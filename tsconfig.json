@@ -13,8 +13,35 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "incremental": true
+    "incremental": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/components/*": ["components/*"],
+      "@/components": ["components/index"],
+      "@/constants/*": ["constants/*"],
+      "@/constants": ["constants/index"],
+      "@/init/*": ["init/*"],
+      "@/init": ["init/index"],
+      "@/public/*": ["public/*"],
+      "@/public": ["public/index"],
+      "@/hooks/*": ["hooks/*"],
+      "@/hooks": ["hooks/index"],
+      "@/utils/*": ["utils/*"],
+      "@/utils": ["utils/index"],
+      "@/interfaces/*": ["interfaces/*"],
+      "@/interfaces": ["interfaces/index"],
+      "@/context/*": ["context/*"],
+      "@/context": ["context/index"]
+    }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "components/*",
+    "hooks/*",
+    "constants/*",
+    "public/*"
+  ],
+  "exclude": ["node_modules", ".vscode"]
 }
