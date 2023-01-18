@@ -26,7 +26,7 @@ const BackgroundMusicOption = () => {
       id: "ave-maria",
       label: "Ave Maria",
       audioComponent: (
-        <AudioPlayer audioFile={aveAudio}>
+        <AudioPlayer audio={aveAudio}>
           <AudioPlayer.AudioPlay />
         </AudioPlayer>
       ),

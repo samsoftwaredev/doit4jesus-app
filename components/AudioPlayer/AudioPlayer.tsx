@@ -1,18 +1,14 @@
-import { RosaryContextProvider } from "context/RosaryContext";
+import { AudioContextProvider } from "context/AudioContext";
 import React from "react";
 import { AudioNext, AudioPrevious, AudioPlay } from "../AudioControllers";
 
 interface Props {
   children: JSX.Element[] | JSX.Element;
-  audioFile: string;
+  audio: string;
 }
 
-const AudioPlayer = ({ children, audioFile }: Props) => {
-  return (
-    <RosaryContextProvider audioFile={audioFile}>
-      {children}
-    </RosaryContextProvider>
-  );
+const AudioPlayer = ({ children, audio }: Props) => {
+  return <AudioContextProvider audio={audio}>{children}</AudioContextProvider>;
 };
 
 AudioPlayer.AudioNext = AudioNext;

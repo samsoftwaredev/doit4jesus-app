@@ -2,12 +2,12 @@ import { useState } from "react";
 import { IconButton, Box } from "@mui/material";
 import PlayIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
-import { useRosaryContext } from "context/RosaryContext";
+import { useAudioContext } from "context/AudioContext";
 
 const audioText = (isPlaying: boolean) => (isPlaying ? "play" : "pause");
 
 const AudioPlay = () => {
-  const { setIsPlaying } = useRosaryContext();
+  const { setIsPlaying } = useAudioContext();
   const [audioPlaying, setAudioPlaying] = useState(false);
 
   const handleToggleAudioPlaying = () => {

@@ -1,9 +1,9 @@
 import { IconButton, Box } from "@mui/material";
 import RedoIcon from "@mui/icons-material/Redo";
-import { useRosaryContext } from "context/RosaryContext";
+import { useAudioContext } from "context/AudioContext";
 
 const AudioControllers = () => {
-  const { forwardAudio } = useRosaryContext();
+  const { forwardAudio } = useAudioContext();
 
   return (
     <Box>

@@ -1,9 +1,9 @@
 import { IconButton, Box } from "@mui/material";
 import UndoIcon from "@mui/icons-material/Undo";
-import { useRosaryContext } from "context/RosaryContext";
+import { useAudioContext } from "context/AudioContext";
 
 const AudioPrevious = () => {
-  const { backwardAudio } = useRosaryContext();
+  const { backwardAudio } = useAudioContext();
 
   return (
     <Box>
