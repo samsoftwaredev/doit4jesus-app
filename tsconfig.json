@@ -33,7 +33,9 @@
       "@/interfaces/*": ["interfaces/*"],
       "@/interfaces": ["interfaces/index"],
       "@/context/*": ["context/*"],
-      "@/context": ["context/index"]
+      "@/context": ["context/index"],
+      "@/styles/*": ["styles/*"],
+      "@/styles": ["styles/index"]
     }
   },
   "include": [
