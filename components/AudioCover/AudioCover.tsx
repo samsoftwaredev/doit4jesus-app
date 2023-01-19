@@ -5,21 +5,21 @@ import { Container } from "./AudioCover.style";
 import { viewSize } from "@/interfaces/rosaryInterface";
 
 interface Props {
-  audioCover: string;
   title: string;
   description: string;
   onClick: MouseEventHandler<HTMLImageElement>;
+  audioCover?: string | null;
   size?: viewSize;
   children?: React.ReactNode;
   controls?: React.ReactNode;
 }
 
 const AudioCover = ({
-  audioCover,
   title,
   description,
   onClick,
   size = "md",
+  audioCover = null,
   children = null,
   controls = null,
 }: Props) => {
@@ -29,13 +29,15 @@ const AudioCover = ({
         <Typography className="rosary-title">{title}</Typography>
         <Typography className="rosary-description">{description}</Typography>
       </Box>
-      <Image
-        className="rosary-image"
-        onClick={onClick}
-        src={audioCover}
-        alt="Rosary Audio Cover"
-        sizes="100px"
-      />
+      {audioCover && (
+        <Image
+          className="rosary-image"
+          onClick={onClick}
+          src={audioCover}
+          alt="Rosary Audio Cover"
+          sizes="100px"
+        />
+      )}
       {children && <Box className="rosary-content">{children}</Box>}
       <Box className="rosary-controls">{controls}</Box>
     </Container>

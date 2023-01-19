@@ -16,6 +16,7 @@ import { VIEW_SIZE } from "@/constants/mysteries";
 import { viewSize } from "@/interfaces/rosaryInterface";
 import { AudioPlayer } from "../AudioPlayer";
 import { Box } from "@mui/system";
+import { INTERFACE_AUDIO_TYPE } from "@/constants/interfaces";
 
 const withBackgroundMusic = true;
 const myRosary = new Rosary(withBackgroundMusic);
@@ -61,7 +62,10 @@ const RosaryAudioPlayer = () => {
   const controls = (
     <>
       <Box sx={{ display: "flex", justifyContent: "center" }}>
-        <AudioPlayer audio="https://www.youtube.com/embed/HgMuRA87US0">
+        <AudioPlayer
+          audio="HgMuRA87US0"
+          type={INTERFACE_AUDIO_TYPE.YOUTUBE_LINK}
+        >
           <AudioPlayer.AudioPrevious />
           <AudioPlayer.AudioPlay />
           <AudioPlayer.AudioNext />
@@ -73,13 +77,8 @@ const RosaryAudioPlayer = () => {
 
   return (
     <Container>
-      {/* <audio controls>
-        <source src={rosary.backgroundMusic} type="audio/ogg" />
-        <source src={rosary.backgroundMusic} type="audio/mpeg" />
-        Your browser does not support the audio tag.
-      </audio> */}
       <AudioCover
-        audioCover={rosary.audioCover}
+        // audioCover={rosary.audioCover}
         title="Rosary"
         description="Sorrow Mysteries"
         size={viewSize}

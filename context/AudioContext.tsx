@@ -1,12 +1,13 @@
 import {
   createContext,
-  LegacyRef,
   MouseEventHandler,
   useContext,
   useEffect,
   useRef,
   useState,
 } from "react";
+import { YouTubeVideo } from "@/components";
+import { INTERFACE_AUDIO_TYPE } from "@/constants";
 
 interface AudioContextType {
   /** Unique id of the item */
@@ -20,94 +21,15 @@ interface AudioContextType {
   backwardAudio: MouseEventHandler<HTMLAnchorElement>;
 }
 
-enum AudioType {
-  AUDIO_FILE = "AUDIO FILE",
-  YOUTUBE_LINK = "YOUTUBE LINK",
-}
-
 interface Props {
   children: JSX.Element | JSX.Element[];
-  type?: AudioType;
+  type?: INTERFACE_AUDIO_TYPE;
   audio: string;
 }
 
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
 
-class AudioFile {
-  isReady = false;
-  isPlaying = false;
-  private _play = Function;
-  private _pause = Function;
-  private _ready = Function;
-  private _audioSrc: HTMLAudioElement = new Audio();
-
-  constructor(audio: string) {
-    if (typeof Audio !== "undefined") {
-      this._audioSrc = new Audio(audio);
-    }
-  }
-
-  play() {
-    return this._play;
-  }
-
-  pause() {
-    return this._pause;
-  }
-
-  ready() {
-    return this._ready;
-  }
-
-  audioSrc() {
-    return this._audioSrc;
-  }
-}
-
-class YouTubeLink {
-  isReady = false;
-  isPlaying = false;
-  private _play = Function;
-  private _pause = Function;
-  private _element = Function;
-
-  constructor(youtubeLink: string, elementId: string) {
-    const element = document.getElementById(elementId);
-    const youTubeIframe = this._appendIframe(youtubeLink);
-
-    element?.appendChild(youTubeIframe);
-  }
-
-  private _appendIframe(youtubeLink: string) {
-    const iframeElem = document.createElement("iframe");
-    iframeElem!.setAttribute("src", youtubeLink);
-    iframeElem!.setAttribute("height", "315");
-    iframeElem!.setAttribute("width", "560");
-    iframeElem!.setAttribute("title", "YouTube video player");
-    iframeElem!.setAttribute("frameborder", "0");
-    iframeElem!.setAttribute(
-      "allow",
-      "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-    );
-    return iframeElem;
-  }
-
-  play() {
-    return this._play;
-  }
-
-  pause() {
-    return this._pause;
-  }
-
-  ready() {}
-
-  audioSrc() {
-    return this._element;
-  }
-}
-
-const setAudioType = (type: AudioType, audio: any) => {
+const setAudioType = (type: INTERFACE_AUDIO_TYPE, audio: any) => {
   // switch (type) {
   //   case AudioType.YOUTUBE_LINK:
   //     const myYTAudio = new YouTubeLink(audio);
@@ -121,11 +43,11 @@ const setAudioType = (type: AudioType, audio: any) => {
 const AudioContextProvider = ({
   children,
   audio,
-  type = AudioType.AUDIO_FILE,
+  type = INTERFACE_AUDIO_TYPE.AUDIO_FILE,
 }: Props) => {
-  const elementId = "audio-context-provider";
-  let isReadyPlayAudio = useRef(false);
-  let audioRef = useRef<HTMLIFrameElement>(null);
+  // const elementId = "audio-context-provider";
+  // let isReadyPlayAudio = useRef(false);
+  // let audioRef = useRef<HTMLIFrameElement>(null);
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [isAudioMute, setIsAudioMute] = useState(false);
@@ -165,10 +87,10 @@ const AudioContextProvider = ({
   }, [isPlaying]);
 
   useEffect(() => {
-    if (audioRef.current) {
-      const myYTAudio = new YouTubeLink(audio, elementId);
-      myYTAudio.ready();
-    }
+    // if (audioRef.current) {
+    // const myYTAudio = new YouTubeLink(audio, elementId, "youtube-video-link");
+    // myYTAudio.ready();
+    // }
   }, []);
 
   const value = {
@@ -184,7 +106,10 @@ const AudioContextProvider = ({
 
   return (
     <AudioContext.Provider value={value}>
-      <div id={elementId} ref={audioRef} />
+      {/* <div id={elementId} ref={audioRef} /> */}
+      {type === INTERFACE_AUDIO_TYPE.YOUTUBE_LINK && (
+        <YouTubeVideo id={audio} visible={false} />
+      )}
       {children}
     </AudioContext.Provider>
   );
