@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import { viewSize } from "@/interfaces/rosaryInterface";
+import { INTERFACE_VIEW_SIZE } from "@/constants/interfaces";
 
 interface Props {
-  size: viewSize;
+  size: INTERFACE_VIEW_SIZE;
 }
 
 export const Container = styled.div<Props>`
