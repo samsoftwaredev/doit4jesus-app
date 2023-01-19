@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Box } from "@mui/system";
 import ShareIcon from "@mui/icons-material/IosShare";
 import MusicIcon from "@mui/icons-material/MusicNote";
@@ -11,12 +12,13 @@ import {
   RosaryOptions,
 } from "@/components";
 import { Rosary } from "@/class";
-import { Container } from "./RosaryAudioPlayer.style";
-import { useState } from "react";
-import { VIEW_SIZE } from "@/constants/mysteries";
-import { viewSize } from "@/interfaces/rosaryInterface";
+import {
+  VIEW_SIZE,
+  INTERFACE_AUDIO_TYPE,
+  INTERFACE_VIEW_SIZE,
+} from "@/constants";
 import { AudioPlayer } from "../AudioPlayer";
-import { INTERFACE_AUDIO_TYPE } from "@/constants/interfaces";
+import { Container } from "./RosaryAudioPlayer.style";
 
 const withBackgroundMusic = true;
 const myRosary = new Rosary(withBackgroundMusic);
@@ -24,13 +26,13 @@ const rosary = myRosary.getRosaryState();
 
 const RosaryAudioPlayer = () => {
   const [rosaryContent, setRosaryContent] = useState<JSX.Element | null>(null);
-  const [viewSize, setViewSize] = useState<viewSize>(
-    VIEW_SIZE.medium as viewSize
+  const [viewSize, setViewSize] = useState<INTERFACE_VIEW_SIZE>(
+    VIEW_SIZE.medium as INTERFACE_VIEW_SIZE
   );
 
   const changeView = (component: JSX.Element | null) => {
-    if (component !== null) setViewSize(VIEW_SIZE.small as viewSize);
-    else setViewSize(VIEW_SIZE.medium as viewSize);
+    if (component !== null) setViewSize(VIEW_SIZE.small as INTERFACE_VIEW_SIZE);
+    else setViewSize(VIEW_SIZE.medium as INTERFACE_VIEW_SIZE);
     setRosaryContent(component);
   };
 

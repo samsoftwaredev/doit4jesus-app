@@ -9,5 +9,6 @@ export { default as Footer } from "./Footer";
 export { default as Meta } from "./Meta";
 export { default as Logo } from "./Logo";
 
-export * from "./Navbar";
 export * from "./AudioPlayer";
+export * from "./Navbars";
+export * from "./Layouts";

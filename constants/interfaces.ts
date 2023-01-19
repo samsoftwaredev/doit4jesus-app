@@ -2,3 +2,8 @@ export enum INTERFACE_AUDIO_TYPE {
   AUDIO_FILE = "AUDIO FILE",
   YOUTUBE_LINK = "YOUTUBE LINK",
 }
+
+export enum INTERFACE_VIEW_SIZE {
+  SMALL = "sm",
+  MEDIUM = "md",
+}
