@@ -8,6 +8,7 @@ import {
 import { AudioPlayer } from "@/components";
 import { aveAudio } from "@/public/assets/audio/index";
 import { Item } from "./BackgroundMusicOption.style";
+import { INTERFACE_AUDIO_TYPE } from "@/constants/interfaces";
 
 const BackgroundMusicOption = () => {
   const [value, setValue] = useState("none");
@@ -26,7 +27,7 @@ const BackgroundMusicOption = () => {
       id: "ave-maria",
       label: "Ave Maria",
       audioComponent: (
-        <AudioPlayer audio={aveAudio}>
+        <AudioPlayer type={INTERFACE_AUDIO_TYPE.AUDIO_FILE} audio={aveAudio}>
           <AudioPlayer.AudioPlay />
         </AudioPlayer>
       ),

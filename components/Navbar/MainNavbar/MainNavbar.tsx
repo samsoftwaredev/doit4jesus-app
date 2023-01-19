@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MAIN_LINKS, APP_LINKS, PAGES } from "@/constants";
+import { NAV_MAIN_LINKS, NAV_APP_LINKS, PAGES } from "@/constants";
 import styles from "./mainNavbar.module.scss";
 import { Logo } from "@/components";
 
@@ -11,11 +11,11 @@ const MainNavbar = ({ type = "main" }: Props) => {
   const displayContent = {
     main: {
       section: "",
-      navLinks: MAIN_LINKS,
+      navLinks: NAV_MAIN_LINKS,
     },
     app: {
       section: "",
-      navLinks: APP_LINKS,
+      navLinks: NAV_APP_LINKS,
     },
   };
   const data = displayContent[type];
@@ -31,7 +31,7 @@ const MainNavbar = ({ type = "main" }: Props) => {
       </div>
       <div className={styles.linkContainer}>
         <ul className={styles.item}>
-          {data.navLinks.map(({ value, label, link }) => (
+          {Object.values(data.navLinks).map(({ value, label, link }) => (
             <li key={value} className={styles.itemLink}>
               <Link href={link}>
                 <a>{label}</a>
