@@ -1,4 +1,4 @@
-import Rosary from "class/Rosary";
+import { Box } from "@mui/system";
 import ShareIcon from "@mui/icons-material/IosShare";
 import MusicIcon from "@mui/icons-material/MusicNote";
 import MenuBook from "@mui/icons-material/MenuBook";
@@ -10,12 +10,12 @@ import {
   ReadRosary,
   RosaryOptions,
 } from "@/components";
+import { Rosary } from "@/class";
 import { Container } from "./RosaryAudioPlayer.style";
 import { useState } from "react";
 import { VIEW_SIZE } from "@/constants/mysteries";
 import { viewSize } from "@/interfaces/rosaryInterface";
 import { AudioPlayer } from "../AudioPlayer";
-import { Box } from "@mui/system";
 import { INTERFACE_AUDIO_TYPE } from "@/constants/interfaces";
 
 const withBackgroundMusic = true;
