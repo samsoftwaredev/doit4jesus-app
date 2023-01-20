@@ -2,29 +2,51 @@ import { useEffect, useState } from "react";
 import { IconButton, Box } from "@mui/material";
 import PlayIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
-import { useAudioContext } from "context/AudioContext";
+import { useAudioContext } from "@/context/AudioContext";
+import { INTERFACE_AUDIO_STATE } from "@/constants/interfaces";
+import { Spinner } from "@/components";
 
 const audioText = (isPlaying: boolean) => (isPlaying ? "play" : "pause");
 
 const AudioPlay = () => {
-  const { setIsPlaying, isPlaying } = useAudioContext();
-  const [audioPlaying, setAudioPlaying] = useState(false);
+  const { setAudioState, audioState } = useAudioContext();
+  const [buttonState, setButtonState] = useState<INTERFACE_AUDIO_STATE>(
+    INTERFACE_AUDIO_STATE.PAUSED
+  );
 
   const handleToggleAudioPlaying = () => {
-    setIsPlaying(!audioPlaying);
+    const state: INTERFACE_AUDIO_STATE =
+      buttonState === INTERFACE_AUDIO_STATE.PLAYING
+        ? INTERFACE_AUDIO_STATE.PAUSED
+        : INTERFACE_AUDIO_STATE.PLAYING;
+    setAudioState(state);
   };
 
   useEffect(() => {
-    setAudioPlaying(isPlaying);
-  }, [isPlaying]);
+    setButtonState(audioState);
+  }, [audioState]);
+
+  const getIcon = () => {
+    switch (audioState) {
+      case INTERFACE_AUDIO_STATE.BUFFERING:
+      case INTERFACE_AUDIO_STATE.VIDEO_CUED:
+        return <Spinner />;
+      case INTERFACE_AUDIO_STATE.PLAYING:
+        return <PlayIcon />;
+      case INTERFACE_AUDIO_STATE.PAUSED:
+      default:
+        return <PauseIcon />;
+    }
+  };
 
   return (
     <Box>
       <IconButton
+        disabled={audioState === INTERFACE_AUDIO_STATE.BUFFERING}
         onClick={handleToggleAudioPlaying}
-        href={`#${audioText(audioPlaying)}`}
+        href={`#${audioText(audioState === INTERFACE_AUDIO_STATE.PLAYING)}`}
       >
-        {audioPlaying ? <PauseIcon /> : <PlayIcon />}
+        {getIcon()}
       </IconButton>
     </Box>
   );

@@ -1,13 +1,14 @@
-import { useEffect, useRef } from "react";
-import { useAudioContext } from "@/context/AudioContext";
+import { useState, useEffect, useRef } from "react";
 import { isClientSideRender } from "@/utils";
-import { Container } from "./YouTubeVideo.style";
-import { useState } from "react";
 import { YouTubeClass } from "@/class";
+import { INTERFACE_AUDIO_STATE } from "@/constants/interfaces";
+import { Container } from "./YouTubeVideo.style";
 
 interface Props {
   id: string;
   visible: boolean;
+  audioState?: INTERFACE_AUDIO_STATE;
+  onChange?: Function;
 }
 
 declare global {
@@ -17,11 +18,15 @@ declare global {
   }
 }
 
-const YouTubeVideo = ({ id, visible = true }: Props) => {
+const YouTubeVideo = ({
+  id,
+  visible = true,
+  audioState = INTERFACE_AUDIO_STATE.UNSTARTED,
+  onChange = () => {},
+}: Props) => {
   let myYT = new YouTubeClass(id);
   const youtubeElem = useRef(null);
   const [player, setPlayer] = useState<any>(null);
-  const { isPlaying, setIsPlaying } = useAudioContext();
 
   useEffect(() => {
     // On mount, check to see if the API script is already loaded
@@ -40,36 +45,35 @@ const YouTubeVideo = ({ id, visible = true }: Props) => {
   };
 
   const onPlayerStateChange = (event: any) => {
-    switch (event.data) {
-      case window.YT.PlayerState.PLAYING:
-        setIsPlaying(true);
-        break;
-      case window.YT.PlayerState.PAUSED:
-      case window.YT.PlayerState.ENDED:
-        setIsPlaying(false);
-        break;
-    }
+    // update the video state
+    onChange(event.data);
   };
 
   const pauseVideo = () => {
     if (typeof player?.pauseVideo === "function") {
       player.pauseVideo();
-      setIsPlaying(false);
+      onChange(INTERFACE_AUDIO_STATE.PAUSED);
     }
   };
 
   const playVideo = () => {
     if (typeof player?.playVideo === "function") {
       player.playVideo();
-      setIsPlaying(true);
+      onChange(INTERFACE_AUDIO_STATE.PLAYING);
     }
   };
 
   useEffect(() => {
     if (isClientSideRender()) {
-      isPlaying ? playVideo() : pauseVideo();
+      switch (audioState) {
+        case INTERFACE_AUDIO_STATE.PLAYING:
+          playVideo();
+          break;
+        case INTERFACE_AUDIO_STATE.PAUSED:
+          pauseVideo();
+      }
     }
-  }, [isPlaying]);
+  }, [audioState]);
 
   return (
     <Container visible={visible} id="youtube-container">

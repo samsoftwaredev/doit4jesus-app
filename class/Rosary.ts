@@ -36,18 +36,6 @@ class Rosary {
     this.rosaryAudioCover = image;
   };
 
-  public pausePrayer = () => {
-    this.isPlaying = false;
-  };
-
-  public playPrayer = () => {
-    this.isPlaying = true;
-  };
-
-  public togglePrayer = () => {
-    this.isPlaying = !this.isPlaying;
-  };
-
   public getRosaryState = () => ({
     isPlaying: this.isPlaying,
     length: this.rosaryLength,

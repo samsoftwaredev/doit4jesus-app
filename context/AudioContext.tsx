@@ -1,12 +1,11 @@
 import { createContext, MouseEventHandler, useContext, useState } from "react";
 import { YouTubeVideo } from "@/components";
-import { INTERFACE_AUDIO_TYPE } from "@/constants";
-import { Box } from "@mui/material";
+import { INTERFACE_AUDIO_TYPE, INTERFACE_AUDIO_STATE } from "@/constants";
 
 interface AudioContextType {
   /** Unique id of the item */
-  isPlaying: boolean;
-  setIsPlaying: Function;
+  audioState: INTERFACE_AUDIO_STATE;
+  setAudioState: Function;
   isAudioMute: boolean;
   toggleIsAudioMute: Function;
   volume: number;
@@ -30,7 +29,7 @@ const AudioContextProvider = ({
   visible = false,
   type = INTERFACE_AUDIO_TYPE.YOUTUBE_LINK,
 }: Props) => {
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [audioState, setAudioState] = useState(INTERFACE_AUDIO_STATE.UNSTARTED);
   const [isAudioMute, setIsAudioMute] = useState(false);
   const [volume, setVolume] = useState(1);
 
@@ -43,8 +42,8 @@ const AudioContextProvider = ({
   const backwardAudio = () => {};
 
   const value = {
-    isPlaying,
-    setIsPlaying,
+    audioState,
+    setAudioState,
     isAudioMute,
     toggleIsAudioMute,
     volume,
@@ -56,7 +55,12 @@ const AudioContextProvider = ({
   return (
     <AudioContext.Provider value={value}>
       {type === INTERFACE_AUDIO_TYPE.YOUTUBE_LINK && (
-        <YouTubeVideo id={audio} visible={visible} />
+        <YouTubeVideo
+          id={audio}
+          visible={visible}
+          audioState={audioState}
+          onChange={setAudioState}
+        />
       )}
       {children}
     </AudioContext.Provider>

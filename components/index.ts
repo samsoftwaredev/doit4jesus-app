@@ -8,6 +8,7 @@ export { default as YouTubeVideo } from "./YouTubeVideo";
 export { default as Footer } from "./Footer";
 export { default as Meta } from "./Meta";
 export { default as Logo } from "./Logo";
+export { default as Spinner } from "./Spinner";
 
 export * from "./AudioPlayer";
 export * from "./Navbars";

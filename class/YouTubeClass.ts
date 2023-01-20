@@ -27,6 +27,7 @@ class YouTubeClass {
   }
 
   public remove() {
+    // remove iframe and creates div element
     const iframeEl = document.getElementById(this.idElFormat());
     if (iframeEl) {
       iframeEl.remove();

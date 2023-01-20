@@ -1,8 +1,10 @@
 import { useState } from "react";
-import ShareIcon from "@mui/icons-material/IosShare";
-import MusicIcon from "@mui/icons-material/MusicNote";
-import MenuBook from "@mui/icons-material/MenuBook";
-import HomeIcon from "@mui/icons-material/Home";
+import {
+  IosShare as ShareIcon,
+  MusicNote as MusicIcon,
+  MenuBook as MenuBook,
+  Home as HomeIcon,
+} from "@mui/icons-material";
 import {
   AudioNavigation,
   AudioCover,
