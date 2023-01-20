@@ -40,6 +40,8 @@ class YouTubeClass {
   public init(callback: Function) {
     return new window.YT.Player(this.idElFormat(), {
       videoId: this.id,
+      width: 0,
+      height: 0,
       playerVars: {
         playsinline: 1,
       },

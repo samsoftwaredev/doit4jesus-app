@@ -1,6 +1,7 @@
 import { createContext, MouseEventHandler, useContext, useState } from "react";
 import { YouTubeVideo } from "@/components";
 import { INTERFACE_AUDIO_TYPE } from "@/constants";
+import { Box } from "@mui/material";
 
 interface AudioContextType {
   /** Unique id of the item */

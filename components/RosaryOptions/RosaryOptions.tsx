@@ -1,4 +1,3 @@
-import { Container } from "./RosaryOptions.style";
 import { useState, SyntheticEvent } from "react";
 import {
   Accordion,
@@ -12,6 +11,7 @@ import LanguageOption from "./LanguageOption";
 import LengthOption from "./LengthOption";
 import SpeedOption from "./SpeedOption";
 import MusicVolumeOption from "./MusicVolumeOption";
+import { Container } from "./RosaryOptions.style";
 
 const RosaryOptions = () => {
   const [expanded, setExpanded] = useState<string | false>(false);

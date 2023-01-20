@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Box } from "@mui/system";
 import ShareIcon from "@mui/icons-material/IosShare";
 import MusicIcon from "@mui/icons-material/MusicNote";
 import MenuBook from "@mui/icons-material/MenuBook";
@@ -12,13 +11,9 @@ import {
   RosaryOptions,
 } from "@/components";
 import { Rosary } from "@/class";
-import {
-  VIEW_SIZE,
-  INTERFACE_AUDIO_TYPE,
-  INTERFACE_VIEW_SIZE,
-} from "@/constants";
+import { VIEW_SIZE, INTERFACE_VIEW_SIZE } from "@/constants";
 import { AudioPlayer } from "../AudioPlayer";
-import { Container } from "./RosaryAudioPlayer.style";
+import { Container, RosaryWrapper } from "./RosaryAudioPlayer.style";
 
 const withBackgroundMusic = true;
 const myRosary = new Rosary(withBackgroundMusic);
@@ -63,13 +58,13 @@ const RosaryAudioPlayer = () => {
 
   const controls = (
     <>
-      <Box sx={{ display: "flex", justifyContent: "center" }}>
+      <RosaryWrapper>
         <AudioPlayer audio="HgMuRA87US0" visible={false}>
           <AudioPlayer.AudioPrevious />
           <AudioPlayer.AudioPlay />
           <AudioPlayer.AudioNext />
         </AudioPlayer>
-      </Box>
+      </RosaryWrapper>
       <AudioNavigation buttons={Object.values(buttons)} />
     </>
   );
@@ -77,7 +72,7 @@ const RosaryAudioPlayer = () => {
   return (
     <Container>
       <AudioCover
-        // audioCover={rosary.audioCover}
+        audioCover={rosary.audioCover}
         title="Rosary"
         description="Sorrow Mysteries"
         size={viewSize}

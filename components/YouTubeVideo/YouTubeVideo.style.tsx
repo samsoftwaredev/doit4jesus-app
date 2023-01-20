@@ -5,6 +5,8 @@ interface Props {
 }
 
 export const Container = styled.div<Props>`
+  display: flex;
+  justify-content: center;
   ${(props) =>
     props.visible
       ? `
