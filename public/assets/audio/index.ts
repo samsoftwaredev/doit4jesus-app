@@ -1,1 +1,1 @@
-export { default as aveAudio } from "./ave.mp3";
+export { default } from "./ave.mp3";
