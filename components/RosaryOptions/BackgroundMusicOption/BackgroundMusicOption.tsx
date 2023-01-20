@@ -5,9 +5,7 @@ import {
   FormControlLabel,
   FormControl,
 } from "@mui/material";
-// import { AudioPlayer } from "@/components";
-// import { INTERFACE_AUDIO_TYPE } from "@/constants/interfaces";
-// import { aveAudio } from "@/public/assets/audio/index";
+import { AudioPlayer } from "@/components";
 import { Item } from "./BackgroundMusicOption.style";
 
 const BackgroundMusicOption = () => {
@@ -27,26 +25,37 @@ const BackgroundMusicOption = () => {
       id: "ave-maria",
       label: "Ave Maria",
       audioComponent: (
-        <></>
-        // <AudioPlayer type={INTERFACE_AUDIO_TYPE.AUDIO_FILE} audio={aveAudio}>
-        //   <AudioPlayer.AudioPlay />
-        // </AudioPlayer>
+        <AudioPlayer audio="7XO9uLEz2WY" visible={false}>
+          <AudioPlayer.AudioPlay />
+        </AudioPlayer>
       ),
     },
     {
       id: "ocean-wave",
       label: "Ocean Waves",
-      audioComponent: null,
+      audioComponent: (
+        <AudioPlayer audio="vPhg6sc1Mk4" visible={false}>
+          <AudioPlayer.AudioPlay />
+        </AudioPlayer>
+      ),
     },
     {
       id: "light-piano",
       label: "Light Piano",
-      audioComponent: null,
+      audioComponent: (
+        <AudioPlayer audio="fOB73qRVGJs" visible={false}>
+          <AudioPlayer.AudioPlay />
+        </AudioPlayer>
+      ),
     },
     {
       id: "gentle-rain",
       label: "Gentle Rain",
-      audioComponent: null,
+      audioComponent: (
+        <AudioPlayer audio="q76bMs-NwRk" visible={false}>
+          <AudioPlayer.AudioPlay />
+        </AudioPlayer>
+      ),
     },
   ];
 

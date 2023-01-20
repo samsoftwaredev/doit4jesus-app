@@ -64,10 +64,7 @@ const RosaryAudioPlayer = () => {
   const controls = (
     <>
       <Box sx={{ display: "flex", justifyContent: "center" }}>
-        <AudioPlayer
-          audio="HgMuRA87US0"
-          type={INTERFACE_AUDIO_TYPE.YOUTUBE_LINK}
-        >
+        <AudioPlayer audio="HgMuRA87US0" visible={false}>
           <AudioPlayer.AudioPrevious />
           <AudioPlayer.AudioPlay />
           <AudioPlayer.AudioNext />
