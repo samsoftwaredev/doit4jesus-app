@@ -1,5 +1,5 @@
 import { ROSARY_DAYS, ROSARY_LENGTH } from "@/constants/mysteries";
-import { aveAudio } from "@/public/assets/audio/index";
+// import { aveAudio } from "@/public/assets/audio/index";
 import crossImage from "@/public/assets/images/crucifixion.svg";
 
 class Rosary {
@@ -29,7 +29,7 @@ class Rosary {
   };
 
   private setBackgroundMusic = (withBGMusic?: boolean) => {
-    if (withBGMusic) this.rosaryBackgroundMusic = aveAudio;
+    // if (withBGMusic) this.rosaryBackgroundMusic = aveAudio;
   };
 
   public setAudioCover = (image: string) => {
