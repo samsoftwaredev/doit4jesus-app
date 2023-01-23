@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { isClientSideRender } from "@/utils";
 import { YouTubeClass } from "@/class";
 import {
+  INTERFACE_AUDIO_SEEK,
   INTERFACE_AUDIO_SPEED,
   INTERFACE_AUDIO_STATE,
 } from "@/constants/interfaces";
@@ -9,12 +10,14 @@ import { Container } from "./YouTubeVideo.style";
 
 interface Props {
   id: string;
+  onChange: Function;
+  setAudioTimer: Function;
   volume?: number;
   audioLoop?: boolean;
   visible?: boolean;
   audioSpeed?: number;
+  audioSeek?: INTERFACE_AUDIO_SEEK;
   audioState?: INTERFACE_AUDIO_STATE;
-  onChange?: Function;
 }
 
 declare global {
@@ -26,12 +29,14 @@ declare global {
 
 const YouTubeVideo = ({
   id,
+  onChange,
+  setAudioTimer,
   volume = 100,
   audioLoop = false,
   visible = true,
+  audioSeek = INTERFACE_AUDIO_SEEK.NEUTRAL,
   audioSpeed = INTERFACE_AUDIO_SPEED.NORMAL,
   audioState = INTERFACE_AUDIO_STATE.UNSTARTED,
-  onChange = () => {},
 }: Props) => {
   let myYT = new YouTubeClass(id);
   const youtubeElem = useRef(null);
@@ -72,23 +77,37 @@ const YouTubeVideo = ({
     }
   };
 
-  const seekTo = (seconds: number = 15, allowSeekAhead: Boolean = true) => {
-    if (typeof player?.seekTo === "function") {
+  const seekTo = (
+    type: INTERFACE_AUDIO_SEEK,
+    seconds: number = 15,
+    allowSeekAhead: Boolean = true
+  ) => {
+    if (
+      typeof player?.seekTo === "function" &&
+      type !== INTERFACE_AUDIO_SEEK.NEUTRAL
+    ) {
+      let newSecondsPointer = 0;
       const currentSeconds = player.getCurrentTime();
-      const newSecondsPointer = Math.abs(seconds + currentSeconds);
+      if (type === INTERFACE_AUDIO_SEEK.FORWARDS) {
+        newSecondsPointer = Math.abs(seconds + currentSeconds);
+      } else {
+        // INTERFACE_AUDIO_SEEK.BACKWARDS
+        newSecondsPointer = Math.abs(seconds - currentSeconds);
+      }
       player.seekTo(newSecondsPointer, allowSeekAhead);
+      setAudioTimer(INTERFACE_AUDIO_SEEK.NEUTRAL);
     }
   };
 
-  const speed = (suggestedRate = 1) => {
+  const setSpeed = (suggestedRate = 1) => {
     if (typeof player?.getPlaybackRate === "function") {
       player.setPlaybackRate(suggestedRate);
     }
   };
 
-  const setLoop = (val: Boolean) => {
+  const setLoop = (bool: Boolean) => {
     if (typeof player?.getPlaybackRate === "function") {
-      player.setLoop(val);
+      player.setLoop(bool);
     }
   };
 
@@ -110,21 +129,16 @@ const YouTubeVideo = ({
     }
   }, [audioState]);
 
-  // useEffect(() => {
-  //   if (audioTimer === 0) {
-  //   } else if (audioTimer < 0) {
-  //     seekTo(audioTimer);
-  //   } else {
-  //     seekTo(audioTimer);
-  //   }
-  // }, [audioTimer]);
+  useEffect(() => {
+    if (isClientSideRender()) seekTo(audioSeek);
+  }, [audioSeek]);
 
   useEffect(() => {
-    if (isClientSideRender()) speed(audioSpeed);
+    if (isClientSideRender()) setSpeed(audioSpeed);
   }, [audioSpeed]);
 
   useEffect(() => {
-    if (isClientSideRender() && audioLoop) setLoop(audioLoop);
+    if (isClientSideRender()) setLoop(audioLoop);
   }, [audioLoop]);
 
   useEffect(() => {

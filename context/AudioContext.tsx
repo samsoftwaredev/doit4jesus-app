@@ -4,6 +4,7 @@ import {
   INTERFACE_AUDIO_TYPE,
   INTERFACE_AUDIO_STATE,
   INTERFACE_AUDIO_PROPS,
+  INTERFACE_AUDIO_SEEK,
 } from "@/constants";
 
 interface AudioContextType {
@@ -12,8 +13,6 @@ interface AudioContextType {
   setAudioState: Function;
   isAudioMute: boolean;
   toggleIsAudioMute: Function;
-  volume: number;
-  setVolume: Function;
   forwardAudio: MouseEventHandler<HTMLAnchorElement>;
   backwardAudio: MouseEventHandler<HTMLAnchorElement>;
 }
@@ -33,23 +32,27 @@ const AudioContextProvider = ({
 }: Props) => {
   const [audioState, setAudioState] = useState(INTERFACE_AUDIO_STATE.PAUSED);
   const [isAudioMute, setIsAudioMute] = useState(false);
-  const [volume, setVolume] = useState(audioPlayer.audioVolume);
+  const [audioTimer, setAudioTimer] = useState<INTERFACE_AUDIO_SEEK>(
+    INTERFACE_AUDIO_SEEK.NEUTRAL
+  );
 
   const toggleIsAudioMute = () => {
     setIsAudioMute((prevState) => !prevState);
   };
 
-  const forwardAudio = () => {};
+  const forwardAudio = () => {
+    setAudioTimer(INTERFACE_AUDIO_SEEK.FORWARDS);
+  };
 
-  const backwardAudio = () => {};
+  const backwardAudio = () => {
+    setAudioTimer(INTERFACE_AUDIO_SEEK.BACKWARDS);
+  };
 
   const value = {
     audioState,
     setAudioState,
     isAudioMute,
     toggleIsAudioMute,
-    volume,
-    setVolume,
     forwardAudio,
     backwardAudio,
   };
@@ -59,12 +62,14 @@ const AudioContextProvider = ({
       {type === INTERFACE_AUDIO_TYPE.YOUTUBE_LINK && (
         <YouTubeVideo
           id={audioPlayer.audio}
+          onChange={setAudioState}
           visible={audioPlayer.visible}
           volume={audioPlayer.audioVolume}
           audioSpeed={audioPlayer.audioSpeed}
           audioLoop={audioPlayer.audioLoop}
+          setAudioTimer={setAudioTimer}
+          audioSeek={audioTimer}
           audioState={audioState}
-          onChange={setAudioState}
         />
       )}
       {children}

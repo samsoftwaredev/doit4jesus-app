@@ -17,6 +17,12 @@ export enum INTERFACE_AUDIO_STATE {
   VIDEO_CUED = 5,
 }
 
+export enum INTERFACE_AUDIO_SEEK {
+  BACKWARDS = -1,
+  NEUTRAL = 0,
+  FORWARDS = 1,
+}
+
 export enum INTERFACE_BACKGROUND_ITEM {
   NONE = "NONE",
   AVE_MARIA = "AVE_MARIA",
@@ -38,5 +44,6 @@ export interface INTERFACE_AUDIO_PROPS {
   visible: boolean;
   audioVolume: number;
   audioLoop?: boolean;
+  audioSeek?: INTERFACE_AUDIO_SEEK;
   audioSpeed?: INTERFACE_AUDIO_SPEED;
 }
