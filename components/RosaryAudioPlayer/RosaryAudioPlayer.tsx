@@ -61,7 +61,13 @@ const RosaryAudioPlayer = () => {
   const controls = (
     <>
       <RosaryWrapper>
-        <AudioPlayer audio="HgMuRA87US0" visible={false}>
+        <AudioPlayer
+          audioPlayer={{
+            audioVolume: 100,
+            audio: "HgMuRA87US0",
+            visible: false,
+          }}
+        >
           <AudioPlayer.AudioPrevious />
           <AudioPlayer.AudioPlay />
           <AudioPlayer.AudioNext />

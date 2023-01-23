@@ -16,3 +16,17 @@ export enum INTERFACE_AUDIO_STATE {
   BUFFERING = 3,
   VIDEO_CUED = 5,
 }
+
+export enum INTERFACE_BACKGROUND_ITEM {
+  NONE = "NONE",
+  AVE_MARIA = "AVE_MARIA",
+  OCEAN_WAVE = "OCEAN_WAVE",
+  LIGHT_PIANO = "LIGHT_PIANO",
+  GENTLE_RAIN = "GENTLE_RAIN",
+}
+
+export interface INTERFACE_AUDIO_PROPS {
+  audio: string;
+  visible: boolean;
+  audioVolume: number;
+}

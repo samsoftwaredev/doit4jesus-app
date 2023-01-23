@@ -31,9 +31,9 @@ const AudioPlay = () => {
       case INTERFACE_AUDIO_STATE.BUFFERING:
       case INTERFACE_AUDIO_STATE.VIDEO_CUED:
         return <Spinner />;
-      case INTERFACE_AUDIO_STATE.PLAYING:
-        return <PlayIcon />;
       case INTERFACE_AUDIO_STATE.PAUSED:
+        return <PlayIcon />;
+      case INTERFACE_AUDIO_STATE.PLAYING:
       default:
         return <PauseIcon />;
     }

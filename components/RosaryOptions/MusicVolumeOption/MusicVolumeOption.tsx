@@ -3,11 +3,16 @@ import { Stack, Slider } from "@mui/material";
 import VolumeDown from "@mui/icons-material/VolumeDown";
 import VolumeUp from "@mui/icons-material/VolumeUp";
 
-const MusicVolumeOption = () => {
-  const [value, setValue] = useState<number>(30);
+interface Props {
+  onChange: Function;
+}
+
+const MusicVolumeOption = ({ onChange }: Props) => {
+  const [value, setValue] = useState<number>(100);
 
   const handleChange = (event: Event, newValue: number | number[]) => {
     setValue(newValue as number);
+    onChange(newValue as number);
   };
 
   return (

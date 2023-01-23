@@ -14,6 +14,7 @@ import MusicVolumeOption from "./MusicVolumeOption";
 import { Container } from "./RosaryOptions.style";
 
 const RosaryOptions = () => {
+  const [backgroundVolume, setBackgroundVolume] = useState<number>(100);
   const [expanded, setExpanded] = useState<string | false>(false);
 
   const handleChange =
@@ -26,8 +27,8 @@ const RosaryOptions = () => {
       title: "Background Music",
       content: (
         <>
-          <BackgroundMusicOption />
-          <MusicVolumeOption />
+          <BackgroundMusicOption volume={backgroundVolume} />
+          <MusicVolumeOption onChange={setBackgroundVolume} />
         </>
       ),
       id: "panel1",

@@ -6,53 +6,86 @@ import {
   FormControl,
 } from "@mui/material";
 import { AudioPlayer } from "@/components";
+import { INTERFACE_BACKGROUND_ITEM } from "@/constants/interfaces";
 import { Item } from "./BackgroundMusicOption.style";
 
-const BackgroundMusicOption = () => {
-  const [value, setValue] = useState("none");
+interface Props {
+  volume: number;
+}
+
+const BackgroundMusicOption = ({ volume = 100 }: Props) => {
+  const [value, setValue] = useState<INTERFACE_BACKGROUND_ITEM>(
+    INTERFACE_BACKGROUND_ITEM.NONE
+  );
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue((event.target as HTMLInputElement).value);
+    const val = (event.target as HTMLInputElement)
+      .value as INTERFACE_BACKGROUND_ITEM;
+    setValue(INTERFACE_BACKGROUND_ITEM[val]);
   };
 
   const backgroundMusicList = [
     {
-      id: "none",
+      id: INTERFACE_BACKGROUND_ITEM.NONE,
       label: "None",
       audioComponent: null,
     },
     {
-      id: "ave-maria",
+      id: INTERFACE_BACKGROUND_ITEM.AVE_MARIA,
       label: "Ave Maria",
       audioComponent: (
-        <AudioPlayer audio="7XO9uLEz2WY" visible={false}>
+        <AudioPlayer
+          audioPlayer={{
+            audio: "7XO9uLEz2WY",
+            visible: false,
+            audioVolume: volume,
+          }}
+        >
           <AudioPlayer.AudioPlay />
         </AudioPlayer>
       ),
     },
     {
-      id: "ocean-wave",
+      id: INTERFACE_BACKGROUND_ITEM.OCEAN_WAVE,
       label: "Ocean Waves",
       audioComponent: (
-        <AudioPlayer audio="vPhg6sc1Mk4" visible={false}>
+        <AudioPlayer
+          audioPlayer={{
+            audio: "vPhg6sc1Mk4",
+            visible: false,
+            audioVolume: volume,
+          }}
+        >
           <AudioPlayer.AudioPlay />
         </AudioPlayer>
       ),
     },
     {
-      id: "light-piano",
+      id: INTERFACE_BACKGROUND_ITEM.LIGHT_PIANO,
       label: "Light Piano",
       audioComponent: (
-        <AudioPlayer audio="fOB73qRVGJs" visible={false}>
+        <AudioPlayer
+          audioPlayer={{
+            audio: "fOB73qRVGJs",
+            visible: false,
+            audioVolume: volume,
+          }}
+        >
           <AudioPlayer.AudioPlay />
         </AudioPlayer>
       ),
     },
     {
-      id: "gentle-rain",
+      id: INTERFACE_BACKGROUND_ITEM.GENTLE_RAIN,
       label: "Gentle Rain",
       audioComponent: (
-        <AudioPlayer audio="q76bMs-NwRk" visible={false}>
+        <AudioPlayer
+          audioPlayer={{
+            audio: "q76bMs-NwRk",
+            visible: false,
+            audioVolume: volume,
+          }}
+        >
           <AudioPlayer.AudioPlay />
         </AudioPlayer>
       ),

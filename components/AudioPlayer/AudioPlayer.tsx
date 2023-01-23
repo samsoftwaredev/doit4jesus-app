@@ -1,18 +1,20 @@
 import React from "react";
-import { INTERFACE_AUDIO_TYPE } from "@/constants/interfaces";
+import {
+  INTERFACE_AUDIO_PROPS,
+  INTERFACE_AUDIO_TYPE,
+} from "@/constants/interfaces";
 import { AudioContextProvider } from "@/context/AudioContext";
 import { AudioNext, AudioPrevious, AudioPlay } from "../AudioControllers";
 
 interface Props {
   children: JSX.Element[] | JSX.Element;
-  audio: string;
-  visible?: boolean;
+  audioPlayer: INTERFACE_AUDIO_PROPS;
   type?: INTERFACE_AUDIO_TYPE;
 }
 
-const AudioPlayer = ({ children, audio, type, visible }: Props) => {
+const AudioPlayer = ({ children, audioPlayer, type }: Props) => {
   return (
-    <AudioContextProvider audio={audio} type={type} visible={visible}>
+    <AudioContextProvider type={type} audioPlayer={audioPlayer}>
       {children}
     </AudioContextProvider>
   );

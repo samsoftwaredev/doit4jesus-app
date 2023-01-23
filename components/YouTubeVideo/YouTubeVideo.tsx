@@ -6,7 +6,8 @@ import { Container } from "./YouTubeVideo.style";
 
 interface Props {
   id: string;
-  visible: boolean;
+  volume: number;
+  visible?: boolean;
   audioState?: INTERFACE_AUDIO_STATE;
   onChange?: Function;
 }
@@ -20,6 +21,7 @@ declare global {
 
 const YouTubeVideo = ({
   id,
+  volume = 100,
   visible = true,
   audioState = INTERFACE_AUDIO_STATE.UNSTARTED,
   onChange = () => {},
@@ -74,6 +76,12 @@ const YouTubeVideo = ({
       }
     }
   }, [audioState]);
+
+  useEffect(() => {
+    if (isClientSideRender()) {
+      if (typeof player?.playVideo === "function") player.setVolume(volume);
+    }
+  }, [volume, player]);
 
   return (
     <Container visible={visible} id="youtube-container">
