@@ -37,5 +37,6 @@ export interface INTERFACE_AUDIO_PROPS {
   audio: string;
   visible: boolean;
   audioVolume: number;
+  audioLoop?: boolean;
   audioSpeed?: INTERFACE_AUDIO_SPEED;
 }

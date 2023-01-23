@@ -40,6 +40,7 @@ const BackgroundMusicOption = ({ volume = 100 }: Props) => {
             audio,
             visible: false,
             audioVolume: volume,
+            audioLoop: true,
           }}
         >
           <AudioPlayer.AudioPlay />

@@ -1,12 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 import { isClientSideRender } from "@/utils";
 import { YouTubeClass } from "@/class";
-import { INTERFACE_AUDIO_STATE } from "@/constants/interfaces";
+import {
+  INTERFACE_AUDIO_SPEED,
+  INTERFACE_AUDIO_STATE,
+} from "@/constants/interfaces";
 import { Container } from "./YouTubeVideo.style";
 
 interface Props {
   id: string;
-  volume: number;
+  volume?: number;
+  audioLoop?: boolean;
   visible?: boolean;
   audioSpeed?: number;
   audioState?: INTERFACE_AUDIO_STATE;
@@ -23,8 +27,9 @@ declare global {
 const YouTubeVideo = ({
   id,
   volume = 100,
+  audioLoop = false,
   visible = true,
-  audioSpeed = 1,
+  audioSpeed = INTERFACE_AUDIO_SPEED.NORMAL,
   audioState = INTERFACE_AUDIO_STATE.UNSTARTED,
   onChange = () => {},
 }: Props) => {
@@ -67,17 +72,29 @@ const YouTubeVideo = ({
     }
   };
 
-  const seekTo = () => {
-    const seconds: number = 15;
-    const allowSeekAhead: Boolean = true;
+  const seekTo = (seconds: number = 15, allowSeekAhead: Boolean = true) => {
     if (typeof player?.seekTo === "function") {
-      player.seekTo(seconds, allowSeekAhead);
+      const currentSeconds = player.getCurrentTime();
+      const newSecondsPointer = Math.abs(seconds + currentSeconds);
+      player.seekTo(newSecondsPointer, allowSeekAhead);
     }
   };
 
   const speed = (suggestedRate = 1) => {
     if (typeof player?.getPlaybackRate === "function") {
       player.setPlaybackRate(suggestedRate);
+    }
+  };
+
+  const setLoop = (val: Boolean) => {
+    if (typeof player?.getPlaybackRate === "function") {
+      player.setLoop(val);
+    }
+  };
+
+  const setVolume = (volume: number) => {
+    if (typeof player?.playVideo === "function") {
+      player.setVolume(volume);
     }
   };
 
@@ -103,14 +120,16 @@ const YouTubeVideo = ({
   // }, [audioTimer]);
 
   useEffect(() => {
-    speed(audioSpeed);
+    if (isClientSideRender()) speed(audioSpeed);
   }, [audioSpeed]);
 
   useEffect(() => {
-    if (isClientSideRender()) {
-      if (typeof player?.playVideo === "function") player.setVolume(volume);
-    }
-  }, [volume, player]);
+    if (isClientSideRender() && audioLoop) setLoop(audioLoop);
+  }, [audioLoop]);
+
+  useEffect(() => {
+    if (isClientSideRender()) setVolume(volume);
+  }, [volume]);
 
   return (
     <Container visible={visible} id="youtube-container">
