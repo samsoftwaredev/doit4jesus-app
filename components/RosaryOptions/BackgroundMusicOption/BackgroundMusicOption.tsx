@@ -6,6 +6,7 @@ import {
   FormControl,
 } from "@mui/material";
 import { AudioPlayer } from "@/components";
+import { BG_AUDIOS } from "@/constants/mysteries";
 import { INTERFACE_BACKGROUND_ITEM } from "@/constants/interfaces";
 import { Item } from "./BackgroundMusicOption.style";
 
@@ -30,13 +31,13 @@ const BackgroundMusicOption = ({ volume = 100 }: Props) => {
       label: "None",
       audioComponent: null,
     },
-    {
-      id: INTERFACE_BACKGROUND_ITEM.AVE_MARIA,
-      label: "Ave Maria",
+    ...BG_AUDIOS.map(({ id, label, audio }) => ({
+      id,
+      label,
       audioComponent: (
         <AudioPlayer
           audioPlayer={{
-            audio: "7XO9uLEz2WY",
+            audio,
             visible: false,
             audioVolume: volume,
           }}
@@ -44,52 +45,7 @@ const BackgroundMusicOption = ({ volume = 100 }: Props) => {
           <AudioPlayer.AudioPlay />
         </AudioPlayer>
       ),
-    },
-    {
-      id: INTERFACE_BACKGROUND_ITEM.OCEAN_WAVE,
-      label: "Ocean Waves",
-      audioComponent: (
-        <AudioPlayer
-          audioPlayer={{
-            audio: "vPhg6sc1Mk4",
-            visible: false,
-            audioVolume: volume,
-          }}
-        >
-          <AudioPlayer.AudioPlay />
-        </AudioPlayer>
-      ),
-    },
-    {
-      id: INTERFACE_BACKGROUND_ITEM.LIGHT_PIANO,
-      label: "Light Piano",
-      audioComponent: (
-        <AudioPlayer
-          audioPlayer={{
-            audio: "fOB73qRVGJs",
-            visible: false,
-            audioVolume: volume,
-          }}
-        >
-          <AudioPlayer.AudioPlay />
-        </AudioPlayer>
-      ),
-    },
-    {
-      id: INTERFACE_BACKGROUND_ITEM.GENTLE_RAIN,
-      label: "Gentle Rain",
-      audioComponent: (
-        <AudioPlayer
-          audioPlayer={{
-            audio: "q76bMs-NwRk",
-            visible: false,
-            audioVolume: volume,
-          }}
-        >
-          <AudioPlayer.AudioPlay />
-        </AudioPlayer>
-      ),
-    },
+    })),
   ];
 
   return (
