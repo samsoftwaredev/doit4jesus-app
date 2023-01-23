@@ -24,6 +24,8 @@ export const VIEW_SIZE = {
   medium: "md",
 };
 
+export const INITIAL_VOLUME = 21;
+
 export const BG_AUDIOS = [
   {
     id: INTERFACE_BACKGROUND_ITEM.AVE_MARIA,

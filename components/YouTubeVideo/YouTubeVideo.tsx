@@ -7,6 +7,7 @@ import {
   INTERFACE_AUDIO_STATE,
 } from "@/constants/interfaces";
 import { Container } from "./YouTubeVideo.style";
+import { INITIAL_VOLUME } from "@/constants/mysteries";
 
 interface Props {
   id: string;
@@ -31,7 +32,7 @@ const YouTubeVideo = ({
   id,
   onChange,
   setAudioTimer,
-  volume = 100,
+  volume = INITIAL_VOLUME,
   audioLoop = false,
   visible = true,
   audioSeek = INTERFACE_AUDIO_SEEK.NEUTRAL,
@@ -113,6 +114,7 @@ const YouTubeVideo = ({
 
   const setVolume = (volume: number) => {
     if (typeof player?.playVideo === "function") {
+      console.log(player.getVolume());
       player.setVolume(volume);
     }
   };

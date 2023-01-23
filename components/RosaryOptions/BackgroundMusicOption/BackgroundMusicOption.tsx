@@ -6,7 +6,7 @@ import {
   FormControl,
 } from "@mui/material";
 import { AudioPlayer } from "@/components";
-import { BG_AUDIOS } from "@/constants/mysteries";
+import { BG_AUDIOS, INITIAL_VOLUME } from "@/constants/mysteries";
 import { INTERFACE_BACKGROUND_ITEM } from "@/constants/interfaces";
 import { Item } from "./BackgroundMusicOption.style";
 
@@ -14,7 +14,7 @@ interface Props {
   volume: number;
 }
 
-const BackgroundMusicOption = ({ volume = 100 }: Props) => {
+const BackgroundMusicOption = ({ volume = INITIAL_VOLUME }: Props) => {
   const [value, setValue] = useState<INTERFACE_BACKGROUND_ITEM>(
     INTERFACE_BACKGROUND_ITEM.NONE
   );
