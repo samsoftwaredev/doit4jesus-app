@@ -25,8 +25,17 @@ export enum INTERFACE_BACKGROUND_ITEM {
   GENTLE_RAIN = "GENTLE_RAIN",
 }
 
+export enum INTERFACE_AUDIO_SPEED {
+  VERY_SLOW = 0.25,
+  SLOW = 0.5,
+  NORMAL = 1,
+  FAST = 1.5,
+  VERY_FAST = 2,
+}
+
 export interface INTERFACE_AUDIO_PROPS {
   audio: string;
   visible: boolean;
   audioVolume: number;
+  audioSpeed?: INTERFACE_AUDIO_SPEED;
 }

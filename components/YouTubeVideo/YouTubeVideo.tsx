@@ -8,6 +8,7 @@ interface Props {
   id: string;
   volume: number;
   visible?: boolean;
+  audioSpeed?: number;
   audioState?: INTERFACE_AUDIO_STATE;
   onChange?: Function;
 }
@@ -23,6 +24,7 @@ const YouTubeVideo = ({
   id,
   volume = 100,
   visible = true,
+  audioSpeed = 1,
   audioState = INTERFACE_AUDIO_STATE.UNSTARTED,
   onChange = () => {},
 }: Props) => {
@@ -65,6 +67,20 @@ const YouTubeVideo = ({
     }
   };
 
+  const seekTo = () => {
+    const seconds: number = 15;
+    const allowSeekAhead: Boolean = true;
+    if (typeof player?.seekTo === "function") {
+      player.seekTo(seconds, allowSeekAhead);
+    }
+  };
+
+  const speed = (suggestedRate = 1) => {
+    if (typeof player?.getPlaybackRate === "function") {
+      player.setPlaybackRate(suggestedRate);
+    }
+  };
+
   useEffect(() => {
     if (isClientSideRender()) {
       switch (audioState) {
@@ -76,6 +92,19 @@ const YouTubeVideo = ({
       }
     }
   }, [audioState]);
+
+  // useEffect(() => {
+  //   if (audioTimer === 0) {
+  //   } else if (audioTimer < 0) {
+  //     seekTo(audioTimer);
+  //   } else {
+  //     seekTo(audioTimer);
+  //   }
+  // }, [audioTimer]);
+
+  useEffect(() => {
+    speed(audioSpeed);
+  }, [audioSpeed]);
 
   useEffect(() => {
     if (isClientSideRender()) {

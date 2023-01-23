@@ -61,6 +61,7 @@ const AudioContextProvider = ({
           id={audioPlayer.audio}
           visible={audioPlayer.visible}
           volume={audioPlayer.audioVolume}
+          audioSpeed={audioPlayer.audioSpeed}
           audioState={audioState}
           onChange={setAudioState}
         />
