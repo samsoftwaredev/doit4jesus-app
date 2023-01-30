@@ -9,6 +9,10 @@ export { default as Footer } from "./Footer";
 export { default as Meta } from "./Meta";
 export { default as Logo } from "./Logo";
 export { default as Spinner } from "./Spinner";
+export { default as Hero } from "./Hero";
+export { default as Features } from "./Features";
+export { default as Resources } from "./Resources";
+export { default as Community } from "./Community";
 
 export * from "./AudioPlayer";
 export * from "./Navbars";

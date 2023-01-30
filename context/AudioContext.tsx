@@ -63,11 +63,11 @@ const AudioContextProvider = ({
         <YouTubeVideo
           id={audioPlayer.audio}
           onChange={setAudioState}
+          setAudioTimer={setAudioTimer}
           visible={audioPlayer.visible}
           volume={audioPlayer.audioVolume}
           audioSpeed={audioPlayer.audioSpeed}
           audioLoop={audioPlayer.audioLoop}
-          setAudioTimer={setAudioTimer}
           audioSeek={audioTimer}
           audioState={audioState}
         />

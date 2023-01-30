@@ -1,37 +1,21 @@
 import Link from "next/link";
-import { NAV_MAIN_LINKS, NAV_APP_LINKS, PAGES } from "@/constants";
+import { NAV_MAIN_LINKS, PAGES } from "@/constants";
 import { Logo } from "@/components";
-import styles from "./mainNavbar.module.scss";
+import styles from "./homeNavbar.module.scss";
 
-interface Props {
-  type?: "main" | "app";
-}
-
-const MainNavbar = ({ type = "main" }: Props) => {
-  const displayContent = {
-    main: {
-      section: "",
-      navLinks: NAV_MAIN_LINKS,
-    },
-    app: {
-      section: "",
-      navLinks: NAV_APP_LINKS,
-    },
-  };
-  const data = displayContent[type];
+const HomeNavbar = () => {
   return (
     <nav className={styles.container}>
       <div className={styles.logo}>
         <Link href={PAGES.home.link}>
           <a className={styles.link}>
             <Logo />
-            <span>{data.section}</span>
           </a>
         </Link>
       </div>
       <div className={styles.linkContainer}>
         <ul className={styles.item}>
-          {Object.values(data.navLinks).map(({ value, label, link }) => (
+          {Object.values(NAV_MAIN_LINKS).map(({ value, label, link }) => (
             <li key={value} className={styles.itemLink}>
               <Link href={link}>
                 <a>{label}</a>
@@ -44,4 +28,4 @@ const MainNavbar = ({ type = "main" }: Props) => {
   );
 };
 
-export default MainNavbar;
+export default HomeNavbar;
