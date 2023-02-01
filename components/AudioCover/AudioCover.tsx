@@ -35,7 +35,6 @@ const AudioCover = ({
           onClick={onClick}
           src={audioCover}
           alt="Rosary Audio Cover"
-          sizes="100px"
         />
       )}
       {children && <Box className="rosary-content">{children}</Box>}
