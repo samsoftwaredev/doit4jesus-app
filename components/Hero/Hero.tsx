@@ -1,16 +1,21 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import Link from "next/link";
+import { Container } from "./hero.style";
 
 const Hero = () => {
   return (
-    <Box>
-      <Typography variant="h1" gutterBottom>
-        Pray Every Day this Year
+    <Container>
+      <div className="line" />
+      <Typography className="title" variant="h1">
+        Pray <span className="em">Every Day</span> this Year
       </Typography>
-      <Button variant="contained">
-        <Link href="/app">Pray Rosary</Link>
-      </Button>
-    </Box>
+      <Typography variant="h6" gutterBottom>
+        And for the rest of your life!
+      </Typography>
+      <Link className="cta" href="/app">
+        Start Praying
+      </Link>
+    </Container>
   );
 };
 

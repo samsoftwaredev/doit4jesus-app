@@ -10,9 +10,7 @@ const Footer = () => {
       <ul className={styles.links}>
         {NAV_FOOTER_LINKS.map(({ link, label, value }) => (
           <li className={styles.item} key={value}>
-            <Link href={link}>
-              <a>{label}</a>
-            </Link>
+            <Link href={link}>{label}</Link>
           </li>
         ))}
       </ul>

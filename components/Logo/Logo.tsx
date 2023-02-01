@@ -1,5 +1,7 @@
+import { IconLogo } from "./logo.style";
+
 const Logo = () => {
-  return <>Company Logo</>;
+  return <IconLogo>DoIt4Jesus</IconLogo>;
 };
 
 export default Logo;

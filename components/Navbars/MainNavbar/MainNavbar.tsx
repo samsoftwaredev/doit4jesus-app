@@ -22,20 +22,16 @@ const MainNavbar = ({ type = "main" }: Props) => {
   return (
     <nav className={styles.container}>
       <div className={styles.logo}>
-        <Link href={PAGES.home.link}>
-          <a className={styles.link}>
-            <Logo />
-            <span>{data.section}</span>
-          </a>
+        <Link href={PAGES.home.link} className={styles.link}>
+          <Logo />
+          <span>{data.section}</span>
         </Link>
       </div>
       <div className={styles.linkContainer}>
         <ul className={styles.item}>
           {Object.values(data.navLinks).map(({ value, label, link }) => (
             <li key={value} className={styles.itemLink}>
-              <Link href={link}>
-                <a>{label}</a>
-              </Link>
+              <Link href={link}>{label}</Link>
             </li>
           ))}
         </ul>
