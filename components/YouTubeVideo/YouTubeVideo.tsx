@@ -49,6 +49,7 @@ const YouTubeVideo = ({
     if (youtubeEleRef && youtubeEleRef.current && isClientSideRender()) {
       myYT = new YouTubeClass(id, youtubeEleRef.current.id);
       myYT.add(loadVideo);
+      pauseVideo();
     }
     return () => {
       myYT.remove();

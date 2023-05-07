@@ -38,16 +38,17 @@ const RosaryOptions = () => {
       content: <LanguageOption />,
       id: "panel2",
     },
-    {
-      title: "Length",
-      content: <LengthOption />,
-      id: "panel3",
-    },
-    {
-      title: "Playback Speed",
-      content: <SpeedOption />,
-      id: "panel4",
-    },
+    // TODO: future enhancements
+    // {
+    //   title: "Length",
+    //   content: <LengthOption />,
+    //   id: "panel3",
+    // },
+    // {
+    //   title: "Playback Speed",
+    //   content: <SpeedOption />,
+    //   id: "panel4",
+    // },
   ];
 
   return (

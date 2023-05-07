@@ -6,8 +6,6 @@ import {
   FormControl,
 } from "@mui/material";
 import { useLanguageContext } from "@/context/LanguageContext";
-import { useAudioContext } from "@/context/AudioContext";
-import { INTERFACE_AUDIO_STATE } from "@/constants/interfaces";
 
 const languagesList = {
   english: {
@@ -26,14 +24,12 @@ const languagesList = {
 
 const LanguageOption = () => {
   const { setLanguage } = useLanguageContext();
-  const { setAudioState } = useAudioContext();
   const [value, setValue] = useState(languagesList.english.value);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const values = event.target as HTMLInputElement;
     setValue(values.value);
     setLanguage(values.value);
-    setAudioState(INTERFACE_AUDIO_STATE.PAUSED);
   };
 
   return (
