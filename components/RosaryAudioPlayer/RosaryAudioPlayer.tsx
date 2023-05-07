@@ -47,16 +47,17 @@ const RosaryAudioPlayer = () => {
       onClick: () => changeView(<RosaryOptions />),
       icon: <MusicIcon />,
     },
-    read: {
-      id: "read",
-      onClick: () => changeView(<ReadRosary />),
-      icon: <MenuBook />,
-    },
-    share: {
-      id: "share",
-      onClick: () => changeView(<ShareRosary />),
-      icon: <ShareIcon />,
-    },
+    // TODO: new features
+    // read: {
+    //   id: "read",
+    //   onClick: () => changeView(<ReadRosary />),
+    //   icon: <MenuBook />,
+    // },
+    // share: {
+    //   id: "share",
+    //   onClick: () => changeView(<ShareRosary />),
+    //   icon: <ShareIcon />,
+    // },
   };
 
   const controls = (

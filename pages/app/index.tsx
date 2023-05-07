@@ -1,14 +1,18 @@
 import type { NextPage } from "next";
-import { RosaryAudioPlayer } from "@/components";
+import Link from "next/link";
 
 const App: NextPage = () => {
   return (
     <>
-      <h1>Daily Rosary</h1>
-      <p>
-        Meditate on the life on Jesus through the eyes of Mary with friends.
-      </p>
-      <RosaryAudioPlayer />
+      <h1>Welcome</h1>
+      <ul>
+        <li>
+          <Link href={"app/rosary"}>Rosary</Link>
+        </li>
+        <li>
+          <Link href={"app/confession"}>Confession</Link>
+        </li>
+      </ul>
     </>
   );
 };
