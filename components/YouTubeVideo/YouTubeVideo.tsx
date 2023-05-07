@@ -61,6 +61,16 @@ const YouTubeVideo = ({
     setPlayer(playerYT);
   };
 
+  const toggleVideoState = (audioState: INTERFACE_AUDIO_STATE) => {
+    switch (audioState) {
+      case INTERFACE_AUDIO_STATE.PLAYING:
+        playVideo();
+        break;
+      case INTERFACE_AUDIO_STATE.PAUSED:
+        pauseVideo();
+    }
+  };
+
   const onPlayerStateChange = (event: any) => {
     // update the video state
     onChange(event.data);
@@ -122,15 +132,7 @@ const YouTubeVideo = ({
   };
 
   useEffect(() => {
-    if (isClientSideRender()) {
-      switch (audioState) {
-        case INTERFACE_AUDIO_STATE.PLAYING:
-          playVideo();
-          break;
-        case INTERFACE_AUDIO_STATE.PAUSED:
-          pauseVideo();
-      }
-    }
+    if (isClientSideRender()) toggleVideoState(audioState);
   }, [audioState]);
 
   useEffect(() => {
