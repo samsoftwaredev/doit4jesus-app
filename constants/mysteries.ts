@@ -13,6 +13,29 @@ export const ROSARY_DAYS = {
 
 export const ROSARY_MYSTERIES = ["glorious", "sorrowful", "joyful", "luminous"];
 
+export const ROSARY_AUDIOS = {
+  glorious: {
+    es: "j6DsMW6k1Qc",
+    en: "WoJ1hQTVdSo",
+    la: "uAZtorHsg1I",
+  },
+  sorrowful: {
+    es: "HgMuRA87US0",
+    en: "ry7FbjkN-p0",
+    la: "87AOQ0hOC9I",
+  },
+  joyful: {
+    es: "zphh7067Jf0",
+    en: "ckUJRg04jyg",
+    la: "ejI-xH54ct4",
+  },
+  luminous: {
+    es: "Q9CsD4KH7DA",
+    en: "b2EjBt2PFpc",
+    la: "ccnYPTN9Xns",
+  },
+};
+
 export const ROSARY_LENGTH = {
   short: "short",
   medium: "medium",

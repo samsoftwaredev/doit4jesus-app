@@ -38,7 +38,6 @@ const BackgroundMusicOption = ({ volume = INITIAL_VOLUME }: Props) => {
         <AudioPlayer
           audioPlayer={{
             audio,
-            visible: false,
             audioVolume: volume,
             audioLoop: true,
           }}

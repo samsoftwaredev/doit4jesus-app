@@ -1,31 +1,30 @@
-import { ROSARY_DAYS, ROSARY_LENGTH } from "@/constants/mysteries";
-// import { aveAudio } from "@/public/assets/audio/index";
+import {
+  ROSARY_AUDIOS,
+  ROSARY_DAYS,
+  ROSARY_LENGTH,
+} from "@/constants/mysteries";
 import crossImage from "@/public/assets/images/crucifixion.svg";
+import {
+  INTERFACE_LANGUAGES,
+  INTERFACE_ROSARY_MYSTERIES,
+  INTERFACE_ROSARY_STATE,
+} from "../constants";
+import { capitalizeFirstLetter } from "../utils";
 
 class Rosary {
-  private isPlaying = false;
-  private rosaryLength = ROSARY_LENGTH.medium;
-  private rosaryBackgroundMusic = "";
   private rosaryAudioCover = "";
-  private currentPrayerIndex = 0;
-  private rosaryPrayer = null;
+  private mysteryName = INTERFACE_ROSARY_MYSTERIES.GLORIOUS;
 
-  constructor(withBGMusic?: boolean) {
-    const mysteryName = this.setTodaysMystery();
-    this.setBackgroundMusic(withBGMusic);
+  constructor() {
+    this.mysteryName = this.setTodaysMystery();
     this.setAudioCover(crossImage);
-    this.fetchRosaryAudio(mysteryName);
   }
 
-  private fetchRosaryAudio = (mysteryName: string) => {
-    // this.rosaryPrayer =
-  };
-
-  private setTodaysMystery = () => {
+  private setTodaysMystery = (): INTERFACE_ROSARY_MYSTERIES => {
     const dayOfTheWeek = new Date().getDay();
     const arrOfPrayersDays = Object.values(ROSARY_DAYS);
     const mysteryName = arrOfPrayersDays[dayOfTheWeek];
-    return mysteryName;
+    return mysteryName as INTERFACE_ROSARY_MYSTERIES;
   };
 
   private setBackgroundMusic = (withBGMusic?: boolean) => {
@@ -36,38 +35,35 @@ class Rosary {
     this.rosaryAudioCover = image;
   };
 
-  public getRosaryState = () => ({
-    isPlaying: this.isPlaying,
-    length: this.rosaryLength,
-    backgroundMusic: this.rosaryBackgroundMusic,
-    audioCover: this.rosaryAudioCover,
-    index: this.currentPrayerIndex,
-    audio: this.rosaryPrayer,
-  });
+  public getAudio = (
+    language: INTERFACE_LANGUAGES = INTERFACE_LANGUAGES.en
+  ): string => {
+    console.log("new language: ", language);
+    return ROSARY_AUDIOS[this.mysteryName as INTERFACE_ROSARY_MYSTERIES][
+      language
+    ];
+  };
+
+  public getRosaryState = (
+    language: INTERFACE_LANGUAGES = INTERFACE_LANGUAGES.en
+  ): INTERFACE_ROSARY_STATE => {
+    const subTitle = `${capitalizeFirstLetter(this.mysteryName)} Mystery`;
+    return {
+      title: "Rosary",
+      mystery: subTitle,
+      mysteryAudio: this.getAudio(language),
+      audioCover: this.rosaryAudioCover,
+    };
+  };
 
   public setRosaryType = (length: keyof typeof ROSARY_LENGTH) => {
-    this.rosaryLength = ROSARY_LENGTH[length];
+    // this.rosaryLength = ROSARY_LENGTH[length];
   };
 
   public mutePrayer = () => {};
-  public changeMystery = () => {};
 
-  public nextPrayer = () => {
-    // if (this.currentPrayerIndex > ROSARY_LENGTH)
-    this.currentPrayerIndex = this.currentPrayerIndex + 1;
-  };
-
-  public prevPrayer = () => {
-    // if (this.currentPrayerIndex < 0)
-    this.currentPrayerIndex = this.currentPrayerIndex - 1;
-  };
-
-  public resetRosary = () => {
-    this.isPlaying = false;
-    this.rosaryLength = ROSARY_LENGTH.medium;
-    this.rosaryBackgroundMusic = "";
-    this.rosaryAudioCover = "";
-    this.currentPrayerIndex = 0;
+  public changeMystery = (mystery: INTERFACE_ROSARY_MYSTERIES) => {
+    this.mysteryName = mystery;
   };
 }
 

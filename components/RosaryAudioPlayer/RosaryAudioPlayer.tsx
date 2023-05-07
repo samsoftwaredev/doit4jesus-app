@@ -16,12 +16,13 @@ import { Rosary } from "@/class";
 import { VIEW_SIZE, INTERFACE_VIEW_SIZE } from "@/constants";
 import { AudioPlayer } from "../AudioPlayer";
 import { Container, RosaryWrapper } from "./RosaryAudioPlayer.style";
+import { useLanguageContext } from "@/context/LanguageContext";
 
-const withBackgroundMusic = true;
-const myRosary = new Rosary(withBackgroundMusic);
-const rosary = myRosary.getRosaryState();
+const myRosary = new Rosary();
+const rosaryState = myRosary.getRosaryState();
 
 const RosaryAudioPlayer = () => {
+  const { language } = useLanguageContext();
   const [rosaryContent, setRosaryContent] = useState<JSX.Element | null>(null);
   const [viewSize, setViewSize] = useState<INTERFACE_VIEW_SIZE>(
     VIEW_SIZE.medium as INTERFACE_VIEW_SIZE
@@ -63,9 +64,7 @@ const RosaryAudioPlayer = () => {
       <RosaryWrapper>
         <AudioPlayer
           audioPlayer={{
-            audioVolume: 100,
-            audio: "HgMuRA87US0",
-            visible: false,
+            audio: myRosary.getAudio(language),
           }}
         >
           <AudioPlayer.AudioPrevious />
@@ -80,9 +79,9 @@ const RosaryAudioPlayer = () => {
   return (
     <Container>
       <AudioCover
-        audioCover={rosary.audioCover}
-        title="Rosary"
-        description="Sorrow Mysteries"
+        audioCover={rosaryState.audioCover}
+        title={rosaryState.title}
+        description={rosaryState.mystery}
         size={viewSize}
         onClick={buttons.home.onClick}
         controls={controls}

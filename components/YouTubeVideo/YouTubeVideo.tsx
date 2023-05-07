@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { isClientSideRender } from "@/utils";
+import { generateRandomStringId, isClientSideRender } from "@/utils";
 import { YouTubeClass } from "@/class";
 import {
   INTERFACE_AUDIO_SEEK,
@@ -34,24 +34,26 @@ const YouTubeVideo = ({
   setAudioTimer,
   volume = INITIAL_VOLUME,
   audioLoop = false,
-  visible = true,
+  visible = false,
   audioSeek = INTERFACE_AUDIO_SEEK.NEUTRAL,
   audioSpeed = INTERFACE_AUDIO_SPEED.NORMAL,
   audioState = INTERFACE_AUDIO_STATE.UNSTARTED,
 }: Props) => {
-  let myYT = new YouTubeClass(id);
-  const youtubeElem = useRef(null);
+  let myYT: YouTubeClass;
+  const youtubeEleRef = useRef<HTMLInputElement>(null);
+  const youtubeId = `youtube-container-${generateRandomStringId(10)}`;
   const [player, setPlayer] = useState<any>(null);
 
   useEffect(() => {
     // On mount, check to see if the API script is already loaded
-    if (isClientSideRender()) {
+    if (youtubeEleRef && youtubeEleRef.current && isClientSideRender()) {
+      myYT = new YouTubeClass(id, youtubeEleRef.current.id);
       myYT.add(loadVideo);
     }
     return () => {
       myYT.remove();
     };
-  }, []);
+  }, [id, youtubeEleRef]);
 
   const loadVideo = () => {
     // the Player object is created uniquely based on the id in props
@@ -147,11 +149,7 @@ const YouTubeVideo = ({
     if (isClientSideRender()) setVolume(volume);
   }, [volume]);
 
-  return (
-    <Container visible={visible} id="youtube-container">
-      <div ref={youtubeElem} id={`youtube-player-${id}`} />
-    </Container>
-  );
+  return <Container ref={youtubeEleRef} visible={visible} id={youtubeId} />;
 };
 
 export default YouTubeVideo;

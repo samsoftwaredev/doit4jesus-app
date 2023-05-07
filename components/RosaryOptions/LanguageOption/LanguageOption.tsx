@@ -5,24 +5,32 @@ import {
   FormControlLabel,
   FormControl,
 } from "@mui/material";
+import { useLanguageContext } from "@/context/LanguageContext";
+
+const languagesList = {
+  english: {
+    value: "en",
+    label: "English",
+  },
+  spanish: {
+    value: "es",
+    label: "Español",
+  },
+  latin: {
+    value: "la",
+    label: "Latin",
+  },
+};
 
 const LanguageOption = () => {
-  const [value, setValue] = useState("en");
+  const { setLanguage } = useLanguageContext();
+  const [value, setValue] = useState(languagesList.english.value);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setValue((event.target as HTMLInputElement).value);
+    const values = event.target as HTMLInputElement;
+    setValue(values.value);
+    setLanguage(values.value);
   };
-
-  const languagesList = [
-    {
-      value: "es",
-      label: "Espanol",
-    },
-    {
-      value: "en",
-      label: "English",
-    },
-  ];
 
   return (
     <FormControl>
@@ -32,7 +40,7 @@ const LanguageOption = () => {
         value={value}
         onChange={handleChange}
       >
-        {languagesList.map(({ value, label }) => (
+        {Object.values(languagesList).map(({ value, label }) => (
           <FormControlLabel
             key={value}
             value={value}

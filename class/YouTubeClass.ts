@@ -1,17 +1,22 @@
 class YouTubeClass {
-  private id: string;
+  private id?: string;
 
-  constructor(id: string) {
+  constructor(id: string, elementId: string) {
     this.id = id;
+    const divEl = document.createElement("div");
+    divEl.setAttribute("id", this.idElFormat(this.id));
+    const container = document.getElementById(elementId);
+    console.log("appendChild", container);
+    if (container) container.appendChild(divEl);
   }
 
-  private idElFormat() {
-    return `youtube-player-${this.id}`;
+  public idElFormat(id?: string) {
+    return `youtube-player-${id}`;
   }
 
   public add(callback: Function) {
     if (!window.YT) {
-      // If not, load the script asynchronously
+      // If YT instance was not already defined, load the script asynchronously
       const tag = document.createElement("script");
       tag.src = "https://www.youtube.com/iframe_api";
 
@@ -28,18 +33,14 @@ class YouTubeClass {
 
   public remove() {
     // remove iframe and creates div element
-    const iframeEl = document.getElementById(this.idElFormat());
+    const iframeEl = document.getElementById(this.idElFormat(this.id));
     if (iframeEl) {
       iframeEl.remove();
-      const divEl = document.createElement("div");
-      divEl.setAttribute("id", this.idElFormat());
-      const container = document.getElementById("youtube-container");
-      if (container) container.appendChild(divEl);
     }
   }
 
   public init(callback: Function) {
-    return new window.YT.Player(this.idElFormat(), {
+    return new window.YT.Player(this.idElFormat(this.id), {
       videoId: this.id,
       width: 0,
       height: 0,

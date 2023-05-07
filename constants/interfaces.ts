@@ -8,6 +8,12 @@ export enum INTERFACE_VIEW_SIZE {
   MEDIUM = "md",
 }
 
+export enum INTERFACE_LANGUAGES {
+  es = "es",
+  la = "la",
+  en = "en",
+}
+
 export enum INTERFACE_AUDIO_STATE {
   UNSTARTED = -1,
   ENDED = 0,
@@ -31,6 +37,13 @@ export enum INTERFACE_BACKGROUND_ITEM {
   GENTLE_RAIN = "GENTLE_RAIN",
 }
 
+export enum INTERFACE_ROSARY_MYSTERIES {
+  GLORIOUS = "glorious",
+  SORROWFUL = "sorrowful",
+  JOYFUL = "joyful",
+  LUMINOUS = "luminous",
+}
+
 export enum INTERFACE_AUDIO_SPEED {
   VERY_SLOW = 0.25,
   SLOW = 0.5,
@@ -41,9 +54,15 @@ export enum INTERFACE_AUDIO_SPEED {
 
 export interface INTERFACE_AUDIO_PROPS {
   audio: string;
-  visible: boolean;
-  audioVolume: number;
+  visible?: boolean;
+  audioVolume?: number;
   audioLoop?: boolean;
   audioSeek?: INTERFACE_AUDIO_SEEK;
   audioSpeed?: INTERFACE_AUDIO_SPEED;
+}
+export interface INTERFACE_ROSARY_STATE {
+  mystery: string;
+  audioCover: string;
+  title: string;
+  mysteryAudio: string;
 }
