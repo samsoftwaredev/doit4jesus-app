@@ -1,0 +1,37 @@
+.container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.prevPrevCard {
+  background-color: rgb(206, 206, 206);
+  margin-left: -30px;
+}
+.prevCard {
+  background-color: rgb(239, 239, 239);
+  margin-left: -20px;
+  z-index: 50;
+}
+.nextCard {
+  background-color: rgb(239, 239, 239);
+  margin-left: 20px;
+  z-index: 50;
+}
+.nextNextCard {
+  background-color: rgb(206, 206, 206);
+  margin-left: 30px;
+}
+.currentCard {
+  z-index: 100;
+}
+.deck {
+  position: relative;
+}
+.card {
+  position: absolute;
+}
+.buttons {
+  position: relative;
+  z-index: 900;
+}

@@ -4,6 +4,8 @@ export const capitalizeFirstLetter = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
+export const css = (...args: string[]) => [...args].join(" ");
+
 export const generateRandomStringId = (length: number) => {
   let result = "";
   const characters =
