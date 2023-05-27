@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { Button } from "@mui/material";
+import { Button, IconButton, Tooltip } from "@mui/material";
 import Card from "../Card";
 import styles from "./cardDeck.module.scss";
 import { CardProps } from "@/interfaces/index";
 import { css } from "@/utils";
+import { CardCounter } from "..";
+import { Check, Close, Undo } from "@mui/icons-material";
 
 interface Props {
   items: CardProps[];
@@ -11,6 +13,8 @@ interface Props {
 
 const CardDeck = ({ items }: Props) => {
   const [counter, setCounter] = useState(0);
+  const isFirstCard = counter === 0;
+  const isLastCard = counter >= items.length - 1;
 
   const nextCard = () => {
     if (counter < items.length - 1) setCounter((counter) => counter + 1);
@@ -57,11 +61,36 @@ const CardDeck = ({ items }: Props) => {
 
   return (
     <div className={styles.container}>
+      <CardCounter counter={counter + 1} cards={items} />
       <div className={styles.deck}>{deckOfCards}</div>
       <div className={styles.buttons}>
-        <Button onClick={prevCard}>Undo</Button>
-        <Button onClick={onSinAcknowledged}>Yes</Button>
-        <Button onClick={onSinRejected}>No</Button>
+        <Tooltip title="Go Back">
+          <IconButton
+            disabled={isFirstCard}
+            onClick={prevCard}
+            aria-label="Undo"
+          >
+            <Undo />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Need to confess">
+          <IconButton
+            disabled={isLastCard}
+            onClick={onSinAcknowledged}
+            aria-label="Yes"
+          >
+            <Check />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Don't need to confess">
+          <IconButton
+            disabled={isLastCard}
+            onClick={onSinRejected}
+            aria-label="No"
+          >
+            <Close />
+          </IconButton>
+        </Tooltip>
       </div>
     </div>
   );

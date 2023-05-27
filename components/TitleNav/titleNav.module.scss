@@ -1,0 +1,22 @@
+.container {
+  color: white;
+  display: flex;
+  align-items: start;
+  margin: 5px 15px;
+}
+
+.title {
+  text-overflow: ellipsis;
+  height: 39px;
+}
+
+.description {
+  height: 50px;
+  text-overflow: ellipsis;
+  font-size: 0.9em;
+}
+
+.button {
+  margin-top: 7px;
+  margin-right: 5px;
+}

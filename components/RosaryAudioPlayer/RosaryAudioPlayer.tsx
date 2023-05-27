@@ -11,6 +11,7 @@ import {
   ShareRosary,
   ReadRosary,
   RosaryOptions,
+  TitleNav,
 } from "@/components";
 import { Rosary } from "@/class";
 import { VIEW_SIZE, INTERFACE_VIEW_SIZE } from "@/constants";
@@ -78,18 +79,24 @@ const RosaryAudioPlayer = () => {
   );
 
   return (
-    <Container>
-      <AudioCover
-        audioCover={rosaryState.audioCover}
-        title={rosaryState.title}
-        description={rosaryState.mystery}
-        size={viewSize}
-        onClick={buttons.home.onClick}
-        controls={controls}
-      >
-        {rosaryContent}
-      </AudioCover>
-    </Container>
+    <>
+      <TitleNav
+        title="The Holy Rosary"
+        description="Let's meditate the life of Jesus and Mary"
+      />
+      <Container>
+        <AudioCover
+          audioCover={rosaryState.audioCover}
+          title={rosaryState.title}
+          description={rosaryState.mystery}
+          size={viewSize}
+          onClick={buttons.home.onClick}
+          controls={controls}
+        >
+          {rosaryContent}
+        </AudioCover>
+      </Container>
+    </>
   );
 };
 

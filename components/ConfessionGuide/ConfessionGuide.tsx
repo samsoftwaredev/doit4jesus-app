@@ -1,6 +1,7 @@
 import styles from "./confessionGuide.module.scss";
 import CardDeck from "../CardDeck";
 import { CardProps } from "@/interfaces/index";
+import { TitleNav } from "..";
 
 const ConfessionGuide = () => {
   const cards: CardProps[] = [
@@ -34,6 +35,7 @@ const ConfessionGuide = () => {
   ];
   return (
     <div className={styles.container}>
+      <TitleNav title="Confession" description="Let's do a great confession" />
       <CardDeck items={cards} />
     </div>
   );

@@ -1,0 +1,140 @@
+/* waves */
+.ocean {
+  z-index: -1;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow-x: hidden;
+  background: rgb(234, 161, 210);
+  background: linear-gradient(0deg, rgb(234, 161, 210) 0%, rgb(40, 3, 92) 100%);
+}
+
+.wave {
+  position: fixed;
+  bottom: -100px;
+  left: -100px;
+  right: -100px;
+
+  --size: 50px;
+  --p: 25px;
+  --R: 55.9px /*sqrt(var(--size)*var(--size) + var(--p)*var(--p))*/;
+
+  height: 200px;
+  margin: 10px 0;
+  -webkit-mask: radial-gradient(
+        var(--R) at left 50% bottom calc(var(--size) + var(--p)),
+        #000 99%,
+        #0000 101%
+      )
+      left calc(50% - 2 * var(--size)) bottom 0 / calc(4 * var(--size)) 51%
+      repeat-x,
+    radial-gradient(
+        var(--R) at left 50% bottom calc(-1 * var(--p)),
+        #0000 99%,
+        #000 101%
+      )
+      left 50% bottom var(--size) / calc(4 * var(--size))
+      calc(51% - var(--size)) repeat-x,
+    radial-gradient(
+        var(--R) at left 50% top calc(var(--size) + var(--p)),
+        #000 99%,
+        #0000 101%
+      )
+      left calc(50% - 2 * var(--size)) top 0 / calc(4 * var(--size)) 51%
+      repeat-x,
+    radial-gradient(
+        var(--R) at left 50% top calc(-1 * var(--p)),
+        #0000 99%,
+        #000 101%
+      )
+      left 50% top var(--size) / calc(4 * var(--size)) calc(51% - var(--size))
+      repeat-x;
+  background: linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgb(69, 68, 68) 80%,
+    rgba(0, 0, 0, 1) 100%
+  );
+  border: none;
+}
+
+.wave + .wave {
+  --d: bottom;
+}
+
+.wave:nth-of-type(1) {
+  bottom: 0px;
+  animation: wave 10s linear infinite;
+  opacity: 0.5;
+}
+
+.wave:nth-of-type(2) {
+  bottom: -40px;
+  animation: wave 10s -5s linear reverse infinite;
+  opacity: 0.5;
+}
+
+.wave:nth-of-type(3) {
+  bottom: -80px;
+  animation: wave 10s linear infinite;
+  opacity: 0.5;
+}
+
+.wave:nth-of-type(4) {
+  bottom: -120px;
+  z-index: 100;
+  opacity: 1;
+}
+
+@keyframes wave {
+  0% {
+    transform: translateX(5%);
+  }
+  50% {
+    transform: translateX(-5%);
+  }
+  100% {
+    transform: translateX(5%);
+  }
+}
+
+.column {
+  position: fixed;
+  bottom: 0;
+  z-index: 100;
+}
+
+.maryColumn {
+  right: 10%;
+}
+
+.eucharistColumn {
+  left: 10%;
+}
+
+.ship {
+  width: 300px;
+  display: block;
+  margin: -250px auto;
+  animation: sail 10s -3s linear infinite;
+}
+
+@keyframes sail {
+  0% {
+    transform: translateY(20px) rotate(0deg);
+  }
+  25% {
+    transform: rotate(6deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(0deg);
+  }
+  75% {
+    transform: rotate(-6deg);
+  }
+  100% {
+    transform: translateY(20px) rotate(0deg);
+  }
+}

@@ -14,6 +14,11 @@ export { default as Features } from "./Features";
 export { default as Resources } from "./Resources";
 export { default as Community } from "./Community";
 export { default as ConfessionGuide } from "./ConfessionGuide";
+export { default as Ocean } from "./Ocean";
+export { default as MainMenu } from "./MainMenu";
+export { default as MainContent } from "./MainContent";
+export { default as TitleNav } from "./TitleNav";
+export { default as CardCounter } from "./CardCounter";
 
 export * from "./AudioPlayer";
 export * from "./Navbars";
