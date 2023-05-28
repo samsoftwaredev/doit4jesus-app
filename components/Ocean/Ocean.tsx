@@ -4,25 +4,34 @@ import maryColumn from "@/public/assets/images/dream/mary-column.svg";
 import ship from "@/public/assets/images/dream/ship.svg";
 import { css } from "@/utils/helpers";
 import Image from "next/image";
+import Link from "next/link";
+import Pulse from "../Pulse";
 
 const Ocean = () => {
   return (
     <div className={styles.ocean}>
-      <Image
-        className={styles.ship}
-        src={ship}
-        alt="The Catholic Church as a ship"
-      />
-      <Image
+      {/* <div className={styles.stars} /> */}
+      <Link href="/app/catholic-church" className={styles.shipLink}>
+        <Image
+          src={ship}
+          alt="The Catholic Church as a ship"
+          className={styles.ship}
+        />
+      </Link>
+      <Link
+        href="/app/confession"
         className={css(styles.eucharistColumn, styles.column)}
-        src={eucharistColumn}
-        alt="The Holy Eucharist Column"
-      />
-      <Image
+      >
+        <Pulse />
+        <Image src={eucharistColumn} alt="The Holy Eucharist Column" />
+      </Link>
+      <Link
+        href="/app/rosary"
         className={css(styles.maryColumn, styles.column)}
-        src={maryColumn}
-        alt="The Virgin Mary Column"
-      />
+      >
+        <Pulse />
+        <Image src={maryColumn} alt="The Virgin Mary Column" />
+      </Link>
       <div className={styles.wave} />
       <div className={styles.wave} />
       <div className={styles.wave} />

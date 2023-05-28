@@ -19,6 +19,7 @@ export { default as MainMenu } from "./MainMenu";
 export { default as MainContent } from "./MainContent";
 export { default as TitleNav } from "./TitleNav";
 export { default as CardCounter } from "./CardCounter";
+export { default as Pulse } from "./Pulse";
 
 export * from "./AudioPlayer";
 export * from "./Navbars";

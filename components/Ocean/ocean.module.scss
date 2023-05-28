@@ -54,8 +54,7 @@
   background: linear-gradient(
     0deg,
     rgba(255, 255, 255, 1) 0%,
-    rgb(69, 68, 68) 80%,
-    rgba(0, 0, 0, 1) 100%
+    rgb(231, 76, 179) 100%
   );
   border: none;
 }
@@ -101,9 +100,15 @@
 }
 
 .column {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   position: fixed;
   bottom: 0;
   z-index: 100;
+  width: 200px;
+  height: -50px;
 }
 
 .maryColumn {
@@ -114,10 +119,16 @@
   left: 10%;
 }
 
-.ship {
+.shipLink {
+  position: fixed;
+  bottom: -600px;
   width: 300px;
-  display: block;
-  margin: -250px auto;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.ship {
+  width: 100%;
   animation: sail 10s -3s linear infinite;
 }
 
@@ -137,4 +148,9 @@
   100% {
     transform: translateY(20px) rotate(0deg);
   }
+}
+
+.stars {
+  background-image: url("../../public/assets/images/dream/stars.png");
+  background-color: #cccccc;
 }

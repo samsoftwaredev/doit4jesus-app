@@ -2,7 +2,7 @@ import { Ocean } from "@/components/index";
 import styles from "./mainContent.module.scss";
 import { css } from "@/utils/helpers";
 import useWindowSize from "@/hooks/useWindowSize";
-import { phoneViewWidth } from "@/constants/devices";
+import { desktopsViewWidth } from "@/constants/devices";
 
 interface Props {
   children: JSX.Element[] | JSX.Element;
@@ -11,10 +11,11 @@ interface Props {
 
 const MainContent = ({ children, alignContent = "center" }: Props) => {
   const { width } = useWindowSize();
-  const isPhone = typeof width === "number" ? width < phoneViewWidth : false;
+  const isDesktop =
+    typeof width === "number" ? width < desktopsViewWidth : false;
   return (
     <div className={styles.container}>
-      {!isPhone && <Ocean />}
+      {!isDesktop && <Ocean />}
       <div className={css(styles.content, styles[`content-${alignContent}`])}>
         {children}
       </div>
