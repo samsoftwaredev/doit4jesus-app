@@ -2,6 +2,7 @@
   height: 100vh;
   position: relative;
   z-index: 1;
+  display: flex;
 }
 
 .content {
@@ -9,11 +10,18 @@
   border-radius: 30px;
   max-width: 500px;
   margin: 30px 10px;
+  padding: 10px 50px;
 }
 
 .content-left {
+  justify-self: flex-start;
 }
+
 .content-right {
+  justify-self: flex-end;
 }
+
 .content-center {
+  align-self: center;
+  margin: auto;
 }

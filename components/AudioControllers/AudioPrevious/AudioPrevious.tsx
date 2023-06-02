@@ -1,4 +1,4 @@
-import { IconButton, Box } from "@mui/material";
+import { IconButton, Tooltip } from "@mui/material";
 import UndoIcon from "@mui/icons-material/Undo";
 import { useAudioContext } from "context/AudioContext";
 
@@ -6,11 +6,11 @@ const AudioPrevious = () => {
   const { backwardAudio } = useAudioContext();
 
   return (
-    <Box>
-      <IconButton onClick={backwardAudio} href="#prev">
-        <UndoIcon />
+    <Tooltip title="Backward">
+      <IconButton color="primary" onClick={backwardAudio} href="#prev">
+        <UndoIcon fontSize="large" />
       </IconButton>
-    </Box>
+    </Tooltip>
   );
 };
 

@@ -5,7 +5,7 @@ import useWindowSize from "@/hooks/useWindowSize";
 import { desktopsViewWidth } from "@/constants/devices";
 
 interface Props {
-  children: JSX.Element[] | JSX.Element;
+  children?: JSX.Element[] | JSX.Element;
   alignContent?: "center" | "left" | "right";
 }
 

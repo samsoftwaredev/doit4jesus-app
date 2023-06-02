@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { IconButton, Box } from "@mui/material";
+import { useEffect, useMemo, useState } from "react";
+import { IconButton, Tooltip } from "@mui/material";
 import PlayIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 import { useAudioContext } from "@/context/AudioContext";
@@ -22,6 +22,11 @@ const AudioPlay = () => {
     setAudioState(state);
   };
 
+  const toggleText = () => {
+    if (audioState === INTERFACE_AUDIO_STATE.PLAYING) return "Pause";
+    return "Play";
+  };
+
   useEffect(() => {
     setButtonState(audioState);
   }, [audioState]);
@@ -32,23 +37,26 @@ const AudioPlay = () => {
       case INTERFACE_AUDIO_STATE.VIDEO_CUED:
         return <Spinner />;
       case INTERFACE_AUDIO_STATE.PAUSED:
-        return <PlayIcon />;
+        return <PlayIcon fontSize="large" />;
       case INTERFACE_AUDIO_STATE.PLAYING:
       default:
-        return <PauseIcon />;
+        return <PauseIcon fontSize="large" />;
     }
   };
 
+  const icon = useMemo(() => getIcon(), [audioState]);
+
   return (
-    <Box>
+    <Tooltip title={toggleText()}>
       <IconButton
+        color="primary"
         disabled={audioState === INTERFACE_AUDIO_STATE.BUFFERING}
         onClick={handleToggleAudioPlaying}
         href={`#${audioText(audioState === INTERFACE_AUDIO_STATE.PLAYING)}`}
       >
-        {getIcon()}
+        {icon}
       </IconButton>
-    </Box>
+    </Tooltip>
   );
 };
 

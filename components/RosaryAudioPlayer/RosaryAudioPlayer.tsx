@@ -41,12 +41,12 @@ const RosaryAudioPlayer = () => {
     home: {
       id: "home",
       onClick: () => changeView(null),
-      icon: <HomeIcon />,
+      icon: <HomeIcon color="secondary" />,
     },
     options: {
       id: "options",
       onClick: () => changeView(<RosaryOptions />),
-      icon: <MusicIcon />,
+      icon: <MusicIcon color="secondary" />,
     },
     // TODO: new features
     // read: {
