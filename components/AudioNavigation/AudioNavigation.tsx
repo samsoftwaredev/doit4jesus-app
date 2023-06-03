@@ -1,26 +1,25 @@
 import { MouseEventHandler } from "react";
-import { IconButton, Box } from "@mui/material";
+import { IconButton, Box, Tooltip } from "@mui/material";
+import styles from "./audioNavigation.module.scss";
 
 interface Props {
   buttons: {
     id: string;
     icon: JSX.Element;
+    tooltip: string;
     onClick: MouseEventHandler<HTMLAnchorElement>;
   }[];
 }
 
 const AudioNavigation = ({ buttons }: Props) => {
   return (
-    <Box>
-      {/* <audio controls>
-        <source src={rosary.backgroundMusic} type="audio/ogg" />
-        <source src={rosary.backgroundMusic} type="audio/mpeg" />
-        Your browser does not support the audio tag.
-      </audio> */}
-      {buttons.map(({ id, icon, onClick }) => (
-        <IconButton key={id} onClick={onClick} href={`#${id}`}>
-          {icon}
-        </IconButton>
+    <Box className={styles.container}>
+      {buttons.map(({ id, icon, tooltip, onClick }) => (
+        <Tooltip title={tooltip}>
+          <IconButton key={id} onClick={onClick} href={`#${id}`}>
+            {icon}
+          </IconButton>
+        </Tooltip>
       ))}
     </Box>
   );

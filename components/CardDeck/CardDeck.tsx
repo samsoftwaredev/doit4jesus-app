@@ -64,22 +64,24 @@ const CardDeck = ({ items }: Props) => {
       <CardCounter counter={counter + 1} cards={items} />
       <div className={styles.deck}>{deckOfCards}</div>
       <div className={styles.buttons}>
-        <Tooltip title="Go Back">
-          <IconButton
-            disabled={isFirstCard}
-            onClick={prevCard}
-            aria-label="Undo"
-          >
-            <Undo />
-          </IconButton>
-        </Tooltip>
         <Tooltip title="Need to confess">
           <IconButton
             disabled={isLastCard}
             onClick={onSinAcknowledged}
             aria-label="Yes"
+            color="primary"
           >
-            <Check />
+            <Check fontSize="large" />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Undo">
+          <IconButton
+            disabled={isFirstCard}
+            onClick={prevCard}
+            aria-label="Undo"
+            color="primary"
+          >
+            <Undo fontSize="large" />
           </IconButton>
         </Tooltip>
         <Tooltip title="Don't need to confess">
@@ -87,8 +89,9 @@ const CardDeck = ({ items }: Props) => {
             disabled={isLastCard}
             onClick={onSinRejected}
             aria-label="No"
+            color="primary"
           >
-            <Close />
+            <Close fontSize="large" />
           </IconButton>
         </Tooltip>
       </div>

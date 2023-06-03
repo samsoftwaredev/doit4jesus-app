@@ -40,11 +40,13 @@ const RosaryAudioPlayer = () => {
   const buttons = {
     home: {
       id: "home",
+      tooltip: "Home",
       onClick: () => changeView(null),
       icon: <HomeIcon color="secondary" />,
     },
     options: {
       id: "options",
+      tooltip: "Settings",
       onClick: () => changeView(<RosaryOptions />),
       icon: <MusicIcon color="secondary" />,
     },
@@ -54,11 +56,12 @@ const RosaryAudioPlayer = () => {
     //   onClick: () => changeView(<ReadRosary />),
     //   icon: <MenuBook />,
     // },
-    // share: {
-    //   id: "share",
-    //   onClick: () => changeView(<ShareRosary />),
-    //   icon: <ShareIcon />,
-    // },
+    share: {
+      id: "share",
+      onClick: () => changeView(<ShareRosary />),
+      tooltip: "Share",
+      icon: <ShareIcon color="secondary" />,
+    },
   };
 
   const controls = (

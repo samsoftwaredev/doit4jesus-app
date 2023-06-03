@@ -4,6 +4,7 @@ export const Container = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
+  width: 400px;
 `;
 
 export const RosaryWrapper = styled.div`

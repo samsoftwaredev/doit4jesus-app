@@ -26,16 +26,17 @@ const AudioCover = ({
   return (
     <Container size={size}>
       <Box className="rosary-header">
-        <Typography className="rosary-title">{title}</Typography>
-        <Typography className="rosary-description">{description}</Typography>
+        <Typography color="primary" className="rosary-title">
+          {title}
+        </Typography>
+        <Typography color="primary" className="rosary-description">
+          {description}
+        </Typography>
       </Box>
       {audioCover && (
-        <Image
-          className="rosary-image"
-          onClick={onClick}
-          src={audioCover}
-          alt="Rosary Audio Cover"
-        />
+        <div className="rosary-image">
+          <Image onClick={onClick} src={audioCover} alt="Rosary Audio Cover" />
+        </div>
       )}
       {children && <Box className="rosary-content">{children}</Box>}
       <Box className="rosary-controls">{controls}</Box>

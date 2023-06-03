@@ -18,9 +18,11 @@ grid-template-columns: 50px minmax(auto, 300px);
 }
 
 .rosary-image {
-  justify-self: center;
-  align-self: start;
-  order: 1; 
+  img {
+    justify-self: center;
+    align-self: start;
+    order: 1; 
+  }
 }
 
 .rosary-content {
@@ -57,7 +59,9 @@ align-items: center;
 }
 
 .rosary-image { 
-  grid-row: span 2;
+  img {
+    grid-row: span 2;
+  }
 }
 
 .rosary-content { 
@@ -77,10 +81,12 @@ export const Container = styled.div<Props>`
   padding: 5px 15px;
 
   .rosary-image {
-    object-fit: contain;
-    width: 100% !important;
-    position: relative !important;
-    height: unset !important;
+    img {
+      object-fit: contain;
+      width: 100% !important;
+      position: relative !important;
+      height: unset !important;
+    }
   }
 
   ${(p) => {
