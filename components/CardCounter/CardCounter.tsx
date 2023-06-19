@@ -9,6 +9,7 @@ interface Props {
 }
 
 const CardCounter = ({ cards, counter, theme = "dark" }: Props) => {
+  if (cards.length === 1) return null;
   if (Array.isArray(cards)) {
     const total = cards.length;
     return (

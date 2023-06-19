@@ -9,15 +9,17 @@ import { Check, Close, Undo } from "@mui/icons-material";
 
 interface Props {
   items: CardProps[];
+  onEnd?: Function;
 }
 
-const CardDeck = ({ items }: Props) => {
+const CardDeck = ({ items, onEnd }: Props) => {
   const [counter, setCounter] = useState(0);
   const isFirstCard = counter === 0;
   const isLastCard = counter >= items.length - 1;
 
   const nextCard = () => {
     if (counter < items.length - 1) setCounter((counter) => counter + 1);
+    if (counter === items.length - 1 && typeof onEnd === "function") onEnd();
   };
 
   const prevCard = () => {
@@ -64,9 +66,8 @@ const CardDeck = ({ items }: Props) => {
       <CardCounter counter={counter + 1} cards={items} />
       <div className={styles.deck}>{deckOfCards}</div>
       <div className={styles.buttons}>
-        <Tooltip title="Need to confess">
+        <Tooltip title="Yes">
           <IconButton
-            disabled={isLastCard}
             onClick={onSinAcknowledged}
             aria-label="Yes"
             color="primary"
@@ -84,13 +85,8 @@ const CardDeck = ({ items }: Props) => {
             <Undo fontSize="large" />
           </IconButton>
         </Tooltip>
-        <Tooltip title="Don't need to confess">
-          <IconButton
-            disabled={isLastCard}
-            onClick={onSinRejected}
-            aria-label="No"
-            color="primary"
-          >
+        <Tooltip title="No">
+          <IconButton onClick={onSinRejected} aria-label="No" color="primary">
             <Close fontSize="large" />
           </IconButton>
         </Tooltip>

@@ -1,3 +1,19 @@
 .container {
-  height: 100vh;
+  width: 500px;
+  padding: 10px;
+}
+
+.title {
+  text-align: center;
+}
+
+.description {
+  padding-top: 20px;
+}
+
+.author {
+  display: block;
+  text-align: right;
+  font-weight: 900;
+  font-size: 0.9em;
 }
