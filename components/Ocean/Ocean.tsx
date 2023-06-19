@@ -9,7 +9,7 @@ import Pulse from "../Pulse";
 
 const Ocean = () => {
   return (
-    <div className={styles.ocean}>
+    <div className={css(styles.ocean, styles.container)}>
       {/* <div className={styles.stars} /> */}
       <Link href="/app/catholic-church" className={styles.shipLink}>
         <Image

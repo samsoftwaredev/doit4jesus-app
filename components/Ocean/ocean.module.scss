@@ -1,4 +1,16 @@
+@import "../../styles/variable.scss";
+
 /* waves */
+.container {
+  display: none;
+}
+
+@media screen and (min-width: $tablet) {
+  .container {
+    display: block;
+  }
+}
+
 .ocean {
   z-index: -1;
   position: fixed;
