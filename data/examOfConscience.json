@@ -1,0 +1,31 @@
+[
+  {
+    "categories": ["lust", "immodesty", "sensuality"],
+    "title": "Chastity",
+    "commandment": "6",
+    "type": "venial-sin",
+    "question": "Have I allowed my eyes to wander in curiosity over dangerous sexual objects?",
+    "description": "The virtue of chastity is called th angelic virtue.",
+    "counsels": [
+      "Many saints suffer from this sin",
+      "You can read more about this subject at ____"
+    ],
+    "prevention": [
+      "Take a cold shower",
+      "Sleep on the floor",
+      "be in a public place, never alone."
+    ],
+    "saints": ["Saint Agustin", "Padre Pio"]
+  },
+  {
+    "categories": [""],
+    "title": "Love of god",
+    "commandment": "1",
+    "type": "mortal-sin",
+    "question": " ",
+    "description": " ",
+    "counsels": [],
+    "prevention": [" "],
+    "saints": [" ", " "]
+  }
+]

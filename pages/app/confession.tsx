@@ -2,11 +2,7 @@ import type { NextPage } from "next";
 import { ConfessionGuide, MainContent } from "@/components";
 
 const Confession: NextPage = () => {
-  return (
-    <MainContent>
-      <ConfessionGuide />
-    </MainContent>
-  );
+  return <ConfessionGuide />;
 };
 
 export default Confession;

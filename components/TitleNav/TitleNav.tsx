@@ -1,20 +1,19 @@
 import styles from "./titleNav.module.scss";
-import { Typography } from "@mui/material";
+import { IconButton, Typography } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import Link from "next/link";
 import { css } from "@/utils/helpers";
 
 type Props = { title: string; description: string };
 
 const Card = ({ title, description }: Props) => {
+  const onBack = () => {
+    window.history.back();
+  };
   return (
     <div className={styles.container}>
-      <Link
-        href={"/app"}
-        className={css(styles.button, "button-link button-circle")}
-      >
+      <IconButton onClick={onBack}>
         <ArrowBackIosIcon />
-      </Link>
+      </IconButton>
       <div className="content">
         <Typography variant="h4" className={css(styles.title)}>
           {title}

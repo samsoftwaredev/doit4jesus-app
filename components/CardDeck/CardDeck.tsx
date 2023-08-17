@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import { Button, IconButton, Tooltip } from "@mui/material";
 import Card from "../Card";
 import styles from "./cardDeck.module.scss";
@@ -17,21 +17,21 @@ const CardDeck = ({ items, onEnd }: Props) => {
   const isFirstCard = counter === 0;
   const isLastCard = counter >= items.length - 1;
 
-  const nextCard = () => {
+  const onNextCard = () => {
     if (counter < items.length - 1) setCounter((counter) => counter + 1);
     if (counter === items.length - 1 && typeof onEnd === "function") onEnd();
   };
 
-  const prevCard = () => {
+  const onPrevCard = () => {
     if (counter > 0) setCounter((counter) => counter - 1);
   };
 
   const onSinAcknowledged = () => {
-    nextCard();
+    onNextCard();
   };
 
   const onSinRejected = () => {
-    nextCard();
+    onNextCard();
   };
 
   const deckOfCards = items.map((data, index) => {
@@ -58,7 +58,7 @@ const CardDeck = ({ items, onEnd }: Props) => {
       classNames = styles.nextNextCard;
     }
     const props = { ...data, classNames: css(classNames, styles.card) };
-    return <Card {...props} />;
+    return <Card key={useId()} {...props} />;
   });
 
   return (
@@ -67,28 +67,40 @@ const CardDeck = ({ items, onEnd }: Props) => {
       <div className={styles.deck}>{deckOfCards}</div>
       <div className={styles.buttons}>
         <Tooltip title="Yes">
-          <IconButton
-            onClick={onSinAcknowledged}
-            aria-label="Yes"
-            color="primary"
-          >
-            <Check fontSize="large" />
-          </IconButton>
+          <span>
+            <IconButton
+              disabled={isLastCard}
+              onClick={onSinAcknowledged}
+              aria-label="Yes"
+              color="primary"
+            >
+              <Check fontSize="large" />
+            </IconButton>
+          </span>
         </Tooltip>
         <Tooltip title="Undo">
-          <IconButton
-            disabled={isFirstCard}
-            onClick={prevCard}
-            aria-label="Undo"
-            color="primary"
-          >
-            <Undo fontSize="large" />
-          </IconButton>
+          <span>
+            <IconButton
+              disabled={isFirstCard}
+              onClick={onPrevCard}
+              aria-label="Undo"
+              color="primary"
+            >
+              <Undo fontSize="large" />
+            </IconButton>
+          </span>
         </Tooltip>
         <Tooltip title="No">
-          <IconButton onClick={onSinRejected} aria-label="No" color="primary">
-            <Close fontSize="large" />
-          </IconButton>
+          <span>
+            <IconButton
+              disabled={isLastCard}
+              onClick={onSinRejected}
+              aria-label="No"
+              color="primary"
+            >
+              <Close fontSize="large" />
+            </IconButton>
+          </span>
         </Tooltip>
       </div>
     </div>

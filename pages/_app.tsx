@@ -11,10 +11,7 @@ const roboto = Roboto({
 });
 
 const theme = createTheme({
-  palette: {
-    primary: { main: colors.purple[50] },
-    secondary: { main: colors.pink[100] },
-  },
+  palette: {},
 });
 
 function MyApp({ Component, pageProps }: AppProps) {
