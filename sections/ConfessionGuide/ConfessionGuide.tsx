@@ -4,9 +4,9 @@ import { CardProps } from "@/interfaces/index";
 import { TitleNav } from "../../components";
 import { useState } from "react";
 import examOfConscience from "../../data/examOfConscience.json";
-import { MainLayout } from "@/layouts/index";
 import { useRouter } from "next/router";
 import { NAV_APP_LINKS } from "@/constants/nav";
+import { Container } from "@mui/material";
 
 const overview: CardProps[] = examOfConscience;
 
@@ -23,14 +23,14 @@ const ConfessionGuide = () => {
   };
 
   return (
-    <MainLayout>
+    <Container maxWidth="sm">
       <TitleNav
         onBack={handelBack}
         title="Confession"
         description="A Step by Step Guide"
       />
       <CardDeck items={cards} onEnd={onEnd} />
-    </MainLayout>
+    </Container>
   );
 };
 

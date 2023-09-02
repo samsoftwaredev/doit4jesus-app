@@ -16,9 +16,9 @@ import {
 import { Rosary } from "@/class";
 import { VIEW_SIZE, INTERFACE_VIEW_SIZE, NAV_APP_LINKS } from "@/constants";
 import { AudioPlayer } from "../AudioPlayer";
-import { Container, RosaryWrapper } from "./RosaryAudioPlayer.style";
 import { useLanguageContext } from "@/context/LanguageContext";
 import { useRouter } from "next/router";
+import { Box, Container } from "@mui/material";
 
 const myRosary = new Rosary();
 const rosaryState = myRosary.getRosaryState();
@@ -72,7 +72,7 @@ const RosaryAudioPlayer = () => {
 
   const controls = (
     <>
-      <RosaryWrapper>
+      <Box>
         <AudioPlayer
           audioPlayer={{
             audio: myRosary.getAudio(language),
@@ -82,31 +82,29 @@ const RosaryAudioPlayer = () => {
           <AudioPlayer.AudioPlay />
           <AudioPlayer.AudioNext />
         </AudioPlayer>
-      </RosaryWrapper>
+      </Box>
       <AudioNavigation buttons={Object.values(buttons)} />
     </>
   );
 
   return (
-    <>
+    <Container maxWidth="sm">
       <TitleNav
         onBack={handelBack}
         title="The Holy Rosary"
         description="Let's meditate the life of Jesus and Mary"
       />
-      <Container>
-        <AudioCover
-          audioCover={rosaryState.audioCover}
-          title={rosaryState.title}
-          description={rosaryState.mystery}
-          size={viewSize}
-          onClick={buttons.home.onClick}
-          controls={controls}
-        >
-          {rosaryContent}
-        </AudioCover>
-      </Container>
-    </>
+      <AudioCover
+        // audioCover={rosaryState.audioCover}
+        title={rosaryState.title}
+        description={rosaryState.mystery}
+        size={viewSize}
+        onClick={buttons.home.onClick}
+        controls={controls}
+      >
+        {rosaryContent}
+      </AudioCover>
+    </Container>
   );
 };
 

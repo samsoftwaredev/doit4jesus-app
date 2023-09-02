@@ -19,6 +19,7 @@ function MainNavbar() {
             color="inherit"
             aria-label="menu"
             sx={{ mr: 2 }}
+            href={NAV_APP_LINKS.app.link}
           >
             <Logo />
           </IconButton>

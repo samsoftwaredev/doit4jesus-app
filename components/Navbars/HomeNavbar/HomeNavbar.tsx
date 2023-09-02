@@ -6,6 +6,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import { Logo } from "../..";
+import { NAV_MAIN_LINKS } from "@/constants/nav";
 
 function HomeNavbar() {
   return (
@@ -18,6 +19,7 @@ function HomeNavbar() {
             color="inherit"
             aria-label="menu"
             sx={{ mr: 2 }}
+            href={NAV_MAIN_LINKS.home.link}
           >
             <Logo />
           </IconButton>
