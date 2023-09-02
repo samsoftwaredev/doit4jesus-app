@@ -39,7 +39,9 @@
       "@/navbars/*": ["components/Navbars/*"],
       "@/navbars": ["components/Navbars/index"],
       "@/layouts/*": ["layouts/*"],
-      "@/layouts": ["layouts/index"]
+      "@/layouts": ["layouts/index"],
+      "@/data/*": ["data/*"],
+      "@/data": ["data/index"]
     }
   },
   "include": [

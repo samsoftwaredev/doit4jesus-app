@@ -1,0 +1,40 @@
+[
+  {
+    "id": "1",
+    "title": "Examination of Conscience for Adults",
+    "description": "Self-evaluate your conscience and avoid sin.",
+    "authors": ["Samuel Ruiz"],
+    "image": "https://www.verywellmind.com/thmb/TZZY4U2cLGRANlhHK6uj7PlBR4w=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/480815263-56a7950c5f9b58b7d0ebe712.jpg",
+    "references": [""],
+    "sections": [
+      {
+        "title": "What is it?",
+        "description": "Examination of Conscience is basically a self-examination. This practice will enhance your awareness of your personal experiences and promote honesty during confession."
+      },
+      {
+        "title": "Why should I do it?",
+        "description": "To properly celebrate the Sacrament of Penance. Preparing beforehand with an examination of conscience is important, there are different types of examinations of conscience, but they must be based on Scripture, specifically the Ten Commandments and Beatitudes."
+      },
+      {
+        "title": "How to do it?",
+        "description": "This involves reflective prayer on one's thoughts, words, and actions to identify sins. This app will provide a reasonably and complete list of moral sins to be avoided and venial sins to be corrected."
+      },
+      {
+        "title": "What is a Mortal and Venial Sin?",
+        "description": "All three conditions must be present for a mortal sin to be committed. Sufficient reflection, full consent of the will, and a violation of God's law in a serious matter. The guilt will not be incurred if one or more conditions are lacking. You can't commit a mortal sin “by mistake“"
+      },
+      {
+        "title": "How to Confess our sins?",
+        "description": "You should confess all your mortal sins, including your venial sins. Confession of our venial sins shows our hatred of all sin because even venial sins are against the love of God and neighbor."
+      },
+      {
+        "title": "How to prevent sins?",
+        "description": "To break free from habitual sin: write down the excuses you usually make before committing sin, avoid triggers, confide in someone you trust with the sin you are struggling with, pray instead, ask your guardian angel for help, and go to Confession."
+      },
+      {
+        "title": "Do I need to go to confession if I haven't sinned?",
+        "description": "No, you shouldn't go to confession. If it's been several weeks since your last confession, you have probably not examined your conscience carefully."
+      }
+    ]
+  }
+]
