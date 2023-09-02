@@ -7,8 +7,15 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import { Logo } from "../..";
 import { NAV_MAIN_LINKS } from "@/constants/nav";
+import { useRouter } from "next/router";
 
 function HomeNavbar() {
+  const router = useRouter();
+
+  const goToHome = () => {
+    router.push(NAV_MAIN_LINKS.home.link);
+  };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -19,7 +26,7 @@ function HomeNavbar() {
             color="inherit"
             aria-label="menu"
             sx={{ mr: 2 }}
-            href={NAV_MAIN_LINKS.home.link}
+            onClick={goToHome}
           >
             <Logo />
           </IconButton>

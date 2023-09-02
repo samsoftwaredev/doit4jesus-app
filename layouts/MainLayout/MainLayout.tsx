@@ -4,14 +4,14 @@ import styles from "./mainLayout.module.scss";
 
 interface Props {
   children?: ReactNode;
-  type?: "main" | "app";
+  topNavbar?: ReactNode;
 }
 
-const MainLayout = ({ children }: Props) => {
+const MainLayout = ({ children, topNavbar = <MainNavbar /> }: Props) => {
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        <MainNavbar />
+        {topNavbar}
         {children}
       </div>
       <div className={styles.footer}>

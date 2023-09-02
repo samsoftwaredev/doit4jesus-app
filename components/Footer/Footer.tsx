@@ -1,20 +1,28 @@
-import { NAV_FOOTER_LINKS } from "@/constants";
-import Link from "next/link";
 import styles from "./footer.module.scss";
+import { useRouter } from "next/router";
+import { NAV_FOOTER_LINKS } from "@/constants";
+import { Button, Container } from "@mui/material";
+
+const currentYear = new Date().getFullYear();
 
 const Footer = () => {
-  const year = new Date().getFullYear();
+  const router = useRouter();
+
+  const goToPage = (link: string) => {
+    router.push(link);
+  };
+
   return (
-    <div className={styles.container}>
-      <div className={styles.logo}>DoIt4Jesus &copy; {year}</div>
+    <Container maxWidth={false}>
+      <div className={styles.logo}>DoIt4Jesus &copy; {currentYear}</div>
       <ul className={styles.links}>
         {NAV_FOOTER_LINKS.map(({ link, label, value }) => (
           <li className={styles.item} key={value}>
-            <Link href={link}>{label}</Link>
+            <Button onClick={() => goToPage(link)}>{label}</Button>
           </li>
         ))}
       </ul>
-    </div>
+    </Container>
   );
 };
 
