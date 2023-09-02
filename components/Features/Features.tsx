@@ -1,7 +1,6 @@
-import Image from "next/image";
-import { Box, Typography } from "@mui/material";
+import { Container, Grid, Typography } from "@mui/material";
 import { findPeace, prayMore, prayWell } from "@/public/assets/images/hero";
-import { Container, Item, Items } from "./features.style";
+import styles from "./features.module.scss";
 
 const features = [
   {
@@ -26,22 +25,13 @@ const features = [
 
 const Features = () => {
   return (
-    <Container>
-      <div className="line" />
-      <Typography className="title" variant="h5" gutterBottom>
+    <Container className={styles.container}>
+      <Typography className="title" variant="h3" gutterBottom>
         Let's do this together...
       </Typography>
-      <Items>
+      <Grid container justifyContent="space-between">
         {features.map(({ thumbnail, title, description }) => (
-          <Item key={title}>
-            <Box px={5} className="imageContainer">
-              <Image
-                className="profileImage"
-                alt={title}
-                src={thumbnail}
-                quality={100}
-              />
-            </Box>
+          <Grid item key={title} md={3}>
             <Typography className="item-title" variant="h5" gutterBottom>
               {title}
             </Typography>
@@ -52,9 +42,9 @@ const Features = () => {
             >
               {description}
             </Typography>
-          </Item>
+          </Grid>
         ))}
-      </Items>
+      </Grid>
     </Container>
   );
 };

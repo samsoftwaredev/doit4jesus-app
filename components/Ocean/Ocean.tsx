@@ -6,6 +6,7 @@ import { css } from "@/utils/helpers";
 import Image from "next/image";
 import Link from "next/link";
 import Pulse from "../Pulse";
+import { NAV_APP_LINKS } from "@/constants/nav";
 
 const Ocean = () => {
   return (
@@ -19,14 +20,14 @@ const Ocean = () => {
         />
       </Link>
       <Link
-        href="/app/confession"
+        href={NAV_APP_LINKS.confession.link}
         className={css(styles.eucharistColumn, styles.column)}
       >
         <Pulse />
         <Image src={eucharistColumn} alt="The Holy Eucharist Column" />
       </Link>
       <Link
-        href="/app/rosary"
+        href={NAV_APP_LINKS.rosary.link}
         className={css(styles.maryColumn, styles.column)}
       >
         <Pulse />

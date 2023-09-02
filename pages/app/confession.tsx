@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { ConfessionGuide, MainContent } from "@/components";
+import { ConfessionGuide } from "sections";
 
 const Confession: NextPage = () => {
   return <ConfessionGuide />;

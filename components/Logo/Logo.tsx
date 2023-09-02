@@ -1,7 +1,7 @@
-import { IconLogo } from "./logo.style";
+import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
 
 const Logo = () => {
-  return <IconLogo>DoIt4Jesus</IconLogo>;
+  return <HealthAndSafetyIcon />;
 };
 
 export default Logo;

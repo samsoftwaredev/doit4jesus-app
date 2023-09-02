@@ -1,12 +1,8 @@
 import type { NextPage } from "next";
-import { ConfessionGuide } from "@/components";
+import { TriviaGame } from "sections";
 
-const TriviaGame: NextPage = () => {
-  return (
-    <>
-      <h1>TriviaGame</h1>
-    </>
-  );
+const TriviaGamePage: NextPage = () => {
+  return <TriviaGame />;
 };
 
-export default TriviaGame;
+export default TriviaGamePage;

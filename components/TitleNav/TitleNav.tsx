@@ -3,12 +3,9 @@ import { IconButton, Typography } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { css } from "@/utils/helpers";
 
-type Props = { title: string; description: string };
+type Props = { title: string; description: string; onBack: () => void };
 
-const Card = ({ title, description }: Props) => {
-  const onBack = () => {
-    window.history.back();
-  };
+const Card = ({ title, description, onBack }: Props) => {
   return (
     <div className={styles.container}>
       <IconButton onClick={onBack}>

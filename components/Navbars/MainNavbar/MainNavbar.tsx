@@ -1,43 +1,40 @@
-import Link from "next/link";
-import { NAV_MAIN_LINKS, NAV_APP_LINKS, PAGES } from "@/constants";
-import { Logo } from "@/components";
-import styles from "./mainNavbar.module.scss";
+import * as React from "react";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import { Logo } from "../..";
+import { NAV_APP_LINKS } from "@/constants/nav";
 
-interface Props {
-  type?: "main" | "app";
-}
-
-const MainNavbar = ({ type = "main" }: Props) => {
-  const displayContent = {
-    main: {
-      section: "",
-      navLinks: NAV_MAIN_LINKS,
-    },
-    app: {
-      section: "",
-      navLinks: NAV_APP_LINKS,
-    },
-  };
-  const data = displayContent[type];
+function MainNavbar() {
   return (
-    <nav className={styles.container}>
-      <div className={styles.logo}>
-        <Link href={PAGES.home.link} className={styles.link}>
-          <Logo />
-          <span>{data.section}</span>
-        </Link>
-      </div>
-      <div className={styles.linkContainer}>
-        <ul className={styles.item}>
-          {Object.values(data.navLinks).map(({ value, label, link }) => (
-            <li key={value} className={styles.itemLink}>
-              <Link href={link}>{label}</Link>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </nav>
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar position="static">
+        <Toolbar>
+          <IconButton
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            sx={{ mr: 2 }}
+          >
+            <Logo />
+          </IconButton>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            DoIt4Jesus
+          </Typography>
+          <Button href={NAV_APP_LINKS.confession.link} color="inherit">
+            Confession
+          </Button>
+          <Button href={NAV_APP_LINKS.rosary.link} color="inherit">
+            Rosary
+          </Button>
+        </Toolbar>
+      </AppBar>
+    </Box>
   );
-};
+}
 
 export default MainNavbar;

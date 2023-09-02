@@ -1,27 +1,34 @@
-import Link from "next/link";
-import { NAV_MAIN_LINKS, PAGES } from "@/constants";
-import { Logo } from "@/components";
-import styles from "./homeNavbar.module.scss";
+import * as React from "react";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import { Logo } from "../..";
 
-const HomeNavbar = () => {
+function HomeNavbar() {
   return (
-    <nav className={styles.container}>
-      <div className={styles.logo}>
-        <Link href={PAGES.home.link} className={styles.link}>
-          <Logo />
-        </Link>
-      </div>
-      <div className={styles.linkContainer}>
-        <ul className={styles.item}>
-          {Object.values(NAV_MAIN_LINKS).map(({ value, label, link }) => (
-            <li key={value} className={styles.itemLink}>
-              <Link href={link}>{label}</Link>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </nav>
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar position="static">
+        <Toolbar>
+          <IconButton
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            sx={{ mr: 2 }}
+          >
+            <Logo />
+          </IconButton>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            DoIt4Jesus
+          </Typography>
+          <Button color="inherit">Login</Button>
+        </Toolbar>
+      </AppBar>
+    </Box>
   );
-};
+}
 
 export default HomeNavbar;

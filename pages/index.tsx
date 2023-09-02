@@ -1,24 +1,15 @@
 import type { NextPage } from "next";
-import {
-  Meta,
-  MinimalLayout,
-  Hero,
-  Features,
-  Resources,
-  Community,
-} from "@/components";
+import { Meta, Hero, Features, Community } from "@/components";
+import { MainLayout } from "@/layouts";
 
 const Home: NextPage = () => {
   return (
-    <>
+    <MainLayout>
       <Meta />
-      <MinimalLayout>
-        <Hero />
-        <Features />
-        <Community />
-        <Resources />
-      </MinimalLayout>
-    </>
+      <Hero />
+      <Features />
+      <Community />
+    </MainLayout>
   );
 };
 

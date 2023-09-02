@@ -14,5 +14,13 @@ export const NAV_MAIN_LINKS = {
 };
 
 export const NAV_APP_LINKS = {
-  rosary: { link: "", label: "", value: "" },
+  app: { link: "/app", label: "App", value: "app" },
+  rosary: { link: "/app/rosary", label: "Rosary", value: "rosary" },
+  confession: { link: "/app/confession", label: "", value: "confession" },
+  tov: { link: "/app/tov", label: "TOV", value: "tov" },
+  triviaGame: {
+    link: "/trivia-game",
+    label: "Trivia Game",
+    value: "trivia-game",
+  },
 };

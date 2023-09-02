@@ -1,11 +1,12 @@
 import type { NextPage } from "next";
-import { MainContent, RosaryAudioPlayer } from "@/components";
+import { RosaryAudioPlayer } from "@/components";
+import { MainLayout } from "@/layouts/index";
 
 const Rosary: NextPage = () => {
   return (
-    <MainContent>
+    <MainLayout>
       <RosaryAudioPlayer />
-    </MainContent>
+    </MainLayout>
   );
 };
 

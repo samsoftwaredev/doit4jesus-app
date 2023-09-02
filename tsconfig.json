@@ -35,7 +35,11 @@
       "@/context/*": ["context/*"],
       "@/context": ["context/index"],
       "@/styles/*": ["styles/*"],
-      "@/styles": ["styles/index"]
+      "@/styles": ["styles/index"],
+      "@/navbars/*": ["components/Navbars/*"],
+      "@/navbars": ["components/Navbars/index"],
+      "@/layouts/*": ["layouts/*"],
+      "@/layouts": ["layouts/index"]
     }
   },
   "include": [
@@ -45,7 +49,11 @@
     "components/*",
     "hooks/*",
     "constants/*",
-    "public/*"
+    "public/*",
+    "sections/ConfessionGuide",
+    "sections/PrayerLifeWorkshops",
+    "layouts",
+    "components/Navbars"
   ],
   "exclude": ["node_modules", ".vscode"]
 }

@@ -14,15 +14,17 @@ import {
   TitleNav,
 } from "@/components";
 import { Rosary } from "@/class";
-import { VIEW_SIZE, INTERFACE_VIEW_SIZE } from "@/constants";
+import { VIEW_SIZE, INTERFACE_VIEW_SIZE, NAV_APP_LINKS } from "@/constants";
 import { AudioPlayer } from "../AudioPlayer";
 import { Container, RosaryWrapper } from "./RosaryAudioPlayer.style";
 import { useLanguageContext } from "@/context/LanguageContext";
+import { useRouter } from "next/router";
 
 const myRosary = new Rosary();
 const rosaryState = myRosary.getRosaryState();
 
 const RosaryAudioPlayer = () => {
+  const router = useRouter();
   const { language } = useLanguageContext();
   const [rosaryContent, setRosaryContent] = useState<JSX.Element | null>(null);
   const [viewSize, setViewSize] = useState<INTERFACE_VIEW_SIZE>(
@@ -33,6 +35,10 @@ const RosaryAudioPlayer = () => {
     if (component !== null) setViewSize(VIEW_SIZE.small as INTERFACE_VIEW_SIZE);
     else setViewSize(VIEW_SIZE.medium as INTERFACE_VIEW_SIZE);
     setRosaryContent(component);
+  };
+
+  const handelBack = () => {
+    router.push(NAV_APP_LINKS.app.link);
   };
 
   // make a call to the backend so it can create a single audio file will
@@ -84,6 +90,7 @@ const RosaryAudioPlayer = () => {
   return (
     <>
       <TitleNav
+        onBack={handelBack}
         title="The Holy Rosary"
         description="Let's meditate the life of Jesus and Mary"
       />
