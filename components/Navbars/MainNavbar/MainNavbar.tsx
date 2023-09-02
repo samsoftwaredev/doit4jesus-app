@@ -7,8 +7,23 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import { Logo } from "../..";
 import { NAV_APP_LINKS } from "@/constants/nav";
+import { useRouter } from "next/router";
 
 function MainNavbar() {
+  const router = useRouter();
+
+  const goToConfession = () => {
+    router.push(NAV_APP_LINKS.confession.link);
+  };
+
+  const goToRosary = () => {
+    router.push(NAV_APP_LINKS.rosary.link);
+  };
+
+  const goToRoot = () => {
+    router.push(NAV_APP_LINKS.app.link);
+  };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -19,17 +34,17 @@ function MainNavbar() {
             color="inherit"
             aria-label="menu"
             sx={{ mr: 2 }}
-            href={NAV_APP_LINKS.app.link}
+            onClick={goToRoot}
           >
             <Logo />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             DoIt4Jesus
           </Typography>
-          <Button href={NAV_APP_LINKS.confession.link} color="inherit">
+          <Button onClick={goToConfession} color="inherit">
             Confession
           </Button>
-          <Button href={NAV_APP_LINKS.rosary.link} color="inherit">
+          <Button onClick={goToRosary} color="inherit">
             Rosary
           </Button>
         </Toolbar>
