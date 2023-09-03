@@ -13,19 +13,20 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 interface Props {
   steps: CardProps[];
+  activeStep: number;
+  setActiveStep: React.Dispatch<React.SetStateAction<number>>;
 }
 
-function CardDeck({ steps }: Props) {
-  const [activeStep, setActiveStep] = React.useState(0);
+function CardDeck({ steps, setActiveStep, activeStep }: Props) {
   const [sinsCommitted, setSinsCommitted] = React.useState<CardProps[]>([]);
-  const progress = (activeStep / steps.length) * 100;
 
   const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    setActiveStep((prevActiveStep: number) => prevActiveStep + 1);
   };
 
   const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    setActiveStep((prevActiveStep: number) => prevActiveStep - 1);
+    sinsCommitted.pop();
   };
 
   const handleReset = () => {
@@ -48,7 +49,6 @@ function CardDeck({ steps }: Props) {
 
   return (
     <Box>
-      <LinearProgress variant="determinate" value={progress} />
       {steps
         .map((step, index) => (
           <Box key={step.title} my={2}>
