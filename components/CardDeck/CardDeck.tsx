@@ -11,6 +11,9 @@ import { CardProps } from "@/interfaces/index";
 import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
+import { StarButton } from "@/components";
+import CloseIcon from "@mui/icons-material/Close";
+
 interface Props {
   steps: CardProps[];
   activeStep: number;
@@ -47,14 +50,29 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
     setActiveStep(steps.length);
   };
 
+  const handelSave = () => {
+    // TODO: API call to save
+  };
+
   return (
     <Box>
       {steps
         .map((step, index) => (
-          <Box key={step.title} my={2}>
-            <Grid container height="250px" flexDirection={"column"}>
-              <Typography variant="h5">{step.title}</Typography>
-              <Typography>{step.question}</Typography>
+          <Box key={step.question} my={2}>
+            <Grid container height="250px" flexDirection="column">
+              <Grid
+                width="100%"
+                item
+                display="flex"
+                flexDirection="row"
+                justifyContent="space-between"
+              >
+                <Typography variant="h5">{step.title}</Typography>
+                <StarButton onClick={handelSave} />
+              </Grid>
+              <Grid item>
+                <Typography>{step.question}</Typography>
+              </Grid>
             </Grid>
             <Grid container justifyContent="space-around">
               <Grid item md={4} sm={4} textAlign="center">
