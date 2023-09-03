@@ -57,7 +57,7 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
               <Typography>{step.question}</Typography>
             </Grid>
             <Grid container justifyContent="space-around">
-              <Grid md={4} item textAlign="center">
+              <Grid item md={4} sm={4} textAlign="center">
                 <IconButton
                   disabled={index === 0}
                   onClick={handleBack}
@@ -66,7 +66,7 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
                   <ArrowCircleLeftIcon />
                 </IconButton>
               </Grid>
-              <Grid md={4} item textAlign="center">
+              <Grid item md={4} sm={4} textAlign="center">
                 <IconButton
                   onClick={() => handleSaveSin(index)}
                   style={{ transform: "scale(1.8)" }}
@@ -74,7 +74,7 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
                   <CheckCircleIcon />
                 </IconButton>
               </Grid>
-              <Grid md={4} item textAlign="center">
+              <Grid item md={4} sm={4} textAlign="center">
                 <IconButton
                   onClick={handleSkip}
                   style={{ transform: "scale(1.8)" }}
@@ -82,15 +82,15 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
                   <CancelIcon />
                 </IconButton>
               </Grid>
-              <Grid item my={5} md={12} textAlign="center">
-                <Button
-                  onClick={handleFinishExam}
-                  variant="outlined"
-                  size="small"
-                >
-                  Finish Exam
-                </Button>
-              </Grid>
+            </Grid>
+            <Grid container justifyContent="center" my={5} textAlign="center">
+              <Button
+                onClick={handleFinishExam}
+                variant="outlined"
+                size="small"
+              >
+                Finish Exam
+              </Button>
             </Grid>
           </Box>
         ))
@@ -98,7 +98,6 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
       {activeStep === steps.length && (
         <Box>
           <Typography>Examination of Conscience completed</Typography>
-
           {sinsCommitted.length > 0 ? (
             <Typography variant="h5">List of sins to confess:</Typography>
           ) : (
