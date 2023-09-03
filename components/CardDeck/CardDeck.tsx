@@ -3,9 +3,9 @@ import {
   Box,
   Button,
   Typography,
-  LinearProgress,
   Grid,
   IconButton,
+  Tooltip,
 } from "@mui/material";
 import { CardProps } from "@/interfaces/index";
 import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
@@ -58,29 +58,35 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
             </Grid>
             <Grid container justifyContent="space-around">
               <Grid item md={4} sm={4} textAlign="center">
-                <IconButton
-                  disabled={index === 0}
-                  onClick={handleBack}
-                  style={{ transform: "scale(1.8)" }}
-                >
-                  <ArrowCircleLeftIcon />
-                </IconButton>
+                <Tooltip title="Back">
+                  <IconButton
+                    disabled={index === 0}
+                    onClick={handleBack}
+                    style={{ transform: "scale(1.8)" }}
+                  >
+                    <ArrowCircleLeftIcon />
+                  </IconButton>
+                </Tooltip>
               </Grid>
               <Grid item md={4} sm={4} textAlign="center">
-                <IconButton
-                  onClick={() => handleSaveSin(index)}
-                  style={{ transform: "scale(1.8)" }}
-                >
-                  <CheckCircleIcon />
-                </IconButton>
+                <Tooltip title="Yes">
+                  <IconButton
+                    onClick={() => handleSaveSin(index)}
+                    style={{ transform: "scale(1.8)" }}
+                  >
+                    <CheckCircleIcon />
+                  </IconButton>
+                </Tooltip>
               </Grid>
               <Grid item md={4} sm={4} textAlign="center">
-                <IconButton
-                  onClick={handleSkip}
-                  style={{ transform: "scale(1.8)" }}
-                >
-                  <CancelIcon />
-                </IconButton>
+                <Tooltip title="No">
+                  <IconButton
+                    onClick={handleSkip}
+                    style={{ transform: "scale(1.8)" }}
+                  >
+                    <CancelIcon />
+                  </IconButton>
+                </Tooltip>
               </Grid>
             </Grid>
             <Grid container justifyContent="center" my={5} textAlign="center">

@@ -1,15 +1,12 @@
 import { MouseEventHandler } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Container, Grid, Typography } from "@mui/material";
 import Image from "next/image";
-import { Container } from "./AudioCover.style";
-import { INTERFACE_VIEW_SIZE } from "@/constants/interfaces";
 
 interface Props {
   title: string;
   description: string;
   onClick: MouseEventHandler<HTMLImageElement>;
   audioCover?: string | null;
-  size?: INTERFACE_VIEW_SIZE;
   children?: React.ReactNode;
   controls?: React.ReactNode;
 }
@@ -18,28 +15,39 @@ const AudioCover = ({
   title,
   description,
   onClick,
-  size = INTERFACE_VIEW_SIZE.MEDIUM,
   audioCover = null,
   children = null,
   controls = null,
 }: Props) => {
   return (
-    <Container size={size}>
-      <Box className="rosary-header">
-        <Typography color="primary" className="rosary-title">
-          {title}
-        </Typography>
-        <Typography color="primary" className="rosary-description">
-          {description}
-        </Typography>
-      </Box>
-      {audioCover && (
-        <div className="rosary-image">
-          <Image onClick={onClick} src={audioCover} alt="Rosary Audio Cover" />
-        </div>
-      )}
-      {children && <Box className="rosary-content">{children}</Box>}
-      <Box className="rosary-controls">{controls}</Box>
+    <Container>
+      <Grid
+        container
+        justifyContent="center"
+        alignContent="center"
+        flexDirection="column"
+      >
+        <Grid item textAlign="center">
+          <Typography variant="h5" color="primary">
+            {description}
+          </Typography>
+        </Grid>
+        {audioCover && (
+          <div>
+            <Image
+              onClick={onClick}
+              src={audioCover}
+              alt="Rosary Audio Cover"
+            />
+          </div>
+        )}
+        <Grid item sx={{ minHeight: "300px", height: "100%", width: "90%" }}>
+          {children}
+        </Grid>
+        <Grid textAlign="center" item>
+          {controls}
+        </Grid>
+      </Grid>
     </Container>
   );
 };

@@ -98,7 +98,6 @@ const RosaryAudioPlayer = () => {
         // audioCover={rosaryState.audioCover}
         title={rosaryState.title}
         description={rosaryState.mystery}
-        size={viewSize}
         onClick={buttons.home.onClick}
         controls={controls}
       >

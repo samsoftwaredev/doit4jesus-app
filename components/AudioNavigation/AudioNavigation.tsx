@@ -15,7 +15,7 @@ const AudioNavigation = ({ buttons }: Props) => {
   return (
     <Box className={styles.container}>
       {buttons.map(({ id, icon, tooltip, onClick }) => (
-        <Tooltip title={tooltip}>
+        <Tooltip key={id} title={tooltip}>
           <IconButton key={id} onClick={onClick} href={`#${id}`}>
             {icon}
           </IconButton>
