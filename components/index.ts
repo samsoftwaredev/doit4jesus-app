@@ -16,6 +16,7 @@ export { default as Ocean } from "./Ocean";
 export { default as TitleNav } from "./TitleNav";
 export { default as CardCounter } from "./CardCounter";
 export { default as Pulse } from "./Pulse";
+export { default as PageNotFound } from "./PageNotFound";
 
 export * from "./AudioPlayer";
 export * from "./Navbars";

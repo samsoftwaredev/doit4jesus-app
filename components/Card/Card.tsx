@@ -1,13 +1,13 @@
 import { CardProps } from "@/interfaces";
 import styles from "./card.module.scss";
 
-type Props = CardProps & { classNames: string };
+type Props = CardProps;
 
-const Card = ({ classNames, title, description }: Props) => {
+const Card = ({ title, question }: Props) => {
   return (
-    <div className={[styles.container, classNames].join(" ")}>
+    <div className={[styles.container].join(" ")}>
       <h4>{title}</h4>
-      <div className={styles.description}>{description}</div>
+      <div>{question}</div>
     </div>
   );
 };

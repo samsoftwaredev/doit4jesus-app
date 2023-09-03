@@ -1,24 +1,34 @@
 import { MainLayout } from "@/layouts/index";
-import { Button, Container, IconButton, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  CardMedia,
+  Container,
+  Grid,
+  IconButton,
+  LinearProgress,
+  Typography,
+} from "@mui/material";
 import { useRouter } from "next/router";
 import articlesList from "@/data/articles.json";
 import { useState } from "react";
-import { HomeNavbar } from "@/components/Navbars";
+import { HomeNavbar, PageNotFound } from "@/components";
 import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
 import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 import { NAV_MAIN_LINKS } from "@/constants/nav";
+import Image from "next/image";
 
 function BlogPost() {
   const router = useRouter();
   const blogId = router.query.slug;
   const article = articlesList.find(({ id }) => id === blogId);
   const [page, setPage] = useState(0);
+
+  const currentPage = article?.sections[page];
   const isFirstPage = page <= 0;
   const isLastPage = article?.sections?.length
     ? page >= article.sections.length - 1
     : false;
-
-  const currentPage = article?.sections[page];
 
   const onPrev = () => {
     setPage((pag) => pag - 1);
@@ -32,28 +42,48 @@ function BlogPost() {
     router.push(NAV_MAIN_LINKS.blog.link);
   };
 
-  if (!article) {
-    return <p>No Article</p>;
-  }
+  if (!article) return <PageNotFound />;
+
+  const progress = (page / (article?.sections?.length - 1)) * 100;
 
   return (
     <MainLayout topNavbar={<HomeNavbar />}>
+      <LinearProgress variant="determinate" value={progress} />
       <Container maxWidth="sm">
-        <Typography variant="h6">{article.title}</Typography>
-        <Typography variant="h4">{currentPage?.title}</Typography>
+        <Box>
+          <CardMedia
+            sx={{
+              height: 240,
+              textAlign: "right",
+              color: "white",
+              textShadow: `1px 1px 2px black`,
+            }}
+            image={article.image}
+            title={article.title}
+          >
+            <Typography p={2} fontWeight="strong" variant="h5">
+              {article.title}
+            </Typography>
+          </CardMedia>
+        </Box>
+        <Typography py={2} variant="h4">
+          {currentPage?.title}
+        </Typography>
         <Typography>{currentPage?.description}</Typography>
-        <IconButton disabled={isFirstPage} onClick={onPrev}>
-          <ArrowCircleLeftIcon />
-        </IconButton>
-        {!isLastPage ? (
-          <IconButton onClick={onNext}>
-            <ArrowCircleRightIcon />
+        <Grid>
+          <IconButton disabled={isFirstPage} onClick={onPrev}>
+            <ArrowCircleLeftIcon />
           </IconButton>
-        ) : (
-          <Button variant="contained" onClick={onFinish}>
-            Completed
-          </Button>
-        )}
+          {!isLastPage ? (
+            <IconButton onClick={onNext}>
+              <ArrowCircleRightIcon />
+            </IconButton>
+          ) : (
+            <Button variant="contained" onClick={onFinish}>
+              Completed
+            </Button>
+          )}
+        </Grid>
       </Container>
     </MainLayout>
   );
