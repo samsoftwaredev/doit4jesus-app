@@ -7,6 +7,7 @@ import {
   Paper,
   Typography,
   LinearProgress,
+  Grid,
 } from "@mui/material";
 import { CardProps } from "@/interfaces/index";
 
@@ -36,7 +37,10 @@ function CardDeck({ steps }: Props) {
       {steps
         .map((step, index) => (
           <Box key={step.title}>
-            <Typography>{step.question}</Typography>
+            <Grid container height="250px" flexDirection={"column"}>
+              <Typography variant="h5">{step.title}</Typography>
+              <Typography>{step.question}</Typography>
+            </Grid>
             <Box sx={{ mb: 2 }}>
               <Button
                 variant="contained"

@@ -5,7 +5,7 @@ import { ConfessionGuide } from "sections";
 const Confession: NextPage = () => {
   return (
     <MainLayout>
-      <ConfessionGuide />;
+      <ConfessionGuide />
     </MainLayout>
   );
 };
