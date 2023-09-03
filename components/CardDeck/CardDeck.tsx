@@ -97,9 +97,7 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
         .slice(activeStep, activeStep + 1)}
       {activeStep === steps.length && (
         <Box>
-          <Typography>
-            Examination of Conscience completed - you&apos;re finished
-          </Typography>
+          <Typography>Examination of Conscience completed</Typography>
 
           {sinsCommitted.length > 0 ? (
             <Typography variant="h5">List of sins to confess:</Typography>
