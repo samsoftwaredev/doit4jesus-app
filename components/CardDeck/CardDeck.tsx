@@ -12,7 +12,7 @@ import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { StarButton } from "@/components";
-import CloseIcon from "@mui/icons-material/Close";
+import { useToastContext } from "@/context/ToastContext";
 
 interface Props {
   steps: CardProps[];
@@ -21,6 +21,7 @@ interface Props {
 }
 
 function CardDeck({ steps, setActiveStep, activeStep }: Props) {
+  const { setToast } = useToastContext();
   const [sinsCommitted, setSinsCommitted] = React.useState<CardProps[]>([]);
 
   const handleNext = () => {
@@ -52,6 +53,8 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
 
   const handelSave = () => {
     // TODO: API call to save
+    console.log("saved");
+    setToast({ open: true, message: "Question saved!", type: "success" });
   };
 
   return (
@@ -77,13 +80,15 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
             <Grid container justifyContent="space-around">
               <Grid item md={4} sm={4} textAlign="center">
                 <Tooltip title="Back">
-                  <IconButton
-                    disabled={index === 0}
-                    onClick={handleBack}
-                    style={{ transform: "scale(1.8)" }}
-                  >
-                    <ArrowCircleLeftIcon />
-                  </IconButton>
+                  <span>
+                    <IconButton
+                      disabled={index === 0}
+                      onClick={handleBack}
+                      style={{ transform: "scale(1.8)" }}
+                    >
+                      <ArrowCircleLeftIcon />
+                    </IconButton>
+                  </span>
                 </Tooltip>
               </Grid>
               <Grid item md={4} sm={4} textAlign="center">
