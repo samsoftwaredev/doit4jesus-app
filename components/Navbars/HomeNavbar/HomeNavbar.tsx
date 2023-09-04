@@ -33,7 +33,7 @@ function HomeNavbar() {
             sx={{ mr: 2 }}
             onClick={goToHome}
           >
-            <Logo type="black" />
+            <Logo type="white" />
           </IconButton>
           <Box sx={{ flexGrow: 1 }} />
           <Button color="inherit">Why Pray?</Button>

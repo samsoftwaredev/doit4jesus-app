@@ -25,27 +25,30 @@ const features = [
 
 const Features = () => {
   return (
-    <Container className={styles.container}>
-      <Typography className="title" variant="h3" gutterBottom>
-        Let's do this together...
-      </Typography>
-      <Grid container justifyContent="space-between">
-        {features.map(({ thumbnail, title, description }) => (
-          <Grid item key={title} md={3}>
-            <Typography className="item-title" variant="h5" gutterBottom>
-              {title}
-            </Typography>
-            <Typography
-              className="description"
-              variant="subtitle1"
-              gutterBottom
-            >
-              {description}
-            </Typography>
-          </Grid>
-        ))}
-      </Grid>
-    </Container>
+    <div className={styles.content}>
+      <div className={styles.topGradient} />
+      <Container className={styles.container}>
+        <Typography className="title" variant="h3" gutterBottom>
+          Let's do this together...
+        </Typography>
+        <Grid container justifyContent="space-between">
+          {features.map(({ thumbnail, title, description }) => (
+            <Grid item key={title} md={3}>
+              <Typography className="item-title" variant="h5" gutterBottom>
+                {title}
+              </Typography>
+              <Typography
+                className="description"
+                variant="subtitle1"
+                gutterBottom
+              >
+                {description}
+              </Typography>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+    </div>
   );
 };
 

@@ -15,12 +15,15 @@ const Hero = () => {
   return (
     <div className={styles.content}>
       <Container maxWidth={false} className={styles.container}>
-        <Typography variant="h1" className={styles.title}>
-          Find Peace in the Rosary
-        </Typography>
-        <Typography variant="h5" className={styles.subTitle}>
-          Pray with millions around the world and multiply your blessings
-        </Typography>
+        <Box>
+          <Typography variant="h1" className={styles.title}>
+            Find Peace in the Rosary
+          </Typography>
+          <Typography variant="h5" className={styles.subTitle}>
+            Pray with millions around the world and multiply your blessings
+          </Typography>
+        </Box>
+        <Box />
         <Box mt={10}>
           <Image src={smartPhoneHand} alt="Hand holding phone" />
         </Box>

@@ -3,17 +3,22 @@
 }
 
 .container {
-  min-height: 160vh;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  flex-direction: column;
+  min-height: 1200px;
+  color: #fff;
+
+  display: grid;
+  text-align: center;
+  grid-template-columns: 1fr;
+  grid-template-rows: 200px 100px 1fr;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+
   background: rgb(255, 255, 255);
   background: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 1) 0%,
+    rgba(22, 55, 86, 1) 0%,
     rgba(255, 163, 168, 1) 53%,
-    rgba(22, 55, 86, 1) 100%
+    rgba(255, 255, 255, 1) 100%
   );
 }
 
@@ -38,7 +43,7 @@
   background: linear-gradient(
     180deg,
     rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0) 30%,
-    rgba(22, 55, 86, 1) 100%
+    rgba(255, 255, 255, 1) 90%,
+    rgba(255, 255, 255, 1) 100%
   );
 }

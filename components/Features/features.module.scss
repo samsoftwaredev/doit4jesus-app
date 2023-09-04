@@ -1,7 +1,23 @@
+.content {
+  position: relative;
+}
+
 .container {
-  height: 90vh;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
+}
+
+.topGradient {
+  position: absolute;
+  width: 100%;
+  height: 500px;
+  background: rgb(255, 255, 255);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
 }
