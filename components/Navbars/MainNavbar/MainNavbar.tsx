@@ -29,6 +29,7 @@ function MainNavbar() {
       <AppBar position="static">
         <Toolbar>
           <IconButton
+            disableRipple
             size="large"
             edge="start"
             color="inherit"
@@ -36,11 +37,9 @@ function MainNavbar() {
             sx={{ mr: 2 }}
             onClick={goToRoot}
           >
-            <Logo />
+            <Logo type="white" />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            DoIt4Jesus
-          </Typography>
+          <Box sx={{ flexGrow: 1 }} />
           <Button onClick={goToConfession} color="inherit">
             Confession
           </Button>

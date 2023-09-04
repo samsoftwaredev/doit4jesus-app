@@ -1,8 +1,8 @@
-export const NAV_FOOTER_LINKS = [
-  { link: "/about", label: "About", value: "about" },
-  { link: "/blog", label: "Blog", value: "blog" },
-  { link: "/contact", label: "Contact", value: "contact" },
-];
+export const NAV_FOOTER_LINKS = {
+  about: { link: "/about", label: "About", value: "about" },
+  blog: { link: "/blog", label: "Blog", value: "blog" },
+  contact: { link: "/contact", label: "Contact", value: "contact" },
+};
 
 export const NAV_MAIN_LINKS = {
   home: { link: "/", label: "Home", value: "home" },

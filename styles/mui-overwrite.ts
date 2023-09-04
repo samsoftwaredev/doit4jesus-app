@@ -4,9 +4,10 @@ export const theme = createTheme({
   palette: {
     primary: {
       main: "#464e61",
+      light: "#00bcd4",
     },
     secondary: {
-      main: "#000",
+      main: "#E8D1CB",
     },
     warning: {
       main: "#ff9800",
@@ -16,7 +17,7 @@ export const theme = createTheme({
       main: "#9f4435",
     },
     info: {
-      main: "#00bcd4",
+      main: "#000",
     },
     success: {
       main: "#009688",
@@ -29,7 +30,11 @@ export const theme = createTheme({
   },
   components: {
     MuiButton: {
-      styleOverrides: {},
+      styleOverrides: {
+        contained: {
+          borderRadius: "50px",
+        },
+      },
     },
   },
 });

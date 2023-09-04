@@ -1,5 +1,5 @@
 import { MouseEventHandler } from "react";
-import { Box, Container, Grid, Typography } from "@mui/material";
+import { Container, Grid, Typography } from "@mui/material";
 import Image from "next/image";
 
 interface Props {
