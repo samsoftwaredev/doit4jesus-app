@@ -1,6 +1,8 @@
-import { Container, Grid, Typography } from "@mui/material";
+import { Box, Container, Grid, Typography } from "@mui/material";
 import { findPeace, prayMore, prayWell } from "@/public/assets/images/hero";
 import styles from "./features.module.scss";
+import Image from "next/image";
+import { theme } from "@/styles/mui-overwrite";
 
 const features = [
   {
@@ -25,30 +27,37 @@ const features = [
 
 const Features = () => {
   return (
-    <div className={styles.content}>
-      <div className={styles.topGradient} />
-      <Container className={styles.container}>
-        <Typography className="title" variant="h3" gutterBottom>
-          Let's do this together...
-        </Typography>
-        <Grid container justifyContent="space-between">
-          {features.map(({ thumbnail, title, description }) => (
-            <Grid item key={title} md={3}>
-              <Typography className="item-title" variant="h5" gutterBottom>
-                {title}
-              </Typography>
-              <Typography
-                className="description"
-                variant="subtitle1"
-                gutterBottom
-              >
-                {description}
-              </Typography>
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
-    </div>
+    <Container className={styles.container}>
+      <Typography className="title" variant="h2" gutterBottom>
+        The Rosary App
+      </Typography>
+      <Grid container justifyContent="space-between">
+        {features.map(({ thumbnail, title, description }) => (
+          <Grid item key={title} md={3} textAlign="center">
+            <Box
+              className={styles.arcs}
+              m={2}
+              sx={{
+                textAlign: "center",
+                borderColor: theme.palette.secondary.main,
+              }}
+            >
+              {/* <Image src={thumbnail} alt={title} /> */}
+            </Box>
+            <Typography className="item-title" variant="h5" gutterBottom>
+              {title}
+            </Typography>
+            <Typography
+              className="description"
+              variant="subtitle1"
+              gutterBottom
+            >
+              {description}
+            </Typography>
+          </Grid>
+        ))}
+      </Grid>
+    </Container>
   );
 };
 
