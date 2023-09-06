@@ -27,30 +27,32 @@ const features = [
 
 const WhyPrayRosary = () => {
   return (
-    <Container maxWidth={false} className={styles.container}>
-      <Typography className={styles.title} variant="h2">
-        Why pray the Rosary
-      </Typography>
-      <Grid container justifyContent="space-around">
-        {features.map(({ thumbnail, title, description }, index) => (
-          <Grid item key={title} md={3} textAlign="center">
-            <Box id={`arc-${index + 1}`} className={styles.arcs}>
-              <Typography className={styles.step}>{index + 1}</Typography>
-              <Typography className="item-title" variant="h5" gutterBottom>
-                {title}
-              </Typography>
-              <Typography
-                className="description"
-                variant="subtitle1"
-                gutterBottom
-              >
-                {description}
-              </Typography>
-            </Box>
-          </Grid>
-        ))}
-      </Grid>
-    </Container>
+    <div className={styles.container}>
+      <Container maxWidth="lg">
+        <Typography className={styles.title} variant="h2">
+          Why pray the Rosary
+        </Typography>
+        <Grid container justifyContent="space-around">
+          {features.map(({ thumbnail, title, description }, index) => (
+            <Grid item key={title} md={3} textAlign="center">
+              <Box id={`arc-${index + 1}`} className={styles.arcs}>
+                <Typography className={styles.step}>{index + 1}</Typography>
+                <Typography className="item-title" variant="h5" gutterBottom>
+                  {title}
+                </Typography>
+                <Typography
+                  className="description"
+                  variant="subtitle1"
+                  gutterBottom
+                >
+                  {description}
+                </Typography>
+              </Box>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+    </div>
   );
 };
 
