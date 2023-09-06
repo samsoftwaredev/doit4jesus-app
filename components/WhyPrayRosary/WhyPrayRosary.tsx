@@ -1,6 +1,6 @@
 import { Box, Container, Grid, Typography } from "@mui/material";
 import { findPeace, prayMore, prayWell } from "@/public/assets/images/hero";
-import styles from "./features.module.scss";
+import styles from "./whyPrayRosary.module.scss";
 import Image from "next/image";
 import { theme } from "@/styles/mui-overwrite";
 
@@ -25,34 +25,28 @@ const features = [
   },
 ];
 
-const Features = () => {
+const WhyPrayRosary = () => {
   return (
-    <Container className={styles.container}>
-      <Typography className="title" variant="h2" gutterBottom>
-        The Rosary App
+    <Container maxWidth={false} className={styles.container}>
+      <Typography className={styles.title} variant="h2">
+        Why pray the Rosary
       </Typography>
       <Grid container justifyContent="space-around">
-        {features.map(({ thumbnail, title, description }) => (
+        {features.map(({ thumbnail, title, description }, index) => (
           <Grid item key={title} md={3} textAlign="center">
-            <Box
-              className={styles.arcs}
-              sx={{
-                textAlign: "center",
-                borderColor: theme.palette.secondary.main,
-              }}
-            >
-              {/* <Image src={thumbnail} alt={title} /> */}
+            <Box id={`arc-${index + 1}`} className={styles.arcs}>
+              <Typography className={styles.step}>{index + 1}</Typography>
+              <Typography className="item-title" variant="h5" gutterBottom>
+                {title}
+              </Typography>
+              <Typography
+                className="description"
+                variant="subtitle1"
+                gutterBottom
+              >
+                {description}
+              </Typography>
             </Box>
-            <Typography className="item-title" variant="h5" gutterBottom>
-              {title}
-            </Typography>
-            <Typography
-              className="description"
-              variant="subtitle1"
-              gutterBottom
-            >
-              {description}
-            </Typography>
           </Grid>
         ))}
       </Grid>
@@ -60,4 +54,4 @@ const Features = () => {
   );
 };
 
-export default Features;
+export default WhyPrayRosary;

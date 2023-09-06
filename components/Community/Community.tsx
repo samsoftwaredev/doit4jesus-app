@@ -1,15 +1,35 @@
-import { Container, Paper, Typography } from "@mui/material";
+import { Box, Container, Grid, Paper, Typography } from "@mui/material";
 import styles from "./community.module.scss";
+import Image from "next/image";
+import rosary from "@/public/assets/images/rosary.svg";
 
 const Hero = () => {
   return (
-    <Container maxWidth={false} className={styles.container}>
-      <Typography variant="h4">About the Rosary</Typography>
-      <Typography variant="subtitle1">
-        Here you will find a community that supports you, prays with you and has
-        the best intentions for you.
-      </Typography>
-    </Container>
+    <div className={styles.container}>
+      <Container maxWidth="md">
+        <Grid>
+          <Typography my={5} variant="h2">
+            About the Rosary
+          </Typography>
+          <Image src={rosary} alt="Rosoary" />
+          <Box className={styles.content}>
+            <p>The Holy Rosary</p>
+            <p>
+              Santo Domingo de Guzman. The Mother of God, in an apparition to
+              Santo Domingo, taught him to pray the rosary, in the year 1208.
+              She told him to spread this devotion and use it as a powerful
+              weapon against the enemies of the Faith.
+            </p>
+            <p>
+              Santo Domingo de Guzman. The Mother of God, in an apparition to
+              Santo Domingo, taught him to pray the rosary, in the year 1208.
+              She told him to spread this devotion and use it as a powerful
+              weapon against the enemies of the Faith.
+            </p>
+          </Box>
+        </Grid>
+      </Container>
+    </div>
   );
 };
 

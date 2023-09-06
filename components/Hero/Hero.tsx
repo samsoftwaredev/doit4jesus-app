@@ -25,7 +25,11 @@ const Hero = () => {
         </Box>
         <Box />
         <Box mt={10}>
-          <Image src={smartPhoneHand} alt="Hand holding phone" />
+          <Image
+            className={styles.image}
+            src={smartPhoneHand}
+            alt="Hand holding phone"
+          />
         </Box>
       </Container>
       <div className={styles.imageBottomGradient} />

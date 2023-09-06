@@ -1,5 +1,5 @@
 .container {
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -7,9 +7,11 @@
 }
 
 .arcs {
+  margin: 20px auto;
   border-top-left-radius: 200px;
   border-top-right-radius: 200px;
   height: 400px;
+  max-width: 200px;
   border: 10px solid #c09397;
   img {
     width: 100%;
