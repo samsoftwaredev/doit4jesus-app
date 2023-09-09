@@ -1,22 +1,27 @@
 import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import CssBaseline from "@mui/material/CssBaseline";
-import Divider from "@mui/material/Divider";
-import Drawer from "@mui/material/Drawer";
-import IconButton from "@mui/material/IconButton";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
-import MenuIcon from "@mui/icons-material/Menu";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import { Logo } from "../..";
-import styles from "./homeNavbar.module.scss";
-import { NAV_FOOTER_LINKS, NAV_MAIN_LINKS } from "@/constants/nav";
 import { useRouter } from "next/router";
+import {
+  AppBar,
+  Box,
+  CssBaseline,
+  Divider,
+  Drawer,
+  IconButton,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  Toolbar,
+  Button,
+} from "@mui/material";
+import { Logo } from "../..";
+import MenuIcon from "@mui/icons-material/Menu";
+import styles from "./homeNavbar.module.scss";
+import {
+  NAV_APP_LINKS,
+  NAV_FOOTER_LINKS,
+  NAV_MAIN_LINKS,
+} from "@/constants/nav";
 
 interface Props {
   /**
@@ -27,7 +32,6 @@ interface Props {
 }
 
 const drawerWidth = 240;
-const navItems = ["Home", "About", "Contact"];
 
 function HomeNavbar(props: Props) {
   const { window } = props;
@@ -38,6 +42,18 @@ function HomeNavbar(props: Props) {
     setMobileOpen((prevState) => !prevState);
   };
 
+  const goToBlogs = () => {
+    router.push(NAV_MAIN_LINKS.blog.link);
+  };
+
+  const goToPray = () => {
+    router.push(NAV_MAIN_LINKS.blog.link);
+  };
+
+  const goToApp = () => {
+    router.push(NAV_APP_LINKS.app.link);
+  };
+
   const goToHome = () => {
     router.push(NAV_MAIN_LINKS.home.link);
   };
@@ -46,20 +62,47 @@ function HomeNavbar(props: Props) {
     router.push(NAV_FOOTER_LINKS.about.link);
   };
 
+  const navItems = [
+    {
+      label: "About",
+      goTo: goToAbout,
+      sx: { color: "#fff" },
+    },
+    {
+      label: "Blogs",
+      goTo: goToBlogs,
+      sx: { color: "#fff" },
+    },
+    {
+      label: "Why Pray?",
+      goTo: goToPray,
+      sx: { color: "#fff" },
+    },
+  ];
+
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
-      <Typography variant="h6" sx={{ my: 2 }}>
-        MUI
-      </Typography>
+      <Button onClick={goToHome}>
+        <Logo type="black" />
+      </Button>
       <Divider />
       <List>
-        {navItems.map((item) => (
-          <ListItem key={item} disablePadding>
-            <ListItemButton sx={{ textAlign: "center" }}>
-              <ListItemText primary={item} />
+        {navItems.map(({ label, goTo }) => (
+          <ListItem key={label} disablePadding>
+            <ListItemButton sx={{ textAlign: "center" }} onClick={goTo}>
+              <ListItemText primary={label} />
             </ListItemButton>
           </ListItem>
         ))}
+        <ListItem disablePadding>
+          <ListItemButton
+            color="secondary"
+            sx={{ textAlign: "center" }}
+            onClick={goToApp}
+          >
+            <ListItemText primary="Sing Up for Free" />
+          </ListItemButton>
+        </ListItem>
       </List>
     </Box>
   );
@@ -71,24 +114,29 @@ function HomeNavbar(props: Props) {
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar component="nav" position="static" className={styles.appBar}>
-        <Toolbar>
+        <Toolbar className={styles.toolbar}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: "none" } }}
+            sx={{ display: { sm: "none" } }}
           >
             <MenuIcon />
           </IconButton>
-          <Logo type="white" />
-          <Box sx={{ flexGrow: 1 }} />
+          <Button onClick={goToHome}>
+            <Logo type="white" />
+          </Button>
+          <Box sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }} />
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
-            {navItems.map((item) => (
-              <Button key={item} sx={{ color: "#fff" }}>
-                {item}
+            {navItems.map(({ label, goTo, sx }) => (
+              <Button key={label} onClick={goTo} sx={sx}>
+                {label}
               </Button>
             ))}
+            <Button variant="contained" color="secondary" onClick={goToApp}>
+              Sing Up for Free
+            </Button>
           </Box>
         </Toolbar>
       </AppBar>

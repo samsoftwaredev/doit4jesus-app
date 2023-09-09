@@ -1,18 +1,6 @@
 .content {
   position: relative;
-}
-
-.container {
-  min-height: 1200px;
   color: #ffffff;
-
-  display: grid;
-  text-align: center;
-  grid-template-columns: 1fr;
-  grid-template-rows: 200px 100px 1fr;
-  grid-column-gap: 0px;
-  grid-row-gap: 0px;
-
   background: rgb(255, 255, 255);
   background: linear-gradient(
     180deg,
@@ -20,6 +8,17 @@
     rgba(255, 163, 168, 1) 53%,
     rgba(255, 255, 255, 1) 100%
   );
+}
+
+.container {
+  min-height: 1200px;
+
+  display: grid;
+  text-align: center;
+  grid-template-columns: 1fr;
+  grid-template-rows: 200px 100px 1fr;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
 }
 
 .cta {

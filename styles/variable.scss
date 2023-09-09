@@ -9,21 +9,28 @@ $tablet: 640px;
 $laptop: 1024px;
 $desktop: 1200px;
 
+$primaryLight: #00bcd4;
+$primaryMain: #163755;
+$secondaryMain: #e8d1cb;
+$warningLight: #955f27;
+$warningMain: #ff9800;
+$warningDark: #844d42;
+$errorLight: #c09397;
+$errorMain: #b47a84;
+$errorDark: #9f4435;
+$successLight: #a69540;
+$successMain: #009688;
+
 $black: #000000;
 $white: #ffffff;
 $dark: #71706a;
 $gray: #cfcec7;
 $light: #f3f2eb;
-$danger: #b1482c;
-$warning: #e16847;
-$info: #225e93;
-$primary: #612ab9;
-$secondary: #35187e;
-$success: #bbddcd;
 
 $sideNavWidth: 250px;
 
 :export {
+  // screen widths
   xs: $xs;
   xm: $sm;
   md: $md;
@@ -33,15 +40,24 @@ $sideNavWidth: 250px;
   mobile: $mobile;
   tablet: $tablet;
   laptop: $laptop;
+
+  // colors
   black: $black;
   white: $white;
   dark: $dark;
   light: $light;
-  danger: $danger;
-  warning: $warning;
-  info: $info;
-  primary: $primary;
-  secondary: $secondary;
-  success: $success;
+  primaryLight: $primaryLight;
+  primaryMain: $primaryMain;
+  secondaryMain: $secondaryMain;
+  warningLight: $warningLight;
+  warningMain: $warningMain;
+  warningDark: $warningDark;
+  errorLight: $errorLight;
+  errorMain: $errorMain;
+  errorDark: $errorDark;
+  successLight: $successLight;
+  successMain: $successMain;
+
+  // widths
   sideNavWidth: $sideNavWidth;
 }

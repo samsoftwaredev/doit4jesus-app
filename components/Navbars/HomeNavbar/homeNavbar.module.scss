@@ -1,4 +1,16 @@
 .appBar {
-  background-color: rgba(22, 55, 86, 1);
+  background-color: $primaryMain;
   box-shadow: none;
+}
+
+.toolbar {
+  display: grid;
+  grid-template-columns: 20px 1fr 20px;
+  grid-template-rows: 1fr;
+  &:last-child() {
+    margin-left: -20em;
+  }
+  @media screen and (min-width: $sm) {
+    display: flex;
+  }
 }
