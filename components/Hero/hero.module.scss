@@ -4,9 +4,9 @@
   background: rgb(255, 255, 255);
   background: linear-gradient(
     180deg,
-    rgba(22, 55, 86, 1) 0%,
-    rgba(255, 163, 168, 1) 53%,
-    rgba(255, 255, 255, 1) 100%
+    $primaryMain 0%,
+    $errorMain 53%,
+    $white 100%
   );
 }
 
@@ -42,8 +42,8 @@
   background: linear-gradient(
     180deg,
     rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 1) 90%,
-    rgba(255, 255, 255, 1) 100%
+    $white 90%,
+    $white 100%
   );
 }
 

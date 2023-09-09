@@ -5,16 +5,11 @@
   justify-content: center;
   flex-direction: column;
   background: rgb(68, 69, 68);
-  background: linear-gradient(
-    180deg,
-    rgba(149, 95, 39, 1) 0%,
-    rgba(255, 255, 255, 1) 80%,
-    rgba(255, 255, 255, 1) 100%
-  );
+  background: linear-gradient(180deg, $warningDark 0%, $white 80%, $white 100%);
 }
 
 .title {
-  color: #ffffff;
+  color: $white;
   margin-bottom: 30px;
 }
 
@@ -23,8 +18,8 @@
   border-top-left-radius: 200px;
   border-top-right-radius: 200px;
   height: 600px;
-  border: 10px solid #ffffff;
-  background-color: #ffffff;
+  border: 10px solid $white;
+  background-color: $white;
   display: flex;
   flex-direction: column;
   justify-content: center;
