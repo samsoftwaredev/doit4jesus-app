@@ -1,7 +1,7 @@
 import type { AppProps } from "next/app";
 import { Roboto } from "@next/font/google";
 import { CssBaseline } from "@mui/material";
-import { ThemeProvider } from "@mui/material";
+import { ThemeProvider } from "@mui/material/styles";
 import { LanguageContextProvider } from "@/context/LanguageContext";
 import { ToastContextProvider } from "@/context/ToastContext";
 import { theme } from "@/styles/mui-overwrite";
