@@ -40,9 +40,7 @@ const WhyPrayRosary = () => {
               >
                 <p className={styles.step}>{index + 1}</p>
                 <h5 className="item-title">{title}</h5>
-                <p className="description" variant="subtitle1" gutterBottom>
-                  {description}
-                </p>
+                <p className="description">{description}</p>
               </Box>
             </Grid>
           ))}
