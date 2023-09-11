@@ -2,13 +2,14 @@ import { Box, Container, Grid, Paper, Typography } from "@mui/material";
 import styles from "./community.module.scss";
 import Image from "next/image";
 import rosary from "@/public/assets/images/rosary.svg";
+import { css } from "@/utils/helpers";
 
 const Hero = () => {
   return (
     <div className={styles.container}>
       <Container maxWidth="md">
         <Grid>
-          <Typography my={5} variant="h2">
+          <Typography my={5} className={"sectionTitle"} variant="h2">
             About the Rosary
           </Typography>
           <Image src={rosary} alt="Rosoary" />

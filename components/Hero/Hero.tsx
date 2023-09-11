@@ -1,9 +1,10 @@
-import { Box, Button, Container, Grid, Typography } from "@mui/material";
+import { Box, Button, Container, Typography } from "@mui/material";
 import styles from "./hero.module.scss";
 import { NAV_APP_LINKS } from "@/constants/nav";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import smartPhoneHand from "@/public/assets/images/hero/smartPhoneHand.svg";
+import { css } from "@/utils";
 
 const Hero = () => {
   const router = useRouter();
@@ -15,22 +16,33 @@ const Hero = () => {
   return (
     <div className={styles.content}>
       <Container maxWidth={false} className={styles.container}>
-        <Box>
-          <Typography variant="h1" className={styles.title}>
+        <Box className={styles.header}>
+          <Typography
+            variant="h1"
+            className={css(styles.title, "sectionTitle")}
+          >
             Find Peace in the Rosary
           </Typography>
-          <Typography variant="h5" className={styles.subTitle}>
+          <Typography
+            variant="h5"
+            className={css(styles.subTitle, "sectionSubTitle")}
+          >
             Pray with millions around the world and multiply your blessings
           </Typography>
+          <Button
+            onClick={goToApp}
+            className={styles.cta}
+            variant="contained"
+            size="large"
+          >
+            Start Today
+          </Button>
         </Box>
-        <Box />
-        <Box mt={10}>
-          <Image
-            className={styles.image}
-            src={smartPhoneHand}
-            alt="Hand holding phone"
-          />
-        </Box>
+        <Image
+          className={styles.image}
+          src={smartPhoneHand}
+          alt="Hand holding phone"
+        />
       </Container>
       <div className={styles.imageBottomGradient} />
     </div>

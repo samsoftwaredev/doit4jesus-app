@@ -1,8 +1,7 @@
 import { Box, Container, Grid, Typography } from "@mui/material";
 import { findPeace, prayMore, prayWell } from "@/public/assets/images/hero";
 import styles from "./whyPrayRosary.module.scss";
-import Image from "next/image";
-import { theme } from "@/styles/mui-overwrite";
+import { css } from "@/utils/helpers";
 
 const features = [
   {
@@ -28,14 +27,17 @@ const features = [
 const WhyPrayRosary = () => {
   return (
     <div className={styles.container}>
-      <Container maxWidth="lg">
-        <Typography className={styles.title} variant="h2">
+      <Container>
+        <Typography className={css(styles.title, "sectionTitle")} variant="h2">
           Why pray the Rosary
         </Typography>
-        <Grid container justifyContent="space-around">
+        <Grid gap={1} container justifyContent="space-around">
           {features.map(({ thumbnail, title, description }, index) => (
             <Grid item key={title} md={3} textAlign="center">
-              <Box id={`arc-${index + 1}`} className={styles.arcs}>
+              <Box
+                id={styles[`arc-${index + 1}` as string]}
+                className={styles.arcs}
+              >
                 <Typography className={styles.step}>{index + 1}</Typography>
                 <Typography className="item-title" variant="h5" gutterBottom>
                   {title}

@@ -27,36 +27,43 @@ const features = [
 
 const Features = () => {
   return (
-    <Container className={styles.container}>
-      <Typography className="title" variant="h2" gutterBottom>
-        The Rosary App
-      </Typography>
-      <Grid container justifyContent="space-around">
-        {features.map(({ thumbnail, title, description }) => (
-          <Grid item key={title} md={3} textAlign="center">
-            <Box
-              className={styles.arcs}
-              sx={{
-                textAlign: "center",
-                borderColor: theme.palette.secondary.main,
-              }}
-            >
-              {/* <Image src={thumbnail} alt={title} /> */}
-            </Box>
-            <Typography className="item-title" variant="h5" gutterBottom>
-              {title}
-            </Typography>
-            <Typography
-              className="description"
-              variant="subtitle1"
-              gutterBottom
-            >
-              {description}
-            </Typography>
-          </Grid>
-        ))}
-      </Grid>
-    </Container>
+    <div className={styles.container}>
+      <Container>
+        <Typography
+          textAlign="center"
+          className={"sectionTitle"}
+          variant="h2"
+          gutterBottom
+        >
+          The Rosary App
+        </Typography>
+        <Grid container justifyContent="space-around">
+          {features.map(({ thumbnail, title, description }) => (
+            <Grid item key={title} md={3} textAlign="center">
+              <Box
+                className={styles.arcs}
+                sx={{
+                  textAlign: "center",
+                  borderColor: theme.palette.secondary.main,
+                }}
+              >
+                {/* <Image src={thumbnail} alt={title} /> */}
+              </Box>
+              <Typography className="item-title" variant="h5" gutterBottom>
+                {title}
+              </Typography>
+              <Typography
+                className="description"
+                variant="subtitle1"
+                gutterBottom
+              >
+                {description}
+              </Typography>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+    </div>
   );
 };
 

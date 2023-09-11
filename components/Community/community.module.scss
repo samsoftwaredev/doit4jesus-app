@@ -1,16 +1,16 @@
 .container {
+  min-height: 900px;
   position: relative;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  text-shadow: 1px 1px 3px #000;
+  text-shadow: 1px 1px 3px $black;
   color: #ffffff;
-  background: rgb(22, 55, 85);
+  background: $primaryMain;
   background: linear-gradient(
     180deg,
-    rgba(22, 55, 85, 1) 0%,
-    rgba(22, 55, 85, 1) 20%,
-    rgba(149, 95, 39, 1) 100%
+    $primaryMain 0%,
+    $primaryMain 20%,
+    $warningDark 100%
   );
 
   img {
@@ -19,13 +19,20 @@
     right: 0;
     z-index: 1;
   }
+}
 
-  .content {
-    font-size: 1.5em;
-    margin-bottom: 150px;
-    margin-top: 50px;
-    position: relative;
-    z-index: 10;
-    max-width: 500px;
+.content {
+  font-size: 0.9em;
+  margin-bottom: 150px;
+  margin-top: 50px;
+  position: relative;
+  z-index: 10;
+  max-width: 500px;
+
+  @include tablet {
+    font-size: 1.1em;
+  }
+  @include desktop {
+    font-size: 1.3em;
   }
 }

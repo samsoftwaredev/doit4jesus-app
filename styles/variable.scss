@@ -4,10 +4,7 @@ $md: 900px;
 $lg: 1200px;
 $xl: 1536px;
 
-$mobile: 0px;
-$tablet: 640px;
 $laptop: 1024px;
-$desktop: 1200px;
 
 $primaryLight: #00bcd4;
 $primaryMain: #163755;
@@ -28,6 +25,20 @@ $gray: #cfcec7;
 $light: #f3f2eb;
 
 $sideNavWidth: 250px;
+$tablet-width: 768px;
+$desktop-width: 1024px;
+
+@mixin tablet {
+  @media (min-width: #{$tablet-width}) and (max-width: #{$desktop-width - 1px}) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: #{$desktop-width}) {
+    @content;
+  }
+}
 
 :export {
   // screen widths
@@ -36,10 +47,6 @@ $sideNavWidth: 250px;
   md: $md;
   lg: $lg;
   xl: $xl;
-  desktop: $desktop;
-  mobile: $mobile;
-  tablet: $tablet;
-  laptop: $laptop;
 
   // colors
   black: $black;
