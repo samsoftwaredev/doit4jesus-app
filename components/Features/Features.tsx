@@ -1,8 +1,7 @@
 import { Box, Container, Grid, Typography } from "@mui/material";
 import { findPeace, prayMore, prayWell } from "@/public/assets/images/hero";
-import styles from "./features.module.scss";
-import Image from "next/image";
 import { theme } from "@/styles/mui-overwrite";
+import styles from "./features.module.scss";
 
 const features = [
   {

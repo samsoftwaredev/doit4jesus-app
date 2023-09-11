@@ -1,8 +1,7 @@
-import { Box, Container, Grid, Paper, Typography } from "@mui/material";
-import styles from "./community.module.scss";
 import Image from "next/image";
+import { Box, Container, Grid, Typography } from "@mui/material";
 import rosary from "@/public/assets/images/rosary.svg";
-import { css } from "@/utils/helpers";
+import styles from "./community.module.scss";
 
 const Hero = () => {
   return (

@@ -16,12 +16,12 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ToastContextProvider>
       <LanguageContextProvider>
-        <ThemeProvider theme={theme}>
-          <main className={roboto.className}>
-            <CssBaseline />
+        <main className={roboto.className}>
+          <CssBaseline />
+          <ThemeProvider theme={theme}>
             <Component {...pageProps} />
-          </main>
-        </ThemeProvider>
+          </ThemeProvider>
+        </main>
       </LanguageContextProvider>
     </ToastContextProvider>
   );

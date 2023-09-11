@@ -1,7 +1,7 @@
 import { Box, Container, Grid, Typography } from "@mui/material";
 import { findPeace, prayMore, prayWell } from "@/public/assets/images/hero";
-import styles from "./whyPrayRosary.module.scss";
 import { css } from "@/utils/helpers";
+import styles from "./whyPrayRosary.module.scss";
 
 const features = [
   {
