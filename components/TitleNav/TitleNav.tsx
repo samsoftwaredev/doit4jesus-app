@@ -12,7 +12,7 @@ const Card = ({ title, description, onBack }: Props) => {
         <ArrowBackIosIcon />
       </IconButton>
       <div className="content">
-        <Typography variant="h4" className={css(styles.title)}>
+        <Typography component="h4" className={css(styles.title)}>
           {title}
         </Typography>
         <div className={styles.description}>{description}</div>

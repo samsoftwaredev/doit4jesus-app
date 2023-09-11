@@ -37,7 +37,7 @@ const Blog: NextPage = () => {
                   <Typography gutterBottom variant="h5" component="div">
                     {title}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography component="body2" color="text.secondary">
                     {description}
                   </Typography>
                 </CardContent>

@@ -4,7 +4,7 @@ import styles from "./callToAction.module.scss";
 const WhyPrayRosary = () => {
   return (
     <Container maxWidth="md" className={styles.container}>
-      <Typography variant="h2" my={3}>
+      <Typography component="h2" my={3}>
         Start praying with other today!
       </Typography>
       <Button size="large" color="secondary" variant="contained">

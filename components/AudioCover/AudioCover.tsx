@@ -28,7 +28,7 @@ const AudioCover = ({
         flexDirection="column"
       >
         <Grid item textAlign="center">
-          <Typography variant="h5" color="primary">
+          <Typography component="h5" color="primary">
             {description}
           </Typography>
         </Grid>

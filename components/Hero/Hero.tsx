@@ -18,13 +18,13 @@ const Hero = () => {
       <Container maxWidth={false} className={styles.container}>
         <Box className={styles.header}>
           <Typography
-            variant="h1"
+            component="h1"
             className={css(styles.title, "sectionTitle")}
           >
             Find Peace in the Rosary
           </Typography>
           <Typography
-            variant="h5"
+            component="h5"
             className={css(styles.subTitle, "sectionSubTitle")}
           >
             Pray with millions around the world and multiply your blessings

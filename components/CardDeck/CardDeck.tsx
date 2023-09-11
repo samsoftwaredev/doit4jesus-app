@@ -70,7 +70,7 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
                 flexDirection="row"
                 justifyContent="space-between"
               >
-                <Typography variant="h5">{step.title}</Typography>
+                <Typography component="h5">{step.title}</Typography>
                 <StarButton onClick={handelSave} />
               </Grid>
               <Grid item>
@@ -128,15 +128,15 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
         <Box>
           <Typography>Examination of Conscience completed</Typography>
           {sinsCommitted.length > 0 ? (
-            <Typography variant="h5">List of sins to confess:</Typography>
+            <Typography component="h5">List of sins to confess:</Typography>
           ) : (
-            <Typography variant="h5">
+            <Typography component="h5">
               Great! No need to go to confession.
             </Typography>
           )}
           {sinsCommitted.map((step, index) => (
             <Grid px={2} py={1}>
-              <Typography variant="h6">{step.title}</Typography>
+              <Typography component="h6">{step.title}</Typography>
               <Typography>{step.question}</Typography>
             </Grid>
           ))}

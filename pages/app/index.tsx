@@ -6,7 +6,7 @@ const App: NextPage = () => {
   return (
     <MainLayout>
       <Container maxWidth="sm">
-        <Typography variant="h4" color="primary">
+        <Typography component="h4" color="primary">
           Vision Of The Two Columns
         </Typography>
         <Typography color="primary">
