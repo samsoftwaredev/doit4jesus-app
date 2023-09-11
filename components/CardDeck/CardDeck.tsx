@@ -70,11 +70,11 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
                 flexDirection="row"
                 justifyContent="space-between"
               >
-                <Typography component="h5">{step.title}</Typography>
+                <h5>{step.title}</h5>
                 <StarButton onClick={handelSave} />
               </Grid>
               <Grid item>
-                <Typography>{step.question}</Typography>
+                <p>{step.question}</p>
               </Grid>
             </Grid>
             <Grid container justifyContent="space-around">
@@ -126,18 +126,16 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
         .slice(activeStep, activeStep + 1)}
       {activeStep === steps.length && (
         <Box>
-          <Typography>Examination of Conscience completed</Typography>
+          <p>Examination of Conscience completed</p>
           {sinsCommitted.length > 0 ? (
-            <Typography component="h5">List of sins to confess:</Typography>
+            <h5>List of sins to confess:</h5>
           ) : (
-            <Typography component="h5">
-              Great! No need to go to confession.
-            </Typography>
+            <h5>Great! No need to go to confession.</h5>
           )}
-          {sinsCommitted.map((step, index) => (
+          {sinsCommitted.map((step) => (
             <Grid px={2} py={1}>
-              <Typography component="h6">{step.title}</Typography>
-              <Typography>{step.question}</Typography>
+              <h6>{step.title}</h6>
+              <p>{step.question}</p>
             </Grid>
           ))}
           <Button

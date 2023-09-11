@@ -28,9 +28,9 @@ const WhyPrayRosary = () => {
   return (
     <div className={styles.container}>
       <Container>
-        <Typography className={css(styles.title, "sectionTitle")} variant="h2">
+        <h2 className={css(styles.title, "sectionTitle")}>
           Why pray the Rosary
-        </Typography>
+        </h2>
         <Grid gap={1} container justifyContent="space-around">
           {features.map(({ thumbnail, title, description }, index) => (
             <Grid item key={title} md={3} textAlign="center">
@@ -38,17 +38,11 @@ const WhyPrayRosary = () => {
                 id={styles[`arc-${index + 1}` as string]}
                 className={styles.arcs}
               >
-                <Typography className={styles.step}>{index + 1}</Typography>
-                <Typography className="item-title" variant="h5" gutterBottom>
-                  {title}
-                </Typography>
-                <Typography
-                  className="description"
-                  variant="subtitle1"
-                  gutterBottom
-                >
+                <p className={styles.step}>{index + 1}</p>
+                <h5 className="item-title">{title}</h5>
+                <p className="description" variant="subtitle1" gutterBottom>
                   {description}
-                </Typography>
+                </p>
               </Box>
             </Grid>
           ))}

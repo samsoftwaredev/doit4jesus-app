@@ -64,7 +64,7 @@ const RosaryOptions = () => {
             aria-controls={`${id}"-content"`}
             id={`${id}"-header"`}
           >
-            <Typography sx={{ flexShrink: 0 }}>{title}</Typography>
+            <h4>{title}</h4>
           </AccordionSummary>
           <AccordionDetails>{content}</AccordionDetails>
         </Accordion>

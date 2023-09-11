@@ -1,24 +1,22 @@
 import styles from "./titleNav.module.scss";
-import { IconButton, Typography } from "@mui/material";
+import { Grid, IconButton } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { css } from "@/utils/helpers";
 
 type Props = { title: string; description: string; onBack: () => void };
 
-const Card = ({ title, description, onBack }: Props) => {
+const TitleNav = ({ title, description, onBack }: Props) => {
   return (
-    <div className={styles.container}>
+    <Grid justifyContent="flex-start" my="5px">
       <IconButton onClick={onBack}>
         <ArrowBackIosIcon />
       </IconButton>
       <div className="content">
-        <Typography component="h4" className={css(styles.title)}>
-          {title}
-        </Typography>
+        <h4 className={css(styles.title)}>{title}</h4>
         <div className={styles.description}>{description}</div>
       </div>
-    </div>
+    </Grid>
   );
 };
 
-export default Card;
+export default TitleNav;

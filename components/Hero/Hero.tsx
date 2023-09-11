@@ -17,18 +17,12 @@ const Hero = () => {
     <div className={styles.content}>
       <Container maxWidth={false} className={styles.container}>
         <Box className={styles.header}>
-          <Typography
-            component="h1"
-            className={css(styles.title, "sectionTitle")}
-          >
+          <h1 className={css(styles.title, "sectionTitle")}>
             Find Peace in the Rosary
-          </Typography>
-          <Typography
-            component="h5"
-            className={css(styles.subTitle, "sectionSubTitle")}
-          >
+          </h1>
+          <h5 className={css(styles.subTitle, "sectionSubTitle")}>
             Pray with millions around the world and multiply your blessings
-          </Typography>
+          </h5>
           <Button
             onClick={goToApp}
             className={styles.cta}
