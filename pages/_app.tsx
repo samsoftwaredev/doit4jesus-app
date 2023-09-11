@@ -1,6 +1,5 @@
 import type { AppProps } from "next/app";
 import { Roboto } from "@next/font/google";
-import { CssBaseline } from "@mui/material";
 import { ThemeProvider } from "@mui/material";
 import { LanguageContextProvider } from "@/context/LanguageContext";
 import { ToastContextProvider } from "@/context/ToastContext";
@@ -17,7 +16,6 @@ function MyApp({ Component, pageProps }: AppProps) {
     <ToastContextProvider>
       <LanguageContextProvider>
         <main className={roboto.className}>
-          <CssBaseline />
           <ThemeProvider theme={theme}>
             <Component {...pageProps} />
           </ThemeProvider>
