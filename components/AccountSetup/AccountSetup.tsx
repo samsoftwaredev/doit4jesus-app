@@ -237,14 +237,16 @@ const AccountSetup = () => {
   }, [currentStep]);
 
   return (
-    <div className={styles.container}>
-      <MainNavbar onlyLogo />
+    <>
       <div className={styles.bg} style={{ backgroundColor: bgColor }} />
-      <Container className={styles.content} maxWidth="md">
-        <Image src={jesusCross} alt="Jesus Cross" />
-        {steps[currentStep].component}
-      </Container>
-    </div>
+      <MainNavbar onlyLogo />
+      <div className={styles.container}>
+        <Container className={styles.content} maxWidth="md">
+          <Image src={jesusCross} alt="Jesus Cross" />
+          {steps[currentStep].component}
+        </Container>
+      </div>
+    </>
   );
 };
 
