@@ -9,7 +9,7 @@ import { NAV_APP_LINKS } from "@/constants/nav";
 import { useRouter } from "next/router";
 
 interface Props {
-  onlyLogo: boolean;
+  onlyLogo?: boolean;
 }
 
 function MainNavbar({ onlyLogo = false }: Props) {
