@@ -1,13 +1,12 @@
-import { Button, Container } from "@mui/material";
+import { Button, Container, Typography } from "@mui/material";
 import styles from "./callToAction.module.scss";
-import { css } from "@/utils/helpers";
 
 const WhyPrayRosary = () => {
   return (
     <Container maxWidth="md" className={styles.container}>
-      <h2 className={css(styles.title, "sectionTitle")}>
+      <Typography component="h2" my={3}>
         Start praying with other today!
-      </h2>
+      </Typography>
       <Button size="large" color="secondary" variant="contained">
         Sing Up for Free
       </Button>

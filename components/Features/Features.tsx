@@ -2,7 +2,6 @@ import { Box, Container, Grid, Typography } from "@mui/material";
 import { findPeace, prayMore, prayWell } from "@/public/assets/images/hero";
 import { theme } from "@/styles/mui-overwrite";
 import styles from "./features.module.scss";
-import { css } from "@/utils/helpers";
 
 const features = [
   {
@@ -29,9 +28,16 @@ const Features = () => {
   return (
     <div className={styles.container}>
       <Container>
-        <h2 className={css(styles.title, "sectionTitle")}>The Rosary App</h2>
+        <Typography
+          textAlign="center"
+          className={"sectionTitle"}
+          variant="h2"
+          gutterBottom
+        >
+          The Rosary App
+        </Typography>
         <Grid container justifyContent="space-around">
-          {features.map(({ title, description }) => (
+          {features.map(({ thumbnail, title, description }) => (
             <Grid item key={title} md={3} textAlign="center">
               <Box
                 className={styles.arcs}
@@ -42,8 +48,16 @@ const Features = () => {
               >
                 {/* <Image src={thumbnail} alt={title} /> */}
               </Box>
-              <h5 className={styles.label}>{title}</h5>
-              <p className={styles.description}>{description}</p>
+              <Typography className="item-title" variant="h5" gutterBottom>
+                {title}
+              </Typography>
+              <Typography
+                className="description"
+                variant="subtitle1"
+                gutterBottom
+              >
+                {description}
+              </Typography>
             </Grid>
           ))}
         </Grid>

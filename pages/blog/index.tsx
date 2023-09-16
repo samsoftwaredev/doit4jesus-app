@@ -34,8 +34,12 @@ const Blog: NextPage = () => {
                   title="green iguana"
                 />
                 <CardContent>
-                  <h5>{title}</h5>
-                  <p>{description}</p>
+                  <Typography gutterBottom component="h5">
+                    {title}
+                  </Typography>
+                  <Typography component="p" color="text.secondary">
+                    {description}
+                  </Typography>
                 </CardContent>
               </Card>
             </Grid>

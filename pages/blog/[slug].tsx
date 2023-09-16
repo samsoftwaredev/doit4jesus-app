@@ -61,11 +61,15 @@ function BlogPost() {
             image={article.image}
             title={article.title}
           >
-            <h5>{article.title}</h5>
+            <Typography p={2} fontWeight="strong" variant="h5">
+              {article.title}
+            </Typography>
           </CardMedia>
         </Box>
-        <h4>{currentPage?.title}</h4>
-        <p>{currentPage?.description}</p>
+        <Typography py={2} variant="h4">
+          {currentPage?.title}
+        </Typography>
+        <Typography>{currentPage?.description}</Typography>
         <Grid>
           <IconButton disabled={isFirstPage} onClick={onPrev}>
             <ArrowCircleLeftIcon />

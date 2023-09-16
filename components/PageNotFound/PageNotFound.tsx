@@ -21,7 +21,7 @@ const PageNotFound = ({
     <MainLayout>
       <Container maxWidth={false} className={styles.container}>
         <Image src={imagePath} alt={imageAlt} />
-        <h1>{title}</h1>
+        <Typography component="h1">{title}</Typography>
         <Typography>{description}</Typography>
       </Container>
     </MainLayout>
