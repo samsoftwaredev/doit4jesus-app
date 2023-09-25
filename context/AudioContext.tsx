@@ -5,7 +5,7 @@ import {
   INTERFACE_AUDIO_STATE,
   INTERFACE_AUDIO_PROPS,
   INTERFACE_AUDIO_SEEK,
-} from "@/constants";
+} from "@/interfaces";
 
 interface AudioContextType {
   /** Unique id of the item */
