@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import { AudioPlayer } from "@/components";
 import { BG_AUDIOS, INITIAL_VOLUME } from "@/constants/mysteries";
-import { INTERFACE_BACKGROUND_ITEM } from "@/constants/interfaces";
+import { INTERFACE_BACKGROUND_ITEM } from "@/interfaces";
 import { Item } from "./BackgroundMusicOption.style";
 
 interface Props {

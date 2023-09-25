@@ -8,7 +8,7 @@ import {
   INTERFACE_LANGUAGES,
   INTERFACE_ROSARY_MYSTERIES,
   INTERFACE_ROSARY_STATE,
-} from "../constants";
+} from "@/interfaces";
 import { capitalizeFirstLetter } from "../utils";
 
 class Rosary {

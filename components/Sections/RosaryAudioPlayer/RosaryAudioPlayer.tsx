@@ -14,11 +14,12 @@ import {
   TitleNav,
 } from "@/components";
 import { Rosary } from "@/class";
-import { VIEW_SIZE, INTERFACE_VIEW_SIZE, NAV_APP_LINKS } from "@/constants";
-import { AudioPlayer } from "../AudioPlayer";
+import { VIEW_SIZE, NAV_APP_LINKS } from "@/constants";
+import { AudioPlayer } from "../../AudioPlayer";
 import { useLanguageContext } from "@/context/LanguageContext";
 import { useRouter } from "next/router";
 import { Box, Container } from "@mui/material";
+import { INTERFACE_VIEW_SIZE } from "@/interfaces";
 
 const myRosary = new Rosary();
 const rosaryState = myRosary.getRosaryState();

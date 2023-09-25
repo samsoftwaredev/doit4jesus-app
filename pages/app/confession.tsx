@@ -1,6 +1,6 @@
 import { MainLayout } from "@/layouts/index";
 import type { NextPage } from "next";
-import { ConfessionGuide } from "sections";
+import { ConfessionGuide } from "@/components/Sections";
 
 const Confession: NextPage = () => {
   return (

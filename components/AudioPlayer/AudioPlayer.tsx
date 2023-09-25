@@ -1,8 +1,5 @@
 import React from "react";
-import {
-  INTERFACE_AUDIO_PROPS,
-  INTERFACE_AUDIO_TYPE,
-} from "@/constants/interfaces";
+import { INTERFACE_AUDIO_PROPS, INTERFACE_AUDIO_TYPE } from "@/interfaces";
 import { AudioContextProvider } from "@/context/AudioContext";
 import { AudioNext, AudioPrevious, AudioPlay } from "../AudioControllers";
 

@@ -8,8 +8,6 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import BackgroundMusicOption from "./BackgroundMusicOption";
 import LanguageOption from "./LanguageOption";
-import LengthOption from "./LengthOption";
-import SpeedOption from "./SpeedOption";
 import MusicVolumeOption from "./MusicVolumeOption";
 import { Container } from "./RosaryOptions.style";
 

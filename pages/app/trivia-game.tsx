@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { TriviaGame } from "sections";
+import { TriviaGame } from "@/components/Sections";
 
 const TriviaGamePage: NextPage = () => {
   return <TriviaGame />;

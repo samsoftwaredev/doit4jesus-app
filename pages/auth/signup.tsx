@@ -1,7 +1,12 @@
+import { SignUpForm } from "@/components/Forms";
 import type { NextPage } from "next";
 
 const SignUp: NextPage = () => {
-  return <div>Sign Up</div>;
+  return (
+    <div>
+      <SignUpForm />
+    </div>
+  );
 };
 
 export default SignUp;

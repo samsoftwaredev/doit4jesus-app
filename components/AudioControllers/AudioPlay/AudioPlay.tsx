@@ -3,7 +3,7 @@ import { IconButton, Tooltip } from "@mui/material";
 import PlayIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 import { useAudioContext } from "@/context/AudioContext";
-import { INTERFACE_AUDIO_STATE } from "@/constants/interfaces";
+import { INTERFACE_AUDIO_STATE } from "@/interfaces";
 import { Spinner } from "@/components";
 
 const audioText = (isPlaying: boolean) => (isPlaying ? "play" : "pause");

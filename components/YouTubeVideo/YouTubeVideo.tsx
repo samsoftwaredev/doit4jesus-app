@@ -5,7 +5,7 @@ import {
   INTERFACE_AUDIO_SEEK,
   INTERFACE_AUDIO_SPEED,
   INTERFACE_AUDIO_STATE,
-} from "@/constants/interfaces";
+} from "@/interfaces";
 import { Container } from "./YouTubeVideo.style";
 import { INITIAL_VOLUME } from "@/constants/mysteries";
 

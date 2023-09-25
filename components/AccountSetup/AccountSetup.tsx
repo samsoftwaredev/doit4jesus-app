@@ -1,20 +1,11 @@
 import { NAV_APP_LINKS } from "@/constants/nav";
 import { theme } from "@/styles/mui-overwrite";
 import { ChevronRight } from "@mui/icons-material";
-import {
-  Box,
-  Button,
-  Container,
-  Grid,
-  LinearProgress,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Container, Grid, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import styles from "./accountSetup.module.scss";
-import jesusFish from "@/public/assets/images/hero/jesusFish.svg";
 import jesusCross from "@/public/assets/images/hero/jesusCross.svg";
-import rosary from "@/public/assets/images/rosary.svg";
 import Image from "next/image";
 import { MainNavbar } from "../Navbars";
 

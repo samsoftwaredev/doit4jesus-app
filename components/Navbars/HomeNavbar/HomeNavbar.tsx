@@ -62,6 +62,14 @@ function HomeNavbar(props: Props) {
     router.push(NAV_FOOTER_LINKS.about.link);
   };
 
+  const goToLogin = () => {
+    router.push(NAV_MAIN_LINKS.login.link);
+  };
+
+  const goToSingUp = () => {
+    router.push(NAV_MAIN_LINKS.signup.link);
+  };
+
   const navItems = [
     {
       label: "About",
@@ -76,6 +84,11 @@ function HomeNavbar(props: Props) {
     {
       label: "Why Pray?",
       goTo: goToPray,
+      sx: { color: "#fff" },
+    },
+    {
+      label: "Log In",
+      goTo: goToLogin,
       sx: { color: "#fff" },
     },
   ];
@@ -134,7 +147,7 @@ function HomeNavbar(props: Props) {
                 {label}
               </Button>
             ))}
-            <Button variant="contained" color="secondary" onClick={goToApp}>
+            <Button variant="contained" color="secondary" onClick={goToSingUp}>
               Sing Up for Free
             </Button>
           </Box>

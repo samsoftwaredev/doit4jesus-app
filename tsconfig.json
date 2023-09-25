@@ -52,10 +52,11 @@
     "hooks/*",
     "constants/*",
     "public/*",
-    "sections/ConfessionGuide",
-    "sections/PrayerLifeWorkshops",
+    "components/Sections/ConfessionGuide",
+    "components/Sections/PrayerLifeWorkshops",
     "layouts",
-    "components/Navbars"
+    "components/Navbars",
+    "components/Sections/RosaryAudioPlayer"
   ],
   "exclude": ["node_modules", ".vscode"]
 }

@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import { INTERFACE_LANGUAGES } from "@/constants";
+import { INTERFACE_LANGUAGES } from "@/interfaces";
 
 interface AudioContextType {
   /** Unique id of the item */

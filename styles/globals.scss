@@ -22,6 +22,7 @@ body {
 }
 
 .sectionTitle {
+  font-weight: 100;
   font-size: 3em;
   @include desktop {
     font-size: 5em;

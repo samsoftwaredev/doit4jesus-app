@@ -1,4 +1,4 @@
-import { INTERFACE_BACKGROUND_ITEM } from "./interfaces";
+import { INTERFACE_BACKGROUND_ITEM } from "@/interfaces";
 
 export const ROSARY_DAYS = {
   // the days of the week start with sunday
