@@ -1,8 +1,8 @@
 import styles from "./confessionGuide.module.scss";
-import CardDeck from "../../CardDeck";
+import CardDeck from "../../components/CardDeck";
 import { CardProps } from "@/interfaces/index";
-import { TitleNav } from "../..";
-import examOfConscience from "../../../data/examOfConscience.json";
+import { TitleNav } from "../../components";
+import examOfConscience from "../../data/examOfConscience.json";
 import { useRouter } from "next/router";
 import { NAV_APP_LINKS } from "@/constants/nav";
 import { Alert, Collapse, Container, LinearProgress } from "@mui/material";

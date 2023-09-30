@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { RosaryAudioPlayer } from "@/components";
+import { RosaryAudioPlayer } from "@/sections/index";
 import { MainLayout } from "@/layouts/index";
 
 const Rosary: NextPage = () => {

@@ -1,5 +1,4 @@
 export { default as AudioCover } from "./AudioCover";
-export { default as RosaryAudioPlayer } from "./Sections/RosaryAudioPlayer";
 export { default as AudioNavigation } from "./AudioNavigation";
 export { default as ShareRosary } from "./ShareRosary";
 export { default as ReadRosary } from "./ReadRosary";

@@ -15,7 +15,7 @@ import {
 } from "@/components";
 import { Rosary } from "@/class";
 import { VIEW_SIZE, NAV_APP_LINKS } from "@/constants";
-import { AudioPlayer } from "../../AudioPlayer";
+import { AudioPlayer } from "../../components/AudioPlayer";
 import { useLanguageContext } from "@/context/LanguageContext";
 import { useRouter } from "next/router";
 import { Box, Container } from "@mui/material";

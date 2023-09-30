@@ -41,7 +41,9 @@
       "@/layouts/*": ["layouts/*"],
       "@/layouts": ["layouts/index"],
       "@/data/*": ["data/*"],
-      "@/data": ["data/index"]
+      "@/data": ["data/index"],
+      "@/sections/*": ["sections/*"],
+      "@/sections": ["sections/index"]
     }
   },
   "include": [
@@ -51,12 +53,7 @@
     "components/*",
     "hooks/*",
     "constants/*",
-    "public/*",
-    "components/Sections/ConfessionGuide",
-    "components/Sections/PrayerLifeWorkshops",
-    "layouts",
-    "components/Navbars",
-    "components/Sections/RosaryAudioPlayer"
+    "public/*"
   ],
   "exclude": ["node_modules", ".vscode"]
 }

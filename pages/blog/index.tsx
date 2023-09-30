@@ -26,7 +26,7 @@ const Blog: NextPage = () => {
       <Container maxWidth="lg">
         <Grid container>
           {articles.map(({ title, description, image, id }) => (
-            <Grid md={3} key={id} onClick={() => goToBlog(id)}>
+            <Grid item md={3} key={id} onClick={() => goToBlog(id)}>
               <Card>
                 <CardMedia
                   sx={{ height: 140 }}
