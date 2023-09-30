@@ -1,5 +1,5 @@
-import { AccountSetup } from "@/components/index";
 import type { NextPage } from "next";
+import { AccountSetup } from "@/components";
 
 const App: NextPage = () => {
   return <AccountSetup />;

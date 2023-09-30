@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
-import { RosaryAudioPlayer } from "@/sections/index";
-import { MainLayout } from "@/layouts/index";
+import { RosaryAudioPlayer } from "@/sections";
+import { MainLayout } from "@/layouts";
 
 const Rosary: NextPage = () => {
   return (

@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { PrayerLifeWorkshops } from "@/sections/index";
+import { PrayerLifeWorkshops } from "@/sections";
 import { MainLayout } from "@/layouts";
 
 const Tov: NextPage = () => {
