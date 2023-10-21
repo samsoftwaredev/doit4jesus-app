@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import { RosaryAudioPlayer } from "@/sections";
 import { MainLayout } from "@/layouts";
 
-const Rosary: NextPage = () => {
+const SoloRosary: NextPage = () => {
   return (
     <MainLayout>
       <RosaryAudioPlayer />
@@ -10,4 +10,4 @@ const Rosary: NextPage = () => {
   );
 };
 
-export default Rosary;
+export default SoloRosary;

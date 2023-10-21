@@ -1,12 +1,11 @@
-import styles from "./confessionGuide.module.scss";
-import CardDeck from "../../components/CardDeck";
+import React from "react";
 import { CardProps } from "@/interfaces/index";
-import { TitleNav } from "../../components";
-import examOfConscience from "../../data/examOfConscience.json";
+import { TitleNav, CardDeck } from "@/components";
+import examOfConscience from "@/data/examOfConscience.json";
 import { useRouter } from "next/router";
 import { NAV_APP_LINKS } from "@/constants/nav";
 import { Alert, Collapse, Container, LinearProgress } from "@mui/material";
-import React from "react";
+import styles from "./confessionGuide.module.scss";
 
 const ConfessionGuide = () => {
   const sins: CardProps[] = examOfConscience;
@@ -17,7 +16,7 @@ const ConfessionGuide = () => {
   const progress = (activeStep / sins.length) * 100;
 
   const handelBack = () => {
-    router.push(NAV_APP_LINKS.app.link);
+    history.back();
   };
 
   const handelCloseWarning = () => {

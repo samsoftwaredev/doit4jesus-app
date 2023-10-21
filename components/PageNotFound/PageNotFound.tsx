@@ -3,6 +3,7 @@ import { Container, Typography } from "@mui/material";
 import Image from "next/image";
 import ship from "@/public/assets/images/dream/ship.svg";
 import styles from "./pageNotFound.module.scss";
+import Ocean from "../Ocean";
 
 interface Props {
   title?: string;
@@ -13,7 +14,7 @@ interface Props {
 
 const PageNotFound = ({
   title = "404",
-  description = "Page Not Found. Luke 15, 1-17",
+  description = "Page Not Found",
   imagePath = ship,
   imageAlt = "Not Found",
 }: Props) => {
@@ -21,8 +22,8 @@ const PageNotFound = ({
     <MainLayout>
       <Container maxWidth={false} className={styles.container}>
         <Image src={imagePath} alt={imageAlt} />
-        <Typography component="h1">{title}</Typography>
-        <Typography>{description}</Typography>
+        <Typography variant="h1">{title}</Typography>
+        <Typography variant="h6">{description}</Typography>
       </Container>
     </MainLayout>
   );

@@ -1,4 +1,4 @@
-import { MainLayout } from "@/layouts/index";
+import { MainLayout } from "@/layouts";
 import type { NextPage } from "next";
 import { ConfessionGuide } from "@/sections";
 
