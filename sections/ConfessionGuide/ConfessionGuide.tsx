@@ -1,19 +1,43 @@
-import React from "react";
-import { CardProps } from "@/interfaces/index";
+import React, { useState } from "react";
+import { CardProps, ExamTypes } from "@/interfaces/index";
 import { TitleNav, CardDeck } from "@/components";
-import examOfConscience from "@/data/examOfConscience.json";
+import adultExamOfConscience from "@/data/examOfConscience.json";
 import { useRouter } from "next/router";
-import { NAV_APP_LINKS } from "@/constants/nav";
-import { Alert, Collapse, Container, LinearProgress } from "@mui/material";
-import styles from "./confessionGuide.module.scss";
+import {
+  Alert,
+  Box,
+  Button,
+  Collapse,
+  Container,
+  LinearProgress,
+  Typography,
+} from "@mui/material";
+
+const exams: ExamTypes = {
+  adult: {
+    label: "Adult Examination of Conscience",
+    value: adultExamOfConscience,
+  },
+  child: {
+    label: "Child Examination of Conscience",
+    value: adultExamOfConscience,
+  },
+  teen: {
+    label: "Teen Examination of Conscience",
+    value: adultExamOfConscience,
+  },
+};
 
 const ConfessionGuide = () => {
-  const sins: CardProps[] = examOfConscience;
   const router = useRouter();
+  const [exam, setExam] = useState<CardProps[]>(exams.adult.value);
   const [activeStep, setActiveStep] = React.useState(0);
   const [openWarning, setOpenWarning] = React.useState(true);
   const [openNote, setOpenNote] = React.useState(true);
-  const progress = (activeStep / sins.length) * 100;
+  const progress = (activeStep / exam.length) * 100;
+  const examTypes = Object.values(exams).map(
+    (examOfConscience) => examOfConscience
+  );
 
   const handelBack = () => {
     history.back();
@@ -33,7 +57,8 @@ const ConfessionGuide = () => {
       <Container maxWidth="sm">
         <TitleNav
           onBack={handelBack}
-          title="Confession"
+          subTitle="Confession (Reconciliation)"
+          title="Exam of Conscience"
           description="A Step by Step Guide"
         />
         <Collapse in={openWarning}>
@@ -56,8 +81,16 @@ const ConfessionGuide = () => {
             .
           </Alert>
         </Collapse>
+        <Typography>Select type of conscience examination:</Typography>
+        <Box display="flex" flexDirection="column" gap="1em">
+          {examTypes.map(({ label }) => (
+            <Button variant="contained" fullWidth key={label}>
+              {label}
+            </Button>
+          ))}
+        </Box>
         <CardDeck
-          steps={sins}
+          steps={exam}
           activeStep={activeStep}
           setActiveStep={setActiveStep}
         />

@@ -5,6 +5,12 @@ export interface CardProps {
   img?: string;
 }
 
+export interface ExamTypes {
+  child: { label: string; value: CardProps[] };
+  teen: { label: string; value: CardProps[] };
+  adult: { label: string; value: CardProps[] };
+}
+
 export enum INTERFACE_AUDIO_TYPE {
   AUDIO_FILE = "AUDIO FILE",
   YOUTUBE_LINK = "YOUTUBE LINK",

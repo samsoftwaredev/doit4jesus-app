@@ -3,19 +3,29 @@ import { IconButton, Typography } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { css } from "@/utils/helpers";
 
-type Props = { title: string; description: string; onBack: () => void };
+type Props = {
+  title: string;
+  description: string;
+  subTitle?: string;
+  onBack: () => void;
+};
 
-const Card = ({ title, description, onBack }: Props) => {
+const Card = ({ title, description, subTitle, onBack }: Props) => {
   return (
     <div className={styles.container}>
       <IconButton onClick={onBack}>
         <ArrowBackIosIcon />
       </IconButton>
       <div className="content">
+        {subTitle && (
+          <Typography className={styles.subTitle}>{subTitle}</Typography>
+        )}
         <Typography component="h2" className={css(styles.title)}>
           {title}
         </Typography>
-        <div className={styles.description}>{description}</div>
+        <Typography variant="body2" className={styles.description}>
+          {description}
+        </Typography>
       </div>
     </div>
   );

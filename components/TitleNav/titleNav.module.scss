@@ -1,6 +1,6 @@
 .container {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   margin: 5px 0px;
 }
 
@@ -10,8 +10,13 @@
   font-size: 1.7em;
 }
 
+.subTitle {
+  height: 15px;
+  font-size: 0.7em;
+}
+
 .description {
-  height: 50px;
+  height: 15px;
   text-overflow: ellipsis;
   font-size: 0.9em;
 }
