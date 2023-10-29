@@ -17,6 +17,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 import CellTowerIcon from "@mui/icons-material/CellTower";
 import { useRouter } from "next/router";
+import ConfessionIcon from "@mui/icons-material/PsychologyAlt";
 
 const drawerWidth = 240;
 
@@ -85,6 +86,11 @@ export default function SideNavbar({ open, handleDrawerClose }: Props) {
     },
     { url: "/app/calendar", label: "Calendar", icon: <CalendarTodayIcon /> },
     { url: "/app/settings", label: "Settings", icon: <SettingsIcon /> },
+    {
+      url: "/app/confession",
+      label: "Exam of Conscience",
+      icon: <ConfessionIcon />,
+    },
     { url: "/app/support", label: "Support", icon: <SupportAgentIcon /> },
   ];
   return (

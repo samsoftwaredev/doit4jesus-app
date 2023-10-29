@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { CardProps, ExamTypes } from "@/interfaces/index";
 import { TitleNav, CardDeck } from "@/components";
-import adultExamOfConscience from "@/data/examOfConscience.json";
+import adultExamOfConscience from "@/data/adultExamOfConscience.json";
+import teenExamOfConscience from "@/data/teenExamOfConscience.json";
+import childExamOfConscience from "@/data/childExamOfConscience.json";
 import { useRouter } from "next/router";
 import {
   Alert,
@@ -13,17 +15,22 @@ import {
   Typography,
 } from "@mui/material";
 
+enum ActiveScreen {
+  selectExam = 0,
+  examOfConscience = 1,
+}
+
 const exams: ExamTypes = {
-  adult: {
-    label: "Adult Examination of Conscience",
-    value: adultExamOfConscience,
-  },
   child: {
     label: "Child Examination of Conscience",
-    value: adultExamOfConscience,
+    value: childExamOfConscience,
   },
   teen: {
     label: "Teen Examination of Conscience",
+    value: teenExamOfConscience,
+  },
+  adult: {
+    label: "Adult Examination of Conscience",
     value: adultExamOfConscience,
   },
 };
@@ -31,9 +38,12 @@ const exams: ExamTypes = {
 const ConfessionGuide = () => {
   const router = useRouter();
   const [exam, setExam] = useState<CardProps[]>(exams.adult.value);
-  const [activeStep, setActiveStep] = React.useState(0);
-  const [openWarning, setOpenWarning] = React.useState(true);
-  const [openNote, setOpenNote] = React.useState(true);
+  const [activeStep, setActiveStep] = useState(0);
+  const [activeScreen, setActiveScreen] = useState<ActiveScreen>(
+    ActiveScreen.selectExam
+  );
+  const [openWarning, setOpenWarning] = useState(true);
+  const [openNote, setOpenNote] = useState(true);
   const progress = (activeStep / exam.length) * 100;
   const examTypes = Object.values(exams).map(
     (examOfConscience) => examOfConscience
@@ -51,16 +61,22 @@ const ConfessionGuide = () => {
     setOpenNote(false);
   };
 
+  const onExamSelected = (type: string) => {
+    setActiveScreen(ActiveScreen.examOfConscience);
+  };
+
   return (
     <>
       <LinearProgress variant="determinate" value={progress} />
       <Container maxWidth="sm">
-        <TitleNav
-          onBack={handelBack}
-          subTitle="Confession (Reconciliation)"
-          title="Exam of Conscience"
-          description="A Step by Step Guide"
-        />
+        <Box my={2}>
+          <TitleNav
+            onBack={handelBack}
+            subTitle="Confession (Reconciliation)"
+            title="Exam of Conscience"
+            description="A Step by Step Guide"
+          />
+        </Box>
         <Collapse in={openWarning}>
           <Alert severity="warning" onClose={handelCloseWarning}>
             A warning should be given to souls who are inclined to scrupulosity.
@@ -81,19 +97,30 @@ const ConfessionGuide = () => {
             .
           </Alert>
         </Collapse>
-        <Typography>Select type of conscience examination:</Typography>
-        <Box display="flex" flexDirection="column" gap="1em">
-          {examTypes.map(({ label }) => (
-            <Button variant="contained" fullWidth key={label}>
-              {label}
-            </Button>
-          ))}
-        </Box>
-        <CardDeck
-          steps={exam}
-          activeStep={activeStep}
-          setActiveStep={setActiveStep}
-        />
+        {activeScreen === ActiveScreen.selectExam && (
+          <>
+            <Typography>Select type of conscience examination:</Typography>
+            <Box display="flex" flexDirection="column" gap="1em">
+              {examTypes.map(({ label }) => (
+                <Button
+                  onClick={() => onExamSelected(label)}
+                  variant="contained"
+                  fullWidth
+                  key={label}
+                >
+                  {label}
+                </Button>
+              ))}
+            </Box>
+          </>
+        )}
+        {activeScreen === ActiveScreen.examOfConscience && (
+          <CardDeck
+            steps={exam}
+            activeStep={activeStep}
+            setActiveStep={setActiveStep}
+          />
+        )}
       </Container>
     </>
   );

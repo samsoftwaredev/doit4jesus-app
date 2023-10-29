@@ -1,12 +1,12 @@
-import { MainLayout } from "@/layouts";
+import { AppLayout } from "@/layouts";
 import type { NextPage } from "next";
 import { ConfessionGuide } from "@/sections";
 
 const Confession: NextPage = () => {
   return (
-    <MainLayout>
+    <AppLayout>
       <ConfessionGuide />
-    </MainLayout>
+    </AppLayout>
   );
 };
 
