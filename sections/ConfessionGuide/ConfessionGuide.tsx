@@ -4,7 +4,6 @@ import { TitleNav, CardDeck } from "@/components";
 import adultExamOfConscience from "@/data/adultExamOfConscience.json";
 import teenExamOfConscience from "@/data/teenExamOfConscience.json";
 import childExamOfConscience from "@/data/childExamOfConscience.json";
-import { useRouter } from "next/router";
 import {
   Alert,
   Box,
@@ -36,7 +35,6 @@ const exams: ExamTypes = {
 };
 
 const ConfessionGuide = () => {
-  const router = useRouter();
   const [exam, setExam] = useState<CardProps[]>(exams.adult.value);
   const [activeStep, setActiveStep] = useState(0);
   const [activeScreen, setActiveScreen] = useState<ActiveScreen>(
@@ -63,6 +61,19 @@ const ConfessionGuide = () => {
 
   const onExamSelected = (type: string) => {
     setActiveScreen(ActiveScreen.examOfConscience);
+    switch (type) {
+      case "Child Examination of Conscience":
+        setExam(exams.child.value);
+        break;
+      case "Teen Examination of Conscience":
+        setExam(exams.teen.value);
+        break;
+      case "Adult Examination of Conscience":
+        setExam(exams.adult.value);
+        break;
+      default:
+        console.error("Invalid type for exam selected " + type);
+    }
   };
 
   return (
