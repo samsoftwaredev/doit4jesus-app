@@ -16,16 +16,18 @@
   grid-column-start: 1;
   grid-column-end: 1;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   border-radius: $borderRadius;
 
   @include tablet {
     grid-column-start: 1;
     grid-column-end: 3;
+    flex-direction: row;
   }
   @include desktop {
     grid-column-start: 1;
     grid-column-end: 4;
+    flex-direction: row;
   }
 }
 
@@ -36,11 +38,52 @@
 }
 
 .mainImage {
-  max-width: 50%;
-  height: auto;
+  width: 100%;
+  height: 190px;
+  @include tablet {
+    width: 150px;
+    height: auto;
+  }
+  @include desktop {
+    width: 350px;
+    height: auto;
+  }
 }
 
 .cardImage {
   width: 100%;
-  height: 150px;
+  height: 190px;
+}
+
+.title {
+  white-space: nowrap;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mainTitle {
+  white-space: nowrap;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  @include tablet {
+    white-space: wrap;
+  }
+  @include desktop {
+    white-space: wrap;
+  }
+}
+
+.date {
+  text-align: right;
+  font-size: 0.9em;
+}
+
+.description {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 }
