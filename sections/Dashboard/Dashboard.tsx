@@ -1,22 +1,19 @@
 import { Box, Card, CardContent, CardMedia, Typography } from "@mui/material";
 import styles from "./dashboard.module.scss";
+import { css } from "@/utils/helpers";
 
 const eventList = [
   {
     title: "Rosary for the unborn",
-    eventDate: new Date().toString(),
+    eventDate: "12/12/2022",
     description: `Lorem Ipsum is simply dummy text of s
-        the printing and typesetting industry. 
-        Lorem Ipsum has been the industry's 
-        standard dummy text ever since the 
-        1500s, when an unknown printer took 
-        a galley of type and scrambled it to 
-        make a type specimen book.`,
-    image: "",
+        the printing and typesetting industry.`,
+    image:
+      "https://www.catholicartandjewelry.com/cdn/shop/products/29992387-e6c3-53a6-92cd-6dfbd87dbfa6.jpg?v=1667269994&width=823",
   },
   {
     title: "Rosary for souls of pulgatory",
-    eventDate: new Date().toString(),
+    eventDate: "12/12/2022",
     description: `Lorem Ipsum is simply dummy text of 
     the printing and typesetting industry. 
     Lorem Ipsum has been the industry's 
@@ -24,11 +21,12 @@ const eventList = [
     1500s, when an unknown printer took 
     a galley of type and scrambled it to 
     make a type specimen book.`,
-    image: "",
+    image:
+      "https://www.catholicartandjewelry.com/cdn/shop/products/29992387-e6c3-53a6-92cd-6dfbd87dbfa6.jpg?v=1667269994&width=823",
   },
   {
     title: "Rosary for God's mercy",
-    eventDate: new Date().toString(),
+    eventDate: "12/12/2022",
     description: `Lorem Ipsum is simply dummy text of 
     the printing and typesetting industry. 
     Lorem Ipsum has been the industry's 
@@ -36,11 +34,12 @@ const eventList = [
     1500s, when an unknown printer took 
     a galley of type and scrambled it to 
     make a type specimen book.`,
-    image: "",
+    image:
+      "https://www.catholicartandjewelry.com/cdn/shop/products/29992387-e6c3-53a6-92cd-6dfbd87dbfa6.jpg?v=1667269994&width=823",
   },
   {
     title: "Rosary for the forgiveness of sins",
-    eventDate: new Date().toString(),
+    eventDate: "12/12/2022",
     description: `Lorem Ipsum is simply dummy text of 
     the printing and typesetting industry. 
     Lorem Ipsum has been the industry's 
@@ -48,11 +47,12 @@ const eventList = [
     1500s, when an unknown printer took 
     a galley of type and scrambled it to 
     make a type specimen book.`,
-    image: "",
+    image:
+      "https://www.catholicartandjewelry.com/cdn/shop/products/29992387-e6c3-53a6-92cd-6dfbd87dbfa6.jpg?v=1667269994&width=823",
   },
   {
     title: "Rosary for cease of war",
-    eventDate: new Date().toString(),
+    eventDate: "12/12/2022",
     description: `Lorem Ipsum is simply dummy text of 
     the printing and typesetting industry. 
     Lorem Ipsum has been the industry's 
@@ -60,15 +60,25 @@ const eventList = [
     1500s, when an unknown printer took 
     a galley of type and scrambled it to 
     make a type specimen book.`,
-    image: "",
+    image:
+      "https://www.catholicartandjewelry.com/cdn/shop/products/29992387-e6c3-53a6-92cd-6dfbd87dbfa6.jpg?v=1667269994&width=823",
   },
 ];
 
 const Dashboard = () => {
   return (
     <Box className={styles.container}>
-      {eventList.map(({ title, description, eventDate, image }) => (
-        <Card key={title} sx={{ display: "flex" }}>
+      {eventList.map(({ title, description, eventDate, image }, index) => (
+        <Card
+          key={title}
+          className={css(index === 0 ? styles.main : styles.card)}
+        >
+          <CardMedia
+            className={css(index === 0 ? styles.mainImage : styles.cardImage)}
+            component="img"
+            image={image}
+            alt={title}
+          />
           <Box sx={{ display: "flex", flexDirection: "column" }}>
             <CardContent sx={{ flex: "1 0 auto" }}>
               <Typography component="div" variant="h5">
@@ -86,12 +96,6 @@ const Dashboard = () => {
               </Typography>
             </CardContent>
           </Box>
-          <CardMedia
-            component="img"
-            sx={{ width: 151 }}
-            image={image}
-            alt="Live from space album cover"
-          />
         </Card>
       ))}
     </Box>
