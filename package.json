@@ -24,7 +24,8 @@
     "react-audio-player": "^0.17.0",
     "react-dom": "^18.2.0",
     "sass": "^1.57.1",
-    "styled-components": "^5.3.6"
+    "styled-components": "^5.3.6",
+    "update": "^0.4.2"
   },
   "devDependencies": {
     "@types/node": "18.11.0",

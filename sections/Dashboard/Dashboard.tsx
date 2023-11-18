@@ -68,7 +68,7 @@ const Dashboard = () => {
   return (
     <Box className={styles.container}>
       {eventList.map(({ title, description, eventDate, image }) => (
-        <Card sx={{ display: "flex" }}>
+        <Card key={title} sx={{ display: "flex" }}>
           <Box sx={{ display: "flex", flexDirection: "column" }}>
             <CardContent sx={{ flex: "1 0 auto" }}>
               <Typography component="div" variant="h5">
