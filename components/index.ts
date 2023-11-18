@@ -7,7 +7,6 @@ export { default as YouTubeVideo } from "./YouTubeVideo";
 export { default as Footer } from "./Footer";
 export { default as Meta } from "./Meta";
 export { default as Logo } from "./Logo";
-export { default as Spinner } from "./Spinner";
 export { default as Hero } from "./Hero";
 export { default as Features } from "./Features";
 export { default as Community } from "./Community";
@@ -24,5 +23,4 @@ export { default as CardDeck } from "./CardDeck";
 
 export * from "./AudioPlayer";
 export * from "./Navbars";
-export * from "./Forms";
 export * from "./Fields";

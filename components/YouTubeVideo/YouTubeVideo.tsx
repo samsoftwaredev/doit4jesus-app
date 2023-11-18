@@ -6,7 +6,6 @@ import {
   INTERFACE_AUDIO_SPEED,
   INTERFACE_AUDIO_STATE,
 } from "@/interfaces";
-import { Container } from "./YouTubeVideo.style";
 import { INITIAL_VOLUME } from "@/constants/mysteries";
 
 interface Props {
@@ -152,7 +151,8 @@ const YouTubeVideo = ({
     if (isClientSideRender()) setVolume(volume);
   }, [volume]);
 
-  return <Container ref={youtubeEleRef} visible={visible} id={youtubeId} />;
+  // return <Container ref={youtubeEleRef} visible={visible} id={youtubeId} />;
+  return <div ref={youtubeEleRef} id={youtubeId} />;
 };
 
 export default YouTubeVideo;

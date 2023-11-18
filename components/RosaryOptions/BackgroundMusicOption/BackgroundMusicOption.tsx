@@ -4,12 +4,12 @@ import {
   RadioGroup,
   FormControlLabel,
   FormControl,
+  Box,
 } from "@mui/material";
 import { AudioPlayer } from "@/components";
 import { BG_AUDIOS, INITIAL_VOLUME } from "@/constants/mysteries";
 import { INTERFACE_BACKGROUND_ITEM } from "@/interfaces";
-import { Item } from "./BackgroundMusicOption.style";
-
+import styles from "./BackgroundMusicOption.module.scss";
 interface Props {
   volume: number;
 }
@@ -57,10 +57,10 @@ const BackgroundMusicOption = ({ volume = INITIAL_VOLUME }: Props) => {
         onChange={handleChange}
       >
         {backgroundMusicList.map(({ id, label, audioComponent }) => (
-          <Item key={id}>
+          <Box className={styles.item} key={id}>
             <FormControlLabel value={id} control={<Radio />} label={label} />
             {!!audioComponent && audioComponent}
-          </Item>
+          </Box>
         ))}
       </RadioGroup>
     </FormControl>

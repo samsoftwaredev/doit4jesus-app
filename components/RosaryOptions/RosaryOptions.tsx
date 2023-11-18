@@ -9,7 +9,6 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import BackgroundMusicOption from "./BackgroundMusicOption";
 import LanguageOption from "./LanguageOption";
 import MusicVolumeOption from "./MusicVolumeOption";
-import { Container } from "./RosaryOptions.style";
 
 const RosaryOptions = () => {
   const [backgroundVolume, setBackgroundVolume] = useState<number>(100);
@@ -50,7 +49,7 @@ const RosaryOptions = () => {
   ];
 
   return (
-    <Container>
+    <div>
       {rosaryOptionsList.map(({ id, title, content }) => (
         <Accordion
           key={id}
@@ -67,7 +66,7 @@ const RosaryOptions = () => {
           <AccordionDetails>{content}</AccordionDetails>
         </Accordion>
       ))}
-    </Container>
+    </div>
   );
 };
 

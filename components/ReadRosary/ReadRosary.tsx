@@ -1,7 +1,5 @@
-import { Container } from "./ReadRosary.style";
-
 const ReadRosary = () => {
-  return <Container>Read Rosary</Container>;
+  return <div>Read Rosary</div>;
 };
 
 export default ReadRosary;

@@ -1,7 +1,7 @@
-import { Container } from "./ShareRosary.style";
+import { Box } from "@mui/material";
 
 const ShareRosary = () => {
-  return <Container>Share Rosary</Container>;
+  return <Box>Share Rosary</Box>;
 };
 
 export default ShareRosary;

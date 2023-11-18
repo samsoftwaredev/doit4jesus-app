@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import { IconButton, Tooltip } from "@mui/material";
+import { CircularProgress, IconButton, Tooltip } from "@mui/material";
 import PlayIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 import { useAudioContext } from "@/context/AudioContext";
 import { INTERFACE_AUDIO_STATE } from "@/interfaces";
-import { Spinner } from "@/components";
 
 const audioText = (isPlaying: boolean) => (isPlaying ? "play" : "pause");
 
@@ -35,7 +34,7 @@ const AudioPlay = () => {
     switch (audioState) {
       case INTERFACE_AUDIO_STATE.BUFFERING:
       case INTERFACE_AUDIO_STATE.VIDEO_CUED:
-        return <Spinner />;
+        return <CircularProgress />;
       case INTERFACE_AUDIO_STATE.PAUSED:
         return <PlayIcon fontSize="large" />;
       case INTERFACE_AUDIO_STATE.PLAYING:
