@@ -2,10 +2,29 @@
 }
 
 .linkItem {
+  transition: color 0.3s;
   display: flex;
   flex-direction: row;
   align-items: center;
   width: 100%;
+  border-radius: $borderRadius;
+  color: $dark;
+  padding: 5px;
+  margin: 5px;
+  svg {
+    transition: color 0.3s;
+    color: $dark;
+  }
+}
+
+.linkItem:hover,
+.linkItem:hover svg {
+  color: $white;
+  background-color: $backgroundDark;
+  border-radius: $borderRadius;
+}
+
+.active {
   color: $white;
   svg {
     color: $white;

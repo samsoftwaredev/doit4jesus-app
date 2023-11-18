@@ -1,27 +1,43 @@
 .container {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr;
   grid-auto-rows: 350px;
   gap: 1em 1em;
+
+  @include tablet {
+    grid-template-columns: 1fr 1fr;
+  }
+  @include desktop {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 }
 
-.main {
+.mainCard {
   grid-column-start: 1;
-  grid-column-end: 4;
+  grid-column-end: 1;
   display: flex;
   flex-direction: row;
   border-radius: $borderRadius;
-}
 
-.mainImage {
-  max-width: 50%;
-  height: auto;
+  @include tablet {
+    grid-column-start: 1;
+    grid-column-end: 3;
+  }
+  @include desktop {
+    grid-column-start: 1;
+    grid-column-end: 4;
+  }
 }
 
 .card {
   display: flex;
   flex-direction: column;
   border-radius: $borderRadius;
+}
+
+.mainImage {
+  max-width: 50%;
+  height: auto;
 }
 
 .cardImage {

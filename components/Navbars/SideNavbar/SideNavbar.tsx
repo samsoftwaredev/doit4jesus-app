@@ -1,7 +1,6 @@
 import * as React from "react";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import GridViewIcon from "@mui/icons-material/GridView";
@@ -14,6 +13,7 @@ import { useRouter } from "next/router";
 import ConfessionIcon from "@mui/icons-material/PsychologyAlt";
 import styles from "./SideNavbar.module.scss";
 import Link from "next/link";
+import { css } from "@/utils/helpers";
 
 interface Props {
   open: boolean;
@@ -39,12 +39,23 @@ export default function SideNavbar({ open, handleDrawerClose }: Props) {
     },
     { url: "/app/support", label: "Support", icon: <SupportAgentIcon /> },
   ];
+
   return (
     <List className={styles.container}>
       {menuItems.map(({ label, icon, url }) => (
-        <ListItem key={label}>
-          <Link href={url} className={styles.linkItem}>
-            <ListItemIcon>{icon}</ListItemIcon>
+        <ListItem sx={{ p: 0 }} key={label}>
+          <Link
+            href={url}
+            className={css(
+              styles.linkItem,
+              navigate.pathname === url ? styles.active : ""
+            )}
+          >
+            <ListItemIcon
+              className={navigate.pathname === url ? styles.active : ""}
+            >
+              {icon}
+            </ListItemIcon>
             <ListItemText primary={label} />
           </Link>
         </ListItem>

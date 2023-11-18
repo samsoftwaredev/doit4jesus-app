@@ -2,18 +2,19 @@ import type { AppProps } from "next/app";
 import { LanguageContextProvider } from "@/context/LanguageContext";
 import { ToastContextProvider } from "@/context/ToastContext";
 import { theme } from "@/styles/mui-overwrite";
+import { ThemeProvider } from "@mui/material";
+import "../styles/normalize.css";
 import "../styles/globals.scss";
-import { ThemeRegistry } from "@/components";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ThemeRegistry options={{ key: "mui", prepend: true }}>
+    <ThemeProvider theme={theme}>
       <ToastContextProvider>
         <LanguageContextProvider>
           <Component {...pageProps} />
         </LanguageContextProvider>
       </ToastContextProvider>
-    </ThemeRegistry>
+    </ThemeProvider>
   );
 }
 

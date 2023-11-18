@@ -19,7 +19,6 @@ export { default as PageNotFound } from "./PageNotFound";
 export { default as StarButton } from "./StarButton";
 export { default as WhyPrayRosary } from "./WhyPrayRosary";
 export { default as CallToAction } from "./CallToAction";
-export { default as ThemeRegistry } from "./ThemeRegistry";
 export { default as AccountSetup } from "./AccountSetup";
 export { default as CardDeck } from "./CardDeck";
 

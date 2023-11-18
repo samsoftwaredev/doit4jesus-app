@@ -1,6 +1,7 @@
 import { Box, Card, CardContent, CardMedia, Typography } from "@mui/material";
 import styles from "./dashboard.module.scss";
 import { css } from "@/utils/helpers";
+import Link from "next/link";
 
 const eventList = [
   {
@@ -70,8 +71,9 @@ const Dashboard = () => {
     <Box className={styles.container}>
       {eventList.map(({ title, description, eventDate, image }, index) => (
         <Card
-          key={title}
-          className={css(index === 0 ? styles.main : styles.card)}
+          component={Link}
+          href=""
+          className={css(index === 0 ? styles.mainCard : styles.card)}
         >
           <CardMedia
             className={css(index === 0 ? styles.mainImage : styles.cardImage)}
@@ -87,11 +89,7 @@ const Dashboard = () => {
               <Typography component="div" variant="h5">
                 {eventDate}
               </Typography>
-              <Typography
-                variant="subtitle1"
-                color="text.secondary"
-                component="div"
-              >
+              <Typography variant="subtitle1" component="p">
                 {description}
               </Typography>
             </CardContent>
