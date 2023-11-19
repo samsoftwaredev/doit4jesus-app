@@ -350,36 +350,3 @@
   [hidden] {
     display: none;
   }
-
-  a {
-    text-decoration: none;
-  }
-
-  .sectionTitle {
-    font-weight: 100;
-    font-size: 3em;
-  }
-  @media (min-width: 1024px) {
-    .sectionTitle {
-      font-size: 5em;
-    }
-  }
-  @media (min-width: 768px) and (max-width: 1023px) {
-    .sectionTitle {
-      font-size: 4em;
-    }
-  }
-
-  .sectionSubTitle {
-    font-size: 0.9em;
-  }
-  @media (min-width: 1024px) {
-      .sectionSubTitle {
-      font-size: 1.3em;
-    }
-  }
-  @media (min-width: 768px) and (max-width: 1023px) {
-      .sectionSubTitle {
-      font-size: 1em;
-    }
-  }

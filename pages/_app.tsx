@@ -5,6 +5,7 @@ import { theme } from "@/styles/mui-overwrite";
 import { ThemeProvider } from "@emotion/react";
 import { StyledEngineProvider } from "@mui/material/styles";
 import "@/styles/normalize.css";
+import "@/styles/global.scss";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
