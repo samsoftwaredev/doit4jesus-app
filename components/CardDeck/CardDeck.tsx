@@ -62,7 +62,7 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
       {steps
         .map((step, index) => (
           <Box key={step.question} my={2}>
-            <Grid container height="250px" flexDirection="column">
+            <Grid mx={1} container height="250px" flexDirection="column">
               <Grid
                 width="100%"
                 item
@@ -70,11 +70,13 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
                 flexDirection="row"
                 justifyContent="space-between"
               >
-                <Typography component="h5">{step.title}</Typography>
+                <Typography variant="h5" component="h3">
+                  {step.title}
+                </Typography>
                 <StarButton onClick={handelSave} />
               </Grid>
-              <Grid item>
-                <Typography>{step.question}</Typography>
+              <Grid mx={2}>
+                <Typography component="p">{step.question}</Typography>
               </Grid>
             </Grid>
             <Grid container justifyContent="space-around">
@@ -82,6 +84,7 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
                 <Tooltip title="Back">
                   <span>
                     <IconButton
+                      color="secondary"
                       disabled={index === 0}
                       onClick={handleBack}
                       style={{ transform: "scale(1.8)" }}
@@ -96,6 +99,7 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
                   <IconButton
                     onClick={() => handleSaveSin(index)}
                     style={{ transform: "scale(1.8)" }}
+                    color="error"
                   >
                     <CheckCircleIcon />
                   </IconButton>
@@ -104,6 +108,7 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
               <Grid item md={4} sm={4} textAlign="center">
                 <Tooltip title="No">
                   <IconButton
+                    color="error"
                     onClick={handleSkip}
                     style={{ transform: "scale(1.8)" }}
                   >
@@ -112,11 +117,12 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
                 </Tooltip>
               </Grid>
             </Grid>
-            <Grid container justifyContent="center" my={5} textAlign="center">
+            <Grid container justifyContent="center" mt={5} textAlign="center">
               <Button
                 onClick={handleFinishExam}
                 variant="outlined"
                 size="small"
+                color="secondary"
               >
                 Finish Exam
               </Button>
@@ -134,14 +140,15 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
               Great! No need to go to confession.
             </Typography>
           )}
-          {sinsCommitted.map((step, index) => (
+          {sinsCommitted.map((step) => (
             <Grid px={2} py={1}>
               <Typography component="h6">{step.title}</Typography>
               <Typography>{step.question}</Typography>
             </Grid>
           ))}
           <Button
-            variant="outlined"
+            variant="contained"
+            color="secondary"
             onClick={handleReset}
             sx={{ mt: 1, mr: 1 }}
           >

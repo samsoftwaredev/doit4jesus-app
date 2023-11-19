@@ -1,7 +1,6 @@
 import * as React from "react";
 import GridViewIcon from "@mui/icons-material/GridView";
 import StarIcon from "@mui/icons-material/Star";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import SettingsIcon from "@mui/icons-material/Settings";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 import CellTowerIcon from "@mui/icons-material/CellTower";
@@ -25,7 +24,6 @@ const menuItems = [
     label: "Attending Events",
     icon: <StarIcon />,
   },
-  { url: "/app/calendar", label: "Calendar", icon: <CalendarTodayIcon /> },
   { url: "/app/settings", label: "Settings", icon: <SettingsIcon /> },
   {
     url: "/app/confession",
