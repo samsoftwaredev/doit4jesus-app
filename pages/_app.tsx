@@ -3,17 +3,20 @@ import { LanguageContextProvider } from "@/context/LanguageContext";
 import { ToastContextProvider } from "@/context/ToastContext";
 import { theme } from "@/styles/mui-overwrite";
 import { ThemeProvider } from "@emotion/react";
+import { StyledEngineProvider } from "@mui/material/styles";
 import "@/styles/normalize.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ThemeProvider theme={theme}>
-      <ToastContextProvider>
-        <LanguageContextProvider>
-          <Component {...pageProps} />
-        </LanguageContextProvider>
-      </ToastContextProvider>
-    </ThemeProvider>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <ToastContextProvider>
+          <LanguageContextProvider>
+            <Component {...pageProps} />
+          </LanguageContextProvider>
+        </ToastContextProvider>
+      </ThemeProvider>
+    </StyledEngineProvider>
   );
 }
 
