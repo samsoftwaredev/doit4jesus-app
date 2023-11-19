@@ -3,8 +3,7 @@ import { LanguageContextProvider } from "@/context/LanguageContext";
 import { ToastContextProvider } from "@/context/ToastContext";
 import { theme } from "@/styles/mui-overwrite";
 import { ThemeProvider } from "@mui/material";
-import "../styles/normalize.css";
-import "../styles/globals.scss";
+import "@/styles/normalize.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
