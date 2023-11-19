@@ -1,10 +1,11 @@
 import type { NextPage } from "next";
 import { AppLayout } from "@/layouts";
+import LiveEvent from "@/sections/LiveEvent";
 
 const Rosary: NextPage = () => {
   return (
     <AppLayout>
-      <p>Live event</p>
+      <LiveEvent />
     </AppLayout>
   );
 };

@@ -85,7 +85,7 @@ const Dashboard = () => {
       {eventList.map(({ title, description, eventDate, image }, index) => (
         <Card
           component={Link}
-          href=""
+          href="app/live-event"
           className={css(index === 0 ? styles.mainCard : styles.card)}
         >
           <CardMedia

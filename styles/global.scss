@@ -22,3 +22,10 @@ a {
     font-size: 1em;
   }
 }
+
+.appCard {
+  background-color: $primaryMain;
+  color: $white;
+  border-radius: $borderRadius;
+  padding: 1em;
+}
