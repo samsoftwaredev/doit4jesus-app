@@ -6,6 +6,7 @@ import {
   Grid,
   IconButton,
   Tooltip,
+  Divider,
 } from "@mui/material";
 import { CardProps } from "@/interfaces/index";
 import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
@@ -13,6 +14,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { StarButton } from "@/components";
 import { useToastContext } from "@/context/ToastContext";
+import { theme } from "@/styles/mui-overwrite";
 
 interface Props {
   steps: CardProps[];
@@ -71,12 +73,14 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
                 justifyContent="space-between"
               >
                 <Typography variant="h5" component="h3">
-                  {step.title}
+                  {index + 1}) {step.title}
                 </Typography>
                 <StarButton onClick={handelSave} />
               </Grid>
               <Grid mx={2}>
-                <Typography component="p">{step.question}</Typography>
+                <Typography color={theme.palette.secondary.main} component="p">
+                  {step.question}
+                </Typography>
               </Grid>
             </Grid>
             <Grid container justifyContent="space-around">
@@ -131,29 +135,40 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
         ))
         .slice(activeStep, activeStep + 1)}
       {activeStep === steps.length && (
-        <Box>
-          <Typography>Examination of Conscience completed</Typography>
+        <Box minHeight="250px" display="flex" flexDirection="column">
+          <Typography variant="h5" my={2} textAlign={"center"}>
+            Examination of Conscience Completed!
+          </Typography>
           {sinsCommitted.length > 0 ? (
-            <Typography component="h5">List of sins to confess:</Typography>
+            <Typography color={theme.palette.secondary.main} component="h5">
+              List of sins to confess:
+            </Typography>
           ) : (
-            <Typography component="h5">
+            <Typography textAlign="center" mb={3} color="grey" component="h5">
               Great! No need to go to confession.
             </Typography>
           )}
-          {sinsCommitted.map((step) => (
+          {sinsCommitted.map((step, index) => (
             <Grid px={2} py={1}>
-              <Typography component="h6">{step.title}</Typography>
-              <Typography>{step.question}</Typography>
+              <Typography variant="h5">
+                {index + 1}) {step.title}
+              </Typography>
+              <Typography color={theme.palette.secondary.main} ml={2} mb={2}>
+                {step.question}
+              </Typography>
+              <Divider sx={{ backgroundColor: "white" }} />
             </Grid>
           ))}
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={handleReset}
-            sx={{ mt: 1, mr: 1 }}
-          >
-            Reset
-          </Button>
+          <Box alignSelf="center">
+            <Button
+              variant="contained"
+              color="error"
+              onClick={handleReset}
+              sx={{ mt: 1, mr: 1, width: "300px" }}
+            >
+              Start Over
+            </Button>
+          </Box>
         </Box>
       )}
     </Box>

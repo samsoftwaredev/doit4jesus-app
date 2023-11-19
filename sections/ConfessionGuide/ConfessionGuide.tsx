@@ -112,8 +112,10 @@ const ConfessionGuide = () => {
         </Box>
         {activeScreen === ActiveScreen.selectExam && (
           <>
-            <Typography>Select type of conscience examination:</Typography>
-            <Box display="flex" flexDirection="column" gap="1em">
+            <Typography my={2} color="white" variant="h5">
+              Select type of conscience examination:
+            </Typography>
+            <Box display="flex" flexDirection="column" gap={2} mx={2}>
               {examTypes.map(({ label }) => (
                 <Button
                   onClick={() => onExamSelected(label)}

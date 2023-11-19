@@ -24,12 +24,12 @@ const menuItems = [
     label: "Attending Events",
     icon: <StarIcon />,
   },
-  { url: "/app/settings", label: "Settings", icon: <SettingsIcon /> },
   {
     url: "/app/confession",
     label: "Exam of Conscience",
     icon: <ConfessionIcon />,
   },
+  { url: "/app/settings", label: "Settings", icon: <SettingsIcon /> },
   { url: "/app/support", label: "Support", icon: <SupportAgentIcon /> },
 ];
 
