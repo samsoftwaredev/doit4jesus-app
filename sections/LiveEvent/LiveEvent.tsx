@@ -5,7 +5,7 @@ import { AttachMoney, Favorite, Reply } from "@mui/icons-material";
 import { css } from "@/utils/helpers";
 import styles from "./liveEvent.module.scss";
 
-const Rosary: NextPage = () => {
+const LiveEvent: NextPage = () => {
   return (
     <Box className={styles.container}>
       <iframe
@@ -55,4 +55,4 @@ const Rosary: NextPage = () => {
   );
 };
 
-export default Rosary;
+export default LiveEvent;
