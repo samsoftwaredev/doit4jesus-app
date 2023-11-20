@@ -64,7 +64,7 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
       {steps
         .map((step, index) => (
           <Box key={step.question} my={2}>
-            <Grid mx={1} container height="250px" flexDirection="column">
+            <Grid mx={1} container minHeight="250px" flexDirection="column">
               <Grid
                 width="100%"
                 item

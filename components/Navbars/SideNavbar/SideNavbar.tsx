@@ -26,7 +26,7 @@ export default function SideNavbar({
   const navigate = useRouter();
 
   return (
-    <List className={styles.container}>
+    <List>
       {menuItems.map(({ label, icon, url }) => (
         <ListItem sx={{ p: 0 }} key={label}>
           <Link

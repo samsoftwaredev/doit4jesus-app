@@ -1,0 +1,24 @@
+.topNavbarMenu {
+  color: $white;
+  display: block;
+  margin-left: -30px;
+  @include tablet {
+    display: none;
+  }
+  @include desktop {
+    display: none;
+  }
+}
+
+.topNavbarLogo {
+  margin-left: 0;
+  @include tablet {
+    margin-left: -30px;
+  }
+  @include desktop {
+    margin-left: -30px;
+  }
+}
+
+.topNavbarProfile {
+}
