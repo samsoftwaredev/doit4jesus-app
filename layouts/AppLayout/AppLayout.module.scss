@@ -49,8 +49,9 @@
   grid-column-start: 1;
   grid-column-end: 2;
   margin: 0;
-  width: calc(100% - 40px);
+  width: 100%;
   background-color: $primaryMain;
+  padding-left: 0;
 
   position: fixed;
   top: 0;
@@ -66,6 +67,7 @@
     margin-left: 1em;
     margin-top: 1em;
     padding-left: 0.5em;
+    width: calc(100% - 40px);
   }
   @include desktop {
     position: relative;
@@ -74,6 +76,7 @@
     margin-left: 1em;
     margin-top: 1em;
     padding-left: 0.5em;
+    width: calc(100% - 40px);
   }
 }
 

@@ -40,7 +40,7 @@
 
 .close {
   display: flex;
-  color: white;
+  color: $white;
   @include tablet {
     display: none;
   }

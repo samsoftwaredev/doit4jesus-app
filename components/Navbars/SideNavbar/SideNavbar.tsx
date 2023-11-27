@@ -30,7 +30,7 @@ export default function SideNavbar({
 
   return (
     <List>
-      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between" }} px={1}>
         <Button disableRipple className={styles.logo}>
           <Logo type="white" />
         </Button>
