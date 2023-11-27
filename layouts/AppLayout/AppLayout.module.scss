@@ -48,12 +48,9 @@
   border-radius: $borderRadius;
   grid-column-start: 1;
   grid-column-end: 2;
-  padding-left: 0.5em;
-  margin-right: 0.5em;
-  margin-left: 1em;
-  margin-top: 1em;
+  margin: 0;
   width: calc(100% - 40px);
-  backdrop-filter: blur(90px);
+  background-color: $primaryMain;
 
   position: fixed;
   top: 0;
@@ -65,10 +62,18 @@
   @include tablet {
     position: relative;
     background-color: $primaryMain;
+    margin-right: 0.5em;
+    margin-left: 1em;
+    margin-top: 1em;
+    padding-left: 0.5em;
   }
   @include desktop {
     position: relative;
     background-color: $primaryMain;
+    margin-right: 0.5em;
+    margin-left: 1em;
+    margin-top: 1em;
+    padding-left: 0.5em;
   }
 }
 

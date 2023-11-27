@@ -27,3 +27,24 @@
     color: $white;
   }
 }
+
+.logo {
+  display: flex;
+  @include tablet {
+    display: none;
+  }
+  @include desktop {
+    display: none;
+  }
+}
+
+.close {
+  display: flex;
+  color: white;
+  @include tablet {
+    display: none;
+  }
+  @include desktop {
+    display: none;
+  }
+}

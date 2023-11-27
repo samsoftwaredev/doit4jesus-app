@@ -7,6 +7,9 @@ import { useRouter } from "next/router";
 import styles from "./SideNavbar.module.scss";
 import Link from "next/link";
 import { css } from "@/utils/helpers";
+import { Box, Button, IconButton } from "@mui/material";
+import { Logo } from "../..";
+import { Close } from "@mui/icons-material";
 
 interface Props {
   open: boolean;
@@ -27,6 +30,14 @@ export default function SideNavbar({
 
   return (
     <List>
+      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Button disableRipple className={styles.logo}>
+          <Logo type="white" />
+        </Button>
+        <IconButton onClick={handleDrawerClose} className={styles.close}>
+          <Close />
+        </IconButton>
+      </Box>
       {menuItems.map(({ label, icon, url }) => (
         <ListItem sx={{ p: 0 }} key={label}>
           <Link

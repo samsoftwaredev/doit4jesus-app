@@ -88,12 +88,14 @@ const Dashboard = () => {
           href="app/live-event"
           className={css(index === 0 ? styles.mainCard : styles.card)}
         >
-          <CardMedia
-            className={css(index === 0 ? styles.mainImage : styles.cardImage)}
-            component="img"
-            image={image}
-            alt={title}
-          />
+          {image && (
+            <CardMedia
+              className={css(index === 0 ? styles.mainImage : styles.cardImage)}
+              component="img"
+              image={image}
+              alt={title}
+            />
+          )}
           <Box sx={{ display: "flex", flexDirection: "column" }}>
             <CardContent sx={{ flex: "1 0 auto" }}>
               <Typography
@@ -103,9 +105,15 @@ const Dashboard = () => {
               >
                 {title}
               </Typography>
-              <Typography component="div" variant="h6" className={styles.date}>
-                {eventDate}
-              </Typography>
+              {eventDate && (
+                <Typography
+                  component="div"
+                  variant="h6"
+                  className={styles.date}
+                >
+                  {eventDate}
+                </Typography>
+              )}
               <Typography
                 variant="subtitle1"
                 component="p"
