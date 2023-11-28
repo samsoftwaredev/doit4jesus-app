@@ -7,8 +7,8 @@ const AudioPrevious = () => {
 
   return (
     <Tooltip title="Backward">
-      <IconButton color="primary" onClick={backwardAudio} href="#prev">
-        <UndoIcon fontSize="large" />
+      <IconButton onClick={backwardAudio} href="#prev">
+        <UndoIcon sx={{ color: "white" }} fontSize="large" />
       </IconButton>
     </Tooltip>
   );

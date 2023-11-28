@@ -49,7 +49,7 @@ class Rosary {
   ): INTERFACE_ROSARY_STATE => {
     const subTitle = `${capitalizeFirstLetter(this.mysteryName)} Mystery`;
     return {
-      title: "Rosary",
+      title: "The Holy Rosary",
       mystery: subTitle,
       mysteryAudio: this.getAudio(language),
       audioCover: this.rosaryAudioCover,

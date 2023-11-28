@@ -152,7 +152,18 @@ const YouTubeVideo = ({
   }, [volume]);
 
   // return <Container ref={youtubeEleRef} visible={visible} id={youtubeId} />;
-  return <div ref={youtubeEleRef} id={youtubeId} />;
+  return (
+    <div
+      style={{
+        position: "fixed",
+        visibility: "hidden",
+        height: 0,
+        width: 0,
+      }}
+      ref={youtubeEleRef}
+      id={youtubeId}
+    />
+  );
 };
 
 export default YouTubeVideo;

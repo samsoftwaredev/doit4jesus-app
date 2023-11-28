@@ -1,0 +1,26 @@
+.controls {
+  background-color: $backgroundDark;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  z-index: 10000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  height: 60px;
+  padding: 0 14px;
+  box-shadow: -2px -5px 13px -4px rgba(176, 176, 176, 1);
+
+  @include tablet {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+  @include desktop {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}

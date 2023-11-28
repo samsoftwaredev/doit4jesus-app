@@ -7,8 +7,8 @@ const AudioControllers = () => {
 
   return (
     <Tooltip title="Forward">
-      <IconButton color="primary" onClick={forwardAudio} href="#next">
-        <RedoIcon fontSize="large" />
+      <IconButton onClick={forwardAudio} href="#next">
+        <RedoIcon sx={{ color: "white" }} fontSize="large" />
       </IconButton>
     </Tooltip>
   );

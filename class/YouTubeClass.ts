@@ -6,7 +6,6 @@ class YouTubeClass {
     const divEl = document.createElement("div");
     divEl.setAttribute("id", this.idElFormat(this.id));
     const container = document.getElementById(elementId);
-    console.log("appendChild", container);
     if (container) container.appendChild(divEl);
   }
 
