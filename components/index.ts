@@ -20,6 +20,7 @@ export { default as WhyPrayRosary } from "./WhyPrayRosary";
 export { default as CallToAction } from "./CallToAction";
 export { default as AccountSetup } from "./AccountSetup";
 export { default as CardDeck } from "./CardDeck";
+export { default as SelectExamOfConscience } from "./SelectExamOfConscience";
 
 export * from "./AudioPlayer";
 export * from "./Navbars";

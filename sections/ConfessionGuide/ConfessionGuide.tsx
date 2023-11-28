@@ -1,18 +1,10 @@
 import React, { useState } from "react";
-import { CardProps, ExamTypes } from "@/interfaces/index";
-import { TitleNav, CardDeck } from "@/components";
+import { CardProps, ExamTypes } from "@/interfaces";
+import { CardDeck, SelectExamOfConscience } from "@/components";
 import adultExamOfConscience from "@/data/adultExamOfConscience.json";
 import teenExamOfConscience from "@/data/teenExamOfConscience.json";
 import childExamOfConscience from "@/data/childExamOfConscience.json";
-import {
-  Alert,
-  Box,
-  Button,
-  Collapse,
-  Container,
-  LinearProgress,
-  Typography,
-} from "@mui/material";
+import { Alert, Box, Collapse, Container, LinearProgress } from "@mui/material";
 
 enum ActiveScreen {
   selectExam = 0,
@@ -43,9 +35,6 @@ const ConfessionGuide = () => {
   const [openWarning, setOpenWarning] = useState(true);
   const [openNote, setOpenNote] = useState(true);
   const progress = (activeStep / exam.length) * 100;
-  const examTypes = Object.values(exams).map(
-    (examOfConscience) => examOfConscience
-  );
 
   const handelBack = () => {
     history.back();
@@ -111,23 +100,7 @@ const ConfessionGuide = () => {
           </Collapse>
         </Box>
         {activeScreen === ActiveScreen.selectExam && (
-          <>
-            <Typography my={2} color="white" variant="h5">
-              Select type of conscience examination:
-            </Typography>
-            <Box display="flex" flexDirection="column" gap={2} mx={2}>
-              {examTypes.map(({ label }) => (
-                <Button
-                  onClick={() => onExamSelected(label)}
-                  variant="contained"
-                  fullWidth
-                  key={label}
-                >
-                  {label}
-                </Button>
-              ))}
-            </Box>
-          </>
+          <SelectExamOfConscience onExamSelected={onExamSelected} />
         )}
         {activeScreen === ActiveScreen.examOfConscience && (
           <Box className="appCard" mt={1}>

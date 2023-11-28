@@ -1,0 +1,47 @@
+.container {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-auto-rows: 350px;
+  gap: 1em 1em;
+
+  @include tablet {
+    grid-template-columns: 1fr 1fr;
+  }
+  @include desktop {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+.cardContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.card {
+  border-radius: $borderRadius;
+  transition: transform 300ms;
+  cursor: pointer;
+  &:hover {
+    transform: scale(1.01);
+  }
+}
+
+.cardImage {
+  width: 100%;
+  height: 190px;
+}
+
+.title {
+  white-space: nowrap;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.description {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
