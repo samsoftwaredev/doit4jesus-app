@@ -34,12 +34,12 @@ const AudioPlay = () => {
     switch (audioState) {
       case INTERFACE_AUDIO_STATE.BUFFERING:
       case INTERFACE_AUDIO_STATE.VIDEO_CUED:
-        return <CircularProgress sx={{ color: "white", height: "20px" }} />;
+        return <CircularProgress sx={{ color: "white" }} />;
       case INTERFACE_AUDIO_STATE.PAUSED:
-        return <PlayIcon fontSize="large" />;
+        return <PlayIcon fontSize="large" sx={{ color: "white" }} />;
       case INTERFACE_AUDIO_STATE.PLAYING:
       default:
-        return <PauseIcon fontSize="large" />;
+        return <PauseIcon fontSize="large" sx={{ color: "white" }} />;
     }
   };
 
@@ -48,7 +48,6 @@ const AudioPlay = () => {
   return (
     <Tooltip title={toggleText()}>
       <IconButton
-        sx={{ color: "white", height: "20px" }}
         disabled={audioState === INTERFACE_AUDIO_STATE.BUFFERING}
         onClick={handleToggleAudioPlaying}
         href={`#${audioText(audioState === INTERFACE_AUDIO_STATE.PLAYING)}`}
