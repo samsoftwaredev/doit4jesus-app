@@ -9,18 +9,42 @@
   justify-content: space-between;
   align-items: center;
   flex-direction: column;
-  height: 60px;
+  height: 110px;
   padding: 0 14px;
-  box-shadow: -2px -5px 13px -4px rgba(176, 176, 176, 1);
+  box-shadow: -2px 0px 13px -4px rgba(176, 176, 176, 1);
 
   @include tablet {
     flex-direction: row;
+    height: 60px;
     justify-content: space-between;
     align-items: center;
   }
   @include desktop {
     flex-direction: row;
+    height: 60px;
     justify-content: space-between;
     align-items: center;
+  }
+}
+
+.title {
+  color: #fff;
+  font-size: 1em;
+  @include tablet {
+    font-size: 1em;
+  }
+  @include desktop {
+    font-size: 1em;
+  }
+}
+
+.mystery {
+  color: #fff;
+  font-size: 1.3em;
+  @include tablet {
+    font-size: 1.5em;
+  }
+  @include desktop {
+    font-size: 1.5em;
   }
 }

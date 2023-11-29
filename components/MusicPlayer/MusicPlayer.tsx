@@ -16,7 +16,7 @@ const MusicPlayer = ({ rosary }: Props) => {
       audioPlayer={{ audio: rosary.getAudio(INTERFACE_LANGUAGES.en) }}
     >
       <Box className={styles.controls}>
-        <Typography variant="h6" sx={{ color: "white" }}>
+        <Typography className={styles.title} component="h3">
           {rosaryState.title}
         </Typography>
         <Box>
@@ -24,7 +24,7 @@ const MusicPlayer = ({ rosary }: Props) => {
           <AudioPlayer.AudioPlay />
           <AudioPlayer.AudioNext />
         </Box>
-        <Typography variant="h5" sx={{ color: "white" }}>
+        <Typography className={styles.mystery} component="h4">
           {rosaryState.mystery}
         </Typography>
       </Box>
