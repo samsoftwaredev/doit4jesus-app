@@ -22,17 +22,19 @@
 }
 
 .content {
-  font-size: 0.9em;
   margin-bottom: 150px;
   margin-top: 50px;
   position: relative;
   z-index: 10;
   max-width: 500px;
 
-  @include tablet {
-    font-size: 1.1em;
-  }
-  @include desktop {
-    font-size: 1.3em;
+  .description {
+    font-size: 1em;
+    @include tablet {
+      font-size: 1.2em;
+    }
+    @include desktop {
+      font-size: 1.5em;
+    }
   }
 }

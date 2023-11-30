@@ -13,18 +13,11 @@ const Hero = () => {
           </Typography>
           <Image src={rosary} alt="Rosoary" />
           <Box className={styles.content}>
-            <Typography>The Holy Rosary</Typography>
-            <Typography>
-              Santo Domingo de Guzman. The Mother of God, in an apparition to
-              Santo Domingo, taught him to pray the rosary, in the year 1208.
-              She told him to spread this devotion and use it as a powerful
-              weapon against the enemies of the Faith.
-            </Typography>
-            <Typography>
-              Santo Domingo de Guzman. The Mother of God, in an apparition to
-              Santo Domingo, taught him to pray the rosary, in the year 1208.
-              She told him to spread this devotion and use it as a powerful
-              weapon against the enemies of the Faith.
+            <Typography className={styles.description}>
+              The Mother of God, in an apparition to Santo Domingo, taught him
+              to pray The Holy Rosary, in the year 1208. She told him to spread
+              this devotion and use it as a powerful weapon against the enemies
+              of the Faith.
             </Typography>
           </Box>
         </Grid>

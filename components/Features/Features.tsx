@@ -8,19 +8,19 @@ const features = [
     thumbnail: findPeace,
     title: "Find Peace.",
     description:
-      "Let God bring you His peace with the Calm Praylist, Daily Gospel, Rosary, & Night Prayer",
+      "The act of praying the Rosary has a calming effect, bringing a sense of tranquility and well-being.",
   },
   {
     thumbnail: prayWell,
-    title: "Pray Your Way.",
+    title: "Spiritual Well-Being",
     description:
-      "Choose from 5,000+ sessions, 5-30 minute lengths, 3 guides, and 9 background music options including Gregorian chant",
+      "Turn to the Rosary during times of distress, seeking solace and comfort through prayer.",
   },
   {
     thumbnail: prayMore,
-    title: "Build a Habit.",
+    title: "Pray Together",
     description:
-      "Build a real habit of prayer every day by setting goals, journaling, tracking streaks, and setting reminders",
+      "Prayer unites us and help support millions of souls while sharing our faith and intentions.",
   },
 ];
 
