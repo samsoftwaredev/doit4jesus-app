@@ -21,6 +21,12 @@
   }
 }
 
+.title {
+  position: relative;
+  text-shadow: 1px 1px 3px $black;
+  z-index: 100;
+}
+
 .content {
   margin-bottom: 150px;
   margin-top: 50px;

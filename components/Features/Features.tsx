@@ -30,7 +30,7 @@ const Features = () => {
       <Container>
         <Typography
           textAlign="center"
-          className={"sectionTitle"}
+          className="sectionTitle"
           variant="h2"
           gutterBottom
         >

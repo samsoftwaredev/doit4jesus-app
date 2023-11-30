@@ -6,6 +6,11 @@
   flex-direction: column;
 }
 
+.title {
+  text-shadow: 1px 1px 3px $black;
+  z-index: 1000;
+}
+
 .arcs {
   margin: 20px auto;
   border-top-left-radius: 200px;

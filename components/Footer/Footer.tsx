@@ -20,24 +20,14 @@ const Footer = () => {
   };
 
   return (
-    <Container maxWidth={false}>
-      <Grid
-        height="100px"
-        container
-        justifyContent="space-between"
-        alignItems="center"
-        flex="row"
-      >
-        <Logo />
-        <Box sx={{ flexGrow: 1 }} />
-        <div className={styles.logo}>
-          &copy; {currentYear} DoIt4Jesus. All rights reserved.
-        </div>
-        <Box sx={{ flexGrow: 1 }} />
-        <Button onClick={goToAbout}>About</Button>
-        <Button onClick={goToBlog}>Blog</Button>
-        <Button onClick={goToContact}>Contact</Button>
-      </Grid>
+    <Container className={styles.container} maxWidth={false}>
+      <Logo />
+      <div className={styles.logo}>
+        &copy; {currentYear} DoIt4Jesus. All rights reserved.
+      </div>
+      <Button onClick={goToAbout}>About</Button>
+      <Button onClick={goToBlog}>Blog</Button>
+      <Button onClick={goToContact}>Contact</Button>
     </Container>
   );
 };

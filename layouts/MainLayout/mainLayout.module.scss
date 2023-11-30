@@ -1,6 +1,13 @@
 .container {
   position: relative;
   min-height: 100vh;
+  margin-bottom: 140px;
+  @include tablet {
+    margin-bottom: 100px;
+  }
+  @include desktop {
+    margin-bottom: 100px;
+  }
 }
 
 .content {
