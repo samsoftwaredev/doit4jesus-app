@@ -6,27 +6,27 @@ import styles from "./whyPrayRosary.module.scss";
 const features = [
   {
     thumbnail: findPeace,
-    title: "Find Peace.",
+    title: "Strengthen faith",
     description:
-      "Let God bring you His peace with the Calm Praylist, Daily Gospel, Rosary, & Night Prayer",
+      "Join our community as we embark on a transformative journey, praying the Rosary together for spiritual fortitude.",
   },
   {
     thumbnail: prayWell,
-    title: "Pray Your Way.",
+    title: "Save souls",
     description:
-      "Choose from 5,000+ sessions, 5-30 minute lengths, 3 guides, and 9 background music options including Gregorian chant",
+      "By praying the Rosary, we intercede for the salvation of souls, asking for God's mercy and grace to be bestowed upon those in need.",
   },
   {
     thumbnail: prayMore,
-    title: "Build a Habit.",
+    title: "Combat darkness",
     description:
-      "Build a real habit of prayer every day by setting goals, journaling, tracking streaks, and setting reminders",
+      "Let's stand united against the challenges of our times, seeking solace and strength in the power of collective prayer.",
   },
 ];
 
 const WhyPrayRosary = () => {
   return (
-    <div className={styles.container}>
+    <div className={styles.container} id="why-pray-rosary">
       <Container>
         <Typography className={css(styles.title, "sectionTitle")} variant="h2">
           Why pray the Rosary
