@@ -1,5 +1,6 @@
 .container {
   margin-top: 60px;
+  padding: 0 20px;
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 1fr 70px 1fr;
@@ -17,6 +18,7 @@
       "image content";
   }
   @include desktop {
+    padding: 0px;
     grid-template-columns: 500px 1fr;
     grid-template-rows: 70px 1fr;
     grid-template-areas:
