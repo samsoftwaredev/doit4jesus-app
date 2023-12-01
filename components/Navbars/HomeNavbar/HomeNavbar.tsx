@@ -94,15 +94,6 @@ function HomeNavbar(props: Props) {
             </ListItemButton>
           </ListItem>
         ))}
-        <ListItem disablePadding>
-          <ListItemButton
-            color="secondary"
-            sx={{ textAlign: "center" }}
-            onClick={goToApp}
-          >
-            <ListItemText primary="Sing Up for Free" />
-          </ListItemButton>
-        </ListItem>
       </List>
     </Box>
   );

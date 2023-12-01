@@ -1,0 +1,38 @@
+.container {
+  margin-top: 60px;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 70px 1fr;
+  gap: 20px;
+  grid-template-areas:
+    "image"
+    "title"
+    "content";
+
+  @include tablet {
+    grid-template-columns: 500px 1fr;
+    grid-template-rows: 70px 1fr;
+    grid-template-areas:
+      "image title"
+      "image content";
+  }
+  @include desktop {
+    grid-template-columns: 500px 1fr;
+    grid-template-rows: 70px 1fr;
+    grid-template-areas:
+      "image title"
+      "image content";
+  }
+}
+.image {
+  grid-area: image;
+  width: 100%;
+  height: auto;
+  border-radius: 50%;
+}
+.title {
+  grid-area: title;
+}
+.content {
+  grid-area: content;
+}
