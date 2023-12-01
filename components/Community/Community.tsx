@@ -19,10 +19,14 @@ const Hero = () => {
           <Image src={rosary} alt="Rosoary" />
           <Box className={styles.content}>
             <Typography className={styles.description}>
+              The purpose of the Rosary lies in bringing people together in
+              prayer to combat darkness and work towards the salvation of souls.
+            </Typography>
+            <Typography className={styles.description}>
               The Mother of God, in an apparition to Santo Domingo, taught him
-              to pray The Holy Rosary, in the year 1208. She told him to spread
-              this devotion and use it as a powerful weapon against the enemies
-              of the Faith.
+              to pray the Rosary, in the year 1208. She told him to spread this
+              devotion and use it as a powerful weapon against the enemies of
+              the Faith.
             </Typography>
           </Box>
         </Grid>
