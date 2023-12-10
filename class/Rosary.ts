@@ -27,10 +27,6 @@ class Rosary {
     return mysteryName as INTERFACE_ROSARY_MYSTERIES;
   };
 
-  private setBackgroundMusic = (withBGMusic?: boolean) => {
-    // if (withBGMusic) this.rosaryBackgroundMusic = aveAudio;
-  };
-
   public setAudioCover = (image: string) => {
     this.rosaryAudioCover = image;
   };

@@ -21,7 +21,7 @@ export const ROSARY_AUDIOS = {
   },
   sorrowful: {
     es: "HgMuRA87US0",
-    en: "ry7FbjkN-p0",
+    en: "hjZCpxnkEFA",
     la: "87AOQ0hOC9I",
   },
   joyful: {

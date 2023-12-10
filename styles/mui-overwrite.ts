@@ -22,6 +22,7 @@ export const theme = createTheme({
     info: {
       light: "#ffffff",
       main: "#000000",
+      dark: "#fafafa",
     },
     success: {
       light: "#a69540",

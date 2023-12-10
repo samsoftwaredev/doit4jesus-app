@@ -1,17 +1,27 @@
+.container {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  z-index: 999;
+  background-color: $primaryMain;
+  height: 1px;
+}
+
 .controls {
   position: fixed;
   bottom: 0;
   right: 0;
   left: 0;
-  z-index: 10000;
+  z-index: 1000;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   flex-direction: column;
   height: 70px;
   padding: 0 14px;
   box-shadow: -2px 0px 13px -4px rgba(176, 176, 176, 1);
-  backdrop-filter: blur(90px);
+  backdrop-filter: blur(50px);
 
   @include tablet {
     flex-direction: row;
@@ -28,10 +38,10 @@
 }
 
 .title {
-  text-shadow: 1px 1px 5px black;
   color: #fff;
-  font-size: 1em;
   display: none;
+  width: 250px;
+
   @include tablet {
     display: block;
   }
@@ -43,15 +53,23 @@
 .mystery {
   position: relative;
   top: -10px;
-  text-shadow: 1px 1px 5px black;
   color: #fff;
-  font-size: 1.3em;
+  width: 250px;
+  text-align: right;
+
   @include tablet {
     top: 0px;
-    font-size: 1.5em;
   }
   @include desktop {
     top: 0px;
-    font-size: 1.5em;
+  }
+}
+
+.buttonControl {
+  button:first-child {
+    margin-right: 50px;
+  }
+  button:last-child {
+    margin-left: 50px;
   }
 }
