@@ -16,7 +16,7 @@ const Hero = () => {
           >
             About the Rosary
           </Typography>
-          <Image src={rosary} alt="Rosoary" />
+          <Image style={{ opacity: 0.4 }} src={rosary} alt="Rosoary" />
           <Box className={styles.content}>
             <Typography className={styles.description}>
               The purpose of the Rosary lies in bringing people together in
