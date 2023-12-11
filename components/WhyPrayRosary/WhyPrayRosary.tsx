@@ -29,7 +29,7 @@ const WhyPrayRosary = () => {
     <div className={styles.container} id="why-pray-rosary">
       <Container>
         <Typography className={css(styles.title, "sectionTitle")} variant="h2">
-          Why pray the Rosary
+          Why pray the Rosary?
         </Typography>
         <Grid gap={1} container justifyContent="space-around">
           {features.map(({ thumbnail, title, description }, index) => (

@@ -74,7 +74,7 @@ function HomeNavbar(props: Props) {
       sx: { color: "#fff" },
     },
     {
-      label: "Why Pray?",
+      label: "Why Pray The Rosary?",
       goTo: goToPray,
       sx: { color: "#fff" },
     },
