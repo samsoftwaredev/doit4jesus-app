@@ -15,7 +15,10 @@ const MusicPlayer = ({ rosary }: Props) => {
 
   return (
     <AudioPlayer
-      audioPlayer={{ audio: rosary.getAudio(INTERFACE_LANGUAGES.en) }}
+      audioPlayer={{
+        audio: rosary.getAudio(INTERFACE_LANGUAGES.en),
+        audioTitle: rosaryState.mystery,
+      }}
     >
       <Box className={styles.container}>
         <Box className={styles.controls}>

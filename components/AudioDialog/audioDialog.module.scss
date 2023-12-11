@@ -1,0 +1,38 @@
+.container {
+  background-color: white;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: calc(100% - 20px);
+  max-width: 1040px;
+  height: calc(100vh - 160px);
+  z-index: 100;
+  box-shadow: 0px 0px 23px 0px rgba(0, 0, 0, 0.75);
+  border-radius: $borderRadius;
+  transition: all 0.3s;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px;
+}
+
+.open {
+  left: 50%;
+}
+
+.close {
+  left: 150%;
+}
+
+.content {
+  margin: 20px;
+  iframe {
+    width: 100%;
+    max-width: 1040px;
+    height: calc(100vh - 260px);
+  }
+}

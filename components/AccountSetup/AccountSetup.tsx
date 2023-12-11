@@ -4,9 +4,9 @@ import { ChevronRight } from "@mui/icons-material";
 import { Box, Button, Container, Grid, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import styles from "./accountSetup.module.scss";
 import jesusCross from "@/public/assets/images/hero/jesusCross.svg";
-import Image from "next/image";
 import { MainNavbar } from "../Navbars";
 
 interface StepProps {
@@ -23,7 +23,7 @@ const KnowledgeStep = ({ next }: StepProps) => {
     <>
       <Box className={styles.stepperContent}>
         <Typography variant="h3" className={styles.title}>
-          How often you pray the Rosary?
+          How Often You Pray The Rosary?
         </Typography>
         <Grid container className={styles.buttons} gap={2}>
           <Button
@@ -58,7 +58,7 @@ const WhatsTheRosary = ({ next }: StepProps) => {
     <>
       <Box className={styles.stepperContent}>
         <Typography variant="h3" className={styles.title}>
-          What's the Rosary?
+          What's The Rosary?
         </Typography>
         <Typography
           my={5}
@@ -93,7 +93,7 @@ const WhyPray = ({ next }: StepProps) => {
     <>
       <Box className={styles.stepperContent}>
         <Typography variant="h3" className={styles.title}>
-          Why pray?
+          Why Pray?
         </Typography>
         <Typography
           my={5}
@@ -127,7 +127,7 @@ const WhyPrayTheRosary = ({ next }: StepProps) => {
     <>
       <Box className={styles.stepperContent}>
         <Typography variant="h3" className={styles.title}>
-          Why pray the Rosary?
+          Why Pray The Rosary?
         </Typography>
         <Typography
           my={5}

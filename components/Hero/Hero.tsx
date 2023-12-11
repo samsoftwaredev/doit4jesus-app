@@ -21,7 +21,7 @@ const Hero = () => {
             component="h1"
             className={css(styles.title, "sectionTitle")}
           >
-            Find Peace in the Rosary
+            Find Peace In The Rosary
           </Typography>
           <Typography
             component="h5"

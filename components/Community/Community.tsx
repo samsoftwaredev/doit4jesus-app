@@ -14,7 +14,7 @@ const Hero = () => {
             className={css(styles.title, "sectionTitle")}
             variant="h2"
           >
-            About the Rosary
+            About The Rosary
           </Typography>
           <Image style={{ opacity: 0.4 }} src={rosary} alt="Rosary" />
           <Box className={styles.content}>

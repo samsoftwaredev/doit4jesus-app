@@ -7,6 +7,7 @@ import {
   INTERFACE_AUDIO_STATE,
 } from "@/interfaces";
 import { INITIAL_VOLUME } from "@/constants/mysteries";
+import styles from "./youTubeVideo.module.scss";
 
 interface Props {
   id: string;
@@ -14,7 +15,6 @@ interface Props {
   setAudioTimer: Function;
   volume?: number;
   audioLoop?: boolean;
-  visible?: boolean;
   audioSpeed?: number;
   audioSeek?: INTERFACE_AUDIO_SEEK;
   audioState?: INTERFACE_AUDIO_STATE;
@@ -33,7 +33,6 @@ const YouTubeVideo = ({
   setAudioTimer,
   volume = INITIAL_VOLUME,
   audioLoop = false,
-  visible = false,
   audioSeek = INTERFACE_AUDIO_SEEK.NEUTRAL,
   audioSpeed = INTERFACE_AUDIO_SPEED.NORMAL,
   audioState = INTERFACE_AUDIO_STATE.UNSTARTED,
@@ -126,7 +125,6 @@ const YouTubeVideo = ({
 
   const setVolume = (volume: number) => {
     if (typeof player?.playVideo === "function") {
-      console.log(player.getVolume());
       player.setVolume(volume);
     }
   };
@@ -151,18 +149,8 @@ const YouTubeVideo = ({
     if (isClientSideRender()) setVolume(volume);
   }, [volume]);
 
-  // return <Container ref={youtubeEleRef} visible={visible} id={youtubeId} />;
   return (
-    <div
-      style={{
-        position: "fixed",
-        visibility: "hidden",
-        height: 0,
-        width: 0,
-      }}
-      ref={youtubeEleRef}
-      id={youtubeId}
-    />
+    <div className={styles.container} ref={youtubeEleRef} id={youtubeId} />
   );
 };
 

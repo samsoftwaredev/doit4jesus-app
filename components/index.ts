@@ -2,7 +2,6 @@ export { default as AudioCover } from "./AudioCover";
 export { default as AudioNavigation } from "./AudioNavigation";
 export { default as ShareRosary } from "./ShareRosary";
 export { default as ReadRosary } from "./ReadRosary";
-export { default as RosaryOptions } from "./RosaryOptions";
 export { default as YouTubeVideo } from "./YouTubeVideo";
 export { default as Footer } from "./Footer";
 export { default as Meta } from "./Meta";
@@ -20,6 +19,8 @@ export { default as WhyPrayRosary } from "./WhyPrayRosary";
 export { default as CallToAction } from "./CallToAction";
 export { default as AccountSetup } from "./AccountSetup";
 export { default as CardDeck } from "./CardDeck";
+export { default as Dialog } from "./Dialog";
+export { default as AudioDialog } from "./AudioDialog";
 export { default as SelectExamOfConscience } from "./SelectExamOfConscience";
 
 export * from "./AudioPlayer";

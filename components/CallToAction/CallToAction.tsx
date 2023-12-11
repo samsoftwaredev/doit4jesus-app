@@ -19,7 +19,7 @@ const WhyPrayRosary = () => {
         variant="contained"
         onClick={handelSignUp}
       >
-        Sing Up for Free
+        Sing Up For Free
       </Button>
     </Container>
   );
