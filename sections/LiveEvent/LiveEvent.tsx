@@ -9,9 +9,8 @@ const LiveEvent: NextPage = () => {
   return (
     <Box className={styles.container}>
       <iframe
-        width="560"
-        height="315"
-        src="https://www.youtube.com/embed/wLXGnCQgWQE?si=0epRZb9qIajBjSSb"
+        className={styles.video}
+        src="https://www.youtube.com/embed/siaPN_trw38?si=JmzZjStMzOb3BaOC"
         title="YouTube video player"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         allowFullScreen
