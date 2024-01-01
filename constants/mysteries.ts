@@ -16,7 +16,7 @@ export const ROSARY_MYSTERIES = ["glorious", "sorrowful", "joyful", "luminous"];
 export const ROSARY_AUDIOS = {
   glorious: {
     es: "j6DsMW6k1Qc",
-    en: "WoJ1hQTVdSo",
+    en: "FJFYQzDqWiI",
     la: "uAZtorHsg1I",
   },
   sorrowful: {
