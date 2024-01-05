@@ -1,12 +1,11 @@
 import styles from "./footer.module.scss";
 import { useRouter } from "next/router";
 import { NAV_FOOTER_LINKS } from "@/constants";
-import { Box, Button, Container, Grid } from "@mui/material";
+import { Button, Container } from "@mui/material";
 import Logo from "../Logo/Logo";
 
-const currentYear = new Date().getFullYear();
-
 const Footer = () => {
+  const currentYear = new Date().getFullYear();
   const router = useRouter();
 
   const goToAbout = () => {
