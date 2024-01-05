@@ -54,22 +54,29 @@
   position: relative;
   top: -10px;
   color: #fff;
-  width: 250px;
-  text-align: right;
+  text-align: center;
+  width: 100%;
 
   @include tablet {
     top: 0px;
+    text-align: right;
+    width: 300px;
   }
   @include desktop {
     top: 0px;
+    text-align: right;
+    width: 250px;
   }
 }
 
 .buttonControl {
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
   button:first-child {
-    margin-right: 50px;
+    margin-right: 40px;
   }
   button:last-child {
-    margin-left: 50px;
+    margin-left: 40px;
   }
 }
