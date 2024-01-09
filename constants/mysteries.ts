@@ -26,12 +26,12 @@ export const ROSARY_AUDIOS = {
   },
   joyful: {
     es: "zphh7067Jf0",
-    en: "ckUJRg04jyg",
+    en: "jmpdz27YAgg",
     la: "ejI-xH54ct4",
   },
   luminous: {
     es: "Q9CsD4KH7DA",
-    en: "b2EjBt2PFpc",
+    en: "rozmRSvZuhs",
     la: "ccnYPTN9Xns",
   },
 };
