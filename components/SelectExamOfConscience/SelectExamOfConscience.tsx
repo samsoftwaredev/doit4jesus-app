@@ -56,7 +56,6 @@ const SelectExamOfConscience = ({ onExamSelected }: Props) => {
         display="flex"
         flexDirection="column"
         gap={2}
-        mx={2}
         className={styles.cardContainer}
       >
         {examTypes.map(({ label, description, image }) => (
