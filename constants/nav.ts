@@ -6,8 +6,8 @@ export const NAV_FOOTER_LINKS = {
 
 export const NAV_MAIN_LINKS = {
   home: { link: "/", label: "Home", value: "home" },
-  login: { link: "/login", label: "Login", value: "login" },
-  signup: { link: "/singup", label: "Sign Up", value: "signup" },
+  login: { link: "/auth", label: "Login", value: "login" },
+  signup: { link: "/auth", label: "Sign Up", value: "signup" },
   blog: { link: "/blog", label: "Blog", value: "blog" },
 };
 

@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import { Box, Button, Container, Typography } from "@mui/material";
 import smartPhoneHand from "@/public/assets/images/hero/smartPhoneHand.svg";
-import { NAV_APP_LINKS } from "@/constants/nav";
+import { NAV_APP_LINKS, NAV_MAIN_LINKS } from "@/constants/nav";
 import { css } from "@/utils";
 import styles from "./hero.module.scss";
 
@@ -10,7 +10,7 @@ const Hero = () => {
   const router = useRouter();
 
   const goToApp = () => {
-    router.push(NAV_APP_LINKS.app.link);
+    router.push(NAV_MAIN_LINKS.signup.link);
   };
 
   return (
