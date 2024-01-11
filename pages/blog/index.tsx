@@ -24,9 +24,10 @@ const Blog: NextPage = () => {
   return (
     <MainLayout topNavbar={<HomeNavbar />}>
       <Container maxWidth="lg">
-        <Grid container>
+        <Typography variant="h4">Resources</Typography>
+        <Grid mt={2} display="flex" justifyContent="center" container>
           {articles.map(({ title, description, image, id }) => (
-            <Grid item md={3} key={id} onClick={() => goToBlog(id)}>
+            <Grid item md={4} key={id} onClick={() => goToBlog(id)}>
               <Card>
                 <CardMedia
                   sx={{ height: 140 }}
