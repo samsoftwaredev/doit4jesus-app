@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import { AudioPlayer } from "../AudioPlayer";
 import { INTERFACE_LANGUAGES } from "@/interfaces/index";
-import Rosary from "@/class/Rosary";
+import { Rosary } from "@/class";
 import styles from "./musicPlayer.module.scss";
 import MusicSettings from "../MusicSettings";
 import MusicVideo from "../MusicVideo";

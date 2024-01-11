@@ -65,4 +65,4 @@ class Rosary {
 
 const myRosary = new Rosary();
 
-export default myRosary;
+export { myRosary, Rosary };

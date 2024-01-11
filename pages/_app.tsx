@@ -9,7 +9,7 @@ import "@/styles/global.scss";
 import MusicPlayer from "@/components/MusicPlayer";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import myRosary from "@/class/Rosary";
+import { myRosary } from "@/class";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
