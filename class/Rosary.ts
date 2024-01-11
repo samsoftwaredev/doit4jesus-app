@@ -63,4 +63,6 @@ class Rosary {
   };
 }
 
-export default Rosary;
+const myRosary = new Rosary();
+
+export default myRosary;

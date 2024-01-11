@@ -6,10 +6,10 @@ import { ThemeProvider } from "@emotion/react";
 import { StyledEngineProvider } from "@mui/material/styles";
 import "@/styles/normalize.css";
 import "@/styles/global.scss";
-import { Rosary } from "../class";
 import MusicPlayer from "@/components/MusicPlayer";
-
-const myRosary = new Rosary();
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import myRosary from "@/class/Rosary";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -17,6 +17,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <ThemeProvider theme={theme}>
         <ToastContextProvider>
           <LanguageContextProvider>
+            <ToastContainer autoClose={5000} />
             <Component {...pageProps} />
             <MusicPlayer rosary={myRosary} />
           </LanguageContextProvider>
