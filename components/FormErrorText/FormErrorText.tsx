@@ -9,10 +9,9 @@ interface Props {
 }
 
 const FormErrorText = ({ control, name, fieldName = "" }: Props) => {
-  const { touchedFields, dirtyFields, errors, isSubmitted, isValid } =
-    useFormState({
-      control,
-    });
+  const { touchedFields, errors, isSubmitted, isValid } = useFormState({
+    control,
+  });
   const fieldTouched = Object.hasOwn(touchedFields, name);
 
   if (isValid) return null;

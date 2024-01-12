@@ -4,7 +4,6 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
 import FormErrorText from "@/components/FormErrorText";
 import { useRouter } from "next/router";
-import { NAV_APP_LINKS } from "@/constants/nav";
 
 interface IFormInputs {
   password: string;
@@ -24,7 +23,7 @@ const LogIn = () => {
   const onSubmit: SubmitHandler<IFormInputs> = async (userInput) => {
     const { error } = await db.logIn(userInput.email, userInput.password);
     if (error) toast.error(error.message);
-    else router.push(NAV_APP_LINKS.app.link);
+    else toast.success("We have sent a confirmation to your email");
   };
 
   return (

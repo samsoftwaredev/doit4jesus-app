@@ -127,7 +127,7 @@ const WhyPrayTheRosary = ({ next }: StepProps) => {
     <>
       <Box className={styles.stepperContent}>
         <Typography variant="h3" className={styles.title}>
-          Why Pray The Rosary?
+          When is your birthday?
         </Typography>
         <Typography
           my={5}
@@ -135,10 +135,9 @@ const WhyPrayTheRosary = ({ next }: StepProps) => {
           color="secondary"
           className={styles.body}
         >
-          Whoever shall recite the Rosary devoutly, God will not chastise him in
-          His justice, he shall not perish by an unprovided death; if he be
-          just, he shall remain in the grace of God, and become worthy of
-          eternal life.
+          It's a pleasure to have you as a member of our lively community, where
+          we celebrate moments of happiness and special occasions such as your
+          birthday.
         </Typography>
         <Grid container justifyContent="flex-end">
           <Button
@@ -219,7 +218,7 @@ const AccountSetup = () => {
     },
     {
       component: <WhyPrayTheRosary next={nextStep} />,
-      color: theme.palette.info.dark,
+      color: theme.palette.error.dark,
     },
   ];
 

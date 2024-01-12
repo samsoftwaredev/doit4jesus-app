@@ -26,7 +26,8 @@ class SupabaseDB {
       email,
       password,
       options: {
-        emailRedirectTo: NAV_APP_LINKS.app.link + "/account-setup",
+        emailRedirectTo:
+          window.location.hostname + NAV_APP_LINKS.app.link + "/account-setup",
       },
     });
   };
