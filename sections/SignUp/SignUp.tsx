@@ -1,4 +1,7 @@
 import db from "@/class/SupabaseDB";
+import FormErrorText from "@/components/FormErrorText";
+import { NAV_APP_LINKS } from "@/constants/nav";
+import { emailRegEx } from "@/utils/regEx";
 import {
   Box,
   Button,
@@ -9,6 +12,7 @@ import {
   RadioGroup,
   TextField,
 } from "@mui/material";
+import { useRouter } from "next/router";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
 
@@ -19,7 +23,10 @@ interface IFormInputs {
 }
 
 const SignUp = () => {
+  const router = useRouter();
+
   const { handleSubmit, control } = useForm<IFormInputs>({
+    mode: "onChange",
     defaultValues: {
       email: "",
       password: "",
@@ -29,7 +36,8 @@ const SignUp = () => {
 
   const onSubmit: SubmitHandler<IFormInputs> = async (userInput) => {
     const { error } = await db.signUp(userInput.email, userInput.password);
-    if (error) toast.error("Unable to create account.");
+    if (error) toast.error(error.message);
+    else router.push(NAV_APP_LINKS.app.link + "/account-setup");
   };
 
   return (
@@ -37,15 +45,36 @@ const SignUp = () => {
       <Controller
         name="email"
         control={control}
-        rules={{ required: true }}
+        rules={{
+          required: true,
+          pattern: {
+            value: emailRegEx,
+            message: "Invalid email address",
+          },
+          maxLength: {
+            value: 100,
+            message: "The email exceed max length",
+          },
+        }}
         render={({ field }) => (
           <TextField fullWidth placeholder="Email" {...field} />
         )}
       />
+      <FormErrorText control={control} name="email" />
       <Controller
         name="password"
         control={control}
-        rules={{ required: true }}
+        rules={{
+          required: true,
+          minLength: {
+            value: 5,
+            message: "Password is too short",
+          },
+          maxLength: {
+            value: 100,
+            message: "The email exceed max length",
+          },
+        }}
         render={({ field }) => (
           <TextField
             fullWidth
@@ -55,6 +84,7 @@ const SignUp = () => {
           />
         )}
       />
+      <FormErrorText name="password" control={control} />
       <Box my={1}>
         <FormLabel id="gender">Select Gender:</FormLabel>
         <Controller
@@ -81,6 +111,7 @@ const SignUp = () => {
             </RadioGroup>
           )}
         />
+        <FormErrorText name="genderMale" fieldName="gender" control={control} />
         <Button fullWidth type="submit" variant="contained">
           Sign Up
         </Button>

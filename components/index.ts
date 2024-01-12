@@ -22,6 +22,7 @@ export { default as CardDeck } from "./CardDeck";
 export { default as Dialog } from "./Dialog";
 export { default as AudioDialog } from "./AudioDialog";
 export { default as SelectExamOfConscience } from "./SelectExamOfConscience";
+export { default as FormErrorText } from "./FormErrorText";
 
 export * from "./AudioPlayer";
 export * from "./Navbars";

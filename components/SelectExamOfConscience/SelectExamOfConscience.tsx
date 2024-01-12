@@ -50,7 +50,7 @@ const SelectExamOfConscience = ({ onExamSelected }: Props) => {
   return (
     <>
       <Typography my={2} color="white" variant="h5">
-        Select type of conscience examination:
+        Select conscience examination:
       </Typography>
       <Box
         display="flex"

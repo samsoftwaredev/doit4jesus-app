@@ -36,10 +36,6 @@ const ConfessionGuide = () => {
   const [openNote, setOpenNote] = useState(true);
   const progress = (activeStep / exam.length) * 100;
 
-  const handelBack = () => {
-    history.back();
-  };
-
   const handelCloseWarning = () => {
     setOpenWarning(false);
   };

@@ -1,4 +1,5 @@
 import { AuthResponse, createClient } from "@supabase/supabase-js";
+import { NAV_APP_LINKS } from "../constants";
 
 const supabaseUrl = "https://uieyknteyflglukepcdy.supabase.co";
 const supabaseKey =
@@ -25,7 +26,7 @@ class SupabaseDB {
       email,
       password,
       options: {
-        emailRedirectTo: "/account-setup",
+        emailRedirectTo: NAV_APP_LINKS.app.link + "/account-setup",
       },
     });
   };
