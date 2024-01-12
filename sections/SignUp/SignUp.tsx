@@ -37,7 +37,7 @@ const SignUp = () => {
   const onSubmit: SubmitHandler<IFormInputs> = async (userInput) => {
     const { error } = await db.signUp(userInput.email, userInput.password);
     if (error) toast.error(error.message);
-    else router.push(NAV_APP_LINKS.app.link + "/account-setup");
+    else toast.success("We have sent a confirmation link to your email");
   };
 
   return (
