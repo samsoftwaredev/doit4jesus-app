@@ -175,6 +175,7 @@ const SignUp = () => {
         />
         <FormErrorText name="genderMale" fieldName="gender" control={control} />
         <Button
+          sx={{ marginTop: "1em" }}
           disabled={signUp.isLoading}
           fullWidth
           type="submit"

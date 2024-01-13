@@ -2,7 +2,7 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import db from "@/class/SupabaseDB";
-import { Button, TextField } from "@mui/material";
+import { Box, Button, TextField } from "@mui/material";
 import FormErrorText from "@/components/FormErrorText";
 import { NAV_APP_LINKS } from "@/constants/nav";
 
@@ -52,10 +52,17 @@ const LogIn = () => {
         )}
       />
       <FormErrorText control={control} name="password" />
-      <Button fullWidth type="submit" variant="contained">
+      <Button
+        sx={{ marginTop: "1em" }}
+        fullWidth
+        type="submit"
+        variant="contained"
+      >
         Log In
       </Button>
-      <Button variant="text">Forgot password?</Button>
+      <Button sx={{ marginTop: "1em" }} fullWidth variant="text">
+        Forgot password?
+      </Button>
     </form>
   );
 };
