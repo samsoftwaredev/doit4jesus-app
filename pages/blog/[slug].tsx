@@ -12,7 +12,7 @@ import {
 import { useRouter } from "next/router";
 import articlesList from "@/data/articles.json";
 import { useState } from "react";
-import { HomeNavbar, PageNotFound } from "@/components";
+import { HomeNavbar, Meta, PageNotFound } from "@/components";
 import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
 import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 import { NAV_MAIN_LINKS } from "@/constants/nav";
@@ -48,6 +48,7 @@ function BlogPost() {
 
   return (
     <MainLayout topNavbar={<HomeNavbar />}>
+      <Meta pageTitle={article.title} />
       <LinearProgress variant="determinate" value={progress} />
       <Container maxWidth="sm">
         <Box>

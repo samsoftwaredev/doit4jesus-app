@@ -21,8 +21,8 @@
     grid-template-rows: 1fr 1fr;
     padding-bottom: 70px;
     grid-template-areas:
-      "logo about blog contact"
-      "copyRights about blog contact";
+      "about blog contact logo"
+      "about blog contact copyRights";
   }
 }
 .copyRights {

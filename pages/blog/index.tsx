@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import { MainLayout } from "@/layouts";
-import { HomeNavbar } from "@/components";
+import { HomeNavbar, Meta } from "@/components";
 import articlesList from "@/data/articles.json";
 import {
   Card,
@@ -23,6 +23,7 @@ const Blog: NextPage = () => {
 
   return (
     <MainLayout topNavbar={<HomeNavbar />}>
+      <Meta pageTitle="Resources" />
       <Container maxWidth="lg">
         <Typography variant="h4">Resources</Typography>
         <Grid mt={2} display="flex" justifyContent="center" container>

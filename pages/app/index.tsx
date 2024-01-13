@@ -1,3 +1,4 @@
+import Meta from "@/components/Meta";
 import { AppLayout } from "@/layouts";
 import Dashboard from "@/sections/Dashboard";
 import type { NextPage } from "next";

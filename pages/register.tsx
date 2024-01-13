@@ -1,11 +1,11 @@
 import type { NextPage } from "next";
 import { MainLayout } from "@/layouts";
-import { HomeNavbar } from "../components";
+import { HomeNavbar, Meta } from "../components";
 import { Box, Button, Container, Typography } from "@mui/material";
 import { useState } from "react";
 import { LogIn, SignUp } from "../sections";
 
-const Auth: NextPage = () => {
+const Register: NextPage = () => {
   const [isNewUser, setIsNewUser] = useState(true);
 
   const toggleView = () => {
@@ -14,6 +14,7 @@ const Auth: NextPage = () => {
 
   return (
     <MainLayout topNavbar={<HomeNavbar />}>
+      <Meta pageTitle="Register" />
       <Container maxWidth="xs">
         <Typography mt={3} variant="h4" component="h1">
           {isNewUser ? "Sing Up" : "Log In"}
@@ -33,4 +34,4 @@ const Auth: NextPage = () => {
   );
 };
 
-export default Auth;
+export default Register;

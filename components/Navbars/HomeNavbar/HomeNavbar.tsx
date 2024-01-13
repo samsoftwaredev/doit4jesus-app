@@ -17,17 +17,9 @@ import {
 import { Logo } from "../..";
 import MenuIcon from "@mui/icons-material/Menu";
 import styles from "./homeNavbar.module.scss";
-import {
-  NAV_APP_LINKS,
-  NAV_FOOTER_LINKS,
-  NAV_MAIN_LINKS,
-} from "@/constants/nav";
+import { NAV_FOOTER_LINKS, NAV_MAIN_LINKS } from "@/constants/nav";
 
 interface Props {
-  /**
-   * Injected by the documentation to work in an iframe.
-   * You won't need it on your project.
-   */
   window?: () => Window;
 }
 
@@ -48,10 +40,6 @@ function HomeNavbar(props: Props) {
 
   const goToPray = () => {
     router.push("/#why-pray-rosary");
-  };
-
-  const goToApp = () => {
-    router.push(NAV_APP_LINKS.app.link);
   };
 
   const goToHome = () => {
