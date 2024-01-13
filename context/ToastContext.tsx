@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState } from "react";
-import { Alert, Button, Snackbar, Stack } from "@mui/material";
+import { Alert, Snackbar, Stack } from "@mui/material";
 
-interface ToastContextType {
+interface ToastContext {
   /** Unique id of the item */
   setToast: Function;
 }
@@ -10,7 +10,7 @@ interface Props {
   children: JSX.Element | JSX.Element[];
 }
 
-const ToastContext = createContext<ToastContextType | undefined>(undefined);
+const ToastContext = createContext<ToastContext | undefined>(undefined);
 
 const defaultToastInfo = { open: false, message: "", type: undefined };
 

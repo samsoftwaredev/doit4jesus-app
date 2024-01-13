@@ -1,7 +1,3 @@
-import db from "@/class/SupabaseDB";
-import FormErrorText from "@/components/FormErrorText";
-import { NAV_APP_LINKS } from "@/constants/nav";
-import { emailRegEx } from "@/utils/regEx";
 import {
   Box,
   Button,
@@ -11,10 +7,17 @@ import {
   Radio,
   RadioGroup,
   TextField,
+  Typography,
 } from "@mui/material";
-import { useRouter } from "next/router";
-import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+
+import FormErrorText from "@/components/FormErrorText";
+import db from "@/class/SupabaseDB";
+import { emailRegEx } from "@/utils/regEx";
 import { toast } from "react-toastify";
+import { useReducer } from "react";
+import Image from "next/image";
+import emailLetter from "@/public/assets/images/emailLetter.png";
 
 interface IFormInputs {
   password: string;
@@ -22,9 +25,39 @@ interface IFormInputs {
   genderMale: boolean;
 }
 
-const SignUp = () => {
-  const router = useRouter();
+// An enum with all the types of actions to use in our reducer
+enum SignUpActionKind {
+  LOADING = "LOADING",
+  SUCCESS = "SUCCESS",
+  FAIL = "FAIL",
+}
 
+// An interface for our actions
+interface SignUpAction {
+  type: SignUpActionKind;
+}
+
+// An interface for our state
+interface SignUpState {
+  isLoading: boolean;
+  isSuccess: boolean;
+}
+const initialState = { isLoading: false, isSuccess: false };
+
+function reducer(_: SignUpState, action: SignUpAction) {
+  switch (action.type) {
+    case SignUpActionKind.LOADING:
+      return { isSuccess: false, isLoading: true };
+    case SignUpActionKind.SUCCESS:
+      return { isSuccess: true, isLoading: false };
+    case SignUpActionKind.FAIL:
+    default:
+      return initialState;
+  }
+}
+
+const SignUp = () => {
+  const [signUp, dispatch] = useReducer(reducer, initialState);
   const { handleSubmit, control } = useForm<IFormInputs>({
     mode: "onChange",
     defaultValues: {
@@ -35,10 +68,39 @@ const SignUp = () => {
   });
 
   const onSubmit: SubmitHandler<IFormInputs> = async (userInput) => {
+    dispatch({ type: SignUpActionKind.LOADING });
     const { error } = await db.signUp(userInput.email, userInput.password);
-    if (error) toast.error(error.message);
-    else toast.success("We have sent a confirmation link to your email");
+    if (error) {
+      toast.error(error.message);
+      dispatch({ type: SignUpActionKind.FAIL });
+    } else {
+      toast.success("We have sent a confirmation link to your email");
+      dispatch({ type: SignUpActionKind.SUCCESS });
+    }
   };
+
+  if (signUp.isSuccess) {
+    return (
+      <>
+        <div style={{ width: "100%", height: "200px", position: "relative" }}>
+          <Image
+            style={{ width: "100%" }}
+            alt="Mountains"
+            src={emailLetter}
+            layout="fill"
+            objectFit="contain"
+          />
+        </div>
+        <Typography textAlign="center" variant="h5">
+          Check Your Inbox
+        </Typography>
+        <Typography mb={3} textAlign="center">
+          A verification email is on the way! <br />
+          If doesn't arrive, try to resend.
+        </Typography>
+      </>
+    );
+  }
 
   return (
     <FormControl fullWidth component="form" onSubmit={handleSubmit(onSubmit)}>
@@ -112,8 +174,13 @@ const SignUp = () => {
           )}
         />
         <FormErrorText name="genderMale" fieldName="gender" control={control} />
-        <Button fullWidth type="submit" variant="contained">
-          Sign Up
+        <Button
+          disabled={signUp.isLoading}
+          fullWidth
+          type="submit"
+          variant="contained"
+        >
+          {signUp.isLoading ? "Loading..." : "Sign Up"}
         </Button>
       </Box>
     </FormControl>

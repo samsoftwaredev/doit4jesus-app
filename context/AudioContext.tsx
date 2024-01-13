@@ -7,7 +7,7 @@ import {
   INTERFACE_AUDIO_SEEK,
 } from "@/interfaces";
 
-interface AudioContextType {
+interface AudioContext {
   /** Unique id of the item */
   audioState: INTERFACE_AUDIO_STATE;
   setAudioState: Function;
@@ -24,7 +24,7 @@ interface Props {
   type?: INTERFACE_AUDIO_TYPE;
 }
 
-const AudioContext = createContext<AudioContextType | undefined>(undefined);
+const AudioContext = createContext<AudioContext | undefined>(undefined);
 
 const AudioContextProvider = ({
   children,

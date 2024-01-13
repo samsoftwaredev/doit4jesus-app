@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import { INTERFACE_LANGUAGES } from "@/interfaces";
 
-interface AudioContextType {
+interface LanguageContext {
   /** Unique id of the item */
   language: INTERFACE_LANGUAGES;
   setLanguage: Function;
@@ -12,7 +12,7 @@ interface Props {
   type?: INTERFACE_LANGUAGES;
 }
 
-const LanguageContext = createContext<AudioContextType | undefined>(undefined);
+const LanguageContext = createContext<LanguageContext | undefined>(undefined);
 
 const LanguageContextProvider = ({
   children,

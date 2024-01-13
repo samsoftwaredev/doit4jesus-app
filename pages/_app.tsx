@@ -10,18 +10,21 @@ import MusicPlayer from "@/components/MusicPlayer";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { myRosary } from "@/class";
+import { UserContextProvider } from "@/context/UserContext";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
-        <ToastContextProvider>
-          <LanguageContextProvider>
-            <ToastContainer autoClose={5000} />
-            <Component {...pageProps} />
-            <MusicPlayer rosary={myRosary} />
-          </LanguageContextProvider>
-        </ToastContextProvider>
+        <UserContextProvider>
+          <ToastContextProvider>
+            <LanguageContextProvider>
+              <ToastContainer autoClose={5000} />
+              <Component {...pageProps} />
+              <MusicPlayer rosary={myRosary} />
+            </LanguageContextProvider>
+          </ToastContextProvider>
+        </UserContextProvider>
       </ThemeProvider>
     </StyledEngineProvider>
   );

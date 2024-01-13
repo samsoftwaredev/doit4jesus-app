@@ -15,17 +15,19 @@ const Auth: NextPage = () => {
   return (
     <MainLayout topNavbar={<HomeNavbar />}>
       <Container maxWidth="xs">
-        <Typography variant="h4" component="h1">
+        <Typography mt={3} variant="h4" component="h1">
           {isNewUser ? "Sing Up" : "Log In"}
         </Typography>
         <Typography variant="body1" component="p">
           {isNewUser ? "Join Our Catholic Community!" : "Welcome back!"}
         </Typography>
         <Box my={2}>{isNewUser ? <SignUp /> : <LogIn />}</Box>
-        {isNewUser ? "Have an account already?" : "Don't have an account?"}
-        <Button variant="text" onClick={toggleView}>
-          {isNewUser ? "Log In" : "Sign Up"}
-        </Button>
+        <Typography textAlign="center" variant="body1" component="p">
+          {isNewUser ? "Have an account already?" : "Don't have an account?"}
+          <Button variant="text" onClick={toggleView}>
+            {isNewUser ? "Log In" : "Sign Up"}
+          </Button>
+        </Typography>
       </Container>
     </MainLayout>
   );
