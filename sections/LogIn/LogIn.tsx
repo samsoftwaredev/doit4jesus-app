@@ -2,7 +2,7 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import db from "@/class/SupabaseDB";
-import { Box, Button, TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import FormErrorText from "@/components/FormErrorText";
 import { NAV_APP_LINKS } from "@/constants/nav";
 import { useUserContext } from "@/context/UserContext";

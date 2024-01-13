@@ -20,13 +20,21 @@ const Footer = () => {
 
   return (
     <Container className={styles.container} maxWidth={false}>
-      <Logo />
       <div className={styles.logo}>
+        <Logo />
+      </div>
+      <div className={styles.copyRights}>
         &copy; {currentYear} DoIt4Jesus. All rights reserved.
       </div>
-      <Button onClick={goToAbout}>About</Button>
-      <Button onClick={goToBlog}>Blog</Button>
-      <Button onClick={goToContact}>Contact</Button>
+      <Button className={styles.about} onClick={goToAbout}>
+        About
+      </Button>
+      <Button className={styles.blog} onClick={goToBlog}>
+        Blog
+      </Button>
+      <Button className={styles.contact} onClick={goToContact}>
+        Contact
+      </Button>
     </Container>
   );
 };
