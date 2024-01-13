@@ -18,6 +18,8 @@ import { toast } from "react-toastify";
 import { useReducer } from "react";
 import Image from "next/image";
 import emailLetter from "@/public/assets/images/emailLetter.png";
+import { useUserContext } from "@/context/UserContext";
+import { normalizeAuthDB } from "@/utils/helpers";
 
 interface IFormInputs {
   password: string;
@@ -57,6 +59,7 @@ function reducer(_: SignUpState, action: SignUpAction) {
 }
 
 const SignUp = () => {
+  const { setUser, user } = useUserContext();
   const [signUp, dispatch] = useReducer(reducer, initialState);
   const { handleSubmit, control } = useForm<IFormInputs>({
     mode: "onChange",
@@ -69,13 +72,18 @@ const SignUp = () => {
 
   const onSubmit: SubmitHandler<IFormInputs> = async (userInput) => {
     dispatch({ type: SignUpActionKind.LOADING });
-    const { error } = await db.signUp(userInput.email, userInput.password);
+    const { error, data: userDB } = await db.signUp(
+      userInput.email,
+      userInput.password
+    );
     if (error) {
       toast.error(error.message);
       dispatch({ type: SignUpActionKind.FAIL });
     } else {
       toast.success("We have sent a confirmation link to your email");
       dispatch({ type: SignUpActionKind.SUCCESS });
+      const dataNormalized = normalizeAuthDB(userDB.user);
+      if (user) setUser({ ...user, ...dataNormalized });
     }
   };
 

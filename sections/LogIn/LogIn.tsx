@@ -5,6 +5,8 @@ import db from "@/class/SupabaseDB";
 import { Box, Button, TextField } from "@mui/material";
 import FormErrorText from "@/components/FormErrorText";
 import { NAV_APP_LINKS } from "@/constants/nav";
+import { useUserContext } from "@/context/UserContext";
+import { normalizeAuthDB } from "@/utils/helpers";
 
 interface IFormInputs {
   password: string;
@@ -13,6 +15,7 @@ interface IFormInputs {
 
 const LogIn = () => {
   const router = useRouter();
+  const { setUser, user } = useUserContext();
   const { handleSubmit, control } = useForm<IFormInputs>({
     mode: "onChange",
     defaultValues: {
@@ -22,9 +25,17 @@ const LogIn = () => {
   });
 
   const onSubmit: SubmitHandler<IFormInputs> = async (userInput) => {
-    const { error } = await db.logIn(userInput.email, userInput.password);
-    if (error) toast.error(error.message);
-    else router.push(NAV_APP_LINKS.app.link);
+    const { error, data: userDB } = await db.logIn(
+      userInput.email,
+      userInput.password
+    );
+    if (error) {
+      toast.error(error?.message);
+    } else {
+      router.push(NAV_APP_LINKS.app.link);
+      const dataNormalized = normalizeAuthDB(userDB.user);
+      if (user) setUser({ ...user, ...dataNormalized });
+    }
   };
 
   return (

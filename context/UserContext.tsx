@@ -12,13 +12,14 @@ interface UserContext {
 }
 
 interface User {
-  email: string;
+  email?: string;
   firstName: string;
   lastName: string;
   genderMale: boolean;
   dateOfBirth: string;
   userId: string;
   picture: string;
+  isConfirmed?: boolean;
 }
 
 interface Props {

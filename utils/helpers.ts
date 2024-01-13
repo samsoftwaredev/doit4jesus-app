@@ -1,3 +1,5 @@
+import { User } from "@supabase/supabase-js";
+
 export const isClientSideRender = () => typeof window !== "undefined";
 
 export const capitalizeFirstLetter = (str: string) => {
@@ -17,4 +19,12 @@ export const generateRandomStringId = (length: number) => {
     counter += 1;
   }
   return result;
+};
+
+export const normalizeAuthDB = (userData: User | null) => {
+  return {
+    id: userData?.id,
+    email: userData?.email,
+    isConfirmed: !!userData?.confirmed_at,
+  };
 };
