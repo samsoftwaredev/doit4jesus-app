@@ -33,6 +33,7 @@
   height: auto;
   display: flex;
   align-self: center;
+  border-radius: $borderRadius;
 }
 .title {
   grid-area: title;

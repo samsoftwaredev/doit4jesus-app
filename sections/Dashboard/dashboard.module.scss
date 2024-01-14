@@ -59,7 +59,7 @@
 
 .cardImage {
   width: 100%;
-  height: 190px;
+  height: auto;
 }
 
 .title {
@@ -93,4 +93,17 @@
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
+}
+
+.eventDetails {
+  display: flex;
+  flex-direction: column;
+  background-color: rgba($color: $white, $alpha: 0.8);
+  background: linear-gradient(
+    360deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 255, 255, 1) 50%,
+    rgba(255, 255, 255, 0.3) 100%
+  );
+  height: auto;
 }

@@ -1,23 +1,26 @@
 import { Box, Container, Grid, Typography } from "@mui/material";
-import { findPeace, prayMore, prayWell } from "@/public/assets/images/hero";
 import { theme } from "@/styles/mui-overwrite";
+import josephPraying from "@/public/assets/images/art/josephPraying.jpeg";
+import jesusPrayingHands from "@/public/assets/images/art/jesusPrayingHands.jpeg";
+import maryMoon from "@/public/assets/images/art/maryMoon.jpeg";
 import styles from "./features.module.scss";
+import Image from "next/image";
 
 const features = [
   {
-    thumbnail: findPeace,
+    thumbnail: maryMoon,
     title: "Find Peace.",
     description:
       "The act of praying the Rosary has a calming effect, bringing a sense of tranquility and well-being.",
   },
   {
-    thumbnail: prayWell,
+    thumbnail: jesusPrayingHands,
     title: "Spiritual Well-Being",
     description:
       "Turn to the Rosary during times of distress, seeking solace and comfort through prayer.",
   },
   {
-    thumbnail: prayMore,
+    thumbnail: josephPraying,
     title: "Pray Together",
     description:
       "Prayer unites us and help support millions of souls while sharing our faith and intentions.",
@@ -46,7 +49,7 @@ const Features = () => {
                   borderColor: theme.palette.secondary.main,
                 }}
               >
-                {/* <Image src={thumbnail} alt={title} /> */}
+                <Image src={thumbnail} alt={title} />
               </Box>
               <Typography className="item-title" variant="h5" gutterBottom>
                 {title}

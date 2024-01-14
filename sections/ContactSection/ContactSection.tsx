@@ -1,5 +1,5 @@
 import FormErrorText from "@/components/FormErrorText";
-import contactUs from "@/public/assets/images/contactUs.png";
+import womanComputer from "@/public/assets/images/womanComputer.jpeg";
 import { emailRegEx, nameRegEx } from "@/utils/regEx";
 import {
   Button,
@@ -32,10 +32,10 @@ const ContactSection = () => {
     <Container maxWidth="md" className={styles.container}>
       <Image
         className={styles.image}
-        src={contactUs}
+        src={womanComputer}
         alt="Mary holding the Holy Rosary"
       />
-      <Typography className={styles.title} component="h1" variant="h4">
+      <Typography className={styles.title} component="h1" variant="h2">
         Contact Us
       </Typography>
       <FormControl

@@ -14,23 +14,23 @@
     grid-template-columns: 500px 1fr;
     grid-template-rows: 70px 1fr;
     grid-template-areas:
-      "image title"
-      "image content";
+      "title image"
+      "content image";
   }
   @include desktop {
     padding: 0px;
     grid-template-columns: 500px 1fr;
     grid-template-rows: 70px 1fr;
     grid-template-areas:
-      "image title"
-      "image content";
+      "title image"
+      "content image";
   }
 }
 .image {
   grid-area: image;
   width: 100%;
   height: auto;
-  border-radius: 50%;
+  border-radius: 20px;
 }
 .title {
   grid-area: title;

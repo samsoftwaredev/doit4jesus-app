@@ -1,15 +1,12 @@
-import {
-  Box,
-  Card,
-  CardContent,
-  CardMedia,
-  Link,
-  Typography,
-} from "@mui/material";
+import { Box, Card, CardContent, Link, Typography } from "@mui/material";
 import adultExamOfConscience from "@/data/adultExamOfConscience.json";
 import teenExamOfConscience from "@/data/teenExamOfConscience.json";
 import childExamOfConscience from "@/data/childExamOfConscience.json";
+import adultPraying from "@/public/assets/images/art/adultPraying.jpeg";
+import teenPraying from "@/public/assets/images/art/teenPraying.jpeg";
+import kidPraying from "@/public/assets/images/art/kidPraying.jpeg";
 import styles from "./SelectExamOfConscience.module.scss";
+import Image from "next/image";
 
 interface Props {
   onExamSelected: (exam: string) => void;
@@ -20,24 +17,21 @@ const SelectExamOfConscience = ({ onExamSelected }: Props) => {
     child: {
       label: "For Kids",
       value: childExamOfConscience,
-      image:
-        "https://i.pinimg.com/564x/95/78/3b/95783b0c78b1047f4f3d06ff57fe380c.jpg",
+      image: kidPraying,
       description:
         "This can assist children in developing a better understanding of themselves, their moral value, attitudes toward others and their relationship with God.",
     },
     teen: {
       label: "For Teens",
       value: teenExamOfConscience,
-      image:
-        "https://i.pinimg.com/564x/dd/33/2a/dd332a074e423da0794fb52258e97f81.jpg",
+      image: teenPraying,
       description:
         "This examination enables teens to recognize and manage their emotions, actions, and attitudes as well as their personal relationship with the spiritual.",
     },
     adult: {
       label: "For Adults",
       value: adultExamOfConscience,
-      image:
-        "https://www.catholicartandjewelry.com/cdn/shop/products/5a3bda6d-8367-587b-9fa5-c656ccd5f105.jpg?v=1667270034&width=1426",
+      image: adultPraying,
       description:
         "This exam encourages adults to question and analyze their thoughts and daily actions. This process promotes critical thinking skills, helping them approach situations with thoughtfulness, an analytical mindset, and faith.",
     },
@@ -65,11 +59,10 @@ const SelectExamOfConscience = ({ onExamSelected }: Props) => {
             onClick={() => onExamSelected(label)}
             className={styles.card}
           >
-            <CardMedia
-              className={styles.cardImage}
-              component="img"
-              image={image}
-              alt={label}
+            <Image
+              className={styles.image}
+              src={image}
+              alt="Mary holding the Holy Rosary"
             />
             <Box sx={{ display: "flex", flexDirection: "column" }}>
               <CardContent sx={{ flex: "1 0 auto" }}>

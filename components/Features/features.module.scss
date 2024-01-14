@@ -1,5 +1,6 @@
 .container {
   min-height: 100vh;
+  margin: 100px 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -15,7 +16,7 @@
   margin: 20px auto;
   border-top-left-radius: 200px;
   border-top-right-radius: 200px;
-  height: 400px;
+  height: 300px;
   max-width: 200px;
   border: 10px solid $errorLight;
   img {

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Container, Typography } from "@mui/material";
-import MaryRosary from "@/public/assets/images/virginMaryRosary.jpg";
+import virginPrayingHeaven from "@/public/assets/images/art/virginPrayingHeaven.jpeg";
 import styles from "./aboutSection.module.scss";
 
 const AboutSection = () => {
@@ -8,7 +8,7 @@ const AboutSection = () => {
     <Container maxWidth="md" className={styles.container}>
       <Image
         className={styles.image}
-        src={MaryRosary}
+        src={virginPrayingHeaven}
         alt="Mary holding the Holy Rosary"
       />
       <Typography className={styles.title} component="h1" variant="h2">

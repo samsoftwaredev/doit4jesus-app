@@ -1,7 +1,14 @@
-import { Box, Card, CardContent, CardMedia, Typography } from "@mui/material";
+import { Box, Card, CardContent, Typography } from "@mui/material";
 import styles from "./dashboard.module.scss";
 import { css } from "@/utils/helpers";
+import oldManPraying from "@/public/assets/images/art/oldManPraying.jpeg";
+import maryPraying from "@/public/assets/images/art/maryPraying.jpeg";
+import stJosephJesus from "@/public/assets/images/art/stJosephJesus.jpeg";
+import virginPrayingSun from "@/public/assets/images/art/virginPrayingSun.jpeg";
+import saintJoseph from "@/public/assets/images/art/saintJoseph.jpeg";
+
 import Link from "next/link";
+import Image from "next/image";
 
 const eventList = [
   {
@@ -17,8 +24,7 @@ const eventList = [
         the printing and typesetting industry.Lorem Ipsum is simply dummy text of s
         the printing and typesetting industry.Lorem Ipsum is simply dummy text of s
         the printing and typesetting industry.`,
-    image:
-      "https://www.catholicartandjewelry.com/cdn/shop/products/1ee94a8a-f769-5cb3-9f29-9788c31f02f7.jpg?v=1667256060&width=600",
+    image: oldManPraying,
   },
   {
     title:
@@ -35,8 +41,7 @@ const eventList = [
     make a type specimen book. n unknown printer took 
     a galley of type and scrambled it to 
     make a type specimen book.`,
-    image:
-      "https://www.catholicartandjewelry.com/cdn/shop/products/a376e9bc-690c-53ce-bdf1-585abda90ff0_f78b317f-01cf-461d-8770-e2d0de28479a.jpg?v=1667256678&width=1100",
+    image: maryPraying,
   },
   {
     title: "Rosary for God's mercy",
@@ -48,8 +53,7 @@ const eventList = [
     1500s, when an unknown printer took 
     a galley of type and scrambled it to 
     make a type specimen book.`,
-    image:
-      "https://www.catholicartandjewelry.com/cdn/shop/products/29992387-e6c3-53a6-92cd-6dfbd87dbfa6.jpg?v=1667269994&width=823",
+    image: saintJoseph,
   },
   {
     title: "Rosary for the forgiveness of sins",
@@ -61,8 +65,7 @@ const eventList = [
     1500s, when an unknown printer took 
     a galley of type and scrambled it to 
     make a type specimen book.`,
-    image:
-      "https://www.catholicartandjewelry.com/cdn/shop/products/5c4e6928-934a-5522-be0f-78cdd7be3683.jpg?v=1667260147&width=600",
+    image: stJosephJesus,
   },
   {
     title: "Rosary for cease of war",
@@ -74,8 +77,7 @@ const eventList = [
     1500s, when an unknown printer took 
     a galley of type and scrambled it to 
     make a type specimen book.`,
-    image:
-      "https://www.catholicartandjewelry.com/cdn/shop/products/29992387-e6c3-53a6-92cd-6dfbd87dbfa6.jpg?v=1667269994&width=823",
+    image: virginPrayingSun,
   },
 ];
 
@@ -88,15 +90,14 @@ const Dashboard = () => {
           href="app/live-event"
           className={css(index === 0 ? styles.mainCard : styles.card)}
         >
-          {image && (
-            <CardMedia
+          <Box sx={{ maxHeight: "190px" }}>
+            <Image
               className={css(index === 0 ? styles.mainImage : styles.cardImage)}
-              component="img"
-              image={image}
+              src={image}
               alt={title}
             />
-          )}
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
+          </Box>
+          <Box className={styles.eventDetails}>
             <CardContent sx={{ flex: "1 0 auto" }}>
               <Typography
                 component="div"
