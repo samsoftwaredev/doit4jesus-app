@@ -90,13 +90,11 @@ const Dashboard = () => {
           href="app/live-event"
           className={css(index === 0 ? styles.mainCard : styles.card)}
         >
-          <Box sx={{ position: "relative", maxHeight: "190px" }}>
+          <Box sx={{ maxHeight: "190px" }}>
             <Image
               className={css(index === 0 ? styles.mainImage : styles.cardImage)}
               src={image}
-              fill
               alt={title}
-              objectFit="cover"
             />
           </Box>
           <Box className={styles.eventDetails}>

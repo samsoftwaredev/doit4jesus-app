@@ -45,16 +45,16 @@
 }
 
 .mainImage {
-  // width: 100%;
-  // height: auto;
-  // @include tablet {
-  //   width: auto;
-  //   height: 350px;
-  // }
-  // @include desktop {
-  //   width: auto;
-  //   height: 350px;
-  // }
+  width: 100%;
+  height: auto;
+  @include tablet {
+    width: auto;
+    height: 350px;
+  }
+  @include desktop {
+    width: auto;
+    height: 350px;
+  }
 }
 
 .cardImage {
