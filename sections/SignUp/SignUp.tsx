@@ -17,7 +17,7 @@ import { emailRegEx } from "@/utils/regEx";
 import { toast } from "react-toastify";
 import { useReducer } from "react";
 import Image from "next/image";
-import emailLetter from "@/public/assets/images/emailLetter.png";
+import virginMaryLetter from "@/public/assets/images/art/virginMaryLetter.jpeg";
 import { useUserContext } from "@/context/UserContext";
 import { normalizeAuthDB } from "@/utils/helpers";
 
@@ -25,6 +25,8 @@ interface IFormInputs {
   password: string;
   email: string;
   genderMale: boolean;
+  firstName: string;
+  lastName: string;
 }
 
 // An enum with all the types of actions to use in our reducer
@@ -67,15 +69,14 @@ const SignUp = () => {
       email: "",
       password: "",
       genderMale: undefined,
+      firstName: "",
+      lastName: "",
     },
   });
 
   const onSubmit: SubmitHandler<IFormInputs> = async (userInput) => {
     dispatch({ type: SignUpActionKind.LOADING });
-    const { error, data: userDB } = await db.signUp(
-      userInput.email,
-      userInput.password
-    );
+    const { error, data: userDB } = await db.signUp(userInput);
     if (error) {
       toast.error(error.message);
       dispatch({ type: SignUpActionKind.FAIL });
@@ -93,8 +94,8 @@ const SignUp = () => {
         <div style={{ width: "100%", height: "200px", position: "relative" }}>
           <Image
             style={{ width: "100%" }}
-            alt="Mountains"
-            src={emailLetter}
+            alt="Virgin Mary Letter"
+            src={virginMaryLetter}
             layout="fill"
             objectFit="contain"
           />
@@ -112,6 +113,48 @@ const SignUp = () => {
 
   return (
     <FormControl fullWidth component="form" onSubmit={handleSubmit(onSubmit)}>
+      <Controller
+        name="firstName"
+        control={control}
+        rules={{
+          required: true,
+          minLength: {
+            value: 1,
+            message: "The first name is too short",
+          },
+          maxLength: {
+            value: 100,
+            message: "The first name exceed max length",
+          },
+        }}
+        render={({ field }) => (
+          <TextField fullWidth placeholder="First Name" {...field} />
+        )}
+      />
+      <FormErrorText
+        fieldName="First Name"
+        name="firstName"
+        control={control}
+      />
+      <Controller
+        name="lastName"
+        control={control}
+        rules={{
+          required: true,
+          minLength: {
+            value: 1,
+            message: "The last name is too short",
+          },
+          maxLength: {
+            value: 100,
+            message: "The last name exceed max length",
+          },
+        }}
+        render={({ field }) => (
+          <TextField fullWidth placeholder="Last Name" {...field} />
+        )}
+      />
+      <FormErrorText fieldName="Last name" name="lastName" control={control} />
       <Controller
         name="email"
         control={control}

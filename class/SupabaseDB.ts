@@ -21,13 +21,25 @@ class SupabaseDB {
       password,
     });
   };
-  signUp = async (email: string, password: string): Promise<AuthResponse> => {
+  signUp = async (userInput: {
+    email: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    genderMale: boolean;
+  }): Promise<AuthResponse> => {
+    const redirectTo =
+      window.location.origin + NAV_APP_LINKS.app.link + "/account-setup";
     return await supabase.auth.signUp({
-      email,
-      password,
+      email: userInput.email,
+      password: userInput.password,
       options: {
-        emailRedirectTo:
-          window.location.hostname + NAV_APP_LINKS.app.link + "/account-setup",
+        data: {
+          firstName: userInput.firstName,
+          lastName: userInput.lastName,
+          gender: userInput.genderMale ? "male" : "female",
+        },
+        emailRedirectTo: redirectTo,
       },
     });
   };

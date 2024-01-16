@@ -1,7 +1,7 @@
 import { Box, Card, CardContent, Typography } from "@mui/material";
 import styles from "./dashboard.module.scss";
 import { css } from "@/utils/helpers";
-import oldManPraying from "@/public/assets/images/art/oldManPraying.jpeg";
+import virginPeaceful from "@/public/assets/images/art/virginPeaceful.jpeg";
 import maryPraying from "@/public/assets/images/art/maryPraying.jpeg";
 import stJosephJesus from "@/public/assets/images/art/stJosephJesus.jpeg";
 import virginPrayingSun from "@/public/assets/images/art/virginPrayingSun.jpeg";
@@ -24,7 +24,7 @@ const eventList = [
         the printing and typesetting industry.Lorem Ipsum is simply dummy text of s
         the printing and typesetting industry.Lorem Ipsum is simply dummy text of s
         the printing and typesetting industry.`,
-    image: oldManPraying,
+    image: virginPeaceful,
   },
   {
     title:
@@ -90,11 +90,13 @@ const Dashboard = () => {
           href="app/live-event"
           className={css(index === 0 ? styles.mainCard : styles.card)}
         >
-          <Box sx={{ maxHeight: "190px" }}>
+          <Box sx={{ position: "relative", maxHeight: "190px" }}>
             <Image
               className={css(index === 0 ? styles.mainImage : styles.cardImage)}
               src={image}
+              fill
               alt={title}
+              objectFit="cover"
             />
           </Box>
           <Box className={styles.eventDetails}>
