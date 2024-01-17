@@ -12,7 +12,7 @@ import {
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
 import FormErrorText from "@/components/FormErrorText";
-import db from "@/class/SupabaseDB";
+import { db } from "@/class/SupabaseDB";
 import { emailRegEx } from "@/utils/regEx";
 import { toast } from "react-toastify";
 import { useReducer } from "react";

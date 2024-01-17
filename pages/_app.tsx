@@ -11,12 +11,27 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { myRosary } from "@/class";
 import { UserContextProvider } from "@/context/UserContext";
+import { useEffect, useState } from "react";
+import { Session } from "@supabase/supabase-js";
+import { supabase } from "@/class/SupabaseDB";
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const [session, setSession] = useState<Session | null | undefined>();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+  }, []);
+
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
-        <UserContextProvider>
+        <UserContextProvider session={session}>
           <ToastContextProvider>
             <LanguageContextProvider>
               <ToastContainer autoClose={5000} />

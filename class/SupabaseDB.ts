@@ -4,10 +4,13 @@ import { NAV_APP_LINKS } from "../constants";
 const supabaseUrl = "https://uieyknteyflglukepcdy.supabase.co";
 const supabaseKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpZXlrbnRleWZsZ2x1a2VwY2R5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDQ2NjM2OTYsImV4cCI6MjAyMDIzOTY5Nn0.-EFzqWmh1pyJLPUZ3P9rk_GxBUJmtIUHS-wCXTwBio0";
-const supabase = createClient(supabaseUrl, supabaseKey);
+export const supabase = createClient(supabaseUrl, supabaseKey);
 
 class SupabaseDB {
   constructor() {}
+  get() {
+    return supabase
+  }
   updatePassword = async (password: string) => {
     return await supabase.auth.updateUser({ password });
   };
@@ -45,6 +48,4 @@ class SupabaseDB {
   };
 }
 
-const db = new SupabaseDB();
-
-export default db;
+export const db = new SupabaseDB();
