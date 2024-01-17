@@ -50,6 +50,10 @@ function HomeNavbar(props: Props) {
     router.push(NAV_FOOTER_LINKS.about.link);
   };
 
+  const goToLogIn = () => {
+    router.push(NAV_MAIN_LINKS.login.link);
+  };
+
   const navItems = [
     {
       label: "About",
@@ -64,6 +68,11 @@ function HomeNavbar(props: Props) {
     {
       label: "Why Pray The Rosary?",
       goTo: goToPray,
+      sx: { color: "#fff" },
+    },
+    {
+      label: "Log In",
+      goTo: goToLogIn,
       sx: { color: "#fff" },
     },
   ];

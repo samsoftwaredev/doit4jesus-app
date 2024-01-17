@@ -9,7 +9,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { NAV_MAIN_LINKS } from "../constants";
+import { NAV_APP_LINKS, NAV_MAIN_LINKS } from "../constants";
 
 interface UserContext {
   user: User | null;
@@ -82,11 +82,16 @@ const UserContextProvider = ({ children, session }: Props) => {
   if (isLoading) return <p>Loading...</p>;
 
   if (session === null && user === null) {
-    // if user is in /app navigate away
+    // if user is not authenticated and navigates to /app
     if (window.location.pathname.includes("/app")) {
       navigate.push(NAV_MAIN_LINKS.login.link);
       return <p>Loading...</p>;
     }
+  }
+
+  if (window.location.pathname.includes("/register")) {
+    navigate.push(NAV_APP_LINKS.app.link);
+    return <p>Loading...</p>;
   }
 
   return (
