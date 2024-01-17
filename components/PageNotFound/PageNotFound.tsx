@@ -3,7 +3,6 @@ import { Container, Typography } from "@mui/material";
 import Image from "next/image";
 import ship from "@/public/assets/images/dream/ship.svg";
 import styles from "./pageNotFound.module.scss";
-import Ocean from "../Ocean";
 
 interface Props {
   title?: string;

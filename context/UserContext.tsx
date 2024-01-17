@@ -1,4 +1,5 @@
 import { supabase } from "@/class/SupabaseDB";
+import { User as SupabaseUser } from "@supabase/supabase-js";
 import { Session } from "@supabase/supabase-js";
 import { useRouter } from "next/router";
 import {
@@ -12,8 +13,8 @@ import {
 import { NAV_APP_LINKS, NAV_MAIN_LINKS } from "../constants";
 
 interface UserContext {
-  user: User | null;
-  setUser: Dispatch<SetStateAction<User | null>>;
+  user: User | null | undefined;
+  setUser: Dispatch<SetStateAction<User | null | undefined>>;
 }
 
 interface User {
@@ -33,63 +34,54 @@ interface Props {
 }
 
 const UserContext = createContext<UserContext | undefined>(undefined);
-let ignore = false;
 
 const UserContextProvider = ({ children, session }: Props) => {
   const navigate = useRouter();
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, seIsLoading] = useState(true);
+  const [user, setUser] = useState<User | null | undefined>();
 
-  const getProfile = async () => {
-    seIsLoading(true);
+  const getProfile = async (sessionUser: SupabaseUser) => {
     try {
-      if (!user) throw Error("No user id");
-
       const { data, error } = await supabase
         .from("profiles")
-        .select(`username, gender, firstName, lastName`)
-        .eq("id", user!.userId)
+        .select(`username`)
+        .eq("id", sessionUser.id)
         .single();
 
-      debugger;
-      if (!ignore) {
-        if (error) {
-          console.warn(error);
-        } else if (data) {
-          setUser({
-            ...data,
-            userId: user!.userId,
-            genderMale: data.gender === "male",
-          });
-        }
+      if (error) {
+        throw Error(error.message);
+      } else if (data) {
+        setUser({
+          userId: sessionUser.id,
+        });
+      } else {
+        setUser(null);
       }
     } catch (error) {
+      setUser(null);
       if (error instanceof Error) {
-        let noUserId = error.message !== "No user id";
-        if (noUserId) console.error(error);
+        let noUserId = error.message === "No user id";
+        if (noUserId) return;
+        console.error(error);
       }
     }
-    seIsLoading(false);
   };
 
   useEffect(() => {
-    getProfile();
-    return () => {
-      ignore = true;
-    };
+    if (session !== undefined) {
+      if (session) getProfile(session.user);
+      else setUser(null);
+    }
   }, [session]);
 
-  if (isLoading) return <p>Loading...</p>;
+  if (user === undefined) return <p>Loading...</p>;
 
-  if (session === null && user === null) {
-    // if user is not authenticated and navigates to /app
-    if (window.location.pathname.includes("/app")) {
-      navigate.push(NAV_MAIN_LINKS.login.link);
-      return <p>Loading...</p>;
-    }
+  // if user is not authenticated and navigates to /app
+  if (user === null && window.location.pathname.includes("/app")) {
+    navigate.push(NAV_MAIN_LINKS.login.link);
+    return <p>Redirecting</p>;
   }
 
-  if (window.location.pathname.includes("/register")) {
+  if (user && window.location.pathname.includes("/register")) {
     navigate.push(NAV_APP_LINKS.app.link);
     return <p>Loading...</p>;
   }
