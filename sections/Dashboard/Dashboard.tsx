@@ -86,6 +86,7 @@ const Dashboard = () => {
     <Box className={styles.container}>
       {eventList.map(({ title, description, eventDate, image }, index) => (
         <Card
+          key={title}
           component={Link}
           href="app/live-event"
           className={css(index === 0 ? styles.mainCard : styles.card)}

@@ -64,7 +64,10 @@ const UserContextProvider = ({ children, session }: Props) => {
         }
       }
     } catch (error) {
-      console.error(error);
+      if (error instanceof Error) {
+        let noUserId = error.message !== "No user id";
+        if (noUserId) console.error(error);
+      }
     }
     seIsLoading(false);
   };

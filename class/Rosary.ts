@@ -34,7 +34,6 @@ class Rosary {
   public getAudio = (
     language: INTERFACE_LANGUAGES = INTERFACE_LANGUAGES.en
   ): string => {
-    console.log("new language: ", language);
     return ROSARY_AUDIOS[this.mysteryName as INTERFACE_ROSARY_MYSTERIES][
       language
     ];
