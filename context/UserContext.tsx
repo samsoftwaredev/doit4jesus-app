@@ -1,7 +1,5 @@
 import { supabase } from "@/class/SupabaseDB";
-import { User as SupabaseUser } from "@supabase/supabase-js";
 import { Session } from "@supabase/supabase-js";
-import { useRouter } from "next/router";
 import {
   Dispatch,
   SetStateAction,
@@ -10,7 +8,6 @@ import {
   useEffect,
   useState,
 } from "react";
-import { NAV_APP_LINKS, NAV_MAIN_LINKS } from "../constants";
 
 interface UserContext {
   user: User | null | undefined;
@@ -30,61 +27,46 @@ interface User {
 
 interface Props {
   children: JSX.Element | JSX.Element[];
-  session: null | Session | undefined;
+  session: null | Session;
 }
 
 const UserContext = createContext<UserContext | undefined>(undefined);
 
 const UserContextProvider = ({ children, session }: Props) => {
-  const navigate = useRouter();
   const [user, setUser] = useState<User | null | undefined>();
+  const [isLoading, setIsLoading] = useState(true);
 
-  const getProfile = async (sessionUser: SupabaseUser) => {
+  const getProfile = async () => {
     try {
+      setIsLoading(true);
+
+      if (session === null) throw new Error("No session");
+
       const { data, error } = await supabase
         .from("profiles")
-        .select(`username`)
-        .eq("id", sessionUser.id)
+        .select("username")
+        .eq("id", session.user.id)
         .single();
 
-      if (error) {
-        throw Error(error.message);
-      } else if (data) {
-        setUser({
-          userId: sessionUser.id,
-        });
-      } else {
-        setUser(null);
-      }
+      if (error) throw Error(error.message);
+
+      setUser({
+        ...data,
+        userId: session.user.id,
+      });
     } catch (error) {
       setUser(null);
-      if (error instanceof Error) {
-        let noUserId = error.message === "No user id";
-        if (noUserId) return;
-        console.error(error);
-      }
+      console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    if (session !== undefined) {
-      if (session) getProfile(session.user);
-      else setUser(null);
-    }
+    getProfile();
   }, [session]);
 
-  if (user === undefined) return <p>Loading...</p>;
-
-  // if user is not authenticated and navigates to /app
-  if (user === null && window.location.pathname.includes("/app")) {
-    navigate.push(NAV_MAIN_LINKS.login.link);
-    return <p>Redirecting</p>;
-  }
-
-  if (user && window.location.pathname.includes("/register")) {
-    navigate.push(NAV_APP_LINKS.app.link);
-    return <p>Loading...</p>;
-  }
+  if (isLoading) return <p>Loading...</p>;
 
   return (
     <UserContext.Provider

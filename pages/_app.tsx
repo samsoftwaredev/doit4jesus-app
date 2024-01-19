@@ -19,19 +19,37 @@ function MyApp({ Component, pageProps }: AppProps) {
   const [session, setSession] = useState<Session | null | undefined>();
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-    });
+    const getSession = async () => {
+      let errorMessage = "No session";
+      await supabase.auth
+        .getSession()
+        .then(async ({ data: { session } }) => {
+          if (session) setSession(session);
+          else throw new Error(errorMessage);
+        })
+        .catch((err) => {
+          if (err.message === errorMessage) setSession(null);
+          console.error(err);
+        });
+    };
+    getSession();
 
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
+    const { data } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN") {
+        setSession(session);
+      }
     });
+    return () => {
+      data.subscription.unsubscribe();
+    };
   }, []);
+
+  if (session === undefined) return <>Loading Session...</>;
 
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
-        <UserContextProvider session={session}>
+        <UserContextProvider session={session!}>
           <ToastContextProvider>
             <LanguageContextProvider>
               <ToastContainer autoClose={5000} />

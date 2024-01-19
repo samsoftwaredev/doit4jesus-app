@@ -1,8 +1,12 @@
 import type { NextPage } from "next";
-import { AccountSetup } from "@/components";
+import { AccountSetup, ProtectedRoute } from "@/components";
 
-const App: NextPage = () => {
-  return <AccountSetup />;
+const AccountSetUp: NextPage = () => {
+  return (
+    <ProtectedRoute>
+      <AccountSetup />
+    </ProtectedRoute>
+  );
 };
 
-export default App;
+export default AccountSetUp;

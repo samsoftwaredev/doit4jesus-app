@@ -1,12 +1,15 @@
 import type { NextPage } from "next";
 import { AppLayout } from "@/layouts";
 import { LiveEvent } from "@/sections";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 const Rosary: NextPage = () => {
   return (
-    <AppLayout>
-      <LiveEvent />
-    </AppLayout>
+    <ProtectedRoute>
+      <AppLayout>
+        <LiveEvent />
+      </AppLayout>
+    </ProtectedRoute>
   );
 };
 
