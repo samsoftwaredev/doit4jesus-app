@@ -48,8 +48,8 @@ const TopNavbar = ({ handleMenu }: Props) => {
       >
         <Logo type="white" />
       </Button>
-      <IconButton onClick={logout}>
-        <AccountCircle className={styles.topNavbarProfile} />
+      <IconButton className={styles.topNavbarProfile} onClick={logout}>
+        <AccountCircle />
       </IconButton>
     </Box>
   );

@@ -22,4 +22,9 @@
 
 .topNavbarProfile {
   color: $secondaryMain;
+  margin-right: -30px;
+  display: block;
+  svg {
+    font-size: 1.3em;
+  }
 }
