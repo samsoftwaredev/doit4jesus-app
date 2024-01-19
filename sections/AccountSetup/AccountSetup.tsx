@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import styles from "./accountSetup.module.scss";
 import jesusCross from "@/public/assets/images/hero/jesusCross.svg";
-import { MainNavbar } from "../Navbars";
+import { MainNavbar } from "../../components/Navbars";
 
 interface StepProps {
   next: () => void;

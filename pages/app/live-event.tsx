@@ -1,16 +1,16 @@
 import type { NextPage } from "next";
 import { AppLayout } from "@/layouts";
-import { LiveEvent } from "@/sections";
+import { LiveEvent as LiveEventSection } from "@/sections";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
-const Rosary: NextPage = () => {
+const LiveEvent: NextPage = () => {
   return (
     <ProtectedRoute>
       <AppLayout>
-        <LiveEvent />
+        <LiveEventSection />
       </AppLayout>
     </ProtectedRoute>
   );
 };
 
-export default Rosary;
+export default LiveEvent;

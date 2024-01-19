@@ -1,13 +1,13 @@
 import type { NextPage } from "next";
-import { TriviaGame } from "@/sections";
+import { TriviaGame as TriviaGameSection } from "@/sections";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
-const TriviaGamePage: NextPage = () => {
+const TriviaGame: NextPage = () => {
   return (
     <ProtectedRoute>
-      <TriviaGame />
+      <TriviaGameSection />
     </ProtectedRoute>
   );
 };
 
-export default TriviaGamePage;
+export default TriviaGame;

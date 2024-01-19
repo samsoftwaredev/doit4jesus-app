@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import { AppLayout } from "@/layouts";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
-const Rosary: NextPage = () => {
+const Settings: NextPage = () => {
   return (
     <ProtectedRoute>
       <AppLayout>
@@ -12,4 +12,4 @@ const Rosary: NextPage = () => {
   );
 };
 
-export default Rosary;
+export default Settings;

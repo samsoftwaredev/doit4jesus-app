@@ -1,12 +1,12 @@
-import type { NextPage } from "next";
-import { MainLayout } from "@/layouts";
-import { HomeNavbar, Meta } from "../components";
 import { Box, Button, Container, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { HomeNavbar, Meta } from "../components";
 import { LogIn, SignUp } from "../sections";
-import { useUserContext } from "@/context/UserContext";
-import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { MainLayout } from "@/layouts";
 import { NAV_APP_LINKS } from "../constants";
+import type { NextPage } from "next";
+import { useRouter } from "next/router";
+import { useUserContext } from "@/context/UserContext";
 
 const Register: NextPage = () => {
   const navigate = useRouter();

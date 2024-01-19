@@ -5,3 +5,4 @@ export { default as LiveEvent } from "./LiveEvent";
 export { default as SignUp } from "./SignUp";
 export { default as LogIn } from "./LogIn";
 export { default as ContactSection } from "./ContactSection";
+export { default as AccountSetup } from "./AccountSetup";

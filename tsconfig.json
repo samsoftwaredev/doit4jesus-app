@@ -53,7 +53,8 @@
     "components/*",
     "hooks/*",
     "constants/*",
-    "public/*"
+    "public/*",
+    "sections/AccountSetup"
   ],
   "exclude": ["node_modules", ".vscode"]
 }

@@ -1,12 +1,13 @@
 import type { NextPage } from "next";
-import { AccountSetup, ProtectedRoute } from "@/components";
+import { ProtectedRoute } from "@/components";
+import { AccountSetup as AccountSetupSection } from "@/sections";
 
-const AccountSetUp: NextPage = () => {
+const AccountSetup: NextPage = () => {
   return (
     <ProtectedRoute>
-      <AccountSetup />
+      <AccountSetupSection />
     </ProtectedRoute>
   );
 };
 
-export default AccountSetUp;
+export default AccountSetup;
