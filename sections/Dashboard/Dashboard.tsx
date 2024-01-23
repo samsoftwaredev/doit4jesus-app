@@ -15,7 +15,7 @@ const Dashboard = ({ events }: Props) => {
   return (
     <Box className={styles.container}>
       {events.map(
-        ({ title, description, startsAt, slug, pictureUrl }, index) => (
+        ({ title, description, startedAt, slug, pictureUrl }, index) => (
           <Card
             key={title}
             component={Link}
@@ -35,13 +35,13 @@ const Dashboard = ({ events }: Props) => {
                 >
                   {title}
                 </Typography>
-                {startsAt && (
+                {startedAt && (
                   <Typography
                     component="div"
                     variant="h6"
                     className={styles.date}
                   >
-                    {startsAt}
+                    {startedAt}
                   </Typography>
                 )}
                 <Typography

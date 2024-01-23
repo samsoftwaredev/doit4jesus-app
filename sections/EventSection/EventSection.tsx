@@ -45,7 +45,7 @@ const Event = ({ event }: Props) => {
           </Button>
         </Box>
         <Typography textAlign="right" fontSize="0.9em" component="body">
-          {event.startsAt}
+          {event.startedAt}
         </Typography>
         <Typography component="body">{event.description}</Typography>
       </Card>

@@ -2,18 +2,66 @@ import type { NextPage } from "next";
 import { AppLayout } from "@/layouts";
 import { EventSection } from "@/sections";
 import ProtectedRoute from "@/components/ProtectedRoute";
-import events from "@/data/events.json";
-import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { Event, EventTypes, VideoEvent } from "@/interfaces";
+import { normalizeEvent, normalizeVideo } from "normalize";
+import { db } from "@/class/SupabaseDB";
+import { toast } from "react-toastify";
 
 const LiveEvent: NextPage = () => {
-  const router = useRouter();
-  const eventId = router.query.slug;
-  const event = events.find(({ id }) => id === eventId);
+  const [isLoading, setIsLoading] = useState(true);
+  const [eventVideo, setEventVideo] = useState<(VideoEvent & Event) | null>(
+    null
+  );
+
+  const getYouTube = async (id: string | null) => {
+    if (!id) return;
+    const { data, error } = await db.getYouTubeVideo().select("*").eq("id", id);
+    if (!error) return normalizeVideo(data)[0];
+    console.error(error);
+    toast.error("Unable to display video");
+  };
+
+  const getEvent = async () => {
+    const { data, error } = await db
+      .getEvents()
+      .select("*")
+      .order("started_at", { ascending: false })
+      .limit(1);
+    if (!error) return normalizeEvent(data)[0];
+    console.error(error);
+    toast.error("Unable to get event");
+  };
+
+  const getData = async () => {
+    const event = await getEvent();
+    if (event?.eventType === EventTypes.youtubeVideo) {
+      const video = await getYouTube(event.eventSource);
+      if (video) {
+        setEventVideo({
+          ...event,
+          ...video,
+        });
+      }
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  if (isLoading)
+    return (
+      <AppLayout>
+        <p>Loading...</p>
+      </AppLayout>
+    );
 
   return (
     <ProtectedRoute>
       <AppLayout>
-        {event ? <EventSection event={event} /> : "No live event"}
+        {eventVideo ? <EventSection event={eventVideo} /> : "No live event"}
       </AppLayout>
     </ProtectedRoute>
   );

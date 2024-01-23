@@ -3,7 +3,7 @@ import { AppLayout } from "@/layouts";
 import { EventSection } from "@/sections";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useRouter } from "next/router";
-import { EventTypes, Event, VideoEvent } from "@/interfaces/index";
+import { EventTypes, Event, VideoEvent } from "@/interfaces";
 import { useEffect, useState } from "react";
 import { db } from "@/class/SupabaseDB";
 import { normalizeEvent, normalizeVideo } from "normalize";

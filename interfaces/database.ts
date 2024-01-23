@@ -21,7 +21,7 @@ export interface Database {
           picture_url: string | null
           price: number | null
           slug: string | null
-          starts_at: string | null
+          started_at: string | null
           title: string | null
           updated_at: string | null
         }
@@ -36,7 +36,7 @@ export interface Database {
           picture_url?: string | null
           price?: number | null
           slug?: string | null
-          starts_at?: string | null
+          started_at?: string | null
           title?: string | null
           updated_at?: string | null
         }
@@ -51,7 +51,7 @@ export interface Database {
           picture_url?: string | null
           price?: number | null
           slug?: string | null
-          starts_at?: string | null
+          started_at?: string | null
           title?: string | null
           updated_at?: string | null
         }
