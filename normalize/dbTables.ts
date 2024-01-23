@@ -40,7 +40,7 @@ export const normalizeEvent = (dataList: EventsDB[]): Event[] => {
 export const normalizeVideo = (dataList: YouTubeDB[]): VideoEvent[] => {
   return dataList.map((data) => {
     return {
-      videoEventId: nullToString(data.video_id),
+      videoEventId: nullToString(data.id),
       description: nullToString(data.description),
       videoId: nullToString(data.video_id),
       title: nullToString(data.title),
