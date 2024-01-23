@@ -24,7 +24,7 @@ const Dashboard = ({ events }: Props) => {
           >
             <Box
               style={{ backgroundImage: `url(${pictureUrl})` }}
-              className={styles.cardImage}
+              className={css(index === 0 ? styles.mainImage : styles.cardImage)}
             />
             <Box className={styles.eventDetails}>
               <CardContent sx={{ flex: "1 0 auto" }}>
