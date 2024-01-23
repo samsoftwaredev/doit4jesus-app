@@ -86,6 +86,7 @@ export enum EventTypes {
 }
 
 export type Event = {
+  eventId: number;
   attendees: number;
   createdAt: string;
   description: string;
@@ -100,6 +101,7 @@ export type Event = {
 };
 
 export type VideoEvent = {
+  videoEventId: string;
   description: string;
   videoId: string;
   title: string;

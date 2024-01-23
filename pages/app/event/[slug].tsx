@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 const LiveEvent: NextPage = () => {
   const router = useRouter();
   const { slug } = router.query;
+  const [isLoading, setIsLoading] = useState(true);
   const [eventVideo, setEventVideo] = useState<(VideoEvent & Event) | null>(
     null
   );
@@ -38,12 +39,11 @@ const LiveEvent: NextPage = () => {
       if (video) {
         setEventVideo({
           ...event,
-          title: video.title,
-          description: video.title,
-          videoId: video.videoId,
+          ...video,
         });
       }
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -51,6 +51,13 @@ const LiveEvent: NextPage = () => {
       getData(slug);
     }
   }, []);
+
+  if (isLoading)
+    return (
+      <AppLayout>
+        <p>Loading...</p>
+      </AppLayout>
+    );
 
   return (
     <ProtectedRoute>
