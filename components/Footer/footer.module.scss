@@ -14,7 +14,8 @@
     grid-template-areas:
       "logo logo logo"
       "copyRights copyRights copyRights"
-      "about blog contact";
+      "about blog contact"
+      "socialMedia socialMedia socialMedia";
   }
   @include desktop {
     grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -40,4 +41,7 @@
 .logo {
   text-align: center;
   grid-area: logo;
+}
+.socialMedia {
+  grid-area: socialMedia;
 }

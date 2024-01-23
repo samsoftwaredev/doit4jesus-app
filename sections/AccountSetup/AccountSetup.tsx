@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import styles from "./accountSetup.module.scss";
 import jesusCross from "@/public/assets/images/hero/jesusCross.svg";
-import { MainNavbar } from "../../components/Navbars";
 
 interface StepProps {
   next: () => void;
@@ -229,7 +228,6 @@ const AccountSetup = () => {
   return (
     <>
       <div className={styles.bg} style={{ backgroundColor: bgColor }} />
-      <MainNavbar onlyLogo />
       <div className={styles.container}>
         <Container className={styles.content} maxWidth="md">
           <Image src={jesusCross} alt="Jesus Cross" />

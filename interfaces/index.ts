@@ -79,3 +79,21 @@ export interface INTERFACE_ROSARY_STATE {
   title: string;
   mysteryAudio: string;
 }
+
+export enum EventTypes {
+  youtubeVideo = "youtubeVideo",
+  text = "text",
+}
+
+export type Events = {
+  attendees: number;
+  createdAt: string;
+  description: string;
+  eventType: EventTypes | null;
+  pictureUrl: string;
+  price: number;
+  slug: string;
+  startsAt: string;
+  title: string;
+  updatedAt: string;
+};

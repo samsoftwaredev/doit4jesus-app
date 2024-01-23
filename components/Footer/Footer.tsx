@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { NAV_FOOTER_LINKS } from "@/constants";
 import { Button, Container } from "@mui/material";
 import Logo from "../Logo/Logo";
+import { YouTubeSubscribe } from "../YouTubeVideo";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -25,6 +26,9 @@ const Footer = () => {
       </div>
       <div className={styles.copyRights}>
         &copy; {currentYear} DoIt4Jesus. All rights reserved.
+      </div>
+      <div className={styles.socialMedia}>
+        <YouTubeSubscribe />
       </div>
       <Button className={styles.about} onClick={goToAbout}>
         About

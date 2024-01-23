@@ -13,7 +13,7 @@ const LiveEvent: NextPage = () => {
   return (
     <ProtectedRoute>
       <AppLayout>
-        {event ? <EventSection event={event} /> : "No live event"}
+        {event ? <EventSection event={event} /> : "No event found"}
       </AppLayout>
     </ProtectedRoute>
   );

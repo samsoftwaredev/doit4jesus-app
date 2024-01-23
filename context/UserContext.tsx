@@ -43,7 +43,7 @@ const UserContextProvider = ({ children, session }: Props) => {
       if (session === null) throw new Error("No session");
 
       const { data, error } = await supabase
-        .from("profiles")
+        .from("Profiles")
         .select("username")
         .eq("id", session.user.id)
         .single();

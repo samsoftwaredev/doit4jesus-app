@@ -34,9 +34,8 @@ class Rosary {
   public getAudio = (
     language: INTERFACE_LANGUAGES = INTERFACE_LANGUAGES.en
   ): string => {
-    return ROSARY_AUDIOS[this.mysteryName as INTERFACE_ROSARY_MYSTERIES][
-      language
-    ];
+    const mystery = this.mysteryName as INTERFACE_ROSARY_MYSTERIES
+    return ROSARY_AUDIOS[mystery][language];
   };
 
   public getRosaryState = (

@@ -11,7 +11,16 @@
 
 .video {
   width: 100%;
+  max-width: 700px;
+  min-height: 400px;
   height: 50vh;
+}
+
+.videoContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  background-color: black;
 }
 
 .eventDetails {

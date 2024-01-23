@@ -16,7 +16,6 @@ import { HomeNavbar, Meta, PageNotFound } from "@/components";
 import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
 import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 import { NAV_MAIN_LINKS } from "@/constants/nav";
-import Image from "next/image";
 
 function BlogPost() {
   const router = useRouter();

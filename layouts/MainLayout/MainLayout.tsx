@@ -1,4 +1,4 @@
-import { MainNavbar, Footer } from "@/components";
+import { Footer, HomeNavbar } from "@/components";
 import { ReactNode } from "react";
 import styles from "./mainLayout.module.scss";
 
@@ -7,7 +7,7 @@ interface Props {
   topNavbar?: ReactNode;
 }
 
-const MainLayout = ({ children, topNavbar = <MainNavbar /> }: Props) => {
+const MainLayout = ({ children, topNavbar = <HomeNavbar /> }: Props) => {
   return (
     <div className={styles.container}>
       <div className={styles.content}>
