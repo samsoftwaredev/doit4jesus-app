@@ -4,10 +4,10 @@ import { css } from "@/utils/helpers";
 
 import Link from "next/link";
 import { YouTubeSubscribe } from "@/components/YouTubeVideo";
-import { Events } from "@/interfaces";
+import { Event } from "@/interfaces";
 
 interface Props {
-  events: Events[] | null;
+  events: Event[] | null;
 }
 
 const Dashboard = ({ events }: Props) => {
@@ -22,11 +22,9 @@ const Dashboard = ({ events }: Props) => {
             href={`app/event/${slug}`}
             className={css(index === 0 ? styles.mainCard : styles.card)}
           >
-            <CardMedia
-              className={css(index === 0 ? styles.mainImage : styles.cardImage)}
-              component="img"
-              image={pictureUrl}
-              alt={title}
+            <Box
+              style={{ backgroundImage: `url(${pictureUrl})` }}
+              className={styles.cardImage}
             />
             <Box className={styles.eventDetails}>
               <CardContent sx={{ flex: "1 0 auto" }}>

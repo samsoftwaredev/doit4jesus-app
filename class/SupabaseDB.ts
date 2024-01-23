@@ -15,6 +15,9 @@ class SupabaseDB {
   getEvents = () => {
     return supabase.from("Events");
   };
+  getYouTubeVideo = () => {
+    return supabase.from("YouTube");
+  };
   updatePassword = async (password: string) => {
     return await supabase.auth.updateUser({ password });
   };

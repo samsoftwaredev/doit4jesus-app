@@ -3,20 +3,10 @@ import { Button } from "@mui/material";
 import { AttachMoney, Favorite, Reply } from "@mui/icons-material";
 import { css } from "@/utils/helpers";
 import styles from "./eventSection.module.scss";
+import { Event, VideoEvent } from "@/interfaces/index";
 
 interface Props {
-  event: {
-    id: string;
-    title: string;
-    description: string;
-    createdDate: string;
-    startingDate: string;
-    duration: string;
-    attendingCount: string;
-    picture: string;
-    price: string;
-    videoId: string;
-  };
+  event: VideoEvent & Event;
 }
 
 const Event = ({ event }: Props) => {
@@ -55,7 +45,7 @@ const Event = ({ event }: Props) => {
           </Button>
         </Box>
         <Typography textAlign="right" fontSize="0.9em" component="body">
-          {event.startingDate}
+          {event.startsAt}
         </Typography>
         <Typography component="body">{event.description}</Typography>
       </Card>

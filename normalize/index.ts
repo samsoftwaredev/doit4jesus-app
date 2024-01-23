@@ -1,1 +1,1 @@
-export { normalizeEvent } from "./event";
+export { normalizeEvent, normalizeVideo } from "./dbTables";
