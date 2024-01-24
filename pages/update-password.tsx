@@ -1,6 +1,6 @@
 import { Box, Button, Container, Typography } from "@mui/material";
 import { HomeNavbar, Meta } from "../components";
-import { LogIn, SignUp, ForgotPassword } from "../sections";
+import { UpdatePassword } from "@/sections";
 import { useEffect, useState } from "react";
 import { MainLayout } from "@/layouts";
 import { NAV_APP_LINKS } from "../constants";
@@ -44,47 +44,15 @@ const Register: NextPage = () => {
       <Meta pageTitle="Register" />
       <Container maxWidth="xs">
         <Typography mt={3} variant="h4" component="h1">
-          {view}
+          Update Password
         </Typography>
         <Typography variant="body1" component="p">
-          {view === ViewType.signUp && "Join Our Catholic Community!"}
-          {view === ViewType.logIn && "Welcome back!"}
-          {view === ViewType.forgotPassword &&
-            "No worries! Fill in your email and we'll send you a link to reset your password"}
+          Enter a new password to reset the password on your account. We'll ask
+          this password whenever you log in.
         </Typography>
         <Box my={2}>
-          {view === ViewType.signUp && <SignUp />}
-          {view === ViewType.logIn && (
-            <LogIn onForgotPassword={toggleViewForgotPassword} />
-          )}
-          {view === ViewType.forgotPassword && <ForgotPassword />}
+          <UpdatePassword />
         </Box>
-        <Typography textAlign="center" variant="body1" component="p">
-          {view === ViewType.signUp && (
-            <>
-              Have an account already?
-              <Button variant="text" onClick={toggleViewLogin}>
-                Log In
-              </Button>
-            </>
-          )}
-          {view === ViewType.logIn && (
-            <>
-              Don't have an account?
-              <Button variant="text" onClick={toggleViewSignUp}>
-                Sign Up
-              </Button>
-            </>
-          )}
-          {view === ViewType.forgotPassword && (
-            <>
-              Did you remembered your password?
-              <Button variant="text" onClick={toggleViewLogin}>
-                Log In
-              </Button>
-            </>
-          )}
-        </Typography>
       </Container>
     </MainLayout>
   );

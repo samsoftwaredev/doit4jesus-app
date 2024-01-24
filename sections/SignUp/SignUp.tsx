@@ -79,6 +79,7 @@ const SignUp = () => {
     const { error, data: userDB } = await db.signUp(userInput);
     if (error) {
       toast.error(error.message);
+      console.error(error);
       dispatch({ type: SignUpActionKind.FAIL });
     } else {
       toast.success("We have sent a confirmation link to your email");

@@ -7,12 +7,14 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { NAV_APP_LINKS, NAV_MAIN_LINKS } from "@/constants/nav";
 import { toast } from "react-toastify";
+import { useUserContext } from "@/context/UserContext";
 
 interface Props {
   handleMenu: () => void;
 }
 
 const TopNavbar = ({ handleMenu }: Props) => {
+  const { user } = useUserContext();
   const navigate = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -49,6 +51,7 @@ const TopNavbar = ({ handleMenu }: Props) => {
         <Logo type="white" />
       </Button>
       <IconButton className={styles.topNavbarProfile} onClick={logout}>
+        {user?.userId}&nbsp;
         <AccountCircle />
       </IconButton>
     </Box>

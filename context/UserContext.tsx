@@ -1,4 +1,4 @@
-import { supabase } from "@/class/SupabaseDB";
+import { db, supabase } from "@/class/SupabaseDB";
 import { Session } from "@supabase/supabase-js";
 import {
   Dispatch,
@@ -36,20 +36,35 @@ const UserContextProvider = ({ children, session }: Props) => {
   const [user, setUser] = useState<User | null | undefined>();
   const [isLoading, setIsLoading] = useState(true);
 
+  // Create a function to handle inserts
+  const handleInserts = (payload: any) => {
+    console.log("Change received!", payload);
+  };
+
+  const setOnlinePresence = async () => {
+    const liveEvent = supabase.channel("live-event"); // set your topic here
+    const presenceTrackStatus = await liveEvent.track({
+      user: user?.userId,
+      online_at: new Date().toISOString(),
+    });
+    console.log("presenceTrackStatus: ", presenceTrackStatus);
+  };
+
   const getProfile = async () => {
     try {
       setIsLoading(true);
 
       if (session === null) throw new Error("No session");
 
-      const { data, error } = await supabase
-        .from("Profiles")
+      const { data, error } = await db
+        .getProfiles()
         .select("username")
         .eq("id", session.user.id)
         .single();
 
       if (error) throw Error(error.message);
 
+      setOnlinePresence();
       setUser({
         ...data,
         userId: session.user.id,

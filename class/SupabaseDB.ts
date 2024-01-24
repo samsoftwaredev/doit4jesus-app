@@ -1,6 +1,8 @@
 import { AuthResponse, createClient } from "@supabase/supabase-js";
 import { NAV_APP_LINKS } from "../constants";
 import type { Database } from "@/interfaces/database";
+import { GENDER_TYPES } from "@/interfaces/enum";
+import { GenderEnumDB } from "@/interfaces/databaseTable";
 
 const supabaseUrl = "https://uieyknteyflglukepcdy.supabase.co";
 const supabaseKey =
@@ -12,17 +14,23 @@ class SupabaseDB {
   get() {
     return supabase;
   }
+  getProfiles = () => {
+    return supabase.from("profiles");
+  };
   getEvents = () => {
-    return supabase.from("Events");
+    return supabase.from("events");
   };
   getYouTubeVideo = () => {
-    return supabase.from("YouTube");
+    return supabase.from("youtube");
   };
   updatePassword = async (password: string) => {
     return await supabase.auth.updateUser({ password });
   };
-  restPassword = async (email: string) => {
-    return await supabase.auth.resetPasswordForEmail(email);
+  resetPassword = async (email: string) => {
+    const redirectTo = window.location.origin + "/update-password";
+    return await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: redirectTo,
+    });
   };
   logOut = async () => await supabase.auth.signOut();
   logIn = async (email: string, password: string) => {
@@ -40,14 +48,17 @@ class SupabaseDB {
   }): Promise<AuthResponse> => {
     const redirectTo =
       window.location.origin + NAV_APP_LINKS.app.link + "/account-setup";
+    const userGender = userInput.genderMale
+      ? GENDER_TYPES.male
+      : GENDER_TYPES.female;
     return await supabase.auth.signUp({
       email: userInput.email,
       password: userInput.password,
       options: {
         data: {
-          firstName: userInput.firstName,
-          lastName: userInput.lastName,
-          gender: userInput.genderMale ? "male" : "female",
+          first_name: userInput.firstName,
+          last_name: userInput.lastName,
+          gender: userGender as any,
         },
         emailRedirectTo: redirectTo,
       },

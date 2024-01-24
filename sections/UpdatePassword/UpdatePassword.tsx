@@ -4,59 +4,43 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { db } from "@/class/SupabaseDB";
 import { Button, TextField } from "@mui/material";
 import FormErrorText from "@/components/FormErrorText";
-import { NAV_APP_LINKS } from "@/constants/nav";
-import { useUserContext } from "@/context/UserContext";
-import { normalizeAuthDB } from "@/utils/helpers";
+import { NAV_MAIN_LINKS } from "@/constants/nav";
 import { useState } from "react";
 
 interface IFormInputs {
   password: string;
-  email: string;
+  confirmPassword: string;
 }
 
-interface Props {
-  onForgotPassword: () => void;
-}
-
-const LogIn = ({ onForgotPassword }: Props) => {
+const LogIn = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const { setUser, user } = useUserContext();
   const { handleSubmit, control } = useForm<IFormInputs>({
     mode: "onChange",
     defaultValues: {
-      email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
   const onSubmit: SubmitHandler<IFormInputs> = async (userInput) => {
-    setIsLoading(true);
-    const { error, data: userDB } = await db.logIn(
-      userInput.email,
-      userInput.password
-    );
-    if (error) {
-      toast.error(error?.message);
+    if (userInput.password === userInput.confirmPassword) {
+      setIsLoading(true);
+      const { error } = await db.updatePassword(userInput.password);
+      if (error) {
+        toast.error(error?.message);
+      } else {
+        router.push(NAV_MAIN_LINKS.login.link);
+        toast.success("Password was updated");
+      }
+      setIsLoading(false);
     } else {
-      router.push(NAV_APP_LINKS.app.link);
-      const dataNormalized = normalizeAuthDB(userDB.user);
-      if (user) setUser({ ...user, ...dataNormalized });
+      toast.warning("Passwords do not match. Please confirm your password.");
     }
-    setIsLoading(false);
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Controller
-        name="email"
-        control={control}
-        rules={{ required: true }}
-        render={({ field }) => (
-          <TextField fullWidth placeholder="Email" {...field} />
-        )}
-      />
-      <FormErrorText control={control} name="email" />
       <Controller
         name="password"
         control={control}
@@ -71,6 +55,24 @@ const LogIn = ({ onForgotPassword }: Props) => {
         )}
       />
       <FormErrorText control={control} name="password" />
+      <Controller
+        name="confirmPassword"
+        control={control}
+        rules={{ required: true }}
+        render={({ field }) => (
+          <TextField
+            fullWidth
+            type="password"
+            placeholder="Confirm Password"
+            {...field}
+          />
+        )}
+      />
+      <FormErrorText
+        control={control}
+        name="confirmPassword"
+        fieldName="Confirm Password"
+      />
       <Button
         disabled={isLoading}
         sx={{ marginTop: "1em" }}
@@ -78,15 +80,7 @@ const LogIn = ({ onForgotPassword }: Props) => {
         type="submit"
         variant="contained"
       >
-        Log In
-      </Button>
-      <Button
-        onClick={onForgotPassword}
-        sx={{ marginTop: "1em" }}
-        fullWidth
-        variant="text"
-      >
-        Forgot password?
+        Update Password
       </Button>
     </form>
   );

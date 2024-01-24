@@ -9,7 +9,7 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
-      Events: {
+      events: {
         Row: {
           attendees: Json | null
           created_at: string
@@ -57,15 +57,36 @@ export interface Database {
         }
         Relationships: [
           {
-            foreignKeyName: "Events_event_source_fkey"
+            foreignKeyName: "events_event_source_fkey"
             columns: ["event_source"]
             isOneToOne: false
-            referencedRelation: "YouTube"
+            referencedRelation: "youtube"
             referencedColumns: ["id"]
           }
         ]
       }
-      Posts: {
+      exam_consciousness: {
+        Row: {
+          commandment: number | null
+          created_at: string
+          id: number
+          title: string | null
+        }
+        Insert: {
+          commandment?: number | null
+          created_at?: string
+          id?: number
+          title?: string | null
+        }
+        Update: {
+          commandment?: number | null
+          created_at?: string
+          id?: number
+          title?: string | null
+        }
+        Relationships: []
+      }
+      posts: {
         Row: {
           content: string | null
           created_at: string
@@ -101,36 +122,45 @@ export interface Database {
         }
         Relationships: [
           {
-            foreignKeyName: "Posts_user_id_fkey"
+            foreignKeyName: "posts_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "Profiles"
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           }
         ]
       }
-      Profiles: {
+      profiles: {
         Row: {
+          birth_date: string | null
+          gender: Database["public"]["Enums"]["gender"] | null
           id: string
+          is_online: boolean | null
           picture_url: string | null
           updated_at: string | null
           username: string | null
         }
         Insert: {
+          birth_date?: string | null
+          gender?: Database["public"]["Enums"]["gender"] | null
           id: string
+          is_online?: boolean | null
           picture_url?: string | null
           updated_at?: string | null
           username?: string | null
         }
         Update: {
+          birth_date?: string | null
+          gender?: Database["public"]["Enums"]["gender"] | null
           id?: string
+          is_online?: boolean | null
           picture_url?: string | null
           updated_at?: string | null
           username?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "Profiles_id_fkey"
+            foreignKeyName: "profiles_id_fkey"
             columns: ["id"]
             isOneToOne: true
             referencedRelation: "users"
@@ -138,7 +168,7 @@ export interface Database {
           }
         ]
       }
-      YouTube: {
+      youtube: {
         Row: {
           created_at: string
           description: string | null
@@ -164,13 +194,20 @@ export interface Database {
       }
     }
     Views: {
-      [_ in never]: never
+      latest_event: {
+        Row: {
+          id: number | null
+          started_at: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
     }
     Enums: {
       event_type: "youtube_video"
+      gender: "male" | "famale"
     }
     CompositeTypes: {
       [_ in never]: never

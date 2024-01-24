@@ -4,5 +4,7 @@ export { default as Dashboard } from "./Dashboard";
 export { default as EventSection } from "./EventSection";
 export { default as SignUp } from "./SignUp";
 export { default as LogIn } from "./LogIn";
+export { default as ForgotPassword } from "./ForgotPassword";
+export { default as UpdatePassword } from "./UpdatePassword";
 export { default as ContactSection } from "./ContactSection";
 export { default as AccountSetup } from "./AccountSetup";
