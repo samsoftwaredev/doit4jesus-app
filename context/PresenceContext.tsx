@@ -10,7 +10,7 @@ interface PresenceContext {
 interface Props {
   children: JSX.Element | JSX.Element[];
   user: User;
-  channel: RealtimeChannel;
+  channel?: RealtimeChannel;
 }
 
 const PresenceContext = createContext<PresenceContext | undefined>(undefined);
@@ -18,6 +18,8 @@ const PresenceContext = createContext<PresenceContext | undefined>(undefined);
 const PresenceContextProvider = ({ children, user, channel }: Props) => {
   let onlineUsers: RealtimePresenceState<{}> = {};
   const [users, setUsers] = useState<OnlineUser[] | undefined>();
+
+  if (!channel) return null; // if name is falsy, exit function
 
   const flattenArr = (data: any) =>
     normalizeOnlineUsers(Object.values(data).flat(2));

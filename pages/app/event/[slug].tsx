@@ -4,7 +4,7 @@ import { EventSection } from "@/sections";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useRouter } from "next/router";
 import { EventTypes, Event, VideoEvent } from "@/interfaces";
-import { useEffect, useId, useState } from "react";
+import { useEffect, useState } from "react";
 import { db, supabase } from "@/class/SupabaseDB";
 import { normalizeEvent, normalizeVideo } from "normalize";
 import { toast } from "react-toastify";
@@ -14,9 +14,8 @@ import { useUserContext } from "@/context/UserContext";
 const LiveEvent: NextPage = () => {
   const router = useRouter();
   const { slug } = router.query;
-  const id = useId();
   const { user } = useUserContext();
-  const liveEvent = supabase.channel(typeof slug === "string" ? slug : id); // set your topic here
+  const liveEvent = supabase.channel(typeof slug === "string" ? slug : "");
   const [isLoading, setIsLoading] = useState(true);
   const [eventVideo, setEventVideo] = useState<(VideoEvent & Event) | null>(
     null
@@ -55,12 +54,13 @@ const LiveEvent: NextPage = () => {
     if (slug && !Array.isArray(slug)) getData(slug);
   }, []);
 
-  if (isLoading)
+  if (isLoading) {
     return (
       <AppLayout>
         <p>Loading...</p>
       </AppLayout>
     );
+  }
 
   return (
     <ProtectedRoute>
