@@ -5,7 +5,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import { useEffect, useState } from "react";
 import { Event, EventTypes, VideoEvent } from "@/interfaces";
 import { normalizeEvent, normalizeVideo } from "normalize";
-import { db } from "@/class/SupabaseDB";
+import { db, supabase } from "@/class/SupabaseDB";
 import { toast } from "react-toastify";
 import { Box } from "@mui/material";
 import { PresenceContextProvider } from "@/context/PresenceContext";
@@ -13,6 +13,7 @@ import { useUserContext } from "@/context/UserContext";
 
 const LiveEvent: NextPage = () => {
   const { user } = useUserContext();
+  const liveEvent = supabase.channel("live-event"); // set your topic here
   const [isLoading, setIsLoading] = useState(true);
   const [eventVideo, setEventVideo] = useState<(VideoEvent & Event) | null>(
     null
@@ -60,7 +61,7 @@ const LiveEvent: NextPage = () => {
 
   return (
     <ProtectedRoute>
-      <PresenceContextProvider user={user!}>
+      <PresenceContextProvider channel={liveEvent} user={user!}>
         <AppLayout>
           {eventVideo ? <EventSection event={eventVideo} /> : "No live event"}
         </AppLayout>

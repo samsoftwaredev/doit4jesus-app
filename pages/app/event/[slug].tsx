@@ -4,14 +4,19 @@ import { EventSection } from "@/sections";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useRouter } from "next/router";
 import { EventTypes, Event, VideoEvent } from "@/interfaces";
-import { useEffect, useState } from "react";
-import { db } from "@/class/SupabaseDB";
+import { useEffect, useId, useState } from "react";
+import { db, supabase } from "@/class/SupabaseDB";
 import { normalizeEvent, normalizeVideo } from "normalize";
 import { toast } from "react-toastify";
+import { PresenceContextProvider } from "@/context/PresenceContext";
+import { useUserContext } from "@/context/UserContext";
 
 const LiveEvent: NextPage = () => {
   const router = useRouter();
   const { slug } = router.query;
+  const id = useId();
+  const { user } = useUserContext();
+  const liveEvent = supabase.channel(typeof slug === "string" ? slug : id); // set your topic here
   const [isLoading, setIsLoading] = useState(true);
   const [eventVideo, setEventVideo] = useState<(VideoEvent & Event) | null>(
     null
@@ -47,9 +52,7 @@ const LiveEvent: NextPage = () => {
   };
 
   useEffect(() => {
-    if (slug && !Array.isArray(slug)) {
-      getData(slug);
-    }
+    if (slug && !Array.isArray(slug)) getData(slug);
   }, []);
 
   if (isLoading)
@@ -61,9 +64,11 @@ const LiveEvent: NextPage = () => {
 
   return (
     <ProtectedRoute>
-      <AppLayout>
-        {eventVideo ? <EventSection event={eventVideo} /> : "No event found"}
-      </AppLayout>
+      <PresenceContextProvider channel={liveEvent} user={user!}>
+        <AppLayout>
+          {eventVideo ? <EventSection event={eventVideo} /> : "No event found"}
+        </AppLayout>
+      </PresenceContextProvider>
     </ProtectedRoute>
   );
 };

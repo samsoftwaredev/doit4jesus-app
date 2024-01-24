@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { OnlineUser, User } from "@/interfaces";
-import { RealtimePresenceState } from "@supabase/supabase-js";
-import { supabase } from "../class";
+import { RealtimeChannel, RealtimePresenceState } from "@supabase/supabase-js";
 import { normalizeOnlineUsers } from "normalize";
 
 interface PresenceContext {
@@ -11,12 +10,12 @@ interface PresenceContext {
 interface Props {
   children: JSX.Element | JSX.Element[];
   user: User;
+  channel: RealtimeChannel;
 }
 
 const PresenceContext = createContext<PresenceContext | undefined>(undefined);
-const liveEvent = supabase.channel("live-event"); // set your topic here
 
-const PresenceContextProvider = ({ children, user }: Props) => {
+const PresenceContextProvider = ({ children, user, channel }: Props) => {
   let onlineUsers: RealtimePresenceState<{}> = {};
   const [users, setUsers] = useState<OnlineUser[] | undefined>();
 
@@ -24,14 +23,14 @@ const PresenceContextProvider = ({ children, user }: Props) => {
     normalizeOnlineUsers(Object.values(data).flat(2));
 
   const untrackPresence = async () => {
-    return await liveEvent.untrack();
+    return await channel.untrack();
   };
 
   const subscribeToPresence = async () => {
     try {
-      await liveEvent
+      await channel
         .on("presence", { event: "sync" }, () => {
-          onlineUsers = liveEvent.presenceState();
+          onlineUsers = channel.presenceState();
           setUsers(flattenArr(onlineUsers));
         })
         .on("presence", { event: "join" }, ({ key, newPresences }) => {
@@ -51,7 +50,7 @@ const PresenceContextProvider = ({ children, user }: Props) => {
 
   const trackPresence = async () => {
     subscribeToPresence();
-    await liveEvent.track({
+    await channel.track({
       userId: user?.userId,
       online_at: new Date().toISOString(),
       picture_url: user?.pictureUrl,
