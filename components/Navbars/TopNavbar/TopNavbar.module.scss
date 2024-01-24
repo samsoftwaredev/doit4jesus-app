@@ -27,4 +27,13 @@
   svg {
     font-size: 1.3em;
   }
+  a {
+    display: none;
+    @include tablet {
+      display: block;
+    }
+    @include desktop {
+      display: block;
+    }
+  }
 }

@@ -1,5 +1,5 @@
 import { AccountCircle, Menu } from "@mui/icons-material";
-import { Box, Button, IconButton } from "@mui/material";
+import { Box, Button, IconButton, Typography } from "@mui/material";
 import { Logo } from "../..";
 import styles from "./TopNavbar.module.scss";
 import { db } from "@/class/SupabaseDB";
@@ -51,7 +51,7 @@ const TopNavbar = ({ handleMenu }: Props) => {
         <Logo type="white" />
       </Button>
       <IconButton className={styles.topNavbarProfile} onClick={logout}>
-        {user?.firstName}&nbsp;
+        <Typography component={"a"}>{user?.firstName}&nbsp;</Typography>
         <AccountCircle />
       </IconButton>
     </Box>
