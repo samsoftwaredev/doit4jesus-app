@@ -51,7 +51,7 @@ const TopNavbar = ({ handleMenu }: Props) => {
         <Logo type="white" />
       </Button>
       <IconButton className={styles.topNavbarProfile} onClick={logout}>
-        {user?.userId}&nbsp;
+        {user?.firstName}&nbsp;
         <AccountCircle />
       </IconButton>
     </Box>

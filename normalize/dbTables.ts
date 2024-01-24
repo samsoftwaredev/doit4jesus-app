@@ -1,6 +1,6 @@
 import { EventTypes, Event, VideoEvent } from "@/interfaces";
 import { Json } from "@/interfaces/database";
-import { EventsDB, YouTubeDB } from "@/interfaces/databaseTable";
+import { EventsDB, ProfilesDB, YouTubeDB } from "@/interfaces/databaseTable";
 import moment from "moment";
 
 const nullToString = (val: string | null) => (val === null ? "" : val);
@@ -46,4 +46,16 @@ export const normalizeVideo = (dataList: YouTubeDB[]): VideoEvent[] => {
       title: nullToString(data.title),
     };
   });
+};
+
+export const normalizeUserProfile = (data: ProfilesDB) => {
+  return {
+    updateAt: data.updated_at,
+    userId: nullToString(data.id),
+    firstName: nullToString(data.first_name),
+    lastName: nullToString(data.last_name),
+    gender: nullToString(data.gender),
+    dob: nullToString(data.birth_date),
+    pictureUrl: nullToString(data.picture_url),
+  };
 };

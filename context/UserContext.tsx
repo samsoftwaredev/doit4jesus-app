@@ -1,5 +1,6 @@
 import { db, supabase } from "@/class/SupabaseDB";
 import { Session } from "@supabase/supabase-js";
+import { normalizeUserProfile } from "normalize/dbTables";
 import {
   Dispatch,
   SetStateAction,
@@ -58,15 +59,16 @@ const UserContextProvider = ({ children, session }: Props) => {
 
       const { data, error } = await db
         .getProfiles()
-        .select("username")
+        .select("*")
         .eq("id", session.user.id)
         .single();
 
       if (error) throw Error(error.message);
 
       setOnlinePresence();
+      const userDataNormalized = normalizeUserProfile(data);
       setUser({
-        ...data,
+        ...userDataNormalized,
         userId: session.user.id,
       });
     } catch (error) {

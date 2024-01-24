@@ -133,27 +133,33 @@ export interface Database {
       profiles: {
         Row: {
           birth_date: string | null
-          gender: Database["public"]["Enums"]["gender"] | null
+          first_name: string | null
+          gender: string | null
           id: string
           is_online: boolean | null
+          last_name: string | null
           picture_url: string | null
           updated_at: string | null
           username: string | null
         }
         Insert: {
           birth_date?: string | null
-          gender?: Database["public"]["Enums"]["gender"] | null
+          first_name?: string | null
+          gender?: string | null
           id: string
           is_online?: boolean | null
+          last_name?: string | null
           picture_url?: string | null
           updated_at?: string | null
           username?: string | null
         }
         Update: {
           birth_date?: string | null
-          gender?: Database["public"]["Enums"]["gender"] | null
+          first_name?: string | null
+          gender?: string | null
           id?: string
           is_online?: boolean | null
+          last_name?: string | null
           picture_url?: string | null
           updated_at?: string | null
           username?: string | null
