@@ -55,7 +55,6 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
 
   const handelSave = () => {
     // TODO: API call to save
-    console.log("saved");
     setToast({ open: true, message: "Question saved!", type: "success" });
   };
 

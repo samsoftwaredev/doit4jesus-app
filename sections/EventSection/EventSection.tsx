@@ -13,7 +13,6 @@ interface Props {
 
 const Event = ({ event }: Props) => {
   const { users } = usePresenceContext();
-  console.log(users);
   return (
     <Box className={styles.container}>
       <Box className={styles.videoContainer}>
