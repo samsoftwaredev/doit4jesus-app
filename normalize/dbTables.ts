@@ -50,12 +50,12 @@ export const normalizeVideo = (dataList: YouTubeDB[]): VideoEvent[] => {
 
 export const normalizeUserProfile = (data: ProfilesDB) => {
   return {
-    updateAt: data.updated_at,
+    updateAt: nullToDate(data.updated_at),
     userId: nullToString(data.id),
     firstName: nullToString(data.first_name),
     lastName: nullToString(data.last_name),
     gender: nullToString(data.gender),
-    dob: nullToString(data.birth_date),
+    dob: nullToDate(data.birth_date),
     pictureUrl: nullToString(data.picture_url),
   };
 };
