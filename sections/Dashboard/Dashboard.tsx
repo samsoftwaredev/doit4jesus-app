@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, CardMedia, Typography } from "@mui/material";
+import { Box, Card, CardContent, Typography } from "@mui/material";
 import styles from "./dashboard.module.scss";
 import { css } from "@/utils/helpers";
 

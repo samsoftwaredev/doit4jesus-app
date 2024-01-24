@@ -34,15 +34,10 @@ const LiveEvent: NextPage = () => {
   };
 
   const getData = async () => {
-    const event = await getEvent();
-    if (event?.eventType === EventTypes.youtubeVideo) {
-      const video = await getYouTube(event.eventSource);
-      if (video) {
-        setEventVideo({
-          ...event,
-          ...video,
-        });
-      }
+    const eventRes = await getEvent();
+    if (eventRes?.eventType === EventTypes.youtubeVideo) {
+      const videoRes = await getYouTube(eventRes.eventSource);
+      if (videoRes) setEventVideo({ ...eventRes, ...videoRes });
     }
     setIsLoading(false);
   };
@@ -51,12 +46,13 @@ const LiveEvent: NextPage = () => {
     getData();
   }, []);
 
-  if (isLoading)
+  if (isLoading) {
     return (
       <AppLayout>
         <p>Loading...</p>
       </AppLayout>
     );
+  }
 
   return (
     <ProtectedRoute>

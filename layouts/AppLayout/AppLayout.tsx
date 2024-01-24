@@ -2,14 +2,12 @@ import React, { useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import { TopNavbar, SideNavbar } from "@/components/Navbars";
 import GridViewIcon from "@mui/icons-material/GridView";
-// import StarIcon from "@mui/icons-material/Star";
-// import SettingsIcon from "@mui/icons-material/Settings";
-// import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 import CellTowerIcon from "@mui/icons-material/CellTower";
 import ConfessionIcon from "@mui/icons-material/PsychologyAlt";
 import { Box, Typography } from "@mui/material";
 import styles from "./AppLayout.module.scss";
 import { css } from "@/utils/helpers";
+import Meta from "@/components/Meta";
 
 interface Props {
   children: React.ReactNode;
@@ -46,31 +44,34 @@ export default function AppLayout({ children }: Props) {
   );
 
   return (
-    <Box className={styles.container}>
-      <Box component="menu" className={styles.topNavbar}>
-        <TopNavbar handleMenu={handleDrawerOpen} />
+    <>
+      <Meta pageTitle={pageTitle?.label} />
+      <Box className={styles.container}>
+        <Box component="menu" className={styles.topNavbar}>
+          <TopNavbar handleMenu={handleDrawerOpen} />
+        </Box>
+        <Box component="header" className={styles.pageTitle}>
+          <Typography component="h1" variant="h4">
+            {pageTitle?.label}
+          </Typography>
+        </Box>
+        <Box
+          component="menu"
+          className={css(
+            styles.sideNavbar,
+            drawerOpen ? styles.sideNavbarOpen : styles.sideNavbarClose
+          )}
+        >
+          <SideNavbar
+            menuItems={menuItems}
+            open={drawerOpen}
+            handleDrawerClose={handleDrawerOpen}
+          />
+        </Box>
+        <Box className={styles.content} component="main">
+          {children}
+        </Box>
       </Box>
-      <Box component="header" className={styles.pageTitle}>
-        <Typography component="h1" variant="h4">
-          {pageTitle?.label}
-        </Typography>
-      </Box>
-      <Box
-        component="menu"
-        className={css(
-          styles.sideNavbar,
-          drawerOpen ? styles.sideNavbarOpen : styles.sideNavbarClose
-        )}
-      >
-        <SideNavbar
-          menuItems={menuItems}
-          open={drawerOpen}
-          handleDrawerClose={handleDrawerOpen}
-        />
-      </Box>
-      <Box className={styles.content} component="main">
-        {children}
-      </Box>
-    </Box>
+    </>
   );
 }
