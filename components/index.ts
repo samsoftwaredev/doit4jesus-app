@@ -23,6 +23,7 @@ export { default as AudioDialog } from "./AudioDialog";
 export { default as SelectExamOfConscience } from "./SelectExamOfConscience";
 export { default as FormErrorText } from "./FormErrorText";
 export { default as ProtectedRoute } from "./ProtectedRoute";
+export { default as OnlineUsers } from "./OnlineUsers";
 
 export * from "./AudioPlayer";
 export * from "./Navbars";

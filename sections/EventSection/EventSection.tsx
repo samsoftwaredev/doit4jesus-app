@@ -4,12 +4,16 @@ import { AttachMoney, Favorite, Reply } from "@mui/icons-material";
 import { css } from "@/utils/helpers";
 import styles from "./eventSection.module.scss";
 import { Event, VideoEvent } from "@/interfaces/index";
+import { usePresenceContext } from "@/context/PresenceContext";
+import { OnlineUsers } from "@/components";
 
 interface Props {
   event: VideoEvent & Event;
 }
 
 const Event = ({ event }: Props) => {
+  const { users } = usePresenceContext();
+  console.log(users);
   return (
     <Box className={styles.container}>
       <Box className={styles.videoContainer}>
@@ -23,6 +27,9 @@ const Event = ({ event }: Props) => {
         />
       </Box>
       <Card className={css(styles.eventDetails, "appCard")}>
+        <Box className={styles.avatarsContainer}>
+          <OnlineUsers users={users} />
+        </Box>
         <Box display="flex" gap={1} className={styles.eventHeader}>
           <Typography component="h1">{event.title}</Typography>
           <Box sx={{ flexGrow: 1 }} />

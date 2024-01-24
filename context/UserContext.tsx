@@ -1,5 +1,5 @@
-import { db, supabase } from "@/class/SupabaseDB";
-import { Session } from "@supabase/supabase-js";
+import { db } from "@/class/SupabaseDB";
+import { RealtimePresenceState, Session } from "@supabase/supabase-js";
 import { normalizeUserProfile } from "normalize/dbTables";
 import {
   Dispatch,
@@ -9,21 +9,11 @@ import {
   useEffect,
   useState,
 } from "react";
+import { User } from "../interfaces";
 
 interface UserContext {
   user: User | null | undefined;
   setUser: Dispatch<SetStateAction<User | null | undefined>>;
-}
-
-interface User {
-  userId: string;
-  email?: string;
-  firstName?: string;
-  lastName?: string;
-  genderMale?: boolean;
-  dateOfBirth?: string;
-  picture?: string;
-  isConfirmed?: boolean;
 }
 
 interface Props {
@@ -36,20 +26,6 @@ const UserContext = createContext<UserContext | undefined>(undefined);
 const UserContextProvider = ({ children, session }: Props) => {
   const [user, setUser] = useState<User | null | undefined>();
   const [isLoading, setIsLoading] = useState(true);
-
-  // Create a function to handle inserts
-  const handleInserts = (payload: any) => {
-    console.log("Change received!", payload);
-  };
-
-  const setOnlinePresence = async () => {
-    const liveEvent = supabase.channel("live-event"); // set your topic here
-    const presenceTrackStatus = await liveEvent.track({
-      user: user?.userId,
-      online_at: new Date().toISOString(),
-    });
-    console.log("presenceTrackStatus: ", presenceTrackStatus);
-  };
 
   const getProfile = async () => {
     try {
@@ -65,7 +41,6 @@ const UserContextProvider = ({ children, session }: Props) => {
 
       if (error) throw Error(error.message);
 
-      setOnlinePresence();
       const userDataNormalized = normalizeUserProfile(data);
       setUser({
         ...userDataNormalized,

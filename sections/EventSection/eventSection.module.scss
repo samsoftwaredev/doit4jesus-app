@@ -45,3 +45,9 @@
     flex-direction: row;
   }
 }
+
+.avatarsContainer {
+  display: flex;
+  top: -20px;
+  z-index: 100;
+}

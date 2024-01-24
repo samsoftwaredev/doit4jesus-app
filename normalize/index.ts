@@ -1,1 +1,6 @@
-export { normalizeEvent, normalizeVideo } from "./dbTables";
+export {
+  normalizeEvent,
+  normalizeVideo,
+  normalizeUserProfile,
+  normalizeOnlineUsers,
+} from "./dbTables";

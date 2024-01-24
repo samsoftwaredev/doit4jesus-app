@@ -7,8 +7,12 @@ import { Event, EventTypes, VideoEvent } from "@/interfaces";
 import { normalizeEvent, normalizeVideo } from "normalize";
 import { db } from "@/class/SupabaseDB";
 import { toast } from "react-toastify";
+import { Box } from "@mui/material";
+import { PresenceContextProvider } from "@/context/PresenceContext";
+import { useUserContext } from "@/context/UserContext";
 
 const LiveEvent: NextPage = () => {
+  const { user } = useUserContext();
   const [isLoading, setIsLoading] = useState(true);
   const [eventVideo, setEventVideo] = useState<(VideoEvent & Event) | null>(
     null
@@ -56,9 +60,11 @@ const LiveEvent: NextPage = () => {
 
   return (
     <ProtectedRoute>
-      <AppLayout>
-        {eventVideo ? <EventSection event={eventVideo} /> : "No live event"}
-      </AppLayout>
+      <PresenceContextProvider user={user!}>
+        <AppLayout>
+          {eventVideo ? <EventSection event={eventVideo} /> : "No live event"}
+        </AppLayout>
+      </PresenceContextProvider>
     </ProtectedRoute>
   );
 };

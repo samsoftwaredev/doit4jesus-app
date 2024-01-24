@@ -106,3 +106,20 @@ export type VideoEvent = {
   videoId: string;
   title: string;
 };
+
+export interface User {
+  userId: string;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  genderMale?: boolean;
+  dateOfBirth?: string;
+  pictureUrl?: string;
+  isConfirmed?: boolean;
+  updateAt?: string;
+}
+export interface OnlineUser {
+  userId: string;
+  pictureUrl: string;
+  fullName: string;
+}

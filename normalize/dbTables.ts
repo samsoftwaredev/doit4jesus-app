@@ -1,4 +1,4 @@
-import { EventTypes, Event, VideoEvent } from "@/interfaces";
+import { EventTypes, Event, VideoEvent, User, OnlineUser } from "@/interfaces";
 import { Json } from "@/interfaces/database";
 import { EventsDB, ProfilesDB, YouTubeDB } from "@/interfaces/databaseTable";
 import moment from "moment";
@@ -48,14 +48,22 @@ export const normalizeVideo = (dataList: YouTubeDB[]): VideoEvent[] => {
   });
 };
 
-export const normalizeUserProfile = (data: ProfilesDB) => {
+export const normalizeUserProfile = (data: ProfilesDB): User => {
   return {
     updateAt: nullToDate(data.updated_at),
     userId: nullToString(data.id),
     firstName: nullToString(data.first_name),
     lastName: nullToString(data.last_name),
-    gender: nullToString(data.gender),
-    dob: nullToDate(data.birth_date),
+    genderMale: data.gender === "male",
+    dateOfBirth: nullToDate(data.birth_date),
     pictureUrl: nullToString(data.picture_url),
   };
+};
+
+export const normalizeOnlineUsers = (users: any[]): OnlineUser[] => {
+  return users.map(({ full_name, userId, picture_url }) => ({
+    userId: userId,
+    pictureUrl: picture_url,
+    fullName: full_name,
+  }));
 };
