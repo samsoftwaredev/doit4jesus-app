@@ -7,7 +7,6 @@ import { Event, EventTypes, VideoEvent } from "@/interfaces";
 import { normalizeEvent, normalizeVideo } from "normalize";
 import { db, supabase } from "@/class/SupabaseDB";
 import { toast } from "react-toastify";
-import { Box } from "@mui/material";
 import { PresenceContextProvider } from "@/context/PresenceContext";
 import { useUserContext } from "@/context/UserContext";
 
