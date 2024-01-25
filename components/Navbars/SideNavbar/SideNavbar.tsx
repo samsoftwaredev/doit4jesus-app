@@ -1,18 +1,21 @@
 import * as React from "react";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
+import {
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Box,
+  Button,
+  IconButton,
+} from "@mui/material";
 import { useRouter } from "next/router";
 import styles from "./SideNavbar.module.scss";
 import Link from "next/link";
-import { css } from "@/utils/helpers";
-import { Box, Button, IconButton } from "@mui/material";
 import { Logo } from "../..";
 import { Close } from "@mui/icons-material";
+import { css } from "@/utils/helpers";
 
 interface Props {
-  open: boolean;
   handleDrawerClose: () => void;
   menuItems: {
     url: string;
@@ -21,11 +24,7 @@ interface Props {
   }[];
 }
 
-export default function SideNavbar({
-  menuItems,
-  open,
-  handleDrawerClose,
-}: Props) {
+const SideNavbar = ({ menuItems, handleDrawerClose }: Props) => {
   const navigate = useRouter();
 
   return (
@@ -58,4 +57,6 @@ export default function SideNavbar({
       ))}
     </List>
   );
-}
+};
+
+export default SideNavbar;

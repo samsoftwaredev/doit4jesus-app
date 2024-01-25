@@ -2,7 +2,7 @@ import { db } from "@/class/SupabaseDB";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { Event } from "@/interfaces/index";
 import { AppLayout } from "@/layouts";
-import Dashboard from "@/sections/Dashboard";
+import Dashboard from "@/sections/DashboardSection";
 import type { NextPage } from "next";
 import { normalizeEvent } from "normalize/dbTables";
 import { useEffect, useState } from "react";

@@ -21,11 +21,12 @@ const menuItems = [
   //   label: "Attending Events",
   //   icon: <StarIcon />,
   // },
-  {
-    url: "/app/confession",
-    label: "Exam of Conscience",
-    icon: <ConfessionIcon />,
-  },
+  // TODO: enable confession once module is completed
+  // {
+  //   url: "/app/confession",
+  //   label: "Exam of Conscience",
+  //   icon: <ConfessionIcon />,
+  // },
   // { url: "/app/settings", label: "Settings", icon: <SettingsIcon /> },
   // { url: "/app/support", label: "Support", icon: <SupportAgentIcon /> },
 ];
@@ -64,7 +65,6 @@ export default function AppLayout({ children }: Props) {
         >
           <SideNavbar
             menuItems={menuItems}
-            open={drawerOpen}
             handleDrawerClose={handleDrawerOpen}
           />
         </Box>

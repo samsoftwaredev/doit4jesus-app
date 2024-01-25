@@ -1,16 +1,17 @@
 import { Box, Card, CardContent, Typography } from "@mui/material";
-import styles from "./dashboard.module.scss";
+import styles from "./dashboardSection.module.scss";
 import { css } from "@/utils/helpers";
 
 import Link from "next/link";
 import { YouTubeSubscribe } from "@/components/YouTubeVideo";
 import { Event } from "@/interfaces";
+import CountdownDate from "@/components/CountdownDate";
 
 interface Props {
   events: Event[] | null;
 }
 
-const Dashboard = ({ events }: Props) => {
+const DashboardSection = ({ events }: Props) => {
   if (events === null) return <p>No events</p>;
   return (
     <Box className={styles.container}>
@@ -26,8 +27,13 @@ const Dashboard = ({ events }: Props) => {
               style={{ backgroundImage: `url(${pictureUrl})` }}
               className={css(index === 0 ? styles.mainImage : styles.cardImage)}
             />
+            {startedAt && (
+              <Typography component="div" variant="h6" className={styles.date}>
+                <CountdownDate targetTime={new Date(startedAt)} />
+              </Typography>
+            )}
             <Box className={styles.eventDetails}>
-              <CardContent sx={{ flex: "1 0 auto" }}>
+              <CardContent>
                 <Typography
                   component="div"
                   variant="h5"
@@ -35,19 +41,12 @@ const Dashboard = ({ events }: Props) => {
                 >
                   {title}
                 </Typography>
-                {startedAt && (
-                  <Typography
-                    component="div"
-                    variant="h6"
-                    className={styles.date}
-                  >
-                    {startedAt}
-                  </Typography>
-                )}
                 <Typography
                   variant="subtitle1"
                   component="p"
-                  className={styles.description}
+                  className={css(
+                    index === 0 ? styles.mainDescription : styles.description
+                  )}
                 >
                   {description}
                 </Typography>
@@ -61,4 +60,4 @@ const Dashboard = ({ events }: Props) => {
   );
 };
 
-export default Dashboard;
+export default DashboardSection;

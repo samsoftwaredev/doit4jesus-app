@@ -23,15 +23,15 @@ export const normalizeEvent = (dataList: EventsDB[]): Event[] => {
     return {
       eventId: data.id,
       attendees: getNumberOfAttendees(data.attendees),
-      createdAt: nullToDate(data.created_at),
       description: nullToString(data.description),
       eventType: getEventType(data.event_type),
       pictureUrl: nullToString(data.picture_url),
       price: nullToNumber(data.price),
       slug: nullToString(data.slug),
-      startedAt: nullToDate(data.started_at),
       title: nullToString(data.title),
-      updatedAt: nullToDate(data.updated_at),
+      createdAt: data.created_at,
+      startedAt: data.started_at,
+      updatedAt: data.updated_at,
       eventSource: data.event_source,
     };
   });

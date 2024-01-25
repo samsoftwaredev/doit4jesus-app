@@ -6,6 +6,7 @@ import styles from "./eventSection.module.scss";
 import { Event, VideoEvent } from "@/interfaces/index";
 import { usePresenceContext } from "@/context/PresenceContext";
 import { OnlineUsers } from "@/components";
+import moment from "moment";
 
 interface Props {
   event: VideoEvent & Event;
@@ -31,7 +32,7 @@ const Event = ({ event }: Props) => {
         </Box>
         <Box display="flex" gap={1} className={styles.eventHeader}>
           <Typography component="h1">{event.title}</Typography>
-          <Box sx={{ flexGrow: 1 }} />
+          {/* <Box sx={{ flexGrow: 1 }} />
           <Button
             color="secondary"
             variant="contained"
@@ -48,10 +49,10 @@ const Event = ({ event }: Props) => {
             startIcon={<AttachMoney />}
           >
             Donate
-          </Button>
+          </Button> */}
         </Box>
         <Typography textAlign="right" fontSize="0.9em" component="body">
-          {event.startedAt}
+          {moment(event.startedAt).format("MM/DD/YYYY")}
         </Typography>
         <Typography component="body">{event.description}</Typography>
       </Card>

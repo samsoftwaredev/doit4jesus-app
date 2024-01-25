@@ -94,9 +94,9 @@ export type Event = {
   pictureUrl: string;
   price: number;
   slug: string;
-  startedAt: string;
+  startedAt: string | null;
   title: string;
-  updatedAt: string;
+  updatedAt: string | null;
   eventSource: string | null;
 };
 

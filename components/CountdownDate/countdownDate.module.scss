@@ -1,0 +1,20 @@
+.pill {
+  color: $white;
+  padding: 0px 5px;
+  border-radius: $borderRadius;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.success {
+  background-color: rgba($successMain, 0.7);
+}
+
+.warning {
+  background-color: rgba($warningMain, 0.7);
+}
+
+.error {
+  background-color: rgba(red, 0.7);
+}
