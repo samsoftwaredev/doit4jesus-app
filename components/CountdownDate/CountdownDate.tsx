@@ -28,7 +28,15 @@ const CountdownDate = ({ targetTime = new Date() }: Props) => {
   const showMinutes = timeBetween.minutes() > 0;
   const showSeconds = timeBetween.seconds() > 0 && timeBetween.minutes() <= 1;
 
-  if (showYears || showMonths || showDays || showHours || showMinutes) {
+  const countdownIsZero =
+    showYears ||
+    showMonths ||
+    showDays ||
+    showHours ||
+    showMinutes ||
+    showSeconds;
+
+  if (countdownIsZero) {
     return (
       <Box className={css(styles.pill, styles.warning)}>
         Starts in&nbsp;
