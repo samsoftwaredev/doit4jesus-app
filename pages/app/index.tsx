@@ -12,7 +12,10 @@ const App: NextPage = () => {
   const [events, setEvents] = useState<Event[] | null>(null);
 
   const getEvents = async () => {
-    const { data, error } = await db.getEvents().select("*");
+    const { data, error } = await db
+      .getEvents()
+      .select("*")
+      .order("started_at", { ascending: true });
     if (!error) setEvents(normalizeEvent(data));
     else {
       console.error(error);

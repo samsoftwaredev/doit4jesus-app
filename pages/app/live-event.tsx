@@ -30,7 +30,7 @@ const LiveEvent: NextPage = () => {
     const { data, error } = await db
       .getEvents()
       .select("*")
-      .order("started_at", { ascending: false })
+      .order("started_at", { ascending: true })
       .limit(1);
     if (!error) return normalizeEvent(data)[0];
     console.error(error);

@@ -15,7 +15,7 @@ const LiveEvent: NextPage = () => {
   const router = useRouter();
   const { slug } = router.query;
   const { user } = useUserContext();
-  const liveEvent = supabase.channel(typeof slug === "string" ? slug : "");
+  const channel = supabase.channel(typeof slug === "string" ? slug : "");
   const [isLoading, setIsLoading] = useState(true);
   const [eventVideo, setEventVideo] = useState<(VideoEvent & Event) | null>(
     null
@@ -64,7 +64,7 @@ const LiveEvent: NextPage = () => {
 
   return (
     <ProtectedRoute>
-      <PresenceContextProvider channel={liveEvent} user={user!}>
+      <PresenceContextProvider channel={channel} user={user!}>
         <AppLayout>
           {eventVideo ? <EventSection event={eventVideo} /> : "No event found"}
         </AppLayout>
