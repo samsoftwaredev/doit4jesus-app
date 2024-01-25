@@ -4,8 +4,18 @@
   right: 0;
   left: 0;
   z-index: 999;
-  background-color: $primaryMain;
-  height: 1px;
+
+  &::before {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    z-index: -100;
+    content: "";
+    height: 1px;
+    width: 100%;
+    background-color: black;
+  }
 }
 
 .controls {

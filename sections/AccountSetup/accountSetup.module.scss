@@ -3,6 +3,8 @@
   margin: 60px 0;
   display: flex;
   align-items: center;
+  justify-content: center;
+  height: 70vh;
 }
 
 .title {
@@ -15,6 +17,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  position: relative;
   img {
     display: none;
     @include desktop {
@@ -22,7 +25,6 @@
       position: absolute;
       top: 0;
       right: 0;
-      z-index: 0;
     }
   }
 }

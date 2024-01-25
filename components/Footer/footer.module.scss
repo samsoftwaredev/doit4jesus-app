@@ -4,11 +4,12 @@
   grid-template-rows: repeat(3, 1fr);
   grid-column-gap: 0px;
   grid-row-gap: 0px;
-  padding-bottom: 70px;
+  padding-bottom: 90px;
   text-align: center;
   grid-template-areas:
     "logo logo logo"
     "copyRights copyRights copyRights"
+    "socialMedia socialMedia socialMedia"
     "about blog contact";
   @include tablet {
     grid-template-areas:
