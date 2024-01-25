@@ -10,6 +10,7 @@ import { normalizeEvent, normalizeVideo } from "normalize";
 import { toast } from "react-toastify";
 import { PresenceContextProvider } from "@/context/PresenceContext";
 import { useUserContext } from "@/context/UserContext";
+import Loading from "@/components/Loading";
 
 const LiveEvent: NextPage = () => {
   const router = useRouter();
@@ -57,7 +58,7 @@ const LiveEvent: NextPage = () => {
   if (isLoading) {
     return (
       <AppLayout>
-        <p>Loading...</p>
+        <Loading isPage={false} />
       </AppLayout>
     );
   }

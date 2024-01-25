@@ -10,6 +10,7 @@ import {
   useState,
 } from "react";
 import { User } from "../interfaces";
+import Loading from "@/components/Loading";
 
 interface UserContext {
   user: User | null | undefined;
@@ -58,7 +59,7 @@ const UserContextProvider = ({ children, session }: Props) => {
     getProfile();
   }, [session]);
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <Loading />;
 
   return (
     <UserContext.Provider

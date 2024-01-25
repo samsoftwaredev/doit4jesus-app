@@ -14,6 +14,7 @@ import { UserContextProvider } from "@/context/UserContext";
 import { useEffect, useState } from "react";
 import { Session } from "@supabase/supabase-js";
 import { supabase } from "@/class/SupabaseDB";
+import Loading from "@/components/Loading";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [session, setSession] = useState<Session | null | undefined>();
@@ -46,7 +47,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     };
   }, []);
 
-  if (session === undefined) return <>Loading Session...</>;
+  if (session === undefined) return <Loading />;
 
   return (
     <StyledEngineProvider injectFirst>

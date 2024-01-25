@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import { NAV_APP_LINKS, NAV_MAIN_LINKS } from "@/constants/nav";
 import { toast } from "react-toastify";
 import { useUserContext } from "@/context/UserContext";
+import Loading from "@/components/Loading";
 
 interface Props {
   handleMenu: () => void;
@@ -30,7 +31,7 @@ const TopNavbar = ({ handleMenu }: Props) => {
     navigate.push(NAV_APP_LINKS.app.link);
   };
 
-  if (isLoading) return <p>Bye Bye!</p>;
+  if (isLoading) return <Loading />;
 
   return (
     <Box
