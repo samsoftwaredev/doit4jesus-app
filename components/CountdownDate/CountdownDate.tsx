@@ -26,17 +26,18 @@ const CountdownDate = ({ targetTime = new Date() }: Props) => {
   const showDays = timeBetween.days() > 0;
   const showHours = timeBetween.hours() > 0;
   const showMinutes = timeBetween.minutes() > 0;
+  const showSeconds = timeBetween.seconds() > 0 && timeBetween.minutes() <= 1;
 
   if (showYears || showMonths || showDays || showHours || showMinutes) {
     return (
       <Box className={css(styles.pill, styles.warning)}>
-        &nbsp;
-        {showYears ? <span>{timeBetween.years()}yr </span> : null}
-        {showMonths ? <span>{timeBetween.months()}m </span> : null}
-        {showDays ? <span>{timeBetween.days()}d </span> : null}
-        {showHours ? <span>{timeBetween.hours()}h </span> : null}
-        {showMinutes ? <span>{timeBetween.minutes()}min </span> : null}
-        {/* <span>{timeBetween.seconds()}s</span>  */}
+        Starts in&nbsp;
+        {showYears ? <span>{timeBetween.years()}yr&nbsp;</span> : null}
+        {showMonths ? <span>{timeBetween.months()}m&nbsp;</span> : null}
+        {showDays ? <span>{timeBetween.days()}d&nbsp;</span> : null}
+        {showHours ? <span>{timeBetween.hours()}h&nbsp;</span> : null}
+        {showMinutes ? <span>{timeBetween.minutes()}min&nbsp;</span> : null}
+        {showSeconds ? <span>{timeBetween.seconds()}s&nbsp;</span> : null}
       </Box>
     );
   }
@@ -44,7 +45,7 @@ const CountdownDate = ({ targetTime = new Date() }: Props) => {
   return (
     <Box className={css(styles.pill, styles.error)}>
       <CircleIcon sx={{ fontSize: "1em" }} />
-      &nbsp; Live
+      &nbsp;Live
     </Box>
   );
 };

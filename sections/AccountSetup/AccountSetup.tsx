@@ -8,6 +8,11 @@ import Image from "next/image";
 import styles from "./accountSetup.module.scss";
 import jesusCross from "@/public/assets/images/hero/jesusCross.svg";
 import jesusFish from "@/public/assets/images/hero/jesusFish.svg";
+import maryRosary from "@/public/assets/images/rosary.svg";
+import birthDay from "@/public/assets/images/hero/birthDay.svg";
+import { DateCalendar, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 
 interface StepProps {
   next: () => void;
@@ -119,7 +124,7 @@ const WhyPray = ({ next }: StepProps) => {
   );
 };
 
-const WhyPrayTheRosary = ({ next }: StepProps) => {
+const WhatsYourBirthDay = ({ next }: StepProps) => {
   return (
     <Box className={styles.stepperContent}>
       <Typography variant="h3" className={styles.title}>
@@ -135,6 +140,18 @@ const WhyPrayTheRosary = ({ next }: StepProps) => {
         we celebrate moments of happiness and special occasions such as your
         birthday.
       </Typography>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <DateCalendar
+          sx={{
+            "backdrop-filter": "blur(10px)",
+            borderRadius: "20px",
+            color: "white",
+            "& .MuiTypography-root": { color: "white" },
+            "& .MuiButtonBase-root": { color: "white" },
+          }}
+          defaultValue={dayjs(new Date())}
+        />
+      </LocalizationProvider>
       <Grid container justifyContent="flex-end">
         <Button
           size="large"
@@ -211,8 +228,8 @@ const AccountSetup = () => {
     },
     {
       component: <WhatsTheRosary next={nextStep} />,
-      color: theme.palette.primary.main,
-      backgroundImage: jesusCross,
+      color: theme.palette.error.dark,
+      backgroundImage: maryRosary,
     },
     {
       component: <WhyPray next={nextStep} />,
@@ -220,9 +237,9 @@ const AccountSetup = () => {
       backgroundImage: jesusCross,
     },
     {
-      component: <WhyPrayTheRosary next={nextStep} />,
-      color: theme.palette.error.dark,
-      backgroundImage: jesusCross,
+      component: <WhatsYourBirthDay next={nextStep} />,
+      color: theme.palette.primary.main,
+      backgroundImage: birthDay,
     },
   ];
 
@@ -233,15 +250,16 @@ const AccountSetup = () => {
   return (
     <>
       <div className={styles.bg} style={{ backgroundColor: bgColor }} />
+      {steps[currentStep].backgroundImage && (
+        <Image
+          className={styles.backgroundImg}
+          fill
+          src={steps[currentStep].backgroundImage!}
+          alt="Jesus Cross"
+        />
+      )}
       <div className={styles.container}>
         <Container className={styles.content} maxWidth="md">
-          {steps[currentStep].backgroundImage && (
-            <Image
-              fill
-              src={steps[currentStep].backgroundImage!}
-              alt="Jesus Cross"
-            />
-          )}
           {steps[currentStep].component}
         </Container>
       </div>

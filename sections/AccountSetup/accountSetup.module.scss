@@ -4,12 +4,28 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 70vh;
+}
+
+.backgroundImg {
+  max-height: 100vh;
+  display: none;
+  opacity: 0.3;
+  left: -380px !important;
+  @include tablet {
+    display: block;
+    position: fixed;
+    left: 0;
+  }
+  @include desktop {
+    display: block;
+    position: fixed;
+  }
 }
 
 .title {
   color: $white;
   text-align: center;
+  font-weight: 100;
 }
 
 .content {
@@ -18,15 +34,6 @@
   justify-content: center;
   align-items: center;
   position: relative;
-  img {
-    display: none;
-    @include desktop {
-      display: block;
-      position: absolute;
-      top: 0;
-      right: 0;
-    }
-  }
 }
 
 .buttons {
