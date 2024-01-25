@@ -15,8 +15,8 @@
     grid-template-areas:
       "logo logo logo"
       "copyRights copyRights copyRights"
-      "about blog contact"
-      "socialMedia socialMedia socialMedia";
+      "socialMedia socialMedia socialMedia"
+      "about blog contact";
   }
   @include desktop {
     grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -24,7 +24,8 @@
     padding-bottom: 70px;
     grid-template-areas:
       "about blog contact logo"
-      "about blog contact copyRights";
+      "about blog contact copyRights"
+      "about blog contact socialMedia";
   }
 }
 .copyRights {
