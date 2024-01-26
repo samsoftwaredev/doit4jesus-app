@@ -36,9 +36,9 @@ function MyApp({ Component, pageProps }: AppProps) {
     getSession();
 
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_IN") {
+      if (event === "SIGNED_IN" && session === null) {
         setSession(session);
-      } else if (event === "SIGNED_OUT") {
+      } else if (event === "SIGNED_OUT" && session !== null) {
         setSession(null);
       }
     });
