@@ -5,6 +5,8 @@ import { Button, TextField } from "@mui/material";
 import FormErrorText from "@/components/FormErrorText";
 import { useUserContext } from "@/context/UserContext";
 import { useEffect, useState } from "react";
+import { NAV_APP_LINKS } from "@/constants/nav";
+import { useRouter } from "next/router";
 
 interface IFormInputs {
   password: string;
@@ -16,6 +18,7 @@ interface Props {
 }
 
 const LogIn = ({ onForgotPassword }: Props) => {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const { getProfile } = useUserContext();
   const { handleSubmit, control } = useForm<IFormInputs>({
@@ -33,8 +36,11 @@ const LogIn = ({ onForgotPassword }: Props) => {
       toast.error(error?.message);
     } else {
       const { data } = await supabase.auth.onAuthStateChange(
-        (event, session) => {
-          if (event === "SIGNED_IN") getProfile(session);
+        async (event, session) => {
+          if (event === "SIGNED_IN") {
+            await getProfile(session);
+            router.push(NAV_APP_LINKS.app.link);
+          }
         }
       );
       data.subscription.unsubscribe();

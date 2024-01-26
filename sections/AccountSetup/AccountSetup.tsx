@@ -1,6 +1,6 @@
 import { NAV_APP_LINKS } from "@/constants/nav";
 import { theme } from "@/styles/mui-overwrite";
-import { ChevronRight } from "@mui/icons-material";
+import { ChevronRight, Label } from "@mui/icons-material";
 import { Box, Button, Container, Grid, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -13,6 +13,8 @@ import birthDay from "@/public/assets/images/hero/birthDay.svg";
 import { DateCalendar, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
+import moment from "moment";
+import { toast } from "react-toastify";
 
 interface StepProps {
   next: () => void;
@@ -125,20 +127,33 @@ const WhyPray = ({ next }: StepProps) => {
 };
 
 const WhatsYourBirthDay = ({ next }: StepProps) => {
+  const [dob, setDob] = useState<Date>();
+
+  const setDateOfBirth = (date: Date) => {
+    const userBirthDay = new Date(date);
+    const validAge = 18;
+    const isLegal = moment().diff(moment(userBirthDay), "years") >= validAge;
+    if (isLegal) {
+      setDob(userBirthDay);
+    } else {
+      setDob(undefined);
+      toast.error(
+        `You're too young! You must be at least ${validAge} years old`
+      );
+    }
+  };
+
+  const storeUserBirthDay = () => {
+    next();
+  };
+
   return (
     <Box className={styles.stepperContent}>
       <Typography variant="h3" className={styles.title}>
-        When is your birthday?
+        Let's Celebrate the Good Times
       </Typography>
-      <Typography
-        my={5}
-        textAlign="center"
-        color="secondary"
-        className={styles.body}
-      >
-        It's a pleasure to have you as a member of our lively community, where
-        we celebrate moments of happiness and special occasions such as your
-        birthday.
+      <Typography textAlign="center" color="secondary" className={styles.body}>
+        Enter your date of birth:
       </Typography>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DateCalendar
@@ -150,15 +165,17 @@ const WhatsYourBirthDay = ({ next }: StepProps) => {
             "& .MuiButtonBase-root": { color: "white" },
           }}
           defaultValue={dayjs(new Date())}
+          onChange={setDateOfBirth}
         />
       </LocalizationProvider>
       <Grid container justifyContent="flex-end">
         <Button
+          disabled={dob === undefined}
           size="large"
           color="secondary"
           variant="contained"
           endIcon={<ChevronRight />}
-          onClick={next}
+          onClick={storeUserBirthDay}
         >
           Continue
         </Button>

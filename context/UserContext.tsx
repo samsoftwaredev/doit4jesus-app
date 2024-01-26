@@ -13,7 +13,7 @@ import {
 import { User } from "../interfaces";
 import Loading from "@/components/Loading";
 import { useRouter } from "next/router";
-import { NAV_APP_LINKS, NAV_MAIN_LINKS } from "../constants";
+import { NAV_MAIN_LINKS } from "../constants";
 
 interface UserContext {
   user: User | null | undefined;
@@ -49,7 +49,6 @@ const UserContextProvider = ({ children }: Props) => {
         ...userDataNormalized,
         userId: userSession.user.id,
       });
-      router.push(NAV_APP_LINKS.app.link);
     } catch (error) {
       setUser(null);
       router.push(NAV_MAIN_LINKS.login.link);
