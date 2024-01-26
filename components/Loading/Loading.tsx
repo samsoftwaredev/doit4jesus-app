@@ -1,6 +1,6 @@
 import styles from "./loading.module.scss";
 import Logo from "../Logo";
-import { CircularProgress } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 
 interface Props {
   isPage?: boolean;
@@ -9,13 +9,19 @@ interface Props {
 const Loading = ({ isPage = true }: Props) => {
   if (isPage) {
     return (
-      <div className={styles.container}>
-        <Logo type="white" />
-        <CircularProgress sx={{ px: "1em" }} color="secondary" />
-      </div>
+      <Box className={styles.container}>
+        <Box className={styles.content}>
+          <Logo type="white" />
+          <CircularProgress sx={{ px: "1em" }} color="secondary" />
+        </Box>
+      </Box>
     );
   }
-  return <CircularProgress color="secondary" />;
+  return (
+    <Box sx={{ width: "100%", display: "flex", justifyContent: "center" }}>
+      <CircularProgress color="secondary" />
+    </Box>
+  );
 };
 
 export default Loading;

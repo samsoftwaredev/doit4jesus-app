@@ -1,4 +1,5 @@
 import { db } from "@/class/SupabaseDB";
+import Loading from "@/components/Loading";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { Event } from "@/interfaces/index";
 import { AppLayout } from "@/layouts";
@@ -10,8 +11,10 @@ import { toast } from "react-toastify";
 
 const App: NextPage = () => {
   const [events, setEvents] = useState<Event[] | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const getEvents = async () => {
+    setIsLoading(true);
     const { data, error } = await db
       .getEvents()
       .select("*")
@@ -21,11 +24,20 @@ const App: NextPage = () => {
       console.error(error);
       toast.error("Unable to get list of events");
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
     getEvents();
   }, []);
+
+  if (isLoading) {
+    return (
+      <AppLayout>
+        <Loading isPage={false} />
+      </AppLayout>
+    );
+  }
 
   return (
     <ProtectedRoute>
