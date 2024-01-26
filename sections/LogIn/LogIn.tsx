@@ -1,12 +1,9 @@
 import { toast } from "react-toastify";
-import { useRouter } from "next/router";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { db } from "@/class/SupabaseDB";
+import { db, supabase } from "@/class/SupabaseDB";
 import { Button, TextField } from "@mui/material";
 import FormErrorText from "@/components/FormErrorText";
-import { NAV_APP_LINKS } from "@/constants/nav";
 import { useUserContext } from "@/context/UserContext";
-import { normalizeAuthDB } from "@/utils/helpers";
 import { useState } from "react";
 
 interface IFormInputs {
@@ -19,9 +16,8 @@ interface Props {
 }
 
 const LogIn = ({ onForgotPassword }: Props) => {
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const { setUser, user } = useUserContext();
+  const { getProfile } = useUserContext();
   const { handleSubmit, control } = useForm<IFormInputs>({
     mode: "onChange",
     defaultValues: {
@@ -32,16 +28,16 @@ const LogIn = ({ onForgotPassword }: Props) => {
 
   const onSubmit: SubmitHandler<IFormInputs> = async (userInput) => {
     setIsLoading(true);
-    const { error, data: userDB } = await db.logIn(
-      userInput.email,
-      userInput.password
-    );
+    const { error } = await db.logIn(userInput.email, userInput.password);
     if (error) {
       toast.error(error?.message);
     } else {
-      router.push(NAV_APP_LINKS.app.link);
-      const dataNormalized = normalizeAuthDB(userDB.user);
-      if (user) setUser({ ...user, ...dataNormalized });
+      const { data } = await supabase.auth.onAuthStateChange(
+        (event, session) => {
+          if (event === "SIGNED_IN") getProfile(session);
+        }
+      );
+      data.subscription.unsubscribe();
     }
     setIsLoading(false);
   };

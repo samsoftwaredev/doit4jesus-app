@@ -5,8 +5,7 @@ import styles from "./TopNavbar.module.scss";
 import { db } from "@/class/SupabaseDB";
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { NAV_APP_LINKS, NAV_MAIN_LINKS } from "@/constants/nav";
-import { toast } from "react-toastify";
+import { NAV_APP_LINKS } from "@/constants/nav";
 import { useUserContext } from "@/context/UserContext";
 import Loading from "@/components/Loading";
 
@@ -22,8 +21,6 @@ const TopNavbar = ({ handleMenu }: Props) => {
   const logout = async () => {
     setIsLoading(true);
     await db.logOut();
-    navigate.push(NAV_MAIN_LINKS.login.link);
-    toast.success("Shalom! Until next time.");
     setIsLoading(false);
   };
 

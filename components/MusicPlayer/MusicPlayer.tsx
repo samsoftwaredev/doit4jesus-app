@@ -1,16 +1,14 @@
 import { Box, Typography } from "@mui/material";
 import { AudioPlayer } from "../AudioPlayer";
 import { INTERFACE_LANGUAGES } from "@/interfaces/index";
-import { Rosary } from "@/class";
 import styles from "./musicPlayer.module.scss";
 import MusicSettings from "../MusicSettings";
 import MusicVideo from "../MusicVideo";
 
-interface Props {
-  rosary: Rosary;
-}
+import { myRosary } from "@/class";
 
-const MusicPlayer = ({ rosary }: Props) => {
+const MusicPlayer = () => {
+  const rosary = myRosary;
   const rosaryState = rosary.getRosaryState();
 
   return (
