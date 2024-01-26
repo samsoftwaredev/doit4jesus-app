@@ -24,6 +24,7 @@ const MusicSettings = () => {
     <>
       <Tooltip title="Settings">
         <IconButton
+          disabled
           aria-label="more"
           id="music-options"
           aria-controls={open ? "rosary-menu" : undefined}
