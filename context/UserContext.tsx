@@ -76,17 +76,6 @@ const UserContextProvider = ({ children }: Props) => {
 
   useEffect(() => {
     getSession();
-
-    const { data } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_IN") {
-        getProfile(session);
-      } else if (event === "SIGNED_OUT") {
-        getProfile(null);
-      }
-    });
-    return () => {
-      data.subscription.unsubscribe();
-    };
   }, []);
 
   const value = useMemo(

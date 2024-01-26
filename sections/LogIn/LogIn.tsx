@@ -4,7 +4,7 @@ import { db, supabase } from "@/class/SupabaseDB";
 import { Button, TextField } from "@mui/material";
 import FormErrorText from "@/components/FormErrorText";
 import { useUserContext } from "@/context/UserContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface IFormInputs {
   password: string;
@@ -41,6 +41,15 @@ const LogIn = ({ onForgotPassword }: Props) => {
     }
     setIsLoading(false);
   };
+
+  useEffect(() => {
+    const { data } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN") getProfile(session);
+    });
+    return () => {
+      data.subscription.unsubscribe();
+    };
+  });
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

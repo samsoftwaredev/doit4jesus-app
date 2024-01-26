@@ -2,8 +2,8 @@ import { AccountCircle, Menu } from "@mui/icons-material";
 import { Box, Button, IconButton, Typography } from "@mui/material";
 import { Logo } from "../..";
 import styles from "./TopNavbar.module.scss";
-import { db } from "@/class/SupabaseDB";
-import { useState } from "react";
+import { db, supabase } from "@/class/SupabaseDB";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { NAV_APP_LINKS } from "@/constants/nav";
 import { useUserContext } from "@/context/UserContext";
@@ -14,6 +14,7 @@ interface Props {
 }
 
 const TopNavbar = ({ handleMenu }: Props) => {
+  const { getProfile } = useUserContext();
   const { user } = useUserContext();
   const navigate = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -27,6 +28,15 @@ const TopNavbar = ({ handleMenu }: Props) => {
   const goToDashboard = () => {
     navigate.push(NAV_APP_LINKS.app.link);
   };
+
+  useEffect(() => {
+    const { data } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_OUT") getProfile(null);
+    });
+    return () => {
+      data.subscription.unsubscribe();
+    };
+  });
 
   if (isLoading) return <Loading />;
 
