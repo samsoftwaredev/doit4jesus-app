@@ -7,12 +7,12 @@
 
   &::before {
     position: fixed;
-    bottom: 0;
+    bottom: 5px;
     right: 0;
     left: 0;
     z-index: -100;
     content: "";
-    height: 1px;
+    height: 20px;
     width: 100%;
     background-color: black;
   }
