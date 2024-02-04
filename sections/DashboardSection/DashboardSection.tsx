@@ -32,7 +32,11 @@ const DashboardSection = ({ events }: Props) => {
                 <CountdownDate targetTime={new Date(startedAt)} />
               </Typography>
             )}
-            <Box className={styles.eventDetails}>
+            <Box
+              className={css(
+                index === 0 ? styles.mainEventDetails : styles.eventDetails
+              )}
+            >
               <CardContent>
                 <Typography
                   component="div"
