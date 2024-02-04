@@ -67,22 +67,6 @@
   text-overflow: ellipsis;
 }
 
-.mainTitle {
-  white-space: nowrap;
-  width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 1.5em;
-  @include tablet {
-    white-space: wrap;
-    font-size: 1.5em;
-  }
-  @include desktop {
-    white-space: wrap;
-    font-size: 1.8em;
-  }
-}
-
 .date {
   position: absolute;
   text-align: right;

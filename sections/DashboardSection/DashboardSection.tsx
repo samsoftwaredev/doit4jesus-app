@@ -41,7 +41,7 @@ const DashboardSection = ({ events }: Props) => {
                 <Typography
                   component="div"
                   variant="h5"
-                  className={css(index === 0 ? styles.mainTitle : styles.title)}
+                  className={styles.title}
                 >
                   {title}
                 </Typography>
