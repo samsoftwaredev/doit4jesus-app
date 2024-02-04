@@ -1,0 +1,35 @@
+.container {
+  min-height: 900px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-shadow: 1px 1px 3px $black;
+  color: #ffffff;
+  background: $primaryMain;
+  background: linear-gradient(
+    180deg,
+    $primaryMain 0%,
+    $primaryMain 20%,
+    $warningDark 100%
+  );
+
+  img {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+}
+
+.title {
+  position: relative;
+  text-shadow: 1px 1px 3px $black;
+  z-index: 100;
+}
+
+.content {
+  margin-bottom: 150px;
+  margin-top: 50px;
+  height: 500px;
+}

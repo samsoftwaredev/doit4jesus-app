@@ -10,22 +10,22 @@
     "logo logo logo"
     "copyRights copyRights copyRights"
     "socialMedia socialMedia socialMedia"
-    "about blog contact";
+    "about resources contact";
   @include tablet {
     grid-template-areas:
       "logo logo logo"
       "copyRights copyRights copyRights"
       "socialMedia socialMedia socialMedia"
-      "about blog contact";
+      "about resources contact";
   }
   @include desktop {
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr;
     padding-bottom: 70px;
     grid-template-areas:
-      "about blog contact logo"
-      "about blog contact copyRights"
-      "about blog contact socialMedia";
+      "about resources contact logo"
+      "about resources contact copyRights"
+      "about resources contact socialMedia";
   }
 }
 .copyRights {
@@ -34,8 +34,8 @@
 .about {
   grid-area: about;
 }
-.blog {
-  grid-area: blog;
+.resources {
+  grid-area: resources;
 }
 .contact {
   grid-area: contact;

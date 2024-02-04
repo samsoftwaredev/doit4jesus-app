@@ -15,12 +15,12 @@ const AboutSection = () => {
         About
       </Typography>
       <Typography className={styles.content}>
-        Welcome to DoIt4Jesus app, where faith unites us, prayers strengthens us
-        and community empowers us. We are dedicated to fostering a deeper
-        connection thought the sacred practice of praying the Holy Rosary
-        together. Our mission is rooted in the profound belief that communal
-        prayer has the power to combat evil, built a vibrant spiritual
-        community, and offer solace to souls in purgatory.
+        Welcome to the DoIt4Jesus app, a platform that brings together people of
+        faith to pray the Holy Rosary as a community. Our mission is to create a
+        stronger connection among believers through the sacred practice of
+        prayer. We firmly believe that praying together has the power to fight
+        evil, foster a vibrant spiritual community, and offer comfort to souls
+        in purgatory. Join us in our mission and let's grow in faith together!
       </Typography>
     </Container>
   );

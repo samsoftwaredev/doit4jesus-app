@@ -12,8 +12,8 @@ const Footer = () => {
   const goToAbout = () => {
     router.push(NAV_FOOTER_LINKS.about.link);
   };
-  const goToBlog = () => {
-    router.push(NAV_FOOTER_LINKS.blog.link);
+  const goToResources = () => {
+    router.push(NAV_FOOTER_LINKS.resources.link);
   };
   const goToContact = () => {
     router.push(NAV_FOOTER_LINKS.contact.link);
@@ -33,8 +33,8 @@ const Footer = () => {
       <Button className={styles.about} onClick={goToAbout}>
         About
       </Button>
-      <Button className={styles.blog} onClick={goToBlog}>
-        Blog
+      <Button className={styles.resources} onClick={goToResources}>
+        Resources
       </Button>
       <Button className={styles.contact} onClick={goToContact}>
         Contact

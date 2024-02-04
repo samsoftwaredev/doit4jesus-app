@@ -13,12 +13,12 @@ import {
 import { useRouter } from "next/router";
 import { NAV_MAIN_LINKS } from "@/constants/nav";
 
-const Blog: NextPage = () => {
+const Resources: NextPage = () => {
   const router = useRouter();
   const articles = articlesList;
 
-  const goToBlog = (id: string) => {
-    router.push(NAV_MAIN_LINKS.blog.link + "/" + id);
+  const goToResources = (id: string) => {
+    router.push(NAV_MAIN_LINKS.resources.link + "/" + id);
   };
 
   return (
@@ -28,7 +28,7 @@ const Blog: NextPage = () => {
         <Typography variant="h4">Resources</Typography>
         <Grid mt={2} display="flex" justifyContent="center" container>
           {articles.map(({ title, description, image, id }) => (
-            <Grid item md={4} key={id} onClick={() => goToBlog(id)}>
+            <Grid item md={4} key={id} onClick={() => goToResources(id)}>
               <Card>
                 <CardMedia
                   sx={{ height: 140 }}
@@ -52,4 +52,4 @@ const Blog: NextPage = () => {
   );
 };
 
-export default Blog;
+export default Resources;

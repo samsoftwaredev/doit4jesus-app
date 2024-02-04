@@ -1,6 +1,6 @@
 export const NAV_FOOTER_LINKS = {
   about: { link: "/about", label: "About", value: "about" },
-  blog: { link: "/blog", label: "Blog", value: "blog" },
+  resources: { link: "/resources", label: "Resources", value: "resources" },
   contact: { link: "/contact", label: "Contact", value: "contact" },
 };
 
@@ -8,7 +8,7 @@ export const NAV_MAIN_LINKS = {
   home: { link: "/", label: "Home", value: "home" },
   login: { link: "/register", label: "Login", value: "login" },
   signup: { link: "/register", label: "Sign Up", value: "signup" },
-  blog: { link: "/blog", label: "Blog", value: "blog" },
+  resources: { link: "/resources", label: "Resources", value: "resources" },
 };
 
 export const NAV_APP_LINKS = {

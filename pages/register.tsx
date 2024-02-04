@@ -18,7 +18,7 @@ const Register: NextPage = () => {
   const navigate = useRouter();
   const { user } = useUserContext();
   const [view, setView] = useState<ViewType>(ViewType.signUp);
-  const isNotAuth = user === null;
+  const isAuth = !!user;
 
   const toggleViewSignUp = () => {
     setView(ViewType.signUp);
@@ -34,10 +34,10 @@ const Register: NextPage = () => {
 
   useEffect(() => {
     // if user is auth, navigate user to application
-    if (!isNotAuth) navigate.push(NAV_APP_LINKS.app.link);
+    if (isAuth) navigate.push(NAV_APP_LINKS.app.link);
   }, []);
 
-  if (!isNotAuth) return null;
+  if (isAuth) return null;
 
   return (
     <MainLayout topNavbar={<HomeNavbar />}>

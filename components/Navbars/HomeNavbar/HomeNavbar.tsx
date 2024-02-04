@@ -34,8 +34,8 @@ function HomeNavbar(props: Props) {
     setMobileOpen((prevState) => !prevState);
   };
 
-  const goToBlogs = () => {
-    router.push(NAV_MAIN_LINKS.blog.link);
+  const goToResources = () => {
+    router.push(NAV_MAIN_LINKS.resources.link);
   };
 
   const goToPray = () => {
@@ -61,8 +61,8 @@ function HomeNavbar(props: Props) {
       sx: { color: "#fff" },
     },
     {
-      label: "Blogs",
-      goTo: goToBlogs,
+      label: "Resources",
+      goTo: goToResources,
       sx: { color: "#fff" },
     },
     {

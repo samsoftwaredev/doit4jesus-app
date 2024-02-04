@@ -7,6 +7,7 @@ import {
   HomeNavbar,
   WhyPrayRosary,
   CallToAction,
+  // RosaryWeapon,
 } from "@/components";
 import { MainLayout } from "@/layouts";
 
@@ -16,6 +17,7 @@ const Home: NextPage = () => {
       <Meta />
       <Hero />
       <Features />
+      {/* <RosaryWeapon /> */}
       <Community />
       <WhyPrayRosary />
       <CallToAction />

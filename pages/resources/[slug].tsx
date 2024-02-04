@@ -17,10 +17,10 @@ import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
 import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 import { NAV_MAIN_LINKS } from "@/constants/nav";
 
-function BlogPost() {
+function ResourcesPost() {
   const router = useRouter();
-  const blogId = router.query.slug;
-  const article = articlesList.find(({ id }) => id === blogId);
+  const resourceId = router.query.slug;
+  const article = articlesList.find(({ id }) => id === resourceId);
   const [page, setPage] = useState(0);
 
   const currentPage = article?.sections[page];
@@ -38,7 +38,7 @@ function BlogPost() {
   };
 
   const onFinish = () => {
-    router.push(NAV_MAIN_LINKS.blog.link);
+    router.push(NAV_MAIN_LINKS.resources.link);
   };
 
   if (!article) return <PageNotFound />;
@@ -89,4 +89,4 @@ function BlogPost() {
   );
 }
 
-export default BlogPost;
+export default ResourcesPost;

@@ -106,7 +106,7 @@ const SignUp = () => {
         </Typography>
         <Typography mb={3} textAlign="center">
           A verification email is on the way! <br />
-          If doesn't arrive, try to resend.
+          If it doesn't arrive, check your spam folder.
         </Typography>
       </>
     );
