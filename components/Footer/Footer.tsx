@@ -4,20 +4,11 @@ import { NAV_FOOTER_LINKS } from "@/constants";
 import { Button, Container } from "@mui/material";
 import Logo from "../Logo/Logo";
 import { YouTubeSubscribe } from "../YouTubeVideo";
+import Link from "next/link";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
   const router = useRouter();
-
-  const goToAbout = () => {
-    router.push(NAV_FOOTER_LINKS.about.link);
-  };
-  const goToResources = () => {
-    router.push(NAV_FOOTER_LINKS.resources.link);
-  };
-  const goToContact = () => {
-    router.push(NAV_FOOTER_LINKS.contact.link);
-  };
 
   return (
     <Container className={styles.container} maxWidth={false}>
@@ -30,15 +21,15 @@ const Footer = () => {
       <div className={styles.socialMedia}>
         <YouTubeSubscribe />
       </div>
-      <Button className={styles.about} onClick={goToAbout}>
-        About
-      </Button>
-      <Button className={styles.resources} onClick={goToResources}>
-        Resources
-      </Button>
-      <Button className={styles.contact} onClick={goToContact}>
-        Contact
-      </Button>
+      <Link passHref href={NAV_FOOTER_LINKS.about.link}>
+        <Button className={styles.about}>About</Button>
+      </Link>
+      <Link passHref href={NAV_FOOTER_LINKS.resources.link}>
+        <Button className={styles.resources}>Resources</Button>
+      </Link>
+      <Link passHref href={NAV_FOOTER_LINKS.contact.link}>
+        <Button className={styles.contact}>Contact</Button>
+      </Link>
     </Container>
   );
 };

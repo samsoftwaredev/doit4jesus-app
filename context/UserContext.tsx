@@ -18,7 +18,7 @@ import { NAV_MAIN_LINKS } from "../constants";
 interface UserContext {
   user: User | null | undefined;
   setUser: Dispatch<SetStateAction<User | null | undefined>>;
-  getProfile: (session: Session | null) => void;
+  getProfile: (session: Session | null) => Promise<User | undefined>;
 }
 
 interface Props {
@@ -32,7 +32,9 @@ const UserContextProvider = ({ children }: Props) => {
   const [user, setUser] = useState<User | null | undefined>();
   const [isLoading, setIsLoading] = useState(true);
 
-  const getProfile = async (userSession: Session | null) => {
+  const getProfile = async (
+    userSession: Session | null
+  ): Promise<User | undefined> => {
     setIsLoading(true);
     try {
       if (!userSession) throw Error("No session");
@@ -45,10 +47,12 @@ const UserContextProvider = ({ children }: Props) => {
       if (error) throw Error(error.message);
 
       const userDataNormalized = normalizeUserProfile(data);
-      setUser({
+      const userData = {
         ...userDataNormalized,
         userId: userSession.user.id,
-      });
+      };
+      setUser(userData);
+      return userData;
     } catch (error) {
       setUser(null);
       router.push(NAV_MAIN_LINKS.login.link);
@@ -59,18 +63,15 @@ const UserContextProvider = ({ children }: Props) => {
   };
 
   const getSession = async () => {
-    let errorMessage = "No session";
     setIsLoading(true);
-    await supabase.auth
-      .getSession()
-      .then(async ({ data: { session } }) => {
-        if (session) getProfile(session);
-        else throw new Error(errorMessage);
-      })
-      .catch((err) => {
-        console.error(err);
-        setIsLoading(false);
-      });
+    try {
+      const res = await supabase.auth.getSession();
+      if (res.data.session) getProfile(res.data.session);
+      else throw new Error("No session");
+    } catch (err) {
+      console.error(err);
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {

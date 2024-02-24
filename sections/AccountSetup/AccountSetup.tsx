@@ -1,6 +1,6 @@
 import { NAV_APP_LINKS } from "@/constants/nav";
 import { theme } from "@/styles/mui-overwrite";
-import { ChevronRight, Label } from "@mui/icons-material";
+import { ChevronRight } from "@mui/icons-material";
 import { Box, Button, Container, Grid, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -15,6 +15,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import moment from "moment";
 import { toast } from "react-toastify";
+import { db } from "@/class/SupabaseDB";
+import { useUserContext } from "@/context/UserContext";
 
 interface StepProps {
   next: () => void;
@@ -68,19 +70,26 @@ const WhatsTheRosary = ({ next }: StepProps) => {
       <Typography variant="h3" className={styles.title}>
         What's The Rosary?
       </Typography>
-      <Typography
-        my={5}
-        textAlign="center"
-        color="secondary"
-        className={styles.body}
-      >
+      <Typography my={5} color="secondary" className={styles.body}>
         The Rosary is a Scripture-based prayer.
         <br />
         <br />
         The word rosary comes from Latin and means a garland of roses, the rose
-        being one of the flowers used to symbolize the Virgin Mary.
+        being one of the flowers used to symbolize the Virgin Mary. However,
+        it's also a powerful weapon.
       </Typography>
-      <Grid container justifyContent="flex-end">
+      <Typography color="secondary" className={styles.body}>
+        Don't believe me? Check this inspiring story of Fr. Don Calloway of the
+        Rosary.
+      </Typography>
+      <iframe
+        src="https://www.youtube.com/embed/y1MdrO__5-g?si=9iLYqkxEzUAKd6NQ"
+        className="iframeYoutube"
+        title="What's The Rosary?"
+        frameBorder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      />
+      <Grid mt={2} container justifyContent="flex-end">
         <Button
           size="large"
           color="secondary"
@@ -99,19 +108,31 @@ const WhyPray = ({ next }: StepProps) => {
   return (
     <Box className={styles.stepperContent}>
       <Typography variant="h3" className={styles.title}>
-        Why Pray?
+        Why Pray The Rosary?
       </Typography>
-      <Typography
-        my={5}
-        textAlign="center"
-        color="secondary"
-        className={styles.body}
-      >
-        The Catechism says that we pray as we live, because we live as we pray.
-        If we are living without prayer, we are living without God. Without
+      <Typography my={5} color="secondary" className={styles.body}>
+        The Catechism says that we pray as we live, because we live as we pray
+        &nbsp;
+        <a
+          href="http://www.scborromeo.org/ccc/para/2725.htm"
+          target="CATECHISM_2725"
+        >
+          (2725)
+        </a>
+        . If we are living without prayer, we are living without God. Without
         perseverance in prayer, we risk falling back into the slavery of sin.
       </Typography>
-      <Grid container justifyContent="flex-end">
+      <Typography color="secondary" className={styles.body}>
+        Do you think praying the rosary is powerful? Watch the video.
+      </Typography>
+      <iframe
+        className="iframeYoutube"
+        src="https://www.youtube.com/embed/x1tH_zQ-Cz0?si=f5nh--UPvn9ZIQ7v"
+        title="Why Pray The Rosary?"
+        frameBorder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      />
+      <Grid mt={2} container justifyContent="flex-end">
         <Button
           size="large"
           color="secondary"
@@ -126,7 +147,8 @@ const WhyPray = ({ next }: StepProps) => {
   );
 };
 
-const WhatsYourBirthDay = ({ next }: StepProps) => {
+const WhenIsYourBirthDay = ({ next }: StepProps) => {
+  const { user, setUser } = useUserContext();
   const [dob, setDob] = useState<Date>();
 
   const setDateOfBirth = (date: Date) => {
@@ -143,14 +165,26 @@ const WhatsYourBirthDay = ({ next }: StepProps) => {
     }
   };
 
-  const storeUserBirthDay = () => {
-    next();
+  const storeUserBirthDay = async () => {
+    if (dob && user) {
+      const { error } = await db
+        .getProfiles()
+        .update({ birth_date: dob.toUTCString() })
+        .eq("id", user.userId)
+        .select();
+      setUser({ ...user, dateOfBirth: dob.toUTCString() });
+      if (error) {
+        toast.error("Unable to save your date of birth");
+      } else {
+        next();
+      }
+    }
   };
 
   return (
     <Box className={styles.stepperContent}>
       <Typography variant="h3" className={styles.title}>
-        Let's Celebrate the Good Times
+        Let's Celebrate The Good Times
       </Typography>
       <Typography textAlign="center" color="secondary" className={styles.body}>
         Enter your date of birth:
@@ -254,7 +288,7 @@ const AccountSetup = () => {
       backgroundImage: jesusCross,
     },
     {
-      component: <WhatsYourBirthDay next={nextStep} />,
+      component: <WhenIsYourBirthDay next={nextStep} />,
       color: theme.palette.primary.main,
       backgroundImage: birthDay,
     },

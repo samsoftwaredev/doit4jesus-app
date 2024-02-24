@@ -18,6 +18,7 @@ import { Logo } from "../..";
 import MenuIcon from "@mui/icons-material/Menu";
 import styles from "./homeNavbar.module.scss";
 import { NAV_FOOTER_LINKS, NAV_MAIN_LINKS } from "@/constants/nav";
+import Link from "next/link";
 
 interface Props {
   window?: () => Window;
@@ -34,59 +35,39 @@ function HomeNavbar(props: Props) {
     setMobileOpen((prevState) => !prevState);
   };
 
-  const goToResources = () => {
-    router.push(NAV_MAIN_LINKS.resources.link);
-  };
-
-  const goToPray = () => {
-    router.push("/#why-pray-rosary");
-  };
-
-  const goToHome = () => {
-    router.push(NAV_MAIN_LINKS.home.link);
-  };
-
-  const goToAbout = () => {
-    router.push(NAV_FOOTER_LINKS.about.link);
-  };
-
-  const goToLogIn = () => {
-    router.push(NAV_MAIN_LINKS.login.link);
-  };
-
   const navItems = [
     {
       label: "About",
-      goTo: goToAbout,
+      goTo: NAV_FOOTER_LINKS.about.link,
       sx: { color: "#fff" },
     },
     {
       label: "Resources",
-      goTo: goToResources,
+      goTo: NAV_MAIN_LINKS.resources.link,
       sx: { color: "#fff" },
     },
     {
       label: "Why Pray The Rosary?",
-      goTo: goToPray,
+      goTo: "/#why-pray-rosary",
       sx: { color: "#fff" },
     },
     {
       label: "Log In",
-      goTo: goToLogIn,
+      goTo: NAV_MAIN_LINKS.login.link,
       sx: { color: "#fff" },
     },
   ];
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
-      <Button onClick={goToHome}>
+      <Button href={NAV_MAIN_LINKS.home.link}>
         <Logo type="black" />
       </Button>
       <Divider />
       <List>
         {navItems.map(({ label, goTo }) => (
           <ListItem key={label} disablePadding>
-            <ListItemButton sx={{ textAlign: "center" }} onClick={goTo}>
+            <ListItemButton sx={{ textAlign: "center" }} href={goTo}>
               <ListItemText primary={label} />
             </ListItemButton>
           </ListItem>
@@ -112,15 +93,19 @@ function HomeNavbar(props: Props) {
           >
             <MenuIcon />
           </IconButton>
-          <Button onClick={goToHome}>
-            <Logo type="white" />
-          </Button>
+          <Link passHref href={NAV_MAIN_LINKS.home.link}>
+            <Button>
+              <Logo type="white" />
+            </Button>
+          </Link>
           <Box sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }} />
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
             {navItems.map(({ label, goTo, sx }) => (
-              <Button key={label} onClick={goTo} sx={sx}>
-                {label}
-              </Button>
+              <Link passHref href={goTo}>
+                <Button key={label} sx={sx}>
+                  {label}
+                </Button>
+              </Link>
             ))}
           </Box>
         </Toolbar>

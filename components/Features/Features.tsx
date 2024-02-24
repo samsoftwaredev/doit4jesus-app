@@ -9,7 +9,7 @@ import Image from "next/image";
 const features = [
   {
     thumbnail: maryMoon,
-    title: "Find Peace.",
+    title: "Find Peace",
     description:
       "The act of praying the Rosary has a calming effect, bringing a sense of tranquility and well-being.",
   },

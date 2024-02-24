@@ -6,7 +6,7 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export interface Database {
+export type Database = {
   public: {
     Tables: {
       events: {
@@ -69,20 +69,47 @@ export interface Database {
         Row: {
           commandment: number | null
           created_at: string
+          description: string | null
+          for_adults: boolean | null
+          for_children: boolean | null
+          for_matrimonies: boolean | null
+          for_religious: boolean | null
+          for_teens: boolean | null
           id: number
-          title: string | null
+          question: string | null
+          sin_type: Database["public"]["Enums"]["sin_type"] | null
+          statement: string | null
+          subject: string | null
         }
         Insert: {
           commandment?: number | null
           created_at?: string
+          description?: string | null
+          for_adults?: boolean | null
+          for_children?: boolean | null
+          for_matrimonies?: boolean | null
+          for_religious?: boolean | null
+          for_teens?: boolean | null
           id?: number
-          title?: string | null
+          question?: string | null
+          sin_type?: Database["public"]["Enums"]["sin_type"] | null
+          statement?: string | null
+          subject?: string | null
         }
         Update: {
           commandment?: number | null
           created_at?: string
+          description?: string | null
+          for_adults?: boolean | null
+          for_children?: boolean | null
+          for_matrimonies?: boolean | null
+          for_religious?: boolean | null
+          for_teens?: boolean | null
           id?: number
-          title?: string | null
+          question?: string | null
+          sin_type?: Database["public"]["Enums"]["sin_type"] | null
+          statement?: string | null
+          subject?: string | null
         }
         Relationships: []
       }
@@ -136,7 +163,6 @@ export interface Database {
           first_name: string | null
           gender: string | null
           id: string
-          is_online: boolean | null
           last_name: string | null
           picture_url: string | null
           updated_at: string | null
@@ -147,7 +173,6 @@ export interface Database {
           first_name?: string | null
           gender?: string | null
           id: string
-          is_online?: boolean | null
           last_name?: string | null
           picture_url?: string | null
           updated_at?: string | null
@@ -158,7 +183,6 @@ export interface Database {
           first_name?: string | null
           gender?: string | null
           id?: string
-          is_online?: boolean | null
           last_name?: string | null
           picture_url?: string | null
           updated_at?: string | null
@@ -212,8 +236,10 @@ export interface Database {
       [_ in never]: never
     }
     Enums: {
+      age_group: "adult" | "teen" | "kid"
       event_type: "youtube_video"
       gender: "male" | "famale"
+      sin_type: "mortal" | "venial"
     }
     CompositeTypes: {
       [_ in never]: never

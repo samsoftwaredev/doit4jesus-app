@@ -1,5 +1,6 @@
 import { db } from "@/class/SupabaseDB";
 import Loading from "@/components/Loading";
+import Meta from "@/components/Meta";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { Event } from "@/interfaces/index";
 import { AppLayout } from "@/layouts";

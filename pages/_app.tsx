@@ -10,6 +10,7 @@ import MusicPlayer from "@/components/MusicPlayer";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { UserContextProvider } from "@/context/UserContext";
+import { AccountSetupContextProvider } from "@/context/AccountSetup";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -17,11 +18,13 @@ function MyApp({ Component, pageProps }: AppProps) {
       <StyledEngineProvider injectFirst>
         <ThemeProvider theme={theme}>
           <ToastContextProvider>
-            <LanguageContextProvider>
-              <ToastContainer autoClose={5000} />
-              <Component {...pageProps} />
-              <MusicPlayer />
-            </LanguageContextProvider>
+            <AccountSetupContextProvider>
+              <LanguageContextProvider>
+                <ToastContainer autoClose={5000} />
+                <Component {...pageProps} />
+                <MusicPlayer />
+              </LanguageContextProvider>
+            </AccountSetupContextProvider>
           </ToastContextProvider>
         </ThemeProvider>
       </StyledEngineProvider>
