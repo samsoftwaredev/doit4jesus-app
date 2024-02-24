@@ -19,13 +19,13 @@ import { db } from "@/class/SupabaseDB";
 import { useUserContext } from "@/context/UserContext";
 
 interface StepProps {
-  next: () => void;
+  next: (skipToEnd?: boolean) => void;
 }
 
 const KnowledgeStep = ({ next }: StepProps) => {
   const onClick = (quantity: string) => {
-    // TODO: call API
-    next();
+    if (quantity === "always") next(true);
+    else next();
   };
 
   return (
@@ -95,7 +95,7 @@ const WhatsTheRosary = ({ next }: StepProps) => {
           color="secondary"
           variant="contained"
           endIcon={<ChevronRight />}
-          onClick={next}
+          onClick={() => next()}
         >
           Continue
         </Button>
@@ -138,7 +138,7 @@ const WhyPray = ({ next }: StepProps) => {
           color="secondary"
           variant="contained"
           endIcon={<ChevronRight />}
-          onClick={next}
+          onClick={() => next()}
         >
           Continue
         </Button>
@@ -238,7 +238,7 @@ const Intro = ({ next }: StepProps) => {
           color="secondary"
           variant="contained"
           endIcon={<ChevronRight />}
-          onClick={next}
+          onClick={() => next()}
         >
           Start
         </Button>
@@ -257,14 +257,18 @@ const AccountSetup = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [bgColor, setBgColor] = useState(theme.palette.error.dark);
 
-  const nextStep = () => {
-    setCurrentStep((step) => {
-      if (step >= steps.length - 1) {
-        router.push(NAV_APP_LINKS.app.link);
-        return step;
-      }
-      return step + 1;
-    });
+  const nextStep = (skipToEnd = false) => {
+    if (skipToEnd === true) {
+      setCurrentStep(steps.length - 1);
+    } else {
+      setCurrentStep((step) => {
+        if (step >= steps.length - 1) {
+          router.push(NAV_APP_LINKS.app.link);
+          return step;
+        }
+        return step + 1;
+      });
+    }
   };
 
   steps = [
