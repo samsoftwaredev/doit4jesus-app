@@ -9,10 +9,19 @@ import { useRouter } from "next/router";
 import { useUserContext } from "@/context/UserContext";
 
 enum ViewType {
-  signUp = "Sing Up",
-  logIn = "Log In",
-  forgotPassword = "Forgot Password",
+  signUp = "signUp",
+  logIn = "logIn",
+  forgotPassword = "forgotPassword",
 }
+
+type PageViewType = {
+  [key: string]: {
+    title: string;
+    header: string;
+    component: string | JSX.Element;
+    footer: string | JSX.Element;
+  };
+};
 
 const Register: NextPage = () => {
   const navigate = useRouter();
@@ -32,6 +41,48 @@ const Register: NextPage = () => {
     setView(ViewType.forgotPassword);
   };
 
+  const pageView: PageViewType = {
+    signUp: {
+      title: "Sing Up",
+      header: "Join Our Catholic Community!",
+      component: <SignUp />,
+      footer: (
+        <>
+          Have an account already?
+          <Button variant="text" onClick={toggleViewLogin}>
+            Log In
+          </Button>
+        </>
+      ),
+    },
+    logIn: {
+      title: "Log In",
+      header: "Welcome back!",
+      component: <LogIn onForgotPassword={toggleViewForgotPassword} />,
+      footer: (
+        <>
+          Don't have an account?
+          <Button variant="text" onClick={toggleViewSignUp}>
+            Sign Up
+          </Button>
+        </>
+      ),
+    },
+    forgotPassword: {
+      title: "Forgot Password",
+      header: "",
+      component: <ForgotPassword />,
+      footer: (
+        <>
+          Did you remembered your password?
+          <Button variant="text" onClick={toggleViewLogin}>
+            Log In
+          </Button>
+        </>
+      ),
+    },
+  };
+
   useEffect(() => {
     // if user is auth, navigate user to application
     if (isAuth) navigate.push(NAV_APP_LINKS.app.link);
@@ -44,46 +95,14 @@ const Register: NextPage = () => {
       <Meta pageTitle="Register" />
       <Container maxWidth="xs">
         <Typography mt={3} variant="h4" component="h1">
-          {view}
+          {pageView[view].title}
         </Typography>
         <Typography variant="body1" component="p">
-          {view === ViewType.signUp && "Join Our Catholic Community!"}
-          {view === ViewType.logIn && "Welcome back!"}
-          {view === ViewType.forgotPassword &&
-            "No worries! Fill in your email and we'll send you a link to reset your password"}
+          {pageView[view].header}
         </Typography>
-        <Box my={2}>
-          {view === ViewType.signUp && <SignUp />}
-          {view === ViewType.logIn && (
-            <LogIn onForgotPassword={toggleViewForgotPassword} />
-          )}
-          {view === ViewType.forgotPassword && <ForgotPassword />}
-        </Box>
+        <Box my={2}>{pageView[view]?.component}</Box>
         <Typography textAlign="center" variant="body1" component="p">
-          {view === ViewType.signUp && (
-            <>
-              Have an account already?
-              <Button variant="text" onClick={toggleViewLogin}>
-                Log In
-              </Button>
-            </>
-          )}
-          {view === ViewType.logIn && (
-            <>
-              Don't have an account?
-              <Button variant="text" onClick={toggleViewSignUp}>
-                Sign Up
-              </Button>
-            </>
-          )}
-          {view === ViewType.forgotPassword && (
-            <>
-              Did you remembered your password?
-              <Button variant="text" onClick={toggleViewLogin}>
-                Log In
-              </Button>
-            </>
-          )}
+          {pageView[view].footer}
         </Typography>
       </Container>
     </MainLayout>
