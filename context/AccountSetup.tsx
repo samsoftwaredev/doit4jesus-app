@@ -3,6 +3,7 @@ import { useUserContext } from "./UserContext";
 import { AccountSetup as AccountSetupSection } from "@/sections";
 import { usePathname } from "next/navigation";
 import { NAV_APP_LINKS } from "../constants";
+import { Meta } from "../components";
 
 interface AccountSetupContext {}
 
@@ -24,7 +25,12 @@ const AccountSetupContextProvider = ({ children }: Props) => {
     !user?.dateOfBirth &&
     pathname.includes(NAV_APP_LINKS.app.link)
   ) {
-    return <AccountSetupSection />;
+    return (
+      <>
+        <Meta pageTitle="DoIt4Jesus" />
+        <AccountSetupSection />;
+      </>
+    );
   }
 
   return (

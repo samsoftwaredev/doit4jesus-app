@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import { PresenceContextProvider } from "@/context/PresenceContext";
 import { useUserContext } from "@/context/UserContext";
 import Loading from "@/components/Loading";
+import Meta from "@/components/Meta";
 
 const LiveEvent: NextPage = () => {
   const { user } = useUserContext();

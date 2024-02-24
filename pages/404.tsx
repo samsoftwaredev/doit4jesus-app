@@ -4,7 +4,7 @@ import { Meta, PageNotFound } from "../components";
 const Page404: NextPage = () => {
   return (
     <div>
-      <Meta pageTitle="Page not found" />
+      <Meta pageTitle="Page Not Found" />
       <PageNotFound />
     </div>
   );
