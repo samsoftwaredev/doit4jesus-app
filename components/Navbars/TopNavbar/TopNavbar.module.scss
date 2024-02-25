@@ -27,7 +27,7 @@
   svg {
     font-size: 1.3em;
   }
-  a {
+  .userName {
     display: none;
     @include tablet {
       display: block;

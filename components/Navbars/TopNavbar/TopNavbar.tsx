@@ -77,13 +77,14 @@ const TopNavbar = ({ handleMenu }: Props) => {
       </Button>
       <IconButton
         className={styles.topNavbarProfile}
-        id="basic-button"
         aria-controls={open ? "basic-menu" : undefined}
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
         onClick={handleClick}
       >
-        <Typography>{user?.firstName}&nbsp;</Typography>
+        <Typography className={styles.userName}>
+          {user?.firstName}&nbsp;
+        </Typography>
         <AccountCircle />
       </IconButton>
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
