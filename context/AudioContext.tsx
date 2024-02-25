@@ -1,37 +1,52 @@
-import { createContext, MouseEventHandler, useContext, useState } from "react";
-import { AudioDialog, YouTubeVideo } from "@/components";
 import {
-  INTERFACE_AUDIO_TYPE,
+  createContext,
+  Dispatch,
+  MouseEventHandler,
+  SetStateAction,
+  useContext,
+  useState,
+} from "react";
+import { YouTubeVideo } from "@/components";
+import {
   INTERFACE_AUDIO_STATE,
   INTERFACE_AUDIO_PROPS,
   INTERFACE_AUDIO_SEEK,
+  INTERFACE_LANGUAGES,
 } from "@/interfaces";
+import { AppLayout } from "../layouts";
+import { usePathname } from "next/navigation";
+import { useRouter } from "next/router";
+import { NAV_APP_LINKS } from "../constants";
+import { myRosary } from "@/class";
 
 interface AudioContext {
-  /** Unique id of the item */
   audioState: INTERFACE_AUDIO_STATE;
   setAudioState: Function;
   isAudioMute: boolean;
   toggleIsAudioMute: Function;
   forwardAudio: MouseEventHandler<HTMLAnchorElement>;
   backwardAudio: MouseEventHandler<HTMLAnchorElement>;
-  toggleDialog: () => void;
+  audioPlayer: INTERFACE_AUDIO_PROPS;
+  setAudioPlayer: Dispatch<SetStateAction<INTERFACE_AUDIO_PROPS>>;
+  goToEvent: () => void;
 }
 
 interface Props {
   children: JSX.Element | JSX.Element[];
-  audioPlayer: INTERFACE_AUDIO_PROPS;
-  type?: INTERFACE_AUDIO_TYPE;
 }
 
 const AudioContext = createContext<AudioContext | undefined>(undefined);
 
-const AudioContextProvider = ({
-  children,
-  audioPlayer,
-  type = INTERFACE_AUDIO_TYPE.YOUTUBE_LINK,
-}: Props) => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+const AudioContextProvider = ({ children }: Props) => {
+  const rosary = myRosary;
+  const rosaryState = rosary.getRosaryState();
+  const pathname = usePathname();
+  const router = useRouter();
+  const [audioPlayer, setAudioPlayer] = useState<INTERFACE_AUDIO_PROPS>({
+    audio: rosary.getAudio(INTERFACE_LANGUAGES.en),
+    audioTitle: "Today's Rosary",
+    audioSubTitle: rosaryState.mystery,
+  });
   const [isAudioMute, setIsAudioMute] = useState(false);
   const [audioState, setAudioState] = useState(INTERFACE_AUDIO_STATE.PAUSED);
   const [audioTimer, setAudioTimer] = useState<INTERFACE_AUDIO_SEEK>(
@@ -50,12 +65,8 @@ const AudioContextProvider = ({
     setAudioTimer(INTERFACE_AUDIO_SEEK.BACKWARDS);
   };
 
-  const closeDialog = () => {
-    setIsDialogOpen(false);
-  };
-
-  const toggleDialog = () => {
-    setIsDialogOpen((prevState) => !prevState);
+  const goToEvent = () => {
+    router.push(NAV_APP_LINKS.liveEvent.link);
   };
 
   const value = {
@@ -65,17 +76,28 @@ const AudioContextProvider = ({
     toggleIsAudioMute,
     forwardAudio,
     backwardAudio,
-    toggleDialog,
+    goToEvent,
+    audioPlayer,
+    setAudioPlayer,
   };
 
   return (
     <AudioContext.Provider value={value}>
-      {type === INTERFACE_AUDIO_TYPE.YOUTUBE_LINK && (
-        <AudioDialog
-          isOpen={isDialogOpen}
-          onClose={closeDialog}
-          title={audioPlayer.audioTitle}
-        >
+      <div
+        style={{
+          visibility:
+            pathname.includes(NAV_APP_LINKS.liveEvent.link) ||
+            pathname.includes(NAV_APP_LINKS.event.link)
+              ? "visible"
+              : "hidden",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+        }}
+      >
+        <AppLayout>
           <YouTubeVideo
             id={audioPlayer.audio}
             onChange={setAudioState}
@@ -86,8 +108,8 @@ const AudioContextProvider = ({
             audioSeek={audioTimer}
             audioState={audioState}
           />
-        </AudioDialog>
-      )}
+        </AppLayout>
+      </div>
       {children}
     </AudioContext.Provider>
   );

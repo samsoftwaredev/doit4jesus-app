@@ -150,7 +150,9 @@ const YouTubeVideo = ({
   }, [volume]);
 
   return (
-    <div className={styles.container} ref={youtubeEleRef} id={youtubeId} />
+    <div className={styles.container}>
+      <div className={styles.video} ref={youtubeEleRef} id={youtubeId} />
+    </div>
   );
 };
 

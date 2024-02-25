@@ -32,7 +32,13 @@ const App: NextPage = () => {
     getEvents();
   }, []);
 
-  if (isLoading) return <Loading isPage={false} />;
+  if (isLoading) {
+    return (
+      <AppLayout>
+        <Loading isPage={true} />
+      </AppLayout>
+    );
+  }
 
   return (
     <ProtectedRoute>

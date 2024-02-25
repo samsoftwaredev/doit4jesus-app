@@ -1,15 +1,14 @@
 import { IconButton, Tooltip } from "@mui/material";
 import RedoIcon from "@mui/icons-material/Redo";
 import { useAudioContext } from "context/AudioContext";
-import { theme } from "@/styles/mui-overwrite";
 
 const AudioControllers = () => {
   const { forwardAudio } = useAudioContext();
 
   return (
     <Tooltip title="Forward">
-      <IconButton onClick={forwardAudio} href="#next">
-        <RedoIcon sx={{ color: theme.palette.info.dark }} fontSize="large" />
+      <IconButton color="info" onClick={forwardAudio} href="#next">
+        <RedoIcon fontSize="large" />
       </IconButton>
     </Tooltip>
   );

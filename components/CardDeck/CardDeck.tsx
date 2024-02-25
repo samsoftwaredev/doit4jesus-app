@@ -13,7 +13,6 @@ import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { StarButton } from "@/components";
-import { useToastContext } from "@/context/ToastContext";
 import { theme } from "@/styles/mui-overwrite";
 
 interface Props {
@@ -23,7 +22,6 @@ interface Props {
 }
 
 function CardDeck({ steps, setActiveStep, activeStep }: Props) {
-  const { setToast } = useToastContext();
   const [sinsCommitted, setSinsCommitted] = React.useState<CardProps[]>([]);
 
   const handleNext = () => {
@@ -55,7 +53,6 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
 
   const handelSave = () => {
     // TODO: API call to save
-    setToast({ open: true, message: "Question saved!", type: "success" });
   };
 
   return (

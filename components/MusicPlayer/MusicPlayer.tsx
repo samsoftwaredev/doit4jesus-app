@@ -1,41 +1,36 @@
 import { Box, Typography } from "@mui/material";
-import { AudioPlayer } from "../AudioPlayer";
-import { INTERFACE_LANGUAGES } from "@/interfaces/index";
 import styles from "./musicPlayer.module.scss";
 import MusicSettings from "../MusicSettings";
 import MusicVideo from "../MusicVideo";
-
-import { myRosary } from "@/class";
+import { AudioNext, AudioPrevious, AudioPlay } from "../AudioControllers";
+import { useAudioContext } from "@/context/AudioContext";
+import OnlineUsers from "../OnlineUsers";
+import { usePresenceContext } from "@/context/PresenceContext";
 
 const MusicPlayer = () => {
-  const rosary = myRosary;
-  const rosaryState = rosary.getRosaryState();
+  const { users } = usePresenceContext();
+  const { audioPlayer } = useAudioContext();
 
   return (
-    <AudioPlayer
-      audioPlayer={{
-        audio: rosary.getAudio(INTERFACE_LANGUAGES.en),
-        audioTitle: rosaryState.mystery,
-      }}
-    >
+    <>
       <Box className={styles.container}>
         <Box className={styles.controls}>
           <Typography className={styles.title} component="h3">
-            {rosaryState.title}
+            {audioPlayer.audioTitle}
           </Typography>
           <Box className={styles.buttonControl}>
             <MusicSettings />
-            <AudioPlayer.AudioPrevious />
-            <AudioPlayer.AudioPlay />
-            <AudioPlayer.AudioNext />
+            <AudioPrevious />
+            <AudioPlay />
+            <AudioNext />
             <MusicVideo />
           </Box>
           <Typography className={styles.mystery} component="h4">
-            {rosaryState.mystery}
+            <OnlineUsers users={users} />
           </Typography>
         </Box>
       </Box>
-    </AudioPlayer>
+    </>
   );
 };
 

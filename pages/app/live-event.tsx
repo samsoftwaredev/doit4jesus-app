@@ -7,13 +7,11 @@ import { Event, EventTypes, VideoEvent } from "@/interfaces";
 import { normalizeEvent, normalizeVideo } from "normalize";
 import { db, supabase } from "@/class/SupabaseDB";
 import { toast } from "react-toastify";
-import { PresenceContextProvider } from "@/context/PresenceContext";
-import { useUserContext } from "@/context/UserContext";
+import { usePresenceContext } from "@/context/PresenceContext";
 import Loading from "@/components/Loading";
-import Meta from "@/components/Meta";
 
 const LiveEvent: NextPage = () => {
-  const { user } = useUserContext();
+  const { setChannel } = usePresenceContext();
   const liveEvent = supabase.channel("live-event"); // set your topic here
   const [isLoading, setIsLoading] = useState(true);
   const [eventVideo, setEventVideo] = useState<(VideoEvent & Event) | null>(
@@ -50,6 +48,7 @@ const LiveEvent: NextPage = () => {
 
   useEffect(() => {
     getData();
+    setChannel(liveEvent);
   }, []);
 
   if (isLoading) {
@@ -62,11 +61,9 @@ const LiveEvent: NextPage = () => {
 
   return (
     <ProtectedRoute>
-      <PresenceContextProvider channel={liveEvent} user={user!}>
-        <AppLayout>
-          {eventVideo ? <EventSection event={eventVideo} /> : "No live event"}
-        </AppLayout>
-      </PresenceContextProvider>
+      <AppLayout>
+        <></>
+      </AppLayout>
     </ProtectedRoute>
   );
 };

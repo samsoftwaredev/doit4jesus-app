@@ -17,6 +17,7 @@ import { useRouter } from "next/router";
 import { NAV_APP_LINKS } from "@/constants/nav";
 import { useUserContext } from "@/context/UserContext";
 import Loading from "@/components/Loading";
+import AppLayout from "@/layouts/AppLayout";
 
 interface Props {
   handleMenu: () => void;
@@ -55,7 +56,13 @@ const TopNavbar = ({ handleMenu }: Props) => {
     };
   });
 
-  if (isLoading) return <Loading />;
+  if (isLoading) {
+    return (
+      <AppLayout>
+        <Loading isPage={true} />
+      </AppLayout>
+    );
+  }
 
   return (
     <Box

@@ -1,14 +1,21 @@
 import FitScreenIcon from "@mui/icons-material/FitScreen";
 import { IconButton, Tooltip } from "@mui/material";
 import { useAudioContext } from "@/context/AudioContext";
-import { theme } from "@/styles/mui-overwrite";
+import { NAV_APP_LINKS } from "@/constants/nav";
+import { usePathname } from "next/navigation";
 
 const MusicVideo = () => {
-  const { toggleDialog } = useAudioContext();
+  const pathname = usePathname();
+  const { goToEvent } = useAudioContext();
+
   return (
     <Tooltip title="View Video">
-      <IconButton onClick={toggleDialog}>
-        <FitScreenIcon sx={{ color: theme.palette.info.dark }} />
+      <IconButton
+        color="info"
+        disabled={pathname.includes(NAV_APP_LINKS.liveEvent.link)}
+        onClick={goToEvent}
+      >
+        <FitScreenIcon />
       </IconButton>
     </Tooltip>
   );

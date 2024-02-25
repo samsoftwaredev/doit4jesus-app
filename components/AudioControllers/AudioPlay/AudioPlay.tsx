@@ -45,14 +45,10 @@ const AudioPlay = () => {
           />
         );
       case INTERFACE_AUDIO_STATE.PAUSED:
-        return (
-          <PlayIcon fontSize="large" sx={{ color: theme.palette.info.dark }} />
-        );
+        return <PlayIcon fontSize="large" />;
       case INTERFACE_AUDIO_STATE.PLAYING:
       default:
-        return (
-          <PauseIcon fontSize="large" sx={{ color: theme.palette.info.dark }} />
-        );
+        return <PauseIcon fontSize="large" />;
     }
   };
 
@@ -61,6 +57,7 @@ const AudioPlay = () => {
   return (
     <Tooltip title={toggleText()}>
       <IconButton
+        color="info"
         disabled={audioState === INTERFACE_AUDIO_STATE.BUFFERING}
         onClick={handleToggleAudioPlaying}
         href={`#${audioText(audioState === INTERFACE_AUDIO_STATE.PLAYING)}`}

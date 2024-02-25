@@ -14,6 +14,7 @@ import { User } from "../interfaces";
 import Loading from "@/components/Loading";
 import { useRouter } from "next/router";
 import { NAV_MAIN_LINKS } from "../constants";
+import { AppLayout } from "../layouts";
 
 interface UserContext {
   user: User | null | undefined;
@@ -87,7 +88,7 @@ const UserContextProvider = ({ children }: Props) => {
     [user]
   );
 
-  if (isLoading) return <Loading />;
+  if (isLoading) return <Loading isPage={true} />;
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };

@@ -1,26 +1,25 @@
 import type { NextPage } from "next";
 import { AppLayout } from "@/layouts";
-import { EventSection } from "@/sections";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useRouter } from "next/router";
-import { EventTypes, Event, VideoEvent } from "@/interfaces";
+import { EventTypes } from "@/interfaces";
 import { useEffect, useState } from "react";
 import { db, supabase } from "@/class/SupabaseDB";
 import { normalizeEvent, normalizeVideo } from "normalize";
 import { toast } from "react-toastify";
-import { PresenceContextProvider } from "@/context/PresenceContext";
-import { useUserContext } from "@/context/UserContext";
+import { usePresenceContext } from "@/context/PresenceContext";
 import Loading from "@/components/Loading";
+import { useAudioContext } from "@/context/AudioContext";
+import { RealtimeChannel } from "@supabase/supabase-js";
 
 const LiveEvent: NextPage = () => {
   const router = useRouter();
   const { slug } = router.query;
-  const { user } = useUserContext();
-  const channel = supabase.channel(typeof slug === "string" ? slug : "");
+  const { setChannel } = usePresenceContext();
+  const { setAudioPlayer } = useAudioContext();
+  const channel: RealtimeChannel | undefined =
+    typeof slug === "string" ? supabase.channel(slug) : undefined;
   const [isLoading, setIsLoading] = useState(true);
-  const [eventVideo, setEventVideo] = useState<(VideoEvent & Event) | null>(
-    null
-  );
 
   const getYouTube = async (id: string | null) => {
     if (!id) return;
@@ -42,9 +41,9 @@ const LiveEvent: NextPage = () => {
     if (event?.eventType === EventTypes.youtubeVideo) {
       const video = await getYouTube(event.eventSource);
       if (video) {
-        setEventVideo({
-          ...event,
-          ...video,
+        setAudioPlayer({
+          audio: video.videoId,
+          audioTitle: video.title,
         });
       }
     }
@@ -53,6 +52,7 @@ const LiveEvent: NextPage = () => {
 
   useEffect(() => {
     if (slug && !Array.isArray(slug)) getData(slug);
+    setChannel(channel);
   }, []);
 
   if (isLoading) {
@@ -65,11 +65,9 @@ const LiveEvent: NextPage = () => {
 
   return (
     <ProtectedRoute>
-      <PresenceContextProvider channel={channel} user={user!}>
-        <AppLayout>
-          {eventVideo ? <EventSection event={eventVideo} /> : "No event found"}
-        </AppLayout>
-      </PresenceContextProvider>
+      <AppLayout>
+        <></>
+      </AppLayout>
     </ProtectedRoute>
   );
 };

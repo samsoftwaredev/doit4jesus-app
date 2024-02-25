@@ -15,13 +15,12 @@ export const theme = createTheme({
       dark: "#844d42",
     },
     error: {
-      light: "##c09397",
+      light: "#c09397",
       main: "#b47a84",
       dark: "#9f4435",
     },
     info: {
-      light: "#ffffff",
-      main: "#000000",
+      main: "#ffffff",
       dark: "#fafafa",
     },
     success: {
