@@ -1,5 +1,14 @@
-import { AccountCircle, Menu } from "@mui/icons-material";
-import { Box, Button, IconButton, Typography } from "@mui/material";
+import { AccountCircle, Logout, Menu as MenuIcon } from "@mui/icons-material";
+import {
+  Box,
+  Button,
+  IconButton,
+  MenuItem,
+  Typography,
+  Menu,
+  ListItemIcon,
+  ListItemText,
+} from "@mui/material";
 import { Logo } from "../..";
 import styles from "./TopNavbar.module.scss";
 import { db, supabase } from "@/class/SupabaseDB";
@@ -18,6 +27,14 @@ const TopNavbar = ({ handleMenu }: Props) => {
   const { user } = useUserContext();
   const navigate = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const logout = async () => {
     setIsLoading(true);
@@ -49,7 +66,7 @@ const TopNavbar = ({ handleMenu }: Props) => {
       }}
     >
       <IconButton className={styles.topNavbarMenu} onClick={handleMenu}>
-        <Menu />
+        <MenuIcon />
       </IconButton>
       <Button
         disableRipple
@@ -58,10 +75,25 @@ const TopNavbar = ({ handleMenu }: Props) => {
       >
         <Logo type="white" />
       </Button>
-      <IconButton className={styles.topNavbarProfile} onClick={logout}>
-        <Typography component={"a"}>{user?.firstName}&nbsp;</Typography>
+      <IconButton
+        className={styles.topNavbarProfile}
+        id="basic-button"
+        aria-controls={open ? "basic-menu" : undefined}
+        aria-haspopup="true"
+        aria-expanded={open ? "true" : undefined}
+        onClick={handleClick}
+      >
+        <Typography>{user?.firstName}&nbsp;</Typography>
         <AccountCircle />
       </IconButton>
+      <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+        <MenuItem sx={{ width: 200, maxWidth: "100%" }} onClick={logout}>
+          <ListItemIcon>
+            <Logout fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Logout</ListItemText>
+        </MenuItem>
+      </Menu>
     </Box>
   );
 };

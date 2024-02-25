@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import Image from "next/image";
 import { Box, Button, Container, Typography } from "@mui/material";
 import smartPhoneHand from "@/public/assets/images/hero/smartPhoneHand.svg";
@@ -8,8 +7,6 @@ import styles from "./hero.module.scss";
 import Link from "next/link";
 
 const Hero = () => {
-  const router = useRouter();
-
   return (
     <div className={styles.content}>
       <Container maxWidth={false} className={styles.container}>
