@@ -68,7 +68,6 @@ export enum INTERFACE_AUDIO_SPEED {
 export interface INTERFACE_AUDIO_PROPS {
   audio: string;
   audioTitle?: string;
-  audioSubTitle?: string;
   audioVolume?: number;
   audioLoop?: boolean;
   audioSeek?: INTERFACE_AUDIO_SEEK;

@@ -15,7 +15,7 @@ const OnlineUsers = ({ users }: Props) => {
     <Box component={"ul"} className={styles.container}>
       {users?.map(({ fullName, userId, pictureUrl }) => (
         <Box component={"li"} className={styles.avatar}>
-          <Tooltip title={`${fullName} in online.`} key={userId}>
+          <Tooltip title={`${fullName} is online.`} key={userId}>
             <AccountCircle />
             {/* <Image width={40} height={40} src={pictureUrl} alt={fullName} /> */}
           </Tooltip>

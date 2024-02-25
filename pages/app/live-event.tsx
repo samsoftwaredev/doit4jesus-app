@@ -1,22 +1,19 @@
 import type { NextPage } from "next";
 import { AppLayout } from "@/layouts";
-import { EventSection } from "@/sections";
-import ProtectedRoute from "@/components/ProtectedRoute";
 import { useEffect, useState } from "react";
-import { Event, EventTypes, VideoEvent } from "@/interfaces";
+import { EventTypes } from "@/interfaces";
 import { normalizeEvent, normalizeVideo } from "normalize";
 import { db, supabase } from "@/class/SupabaseDB";
 import { toast } from "react-toastify";
 import { usePresenceContext } from "@/context/PresenceContext";
 import Loading from "@/components/Loading";
+import { useAudioContext } from "@/context/AudioContext";
 
 const LiveEvent: NextPage = () => {
   const { setChannel } = usePresenceContext();
+  const { setAudioPlayer } = useAudioContext();
   const liveEvent = supabase.channel("live-event"); // set your topic here
   const [isLoading, setIsLoading] = useState(true);
-  const [eventVideo, setEventVideo] = useState<(VideoEvent & Event) | null>(
-    null
-  );
 
   const getYouTube = async (id: string | null) => {
     if (!id) return;
@@ -41,7 +38,12 @@ const LiveEvent: NextPage = () => {
     const eventRes = await getEvent();
     if (eventRes?.eventType === EventTypes.youtubeVideo) {
       const videoRes = await getYouTube(eventRes.eventSource);
-      if (videoRes) setEventVideo({ ...eventRes, ...videoRes });
+      if (videoRes) {
+        setAudioPlayer({
+          audio: videoRes.videoId,
+          audioTitle: videoRes.title,
+        });
+      }
     }
     setIsLoading(false);
   };
@@ -59,13 +61,7 @@ const LiveEvent: NextPage = () => {
     );
   }
 
-  return (
-    <ProtectedRoute>
-      <AppLayout>
-        <></>
-      </AppLayout>
-    </ProtectedRoute>
-  );
+  return null;
 };
 
 export default LiveEvent;

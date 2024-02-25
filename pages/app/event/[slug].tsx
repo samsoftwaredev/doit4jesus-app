@@ -63,13 +63,7 @@ const LiveEvent: NextPage = () => {
     );
   }
 
-  return (
-    <ProtectedRoute>
-      <AppLayout>
-        <></>
-      </AppLayout>
-    </ProtectedRoute>
-  );
+  return null;
 };
 
 export default LiveEvent;
