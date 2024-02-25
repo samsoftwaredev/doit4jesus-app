@@ -43,7 +43,9 @@
       "@/data/*": ["data/*"],
       "@/data": ["data/index"],
       "@/sections/*": ["sections/*"],
-      "@/sections": ["sections/index"]
+      "@/sections": ["sections/index"],
+      "@/normalize/*": ["normalize/*"],
+      "@/normalize": ["normalize/index"]
     }
   },
   "include": [

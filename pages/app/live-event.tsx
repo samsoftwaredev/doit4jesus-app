@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import { AppLayout } from "@/layouts";
 import { useEffect, useState } from "react";
 import { EventTypes } from "@/interfaces";
-import { normalizeEvent, normalizeVideo } from "normalize";
+import { normalizeEvent, normalizeVideo } from "@/normalize";
 import { db, supabase } from "@/class/SupabaseDB";
 import { toast } from "react-toastify";
 import { usePresenceContext } from "@/context/PresenceContext";
@@ -11,8 +11,8 @@ import { useAudioContext } from "@/context/AudioContext";
 
 const LiveEvent: NextPage = () => {
   const { setChannel } = usePresenceContext();
-  const { setAudioPlayer } = useAudioContext();
-  const liveEvent = supabase.channel("live-event"); // set your topic here
+  const { setAudioPlayer, audioPlayer } = useAudioContext();
+  const liveEvent = supabase.channel("live-event");
   const [isLoading, setIsLoading] = useState(true);
 
   const getYouTube = async (id: string | null) => {
@@ -38,7 +38,7 @@ const LiveEvent: NextPage = () => {
     const eventRes = await getEvent();
     if (eventRes?.eventType === EventTypes.youtubeVideo) {
       const videoRes = await getYouTube(eventRes.eventSource);
-      if (videoRes) {
+      if (videoRes && !audioPlayer.audio) {
         setAudioPlayer({
           audio: videoRes.videoId,
           audioTitle: videoRes.title,

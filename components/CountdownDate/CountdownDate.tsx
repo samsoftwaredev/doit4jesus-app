@@ -11,7 +11,7 @@ interface Props {
 
 const CountdownDate = ({ targetTime = new Date() }: Props) => {
   const [currentTime, setCurrentTime] = useState(moment());
-  const timeBetween = moment.duration(moment(targetTime).diff(currentTime));
+  const timeRemaining = moment.duration(moment(targetTime).diff(currentTime));
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -21,12 +21,13 @@ const CountdownDate = ({ targetTime = new Date() }: Props) => {
     return () => clearInterval(interval);
   }, []);
 
-  const showYears = timeBetween.years() > 0;
-  const showMonths = timeBetween.months() > 0;
-  const showDays = timeBetween.days() > 0;
-  const showHours = timeBetween.hours() > 0;
-  const showMinutes = timeBetween.minutes() > 0;
-  const showSeconds = timeBetween.seconds() > 0 && timeBetween.minutes() <= 1;
+  const showYears = timeRemaining.years() > 0;
+  const showMonths = timeRemaining.months() > 0;
+  const showDays = timeRemaining.days() > 0;
+  const showHours = timeRemaining.hours() > 0;
+  const showMinutes = timeRemaining.minutes() > 0;
+  const showSeconds =
+    timeRemaining.seconds() > 0 && timeRemaining.minutes() <= 1;
 
   const countdownIsZero =
     showYears ||
@@ -40,12 +41,12 @@ const CountdownDate = ({ targetTime = new Date() }: Props) => {
     return (
       <Box className={css(styles.pill, styles.warning)}>
         Starts in&nbsp;
-        {showYears ? <span>{timeBetween.years()}yr&nbsp;</span> : null}
-        {showMonths ? <span>{timeBetween.months()}m&nbsp;</span> : null}
-        {showDays ? <span>{timeBetween.days()}d&nbsp;</span> : null}
-        {showHours ? <span>{timeBetween.hours()}h&nbsp;</span> : null}
-        {showMinutes ? <span>{timeBetween.minutes()}min&nbsp;</span> : null}
-        {showSeconds ? <span>{timeBetween.seconds()}s&nbsp;</span> : null}
+        {showYears ? <span>{timeRemaining.years()}yr&nbsp;</span> : null}
+        {showMonths ? <span>{timeRemaining.months()}m&nbsp;</span> : null}
+        {showDays ? <span>{timeRemaining.days()}d&nbsp;</span> : null}
+        {showHours ? <span>{timeRemaining.hours()}h&nbsp;</span> : null}
+        {showMinutes ? <span>{timeRemaining.minutes()}min&nbsp;</span> : null}
+        {showSeconds ? <span>{timeRemaining.seconds()}s&nbsp;</span> : null}
       </Box>
     );
   }
