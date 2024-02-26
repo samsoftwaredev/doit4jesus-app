@@ -6,6 +6,7 @@ import { AudioNext, AudioPrevious, AudioPlay } from "../AudioControllers";
 import { useAudioContext } from "@/context/AudioContext";
 import OnlineUsers from "../OnlineUsers";
 import { usePresenceContext } from "@/context/PresenceContext";
+import MovingText from "../MovingText";
 
 const MusicPlayer = () => {
   const { users } = usePresenceContext();
@@ -15,8 +16,8 @@ const MusicPlayer = () => {
     <>
       <Box className={styles.container}>
         <Box className={styles.controls}>
-          <Typography className={styles.title} component="h3">
-            {audioPlayer.audioTitle}
+          <Typography className={styles.title} component="span">
+            <MovingText>{audioPlayer.audioTitle}</MovingText>
           </Typography>
           <Box className={styles.buttonControl}>
             <MusicSettings />

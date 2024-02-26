@@ -24,64 +24,78 @@
   right: 0;
   left: 0;
   z-index: 1000;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  flex-direction: column;
-  height: 70px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 20px;
+  gap: 1em 1em;
+  grid-auto-flow: row;
+  grid-template-areas:
+    "buttonControl buttonControl"
+    "title mystery";
+
+  height: 80px;
   padding: 0 14px;
   box-shadow: -2px 0px 13px -4px rgba(176, 176, 176, 1);
   backdrop-filter: blur(50px);
 
   @include tablet {
-    flex-direction: row;
-    height: 60px;
-    justify-content: space-between;
+    grid-template-columns: 1fr 350px 1fr;
+    grid-template-rows: 1fr;
+    gap: 1em 1em;
+    grid-auto-flow: row;
+    grid-template-areas: "title buttonControl mystery";
     align-items: center;
   }
   @include desktop {
-    flex-direction: row;
-    height: 60px;
-    justify-content: space-between;
+    grid-template-columns: 1fr 350px 1fr;
+    grid-template-rows: 1fr;
+    gap: 1em 1em;
+    grid-auto-flow: row;
+    grid-template-areas: "title buttonControl mystery";
     align-items: center;
   }
 }
 
 .title {
   color: #fff;
-  display: none;
   width: 250px;
+  text-wrap: nowrap;
+  grid-area: title;
+  position: relative;
+  top: -20px;
 
   @include tablet {
     display: block;
+    top: 0px;
   }
   @include desktop {
     display: block;
+    top: 0px;
   }
 }
 
 .mystery {
-  position: relative;
-  top: -10px;
   color: #fff;
-  text-align: center;
+  position: relative;
+  top: -20px;
   width: 100%;
+  grid-area: mystery;
+  position: relative;
+  text-align: center;
 
   @include tablet {
     top: 0px;
     text-align: right;
-    width: 300px;
   }
   @include desktop {
     top: 0px;
     text-align: right;
-    width: 250px;
   }
 }
 
 .buttonControl {
+  grid-area: buttonControl;
   width: 100%;
-  max-width: 400px;
   text-align: center;
   button:first-child {
     margin-right: 40px;

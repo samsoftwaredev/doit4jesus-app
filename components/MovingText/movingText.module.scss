@@ -1,0 +1,17 @@
+.container {
+  overflow: hidden;
+  width: 100%;
+}
+
+.movingText {
+  animation: marquee 20s linear infinite;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}

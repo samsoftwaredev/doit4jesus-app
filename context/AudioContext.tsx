@@ -44,7 +44,7 @@ const AudioContextProvider = ({ children }: Props) => {
   const router = useRouter();
   const [audioPlayer, setAudioPlayer] = useState<INTERFACE_AUDIO_PROPS>({
     audio: rosary.getAudio(INTERFACE_LANGUAGES.en),
-    audioTitle: "Today's Rosary: " + rosaryState.mystery,
+    audioTitle: `Today's Rosary: ${rosaryState.mystery}   `,
   });
   const [isAudioMute, setIsAudioMute] = useState(false);
   const [audioState, setAudioState] = useState(INTERFACE_AUDIO_STATE.PAUSED);
