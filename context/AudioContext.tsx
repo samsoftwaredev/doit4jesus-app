@@ -13,7 +13,6 @@ import {
   INTERFACE_AUDIO_SEEK,
   INTERFACE_LANGUAGES,
 } from "@/interfaces";
-import { AppLayout } from "../layouts";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/router";
 import { NAV_APP_LINKS } from "../constants";
