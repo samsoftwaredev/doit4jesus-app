@@ -6,7 +6,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { OnlineUser, User } from "@/interfaces";
+import { OnlineUser } from "@/interfaces";
 import { RealtimeChannel, RealtimePresenceState } from "@supabase/supabase-js";
 import { normalizeOnlineUsers } from "normalize";
 import { useUserContext } from "./UserContext";

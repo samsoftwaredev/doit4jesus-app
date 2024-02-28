@@ -1,8 +1,7 @@
 import { db } from "@/class/SupabaseDB";
 import Loading from "@/components/Loading";
-import Meta from "@/components/Meta";
 import ProtectedRoute from "@/components/ProtectedRoute";
-import { Event } from "@/interfaces/index";
+import { DataEvent } from "@/interfaces";
 import { AppLayout } from "@/layouts";
 import Dashboard from "@/sections/DashboardSection";
 import type { NextPage } from "next";
@@ -11,7 +10,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 const App: NextPage = () => {
-  const [events, setEvents] = useState<Event[] | null>(null);
+  const [events, setEvents] = useState<DataEvent[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const getEvents = async () => {

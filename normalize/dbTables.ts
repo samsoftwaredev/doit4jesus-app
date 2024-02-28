@@ -1,4 +1,10 @@
-import { EventTypes, Event, VideoEvent, User, OnlineUser } from "@/interfaces";
+import {
+  EventTypes,
+  DataEvent,
+  VideoEvent,
+  User,
+  OnlineUser,
+} from "@/interfaces";
 import { Json } from "@/interfaces/database";
 import { EventsDB, ProfilesDB, YouTubeDB } from "@/interfaces/databaseTable";
 import moment from "moment";
@@ -8,7 +14,7 @@ const nullToNumber = (val: number | null) => (val === null ? 0 : val);
 const nullToDate = (val: string | null) =>
   val === null ? "" : moment(val).format("MM/DD/YYYY");
 
-export const normalizeEvent = (dataList: EventsDB[]): Event[] => {
+export const normalizeEvent = (dataList: EventsDB[]): DataEvent[] => {
   return dataList.map((data) => {
     const getNumberOfAttendees = (attendees: Json | null) =>
       attendees ? Object.keys(attendees).length : 0;

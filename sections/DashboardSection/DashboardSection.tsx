@@ -4,11 +4,11 @@ import { css } from "@/utils/helpers";
 
 import Link from "next/link";
 import { YouTubeSubscribe } from "@/components/YouTubeVideo";
-import { Event } from "@/interfaces";
+import { DataEvent } from "@/interfaces";
 import CountdownDate from "@/components/CountdownDate";
 
 interface Props {
-  events: Event[] | null;
+  events: DataEvent[] | null;
 }
 
 const DashboardSection = ({ events }: Props) => {
