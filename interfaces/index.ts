@@ -85,7 +85,7 @@ export enum EventTypes {
   text = "text",
 }
 
-export type Event = {
+export type DataEvent = {
   eventId: number;
   attendees: number;
   createdAt: string;

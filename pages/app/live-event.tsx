@@ -1,19 +1,23 @@
 import type { NextPage } from "next";
 import { AppLayout } from "@/layouts";
 import { useEffect, useState } from "react";
-import { EventTypes } from "@/interfaces";
+import { DataEvent, EventTypes, VideoEvent } from "@/interfaces";
 import { normalizeEvent, normalizeVideo } from "@/normalize";
 import { db, supabase } from "@/class/SupabaseDB";
 import { toast } from "react-toastify";
 import { usePresenceContext } from "@/context/PresenceContext";
 import Loading from "@/components/Loading";
 import { useAudioContext } from "@/context/AudioContext";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import { Container, Typography } from "@mui/material";
+import EventSection from "@/sections/EventSection";
 
 const LiveEvent: NextPage = () => {
   const { setChannel } = usePresenceContext();
-  const { setAudioPlayer, audioPlayer } = useAudioContext();
+  const { setAudioPlayer } = useAudioContext();
   const liveEvent = supabase.channel("live-event");
   const [isLoading, setIsLoading] = useState(true);
+  const [dataEvent, setDataEvent] = useState<VideoEvent & DataEvent>();
 
   const getYouTube = async (id: string | null) => {
     if (!id) return;
@@ -38,7 +42,11 @@ const LiveEvent: NextPage = () => {
     const eventRes = await getEvent();
     if (eventRes?.eventType === EventTypes.youtubeVideo) {
       const videoRes = await getYouTube(eventRes.eventSource);
-      if (videoRes && !audioPlayer.audio) {
+      if (videoRes) {
+        setDataEvent({
+          ...eventRes,
+          ...videoRes,
+        });
         setAudioPlayer({
           audio: videoRes.videoId,
           audioTitle: videoRes.title,
@@ -61,7 +69,21 @@ const LiveEvent: NextPage = () => {
     );
   }
 
-  return null;
+  return (
+    <ProtectedRoute>
+      <AppLayout>
+        <Container className="container-box" maxWidth="lg">
+          {typeof dataEvent === "object" ? (
+            <EventSection videoEvent={dataEvent} />
+          ) : (
+            <Typography variant="h3" color="secondary">
+              No Data
+            </Typography>
+          )}
+        </Container>
+      </AppLayout>
+    </ProtectedRoute>
+  );
 };
 
 export default LiveEvent;

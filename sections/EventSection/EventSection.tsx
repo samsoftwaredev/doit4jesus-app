@@ -1,37 +1,24 @@
 import { Box, Card, Typography } from "@mui/material";
-import { Button } from "@mui/material";
-import { AttachMoney, Favorite, Reply } from "@mui/icons-material";
 import { css } from "@/utils/helpers";
 import styles from "./eventSection.module.scss";
-import { Event, VideoEvent } from "@/interfaces/index";
-import { usePresenceContext } from "@/context/PresenceContext";
-import { OnlineUsers } from "@/components";
+import { DataEvent, VideoEvent } from "@/interfaces/index";
 import moment from "moment";
 
 interface Props {
-  event: VideoEvent & Event;
+  videoEvent: VideoEvent & DataEvent;
 }
 
-const Event = ({ event }: Props) => {
-  const { users } = usePresenceContext();
+const EventSection = ({ videoEvent }: Props) => {
   return (
     <Box className={styles.container}>
-      <Box className={styles.videoContainer}>
+      <Box className="video">
         <iframe
-          className={styles.video}
-          src={`https://www.youtube.com/embed/${event.videoId};controls=0`}
-          title={event.title}
           frameBorder={0} // don't remove this attribute
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowFullScreen
         />
       </Box>
       <Card className={css(styles.eventDetails, "appCard")}>
-        <Box className={styles.avatarsContainer}>
-          <OnlineUsers users={users} />
-        </Box>
         <Box display="flex" gap={1} className={styles.eventHeader}>
-          <Typography component="h1">{event.title}</Typography>
+          <Typography component="h1">{videoEvent.title}</Typography>
           {/* <Box sx={{ flexGrow: 1 }} />
           <Button
             color="secondary"
@@ -52,12 +39,12 @@ const Event = ({ event }: Props) => {
           </Button> */}
         </Box>
         <Typography textAlign="right" fontSize="0.9em" component="body">
-          {moment(event.startedAt).format("MM/DD/YYYY")}
+          {moment(videoEvent.startedAt).format("MM/DD/YYYY")}
         </Typography>
-        <Typography component="body">{event.description}</Typography>
+        <Typography component="body">{videoEvent.description}</Typography>
       </Card>
     </Box>
   );
 };
 
-export default Event;
+export default EventSection;

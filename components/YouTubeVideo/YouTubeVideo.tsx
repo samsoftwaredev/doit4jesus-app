@@ -18,6 +18,7 @@ interface Props {
   audioSpeed?: number;
   audioSeek?: INTERFACE_AUDIO_SEEK;
   audioState?: INTERFACE_AUDIO_STATE;
+  showVideo?: boolean;
 }
 
 declare global {
@@ -36,6 +37,7 @@ const YouTubeVideo = ({
   audioSeek = INTERFACE_AUDIO_SEEK.NEUTRAL,
   audioSpeed = INTERFACE_AUDIO_SPEED.NORMAL,
   audioState = INTERFACE_AUDIO_STATE.UNSTARTED,
+  showVideo = false,
 }: Props) => {
   let myYT: YouTubeClass;
   const youtubeEleRef = useRef<HTMLInputElement>(null);
@@ -150,8 +152,11 @@ const YouTubeVideo = ({
   }, [volume]);
 
   return (
-    <div className={styles.container}>
-      <div className={styles.video} ref={youtubeEleRef} id={youtubeId} />
+    <div
+      className={styles.container}
+      style={{ visibility: showVideo ? "visible" : "hidden" }}
+    >
+      <div className="video" ref={youtubeEleRef} id={youtubeId} />
     </div>
   );
 };

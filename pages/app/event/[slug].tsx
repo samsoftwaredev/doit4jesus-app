@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import { AppLayout } from "@/layouts";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useRouter } from "next/router";
-import { EventTypes } from "@/interfaces";
+import { DataEvent, EventTypes, VideoEvent } from "@/interfaces";
 import { useEffect, useState } from "react";
 import { db, supabase } from "@/class/SupabaseDB";
 import { normalizeEvent, normalizeVideo } from "normalize";
@@ -11,6 +11,8 @@ import { usePresenceContext } from "@/context/PresenceContext";
 import Loading from "@/components/Loading";
 import { useAudioContext } from "@/context/AudioContext";
 import { RealtimeChannel } from "@supabase/supabase-js";
+import { Container, Typography } from "@mui/material";
+import EventSection from "@/sections/EventSection";
 
 const LiveEvent: NextPage = () => {
   const router = useRouter();
@@ -20,6 +22,7 @@ const LiveEvent: NextPage = () => {
   const channel: RealtimeChannel | undefined =
     typeof slug === "string" ? supabase.channel(slug) : undefined;
   const [isLoading, setIsLoading] = useState(true);
+  const [dataEvent, setDataEvent] = useState<VideoEvent & DataEvent>();
 
   const getYouTube = async (id: string | null) => {
     if (!id) return;
@@ -37,13 +40,17 @@ const LiveEvent: NextPage = () => {
   };
 
   const getData = async (slugId: string) => {
-    const event = await getEvent(slugId);
-    if (event?.eventType === EventTypes.youtubeVideo) {
-      const video = await getYouTube(event.eventSource);
-      if (video) {
+    const eventRes = await getEvent(slugId);
+    if (eventRes?.eventType === EventTypes.youtubeVideo) {
+      const videoRes = await getYouTube(eventRes.eventSource);
+      if (videoRes) {
+        setDataEvent({
+          ...eventRes,
+          ...videoRes,
+        });
         setAudioPlayer({
-          audio: video.videoId,
-          audioTitle: video.title,
+          audio: videoRes.videoId,
+          audioTitle: videoRes.title,
         });
       }
     }
@@ -63,7 +70,21 @@ const LiveEvent: NextPage = () => {
     );
   }
 
-  return null;
+  return (
+    <ProtectedRoute>
+      <AppLayout>
+        <Container maxWidth="lg">
+          {typeof dataEvent === "object" ? (
+            <EventSection videoEvent={dataEvent} />
+          ) : (
+            <Typography variant="h3" color="secondary">
+              No Data
+            </Typography>
+          )}
+        </Container>
+      </AppLayout>
+    </ProtectedRoute>
+  );
 };
 
 export default LiveEvent;
