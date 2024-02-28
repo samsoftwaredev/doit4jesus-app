@@ -28,7 +28,6 @@ const drawerWidth = 240;
 
 function HomeNavbar(props: Props) {
   const { window } = props;
-  const router = useRouter();
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
   const handleDrawerToggle = () => {
@@ -101,7 +100,7 @@ function HomeNavbar(props: Props) {
           <Box sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }} />
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
             {navItems.map(({ label, goTo, sx }) => (
-              <Link passHref href={goTo}>
+              <Link key={label} passHref href={goTo}>
                 <Button key={label} sx={sx}>
                   {label}
                 </Button>
