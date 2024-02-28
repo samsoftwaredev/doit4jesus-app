@@ -1,6 +1,5 @@
 import type { NextPage } from "next";
 import { AppLayout } from "@/layouts";
-import ProtectedRoute from "@/components/ProtectedRoute";
 import { useRouter } from "next/router";
 import { DataEvent, EventTypes, VideoEvent } from "@/interfaces";
 import { useEffect, useState } from "react";
@@ -13,6 +12,15 @@ import { useAudioContext } from "@/context/AudioContext";
 import { RealtimeChannel } from "@supabase/supabase-js";
 import { Container, Typography } from "@mui/material";
 import EventSection from "@/sections/EventSection";
+import AppWrapper from "@/components/AppWrapper/AppWrapper";
+
+const LiveEventWrapper = () => {
+  return (
+    <AppWrapper>
+      <LiveEvent />
+    </AppWrapper>
+  );
+};
 
 const LiveEvent: NextPage = () => {
   const router = useRouter();
@@ -71,20 +79,18 @@ const LiveEvent: NextPage = () => {
   }
 
   return (
-    <ProtectedRoute>
-      <AppLayout>
-        <Container maxWidth="lg">
-          {typeof dataEvent === "object" ? (
-            <EventSection videoEvent={dataEvent} />
-          ) : (
-            <Typography variant="h3" color="secondary">
-              No Data
-            </Typography>
-          )}
-        </Container>
-      </AppLayout>
-    </ProtectedRoute>
+    <AppLayout>
+      <Container maxWidth="lg">
+        {typeof dataEvent === "object" ? (
+          <EventSection videoEvent={dataEvent} />
+        ) : (
+          <Typography variant="h3" color="secondary">
+            No Data
+          </Typography>
+        )}
+      </Container>
+    </AppLayout>
   );
 };
 
-export default LiveEvent;
+export default LiveEventWrapper;

@@ -18,17 +18,13 @@ function MyApp({ Component, pageProps }: AppProps) {
     <UserContextProvider>
       <StyledEngineProvider injectFirst>
         <ThemeProvider theme={theme}>
-          <AccountSetupContextProvider>
-            <LanguageContextProvider>
-              <AudioContextProvider>
-                <PresenceContextProvider>
-                  <ToastContainer autoClose={5000} />
-                  <Component {...pageProps} />
-                  <MusicPlayer />
-                </PresenceContextProvider>
-              </AudioContextProvider>
-            </LanguageContextProvider>
-          </AccountSetupContextProvider>
+          <LanguageContextProvider>
+            <AudioContextProvider>
+              <ToastContainer autoClose={5000} />
+              <Component {...pageProps} />
+              <MusicPlayer />
+            </AudioContextProvider>
+          </LanguageContextProvider>
         </ThemeProvider>
       </StyledEngineProvider>
     </UserContextProvider>

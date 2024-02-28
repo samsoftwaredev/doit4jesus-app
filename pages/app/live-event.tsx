@@ -8,9 +8,17 @@ import { toast } from "react-toastify";
 import { usePresenceContext } from "@/context/PresenceContext";
 import Loading from "@/components/Loading";
 import { useAudioContext } from "@/context/AudioContext";
-import ProtectedRoute from "@/components/ProtectedRoute";
 import { Container, Typography } from "@mui/material";
 import EventSection from "@/sections/EventSection";
+import AppWrapper from "@/components/AppWrapper/AppWrapper";
+
+const LiveEventWrapper = () => {
+  return (
+    <AppWrapper>
+      <LiveEvent />
+    </AppWrapper>
+  );
+};
 
 const LiveEvent: NextPage = () => {
   const { setChannel } = usePresenceContext();
@@ -70,20 +78,17 @@ const LiveEvent: NextPage = () => {
   }
 
   return (
-    <ProtectedRoute>
-      <AppLayout>
-        <Container className="container-box" maxWidth="lg">
-          {typeof dataEvent === "object" ? (
-            <EventSection videoEvent={dataEvent} />
-          ) : (
-            <Typography variant="h3" color="secondary">
-              No Data
-            </Typography>
-          )}
-        </Container>
-      </AppLayout>
-    </ProtectedRoute>
+    <AppLayout>
+      <Container className="container-box" maxWidth="lg">
+        {typeof dataEvent === "object" ? (
+          <EventSection videoEvent={dataEvent} />
+        ) : (
+          <Typography variant="h3" color="secondary">
+            No Data
+          </Typography>
+        )}
+      </Container>
+    </AppLayout>
   );
 };
-
-export default LiveEvent;
+export default LiveEventWrapper;

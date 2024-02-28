@@ -1,16 +1,24 @@
 import { AppLayout } from "@/layouts";
 import type { NextPage } from "next";
 import { ConfessionGuide } from "@/sections";
-import ProtectedRoute from "@/components/ProtectedRoute";
+import AppWrapper from "@/components/AppWrapper";
 
-const Confession: NextPage = () => {
+const ConfessionWrapper = () => {
   return (
-    <ProtectedRoute>
-      <AppLayout>
-        <ConfessionGuide />
-      </AppLayout>
-    </ProtectedRoute>
+    <AppWrapper>
+      <Confession />
+    </AppWrapper>
   );
 };
 
-export default Confession;
+const Confession: NextPage = () => {
+  return (
+    <AppWrapper>
+      <AppLayout>
+        <ConfessionGuide />
+      </AppLayout>
+    </AppWrapper>
+  );
+};
+
+export default ConfessionWrapper;

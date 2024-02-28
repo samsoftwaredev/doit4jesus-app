@@ -7,6 +7,15 @@ import { useAudioContext } from "@/context/AudioContext";
 import OnlineUsers from "../OnlineUsers";
 import { usePresenceContext } from "@/context/PresenceContext";
 import MovingText from "../MovingText";
+import AppWrapper from "../AppWrapper";
+
+const MusicPlayerWrapper = () => {
+  return (
+    <AppWrapper>
+      <MusicPlayer />
+    </AppWrapper>
+  );
+};
 
 const MusicPlayer = () => {
   const { users } = usePresenceContext();
@@ -35,4 +44,4 @@ const MusicPlayer = () => {
   );
 };
 
-export default MusicPlayer;
+export default MusicPlayerWrapper;

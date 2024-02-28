@@ -1,6 +1,5 @@
 import { db } from "@/class/SupabaseDB";
 import Loading from "@/components/Loading";
-import ProtectedRoute from "@/components/ProtectedRoute";
 import { DataEvent } from "@/interfaces";
 import { AppLayout } from "@/layouts";
 import Dashboard from "@/sections/DashboardSection";
@@ -8,6 +7,15 @@ import type { NextPage } from "next";
 import { normalizeEvent } from "normalize/dbTables";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import AppWrapper from "@/components/AppWrapper";
+
+const AppPageWrapper = () => {
+  return (
+    <AppWrapper>
+      <App />
+    </AppWrapper>
+  );
+};
 
 const App: NextPage = () => {
   const [events, setEvents] = useState<DataEvent[] | null>(null);
@@ -40,12 +48,12 @@ const App: NextPage = () => {
   }
 
   return (
-    <ProtectedRoute>
+    <AppWrapper>
       <AppLayout>
         <Dashboard events={events} />
       </AppLayout>
-    </ProtectedRoute>
+    </AppWrapper>
   );
 };
 
-export default App;
+export default AppPageWrapper;

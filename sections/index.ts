@@ -1,4 +1,3 @@
-export { default as TriviaGame } from "./TriviaGame";
 export { default as ConfessionGuide } from "./ConfessionGuide";
 export { default as Dashboard } from "./DashboardSection";
 export { default as EventSection } from "./EventSection";
