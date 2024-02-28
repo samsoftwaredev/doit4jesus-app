@@ -18,6 +18,7 @@ import { usePathname } from "next/navigation";
 import { useRouter } from "next/router";
 import { NAV_APP_LINKS } from "../constants";
 import { myRosary } from "@/class";
+import { Container } from "@mui/material";
 
 interface AudioContext {
   audioState: INTERFACE_AUDIO_STATE;
@@ -97,16 +98,18 @@ const AudioContextProvider = ({ children }: Props) => {
         }}
       >
         <AppLayout>
-          <YouTubeVideo
-            id={audioPlayer.audio}
-            onChange={setAudioState}
-            setAudioTimer={setAudioTimer}
-            volume={audioPlayer.audioVolume}
-            audioSpeed={audioPlayer.audioSpeed}
-            audioLoop={audioPlayer.audioLoop}
-            audioSeek={audioTimer}
-            audioState={audioState}
-          />
+          <Container sx={{ padding: "1em 0 0 0" }} maxWidth="lg">
+            <YouTubeVideo
+              id={audioPlayer.audio}
+              onChange={setAudioState}
+              setAudioTimer={setAudioTimer}
+              volume={audioPlayer.audioVolume}
+              audioSpeed={audioPlayer.audioSpeed}
+              audioLoop={audioPlayer.audioLoop}
+              audioSeek={audioTimer}
+              audioState={audioState}
+            />
+          </Container>
         </AppLayout>
       </div>
       {children}

@@ -64,7 +64,7 @@ const ConfessionGuide = () => {
   return (
     <>
       {/* <LinearProgress variant="determinate" value={progress} /> */}
-      <Container maxWidth="sm">
+      <Container className="container-box" maxWidth="sm">
         {/* <Box my={2}>
           <TitleNav
             onBack={handelBack}

@@ -9,13 +9,13 @@
   overflow: hidden;
   width: 100%;
   max-width: 1000px;
-  padding-top: 80%; /* 16:9 Aspect Ratio (divide 9 by 16 = 0.5625) */
+  padding-top: 100%; /* 16:9 Aspect Ratio (divide 9 by 16 = 0.5625) */
 
   @include tablet {
-    padding-top: 46%; /* 16:9 Aspect Ratio (divide 9 by 16 = 0.5625) */
+    padding-top: 86%; /* 16:9 Aspect Ratio (divide 9 by 16 = 0.5625) */
   }
   @include desktop {
-    padding-top: 56%; /* 16:9 Aspect Ratio (divide 9 by 16 = 0.5625) */
+    padding-top: 66%; /* 16:9 Aspect Ratio (divide 9 by 16 = 0.5625) */
   }
 }
 
