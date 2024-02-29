@@ -20,9 +20,11 @@ function MyApp({ Component, pageProps }: AppProps) {
         <ThemeProvider theme={theme}>
           <LanguageContextProvider>
             <AudioContextProvider>
-              <ToastContainer autoClose={5000} />
-              <Component {...pageProps} />
-              <MusicPlayer />
+              <PresenceContextProvider>
+                <ToastContainer autoClose={5000} />
+                <Component {...pageProps} />
+                <MusicPlayer />
+              </PresenceContextProvider>
             </AudioContextProvider>
           </LanguageContextProvider>
         </ThemeProvider>

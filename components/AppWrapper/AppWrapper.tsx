@@ -9,9 +9,7 @@ interface Props {
 const AppWrapper = ({ children }: Props) => {
   return (
     <ProtectedRoute>
-      <AccountSetupContextProvider>
-        <PresenceContextProvider>{children}</PresenceContextProvider>
-      </AccountSetupContextProvider>
+      <AccountSetupContextProvider>{children}</AccountSetupContextProvider>
     </ProtectedRoute>
   );
 };
