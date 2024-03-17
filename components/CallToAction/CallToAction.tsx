@@ -8,7 +8,7 @@ const WhyPrayRosary = () => {
   const router = useRouter();
   return (
     <Container maxWidth="md" className={styles.container}>
-      <Typography mb={2} component="h1" className={styles.title}>
+      <Typography pb={5} component="h1" className={styles.title}>
         Start praying with others today!
       </Typography>
       <Link passHref href={NAV_MAIN_LINKS.signup.link}>

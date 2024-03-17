@@ -51,7 +51,7 @@ const Features = () => {
               >
                 <Image src={thumbnail} alt={title} />
               </Box>
-              <Typography className="item-title" variant="h5" gutterBottom>
+              <Typography variant="h5" gutterBottom>
                 {title}
               </Typography>
               <Typography

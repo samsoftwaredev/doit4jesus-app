@@ -24,7 +24,11 @@ const Hero = () => {
           >
             Pray with millions around the world and multiply your blessings
           </Typography>
-          <Link passHref href={NAV_MAIN_LINKS.signup.link}>
+          <Link
+            style={{ padding: "1em 0" }}
+            passHref
+            href={NAV_MAIN_LINKS.signup.link}
+          >
             <Button className={styles.cta} variant="contained" size="large">
               Start Today
             </Button>
