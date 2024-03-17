@@ -10,15 +10,22 @@ interface Props {
 }
 
 const CountdownDate = ({ targetTime = new Date() }: Props) => {
+  let interval: undefined | any = undefined;
   const [currentTime, setCurrentTime] = useState(moment());
   const timeRemaining = moment.duration(moment(targetTime).diff(currentTime));
+  const eventDuration = currentTime.add(2, "hour");
+  const eventIsOld = moment.duration(moment(targetTime).diff(eventDuration));
+
+  const stopTimer = () => {
+    if (interval) clearInterval(interval);
+  };
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    interval = setInterval(() => {
       setCurrentTime(moment());
     }, 1000);
 
-    return () => clearInterval(interval);
+    return () => stopTimer();
   }, []);
 
   const showYears = timeRemaining.years() > 0;
@@ -28,8 +35,11 @@ const CountdownDate = ({ targetTime = new Date() }: Props) => {
   const showMinutes = timeRemaining.minutes() > 0;
   const showSeconds =
     timeRemaining.seconds() > 0 && timeRemaining.minutes() <= 1;
+  const isNotLive = eventIsOld.hours() < 0;
+  const showSecondsCount =
+    timeRemaining.hours() === 0 && timeRemaining.minutes() <= 5 && showSeconds;
 
-  const countdownIsZero =
+  const countdownIsNotZero =
     showYears ||
     showMonths ||
     showDays ||
@@ -37,7 +47,7 @@ const CountdownDate = ({ targetTime = new Date() }: Props) => {
     showMinutes ||
     showSeconds;
 
-  if (countdownIsZero) {
+  if (countdownIsNotZero) {
     return (
       <Box className={css(styles.pill, styles.warning)}>
         Starts in&nbsp;
@@ -46,11 +56,19 @@ const CountdownDate = ({ targetTime = new Date() }: Props) => {
         {showDays ? <span>{timeRemaining.days()}d&nbsp;</span> : null}
         {showHours ? <span>{timeRemaining.hours()}h&nbsp;</span> : null}
         {showMinutes ? <span>{timeRemaining.minutes()}min&nbsp;</span> : null}
-        {showSeconds ? <span>{timeRemaining.seconds()}s&nbsp;</span> : null}
+        {showSecondsCount ? (
+          <span>{timeRemaining.seconds()}s&nbsp;</span>
+        ) : null}
       </Box>
     );
   }
 
+  if (isNotLive) {
+    stopTimer();
+    return null;
+  }
+
+  stopTimer();
   return (
     <Box className={css(styles.pill, styles.error)}>
       <CircleIcon sx={{ fontSize: "1em" }} />
