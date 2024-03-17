@@ -5,6 +5,8 @@ import { NAV_APP_LINKS } from "@/constants/nav";
 import { COMPANY } from "@/constants/company";
 import AccountSetup from "@/sections/AccountSetup";
 import Meta from "../Meta";
+import { useAudioContext } from "@/context/AudioContext";
+import { useEffect } from "react";
 
 interface Props {
   children: any;
@@ -12,8 +14,17 @@ interface Props {
 
 const AppWrapper = ({ children }: Props) => {
   const { user } = useUserContext();
+  const { setHideMusicPlayer } = useAudioContext();
   const pathname = usePathname();
   const isAuth = !!user;
+
+  useEffect(() => {
+    if (!isAuth) {
+      setHideMusicPlayer(true);
+    } else {
+      setHideMusicPlayer(false);
+    }
+  }, [!!user]);
 
   if (
     isAuth &&
