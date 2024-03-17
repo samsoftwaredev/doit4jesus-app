@@ -55,8 +55,7 @@
     "components/*",
     "hooks/*",
     "constants/*",
-    "public/*",
-    "sections/AccountSetup"
+    "public/*"
   ],
   "exclude": ["node_modules", ".vscode"]
 }

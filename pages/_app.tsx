@@ -9,21 +9,25 @@ import MusicPlayer from "@/components/MusicPlayer";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { UserContextProvider } from "@/context/UserContext";
-import { AccountSetupContextProvider } from "@/context/AccountSetup";
 import { AudioContextProvider } from "@/context/AudioContext";
 import { PresenceContextProvider } from "@/context/PresenceContext";
+import { useState } from "react";
 
-function MyApp({ Component, pageProps }: AppProps) {
+const MyApp = ({ Component, pageProps }: AppProps) => {
+  const [hideMusicPlayer, setHideMusicPlayer] = useState(true);
   return (
     <UserContextProvider>
       <StyledEngineProvider injectFirst>
         <ThemeProvider theme={theme}>
           <LanguageContextProvider>
-            <AudioContextProvider>
+            <AudioContextProvider
+              hideMusicPlayer={hideMusicPlayer}
+              setHideMusicPlayer={setHideMusicPlayer}
+            >
               <PresenceContextProvider>
                 <ToastContainer autoClose={5000} />
                 <Component {...pageProps} />
-                <MusicPlayer />
+                <MusicPlayer hideMusicPlayer={hideMusicPlayer} />
               </PresenceContextProvider>
             </AudioContextProvider>
           </LanguageContextProvider>
@@ -31,6 +35,6 @@ function MyApp({ Component, pageProps }: AppProps) {
       </StyledEngineProvider>
     </UserContextProvider>
   );
-}
+};
 
 export default MyApp;

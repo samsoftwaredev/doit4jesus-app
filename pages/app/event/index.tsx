@@ -4,23 +4,21 @@ import { Meta } from "@/components";
 import { Container } from "@mui/material";
 import AppWrapper from "@/components/AppWrapper";
 
+const LiveEvent: NextPage = () => {
+  return (
+    <AppLayout>
+      <Meta pageTitle="Resources" />
+      <Container maxWidth="lg">
+        <p>No event</p>
+      </Container>
+    </AppLayout>
+  );
+};
+
 const LiveEventWrapper = () => {
   return (
     <AppWrapper>
       <LiveEvent />
-    </AppWrapper>
-  );
-};
-
-const LiveEvent: NextPage = () => {
-  return (
-    <AppWrapper>
-      <AppLayout>
-        <Meta pageTitle="Resources" />
-        <Container maxWidth="lg">
-          <p>No event</p>
-        </Container>
-      </AppLayout>
     </AppWrapper>
   );
 };

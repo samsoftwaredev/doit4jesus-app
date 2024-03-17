@@ -28,15 +28,23 @@ interface AudioContext {
   audioPlayer: INTERFACE_AUDIO_PROPS;
   setAudioPlayer: Dispatch<SetStateAction<INTERFACE_AUDIO_PROPS>>;
   goToEvent: () => void;
+  hideMusicPlayer: boolean;
+  setHideMusicPlayer: React.Dispatch<SetStateAction<boolean>>;
 }
 
 interface Props {
   children: JSX.Element | JSX.Element[];
+  hideMusicPlayer: boolean;
+  setHideMusicPlayer: React.Dispatch<SetStateAction<boolean>>;
 }
 
 const AudioContext = createContext<AudioContext | undefined>(undefined);
 
-const AudioContextProvider = ({ children }: Props) => {
+const AudioContextProvider = ({
+  children,
+  hideMusicPlayer,
+  setHideMusicPlayer,
+}: Props) => {
   const rosary = myRosary;
   const rosaryState = rosary.getRosaryState();
   const pathname = usePathname();
@@ -77,24 +85,28 @@ const AudioContextProvider = ({ children }: Props) => {
     goToEvent,
     audioPlayer,
     setAudioPlayer,
+    hideMusicPlayer,
+    setHideMusicPlayer,
   };
 
   return (
     <AudioContext.Provider value={value}>
-      <YouTubeVideo
-        showVideo={
-          pathname.includes(NAV_APP_LINKS.liveEvent.link) ||
-          pathname.includes(NAV_APP_LINKS.event.link)
-        }
-        id={audioPlayer.audio}
-        onChange={setAudioState}
-        setAudioTimer={setAudioTimer}
-        volume={audioPlayer.audioVolume}
-        audioSpeed={audioPlayer.audioSpeed}
-        audioLoop={audioPlayer.audioLoop}
-        audioSeek={audioTimer}
-        audioState={audioState}
-      />
+      {!hideMusicPlayer && (
+        <YouTubeVideo
+          showVideo={
+            pathname.includes(NAV_APP_LINKS.liveEvent.link) ||
+            pathname.includes(NAV_APP_LINKS.event.link)
+          }
+          id={audioPlayer.audio}
+          onChange={setAudioState}
+          setAudioTimer={setAudioTimer}
+          volume={audioPlayer.audioVolume}
+          audioSpeed={audioPlayer.audioSpeed}
+          audioLoop={audioPlayer.audioLoop}
+          audioSeek={audioTimer}
+          audioState={audioState}
+        />
+      )}
       {children}
     </AudioContext.Provider>
   );

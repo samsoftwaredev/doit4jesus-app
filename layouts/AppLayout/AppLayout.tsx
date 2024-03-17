@@ -31,7 +31,7 @@ const menuItems = [
   // { url: "/app/support", label: "Support", icon: <SupportAgentIcon /> },
 ];
 
-export default function AppLayout({ children }: Props) {
+const AppLayout = ({ children }: Props) => {
   const navigate = useRouter();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -74,4 +74,6 @@ export default function AppLayout({ children }: Props) {
       </Box>
     </>
   );
-}
+};
+
+export default AppLayout;

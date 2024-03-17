@@ -7,19 +7,16 @@ import { useAudioContext } from "@/context/AudioContext";
 import OnlineUsers from "../OnlineUsers";
 import { usePresenceContext } from "@/context/PresenceContext";
 import MovingText from "../MovingText";
-import AppWrapper from "../AppWrapper";
 
-const MusicPlayerWrapper = () => {
-  return (
-    <AppWrapper>
-      <MusicPlayer />
-    </AppWrapper>
-  );
-};
+interface Props {
+  hideMusicPlayer: boolean;
+}
 
-const MusicPlayer = () => {
+const MusicPlayer = ({ hideMusicPlayer }: Props) => {
   const { users } = usePresenceContext();
   const { audioPlayer } = useAudioContext();
+
+  if (hideMusicPlayer) return null;
 
   return (
     <>
@@ -44,4 +41,4 @@ const MusicPlayer = () => {
   );
 };
 
-export default MusicPlayerWrapper;
+export default MusicPlayer;

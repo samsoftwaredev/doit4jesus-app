@@ -12,14 +12,6 @@ import { Container, Typography } from "@mui/material";
 import EventSection from "@/sections/EventSection";
 import AppWrapper from "@/components/AppWrapper/AppWrapper";
 
-const LiveEventWrapper = () => {
-  return (
-    <AppWrapper>
-      <LiveEvent />
-    </AppWrapper>
-  );
-};
-
 const LiveEvent: NextPage = () => {
   const { setChannel } = usePresenceContext();
   const { setAudioPlayer } = useAudioContext();
@@ -91,4 +83,13 @@ const LiveEvent: NextPage = () => {
     </AppLayout>
   );
 };
+
+const LiveEventWrapper = () => {
+  return (
+    <AppWrapper>
+      <LiveEvent />
+    </AppWrapper>
+  );
+};
+
 export default LiveEventWrapper;

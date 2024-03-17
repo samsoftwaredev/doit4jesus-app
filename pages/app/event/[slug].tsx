@@ -14,14 +14,6 @@ import { Container, Typography } from "@mui/material";
 import EventSection from "@/sections/EventSection";
 import AppWrapper from "@/components/AppWrapper/AppWrapper";
 
-const LiveEventWrapper = () => {
-  return (
-    <AppWrapper>
-      <LiveEvent />
-    </AppWrapper>
-  );
-};
-
 const LiveEvent: NextPage = () => {
   const router = useRouter();
   const { slug } = router.query;
@@ -90,6 +82,14 @@ const LiveEvent: NextPage = () => {
         )}
       </Container>
     </AppLayout>
+  );
+};
+
+const LiveEventWrapper = () => {
+  return (
+    <AppWrapper>
+      <LiveEvent />
+    </AppWrapper>
   );
 };
 

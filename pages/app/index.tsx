@@ -9,14 +9,6 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import AppWrapper from "@/components/AppWrapper";
 
-const AppPageWrapper = () => {
-  return (
-    <AppWrapper>
-      <App />
-    </AppWrapper>
-  );
-};
-
 const App: NextPage = () => {
   const [events, setEvents] = useState<DataEvent[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -48,10 +40,16 @@ const App: NextPage = () => {
   }
 
   return (
+    <AppLayout>
+      <Dashboard events={events} />
+    </AppLayout>
+  );
+};
+
+const AppPageWrapper = () => {
+  return (
     <AppWrapper>
-      <AppLayout>
-        <Dashboard events={events} />
-      </AppLayout>
+      <App />
     </AppWrapper>
   );
 };

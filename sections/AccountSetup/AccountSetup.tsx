@@ -17,6 +17,7 @@ import moment from "moment";
 import { toast } from "react-toastify";
 import { db } from "@/class/SupabaseDB";
 import { useUserContext } from "@/context/UserContext";
+import { useAudioContext } from "@/context/AudioContext";
 
 interface StepProps {
   next: (skipToEnd?: boolean) => void;
@@ -254,6 +255,7 @@ const AccountSetup = () => {
     backgroundImage?: string;
   }> = [];
   const router = useRouter();
+  const { setHideMusicPlayer } = useAudioContext();
   const [currentStep, setCurrentStep] = useState(0);
   const [bgColor, setBgColor] = useState(theme.palette.error.dark);
 
@@ -263,6 +265,7 @@ const AccountSetup = () => {
     } else {
       setCurrentStep((step) => {
         if (step >= steps.length - 1) {
+          setHideMusicPlayer(false);
           router.push(NAV_APP_LINKS.app.link);
           return step;
         }
@@ -301,6 +304,10 @@ const AccountSetup = () => {
   useEffect(() => {
     setBgColor(steps[currentStep].color);
   }, [currentStep]);
+
+  useEffect(() => {
+    setHideMusicPlayer(true);
+  }, []);
 
   return (
     <>
