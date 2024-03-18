@@ -3,7 +3,7 @@ import { theme } from "@/styles/mui-overwrite";
 import { ChevronRight } from "@mui/icons-material";
 import { Box, Button, Container, Grid, Typography } from "@mui/material";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Image from "next/image";
 import styles from "./accountSetup.module.scss";
 import jesusCross from "@/public/assets/images/hero/jesusCross.svg";
@@ -79,17 +79,6 @@ const WhatsTheRosary = ({ next }: StepProps) => {
         being one of the flowers used to symbolize the Virgin Mary. However,
         it's also a powerful weapon.
       </Typography>
-      <Typography color="secondary" className={styles.body}>
-        Don't believe me? Check this inspiring story of Fr. Don Calloway of the
-        Rosary.
-      </Typography>
-      <iframe
-        src="https://www.youtube.com/embed/y1MdrO__5-g?si=9iLYqkxEzUAKd6NQ"
-        className="iframeYoutube"
-        title="What's The Rosary?"
-        frameBorder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-      />
       <Grid mt={2} container justifyContent="flex-end">
         <Button
           size="large"
@@ -115,7 +104,7 @@ const WhyPray = ({ next }: StepProps) => {
         The Catechism says that we pray as we live, because we live as we pray
         &nbsp;
         <a
-          href="http://www.scborromeo.org/ccc/para/2725.htm"
+          href="https://www.vatican.va/archive/catechism_sp/p4s1c3a2_sp.html#:~:text=2725%20La%20oraci%C3%B3n%20es%20un,%C2%BFContra%20qui%C3%A9n%3F"
           target="CATECHISM_2725"
         >
           (2725)
@@ -148,9 +137,13 @@ const WhyPray = ({ next }: StepProps) => {
   );
 };
 
-const WhenIsYourBirthDay = ({ next }: StepProps) => {
-  const { user, setUser } = useUserContext();
-  const [dob, setDob] = useState<Date>();
+type DobProps = {
+  dob: Date | undefined;
+  setDob: Dispatch<SetStateAction<Date | undefined>>;
+} & StepProps;
+
+const WhenIsYourBirthDay = ({ next, setDob, dob }: DobProps) => {
+  const { user } = useUserContext();
 
   const setDateOfBirth = (date: Date) => {
     const userBirthDay = new Date(date);
@@ -173,7 +166,6 @@ const WhenIsYourBirthDay = ({ next }: StepProps) => {
         .update({ birth_date: dob.toUTCString() })
         .eq("id", user.userId)
         .select();
-      setUser({ ...user, dateOfBirth: dob.toUTCString() });
       if (error) {
         toast.error("Unable to save your date of birth");
       } else {
@@ -255,9 +247,11 @@ const AccountSetup = () => {
     backgroundImage?: string;
   }> = [];
   const router = useRouter();
+  const { user, setUser } = useUserContext();
   const { setHideMusicPlayer } = useAudioContext();
   const [currentStep, setCurrentStep] = useState(0);
   const [bgColor, setBgColor] = useState(theme.palette.error.dark);
+  const [dob, setDob] = useState<Date>();
 
   const nextStep = (skipToEnd = false) => {
     if (skipToEnd === true) {
@@ -266,6 +260,7 @@ const AccountSetup = () => {
       setCurrentStep((step) => {
         if (step >= steps.length - 1) {
           setHideMusicPlayer(false);
+          if (user && dob) setUser({ ...user, dateOfBirth: dob.toUTCString() });
           router.push(NAV_APP_LINKS.app.link);
           return step;
         }
@@ -276,8 +271,15 @@ const AccountSetup = () => {
 
   steps = [
     {
-      component: <Intro next={nextStep} />,
+      component: (
+        <WhenIsYourBirthDay next={nextStep} dob={dob} setDob={setDob} />
+      ),
       color: theme.palette.error.dark,
+      backgroundImage: birthDay,
+    },
+    {
+      component: <Intro next={nextStep} />,
+      color: theme.palette.success.main,
       backgroundImage: jesusFish,
     },
     {
@@ -293,11 +295,6 @@ const AccountSetup = () => {
       component: <WhyPray next={nextStep} />,
       color: theme.palette.success.dark,
       backgroundImage: jesusCross,
-    },
-    {
-      component: <WhenIsYourBirthDay next={nextStep} />,
-      color: theme.palette.primary.main,
-      backgroundImage: birthDay,
     },
   ];
 

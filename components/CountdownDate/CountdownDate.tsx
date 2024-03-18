@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import moment, { Moment } from "moment";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import styles from "./countdownDate.module.scss";
 import { css } from "@/utils/helpers";
