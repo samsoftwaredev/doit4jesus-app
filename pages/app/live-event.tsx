@@ -11,13 +11,15 @@ import { useAudioContext } from "@/context/AudioContext";
 import { Container, Typography } from "@mui/material";
 import EventSection from "@/sections/EventSection";
 import AppWrapper from "@/components/AppWrapper/AppWrapper";
+import moment from "moment";
 
 const LiveEvent: NextPage = () => {
   const { setChannel } = usePresenceContext();
-  const { setAudioPlayer } = useAudioContext();
+  const { setAudioPlayer, setHideMusicPlayer } = useAudioContext();
   const liveEvent = supabase.channel("live-event");
   const [isLoading, setIsLoading] = useState(true);
   const [dataEvent, setDataEvent] = useState<VideoEvent & DataEvent>();
+  const timeRemaining = moment(dataEvent?.startedAt) > moment();
 
   const getYouTube = async (id: string | null) => {
     if (!id) return;
@@ -65,6 +67,17 @@ const LiveEvent: NextPage = () => {
     return (
       <AppLayout>
         <Loading isPage={false} />
+      </AppLayout>
+    );
+  }
+  console.log(timeRemaining);
+  if (timeRemaining) {
+    setHideMusicPlayer(true);
+    return (
+      <AppLayout>
+        <Container className="container-box" maxWidth="lg">
+          <Typography>Event hasn't started</Typography>
+        </Container>
       </AppLayout>
     );
   }

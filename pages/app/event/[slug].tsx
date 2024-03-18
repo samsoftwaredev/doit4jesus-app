@@ -13,16 +13,18 @@ import { RealtimeChannel } from "@supabase/supabase-js";
 import { Container, Typography } from "@mui/material";
 import EventSection from "@/sections/EventSection";
 import AppWrapper from "@/components/AppWrapper/AppWrapper";
+import moment from "moment";
 
 const LiveEvent: NextPage = () => {
   const router = useRouter();
   const { slug } = router.query;
+  const { setAudioPlayer, setHideMusicPlayer } = useAudioContext();
   const { setChannel } = usePresenceContext();
-  const { setAudioPlayer } = useAudioContext();
   const channel: RealtimeChannel | undefined =
     typeof slug === "string" ? supabase.channel(slug) : undefined;
   const [isLoading, setIsLoading] = useState(true);
   const [dataEvent, setDataEvent] = useState<VideoEvent & DataEvent>();
+  const timeRemaining = moment(dataEvent?.startedAt) > moment();
 
   const getYouTube = async (id: string | null) => {
     if (!id) return;
@@ -66,6 +68,17 @@ const LiveEvent: NextPage = () => {
     return (
       <AppLayout>
         <Loading isPage={false} />
+      </AppLayout>
+    );
+  }
+
+  if (timeRemaining) {
+    setHideMusicPlayer(true);
+    return (
+      <AppLayout>
+        <Container className="container-box" maxWidth="lg">
+          <Typography color="secondary">Event hasn't started yet!</Typography>
+        </Container>
       </AppLayout>
     );
   }
