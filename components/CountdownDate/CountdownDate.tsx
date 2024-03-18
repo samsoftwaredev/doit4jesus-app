@@ -1,43 +1,33 @@
 import { Box } from "@mui/material";
-import moment from "moment";
+import moment, { Moment } from "moment";
 import { useEffect, useState } from "react";
 import styles from "./countdownDate.module.scss";
 import { css } from "@/utils/helpers";
 import CircleIcon from "@mui/icons-material/Circle";
 
 interface Props {
-  targetTime?: Date;
+  targetTime: Date;
 }
 
-const CountdownDate = ({ targetTime = new Date() }: Props) => {
-  let interval: undefined | any = undefined;
+const CountdownDate = ({ targetTime }: Props) => {
+  const [intervalId, setIntervalId] = useState<undefined | any>();
   const [currentTime, setCurrentTime] = useState(moment());
   const timeRemaining = moment.duration(moment(targetTime).diff(currentTime));
-  const eventDuration = currentTime.add(2, "hour");
-  const eventIsOld = moment.duration(moment(targetTime).diff(eventDuration));
+  const isNotLive = moment(currentTime) > moment(targetTime).add(1, "h");
 
-  const stopTimer = () => {
-    if (interval) clearInterval(interval);
-  };
-
-  useEffect(() => {
-    interval = setInterval(() => {
-      setCurrentTime(moment());
-    }, 1000);
-
-    return () => stopTimer();
-  }, []);
-
+  // calculate time remaining
   const showYears = timeRemaining.years() > 0;
   const showMonths = timeRemaining.months() > 0;
   const showDays = timeRemaining.days() > 0;
   const showHours = timeRemaining.hours() > 0;
   const showMinutes = timeRemaining.minutes() > 0;
   const showSeconds =
-    timeRemaining.seconds() > 0 && timeRemaining.minutes() <= 1;
-  const isNotLive = eventIsOld.hours() < 0;
-  const showSecondsCount =
-    timeRemaining.hours() === 0 && timeRemaining.minutes() <= 5 && showSeconds;
+    timeRemaining.years() > 0 &&
+    timeRemaining.months() > 0 &&
+    timeRemaining.days() > 0 &&
+    timeRemaining.hours() > 0 &&
+    timeRemaining.minutes() <= 5 &&
+    timeRemaining.seconds() > 0;
 
   const countdownIsNotZero =
     showYears ||
@@ -46,6 +36,19 @@ const CountdownDate = ({ targetTime = new Date() }: Props) => {
     showHours ||
     showMinutes ||
     showSeconds;
+
+  const stopTimer = () => {
+    clearInterval(intervalId);
+  };
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setCurrentTime(moment());
+    }, 1000);
+    setIntervalId(id);
+
+    return () => stopTimer();
+  }, []);
 
   if (countdownIsNotZero) {
     return (
@@ -56,9 +59,7 @@ const CountdownDate = ({ targetTime = new Date() }: Props) => {
         {showDays ? <span>{timeRemaining.days()}d&nbsp;</span> : null}
         {showHours ? <span>{timeRemaining.hours()}h&nbsp;</span> : null}
         {showMinutes ? <span>{timeRemaining.minutes()}min&nbsp;</span> : null}
-        {showSecondsCount ? (
-          <span>{timeRemaining.seconds()}s&nbsp;</span>
-        ) : null}
+        {showSeconds ? <span>{timeRemaining.seconds()}s&nbsp;</span> : null}
       </Box>
     );
   }
@@ -68,7 +69,6 @@ const CountdownDate = ({ targetTime = new Date() }: Props) => {
     return null;
   }
 
-  stopTimer();
   return (
     <Box className={css(styles.pill, styles.error)}>
       <CircleIcon sx={{ fontSize: "1em" }} />
