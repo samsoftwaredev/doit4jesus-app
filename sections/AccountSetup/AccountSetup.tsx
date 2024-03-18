@@ -248,7 +248,6 @@ const AccountSetup = () => {
   }> = [];
   const router = useRouter();
   const { user, setUser } = useUserContext();
-  const { setHideMusicPlayer } = useAudioContext();
   const [currentStep, setCurrentStep] = useState(0);
   const [bgColor, setBgColor] = useState(theme.palette.error.dark);
   const [dob, setDob] = useState<Date>();
@@ -259,7 +258,6 @@ const AccountSetup = () => {
     } else {
       setCurrentStep((step) => {
         if (step >= steps.length - 1) {
-          setHideMusicPlayer(false);
           if (user && dob) setUser({ ...user, dateOfBirth: dob.toUTCString() });
           router.push(NAV_APP_LINKS.app.link);
           return step;
@@ -301,10 +299,6 @@ const AccountSetup = () => {
   useEffect(() => {
     setBgColor(steps[currentStep].color);
   }, [currentStep]);
-
-  useEffect(() => {
-    setHideMusicPlayer(true);
-  }, []);
 
   return (
     <>

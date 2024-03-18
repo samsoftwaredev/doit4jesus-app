@@ -70,7 +70,7 @@ const LiveEvent: NextPage = () => {
       </AppLayout>
     );
   }
-  console.log(timeRemaining);
+
   if (timeRemaining) {
     setHideMusicPlayer(true);
     return (
