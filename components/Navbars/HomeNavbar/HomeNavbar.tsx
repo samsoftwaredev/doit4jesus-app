@@ -91,7 +91,11 @@ function HomeNavbar(props: Props) {
           >
             <MenuIcon />
           </IconButton>
-          <Link passHref href={NAV_MAIN_LINKS.home.link}>
+          <Link
+            style={{ textAlign: "center" }}
+            passHref
+            href={NAV_MAIN_LINKS.home.link}
+          >
             <Button>
               <Logo type="white" />
             </Button>
