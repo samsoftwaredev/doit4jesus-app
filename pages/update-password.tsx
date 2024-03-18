@@ -1,12 +1,12 @@
 import { Box, Container, Typography } from "@mui/material";
-import { HomeNavbar, Meta } from "../components";
+import { Meta } from "../components";
 import { UpdatePassword } from "@/sections";
 import { MainLayout } from "@/layouts";
 import type { NextPage } from "next";
 
 const Register: NextPage = () => {
   return (
-    <MainLayout topNavbar={<HomeNavbar />}>
+    <MainLayout>
       <Meta pageTitle="Register" />
       <Container maxWidth="xs">
         <Typography mt={3} variant="h4" component="h1">

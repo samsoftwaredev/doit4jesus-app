@@ -4,7 +4,6 @@ import {
   Hero,
   Features,
   Community,
-  HomeNavbar,
   WhyPrayRosary,
   CallToAction,
   // RosaryWeapon,
@@ -13,7 +12,7 @@ import { MainLayout } from "@/layouts";
 
 const Home: NextPage = () => {
   return (
-    <MainLayout topNavbar={<HomeNavbar />}>
+    <MainLayout>
       <Meta />
       <Hero />
       <Features />

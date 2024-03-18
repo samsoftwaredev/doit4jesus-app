@@ -1,11 +1,11 @@
 import type { NextPage } from "next";
 import { MainLayout } from "@/layouts";
-import { HomeNavbar, Meta } from "../components";
+import { Meta } from "../components";
 import { ContactSection } from "@/sections";
 
 const Contact: NextPage = () => {
   return (
-    <MainLayout topNavbar={<HomeNavbar />}>
+    <MainLayout>
       <Meta pageTitle="Contact" />
       <ContactSection />
     </MainLayout>

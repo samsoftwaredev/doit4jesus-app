@@ -12,7 +12,7 @@ import {
 import { useRouter } from "next/router";
 import articlesList from "@/data/articles.json";
 import { useState } from "react";
-import { HomeNavbar, Meta, PageNotFound } from "@/components";
+import { Meta, PageNotFound } from "@/components";
 import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
 import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 import { NAV_MAIN_LINKS } from "@/constants/nav";
@@ -46,7 +46,7 @@ function ResourcesPost() {
   const progress = (page / (article?.sections?.length - 1)) * 100;
 
   return (
-    <MainLayout topNavbar={<HomeNavbar />}>
+    <MainLayout>
       <Meta pageTitle={article.title} />
       <LinearProgress variant="determinate" value={progress} />
       <Container maxWidth="sm">

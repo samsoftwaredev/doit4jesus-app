@@ -8,13 +8,9 @@ import OnlineUsers from "../OnlineUsers";
 import { usePresenceContext } from "@/context/PresenceContext";
 import MovingText from "../MovingText";
 
-interface Props {
-  hideMusicPlayer: boolean;
-}
-
-const MusicPlayer = ({ hideMusicPlayer }: Props) => {
+const MusicPlayer = () => {
   const { users } = usePresenceContext();
-  const { audioPlayer } = useAudioContext();
+  const { audioPlayer, hideMusicPlayer } = useAudioContext();
 
   if (hideMusicPlayer) return null;
 

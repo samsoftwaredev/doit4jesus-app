@@ -1,5 +1,5 @@
 import { Box, Button, Container, Typography } from "@mui/material";
-import { HomeNavbar, Meta } from "../components";
+import { Meta } from "../components";
 import { LogIn, SignUp, ForgotPassword } from "../sections";
 import { useEffect, useState } from "react";
 import { MainLayout } from "@/layouts";
@@ -91,7 +91,7 @@ const Register: NextPage = () => {
   if (isAuth) return null;
 
   return (
-    <MainLayout topNavbar={<HomeNavbar />}>
+    <MainLayout>
       <Meta pageTitle="Register" />
       <Container maxWidth="xs">
         <Typography mt={3} variant="h4" component="h1">

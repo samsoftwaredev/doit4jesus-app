@@ -27,7 +27,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
               <PresenceContextProvider>
                 <ToastContainer autoClose={5000} />
                 <Component {...pageProps} />
-                <MusicPlayer hideMusicPlayer={hideMusicPlayer} />
+                <MusicPlayer />
               </PresenceContextProvider>
             </AudioContextProvider>
           </LanguageContextProvider>

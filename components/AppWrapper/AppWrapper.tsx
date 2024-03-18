@@ -20,6 +20,7 @@ const AppWrapper = ({ children }: Props) => {
 
   useEffect(() => {
     if (!isAuth) {
+      // hide music player if user is not auth
       setHideMusicPlayer(true);
     } else if (!user.dateOfBirth && isAuth) {
       // hide music player if user is setting up account
