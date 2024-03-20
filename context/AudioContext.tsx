@@ -11,12 +11,10 @@ import {
   INTERFACE_AUDIO_STATE,
   INTERFACE_AUDIO_PROPS,
   INTERFACE_AUDIO_SEEK,
-  INTERFACE_LANGUAGES,
 } from "@/interfaces";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/router";
 import { NAV_APP_LINKS } from "../constants";
-import { myRosary } from "@/class";
 
 interface AudioContext {
   audioState: INTERFACE_AUDIO_STATE;
@@ -25,8 +23,8 @@ interface AudioContext {
   toggleIsAudioMute: Function;
   forwardAudio: MouseEventHandler<HTMLAnchorElement>;
   backwardAudio: MouseEventHandler<HTMLAnchorElement>;
-  audioPlayer: INTERFACE_AUDIO_PROPS;
-  setAudioPlayer: Dispatch<SetStateAction<INTERFACE_AUDIO_PROPS>>;
+  audioPlayer?: INTERFACE_AUDIO_PROPS;
+  setAudioPlayer: Dispatch<SetStateAction<INTERFACE_AUDIO_PROPS | undefined>>;
   goToEvent: () => void;
   hideMusicPlayer: boolean;
   setHideMusicPlayer: React.Dispatch<SetStateAction<boolean>>;
@@ -45,14 +43,11 @@ const AudioContextProvider = ({
   hideMusicPlayer,
   setHideMusicPlayer,
 }: Props) => {
-  const rosary = myRosary;
-  const rosaryState = rosary.getRosaryState();
   const pathname = usePathname();
   const router = useRouter();
-  const [audioPlayer, setAudioPlayer] = useState<INTERFACE_AUDIO_PROPS>({
-    audio: rosary.getAudio(INTERFACE_LANGUAGES.en),
-    audioTitle: `Today's Rosary: ${rosaryState.mystery}   `,
-  });
+  const [audioPlayer, setAudioPlayer] = useState<
+    INTERFACE_AUDIO_PROPS | undefined
+  >();
   const [isAudioMute, setIsAudioMute] = useState(false);
   const [audioState, setAudioState] = useState(INTERFACE_AUDIO_STATE.PAUSED);
   const [audioTimer, setAudioTimer] = useState<INTERFACE_AUDIO_SEEK>(
@@ -72,7 +67,7 @@ const AudioContextProvider = ({
   };
 
   const goToEvent = () => {
-    router.push(NAV_APP_LINKS.liveEvent.link);
+    router.push(`app/event/${audioPlayer?.id}`);
   };
 
   const value = {
@@ -91,18 +86,18 @@ const AudioContextProvider = ({
 
   return (
     <AudioContext.Provider value={value}>
-      {!hideMusicPlayer && (
+      {!hideMusicPlayer && audioPlayer?.audio && (
         <YouTubeVideo
           showVideo={
             pathname.includes(NAV_APP_LINKS.liveEvent.link) ||
             pathname.includes(NAV_APP_LINKS.event.link)
           }
-          id={audioPlayer.audio}
+          id={audioPlayer?.audio}
           onChange={setAudioState}
           setAudioTimer={setAudioTimer}
-          volume={audioPlayer.audioVolume}
-          audioSpeed={audioPlayer.audioSpeed}
-          audioLoop={audioPlayer.audioLoop}
+          volume={audioPlayer?.audioVolume}
+          audioSpeed={audioPlayer?.audioSpeed}
+          audioLoop={audioPlayer?.audioLoop}
           audioSeek={audioTimer}
           audioState={audioState}
         />

@@ -19,7 +19,7 @@ const MusicPlayer = () => {
       <Box className={styles.container}>
         <Box className={styles.controls}>
           <Typography className={styles.title} component="span">
-            <MovingText>{audioPlayer.audioTitle}</MovingText>
+            <MovingText>{audioPlayer?.audioTitle}</MovingText>
           </Typography>
           <Box className={styles.buttonControl}>
             <MusicSettings />

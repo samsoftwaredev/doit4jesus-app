@@ -52,6 +52,7 @@ const LiveEvent: NextPage = () => {
         setAudioPlayer({
           audio: videoRes.videoId,
           audioTitle: videoRes.title,
+          id: eventRes.slug,
         });
       }
     }

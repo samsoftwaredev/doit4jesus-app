@@ -3,11 +3,16 @@ import RedoIcon from "@mui/icons-material/Redo";
 import { useAudioContext } from "context/AudioContext";
 
 const AudioControllers = () => {
-  const { forwardAudio } = useAudioContext();
+  const { forwardAudio, audioPlayer } = useAudioContext();
 
   return (
     <Tooltip title="Forward">
-      <IconButton color="info" onClick={forwardAudio} href="#next">
+      <IconButton
+        disabled={audioPlayer?.audio === undefined}
+        color="info"
+        onClick={forwardAudio}
+        href="#next"
+      >
         <RedoIcon fontSize="large" />
       </IconButton>
     </Tooltip>

@@ -9,7 +9,7 @@ import { theme } from "@/styles/mui-overwrite";
 const audioText = (isPlaying: boolean) => (isPlaying ? "play" : "pause");
 
 const AudioPlay = () => {
-  const { setAudioState, audioState } = useAudioContext();
+  const { setAudioState, audioState, audioPlayer } = useAudioContext();
   const [buttonState, setButtonState] = useState<INTERFACE_AUDIO_STATE>(
     INTERFACE_AUDIO_STATE.PAUSED
   );
@@ -58,7 +58,10 @@ const AudioPlay = () => {
     <Tooltip title={toggleText()}>
       <IconButton
         color="info"
-        disabled={audioState === INTERFACE_AUDIO_STATE.BUFFERING}
+        disabled={
+          audioState === INTERFACE_AUDIO_STATE.BUFFERING ||
+          audioPlayer?.audio === undefined
+        }
         onClick={handleToggleAudioPlaying}
         href={`#${audioText(audioState === INTERFACE_AUDIO_STATE.PLAYING)}`}
       >
