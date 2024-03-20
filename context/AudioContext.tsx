@@ -67,7 +67,7 @@ const AudioContextProvider = ({
   };
 
   const goToEvent = () => {
-    router.push(`app/event/${audioPlayer?.id}`);
+    router.push(`${NAV_APP_LINKS.event.link}/${audioPlayer?.id}`);
   };
 
   const value = {

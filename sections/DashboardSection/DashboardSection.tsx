@@ -6,6 +6,7 @@ import Link from "next/link";
 import { YouTubeSubscribe } from "@/components/YouTubeVideo";
 import { DataEvent } from "@/interfaces";
 import CountdownDate from "@/components/CountdownDate";
+import { NAV_APP_LINKS } from "@/constants/nav";
 
 interface Props {
   events: DataEvent[] | null;
@@ -21,7 +22,7 @@ const DashboardSection = ({ events }: Props) => {
             <Card
               key={title}
               component={Link}
-              href={`app/event/${slug}`}
+              href={`${NAV_APP_LINKS.event.link}/${slug}`}
               className={css(index === 0 ? styles.mainCard : styles.card)}
             >
               <Box
