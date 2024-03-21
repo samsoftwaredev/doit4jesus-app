@@ -2,7 +2,7 @@ import { Box, Button, Container, Typography } from "@mui/material";
 import { Meta } from "../components";
 import { LogIn, SignUp, ForgotPassword } from "../sections";
 import { useEffect, useState } from "react";
-import { MainLayout } from "@/layouts";
+import { MainLayout } from "@/components/layouts";
 import { NAV_APP_LINKS } from "../constants";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";

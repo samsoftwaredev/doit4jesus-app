@@ -14,7 +14,7 @@ import { User } from "../interfaces";
 import Loading from "@/components/Loading";
 import { useRouter } from "next/router";
 import { NAV_MAIN_LINKS } from "../constants";
-import { AppLayout } from "../layouts";
+import { AppLayout } from "../components/layouts";
 
 interface UserContext {
   user: User | null | undefined;

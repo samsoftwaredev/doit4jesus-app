@@ -1,4 +1,4 @@
-import { AppLayout } from "@/layouts";
+import { AppLayout } from "@/components/layouts";
 import type { NextPage } from "next";
 import { ConfessionGuide } from "@/sections";
 import AppWrapper from "@/components/AppWrapper";
