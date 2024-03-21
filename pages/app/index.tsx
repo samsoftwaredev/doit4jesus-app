@@ -1,8 +1,8 @@
 import { db } from "@/class/SupabaseDB";
 import Loading from "@/components/Loading";
 import { DataEvent } from "@/interfaces";
-import { AppLayout } from "@/components/layouts";
-import Dashboard from "@/sections/DashboardSection";
+import { AppLayout } from "@/components/Layouts";
+import Dashboard from "@/components/Sections/DashboardSection";
 import type { NextPage } from "next";
 import { normalizeEvent } from "@/utils";
 import { useEffect, useState } from "react";

@@ -38,12 +38,12 @@
       "@/styles": ["styles/index"],
       "@/navbars/*": ["components/Navbars/*"],
       "@/navbars": ["components/Navbars/index"],
-      "@/layouts/*": ["components/layouts/*"],
-      "@/layouts": ["components/layouts/index"],
+      "@/layouts/*": ["components/Layouts/*"],
+      "@/layouts": ["components/Layouts/index"],
       "@/data/*": ["data/*"],
       "@/data": ["data/index"],
-      "@/sections/*": ["sections/*"],
-      "@/sections": ["sections/index"]
+      "@/sections/*": ["components/Sections/*"],
+      "@/sections": ["components/Sections/index"]
     }
   },
   "include": [

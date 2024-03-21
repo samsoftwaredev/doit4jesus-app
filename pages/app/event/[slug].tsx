@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { AppLayout } from "@/components/layouts";
+import { AppLayout } from "@/components/Layouts";
 import { useRouter } from "next/router";
 import { DataEvent, EventTypes, VideoEvent } from "@/interfaces";
 import { useEffect, useState } from "react";
@@ -11,7 +11,7 @@ import Loading from "@/components/Loading";
 import { useAudioContext } from "@/context/AudioContext";
 import { RealtimeChannel } from "@supabase/supabase-js";
 import { Container, Typography } from "@mui/material";
-import EventSection from "@/sections/EventSection";
+import EventSection from "@/components/Sections/EventSection";
 import AppWrapper from "@/components/AppWrapper/AppWrapper";
 import moment from "moment";
 

@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { Meta, PageNotFound } from "../components";
+import { Meta, PageNotFound } from "@/components";
 
 const Page404: NextPage = () => {
   return (

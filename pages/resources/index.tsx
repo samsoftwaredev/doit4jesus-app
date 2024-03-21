@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { MainLayout } from "@/components/layouts";
+import { MainLayout } from "@/components/Layouts";
 import { Meta } from "@/components";
 import articlesList from "@/data/articles.json";
 import {

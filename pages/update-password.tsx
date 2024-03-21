@@ -1,7 +1,7 @@
 import { Box, Container, Typography } from "@mui/material";
-import { Meta } from "../components";
-import { UpdatePassword } from "@/sections";
-import { MainLayout } from "@/components/layouts";
+import { Meta } from "@/components";
+import { UpdatePassword } from "@/components/Sections";
+import { MainLayout } from "@/components/Layouts";
 import type { NextPage } from "next";
 
 const Register: NextPage = () => {

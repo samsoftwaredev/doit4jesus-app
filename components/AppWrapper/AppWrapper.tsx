@@ -3,7 +3,7 @@ import { useUserContext } from "@/context/UserContext";
 import { usePathname } from "next/navigation";
 import { NAV_APP_LINKS } from "@/constants/nav";
 import { COMPANY } from "@/constants/company";
-import AccountSetup from "@/sections/AccountSetup";
+import AccountSetup from "@/components/Sections/AccountSetup";
 import Meta from "../Meta";
 import { useAudioContext } from "@/context/AudioContext";
 import { useEffect } from "react";
