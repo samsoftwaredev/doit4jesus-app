@@ -1,4 +1,4 @@
-import { db, supabase } from "@/class/SupabaseDB";
+import { db, supabase } from "classes/SupabaseDB";
 import { Session } from "@supabase/supabase-js";
 import { normalizeUserProfile } from "@/utils";
 import {

@@ -15,7 +15,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import moment from "moment";
 import { toast } from "react-toastify";
-import { db } from "@/class/SupabaseDB";
+import { db } from "classes/SupabaseDB";
 import { useUserContext } from "@/context/UserContext";
 import { useAudioContext } from "@/context/AudioContext";
 

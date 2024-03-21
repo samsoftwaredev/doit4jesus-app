@@ -16,18 +16,14 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@/class/*": ["class/*"],
-      "@/class": ["class/index"],
+      "@/class/*": ["classes/*"],
+      "@/class": ["classes/index"],
       "@/components/*": ["components/*"],
       "@/components": ["components/index"],
       "@/constants/*": ["constants/*"],
       "@/constants": ["constants/index"],
-      "@/init/*": ["init/*"],
-      "@/init": ["init/index"],
       "@/public/*": ["public/*"],
       "@/public": ["public/index"],
-      "@/hooks/*": ["hooks/*"],
-      "@/hooks": ["hooks/index"],
       "@/utils/*": ["utils/*"],
       "@/utils": ["utils/index"],
       "@/interfaces/*": ["interfaces/*"],
@@ -36,14 +32,8 @@
       "@/context": ["context/index"],
       "@/styles/*": ["styles/*"],
       "@/styles": ["styles/index"],
-      "@/navbars/*": ["components/Navbars/*"],
-      "@/navbars": ["components/Navbars/index"],
-      "@/layouts/*": ["components/Layouts/*"],
-      "@/layouts": ["components/Layouts/index"],
       "@/data/*": ["data/*"],
-      "@/data": ["data/index"],
-      "@/sections/*": ["components/Sections/*"],
-      "@/sections": ["components/Sections/index"]
+      "@/data": ["data/index"]
     }
   },
   "include": [

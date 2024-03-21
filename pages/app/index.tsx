@@ -1,4 +1,4 @@
-import { db } from "@/class/SupabaseDB";
+import { db } from "classes/SupabaseDB";
 import Loading from "@/components/Loading";
 import { DataEvent } from "@/interfaces";
 import { AppLayout } from "@/components/Layouts";

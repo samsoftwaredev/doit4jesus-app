@@ -3,7 +3,7 @@ import { AppLayout } from "@/components/Layouts";
 import { useRouter } from "next/router";
 import { DataEvent, EventTypes, VideoEvent } from "@/interfaces";
 import { useEffect, useState } from "react";
-import { db, supabase } from "@/class/SupabaseDB";
+import { db, supabase } from "classes/SupabaseDB";
 import { normalizeEvent, normalizeVideo } from "@/utils";
 import { toast } from "react-toastify";
 import { usePresenceContext } from "@/context/PresenceContext";

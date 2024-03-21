@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { generateRandomStringId, isClientSideRender } from "@/utils";
-import { YouTubeClass } from "@/class";
+import { YouTubeClass } from "classes";
 import {
   INTERFACE_AUDIO_SEEK,
   INTERFACE_AUDIO_SPEED,

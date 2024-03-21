@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { db } from "@/class/SupabaseDB";
+import { db } from "classes/SupabaseDB";
 import { Button, TextField } from "@mui/material";
 import FormErrorText from "@/components/FormErrorText";
 import { useState } from "react";

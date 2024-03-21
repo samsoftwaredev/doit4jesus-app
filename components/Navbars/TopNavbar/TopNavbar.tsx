@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { Logo } from "../..";
 import styles from "./TopNavbar.module.scss";
-import { db, supabase } from "@/class/SupabaseDB";
+import { db, supabase } from "classes/SupabaseDB";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { NAV_APP_LINKS } from "@/constants/nav";

@@ -9,7 +9,7 @@ import {
   INTERFACE_ROSARY_MYSTERIES,
   INTERFACE_ROSARY_STATE,
 } from "@/interfaces";
-import { capitalizeFirstLetter } from "../utils";
+import { capitalizeFirstLetter } from "@/utils";
 
 class Rosary {
   private rosaryAudioCover = "";
@@ -34,7 +34,7 @@ class Rosary {
   public getAudio = (
     language: INTERFACE_LANGUAGES = INTERFACE_LANGUAGES.en
   ): string => {
-    const mystery = this.mysteryName as INTERFACE_ROSARY_MYSTERIES
+    const mystery = this.mysteryName as INTERFACE_ROSARY_MYSTERIES;
     return ROSARY_AUDIOS[mystery][language];
   };
 

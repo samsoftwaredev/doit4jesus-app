@@ -3,7 +3,7 @@ import { AppLayout } from "@/components/Layouts";
 import { useEffect, useState } from "react";
 import { DataEvent, EventTypes, VideoEvent } from "@/interfaces";
 import { normalizeEvent, normalizeVideo } from "@/utils";
-import { db, supabase } from "@/class/SupabaseDB";
+import { db, supabase } from "classes/SupabaseDB";
 import { toast } from "react-toastify";
 import { usePresenceContext } from "@/context/PresenceContext";
 import Loading from "@/components/Loading";
