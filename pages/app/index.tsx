@@ -4,7 +4,7 @@ import { DataEvent } from "@/interfaces";
 import { AppLayout } from "@/components/layouts";
 import Dashboard from "@/sections/DashboardSection";
 import type { NextPage } from "next";
-import { normalizeEvent } from "normalize/dbTables";
+import { normalizeEvent } from "@/utils";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import AppWrapper from "@/components/AppWrapper";

@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { DataEvent, EventTypes, VideoEvent } from "@/interfaces";
 import { useEffect, useState } from "react";
 import { db, supabase } from "@/class/SupabaseDB";
-import { normalizeEvent, normalizeVideo } from "normalize";
+import { normalizeEvent, normalizeVideo } from "@/utils";
 import { toast } from "react-toastify";
 import { usePresenceContext } from "@/context/PresenceContext";
 import Loading from "@/components/Loading";

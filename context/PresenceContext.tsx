@@ -8,7 +8,7 @@ import {
 } from "react";
 import { OnlineUser } from "@/interfaces";
 import { RealtimeChannel, RealtimePresenceState } from "@supabase/supabase-js";
-import { normalizeOnlineUsers } from "normalize";
+import { normalizeOnlineUsers } from "@/utils";
 import { useUserContext } from "./UserContext";
 
 interface PresenceContext {

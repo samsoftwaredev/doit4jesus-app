@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import { AppLayout } from "@/components/layouts";
 import { useEffect, useState } from "react";
 import { DataEvent, EventTypes, VideoEvent } from "@/interfaces";
-import { normalizeEvent, normalizeVideo } from "@/normalize";
+import { normalizeEvent, normalizeVideo } from "@/utils";
 import { db, supabase } from "@/class/SupabaseDB";
 import { toast } from "react-toastify";
 import { usePresenceContext } from "@/context/PresenceContext";

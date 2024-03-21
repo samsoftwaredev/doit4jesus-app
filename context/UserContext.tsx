@@ -1,6 +1,6 @@
 import { db, supabase } from "@/class/SupabaseDB";
 import { Session } from "@supabase/supabase-js";
-import { normalizeUserProfile } from "normalize/dbTables";
+import { normalizeUserProfile } from "@/utils";
 import {
   Dispatch,
   SetStateAction,
@@ -14,7 +14,6 @@ import { User } from "../interfaces";
 import Loading from "@/components/Loading";
 import { useRouter } from "next/router";
 import { NAV_MAIN_LINKS } from "../constants";
-import { AppLayout } from "../components/layouts";
 
 interface UserContext {
   user: User | null | undefined;
