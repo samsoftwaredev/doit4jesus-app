@@ -43,7 +43,7 @@ const EventSection = ({ videoEvent }: Props) => {
         </Typography>
         <Typography component="body">{videoEvent.description}</Typography>
       </Card>
-      {/* <Card className={css(styles.eventDetails, "appCard")}>Comments</Card> */}
+      <Card className={css(styles.eventDetails, "appCard")}>Comments</Card>
     </Box>
   );
 };

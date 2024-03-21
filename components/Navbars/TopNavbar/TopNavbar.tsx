@@ -17,7 +17,7 @@ import { useRouter } from "next/router";
 import { NAV_APP_LINKS } from "@/constants";
 import { useUserContext } from "@/context/UserContext";
 import { Loading } from "@/components";
-import { AppLayout } from "@/components/Layouts";
+import { AppLayout } from "../../Layouts";
 
 interface Props {
   handleMenu: () => void;
