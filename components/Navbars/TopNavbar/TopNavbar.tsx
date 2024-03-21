@@ -14,10 +14,10 @@ import styles from "./TopNavbar.module.scss";
 import { db, supabase } from "classes/SupabaseDB";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { NAV_APP_LINKS } from "@/constants/nav";
+import { NAV_APP_LINKS } from "@/constants";
 import { useUserContext } from "@/context/UserContext";
-import Loading from "@/components/Loading";
-import AppLayout from "@/components/Layouts/AppLayout";
+import { Loading } from "@/components";
+import { AppLayout } from "@/components/Layouts";
 
 interface Props {
   handleMenu: () => void;

@@ -27,6 +27,7 @@ export { default as ProtectedRoute } from "./ProtectedRoute";
 export { default as OnlineUsers } from "./OnlineUsers";
 export { default as CountdownDate } from "./CountdownDate";
 export { default as MovingText } from "./MovingText";
+export { default as Loading } from "./Loading";
 
 export * from "./Navbars";
 export * from "./Fields";

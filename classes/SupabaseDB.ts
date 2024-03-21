@@ -1,5 +1,5 @@
 import { AuthResponse, createClient } from "@supabase/supabase-js";
-import { NAV_APP_LINKS } from "../constants";
+import { NAV_APP_LINKS } from "@/constants";
 import type { Database } from "@/interfaces/database";
 import { GENDER_TYPES } from "@/interfaces/enum";
 
