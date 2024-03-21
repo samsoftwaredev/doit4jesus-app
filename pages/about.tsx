@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { MainLayout } from "@/components/Layouts";
+import { MainLayout } from "@/components/Templates";
 import { Meta } from "@/components";
 import AboutSection from "@/components/Sections/AboutSection";
 

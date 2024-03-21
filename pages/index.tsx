@@ -8,7 +8,7 @@ import {
   CallToAction,
   // RosaryWeapon,
 } from "@/components";
-import { MainLayout } from "@/components/Layouts";
+import { MainLayout } from "@/components/Templates";
 
 const Home: NextPage = () => {
   return (

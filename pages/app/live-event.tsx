@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { AppLayout } from "@/components/Layouts";
+import { AppLayout } from "@/components/Templates";
 import { useEffect, useState } from "react";
 import { DataEvent, EventTypes, VideoEvent } from "@/interfaces";
 import { normalizeEvent, normalizeVideo } from "@/utils";

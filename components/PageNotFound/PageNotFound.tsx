@@ -1,4 +1,4 @@
-import { MainLayout } from "@/components/Layouts/index";
+import { MainLayout } from "@/components/Templates/index";
 import { Container, Typography } from "@mui/material";
 import Image from "next/image";
 import ship from "@/public/assets/images/dream/ship.svg";

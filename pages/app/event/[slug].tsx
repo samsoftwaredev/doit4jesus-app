@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { AppLayout } from "@/components/Layouts";
+import { AppLayout } from "@/components/Templates";
 import { useRouter } from "next/router";
 import { DataEvent, EventTypes, VideoEvent } from "@/interfaces";
 import { useEffect, useState } from "react";

@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { AppLayout } from "@/components/Layouts";
+import { AppLayout } from "@/components/Templates";
 import { Meta } from "@/components";
 import { Container } from "@mui/material";
 import AppWrapper from "@/components/AppWrapper";

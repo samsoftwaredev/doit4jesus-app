@@ -1,7 +1,7 @@
 import { db } from "classes/SupabaseDB";
 import Loading from "@/components/Loading";
 import { DataEvent } from "@/interfaces";
-import { AppLayout } from "@/components/Layouts";
+import { AppLayout } from "@/components/Templates";
 import Dashboard from "@/components/Sections/DashboardSection";
 import type { NextPage } from "next";
 import { normalizeEvent } from "@/utils";
