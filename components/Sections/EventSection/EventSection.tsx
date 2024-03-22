@@ -3,12 +3,17 @@ import { css } from "@/utils/helpers";
 import styles from "./eventSection.module.scss";
 import { DataEvent, VideoEvent } from "@/interfaces/index";
 import moment from "moment";
+import { useUserContext } from "@/context/UserContext";
+import { ChatMessage } from "../..";
+import ChatTextbox from "@/components/ChatTextbox/ChatTextbox";
 
 interface Props {
   videoEvent: VideoEvent & DataEvent;
 }
 
 const EventSection = ({ videoEvent }: Props) => {
+  const { user } = useUserContext();
+  const numberOfPrayers = 3;
   return (
     <Box className={styles.container}>
       <Box className="video">
@@ -39,11 +44,31 @@ const EventSection = ({ videoEvent }: Props) => {
           </Button> */}
         </Box>
         <Typography textAlign="right" fontSize="0.9em" component="body">
-          {moment(videoEvent.startedAt).format("MM/DD/YYYY")}
+          {moment(videoEvent.startedAt).fromNow()}
         </Typography>
         <Typography component="body">{videoEvent.description}</Typography>
       </Card>
-      <Card className={css(styles.eventDetails, "appCard")}>Comments</Card>
+      <Card className={css(styles.eventDetails, "appCard")}>
+        <Typography fontWeight="bold" component="h4" variant="h4">
+          {numberOfPrayers > 1 ? (
+            <span>{numberOfPrayers} Prayers</span>
+          ) : (
+            <span>Prayers</span>
+          )}
+        </Typography>
+        <Box mb={3}>
+          <ChatTextbox />
+        </Box>
+        <ChatMessage
+          user={{
+            firstName: user?.firstName || "",
+            lastName: user?.lastName || "",
+          }}
+        >
+          This is a very long message that will display here just as a
+          placeholder.
+        </ChatMessage>
+      </Card>
     </Box>
   );
 };

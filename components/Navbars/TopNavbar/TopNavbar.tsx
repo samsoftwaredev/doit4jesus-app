@@ -89,8 +89,8 @@ const TopNavbar = ({ handleMenu }: Props) => {
         aria-expanded={open ? "true" : undefined}
         onClick={handleClick}
       >
-        <Typography className={styles.userName}>
-          {user?.firstName}&nbsp;
+        <Typography fontWeight="bold" className={styles.userName}>
+          {user?.firstName} {user?.lastName}&nbsp;
         </Typography>
         <AccountCircle />
       </IconButton>
