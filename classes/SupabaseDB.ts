@@ -7,19 +7,10 @@ import { NAV_APP_LINKS } from "@/constants";
 import type { Database } from "@/interfaces/database";
 import { GENDER_TYPES } from "@/interfaces/enum";
 
-let supabase: SupabaseClient;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_PROJECT_URL!;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PROJECT_KEY!;
 
-try {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_PROJECT_URL!;
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PROJECT_KEY!;
-  if (!supabaseKey || !supabaseKey) {
-    throw new Error();
-  } else {
-    supabase = createClient<Database>(supabaseUrl, supabaseKey);
-  }
-} catch (e) {
-  console.error(e);
-}
+const supabase = createClient<Database>(supabaseUrl, supabaseKey);
 
 class SupabaseDB {
   constructor() {}
