@@ -19,7 +19,7 @@ import { useReducer } from "react";
 import Image from "next/image";
 import virginMaryLetter from "@/public/assets/images/art/virginMaryLetter.jpeg";
 import { useUserContext } from "@/context/UserContext";
-import { normalizeAuthDB } from "@/utils/helpers";
+import { normalizeAuthDB } from "@/utils/normalizers";
 
 interface IFormInputs {
   password: string;
