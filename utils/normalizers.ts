@@ -4,10 +4,18 @@ import {
   VideoEvent,
   User,
   OnlineUser,
+  EventMessages,
 } from "@/interfaces";
+import { User as UserSupabase } from "@supabase/supabase-js";
 import { Json } from "@/interfaces/database";
-import { EventsDB, ProfilesDB, YouTubeDB } from "@/interfaces/databaseTable";
+import {
+  EventMessagesDB,
+  EventsDB,
+  ProfilesDB,
+  YouTubeDB,
+} from "@/interfaces/databaseTable";
 import moment from "moment";
+import { numberToDollar } from "./helpers";
 
 const nullToString = (val: string | null) => (val === null ? "" : val);
 const nullToNumber = (val: number | null) => (val === null ? 0 : val);
@@ -72,4 +80,33 @@ export const normalizeOnlineUsers = (users: any[]): OnlineUser[] => {
     pictureUrl: picture_url,
     fullName: full_name,
   }));
+};
+
+export const normalizeEventMessages = (
+  messages: EventMessagesDB[]
+): EventMessages[] => {
+  return messages.map((message) => ({
+    firstName: message.firstName,
+    lastName: message.lastName,
+    id: message.id,
+    createdAt: message.created_at,
+    message: message.message,
+    updatedAt: message.updated_at,
+    userId: message.user_id,
+    deletedAt: message.deleted_at,
+    eventId: message.event_id,
+    like: message.like,
+    donationAmount: message.donation_amount
+      ? numberToDollar(message.donation_amount)
+      : null,
+    replyId: message.reply_id,
+  }));
+};
+
+export const normalizeAuthDB = (userData: UserSupabase | null) => {
+  return {
+    id: userData?.id,
+    email: userData?.email,
+    isConfirmed: !!userData?.confirmed_at,
+  };
 };

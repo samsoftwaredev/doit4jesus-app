@@ -1,3 +1,5 @@
+import { Json } from "./database";
+
 export interface CardProps {
   title: string;
   question: string;
@@ -123,4 +125,19 @@ export interface OnlineUser {
   userId: string;
   pictureUrl: string;
   fullName: string;
+}
+
+export interface EventMessages {
+  id: string;
+  createdAt: string;
+  message: string | null;
+  updatedAt: string | null;
+  userId: string | null;
+  deletedAt: string | null;
+  eventId: number | null;
+  like: Json;
+  donationAmount: number | null;
+  replyId: string | null;
+  firstName: string | null;
+  lastName: string | null;
 }

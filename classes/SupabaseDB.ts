@@ -1,12 +1,25 @@
-import { AuthResponse, createClient } from "@supabase/supabase-js";
+import {
+  AuthResponse,
+  SupabaseClient,
+  createClient,
+} from "@supabase/supabase-js";
 import { NAV_APP_LINKS } from "@/constants";
 import type { Database } from "@/interfaces/database";
 import { GENDER_TYPES } from "@/interfaces/enum";
 
-const supabaseUrl = "https://uieyknteyflglukepcdy.supabase.co";
-const supabaseKey =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpZXlrbnRleWZsZ2x1a2VwY2R5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDQ2NjM2OTYsImV4cCI6MjAyMDIzOTY5Nn0.-EFzqWmh1pyJLPUZ3P9rk_GxBUJmtIUHS-wCXTwBio0";
-export const supabase = createClient<Database>(supabaseUrl, supabaseKey);
+let supabase: SupabaseClient;
+
+try {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_PROJECT_URL!;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PROJECT_KEY!;
+  if (!supabaseKey || !supabaseKey) {
+    throw new Error();
+  } else {
+    supabase = createClient<Database>(supabaseUrl, supabaseKey);
+  }
+} catch (e) {
+  console.error(e);
+}
 
 class SupabaseDB {
   constructor() {}
@@ -21,6 +34,9 @@ class SupabaseDB {
   };
   getYouTubeVideo = () => {
     return supabase.from("youtube");
+  };
+  getEventMessages = () => {
+    return supabase.from("event_messages");
   };
   updatePassword = async (password: string) => {
     return await supabase.auth.updateUser({ password });
@@ -64,4 +80,5 @@ class SupabaseDB {
   };
 }
 
-export const db = new SupabaseDB();
+const db = new SupabaseDB();
+export { db, supabase };

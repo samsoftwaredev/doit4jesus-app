@@ -1,5 +1,3 @@
-import { User } from "@supabase/supabase-js";
-
 export const isClientSideRender = () => typeof window !== "undefined";
 
 export const capitalizeFirstLetter = (str: string) => {
@@ -21,10 +19,17 @@ export const generateRandomStringId = (length: number) => {
   return result;
 };
 
-export const normalizeAuthDB = (userData: User | null) => {
-  return {
-    id: userData?.id,
-    email: userData?.email,
-    isConfirmed: !!userData?.confirmed_at,
-  };
+export const dollarFormatter = (amount: number) => {
+  const formatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  });
+  return formatter.format(amount);
+};
+
+export const numberToDollar = (dollar: number) => {
+  const dollarArrStr = dollar.toString().split("");
+  dollarArrStr.splice(dollarArrStr.length - 2, 0, ".");
+  const dollarNumber = dollarArrStr.join("");
+  return +dollarNumber;
 };

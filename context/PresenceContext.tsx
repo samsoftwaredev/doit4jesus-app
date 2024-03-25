@@ -28,7 +28,7 @@ const PresenceContextProvider = ({ children }: Props) => {
   const [users, setUsers] = useState<OnlineUser[] | undefined>();
   const [channel, setChannel] = useState<RealtimeChannel | undefined>();
 
-  const flattenArr = (data: any) =>
+  const flattenArr = (data: RealtimePresenceState<{}>) =>
     normalizeOnlineUsers(Object.values(data).flat(2));
 
   const untrackPresence = async () => {

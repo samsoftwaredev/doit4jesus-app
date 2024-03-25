@@ -1,3 +1,5 @@
+import { theme } from "@/styles/mui-overwrite";
+import { dollarFormatter } from "@/utils/helpers";
 import { AccountCircle, AttachMoney, Favorite } from "@mui/icons-material";
 import { Box, Button, Typography } from "@mui/material";
 import moment from "moment";
@@ -10,7 +12,7 @@ interface Props {
   children: JSX.Element | string;
   date?: Date;
   numLikes?: number;
-  donationAmount?: number;
+  donationAmount?: number | null;
 }
 
 const ChatMessage = ({
@@ -21,7 +23,7 @@ const ChatMessage = ({
   donationAmount = 0,
 }: Props) => {
   return (
-    <Box display="flex" flexDirection="column" gap="1em">
+    <Box my="1em" display="flex" flexDirection="column" gap="1em">
       <Box display="flex" gap="0.5em" alignItems="center">
         <AccountCircle />
         <Typography fontWeight="bold">
@@ -30,19 +32,23 @@ const ChatMessage = ({
         <Typography fontSize="small">{moment(date).fromNow()}</Typography>
       </Box>
       <Typography ml={2}>{children}</Typography>
-      <Box ml={2} display="flex" gap="0.5em">
+      <Box ml={2} display="flex" alignItems="center" gap="1em">
+        {/* <Button color="secondary" variant="text">
+          Reply
+        </Button> */}
+        {typeof donationAmount === "number" && (
+          <Typography
+            color={theme.palette.success.main}
+            fontWeight="bold"
+            alignItems="center"
+            display="flex"
+          >
+            Donated &nbsp;{dollarFormatter(donationAmount)}
+          </Typography>
+        )}
         <Button color="secondary" variant="contained" startIcon={<Favorite />}>
           {numLikes}
         </Button>
-        <Button color="secondary" variant="text">
-          Reply
-        </Button>
-        {donationAmount > 0 && (
-          <Typography alignItems="center" display="flex" color="success">
-            <AttachMoney />
-            &nbsp; {donationAmount}
-          </Typography>
-        )}
       </Box>
     </Box>
   );

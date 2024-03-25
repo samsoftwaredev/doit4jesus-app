@@ -1,0 +1,30 @@
+import { EventMessages } from "@/interfaces/index";
+import ChatMessage from "../ChatMessage";
+import { Typography } from "@mui/material";
+
+interface Props {
+  messages?: EventMessages[];
+}
+
+const ChatList = ({ messages }: Props) => {
+  if (!messages) return null;
+  return (
+    <>
+      {messages.map((data) => (
+        <ChatMessage
+          date={new Date(data.createdAt)}
+          numLikes={data.like ? Object.values(data.like).length : 0}
+          donationAmount={data.donationAmount}
+          user={{
+            firstName: data.firstName || "",
+            lastName: data.lastName || "",
+          }}
+        >
+          <Typography>{data.message}</Typography>
+        </ChatMessage>
+      ))}
+    </>
+  );
+};
+
+export default ChatList;
