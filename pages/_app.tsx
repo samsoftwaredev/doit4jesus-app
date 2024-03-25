@@ -11,6 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { UserContextProvider } from "@/context/UserContext";
 import { AudioContextProvider } from "@/context/AudioContext";
 import { PresenceContextProvider } from "@/context/PresenceContext";
+import { Analytics } from "@vercel/analytics/react";
 import { useState } from "react";
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
@@ -27,6 +28,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
               <PresenceContextProvider>
                 <ToastContainer autoClose={5000} />
                 <Component {...pageProps} />
+                <Analytics />
                 <MusicPlayer />
               </PresenceContextProvider>
             </AudioContextProvider>
