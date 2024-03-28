@@ -86,8 +86,8 @@ export const normalizeEventMessages = (
   messages: EventMessagesDB[]
 ): EventMessages[] => {
   return messages.map((message) => ({
-    firstName: message.firstName,
-    lastName: message.lastName,
+    firstName: message.first_name,
+    lastName: message.last_name,
     id: message.id,
     createdAt: message.created_at,
     message: message.message,
