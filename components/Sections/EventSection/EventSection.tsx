@@ -24,6 +24,7 @@ const EventSection = ({ videoEvent }: Props) => {
     const { data, error } = await db
       .getEventMessages()
       .select("*")
+      .order("created_at", { ascending: false })
       .eq("event_id", id);
     if (!error) return normalizeEventMessages(data);
     console.error(error);
