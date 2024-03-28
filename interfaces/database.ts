@@ -15,9 +15,9 @@ export type Database = {
           deleted_at: string | null
           donation_amount: number | null
           event_id: number | null
-          firstName: string | null
+          first_name: string | null
           id: string
-          lastName: string | null
+          last_name: string | null
           like: Json | null
           message: string | null
           reply_id: string | null
@@ -29,9 +29,9 @@ export type Database = {
           deleted_at?: string | null
           donation_amount?: number | null
           event_id?: number | null
-          firstName?: string | null
+          first_name?: string | null
           id?: string
-          lastName?: string | null
+          last_name?: string | null
           like?: Json | null
           message?: string | null
           reply_id?: string | null
@@ -43,9 +43,9 @@ export type Database = {
           deleted_at?: string | null
           donation_amount?: number | null
           event_id?: number | null
-          firstName?: string | null
+          first_name?: string | null
           id?: string
-          lastName?: string | null
+          last_name?: string | null
           like?: Json | null
           message?: string | null
           reply_id?: string | null

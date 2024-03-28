@@ -30,6 +30,24 @@ const EventSection = ({ videoEvent }: Props) => {
     toast.error("Unable to retrieve messages");
   };
 
+  const onSendMessage = async (message: string) => {
+    const { error } = await db
+      .getEventMessages()
+      .insert([
+        {
+          message,
+          first_name: user?.firstName,
+          last_name: user?.lastName,
+          event_id: videoEvent.eventId,
+        },
+      ])
+      .select();
+    if (error) {
+      console.error(error);
+      toast.error("Unable to send message");
+    }
+  };
+
   const setUp = async () => {
     const messageList = await getEventMessages(videoEvent.eventId);
     setMessages(messageList);
@@ -68,21 +86,17 @@ const EventSection = ({ videoEvent }: Props) => {
             Donate
           </Button> */}
         </Box>
-        <Typography textAlign="right" fontSize="0.9em" component="body">
+        <Typography textAlign="right" fontSize="0.9em">
           {moment(videoEvent.startedAt).fromNow()}
         </Typography>
-        <Typography component="body">{videoEvent.description}</Typography>
+        <Typography>{videoEvent.description}</Typography>
       </Card>
       <Card className={css(styles.eventDetails, "appCard")}>
         <Typography fontWeight="bold" component="h4" variant="h4">
-          {numberOfPrayers > 1 ? (
-            <span>{numberOfPrayers} Prayers</span>
-          ) : (
-            <span>Prayers</span>
-          )}
+          <span>{numberOfPrayers > 1 ? numberOfPrayers : null} Prayers</span>
         </Typography>
         <Box mb={3}>
-          <ChatTextbox />
+          <ChatTextbox onSendMessage={onSendMessage} />
         </Box>
         <ChatList messages={messages} />
       </Card>

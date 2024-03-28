@@ -23,16 +23,18 @@ const MusicSettings = () => {
   return (
     <>
       <Tooltip title="Settings">
-        <IconButton
-          disabled
-          aria-controls={open ? "rosary-menu" : undefined}
-          aria-expanded={open ? "true" : undefined}
-          aria-haspopup="true"
-          onClick={handleClick}
-          sx={{ color: theme.palette.info.dark }}
-        >
-          <SettingsIcon />
-        </IconButton>
+        <span>
+          <IconButton
+            disabled
+            aria-controls={open ? "rosary-menu" : undefined}
+            aria-expanded={open ? "true" : undefined}
+            aria-haspopup="true"
+            onClick={handleClick}
+            sx={{ color: theme.palette.info.dark }}
+          >
+            <SettingsIcon />
+          </IconButton>
+        </span>
       </Tooltip>
 
       <Menu

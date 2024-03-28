@@ -56,17 +56,19 @@ const AudioPlay = () => {
 
   return (
     <Tooltip title={toggleText()}>
-      <IconButton
-        color="info"
-        disabled={
-          audioState === INTERFACE_AUDIO_STATE.BUFFERING ||
-          audioPlayer?.audio === undefined
-        }
-        onClick={handleToggleAudioPlaying}
-        href={`#${audioText(audioState === INTERFACE_AUDIO_STATE.PLAYING)}`}
-      >
-        {icon}
-      </IconButton>
+      <span>
+        <IconButton
+          color="info"
+          disabled={
+            audioState === INTERFACE_AUDIO_STATE.BUFFERING ||
+            audioPlayer?.audio === undefined
+          }
+          onClick={handleToggleAudioPlaying}
+          href={`#${audioText(audioState === INTERFACE_AUDIO_STATE.PLAYING)}`}
+        >
+          {icon}
+        </IconButton>
+      </span>
     </Tooltip>
   );
 };

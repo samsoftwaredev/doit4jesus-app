@@ -3,11 +3,21 @@ import { AccountCircle, AttachMoney, Send } from "@mui/icons-material";
 import { Box, Button, Paper, TextField } from "@mui/material";
 import { ChangeEvent, useState } from "react";
 
-const ChatTextbox = () => {
+interface Props {
+  onSendMessage: (message: string) => void;
+}
+
+const ChatTextbox = ({ onSendMessage }: Props) => {
   const [message, setMessage] = useState("");
+  const isSendBtnValid = message.trim() === "";
 
   const onChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setMessage(e.target.value as string);
+  };
+
+  const onSubmit = () => {
+    onSendMessage(message);
+    setMessage("");
   };
 
   return (
@@ -37,10 +47,21 @@ const ChatTextbox = () => {
         </Paper>
       </Box>
       <Box ml="1em" display="flex" gap="1em">
-        <Button color="success" variant="contained" startIcon={<AttachMoney />}>
+        <Button
+          disabled
+          color="success"
+          variant="contained"
+          startIcon={<AttachMoney />}
+        >
           Make Donation
         </Button>
-        <Button color="secondary" variant="contained" startIcon={<Send />}>
+        <Button
+          disabled={isSendBtnValid}
+          onClick={onSubmit}
+          color="secondary"
+          variant="contained"
+          startIcon={<Send />}
+        >
           Send
         </Button>
       </Box>

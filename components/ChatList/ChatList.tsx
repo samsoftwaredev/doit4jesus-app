@@ -12,6 +12,7 @@ const ChatList = ({ messages }: Props) => {
     <>
       {messages.map((data) => (
         <ChatMessage
+          key={data.id}
           date={new Date(data.createdAt)}
           numLikes={data.like ? Object.values(data.like).length : 0}
           donationAmount={data.donationAmount}

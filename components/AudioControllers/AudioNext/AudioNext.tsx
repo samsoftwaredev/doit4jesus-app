@@ -7,14 +7,16 @@ const AudioControllers = () => {
 
   return (
     <Tooltip title="Forward">
-      <IconButton
-        disabled={audioPlayer?.audio === undefined}
-        color="info"
-        onClick={forwardAudio}
-        href="#next"
-      >
-        <RedoIcon fontSize="large" />
-      </IconButton>
+      <span>
+        <IconButton
+          disabled={audioPlayer?.audio === undefined}
+          color="info"
+          onClick={forwardAudio}
+          href="#next"
+        >
+          <RedoIcon fontSize="large" />
+        </IconButton>
+      </span>
     </Tooltip>
   );
 };

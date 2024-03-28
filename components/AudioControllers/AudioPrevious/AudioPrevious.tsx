@@ -7,14 +7,16 @@ const AudioPrevious = () => {
 
   return (
     <Tooltip title="Backward">
-      <IconButton
-        disabled={audioPlayer?.audio === undefined}
-        color="info"
-        onClick={backwardAudio}
-        href="#prev"
-      >
-        <UndoIcon fontSize="large" />
-      </IconButton>
+      <span>
+        <IconButton
+          disabled={audioPlayer?.audio === undefined}
+          color="info"
+          onClick={backwardAudio}
+          href="#prev"
+        >
+          <UndoIcon fontSize="large" />
+        </IconButton>
+      </span>
     </Tooltip>
   );
 };

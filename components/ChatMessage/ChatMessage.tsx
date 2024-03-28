@@ -31,7 +31,7 @@ const ChatMessage = ({
         </Typography>
         <Typography fontSize="small">{moment(date).fromNow()}</Typography>
       </Box>
-      <Typography ml={2}>{children}</Typography>
+      <Box ml={2}>{children}</Box>
       <Box ml={2} display="flex" alignItems="center" gap="1em">
         {/* <Button color="secondary" variant="text">
           Reply
