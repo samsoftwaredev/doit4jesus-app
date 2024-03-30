@@ -62,7 +62,6 @@ const EventSection = ({ videoEvent }: Props) => {
         "postgres_changes",
         { event: "*", schema: "public", table: "event_messages" },
         (payload) => {
-          console.log(payload);
           switch (payload.eventType) {
             case "INSERT": {
               const messageList = messages ? [...messages] : [];
