@@ -1,9 +1,20 @@
 import { EventMessages } from "@/interfaces/index";
 import ChatMessage from "../ChatMessage";
-import { Box, IconButton, Menu, MenuItem, Typography } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  ListItemIcon,
+  Menu,
+  MenuItem,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useState } from "react";
 import { useUserContext } from "@/context/UserContext";
+import AnnouncementIcon from "@mui/icons-material/Announcement";
+import DeleteIcon from "@mui/icons-material/Delete";
+import BorderColorIcon from "@mui/icons-material/BorderColor";
 
 interface Props {
   message: EventMessages;
@@ -54,8 +65,8 @@ const ChatList = ({
       <Box>
         <IconButton
           aria-label="more"
-          id="long-button"
-          aria-controls={open ? "long-menu" : undefined}
+          id="event-message-actions"
+          aria-controls={open ? "event-message" : undefined}
           aria-expanded={open ? "true" : undefined}
           aria-haspopup="true"
           onClick={handleClick}
@@ -63,22 +74,43 @@ const ChatList = ({
           <MoreVertIcon color="secondary" />
         </IconButton>
         <Menu
-          id="long-menu"
+          id="event-message"
           MenuListProps={{
-            "aria-labelledby": "long-button",
+            "aria-labelledby": "event-message-actions",
           }}
           anchorEl={anchorEl}
           open={open}
           onClose={handleClose}
         >
           {isOwner && (
-            <MenuItem onClick={() => handleDelete(message.id)}>Delete</MenuItem>
+            <MenuItem
+              disabled={!!message.deletedAt}
+              onClick={() => handleDelete(message.id)}
+            >
+              <ListItemIcon>
+                <DeleteIcon />
+              </ListItemIcon>
+              Delete
+            </MenuItem>
           )}
           {isOwner && (
-            <MenuItem onClick={() => handleEdit(message.id, "")}>Edit</MenuItem>
+            <MenuItem
+              disabled={!!message.deletedAt}
+              onClick={() => handleEdit(message.id, "")}
+            >
+              <ListItemIcon>
+                <BorderColorIcon />
+              </ListItemIcon>
+              Edit
+            </MenuItem>
           )}
           {!isOwner && (
-            <MenuItem onClick={() => handleReport(message.id)}>Report</MenuItem>
+            <MenuItem onClick={() => handleReport(message.id)}>
+              <ListItemIcon>
+                <AnnouncementIcon />
+              </ListItemIcon>
+              Report
+            </MenuItem>
           )}
         </Menu>
       </Box>
