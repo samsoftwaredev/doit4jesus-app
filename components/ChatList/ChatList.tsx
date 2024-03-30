@@ -21,7 +21,9 @@ const ChatList = ({ messages }: Props) => {
             lastName: data.lastName || "",
           }}
         >
-          <Typography>{data.message}</Typography>
+          <Typography>
+            {data.id} - {data.message}
+          </Typography>
         </ChatMessage>
       ))}
     </>

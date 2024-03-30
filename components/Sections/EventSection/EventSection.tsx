@@ -62,9 +62,10 @@ const EventSection = ({ videoEvent }: Props) => {
         "postgres_changes",
         { event: "*", schema: "public", table: "event_messages" },
         (payload) => {
+          console.log(payload);
           switch (payload.eventType) {
             case "INSERT": {
-              const messageList = messages ? messages : [];
+              const messageList = messages ? [...messages] : [];
               const newMessage = payload.new as EventMessagesDB;
               const normalizedMessages = normalizeEventMessages([newMessage]);
               messageList.unshift(normalizedMessages[0]);
@@ -114,11 +115,14 @@ const EventSection = ({ videoEvent }: Props) => {
 
   useEffect(() => {
     setUp();
+  }, []);
+
+  useEffect(() => {
     subscribeToMessages();
     return () => {
       untrackMessages();
     };
-  }, []);
+  }, [messages]);
 
   return (
     <Box className={styles.container}>
