@@ -6,7 +6,6 @@ import {
   ListItemIcon,
   Menu,
   MenuItem,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -15,6 +14,7 @@ import { useUserContext } from "@/context/UserContext";
 import AnnouncementIcon from "@mui/icons-material/Announcement";
 import DeleteIcon from "@mui/icons-material/Delete";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
+import ChatTextbox from "../ChatTextbox";
 
 interface Props {
   message: EventMessages;
@@ -29,6 +29,7 @@ const ChatList = ({
   handleEdit,
   handleReport,
 }: Props) => {
+  const [isEditMode, setIsEditMode] = useState(false);
   const { user } = useUserContext();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -42,25 +43,43 @@ const ChatList = ({
     setAnchorEl(null);
   };
 
+  const handleSaveMessage = (newMessage: string) => {
+    handleEdit(message.id, newMessage);
+    setIsEditMode(false);
+  };
+
+  const handleCloseEditMode = () => {
+    setIsEditMode(false);
+  };
+
   return (
     <Box display="flex" flexDirection="row" justifyContent="space-between">
-      <ChatMessage
-        date={new Date(message.createdAt)}
-        numLikes={message.like ? Object.values(message.like).length : 0}
-        donationAmount={message.donationAmount}
-        user={{
-          firstName: message.firstName || "",
-          lastName: message.lastName || "",
-        }}
-      >
-        <Typography>
-          {message.deletedAt ? (
-            <i>The message was deleted.</i>
-          ) : (
-            message.message
-          )}
-        </Typography>
-      </ChatMessage>
+      {isEditMode ? (
+        <ChatTextbox
+          onCloseEditMode={handleCloseEditMode}
+          onSendMessage={handleSaveMessage}
+          text={message.message}
+          isEditMode
+        />
+      ) : (
+        <ChatMessage
+          date={new Date(message.createdAt)}
+          numLikes={message.like ? Object.values(message.like).length : 0}
+          donationAmount={message.donationAmount}
+          user={{
+            firstName: message.firstName || "",
+            lastName: message.lastName || "",
+          }}
+        >
+          <Typography>
+            {message.deletedAt ? (
+              <i>The message was deleted.</i>
+            ) : (
+              message.message
+            )}
+          </Typography>
+        </ChatMessage>
+      )}
 
       <Box>
         <IconButton
@@ -96,7 +115,7 @@ const ChatList = ({
           {isOwner && (
             <MenuItem
               disabled={!!message.deletedAt}
-              onClick={() => handleEdit(message.id, "")}
+              onClick={() => setIsEditMode(true)}
             >
               <ListItemIcon>
                 <BorderColorIcon />

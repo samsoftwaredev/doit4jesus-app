@@ -2,13 +2,22 @@ import { theme } from "@/styles/mui-overwrite";
 import { AccountCircle, AttachMoney, Send } from "@mui/icons-material";
 import { Box, Button, Paper, TextField } from "@mui/material";
 import { ChangeEvent, useState } from "react";
+import CloseIcon from "@mui/icons-material/Close";
 
 interface Props {
   onSendMessage: (message: string) => void;
+  onCloseEditMode?: () => void;
+  text?: string | null;
+  isEditMode?: boolean;
 }
 
-const ChatTextbox = ({ onSendMessage }: Props) => {
-  const [message, setMessage] = useState("");
+const ChatTextbox = ({
+  onSendMessage,
+  onCloseEditMode = () => {},
+  text = "",
+  isEditMode = false,
+}: Props) => {
+  const [message, setMessage] = useState(text ?? "");
   const isSendBtnValid = message.trim() === "";
 
   const onChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -47,14 +56,26 @@ const ChatTextbox = ({ onSendMessage }: Props) => {
         </Paper>
       </Box>
       <Box ml="1em" display="flex" gap="1em">
-        <Button
-          disabled
-          color="success"
-          variant="contained"
-          startIcon={<AttachMoney />}
-        >
-          Make Donation
-        </Button>
+        {!isEditMode && (
+          <Button
+            disabled
+            color="success"
+            variant="contained"
+            startIcon={<AttachMoney />}
+          >
+            Make Donation
+          </Button>
+        )}
+        {isEditMode && (
+          <Button
+            color="secondary"
+            variant="outlined"
+            onClick={onCloseEditMode}
+            startIcon={<CloseIcon />}
+          >
+            Cancel
+          </Button>
+        )}
         <Button
           disabled={isSendBtnValid}
           onClick={onSubmit}
@@ -62,7 +83,7 @@ const ChatTextbox = ({ onSendMessage }: Props) => {
           variant="contained"
           startIcon={<Send />}
         >
-          Send
+          {!isEditMode ? "Send" : "Update"}
         </Button>
       </Box>
     </Box>
