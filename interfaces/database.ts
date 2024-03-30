@@ -16,6 +16,7 @@ export type Database = {
           donation_amount: number | null
           event_id: number | null
           first_name: string | null
+          flagged: string | null
           id: string
           last_name: string | null
           like: Json | null
@@ -30,6 +31,7 @@ export type Database = {
           donation_amount?: number | null
           event_id?: number | null
           first_name?: string | null
+          flagged?: string | null
           id?: string
           last_name?: string | null
           like?: Json | null
@@ -44,6 +46,7 @@ export type Database = {
           donation_amount?: number | null
           event_id?: number | null
           first_name?: string | null
+          flagged?: string | null
           id?: string
           last_name?: string | null
           like?: Json | null

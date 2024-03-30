@@ -12,6 +12,7 @@ import { normalizeEventMessages } from "@/utils/normalizers";
 import ChatList from "@/components/ChatList";
 import { RealtimeChannel } from "@supabase/supabase-js";
 import { EventMessagesDB } from "@/interfaces/databaseTable";
+import dayjs from "dayjs";
 
 interface Props {
   videoEvent: VideoEvent & DataEvent;
@@ -19,6 +20,7 @@ interface Props {
 
 const EventSection = ({ videoEvent }: Props) => {
   const [messages, setMessages] = useState<EventMessages[]>();
+  const [isLoading, setIsLoading] = useState(true);
   const channel = useRef<RealtimeChannel | undefined>();
   const { user } = useUserContext();
   const numberOfPrayers = messages?.length ?? 0;
@@ -65,26 +67,25 @@ const EventSection = ({ videoEvent }: Props) => {
           const msgs = messages ? [...messages] : [];
           const newMessage = payload.new as EventMessagesDB;
           const normalizedMessages = normalizeEventMessages([newMessage]);
-
           if (normalizedMessages[0].eventId !== videoEvent.eventId) return;
 
           switch (payload.eventType) {
             case "INSERT": {
               msgs.unshift(normalizedMessages[0]);
+              setMessages(msgs);
               break;
             }
 
             case "UPDATE": {
               const index = msgs.findIndex(({ id }) => id === newMessage.id);
-              if (index) msgs.splice(index, 1, normalizedMessages[0]);
+              if (index > -1) msgs.splice(index, 1, normalizedMessages[0]);
               break;
             }
 
             case "DELETE":
             default: {
               const index = msgs.findIndex(({ id }) => id === newMessage.id);
-              if (index) msgs.splice(index, 1);
-              break;
+              if (index > -1) msgs.splice(index, 1);
             }
           }
           setMessages(msgs);
@@ -99,8 +100,40 @@ const EventSection = ({ videoEvent }: Props) => {
   };
 
   const setUp = async () => {
+    setIsLoading(true);
     const messageList = await getEventMessages(videoEvent.eventId);
     setMessages(messageList);
+    setIsLoading(false);
+  };
+
+  const handleDelete = async (messageId: string) => {
+    const { error } = await db
+      .getEventMessages()
+      .update({
+        deleted_at: new Date().toISOString(),
+      })
+      .eq("id", messageId)
+      .select();
+    if (error) toast.error("Unable to delete message");
+  };
+
+  const handleEdit = async (messageId: string, newMessage: string) => {
+    const { error } = await db
+      .getEventMessages()
+      .update({
+        message: newMessage,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", messageId)
+      .select();
+    if (error) toast.error("Unable to update message");
+  };
+
+  const handleReport = async (messageId: string) => {
+    // TODO: update database
+    toast.success(
+      "Thanks for keeping our community safe. We are reviewing the comment."
+    );
   };
 
   useEffect(() => {
@@ -113,6 +146,8 @@ const EventSection = ({ videoEvent }: Props) => {
       untrackMessages();
     };
   }, [messages]);
+
+  if (isLoading) return null;
 
   return (
     <Box className={styles.container}>
@@ -155,7 +190,15 @@ const EventSection = ({ videoEvent }: Props) => {
         <Box mb={3}>
           <ChatTextbox onSendMessage={onSendMessage} />
         </Box>
-        <ChatList messages={messages} />
+        {messages?.map((data) => (
+          <ChatList
+            key={data.id}
+            handleDelete={handleDelete}
+            handleEdit={handleEdit}
+            handleReport={handleReport}
+            message={data}
+          />
+        ))}
       </Card>
     </Box>
   );

@@ -140,4 +140,6 @@ export interface EventMessages {
   replyId: string | null;
   firstName: string | null;
   lastName: string | null;
+  flagged: string | null;
+  isFlagged: boolean;
 }

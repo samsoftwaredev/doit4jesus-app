@@ -100,6 +100,8 @@ export const normalizeEventMessages = (
       ? numberToDollar(message.donation_amount)
       : null,
     replyId: message.reply_id,
+    isFlagged: !!message.flagged,
+    flagged: message.flagged,
   }));
 };
 
