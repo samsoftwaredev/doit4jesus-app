@@ -66,18 +66,14 @@ const ChatList = ({
           date={new Date(message.createdAt)}
           numLikes={message.like ? Object.values(message.like).length : 0}
           donationAmount={message.donationAmount}
+          updatedAt={message.updatedAt}
+          deletedAt={message.deletedAt}
           user={{
             firstName: message.firstName || "",
             lastName: message.lastName || "",
           }}
         >
-          <Typography>
-            {message.deletedAt ? (
-              <i>The message was deleted.</i>
-            ) : (
-              message.message
-            )}
-          </Typography>
+          <Typography>{message.message}</Typography>
         </ChatMessage>
       )}
 

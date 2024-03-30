@@ -2,6 +2,7 @@ import { theme } from "@/styles/mui-overwrite";
 import { dollarFormatter } from "@/utils/helpers";
 import { AccountCircle, AttachMoney, Favorite } from "@mui/icons-material";
 import { Box, Button, Typography } from "@mui/material";
+import dayjs from "dayjs";
 import moment from "moment";
 
 interface Props {
@@ -12,6 +13,8 @@ interface Props {
   children: JSX.Element | string;
   date?: Date;
   numLikes?: number;
+  updatedAt?: string | null;
+  deletedAt?: string | null;
   donationAmount?: number | null;
 }
 
@@ -20,6 +23,8 @@ const ChatMessage = ({
   children,
   date = new Date(),
   numLikes = 0,
+  updatedAt,
+  deletedAt,
   donationAmount = 0,
 }: Props) => {
   return (
@@ -29,9 +34,17 @@ const ChatMessage = ({
         <Typography fontWeight="bold">
           {user.firstName} {user.lastName}
         </Typography>
-        <Typography fontSize="small">{moment(date).fromNow()}</Typography>
+        <Typography fontSize="small">
+          {updatedAt ? (
+            <>
+              {moment(updatedAt).fromNow()} <i>(updated)</i>
+            </>
+          ) : (
+            moment(date).fromNow()
+          )}
+        </Typography>
       </Box>
-      <Box ml={2}>{children}</Box>
+      <Box ml={2}>{deletedAt ? <i>The message was deleted.</i> : children}</Box>
       <Box ml={2} display="flex" alignItems="center" gap="1em">
         {/* <Button color="secondary" variant="text">
           Reply
