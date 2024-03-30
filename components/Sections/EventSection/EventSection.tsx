@@ -62,41 +62,32 @@ const EventSection = ({ videoEvent }: Props) => {
         "postgres_changes",
         { event: "*", schema: "public", table: "event_messages" },
         (payload) => {
+          const msgs = messages ? [...messages] : [];
+          const newMessage = payload.new as EventMessagesDB;
+          const normalizedMessages = normalizeEventMessages([newMessage]);
+
+          if (normalizedMessages[0].eventId !== videoEvent.eventId) return;
+
           switch (payload.eventType) {
             case "INSERT": {
-              const messageList = messages ? [...messages] : [];
-              const newMessage = payload.new as EventMessagesDB;
-              const normalizedMessages = normalizeEventMessages([newMessage]);
-              messageList.unshift(normalizedMessages[0]);
-              setMessages(messageList);
+              msgs.unshift(normalizedMessages[0]);
               break;
             }
+
             case "UPDATE": {
-              const messageList = messages ? [...messages] : [];
-              const newMessage = payload.new as EventMessagesDB;
-              const normalizedMessages = normalizeEventMessages([newMessage]);
-              const index = messages?.findIndex(
-                ({ id }) => id === newMessage.id
-              );
-              if (index) {
-                messageList.splice(index, 1, normalizedMessages[0]);
-                setMessages(messageList);
-              }
+              const index = msgs.findIndex(({ id }) => id === newMessage.id);
+              if (index) msgs.splice(index, 1, normalizedMessages[0]);
               break;
             }
+
             case "DELETE":
             default: {
-              const messageList = messages ? [...messages] : [];
-              const newMessage = payload.new as EventMessagesDB;
-              const index = messages?.findIndex(
-                ({ id }) => id === newMessage.id
-              );
-              if (index) {
-                messageList.splice(index, 1);
-                setMessages(messageList);
-              }
+              const index = msgs.findIndex(({ id }) => id === newMessage.id);
+              if (index) msgs.splice(index, 1);
+              break;
             }
           }
+          setMessages(msgs);
         }
       )
       .subscribe();
