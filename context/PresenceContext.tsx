@@ -32,7 +32,7 @@ const PresenceContextProvider = ({ children }: Props) => {
     normalizeOnlineUsers(Object.values(data).flat(2));
 
   const untrackPresence = async () => {
-    return await channel!.untrack();
+    await channel!.untrack();
   };
 
   const subscribeToPresence = async () => {

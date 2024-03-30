@@ -46,9 +46,9 @@ const ChatMessage = ({
             Donated &nbsp;{dollarFormatter(donationAmount)}
           </Typography>
         )}
-        <Button color="secondary" variant="contained" startIcon={<Favorite />}>
+        {/* <Button color="secondary" variant="contained" startIcon={<Favorite />}>
           {numLikes}
-        </Button>
+        </Button> */}
       </Box>
     </Box>
   );

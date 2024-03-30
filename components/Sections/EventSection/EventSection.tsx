@@ -5,11 +5,13 @@ import { DataEvent, EventMessages, VideoEvent } from "@/interfaces/index";
 import moment from "moment";
 import { useUserContext } from "@/context/UserContext";
 import ChatTextbox from "@/components/ChatTextbox/ChatTextbox";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import { db } from "@/class/SupabaseDB";
+import { db, supabase } from "@/class/SupabaseDB";
 import { normalizeEventMessages } from "@/utils/normalizers";
 import ChatList from "@/components/ChatList";
+import { RealtimeChannel } from "@supabase/supabase-js";
+import { EventMessagesDB } from "@/interfaces/databaseTable";
 
 interface Props {
   videoEvent: VideoEvent & DataEvent;
@@ -17,6 +19,7 @@ interface Props {
 
 const EventSection = ({ videoEvent }: Props) => {
   const [messages, setMessages] = useState<EventMessages[]>();
+  const channel = useRef<RealtimeChannel | undefined>();
   const { user } = useUserContext();
   const numberOfPrayers = messages?.length ?? 0;
 
@@ -26,9 +29,12 @@ const EventSection = ({ videoEvent }: Props) => {
       .select("*")
       .order("created_at", { ascending: false })
       .eq("event_id", id);
-    if (!error) return normalizeEventMessages(data);
-    console.error(error);
-    toast.error("Unable to retrieve messages");
+    if (!error) {
+      return normalizeEventMessages(data);
+    } else {
+      console.error(error);
+      toast.error("Unable to retrieve messages");
+    }
   };
 
   const onSendMessage = async (message: string) => {
@@ -49,6 +55,58 @@ const EventSection = ({ videoEvent }: Props) => {
     }
   };
 
+  const subscribeToMessages = async () => {
+    const eventMessages = await supabase
+      .channel(`event-id-${videoEvent.eventId}-messages`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "event_messages" },
+        (payload) => {
+          switch (payload.eventType) {
+            case "INSERT": {
+              const messageList = messages ? messages : [];
+              const newMessage = payload.new as EventMessagesDB;
+              const normalizedMessages = normalizeEventMessages([newMessage]);
+              messageList.unshift(normalizedMessages[0]);
+              setMessages(messageList);
+              break;
+            }
+            case "UPDATE": {
+              const messageList = messages ? [...messages] : [];
+              const newMessage = payload.new as EventMessagesDB;
+              const normalizedMessages = normalizeEventMessages([newMessage]);
+              const index = messages?.findIndex(
+                ({ id }) => id === newMessage.id
+              );
+              if (index) {
+                messageList.splice(index, 1, normalizedMessages[0]);
+                setMessages(messageList);
+              }
+              break;
+            }
+            case "DELETE":
+            default: {
+              const messageList = messages ? [...messages] : [];
+              const newMessage = payload.new as EventMessagesDB;
+              const index = messages?.findIndex(
+                ({ id }) => id === newMessage.id
+              );
+              if (index) {
+                messageList.splice(index, 1);
+                setMessages(messageList);
+              }
+            }
+          }
+        }
+      )
+      .subscribe();
+    channel.current = eventMessages;
+  };
+
+  const untrackMessages = async () => {
+    if (channel.current) await channel.current!.untrack();
+  };
+
   const setUp = async () => {
     const messageList = await getEventMessages(videoEvent.eventId);
     setMessages(messageList);
@@ -56,6 +114,10 @@ const EventSection = ({ videoEvent }: Props) => {
 
   useEffect(() => {
     setUp();
+    subscribeToMessages();
+    return () => {
+      untrackMessages();
+    };
   }, []);
 
   return (
