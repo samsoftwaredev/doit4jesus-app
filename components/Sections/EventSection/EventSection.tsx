@@ -13,6 +13,7 @@ import ChatList from "@/components/ChatList";
 import { RealtimeChannel } from "@supabase/supabase-js";
 import { EventMessagesDB } from "@/interfaces/databaseTable";
 import dayjs from "dayjs";
+import { Json } from "@/interfaces/database";
 
 interface Props {
   videoEvent: VideoEvent & DataEvent;
@@ -26,9 +27,13 @@ const EventSection = ({ videoEvent }: Props) => {
   const numberOfPrayers = messages?.length ?? 0;
 
   const getEventMessages = async (id: number) => {
+    const joinTables = `
+    created_at, deleted_at, donation_amount, event_id, first_name, id, last_name, message, reply_id, updated_at, user_id,
+    event_messages_actions(id, likes, flagged, created_at)
+    `;
     const { data, error } = await db
       .getEventMessages()
-      .select("*")
+      .select(joinTables)
       .order("created_at", { ascending: false })
       .eq("event_id", id);
     if (!error) {
@@ -136,6 +141,14 @@ const EventSection = ({ videoEvent }: Props) => {
     );
   };
 
+  const handleLike = async (messageId: string, likes: Json) => {
+    const { error } = await db
+      .getEventMessagesActions()
+      .upsert({ likes, id: messageId })
+      .select();
+    if (error) toast.error("Unable to complete the action.");
+  };
+
   useEffect(() => {
     setUp();
   }, []);
@@ -196,6 +209,7 @@ const EventSection = ({ videoEvent }: Props) => {
             handleDelete={handleDelete}
             handleEdit={handleEdit}
             handleReport={handleReport}
+            handleLike={handleLike}
             message={data}
           />
         ))}

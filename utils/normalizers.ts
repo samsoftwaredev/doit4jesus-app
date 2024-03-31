@@ -9,6 +9,7 @@ import {
 import { User as UserSupabase } from "@supabase/supabase-js";
 import { Json } from "@/interfaces/database";
 import {
+  EventMessagesActionsDB,
   EventMessagesDB,
   EventsDB,
   ProfilesDB,
@@ -82,10 +83,14 @@ export const normalizeOnlineUsers = (users: any[]): OnlineUser[] => {
   }));
 };
 
+type EventMessagesJoinActions = EventMessagesDB & {
+  event_messages_actions?: EventMessagesActionsDB | null;
+};
+
 export const normalizeEventMessages = (
-  messages: EventMessagesDB[]
+  data: EventMessagesJoinActions[]
 ): EventMessages[] => {
-  return messages.map((message) => ({
+  return data.map((message) => ({
     firstName: message.first_name,
     lastName: message.last_name,
     id: message.id,
@@ -95,13 +100,13 @@ export const normalizeEventMessages = (
     userId: message.user_id,
     deletedAt: message.deleted_at,
     eventId: message.event_id,
-    like: message.like,
     donationAmount: message.donation_amount
       ? numberToDollar(message.donation_amount)
       : null,
     replyId: message.reply_id,
-    isFlagged: !!message.flagged,
-    flagged: message.flagged,
+    likes: message?.event_messages_actions?.likes,
+    flagged: message?.event_messages_actions?.flagged,
+    isFlagged: !!message?.event_messages_actions?.flagged,
   }));
 };
 

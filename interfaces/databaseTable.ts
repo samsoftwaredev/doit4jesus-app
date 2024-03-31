@@ -6,5 +6,7 @@ export type PostsDB = Database["public"]["Tables"]["posts"]["Row"];
 export type YouTubeDB = Database["public"]["Tables"]["youtube"]["Row"];
 export type EventMessagesDB =
   Database["public"]["Tables"]["event_messages"]["Row"];
+export type EventMessagesActionsDB =
+  Database["public"]["Tables"]["event_messages_actions"]["Row"];
 
 export type GenderEnumDB = Database["public"]["Enums"]["gender"];

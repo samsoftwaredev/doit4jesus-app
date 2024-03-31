@@ -135,11 +135,11 @@ export interface EventMessages {
   userId: string | null;
   deletedAt: string | null;
   eventId: number | null;
-  like: Json;
   donationAmount: number | null;
   replyId: string | null;
   firstName: string | null;
   lastName: string | null;
-  flagged: string | null;
+  flagged?: string | null;
+  likes?: Json;
   isFlagged: boolean;
 }
