@@ -1,23 +1,12 @@
 import { EventMessages } from "@/interfaces/index";
 import ChatMessage from "../ChatMessage";
-import {
-  Box,
-  Button,
-  IconButton,
-  ListItemIcon,
-  Menu,
-  MenuItem,
-  Typography,
-} from "@mui/material";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { Box, Button, Typography } from "@mui/material";
 import { useState } from "react";
 import { useUserContext } from "@/context/UserContext";
-import AnnouncementIcon from "@mui/icons-material/Announcement";
-import DeleteIcon from "@mui/icons-material/Delete";
-import BorderColorIcon from "@mui/icons-material/BorderColor";
 import ChatTextbox from "../ChatTextbox";
 import { Favorite } from "@mui/icons-material";
 import { Json } from "@/interfaces/database";
+import ActionMenu from "./ActionMenu";
 
 interface Props {
   message: EventMessages;
@@ -37,23 +26,12 @@ const ChatList = ({
   const messagesLikes = message.likes;
   const [isEditMode, setIsEditMode] = useState(false);
   const { user } = useUserContext();
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const isOwner = user?.userId === message.userId;
   const [numLikes, setNumLikes] = useState(
     messagesLikes ? Object.values(messagesLikes).length : 0
   );
   // @ts-ignore
   const prevLikes: { [key: string]: Json | undefined } =
     typeof messagesLikes === "object" ? { ...messagesLikes } : {};
-
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 
   const handleSaveMessage = (newMessage: string) => {
     if (message.message !== newMessage) {
@@ -85,11 +63,9 @@ const ChatList = ({
 
   const onClickDelete = () => {
     handleDelete(message.id);
-    setAnchorEl(null);
   };
 
   const onClickEdit = () => {
-    setAnchorEl(null);
     setIsEditMode(true);
   };
 
@@ -133,52 +109,14 @@ const ChatList = ({
           </Box>
         </Box>
       )}
-      <Box>
-        <IconButton
-          aria-label="more"
-          id="event-message-actions"
-          aria-controls={open ? "event-message" : undefined}
-          aria-expanded={open ? "true" : undefined}
-          aria-haspopup="true"
-          onClick={handleClick}
-        >
-          <MoreVertIcon color="secondary" />
-        </IconButton>
-        <Menu
-          id="event-message"
-          MenuListProps={{
-            "aria-labelledby": "event-message-actions",
-          }}
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-        >
-          {isOwner && (
-            <MenuItem disabled={!!message.deletedAt} onClick={onClickDelete}>
-              <ListItemIcon>
-                <DeleteIcon />
-              </ListItemIcon>
-              Delete
-            </MenuItem>
-          )}
-          {isOwner && (
-            <MenuItem disabled={!!message.deletedAt} onClick={onClickEdit}>
-              <ListItemIcon>
-                <BorderColorIcon />
-              </ListItemIcon>
-              Edit
-            </MenuItem>
-          )}
-          {!isOwner && (
-            <MenuItem onClick={() => handleReport(message.id)}>
-              <ListItemIcon>
-                <AnnouncementIcon />
-              </ListItemIcon>
-              Report
-            </MenuItem>
-          )}
-        </Menu>
-      </Box>
+      {!isEditMode && (
+        <ActionMenu
+          message={message}
+          onClickDelete={onClickDelete}
+          onClickEdit={onClickEdit}
+          handleReport={handleReport}
+        />
+      )}
     </Box>
   );
 };
