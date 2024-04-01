@@ -1,4 +1,4 @@
-import { Box, Button, Card, Typography } from "@mui/material";
+import { Box, Card, Typography } from "@mui/material";
 import { css } from "@/utils/helpers";
 import styles from "./eventSection.module.scss";
 import { DataEvent, EventMessages, VideoEvent } from "@/interfaces/index";
@@ -12,9 +12,8 @@ import { normalizeEventMessages } from "@/utils/normalizers";
 import ChatList from "@/components/ChatList";
 import { RealtimeChannel } from "@supabase/supabase-js";
 import { EventMessagesDB } from "@/interfaces/databaseTable";
-import dayjs from "dayjs";
 import { Json } from "@/interfaces/database";
-import { Dialog } from "../..";
+import DeleteMessageDialog from "./DeleteMessageDialog";
 
 interface Props {
   videoEvent: VideoEvent & DataEvent;
@@ -204,10 +203,10 @@ const EventSection = ({ videoEvent }: Props) => {
             Donate
           </Button> */}
         </Box>
-        <Typography textAlign="right" fontSize="0.9em">
+        <Typography textAlign="right" fontSize="small">
           {moment(videoEvent.startedAt).fromNow()}
         </Typography>
-        <Typography>{videoEvent.description}</Typography>
+        <Typography fontWeight="light">{videoEvent.description}</Typography>
       </Card>
       <Card className={css(styles.eventDetails, "appCard")}>
         <Typography fontWeight="bold" component="h4" variant="h4">
@@ -226,25 +225,11 @@ const EventSection = ({ videoEvent }: Props) => {
             message={data}
           />
         ))}
-        <Dialog
-          open={!!currentMessageId}
-          handleClose={handleCloseDelete}
-          modalTitle="Delete Message"
-          actions={
-            <>
-              <Button onClick={handleCloseDelete}>Close</Button>
-              <Button variant="contained" color="error" onClick={handleDelete}>
-                Delete Message
-              </Button>
-            </>
-          }
-        >
-          <Box>
-            <Typography>
-              Are you sure you want to delete this message?
-            </Typography>
-          </Box>
-        </Dialog>
+        <DeleteMessageDialog
+          currentMessageId={currentMessageId}
+          handleCloseDelete={handleCloseDelete}
+          handleDelete={handleDelete}
+        />
       </Card>
     </Box>
   );

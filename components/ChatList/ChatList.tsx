@@ -96,12 +96,14 @@ const ChatList = ({
   return (
     <Box display="flex" flexDirection="row" justifyContent="space-between">
       {isEditMode ? (
-        <ChatTextbox
-          onCloseEditMode={handleCloseEditMode}
-          onSendMessage={handleSaveMessage}
-          text={message.message}
-          isEditMode
-        />
+        <Box display="flex" flexDirection="column" flex="1">
+          <ChatTextbox
+            onCloseEditMode={handleCloseEditMode}
+            onSendMessage={handleSaveMessage}
+            text={message.message}
+            isEditMode
+          />
+        </Box>
       ) : (
         <Box display="flex" flexDirection="column" flex="1">
           <ChatMessage
@@ -114,7 +116,7 @@ const ChatList = ({
               lastName: message.lastName || "",
             }}
           >
-            <Typography>{message.message}</Typography>
+            <Typography fontWeight="light">{message.message}</Typography>
           </ChatMessage>
           <Box>
             <Button

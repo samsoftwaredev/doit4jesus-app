@@ -1,0 +1,126 @@
+.container {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-auto-rows: 350px;
+  gap: 1em 1em;
+
+  @include tablet {
+    grid-template-columns: 1fr 1fr;
+  }
+  @include desktop {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+.mainCard {
+  grid-column-start: 1;
+  grid-column-end: 2;
+  display: flex;
+  flex-direction: column;
+
+  border-radius: $borderRadius;
+  transition: transform 300ms;
+  &:hover {
+    transform: scale(1.01);
+  }
+  @include tablet {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    flex-direction: row;
+  }
+  @include desktop {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    flex-direction: row;
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  border-radius: $borderRadius;
+  transition: transform 300ms;
+  &:hover {
+    transform: scale(1.01);
+  }
+}
+
+.cardImage {
+  background-size: cover;
+  background-position: center top;
+  width: 100%;
+  height: 350px;
+}
+
+.mainImage {
+  background-size: cover;
+  background-position: center top;
+  width: 100%;
+  height: 350px;
+}
+
+.title {
+  font-size: 1.5em;
+  white-space: nowrap;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.date {
+  position: absolute;
+  text-align: right;
+  font-size: 0.9em;
+}
+
+.mainDescription {
+  margin-top: 1em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  @include tablet {
+    -webkit-line-clamp: 4;
+    margin-top: 2em;
+  }
+  @include desktop {
+    -webkit-line-clamp: 4;
+    margin-top: 2em;
+  }
+}
+
+.description {
+  margin-top: 1em;
+  font-size: 1em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.eventDetails {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  color: $white;
+  background-color: $primaryMain;
+  height: auto;
+}
+
+.mainEventDetails {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  color: $white;
+  background-color: $primaryMain;
+  height: auto;
+
+  @include tablet {
+    width: 60%;
+  }
+  @include desktop {
+    width: 50%;
+  }
+}

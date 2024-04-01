@@ -1,15 +1,11 @@
-import { CardProps } from "@/interfaces";
 import styles from "./card.module.scss";
 
-type Props = CardProps;
+interface Props {
+  children: JSX.Element | JSX.Element[] | string;
+}
 
-const Card = ({ title, question }: Props) => {
-  return (
-    <div className={[styles.container].join(" ")}>
-      <h4>{title}</h4>
-      <div>{question}</div>
-    </div>
-  );
+const Card = ({ children }: Props) => {
+  return <div className={styles.container}>{children}</div>;
 };
 
 export default Card;

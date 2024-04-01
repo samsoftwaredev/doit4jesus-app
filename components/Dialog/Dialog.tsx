@@ -30,7 +30,9 @@ const Dialog = ({
         justifyContent="space-between"
         alignItems="center"
       >
-        <DialogTitle color="primary">{modalTitle}</DialogTitle>
+        <DialogTitle fontWeight="bold" color="primary">
+          {modalTitle}
+        </DialogTitle>
         <IconButton
           sx={{
             marginRight: "0.5em",
@@ -41,7 +43,7 @@ const Dialog = ({
           <CloseIcon color="primary" />
         </IconButton>
       </Box>
-      <Box pb={4} p={3}>
+      <Box pb={4} p={3} sx={{ color: theme.palette.grey[500] }}>
         {children}
       </Box>
       <Box display="flex" justifyContent="end" gap={1} mr={3} my={3}>

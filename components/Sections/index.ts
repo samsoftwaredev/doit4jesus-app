@@ -1,5 +1,5 @@
 export { default as ConfessionGuide } from "./ConfessionGuide";
-export { default as Dashboard } from "./DashboardSection";
+export { default as Dashboard } from "./AllEventSection";
 export { default as EventSection } from "./EventSection";
 export { default as SignUp } from "./SignUp";
 export { default as LogIn } from "./LogIn";

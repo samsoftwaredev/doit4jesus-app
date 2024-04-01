@@ -2,7 +2,7 @@ import { db } from "classes/SupabaseDB";
 import Loading from "@/components/Loading";
 import { DataEvent } from "@/interfaces";
 import { AppLayout } from "@/components/Templates";
-import Dashboard from "@/components/Sections/DashboardSection";
+import AllEventSection from "@/components/Sections/AllEventSection";
 import type { NextPage } from "next";
 import { normalizeEvent } from "@/utils";
 import { useEffect, useState } from "react";
@@ -41,7 +41,7 @@ const App: NextPage = () => {
 
   return (
     <AppLayout>
-      <Dashboard events={events} />
+      <AllEventSection events={events} />
     </AppLayout>
   );
 };

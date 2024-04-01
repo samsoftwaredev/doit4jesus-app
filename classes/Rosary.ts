@@ -27,8 +27,8 @@ class Rosary {
     return mysteryName as INTERFACE_ROSARY_MYSTERIES;
   };
 
-  public setAudioCover = (image: string) => {
-    this.rosaryAudioCover = image;
+  public setAudioCover = (imageSrc: string) => {
+    this.rosaryAudioCover = imageSrc;
   };
 
   public getAudio = (
