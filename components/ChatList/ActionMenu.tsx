@@ -11,7 +11,7 @@ interface Props {
   message: EventMessages;
   onClickDelete: () => void;
   onClickEdit: () => void;
-  handleReport: (messageId: string) => void;
+  handleReport: () => void;
 }
 
 const ActionMenu = ({
@@ -29,9 +29,9 @@ const ActionMenu = ({
     setAnchorEl(null);
   };
 
-  const onActionClick = (func: () => void) => {
+  const onActionClick = (callback: () => void) => {
     setAnchorEl(null);
-    func();
+    callback();
   };
 
   const open = Boolean(anchorEl);
@@ -82,7 +82,7 @@ const ActionMenu = ({
           </MenuItem>
         )}
         {!isOwner && (
-          <MenuItem onClick={() => handleReport(message.id)}>
+          <MenuItem onClick={() => onActionClick(handleReport)}>
             <ListItemIcon>
               <AnnouncementIcon />
             </ListItemIcon>

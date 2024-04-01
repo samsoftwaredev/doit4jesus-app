@@ -122,7 +122,7 @@ const EventSection = ({ videoEvent }: Props) => {
         .eq("id", currentMessageId)
         .select();
       if (error) toast.error("Unable to delete message");
-      if (data) setCurrentMessageId(undefined);
+      if (data) handleCloseDeleteDialog();
     }
   };
 
@@ -153,11 +153,11 @@ const EventSection = ({ videoEvent }: Props) => {
     if (error) toast.error("Unable to complete the action.");
   };
 
-  const handleCloseDelete = () => {
+  const handleCloseDeleteDialog = () => {
     setCurrentMessageId(undefined);
   };
 
-  const handleOpenDelete = (messageId: string) => {
+  const handleOpenDeleteDialog = (messageId: string) => {
     setCurrentMessageId(messageId);
   };
 
@@ -218,7 +218,7 @@ const EventSection = ({ videoEvent }: Props) => {
         {messages?.map((data) => (
           <ChatList
             key={data.id}
-            handleDelete={handleOpenDelete}
+            handleDelete={handleOpenDeleteDialog}
             handleEdit={handleEdit}
             handleReport={handleReport}
             handleLike={handleLike}
@@ -227,7 +227,7 @@ const EventSection = ({ videoEvent }: Props) => {
         ))}
         <DeleteMessageDialog
           currentMessageId={currentMessageId}
-          handleCloseDelete={handleCloseDelete}
+          handleCloseDelete={handleCloseDeleteDialog}
           handleDelete={handleDelete}
         />
       </Card>

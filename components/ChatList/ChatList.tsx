@@ -69,6 +69,10 @@ const ChatList = ({
     setIsEditMode(true);
   };
 
+  const onClickReport = () => {
+    handleReport(message.id);
+  };
+
   return (
     <Box display="flex" flexDirection="row" justifyContent="space-between">
       {isEditMode ? (
@@ -114,7 +118,7 @@ const ChatList = ({
           message={message}
           onClickDelete={onClickDelete}
           onClickEdit={onClickEdit}
-          handleReport={handleReport}
+          handleReport={onClickReport}
         />
       )}
     </Box>
