@@ -56,7 +56,9 @@ const ChatList = ({
   };
 
   const handleSaveMessage = (newMessage: string) => {
-    handleEdit(message.id, newMessage);
+    if (message.message !== newMessage) {
+      handleEdit(message.id, newMessage);
+    }
     setIsEditMode(false);
   };
 

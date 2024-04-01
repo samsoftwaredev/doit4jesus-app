@@ -24,13 +24,13 @@ const Dialog = ({
     <MuiDialog maxWidth="md" onClose={handleClose} {...props}>
       <Box
         sx={{
-          borderBottom: `1px solid ${theme.palette.primary.main}`,
+          borderBottom: `1px solid ${theme.palette.grey[300]}`,
         }}
         display="flex"
         justifyContent="space-between"
         alignItems="center"
       >
-        <DialogTitle>{modalTitle}</DialogTitle>
+        <DialogTitle color="primary">{modalTitle}</DialogTitle>
         <IconButton
           sx={{
             marginRight: "0.5em",
@@ -41,7 +41,9 @@ const Dialog = ({
           <CloseIcon color="primary" />
         </IconButton>
       </Box>
-      <Box p={3}>{children}</Box>
+      <Box pb={4} p={3}>
+        {children}
+      </Box>
       <Box display="flex" justifyContent="end" gap={1} mr={3} my={3}>
         {actions}
       </Box>
