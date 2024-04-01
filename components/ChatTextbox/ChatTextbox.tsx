@@ -67,12 +67,7 @@ const ChatTextbox = ({
           </Button>
         )}
         {isEditMode && (
-          <Button
-            color="secondary"
-            variant="outlined"
-            onClick={onCloseEditMode}
-            startIcon={<CloseIcon />}
-          >
+          <Button color="secondary" onClick={onCloseEditMode}>
             Cancel
           </Button>
         )}

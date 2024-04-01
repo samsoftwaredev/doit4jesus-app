@@ -81,6 +81,16 @@ const ChatList = ({
     setIsEditMode(false);
   };
 
+  const onClickDelete = () => {
+    handleDelete(message.id);
+    setAnchorEl(null);
+  };
+
+  const onClickEdit = () => {
+    setAnchorEl(null);
+    setIsEditMode(true);
+  };
+
   return (
     <Box display="flex" flexDirection="row" justifyContent="space-between">
       {isEditMode ? (
@@ -119,7 +129,6 @@ const ChatList = ({
           </Box>
         </Box>
       )}
-
       <Box>
         <IconButton
           aria-label="more"
@@ -141,10 +150,7 @@ const ChatList = ({
           onClose={handleClose}
         >
           {isOwner && (
-            <MenuItem
-              disabled={!!message.deletedAt}
-              onClick={() => handleDelete(message.id)}
-            >
+            <MenuItem disabled={!!message.deletedAt} onClick={onClickDelete}>
               <ListItemIcon>
                 <DeleteIcon />
               </ListItemIcon>
@@ -152,10 +158,7 @@ const ChatList = ({
             </MenuItem>
           )}
           {isOwner && (
-            <MenuItem
-              disabled={!!message.deletedAt}
-              onClick={() => setIsEditMode(true)}
-            >
+            <MenuItem disabled={!!message.deletedAt} onClick={onClickEdit}>
               <ListItemIcon>
                 <BorderColorIcon />
               </ListItemIcon>

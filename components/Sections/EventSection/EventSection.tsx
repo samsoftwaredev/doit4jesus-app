@@ -1,4 +1,4 @@
-import { Box, Card, Typography } from "@mui/material";
+import { Box, Button, Card, Typography } from "@mui/material";
 import { css } from "@/utils/helpers";
 import styles from "./eventSection.module.scss";
 import { DataEvent, EventMessages, VideoEvent } from "@/interfaces/index";
@@ -14,6 +14,7 @@ import { RealtimeChannel } from "@supabase/supabase-js";
 import { EventMessagesDB } from "@/interfaces/databaseTable";
 import dayjs from "dayjs";
 import { Json } from "@/interfaces/database";
+import { Dialog } from "../..";
 
 interface Props {
   videoEvent: VideoEvent & DataEvent;
@@ -22,6 +23,7 @@ interface Props {
 const EventSection = ({ videoEvent }: Props) => {
   const [messages, setMessages] = useState<EventMessages[]>();
   const [isLoading, setIsLoading] = useState(true);
+  const [currentMessageId, setCurrentMessageId] = useState<string>();
   const channel = useRef<RealtimeChannel | undefined>();
   const { user } = useUserContext();
   const numberOfPrayers = messages?.length ?? 0;
@@ -111,15 +113,18 @@ const EventSection = ({ videoEvent }: Props) => {
     setIsLoading(false);
   };
 
-  const handleDelete = async (messageId: string) => {
-    const { error } = await db
-      .getEventMessages()
-      .update({
-        deleted_at: new Date().toISOString(),
-      })
-      .eq("id", messageId)
-      .select();
-    if (error) toast.error("Unable to delete message");
+  const handleDelete = async () => {
+    if (currentMessageId) {
+      const { data, error } = await db
+        .getEventMessages()
+        .update({
+          deleted_at: new Date().toISOString(),
+        })
+        .eq("id", currentMessageId)
+        .select();
+      if (error) toast.error("Unable to delete message");
+      if (data) setCurrentMessageId(undefined);
+    }
   };
 
   const handleEdit = async (messageId: string, newMessage: string) => {
@@ -147,6 +152,14 @@ const EventSection = ({ videoEvent }: Props) => {
       .upsert({ likes, id: messageId })
       .select();
     if (error) toast.error("Unable to complete the action.");
+  };
+
+  const handleCloseDelete = () => {
+    setCurrentMessageId(undefined);
+  };
+
+  const handleOpenDelete = (messageId: string) => {
+    setCurrentMessageId(messageId);
   };
 
   useEffect(() => {
@@ -206,13 +219,32 @@ const EventSection = ({ videoEvent }: Props) => {
         {messages?.map((data) => (
           <ChatList
             key={data.id}
-            handleDelete={handleDelete}
+            handleDelete={handleOpenDelete}
             handleEdit={handleEdit}
             handleReport={handleReport}
             handleLike={handleLike}
             message={data}
           />
         ))}
+        <Dialog
+          open={!!currentMessageId}
+          handleClose={handleCloseDelete}
+          modalTitle="Delete Message"
+          actions={
+            <>
+              <Button onClick={handleCloseDelete}>Close</Button>
+              <Button variant="contained" color="error" onClick={handleDelete}>
+                Delete Message
+              </Button>
+            </>
+          }
+        >
+          <Box>
+            <Typography>
+              Are you sure you want to delete this message?
+            </Typography>
+          </Box>
+        </Dialog>
       </Card>
     </Box>
   );
