@@ -1,27 +1,16 @@
 import { Box, Button, Container, Typography } from "@mui/material";
 import styles from "./dashboardSection.module.scss";
 import Card from "@/components/Card";
-import { Rosary } from "@/class/Rosary";
+import TodaysRosary from "@/components/TodaysRosary";
 
 const DashboardSection = () => {
-  const rosary = new Rosary();
-  const todayMystery = rosary.getRosaryState().mystery;
-
   return (
     <Container className="container-box" maxWidth="lg">
       <Box className={styles.container}>
         <Box className={styles.containerCards}>
           <div className={styles.TodayRosary}>
             <Card>
-              <Typography fontSize="small" fontWeight="light">
-                Today's Rosary
-              </Typography>
-              <Typography my={2} component="h1" variant="h4">
-                {todayMystery}
-              </Typography>
-              <Button color="success" variant="outlined">
-                Pray Today's Rosary
-              </Button>
+              <TodaysRosary />
             </Card>
           </div>
 
