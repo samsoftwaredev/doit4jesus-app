@@ -1,11 +1,12 @@
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
-import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import { useForm, Controller, SubmitHandler, useWatch } from "react-hook-form";
 import { db } from "classes/SupabaseDB";
 import { Button, TextField } from "@mui/material";
 import FormErrorText from "@/components/FormErrorText";
-import { NAV_MAIN_LINKS } from "@/constants/nav";
+import { NAV_MAIN_LINKS, passwordValidationRules } from "@/constants";
 import { useState } from "react";
+import { PasswordValidator } from "../..";
 
 interface IFormInputs {
   password: string;
@@ -22,9 +23,16 @@ const LogIn = () => {
       confirmPassword: "",
     },
   });
+  const password = useWatch({ control, name: "password" });
+  const confirmPassword = useWatch({
+    control,
+    name: "confirmPassword",
+  });
 
   const onSubmit: SubmitHandler<IFormInputs> = async (userInput) => {
-    if (userInput.password === userInput.confirmPassword) {
+    const passwordsMatch = userInput.password === userInput.confirmPassword;
+
+    if (passwordsMatch) {
       setIsLoading(true);
       const { error } = await db.updatePassword(userInput.password);
       if (error) {
@@ -44,7 +52,7 @@ const LogIn = () => {
       <Controller
         name="password"
         control={control}
-        rules={{ required: true }}
+        rules={passwordValidationRules}
         render={({ field }) => (
           <TextField
             fullWidth
@@ -72,6 +80,11 @@ const LogIn = () => {
         control={control}
         name="confirmPassword"
         fieldName="Confirm Password"
+      />
+      <PasswordValidator
+        password={password}
+        confirmPassword={confirmPassword}
+        comparePasswords
       />
       <Button
         disabled={isLoading}

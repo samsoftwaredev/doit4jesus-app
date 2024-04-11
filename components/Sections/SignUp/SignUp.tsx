@@ -9,7 +9,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm, useWatch } from "react-hook-form";
 
 import FormErrorText from "@/components/FormErrorText";
 import { db } from "classes/SupabaseDB";
@@ -20,6 +20,8 @@ import Image from "next/image";
 import virginMaryLetter from "@/public/assets/images/art/virginMaryLetter.jpeg";
 import { useUserContext } from "@/context/UserContext";
 import { normalizeAuthDB } from "@/utils/normalizers";
+import { PasswordValidator } from "../..";
+import { passwordValidationRules } from "@/constants";
 
 interface IFormInputs {
   password: string;
@@ -73,6 +75,7 @@ const SignUp = () => {
       lastName: "",
     },
   });
+  const password = useWatch({ control, name: "password" });
 
   const onSubmit: SubmitHandler<IFormInputs> = async (userInput) => {
     dispatch({ type: SignUpActionKind.LOADING });
@@ -178,17 +181,7 @@ const SignUp = () => {
       <Controller
         name="password"
         control={control}
-        rules={{
-          required: true,
-          minLength: {
-            value: 5,
-            message: "Password is too short",
-          },
-          maxLength: {
-            value: 100,
-            message: "The email exceed max length",
-          },
-        }}
+        rules={passwordValidationRules}
         render={({ field }) => (
           <TextField
             fullWidth
@@ -199,6 +192,7 @@ const SignUp = () => {
         )}
       />
       <FormErrorText name="password" control={control} />
+      <PasswordValidator password={password} />
       <Box my={1}>
         <FormLabel id="gender">Select Gender:</FormLabel>
         <Controller

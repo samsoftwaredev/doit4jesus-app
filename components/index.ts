@@ -30,6 +30,7 @@ export { default as MovingText } from "./MovingText";
 export { default as Loading } from "./Loading";
 export { default as ChatMessage } from "./ChatMessage";
 export { default as ChatTextbox } from "./ChatTextbox";
+export { default as PasswordValidator } from "./PasswordValidator";
 
 export * from "./Navbars";
 export * from "./Fields";
