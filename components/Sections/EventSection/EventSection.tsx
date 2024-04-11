@@ -112,18 +112,17 @@ const EventSection = ({ videoEvent }: Props) => {
     setIsLoading(false);
   };
 
-  const handleDelete = async () => {
-    if (currentMessageId) {
-      const { data, error } = await db
-        .getEventMessages()
-        .update({
-          deleted_at: new Date().toISOString(),
-        })
-        .eq("id", currentMessageId)
-        .select();
-      if (error) toast.error("Unable to delete message");
-      if (data) handleCloseDeleteDialog();
-    }
+  const handleDelete = async (messageId?: string) => {
+    if (messageId === undefined) return;
+    const { data, error } = await db
+      .getEventMessages()
+      .update({
+        deleted_at: new Date().toISOString(),
+      })
+      .eq("id", messageId)
+      .select();
+    if (error) toast.error("Unable to delete message");
+    if (data) handleCloseDeleteDialog();
   };
 
   const handleEdit = async (messageId: string, newMessage: string) => {

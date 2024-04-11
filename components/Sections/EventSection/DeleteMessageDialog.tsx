@@ -1,11 +1,10 @@
 import { Box, Button, Typography } from "@mui/material";
 import { Dialog } from "../..";
-import { useMemo } from "react";
 
 interface Props {
   currentMessageId?: string;
   handleCloseDelete: () => void;
-  handleDelete: () => void;
+  handleDelete: (messageId?: string) => Promise<void>;
 }
 
 const DeleteMessageDialog = ({
@@ -13,29 +12,23 @@ const DeleteMessageDialog = ({
   handleCloseDelete,
   handleDelete,
 }: Props) => {
-  const ActionButtons = useMemo(
-    () => (
-      <>
-        <Button onClick={handleCloseDelete}>Close</Button>
-        <Button variant="contained" color="error" onClick={handleDelete}>
-          Delete Message
-        </Button>
-      </>
-    ),
-    []
-  );
-
+  const onDelete = () => handleDelete(currentMessageId);
   return (
     <Dialog
       open={!!currentMessageId}
       handleClose={handleCloseDelete}
       modalTitle="Delete Message"
-      actions={ActionButtons}
+      actions={
+        <>
+          <Button onClick={handleCloseDelete}>Close</Button>
+          <Button variant="contained" color="error" onClick={onDelete}>
+            Delete Message
+          </Button>
+        </>
+      }
     >
       <Box>
-        <Typography fontWeight="light">
-          Are you sure you want to delete this message?
-        </Typography>
+        <Typography>Are you sure you want to delete this message?</Typography>
       </Box>
     </Dialog>
   );
