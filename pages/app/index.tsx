@@ -31,17 +31,13 @@ const App: NextPage = () => {
     getEvents();
   }, []);
 
-  if (isLoading) {
-    return (
-      <AppLayout>
-        <Loading isPage={true} />
-      </AppLayout>
-    );
-  }
-
   return (
     <AppLayout>
-      <AllEventSection events={events} />
+      {isLoading ? (
+        <Loading isPage={false} />
+      ) : (
+        <AllEventSection events={events} />
+      )}
     </AppLayout>
   );
 };
