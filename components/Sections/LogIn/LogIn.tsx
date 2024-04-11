@@ -5,19 +5,16 @@ import { Button, TextField } from "@mui/material";
 import FormErrorText from "@/components/FormErrorText";
 import { useUserContext } from "@/context/UserContext";
 import { useEffect, useState } from "react";
-import { NAV_APP_LINKS } from "@/constants/nav";
+import { NAV_APP_LINKS, NAV_MAIN_LINKS } from "@/constants/nav";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 interface IFormInputs {
   password: string;
   email: string;
 }
 
-interface Props {
-  onForgotPassword: () => void;
-}
-
-const LogIn = ({ onForgotPassword }: Props) => {
+const LogIn = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const { getProfile } = useUserContext();
@@ -91,14 +88,11 @@ const LogIn = ({ onForgotPassword }: Props) => {
       >
         Log In
       </Button>
-      <Button
-        onClick={onForgotPassword}
-        sx={{ marginTop: "1em" }}
-        fullWidth
-        variant="text"
-      >
-        Forgot password?
-      </Button>
+      <Link passHref href={NAV_MAIN_LINKS.forgotPassword.link}>
+        <Button fullWidth sx={{ marginTop: "1em" }}>
+          Forgot password?
+        </Button>
+      </Link>
     </form>
   );
 };

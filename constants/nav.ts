@@ -6,9 +6,14 @@ export const NAV_FOOTER_LINKS = {
 
 export const NAV_MAIN_LINKS = {
   home: { link: "/", label: "Home", value: "home" },
-  login: { link: "/register", label: "Login", value: "login" },
-  signup: { link: "/register", label: "Sign Up", value: "signup" },
+  login: { link: "/login", label: "Login", value: "login" },
+  signup: { link: "/sign-up", label: "Sign Up", value: "signup" },
   resources: { link: "/resources", label: "Resources", value: "resources" },
+  forgotPassword: {
+    link: "/forgot-password",
+    label: "Forgot Password",
+    value: "forgotPassword",
+  },
 };
 
 export const NAV_APP_LINKS = {

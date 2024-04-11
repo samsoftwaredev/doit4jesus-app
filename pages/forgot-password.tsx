@@ -8,12 +8,7 @@ import { useRouter } from "next/router";
 import { useUserContext } from "@/context/UserContext";
 import { pageView } from "@/constants/register";
 
-/**
- * DO NOT REMOVE PAGE!
- * This register page is needed for email sent to confirm account.
- */
-
-const Register: NextPage = () => {
+const ForgotPassword: NextPage = () => {
   const navigate = useRouter();
   const { user } = useUserContext();
   const isAuth = !!user;
@@ -27,21 +22,21 @@ const Register: NextPage = () => {
 
   return (
     <MainLayout>
-      <Meta pageTitle="Register" />
+      <Meta pageTitle="ForgotPassword" />
       <Container maxWidth="xs">
         <Typography mt={3} variant="h4" component="h1">
-          {pageView.signUp.title}
+          {pageView.forgotPassword.title}
         </Typography>
         <Typography variant="body1" component="p">
-          {pageView.signUp.header}
+          {pageView.forgotPassword.header}
         </Typography>
-        <Box my={2}>{pageView.signUp?.component}</Box>
+        <Box my={2}>{pageView.forgotPassword?.component}</Box>
         <Typography textAlign="center" variant="body1" component="p">
-          {pageView.signUp.footer}
+          {pageView.forgotPassword.footer}
         </Typography>
       </Container>
     </MainLayout>
   );
 };
 
-export default Register;
+export default ForgotPassword;
