@@ -11,7 +11,6 @@ const nextConfig = {
     includePaths: [path.join(__dirname, "styles")],
     prependData: `@import "@/styles/variable.scss";`,
   },
-  exclude: ["supabase"],
   webpack(config, options) {
     const { isServer } = options;
     config.module.rules.push({
