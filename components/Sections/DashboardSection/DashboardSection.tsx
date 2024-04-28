@@ -1,7 +1,6 @@
 import { Box, Button, Container, Typography } from "@mui/material";
 import styles from "./dashboardSection.module.scss";
-import Card from "@/components/Card";
-import TodaysRosary from "@/components/TodaysRosary";
+import { Card, TodaysRosary } from "@/components";
 
 const DashboardSection = () => {
   return (
