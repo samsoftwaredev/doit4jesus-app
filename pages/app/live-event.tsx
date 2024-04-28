@@ -77,7 +77,7 @@ const LiveEvent: NextPage = () => {
     return (
       <AppLayout>
         <Container className="container-box" maxWidth="lg">
-          <Typography>This event hasn't started</Typography>
+          <Typography>This event has not started</Typography>
         </Container>
       </AppLayout>
     );

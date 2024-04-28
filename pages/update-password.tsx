@@ -13,8 +13,8 @@ const Register: NextPage = () => {
           Update Password
         </Typography>
         <Typography variant="body1" component="p">
-          Enter a new password to reset the password on your account. We'll ask
-          this password whenever you log in.
+          Enter a new password to reset the password on your account. We will
+          ask this password whenever you log in.
         </Typography>
         <Box my={2}>
           <UpdatePassword />

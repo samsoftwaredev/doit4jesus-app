@@ -145,7 +145,7 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
             </Typography>
           )}
           {sinsCommitted.map((step, index) => (
-            <Grid px={2} py={1}>
+            <Grid key={step.title} px={2} py={1}>
               <Typography variant="h5">
                 {index + 1}) {step.title}
               </Typography>

@@ -20,7 +20,7 @@ const AboutSection = () => {
         stronger connection among believers through the sacred practice of
         prayer. We firmly believe that praying together has the power to fight
         evil, foster a vibrant spiritual community, and offer comfort to souls
-        in purgatory. Join us in our mission and let's grow in faith together!
+        in purgatory. Join us in our mission and let us grow in faith together!
       </Typography>
     </Container>
   );

@@ -69,15 +69,15 @@ const WhatsTheRosary = ({ next }: StepProps) => {
   return (
     <Box className={styles.stepperContent}>
       <Typography variant="h3" className={styles.title}>
-        What's The Rosary?
+        What is The Rosary?
       </Typography>
       <Typography my={5} color="secondary" className={styles.body}>
         The Rosary is a Scripture-based prayer.
         <br />
         <br />
         The word rosary comes from Latin and means a garland of roses, the rose
-        being one of the flowers used to symbolize the Virgin Mary. However,
-        it's also a powerful weapon.
+        being one of the flowers used to symbolize the Virgin Mary. However, it
+        is also a powerful weapon.
       </Typography>
       <Grid mt={2} container justifyContent="flex-end">
         <Button
@@ -177,7 +177,7 @@ const WhenIsYourBirthDay = ({ next, setDob, dob }: DobProps) => {
   return (
     <Box className={styles.stepperContent}>
       <Typography variant="h3" className={styles.title}>
-        Let's Celebrate The Good Times
+        Let&apos;s Celebrate The Good Times
       </Typography>
       <Typography textAlign="center" color="secondary" className={styles.body}>
         Enter your date of birth:
@@ -223,7 +223,7 @@ const Intro = ({ next }: StepProps) => {
         color="secondary"
         className={styles.body}
       >
-        Let's get to know you...
+        Let&apos;s get to know you...
       </Typography>
       <Grid container justifyContent="flex-end">
         <Button

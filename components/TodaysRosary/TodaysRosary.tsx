@@ -41,13 +41,13 @@ const TodayRosary = () => {
   return (
     <>
       <Typography fontSize="small" fontWeight="light">
-        Today's Rosary
+        Today&apos;s Rosary
       </Typography>
       <Typography my={2} component="h1" variant="h4">
         {todayMystery}
       </Typography>
       <Button onClick={goToRosary} color="success" variant="outlined">
-        Pray Today's Rosary
+        Pray Today&apos;s Rosary
       </Button>
     </>
   );

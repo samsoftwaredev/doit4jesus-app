@@ -89,7 +89,7 @@ const ConfessionGuide = () => {
               conditions are preset:&nbsp;
               <b>
                 sufficient reflection, full consent of will, and a violation of
-                God's law in a serious matter
+                God&apos;s law in a serious matter
               </b>
               .
             </Alert>
