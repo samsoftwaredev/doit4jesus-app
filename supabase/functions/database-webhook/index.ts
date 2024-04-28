@@ -2,7 +2,7 @@
 // https://deno.land/manual/getting_started/setup_your_environment
 // This enables autocomplete, go to definition, etc.
 
-import { Database } from "./types.ts";
+import { Database } from "./types";
 console.log("Hello from Functions!");
 
 type User = Database["public"]["Tables"]["profiles"]["Row"];
