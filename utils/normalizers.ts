@@ -5,6 +5,8 @@ import {
   User,
   OnlineUser,
   EventMessages,
+  ResourcePost,
+  ResourceContent,
 } from "@/interfaces";
 import { User as UserSupabase } from "@supabase/supabase-js";
 import { Json } from "@/interfaces/database";
@@ -12,6 +14,7 @@ import {
   EventMessagesActionsDB,
   EventMessagesDB,
   EventsDB,
+  PostsDB,
   ProfilesDB,
   YouTubeDB,
 } from "@/interfaces/databaseTable";
@@ -116,4 +119,17 @@ export const normalizeAuthDB = (userData: UserSupabase | null) => {
     email: userData?.email,
     isConfirmed: !!userData?.confirmed_at,
   };
+};
+
+export const normalizePost = (posts: PostsDB[]): ResourcePost[] => {
+  return posts.map((data) => ({
+    author: data.author,
+    content: data.content as ResourceContent,
+    createdAt: data.created_at,
+    id: data.id,
+    keywords: data.keywords,
+    publishedAt: data.published_at,
+    slug: data.slug,
+    updatedAt: data.updated_at,
+  }));
 };

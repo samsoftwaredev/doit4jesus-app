@@ -143,3 +143,30 @@ export interface EventMessages {
   likes?: Json;
   isFlagged: boolean;
 }
+
+export type ResourceSection = {
+  body: string;
+  title: string;
+  image: string;
+  imgAlt: string;
+  references: { url: string; resource: string }[];
+};
+
+export type ResourceContent = {
+  image: string;
+  description: string;
+  title: string;
+  imgAlt: string;
+  sections: ResourceSection[];
+};
+
+export interface ResourcePost {
+  author: string | null;
+  content: ResourceContent;
+  createdAt: string;
+  id: string;
+  keywords: string | null;
+  publishedAt: string | null;
+  slug: string;
+  updatedAt: string | null;
+}

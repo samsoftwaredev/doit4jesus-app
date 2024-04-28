@@ -186,36 +186,33 @@ export type Database = {
       }
       posts: {
         Row: {
-          author: string | null
-          content: Json | null
+          author: string
+          content: Json
           created_at: string
           id: string
-          image: string | null
           keywords: string | null
           published_at: string | null
-          slug: string | null
+          slug: string
           updated_at: string | null
         }
         Insert: {
-          author?: string | null
-          content?: Json | null
+          author: string
+          content: Json
           created_at?: string
           id?: string
-          image?: string | null
           keywords?: string | null
           published_at?: string | null
-          slug?: string | null
+          slug: string
           updated_at?: string | null
         }
         Update: {
-          author?: string | null
-          content?: Json | null
+          author?: string
+          content?: Json
           created_at?: string
           id?: string
-          image?: string | null
           keywords?: string | null
           published_at?: string | null
-          slug?: string | null
+          slug?: string
           updated_at?: string | null
         }
         Relationships: []
@@ -226,6 +223,7 @@ export type Database = {
           first_name: string | null
           gender: string | null
           id: string
+          invited_by: string | null
           last_name: string | null
           picture_url: string | null
           updated_at: string | null
@@ -236,6 +234,7 @@ export type Database = {
           first_name?: string | null
           gender?: string | null
           id: string
+          invited_by?: string | null
           last_name?: string | null
           picture_url?: string | null
           updated_at?: string | null
@@ -246,6 +245,7 @@ export type Database = {
           first_name?: string | null
           gender?: string | null
           id?: string
+          invited_by?: string | null
           last_name?: string | null
           picture_url?: string | null
           updated_at?: string | null
@@ -257,6 +257,13 @@ export type Database = {
             columns: ["id"]
             isOneToOne: true
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_invited_by_fkey"
+            columns: ["invited_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]

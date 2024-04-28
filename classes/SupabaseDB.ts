@@ -1,6 +1,5 @@
 import {
   AuthResponse,
-  SupabaseClient,
   createClient,
 } from "@supabase/supabase-js";
 import { NAV_APP_LINKS } from "@/constants";
@@ -22,6 +21,9 @@ class SupabaseDB {
   };
   getEvents = () => {
     return supabase.from("events");
+  };
+  getPosts = () => {
+    return supabase.from("posts");
   };
   getYouTubeVideo = () => {
     return supabase.from("youtube");
