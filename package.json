@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "export": "next export",
-    "db-ts": "supabase gen types typescript --project-id uieyknteyflglukepcdy > interfaces/database.ts"
+    "fe-ts": "supabase gen types typescript --project-id uieyknteyflglukepcdy > interfaces/database.ts",
+    "edge-func-ts": "supabase gen types typescript --project-id uieyknteyflglukepcdy > supabase/functions/database-webhook/types.ts",
+    "db-ts": "npm run fe-ts && npm run edge-func-ts"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",

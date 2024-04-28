@@ -2,19 +2,26 @@
 // https://deno.land/manual/getting_started/setup_your_environment
 // This enables autocomplete, go to definition, etc.
 
-console.log("Hello from Functions!")
+import { Database } from "./types.ts";
+console.log("Hello from Functions!");
+
+type User = Database["public"]["Tables"]["profiles"]["Row"];
+interface WebhookPayload {
+  type: "INSERT" | "UPDATE" | "DELETE";
+  table: string;
+  record: User;
+  schema: "public";
+  old_record: null;
+}
 
 Deno.serve(async (req) => {
-  const { name } = await req.json()
-  const data = {
-    message: `Hello ${name}!`,
-  }
+  const payload: WebhookPayload = await req.json();
+  console.log(
+    `${payload.record.first_name} has joined the community of prayers, thanks to you!`
+  );
 
-  return new Response(
-    JSON.stringify(data),
-    { headers: { "Content-Type": "application/json" } },
-  )
-})
+  return new Response("ok");
+});
 
 /* To invoke locally:
 
