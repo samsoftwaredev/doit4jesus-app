@@ -11,7 +11,7 @@ interface WebhookPayload {
   table: string;
   record: User;
   schema: "public";
-  old_record: null;
+  old_record: User | null;
 }
 
 Deno.serve(async (req) => {
