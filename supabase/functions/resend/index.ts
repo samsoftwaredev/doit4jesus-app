@@ -2,19 +2,15 @@
 // https://deno.land/manual/getting_started/setup_your_environment
 // This enables autocomplete, go to definition, etc.
 
-const RESEND_API_KEY = process.env.RESEND_API_KEY;
-
 Deno.serve(async (req) => {
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${
-        RESEND_API_KEY ?? Deno.env.get("RESEND_API_KEY")
-      }`,
+      Authorization: `Bearer ${Deno.env.get("RESEND_API_KEY")}`,
     },
     body: JSON.stringify({
-      from: "DoIt4Jesus <team@doit4jesus.com>",
+      from: "DoIt4Jesus <team@doitforjesus.com>",
       to: ["gero@fastmail.com"],
       subject: "hello world",
       html: "<strong>it works!</strong>",
@@ -22,6 +18,7 @@ Deno.serve(async (req) => {
   });
 
   const data = await res.json();
+  console.log(data);
   return new Response(JSON.stringify(data), {
     status: 200,
     headers: {
