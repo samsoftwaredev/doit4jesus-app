@@ -39,7 +39,7 @@ Deno.serve(async (req) => {
       },
       body: JSON.stringify({
         from: "DoIt4Jesus <team@doitforjesus.com>",
-        to: [userEmails],
+        to: userEmails,
         subject: "Hi there",
         html: "<strong>This is an email from the CEO of DoIt4Jesus remembering you to pray the rosary today. <br/ >Best,<br/ ><br/ > Samuel Ruiz</strong>",
       }),
