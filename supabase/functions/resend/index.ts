@@ -1,30 +1,64 @@
 // Follow this setup guide to integrate the Deno language server with your editor:
 // https://deno.land/manual/getting_started/setup_your_environment
 // This enables autocomplete, go to definition, etc.
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.7.1";
+import { corsHeaders } from "../_shared/cors.ts";
 
 Deno.serve(async (req) => {
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${Deno.env.get("RESEND_API_KEY")}`,
-    },
-    body: JSON.stringify({
-      from: "DoIt4Jesus <team@doitforjesus.com>",
-      to: ["gero@fastmail.com"],
-      subject: "hello world",
-      html: "<strong>it works!</strong>",
-    }),
-  });
+  try {
+    // Create a Supabase client with the Auth context of the logged in user.
+    const supabaseClient = createClient(
+      // Supabase API URL - env var exported by default.
+      Deno.env.get("SUPABASE_URL") ?? "",
+      // Supabase SUPABASE_SERVICE_ROLE_KEY - env var exported by default.
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+      // Create client with Auth context of the user that called the function.
+      // This way your row-level-security (RLS) policies are applied.
+      {
+        global: {
+          headers: {
+            Authorization: `Bearer ${Deno.env.get(
+              "SUPABASE_SERVICE_ROLE_KEY"
+            )}`,
+          },
+        },
+      }
+    );
+    // And we can run queries in the context of our authenticated user
+    const { data, error } = await supabaseClient.auth.admin.listUsers();
+    if (error) throw error;
+    console.log(data);
+    const userEmails = data.users.map(({ email }) => email);
 
-  const data = await res.json();
-  console.log(data);
-  return new Response(JSON.stringify(data), {
-    status: 200,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${Deno.env.get("RESEND_API_KEY")}`,
+      },
+      body: JSON.stringify({
+        from: "DoIt4Jesus <team@doitforjesus.com>",
+        to: [userEmails],
+        subject: "Hi there",
+        html: "<strong>This is an email from the CEO of DoIt4Jesus remembering you to pray the rosary today. <br/ >Best,<br/ ><br/ > Samuel Ruiz</strong>",
+      }),
+    });
+
+    const emailData = await res.json();
+    console.log(emailData);
+    return new Response(JSON.stringify(emailData), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {
+    return new Response(JSON.stringify({ error: error.message }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 400,
+    });
+  }
 });
 
 /* To invoke locally:
