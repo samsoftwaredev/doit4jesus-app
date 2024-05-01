@@ -4,6 +4,45 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.7.1";
 import { corsHeaders } from "../_shared/cors.ts";
 
+const emailBody = `
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        text-align: center;
+        padding: 20px;
+    }
+    .container {
+        max-width: 400px;
+        margin: auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+        color: #333;
+    }
+    p {
+        color: #666;
+    }
+    .bible-verse {
+        margin-top: 20px;
+        font-style: italic;
+        color: #888;
+    }
+  </style>
+
+  <h2>Welcome!</h2>
+  <p>Ready for a chill vibe? 🎧 Let’s hit pause on the daily grind and tune into the rosary’s rhythm. It’s not just a prayer; it’s a spiritual playlist that drops beats of peace and wisdom.</p>
+  <b><a href="https://www.doitforjesus.com/app/dashboard">Start praying the Rosary</a></b>
+  <p>Join our prayer party and let’s vibe with the divine. Can’t wait to sync our souls in harmony.</p>
+  <p>Peace out,</p>
+  <br />
+  <p>Samuel Ruiz</p>
+  <p>CEO | DoIt4Jesus</p>
+`;
+
 Deno.serve(async (req) => {
   try {
     // Create a Supabase client with the Auth context of the logged in user.
@@ -38,10 +77,10 @@ Deno.serve(async (req) => {
         Authorization: `Bearer ${Deno.env.get("RESEND_API_KEY")}`,
       },
       body: JSON.stringify({
-        from: "DoIt4Jesus <team@doitforjesus.com>",
+        from: "Samuel Ruiz - DoIt4Jesus <team@doitforjesus.com>",
         to: userEmails,
-        subject: "Hi there",
-        html: "<strong>This is an email from the CEO of DoIt4Jesus remembering you to pray the rosary today. <br/ >Best,<br/ ><br/ > Samuel Ruiz</strong>",
+        subject: "Bead by Bead: Unveil the Power of Prayer with the Rosary",
+        html: emailBody,
       }),
     });
 
