@@ -33,8 +33,8 @@ const emailBody = `
     }
   </style>
 
-  <h2>Welcome!</h2>
-  <p>Ready for a chill vibe? 🎧 Let’s hit pause on the daily grind and tune into the rosary’s rhythm. It’s not just a prayer; it’s a spiritual playlist that drops beats of peace and wisdom.</p>
+  <h2>Ready for a chill vibe? 🎧</h2>
+  <p>Let’s hit pause on the daily grind and tune into the rosary’s rhythm. It’s not just a prayer; it’s a spiritual playlist that drops beats of peace and wisdom.</p>
   <b><a href="https://www.doitforjesus.com/app/dashboard">Start praying the Rosary</a></b>
   <p>Join our prayer party and let’s vibe with the divine. Can’t wait to sync our souls in harmony.</p>
   <p>Peace out,</p>
