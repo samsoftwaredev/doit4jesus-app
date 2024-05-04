@@ -85,7 +85,6 @@ Deno.serve(async (req) => {
     });
 
     const emailData = await res.json();
-    console.log(emailData);
     return new Response(JSON.stringify(emailData), {
       status: 200,
       headers: {
