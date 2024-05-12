@@ -1,6 +1,7 @@
 import { Box, Button, Container, Typography } from "@mui/material";
 import styles from "./dashboardSection.module.scss";
 import { Card, TodaysRosary } from "@/components";
+import InviteFriend from "@/components/InviteFriend";
 
 const DashboardSection = () => {
   return (
@@ -38,24 +39,7 @@ const DashboardSection = () => {
 
           <div className={styles.Friends}>
             <Card>
-              <Typography
-                fontSize="small"
-                textAlign="center"
-                fontWeight="light"
-              >
-                Number of Friends
-              </Typography>
-              <Typography
-                textAlign="center"
-                fontWeight="bold"
-                component="h3"
-                variant="h2"
-              >
-                0
-              </Typography>
-              <Button fullWidth color="success" variant="outlined">
-                Invite Friend
-              </Button>
+              <InviteFriend />
             </Card>
           </div>
 

@@ -13,7 +13,7 @@ import { Controller, SubmitHandler, useForm, useWatch } from "react-hook-form";
 
 import FormErrorText from "@/components/FormErrorText";
 import { db } from "classes/SupabaseDB";
-import { emailRegEx } from "@/utils/regEx";
+import { emailRegEx, nameRegEx } from "@/utils/regEx";
 import { toast } from "react-toastify";
 import { useReducer } from "react";
 import Image from "next/image";
@@ -95,16 +95,26 @@ const SignUp = () => {
   if (signUp.isSuccess) {
     return (
       <>
-        <div style={{ width: "100%", height: "200px", position: "relative" }}>
+        <div
+          style={{
+            width: "100%",
+            height: "200px",
+            position: "relative",
+          }}
+        >
           <Image
-            style={{ width: "100%" }}
+            style={{
+              width: "100%",
+              borderTopLeftRadius: "50%",
+              borderTopRightRadius: "50%",
+            }}
             alt="Virgin Mary Letter"
             src={virginMaryLetter}
             layout="fill"
             objectFit="contain"
           />
         </div>
-        <Typography textAlign="center" variant="h5">
+        <Typography my={2} textAlign="center" variant="h5">
           Check Your Inbox
         </Typography>
         <Typography mb={3} textAlign="center">
@@ -122,6 +132,10 @@ const SignUp = () => {
         control={control}
         rules={{
           required: true,
+          pattern: {
+            value: nameRegEx,
+            message: "Invalid name",
+          },
           minLength: {
             value: 1,
             message: "The first name is too short",
@@ -145,6 +159,10 @@ const SignUp = () => {
         control={control}
         rules={{
           required: true,
+          pattern: {
+            value: nameRegEx,
+            message: "Invalid name",
+          },
           minLength: {
             value: 1,
             message: "The last name is too short",

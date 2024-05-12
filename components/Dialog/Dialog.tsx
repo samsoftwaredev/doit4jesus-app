@@ -46,9 +46,11 @@ const Dialog = ({
       <Box pb={4} p={3} sx={{ color: theme.palette.grey[500] }}>
         {children}
       </Box>
-      <Box display="flex" justifyContent="end" gap={1} mr={3} my={3}>
-        {actions}
-      </Box>
+      {!!actions && (
+        <Box display="flex" justifyContent="end" gap={1} mr={3} my={3}>
+          {actions}
+        </Box>
+      )}
     </MuiDialog>
   );
 };

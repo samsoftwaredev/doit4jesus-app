@@ -17,7 +17,6 @@ import moment from "moment";
 import { toast } from "react-toastify";
 import { db } from "classes/SupabaseDB";
 import { useUserContext } from "@/context/UserContext";
-import { useAudioContext } from "@/context/AudioContext";
 
 interface StepProps {
   next: (skipToEnd?: boolean) => void;
@@ -37,6 +36,15 @@ const KnowledgeStep = ({ next }: StepProps) => {
         className={styles.title}
       >
         How Often You Pray The Rosary?
+      </Typography>
+      <Typography
+        style={{ color: "black" }}
+        textAlign="center"
+        className={styles.body}
+      >
+        Whether you&apos;re a seasoned prayer warrior or just starting to
+        explore the mysteries of the Rosary, we&apos;re here for you. No
+        judgment here if your Rosary is a bit dusty – we all began somewhere.
       </Typography>
       <Grid container className={styles.buttons} gap={2}>
         <Button
@@ -71,13 +79,22 @@ const WhatsTheRosary = ({ next }: StepProps) => {
       <Typography variant="h3" className={styles.title}>
         What is The Rosary?
       </Typography>
-      <Typography my={5} color="secondary" className={styles.body}>
-        The Rosary is a Scripture-based prayer.
+      <Typography
+        my={5}
+        textAlign="center"
+        color="secondary"
+        className={styles.body}
+      >
+        At its heart, the Rosary is a prayer deeply rooted in Scripture, guiding
+        us through the life of Christ with the rhythm of Hail Marys. The term
+        &apos;rosary&apos; derives from the Latin for &apos;garland of
+        roses,&apos; with each rose representing a prayer and a tribute to the
+        Virgin Mary.
         <br />
         <br />
-        The word rosary comes from Latin and means a garland of roses, the rose
-        being one of the flowers used to symbolize the Virgin Mary. However, it
-        is also a powerful weapon.
+        Embrace the Rosary, not just as a chain of prayers, but as a blossoming
+        garden of faith, where each bead is a step closer to divine love and
+        wisdom.
       </Typography>
       <Grid mt={2} container justifyContent="flex-end">
         <Button
@@ -100,20 +117,10 @@ const WhyPray = ({ next }: StepProps) => {
       <Typography variant="h3" className={styles.title}>
         Why Pray The Rosary?
       </Typography>
-      <Typography my={5} color="secondary" className={styles.body}>
-        The Catechism says that we pray as we live, because we live as we pray
-        &nbsp;
-        <a
-          href="https://www.vatican.va/archive/catechism_sp/p4s1c3a2_sp.html#:~:text=2725%20La%20oraci%C3%B3n%20es%20un,%C2%BFContra%20qui%C3%A9n%3F"
-          target="CATECHISM_2725"
-        >
-          (2725)
-        </a>
-        . If we are living without prayer, we are living without God. Without
-        perseverance in prayer, we risk falling back into the slavery of sin.
-      </Typography>
       <Typography color="secondary" className={styles.body}>
-        Do you think praying the rosary is powerful? Watch the video.
+        Tune in to Father Don Calloway’s eloquent discourse on the Rosary and
+        its profound significance. Afterward, you will be ready to embark on
+        this journey of profound prayer.
       </Typography>
       <iframe
         className="iframeYoutube"
@@ -143,19 +150,18 @@ type DobProps = {
 } & StepProps;
 
 const WhenIsYourBirthDay = ({ next, setDob, dob }: DobProps) => {
+  const maxAge = 120;
   const { user } = useUserContext();
 
   const setDateOfBirth = (date: Date) => {
     const userBirthDay = new Date(date);
-    const validAge = 18;
+    const validAge = 12;
     const isLegal = moment().diff(moment(userBirthDay), "years") >= validAge;
     if (isLegal) {
       setDob(userBirthDay);
     } else {
       setDob(undefined);
-      toast.error(
-        `You're too young! You must be at least ${validAge} years old`
-      );
+      toast.error(`You must be at least ${validAge} years old.`);
     }
   };
 
@@ -184,6 +190,8 @@ const WhenIsYourBirthDay = ({ next, setDob, dob }: DobProps) => {
       </Typography>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DateCalendar
+          maxDate={dayjs()}
+          minDate={dayjs().subtract(maxAge, "year")}
           sx={{
             "backdrop-filter": "blur(10px)",
             borderRadius: "20px",
@@ -212,6 +220,8 @@ const WhenIsYourBirthDay = ({ next, setDob, dob }: DobProps) => {
 };
 
 const Intro = ({ next }: StepProps) => {
+  const { user } = useUserContext();
+
   return (
     <Box className={styles.stepperContent}>
       <Typography variant="h3" className={styles.title}>
@@ -223,7 +233,28 @@ const Intro = ({ next }: StepProps) => {
         color="secondary"
         className={styles.body}
       >
-        Let&apos;s get to know you...
+        Welcome aboard {user?.firstName} {user?.lastName}, and may your WiFi be
+        as uninterrupted as your prayers. ✨
+      </Typography>
+      <Typography
+        my={5}
+        textAlign="center"
+        color="secondary"
+        className={styles.body}
+      >
+        You&apos;ve just completed the divine achievement of joining the most
+        spirited Rosary prayer group online. Here, we&apos;re all about sharing
+        the love, one Hail Mary at a time.
+      </Typography>
+      <Typography
+        my={5}
+        textAlign="center"
+        color="secondary"
+        className={styles.body}
+      >
+        So, grab your beads and get ready to click &apos;n pray with millions of
+        other Catholics who have WiFi as strong as their faith. And don&apos;t
+        worry, the only thing we spam here are Amens!
       </Typography>
       <Grid container justifyContent="flex-end">
         <Button

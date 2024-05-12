@@ -3,6 +3,7 @@
 // This enables autocomplete, go to definition, etc.
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.7.1";
+import { corsHeaders } from "../_shared/cors.ts";
 
 const emailBody = ({ userName, friendName }) => `
   <style>
@@ -36,17 +37,21 @@ const emailBody = ({ userName, friendName }) => `
   <h2>${userName} is calling you to join a prayer session.</h2>
   <p>${friendName} don’t go solo on your prayer journey.</p>
   <p>Team up with friends and let your spirituality soar to divine heights.</p>
-  <b><a href="https://www.doitforjesus.com/sign-up">Accept Invite</a></b>
   <p>Will you answer the call to uplift your spirit?</p>
+  <b><a href="https://www.doitforjesus.com/sign-up">Accept Invite</a></b>
   <br />
   <p>DoIt4Jesus</p>
   <p>Pray with millions around the world!</p>
 `;
 
 Deno.serve(async (req) => {
-  const payload = await req.json();
+  // This is needed to invoke your function from a browser.
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
 
   try {
+    const payload = await req.json();
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -67,9 +72,7 @@ Deno.serve(async (req) => {
     const emailData = await res.json();
     return new Response(JSON.stringify(emailData), {
       status: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
     return new Response(JSON.stringify({ error: error.message }), {
