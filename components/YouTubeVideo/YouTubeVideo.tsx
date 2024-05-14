@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, SetStateAction, Dispatch } from "react";
 import { generateRandomStringId, isClientSideRender } from "@/utils";
 import { YouTubeClass } from "classes";
 import {
@@ -12,7 +12,8 @@ import styles from "./youTubeVideo.module.scss";
 interface Props {
   id: string;
   onChange: Function;
-  setAudioTimer: Function;
+  setAudioTimer: Dispatch<SetStateAction<INTERFACE_AUDIO_SEEK>>;
+  setAudioProgress: Dispatch<SetStateAction<number>>;
   volume?: number;
   audioLoop?: boolean;
   audioSpeed?: number;
@@ -32,6 +33,7 @@ const YouTubeVideo = ({
   id,
   onChange,
   setAudioTimer,
+  setAudioProgress,
   volume = INITIAL_VOLUME,
   audioLoop = false,
   audioSeek = INTERFACE_AUDIO_SEEK.NEUTRAL,
@@ -150,6 +152,18 @@ const YouTubeVideo = ({
   useEffect(() => {
     if (isClientSideRender()) setVolume(volume);
   }, [volume]);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      //assign interval to a variable to clear it.
+      if (player) {
+        const progress = (player.getCurrentTime() / player.getDuration()) * 100;
+        setAudioProgress(progress);
+      }
+    }, 5000);
+
+    return () => clearInterval(intervalId); //This is important
+  }, [player]);
 
   return (
     <div

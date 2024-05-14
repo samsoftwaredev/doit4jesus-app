@@ -271,19 +271,16 @@ export type Database = {
       rosary_stats: {
         Row: {
           completed_at: string
-          created_at: string
           id: string
           user_id: string
         }
         Insert: {
           completed_at: string
-          created_at?: string
           id?: string
           user_id?: string
         }
         Update: {
           completed_at?: string
-          created_at?: string
           id?: string
           user_id?: string
         }

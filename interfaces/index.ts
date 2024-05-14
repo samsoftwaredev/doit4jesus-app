@@ -120,7 +120,7 @@ export interface User {
   pictureUrl?: string;
   isConfirmed?: boolean;
   updateAt?: string;
-  stats: { rosaryTotalCount: number };
+  stats: { rosaryTotalCount: number; rosaryGraph?: string[] };
 }
 export interface OnlineUser {
   userId: string;

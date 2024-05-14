@@ -63,7 +63,6 @@ const UserContextProvider = ({ children }: Props) => {
     } catch (error) {
       setUser(null);
       router.push(NAV_MAIN_LINKS.login.link);
-      console.error(error);
     } finally {
       setIsLoading(false);
     }

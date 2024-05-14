@@ -13,6 +13,7 @@ import { AudioContextProvider } from "@/context/AudioContext";
 import { PresenceContextProvider } from "@/context/PresenceContext";
 import { Analytics } from "@vercel/analytics/react";
 import { useState } from "react";
+import { StatsContextProvider } from "@/context/StatsContext";
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   const [hideMusicPlayer, setHideMusicPlayer] = useState(true);
@@ -25,12 +26,14 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
               hideMusicPlayer={hideMusicPlayer}
               setHideMusicPlayer={setHideMusicPlayer}
             >
-              <PresenceContextProvider>
-                <ToastContainer autoClose={5000} />
-                <Component {...pageProps} />
-                <Analytics />
-                <MusicPlayer />
-              </PresenceContextProvider>
+              <StatsContextProvider>
+                <PresenceContextProvider>
+                  <ToastContainer autoClose={5000} />
+                  <Component {...pageProps} />
+                  <Analytics />
+                  <MusicPlayer />
+                </PresenceContextProvider>
+              </StatsContextProvider>
             </AudioContextProvider>
           </LanguageContextProvider>
         </ThemeProvider>

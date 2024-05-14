@@ -7,19 +7,20 @@ import {
   useEffect,
   useState,
 } from "react";
+import { usePathname } from "next/navigation";
+import { useRouter } from "next/router";
 import { YouTubeVideo } from "@/components";
 import {
   INTERFACE_AUDIO_STATE,
   INTERFACE_AUDIO_PROPS,
   INTERFACE_AUDIO_SEEK,
 } from "@/interfaces";
-import { usePathname } from "next/navigation";
-import { useRouter } from "next/router";
 import { NAV_APP_LINKS } from "../constants";
 
 type FunctionCallback = undefined | Function;
 
 interface AudioContext {
+  audioProgress: number;
   audioState: INTERFACE_AUDIO_STATE;
   setAudioState: Function;
   isAudioMute: boolean;
@@ -54,6 +55,7 @@ const AudioContextProvider = ({
     INTERFACE_AUDIO_PROPS | undefined
   >();
   const [isAudioMute, setIsAudioMute] = useState(false);
+  const [audioProgress, setAudioProgress] = useState(0);
   const [audioState, setAudioState] = useState(INTERFACE_AUDIO_STATE.PAUSED);
   const [audioTimer, setAudioTimer] = useState<INTERFACE_AUDIO_SEEK>(
     INTERFACE_AUDIO_SEEK.NEUTRAL
@@ -84,14 +86,12 @@ const AudioContextProvider = ({
   };
 
   useEffect(() => {
-    if (
-      audioState === INTERFACE_AUDIO_STATE.ENDED &&
-      typeof onCompletedCallback === "function"
-    ) {
+    const videoNearCompletion = audioProgress > 85;
+    if (videoNearCompletion && typeof onCompletedCallback === "function") {
       onCompletedCallback();
       onResetAudio();
     }
-  }, [audioState]);
+  }, [audioState, audioProgress]);
 
   useEffect(() => {
     return () => {
@@ -100,6 +100,7 @@ const AudioContextProvider = ({
   }, []);
 
   const value = {
+    audioProgress,
     audioState,
     setAudioState,
     isAudioMute,
@@ -125,6 +126,7 @@ const AudioContextProvider = ({
           id={audioPlayer?.audio}
           onChange={setAudioState}
           setAudioTimer={setAudioTimer}
+          setAudioProgress={setAudioProgress}
           volume={audioPlayer?.audioVolume}
           audioSpeed={audioPlayer?.audioSpeed}
           audioLoop={audioPlayer?.audioLoop}
