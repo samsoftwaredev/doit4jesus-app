@@ -4,6 +4,7 @@ import {
   MouseEventHandler,
   SetStateAction,
   useContext,
+  useEffect,
   useState,
 } from "react";
 import { YouTubeVideo } from "@/components";
@@ -15,6 +16,8 @@ import {
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/router";
 import { NAV_APP_LINKS } from "../constants";
+
+type FunctionCallback = undefined | Function;
 
 interface AudioContext {
   audioState: INTERFACE_AUDIO_STATE;
@@ -28,6 +31,7 @@ interface AudioContext {
   goToEvent: () => void;
   hideMusicPlayer: boolean;
   setHideMusicPlayer: React.Dispatch<SetStateAction<boolean>>;
+  setCallbackOnCompleteVideo: (func: () => void) => void;
 }
 
 interface Props {
@@ -45,6 +49,7 @@ const AudioContextProvider = ({
 }: Props) => {
   const pathname = usePathname();
   const router = useRouter();
+  let onCompletedCallback: FunctionCallback;
   const [audioPlayer, setAudioPlayer] = useState<
     INTERFACE_AUDIO_PROPS | undefined
   >();
@@ -70,6 +75,30 @@ const AudioContextProvider = ({
     router.push(`${NAV_APP_LINKS.event.link}/${audioPlayer?.id}`);
   };
 
+  const onResetAudio = () => {
+    onCompletedCallback = undefined;
+  };
+
+  const setCallbackOnCompleteVideo = (func: () => void) => {
+    onCompletedCallback = func;
+  };
+
+  useEffect(() => {
+    if (
+      audioState === INTERFACE_AUDIO_STATE.ENDED &&
+      typeof onCompletedCallback === "function"
+    ) {
+      onCompletedCallback();
+      onResetAudio();
+    }
+  }, [audioState]);
+
+  useEffect(() => {
+    return () => {
+      onResetAudio();
+    };
+  }, []);
+
   const value = {
     audioState,
     setAudioState,
@@ -82,6 +111,7 @@ const AudioContextProvider = ({
     setAudioPlayer,
     hideMusicPlayer,
     setHideMusicPlayer,
+    setCallbackOnCompleteVideo,
   };
 
   return (

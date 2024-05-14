@@ -15,11 +15,13 @@ import {
   EventMessagesDB,
   EventsDB,
   PostsDB,
+  RosaryStatsDB,
   ProfilesDB,
   YouTubeDB,
 } from "@/interfaces/databaseTable";
 import moment from "moment";
 import { numberToDollar } from "./helpers";
+import dayjs from "dayjs";
 
 const nullToString = (val: string | null) => (val === null ? "" : val);
 const nullToNumber = (val: number | null) => (val === null ? 0 : val);
@@ -66,15 +68,24 @@ export const normalizeVideo = (dataList: YouTubeDB[]): VideoEvent[] => {
   });
 };
 
-export const normalizeUserProfile = (data: ProfilesDB): User => {
+export const normalizeUserProfile = (
+  userProfile: ProfilesDB,
+  rosaryStats: RosaryStatsDB[] | null
+): User => {
+  const generateRosaryCount = (stats: RosaryStatsDB[] | null) => {
+    if (stats === null) return { rosaryTotalCount: 0 };
+    return { rosaryTotalCount: stats.length };
+  };
+
   return {
-    updateAt: nullToDate(data.updated_at),
-    userId: nullToString(data.id),
-    firstName: nullToString(data.first_name),
-    lastName: nullToString(data.last_name),
-    genderMale: data.gender === "male",
-    dateOfBirth: nullToDate(data.birth_date),
-    pictureUrl: nullToString(data.picture_url),
+    updateAt: nullToDate(userProfile.updated_at),
+    userId: nullToString(userProfile.id),
+    firstName: nullToString(userProfile.first_name),
+    lastName: nullToString(userProfile.last_name),
+    genderMale: userProfile.gender === "male",
+    dateOfBirth: nullToDate(userProfile.birth_date),
+    pictureUrl: nullToString(userProfile.picture_url),
+    stats: generateRosaryCount(rosaryStats),
   };
 };
 

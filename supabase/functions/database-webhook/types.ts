@@ -268,6 +268,35 @@ export type Database = {
           },
         ]
       }
+      rosary_stats: {
+        Row: {
+          completed_at: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          completed_at: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Update: {
+          completed_at?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rosary_stats_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       youtube: {
         Row: {
           created_at: string

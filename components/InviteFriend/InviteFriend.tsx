@@ -65,7 +65,7 @@ const InviteFriend = () => {
   return (
     <>
       <Typography fontSize="small" textAlign="center" fontWeight="light">
-        Number of Friends
+        Friends Invited
       </Typography>
       <Typography
         textAlign="center"

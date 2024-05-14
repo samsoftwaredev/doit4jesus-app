@@ -38,15 +38,22 @@ const UserContextProvider = ({ children }: Props) => {
     setIsLoading(true);
     try {
       if (!userSession) throw Error("No session");
-      const { data, error } = await db
+      const { data: userProfile, error: profileErr } = await db
         .getProfiles()
         .select("*")
         .eq("id", userSession.user.id)
         .single();
 
-      if (error) throw Error(error.message);
+      if (profileErr) throw Error(profileErr.message);
 
-      const userDataNormalized = normalizeUserProfile(data);
+      const { data: rosaryStats, error: statsErr } = await db
+        .getRosaryStats()
+        .select("*")
+        .eq("user_id", userSession.user.id);
+
+      if (statsErr) throw Error(statsErr.message);
+
+      const userDataNormalized = normalizeUserProfile(userProfile, rosaryStats);
       const userData = {
         ...userDataNormalized,
         userId: userSession.user.id,

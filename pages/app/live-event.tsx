@@ -12,10 +12,14 @@ import { Container, Typography } from "@mui/material";
 import EventSection from "@/components/Sections/EventSection";
 import AppWrapper from "@/components/AppWrapper/AppWrapper";
 import moment from "moment";
+import { useUserContext } from "@/context/UserContext";
+import dayjs from "dayjs";
 
 const LiveEvent: NextPage = () => {
+  const { user } = useUserContext();
   const { setChannel } = usePresenceContext();
-  const { setAudioPlayer, setHideMusicPlayer } = useAudioContext();
+  const { setAudioPlayer, setHideMusicPlayer, setCallbackOnCompleteVideo } =
+    useAudioContext();
   const liveEvent = supabase.channel("live-event");
   const [isLoading, setIsLoading] = useState(true);
   const [dataEvent, setDataEvent] = useState<VideoEvent & DataEvent>();
@@ -24,9 +28,8 @@ const LiveEvent: NextPage = () => {
   const getYouTube = async (id: string | null) => {
     if (!id) return;
     const { data, error } = await db.getYouTubeVideo().select("*").eq("id", id);
-    if (!error) return normalizeVideo(data)[0];
-    console.error(error);
-    toast.error("Unable to display video");
+    if (data) return normalizeVideo(data)[0];
+    if (error) toast.error("Unable to display video");
   };
 
   const getEvent = async () => {
@@ -35,10 +38,27 @@ const LiveEvent: NextPage = () => {
       .select("*")
       .order("started_at", { ascending: true })
       .limit(1);
-    if (!error) return normalizeEvent(data)[0];
-    console.error(error);
-    toast.error("Unable to get event");
+    if (data) return normalizeEvent(data)[0];
+    if (error) toast.error("Unable to get event");
   };
+
+  const registerRosaryCompleted = async () => {
+    if (user?.userId) {
+      const { error } = await db
+        .getRosaryStats()
+        .insert({
+          completed_at: dayjs().format("MM/DD/YYYY"),
+          user_id: user.userId,
+        })
+        .eq("user_id", user.userId!)
+        .select();
+      if (error) toast.error("Unable to store rosary count");
+    }
+  };
+
+  setCallbackOnCompleteVideo(() => {
+    registerRosaryCompleted();
+  });
 
   const getData = async () => {
     const eventRes = await getEvent();

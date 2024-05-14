@@ -2,6 +2,7 @@ import { Box, Button, Container, Typography } from "@mui/material";
 import styles from "./dashboardSection.module.scss";
 import { Card, TodaysRosary } from "@/components";
 import InviteFriend from "@/components/InviteFriend";
+import RosaryStats from "@/components/RosaryStats";
 
 const DashboardSection = () => {
   return (
@@ -16,24 +17,7 @@ const DashboardSection = () => {
 
           <div className={styles.RosariesCompleted}>
             <Card>
-              <Typography
-                fontSize="small"
-                textAlign="center"
-                fontWeight="light"
-              >
-                Number of Rosaries Completed
-              </Typography>
-              <Typography
-                textAlign="center"
-                fontWeight="bold"
-                component="h3"
-                variant="h2"
-              >
-                0
-              </Typography>
-              <Button fullWidth color="success" variant="outlined">
-                Start Praying
-              </Button>
+              <RosaryStats />
             </Card>
           </div>
 

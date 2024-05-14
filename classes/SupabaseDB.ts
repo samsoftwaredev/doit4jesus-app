@@ -1,7 +1,4 @@
-import {
-  AuthResponse,
-  createClient,
-} from "@supabase/supabase-js";
+import { AuthResponse, createClient } from "@supabase/supabase-js";
 import { NAV_APP_LINKS } from "@/constants";
 import type { Database } from "@/interfaces/database";
 import { GENDER_TYPES } from "@/interfaces/enum";
@@ -18,6 +15,9 @@ class SupabaseDB {
   }
   getProfiles = () => {
     return supabase.from("profiles");
+  };
+  getRosaryStats = () => {
+    return supabase.from("rosary_stats");
   };
   getEvents = () => {
     return supabase.from("events");
