@@ -67,29 +67,29 @@ Deno.serve(async (req) => {
     // And we can run queries in the context of our authenticated user
     const { data, error } = await supabaseClient.auth.admin.listUsers();
     if (error) throw error;
-    console.log(data);
-    const userEmails = data.users.map(({ email }) => email);
+    const userEmails: string[] = data.users.map(({ email }) => email);
 
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${Deno.env.get("RESEND_API_KEY")}`,
-      },
-      body: JSON.stringify({
-        from: "Samuel Ruiz - DoIt4Jesus <team@doitforjesus.com>",
-        to: userEmails,
-        subject: "Bead by Bead: Unveil the Power of Prayer with the Rosary",
-        html: emailBody,
-      }),
+    const promises = userEmails.map((userEmail) => {
+      return fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${Deno.env.get("RESEND_API_KEY")}`,
+        },
+        body: JSON.stringify({
+          from: "Samuel Ruiz - DoIt4Jesus <team@doitforjesus.com>",
+          to: [userEmail],
+          subject: "Bead by Bead: Unveil the Power of Prayer with the Rosary",
+          html: emailBody,
+        }),
+      });
     });
 
-    const emailData = await res.json();
-    return new Response(JSON.stringify(emailData), {
+    await Promise.all(promises);
+
+    return new Response("Emails sent successfully", {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
     });
   } catch (error) {
     return new Response(JSON.stringify({ error: error.message }), {
