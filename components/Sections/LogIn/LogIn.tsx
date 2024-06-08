@@ -1,13 +1,14 @@
 import { toast } from "react-toastify";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { db, supabase } from "classes/SupabaseDB";
-import { Button, TextField } from "@mui/material";
+import { Button, FormControl, TextField } from "@mui/material";
 import FormErrorText from "@/components/FormErrorText";
 import { useUserContext } from "@/context/UserContext";
 import { useEffect, useState } from "react";
 import { NAV_APP_LINKS, NAV_MAIN_LINKS } from "@/constants/nav";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { GoogleAuth, HorizontalDivider } from "@/components";
 
 interface IFormInputs {
   password: string;
@@ -55,7 +56,9 @@ const LogIn = () => {
   });
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <FormControl fullWidth component="form" onSubmit={handleSubmit(onSubmit)}>
+      <GoogleAuth />
+      <HorizontalDivider />
       <Controller
         name="email"
         control={control}
@@ -93,7 +96,7 @@ const LogIn = () => {
           Forgot password?
         </Button>
       </Link>
-    </form>
+    </FormControl>
   );
 };
 

@@ -14,6 +14,7 @@ import { User } from "../interfaces";
 import Loading from "@/components/Loading";
 import { useRouter } from "next/router";
 import { NAV_MAIN_LINKS } from "../constants";
+import { toast } from "react-toastify";
 
 interface UserContext {
   user: User | null | undefined;
@@ -26,6 +27,20 @@ interface Props {
 }
 
 const UserContext = createContext<UserContext | undefined>(undefined);
+
+const updateProfileGoogle = async (userSession: Session, userProfile: any) => {
+  if (userProfile?.first_name === null) {
+    const { error } = await db
+      .getProfiles()
+      .update({
+        first_name: userSession.user.user_metadata.name,
+        picture_url: userSession.user.user_metadata.picture,
+      })
+      .eq("id", userSession.user.id)
+      .select();
+    if (error) toast.error("Unable to update profile");
+  }
+};
 
 const UserContextProvider = ({ children }: Props) => {
   const router = useRouter();
@@ -43,6 +58,10 @@ const UserContextProvider = ({ children }: Props) => {
         .select("*")
         .eq("id", userSession.user.id)
         .single();
+
+      if (userSession.user.app_metadata.provider === "google") {
+        updateProfileGoogle(userSession, userProfile);
+      }
 
       if (profileErr) throw Error(profileErr.message);
 

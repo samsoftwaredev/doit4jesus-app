@@ -33,6 +33,8 @@ export { default as ChatTextbox } from "./ChatTextbox";
 export { default as PasswordValidator } from "./PasswordValidator";
 export { default as TodaysRosary } from "./TodaysRosary";
 export { default as Card } from "./Card";
+export { default as HorizontalDivider } from "./HorizontalDivider";
+export { default as GoogleAuth } from "./GoogleAuth";
 
 export * from "./Navbars";
 export * from "./Fields";

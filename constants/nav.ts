@@ -2,6 +2,16 @@ export const NAV_FOOTER_LINKS = {
   about: { link: "/about", label: "About", value: "about" },
   resources: { link: "/resources", label: "Resources", value: "resources" },
   contact: { link: "/contact", label: "Contact", value: "contact" },
+  termsOfService: {
+    link: "/terms-of-service",
+    label: "Terms of Service",
+    value: "terms-of-service",
+  },
+  privacyPolicy: {
+    link: "/privacy-policy",
+    label: "Privacy Policy",
+    value: "privacy-policy",
+  },
 };
 
 export const NAV_MAIN_LINKS = {

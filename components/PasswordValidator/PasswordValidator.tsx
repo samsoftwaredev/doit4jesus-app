@@ -11,7 +11,7 @@ interface Props {
 }
 
 const ValidationCheck = ({ isValid }: { isValid: boolean }) => (
-  <Box component="span" sx={{ verticalAlign: "text-top" }}>
+  <Box component="span" sx={{ verticalAlign: "middle", lineHeight: "18px" }}>
     {isValid ? <CheckIcon color="success" /> : <CloseIcon color="error" />}
   </Box>
 );

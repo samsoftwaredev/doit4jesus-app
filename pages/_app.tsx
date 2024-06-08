@@ -14,30 +14,35 @@ import { PresenceContextProvider } from "@/context/PresenceContext";
 import { Analytics } from "@vercel/analytics/react";
 import { useState } from "react";
 import { StatsContextProvider } from "@/context/StatsContext";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+
+const googleKey = process.env.NEXT_PUBLIC_GOOGLE_AUTH_KEY!;
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   const [hideMusicPlayer, setHideMusicPlayer] = useState(true);
   return (
     <UserContextProvider>
-      <StyledEngineProvider injectFirst>
-        <ThemeProvider theme={theme}>
-          <LanguageContextProvider>
-            <AudioContextProvider
-              hideMusicPlayer={hideMusicPlayer}
-              setHideMusicPlayer={setHideMusicPlayer}
-            >
-              <StatsContextProvider>
-                <PresenceContextProvider>
-                  <ToastContainer autoClose={5000} />
-                  <Component {...pageProps} />
-                  <Analytics />
-                  <MusicPlayer />
-                </PresenceContextProvider>
-              </StatsContextProvider>
-            </AudioContextProvider>
-          </LanguageContextProvider>
-        </ThemeProvider>
-      </StyledEngineProvider>
+      <GoogleOAuthProvider clientId={googleKey}>
+        <StyledEngineProvider injectFirst>
+          <ThemeProvider theme={theme}>
+            <LanguageContextProvider>
+              <AudioContextProvider
+                hideMusicPlayer={hideMusicPlayer}
+                setHideMusicPlayer={setHideMusicPlayer}
+              >
+                <StatsContextProvider>
+                  <PresenceContextProvider>
+                    <ToastContainer autoClose={5000} />
+                    <Component {...pageProps} />
+                    <Analytics />
+                    <MusicPlayer />
+                  </PresenceContextProvider>
+                </StatsContextProvider>
+              </AudioContextProvider>
+            </LanguageContextProvider>
+          </ThemeProvider>
+        </StyledEngineProvider>
+      </GoogleOAuthProvider>
     </UserContextProvider>
   );
 };

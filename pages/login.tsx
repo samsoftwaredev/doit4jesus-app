@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import { useUserContext } from "@/context/UserContext";
 import { pageView } from "@/constants/register";
 
-const Register: NextPage = () => {
+const Login: NextPage = () => {
   const navigate = useRouter();
   const { user } = useUserContext();
   const isAuth = !!user;
@@ -37,4 +37,4 @@ const Register: NextPage = () => {
   );
 };
 
-export default Register;
+export default Login;

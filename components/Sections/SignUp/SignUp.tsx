@@ -20,7 +20,7 @@ import Image from "next/image";
 import virginMaryLetter from "@/public/assets/images/art/virginMaryLetter.jpeg";
 import { useUserContext } from "@/context/UserContext";
 import { normalizeAuthDB } from "@/utils/normalizers";
-import { PasswordValidator } from "../..";
+import { GoogleAuth, HorizontalDivider, PasswordValidator } from "../..";
 import { passwordValidationRules } from "@/constants";
 
 interface IFormInputs {
@@ -84,11 +84,12 @@ const SignUp = () => {
       toast.error(error.message);
       console.error(error);
       dispatch({ type: SignUpActionKind.FAIL });
-    } else {
+    }
+    if (userDB) {
       toast.success("We have sent a confirmation link to your email");
       dispatch({ type: SignUpActionKind.SUCCESS });
       const dataNormalized = normalizeAuthDB(userDB.user);
-      if (user) setUser({ ...user, ...dataNormalized });
+      setUser({ ...user!, ...dataNormalized });
     }
   };
 
@@ -127,6 +128,8 @@ const SignUp = () => {
 
   return (
     <FormControl fullWidth component="form" onSubmit={handleSubmit(onSubmit)}>
+      <GoogleAuth />
+      <HorizontalDivider />
       <Controller
         name="firstName"
         control={control}
