@@ -67,9 +67,9 @@ const TermsOfService: NextPage = () => {
           </p>
           <p>
             <b> 6. Privacy</b>
-            <br /> Your privacy is important to us. Please review our Privacy
-            Policy to understand how we collect, use, and disclose your personal
-            information.
+            <br /> Your privacy is important to us. Please review our{" "}
+            <a href="/privacy-policy">Privacy Policy</a> to understand how we
+            collect, use, and disclose your personal information.
           </p>
           <p>
             <b>7. Termination</b>

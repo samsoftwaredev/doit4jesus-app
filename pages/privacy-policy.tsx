@@ -98,6 +98,44 @@ const PrivacyPolicy: NextPage = () => {
             </ul>
           </p>
           <p>
+            <b>3.1. Managing Access to Your Google Account</b>
+            <br />
+            Your Google Account is a powerful tool that allows you to
+            personalize your experience across various Google services. Here’s
+            how you can manage access to your account:
+            <br />
+            <ol>
+              <li>
+                Sign In: To access your Google Account, simply sign in using
+                your credentials. Once signed in, you’ll have seamless access to
+                services like Gmail, Google Calendar, and more.
+              </li>
+              <li>
+                Manage Your Account: Click on your profile picture and select
+                “Manage your Google Account.” From there, you can update basic
+                information, control privacy settings, and review your data and
+                preferences.
+              </li>
+              <li>
+                Privacy Controls: Google provides easy-to-use tools for managing
+                your privacy. The Privacy Checkup feature allows you to choose
+                privacy settings that suit your preferences.{" "}
+                <a href="https://support.google.com/a/answer/7281227?hl=en">
+                  You can also control what data is saved in your account and
+                  delete specific information by date, product, and topic.
+                </a>
+              </li>
+              <li>
+                Security: Google prioritizes security by automatically detecting
+                and blocking threats. Your account is protected with
+                industry-leading security features. Regularly check the Security
+                Checkup to ensure your account remains secure.
+              </li>
+              For more details, visit the Google Account Help article on
+              managing your account.
+            </ol>
+          </p>
+          <p>
             <b>4. Data Retention</b>
             <br />
             We will retain your personal information for as long as necessary to

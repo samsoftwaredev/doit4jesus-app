@@ -57,7 +57,7 @@ const LogIn = () => {
 
   return (
     <FormControl fullWidth component="form" onSubmit={handleSubmit(onSubmit)}>
-      <GoogleAuth />
+      <GoogleAuth isSignUp={false} />
       <HorizontalDivider />
       <Controller
         name="email"

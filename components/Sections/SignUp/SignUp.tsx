@@ -128,7 +128,7 @@ const SignUp = () => {
 
   return (
     <FormControl fullWidth component="form" onSubmit={handleSubmit(onSubmit)}>
-      <GoogleAuth />
+      <GoogleAuth isSignUp />
       <HorizontalDivider />
       <Controller
         name="firstName"
