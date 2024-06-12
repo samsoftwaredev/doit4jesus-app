@@ -37,7 +37,11 @@ const TopNavbar = ({ handleMenu }: Props) => {
     setAnchorEl(null);
   };
 
-  const logout = async () => {
+  const onViewProfile = () => {
+    navigate.push(NAV_APP_LINKS.account.link);
+  };
+
+  const onLogout = async () => {
     setIsLoading(true);
     await db.logOut();
     setIsLoading(false);
@@ -95,7 +99,13 @@ const TopNavbar = ({ handleMenu }: Props) => {
         <AccountCircle />
       </IconButton>
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-        <MenuItem sx={{ width: 200, maxWidth: "100%" }} onClick={logout}>
+        <MenuItem sx={{ width: 200, maxWidth: "100%" }} onClick={onViewProfile}>
+          <ListItemIcon>
+            <AccountCircle fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>{NAV_APP_LINKS.account.label}</ListItemText>
+        </MenuItem>
+        <MenuItem sx={{ width: 200, maxWidth: "100%" }} onClick={onLogout}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>

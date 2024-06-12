@@ -7,7 +7,7 @@ type Props = {
   title: string;
   description: string;
   subTitle?: string;
-  onBack: () => void;
+  onBack?: () => void;
 };
 
 const Card = ({ title, description, subTitle, onBack }: Props) => {

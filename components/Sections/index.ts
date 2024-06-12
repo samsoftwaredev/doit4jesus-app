@@ -7,3 +7,4 @@ export { default as ForgotPassword } from "./ForgotPassword";
 export { default as UpdatePassword } from "./UpdatePassword";
 export { default as ContactSection } from "./ContactSection";
 export { default as AccountSetup } from "./AccountSetup";
+export { default as AccountSection } from "./AccountSection";

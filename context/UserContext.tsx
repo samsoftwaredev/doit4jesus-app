@@ -11,7 +11,7 @@ import {
   useState,
 } from "react";
 import { User } from "../interfaces";
-import Loading from "@/components/Loading";
+import { Loading } from "@/components";
 import { useRouter } from "next/router";
 import { NAV_MAIN_LINKS } from "../constants";
 import { toast } from "react-toastify";

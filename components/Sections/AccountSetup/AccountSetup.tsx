@@ -17,6 +17,7 @@ import moment from "moment";
 import { toast } from "react-toastify";
 import { db } from "classes/SupabaseDB";
 import { useUserContext } from "@/context/UserContext";
+import { maxAge, minAge } from "@/constants/global";
 
 interface StepProps {
   next: (skipToEnd?: boolean) => void;
@@ -150,18 +151,16 @@ type DobProps = {
 } & StepProps;
 
 const WhenIsYourBirthDay = ({ next, setDob, dob }: DobProps) => {
-  const maxAge = 120;
   const { user } = useUserContext();
 
   const setDateOfBirth = (date: Date) => {
     const userBirthDay = new Date(date);
-    const validAge = 12;
-    const isLegal = moment().diff(moment(userBirthDay), "years") >= validAge;
+    const isLegal = moment().diff(moment(userBirthDay), "years") >= minAge;
     if (isLegal) {
       setDob(userBirthDay);
     } else {
       setDob(undefined);
-      toast.error(`You must be at least ${validAge} years old.`);
+      toast.error(`You must be at least ${minAge} years old.`);
     }
   };
 
