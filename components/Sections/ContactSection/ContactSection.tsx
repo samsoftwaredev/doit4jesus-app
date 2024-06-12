@@ -11,6 +11,9 @@ import {
 import Image from "next/image";
 import { Controller, useForm } from "react-hook-form";
 import styles from "./ContactSection.module.scss";
+import { supabase } from "@/class/index";
+import { toast } from "react-toastify";
+import { useState } from "react";
 
 interface IFormInputs {
   email: string;
@@ -19,7 +22,9 @@ interface IFormInputs {
 }
 
 const ContactSection = () => {
-  const { handleSubmit, control } = useForm<IFormInputs>({
+  const [loading, setLoading] = useState(false);
+  const [submittedSuccessfully, setSubmittedSuccessfully] = useState(false);
+  const { handleSubmit, reset, control } = useForm<IFormInputs>({
     mode: "onChange",
     defaultValues: {
       email: "",
@@ -27,7 +32,25 @@ const ContactSection = () => {
       message: "",
     },
   });
-  const onSubmit = () => {};
+
+  const onSubmit = async ({ email, name, message }: IFormInputs) => {
+    setLoading(true);
+    const { data, error } = await supabase.functions.invoke("invite-friend", {
+      body: {
+        userEmail: email,
+        userName: name,
+        userMessage: message,
+      },
+    });
+    if (data) {
+      toast.success("Message sent! We will contact you shortly.");
+      setSubmittedSuccessfully(true);
+      reset();
+    }
+    if (error) toast.error("Unable to send message");
+    setLoading(false);
+  };
+
   return (
     <Container maxWidth="md" className={styles.container}>
       <Image
@@ -110,6 +133,7 @@ const ContactSection = () => {
           sx={{ marginTop: "1em" }}
           fullWidth
           type="submit"
+          disabled={loading || submittedSuccessfully}
           variant="contained"
         >
           Send Message

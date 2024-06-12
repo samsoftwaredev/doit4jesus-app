@@ -39,7 +39,7 @@ export const NAV_APP_LINKS = {
     label: "Event",
     value: "event",
   },
-  confession: { link: "/confession", label: "", value: "confession" },
+  confession: { link: "/confession", label: "Confession", value: "confession" },
   tov: { link: "/app/tov", label: "TOV", value: "tov" },
   account: { link: "/app/account", label: "My Account", value: "account" },
   triviaGame: {
