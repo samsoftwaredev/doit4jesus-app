@@ -1,7 +1,7 @@
 export const NAV_FOOTER_LINKS = {
   about: { link: "/about", label: "About", value: "about" },
   resources: { link: "/resources", label: "Resources", value: "resources" },
-  contact: { link: "/contact", label: "Contact", value: "contact" },
+  contact: { link: "/contact", label: "Contact Us", value: "contact" },
   termsOfService: {
     link: "/terms-of-service",
     label: "Terms of Service",
