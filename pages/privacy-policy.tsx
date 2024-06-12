@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import { Meta } from "@/components";
 import { MainLayout } from "@/components/Templates";
 import { Container, Typography } from "@mui/material";
-import { COMPANY } from "../constants";
+import { COMPANY, minAge } from "../constants";
 
 const PrivacyPolicy: NextPage = () => {
   const appName = COMPANY.nameAbbr;
@@ -106,34 +106,96 @@ const PrivacyPolicy: NextPage = () => {
             <br />
             <ol>
               <li>
-                Sign In: To access your Google Account, simply sign in using
-                your credentials. Once signed in, you’ll have seamless access to
-                services like Gmail, Google Calendar, and more.
+                <b>Sign In:</b> To access your Google Account, simply sign in
+                using your credentials. Once signed in, you’ll have seamless
+                access to services like Gmail, Google Calendar, and more.
               </li>
               <li>
-                Manage Your Account: Click on your profile picture and select
-                “Manage your Google Account.” From there, you can update basic
-                information, control privacy settings, and review your data and
-                preferences.
+                <b>Manage Your Account:</b> Click on your profile picture and
+                select “Manage your Google Account.” From there, you can update
+                basic information, control privacy settings, and review your
+                data and preferences.
               </li>
               <li>
-                Privacy Controls: Google provides easy-to-use tools for managing
-                your privacy. The Privacy Checkup feature allows you to choose
-                privacy settings that suit your preferences.{" "}
+                <b>Privacy Controls:</b> Google provides easy-to-use tools for
+                managing your privacy. The Privacy Checkup feature allows you to
+                choose privacy settings that suit your preferences.{" "}
                 <a href="https://support.google.com/a/answer/7281227?hl=en">
                   You can also control what data is saved in your account and
                   delete specific information by date, product, and topic.
                 </a>
               </li>
               <li>
-                Security: Google prioritizes security by automatically detecting
-                and blocking threats. Your account is protected with
+                <b>Security:</b> Google prioritizes security by automatically
+                detecting and blocking threats. Your account is protected with
                 industry-leading security features. Regularly check the Security
                 Checkup to ensure your account remains secure.
               </li>
               For more details, visit the Google Account Help article on
               managing your account.
             </ol>
+          </p>
+          <p>
+            <b>3.2. Google OAuth and User Data Usage</b>
+            <br />
+            Our website uses Google OAuth for authentication purposes. When
+            users log in using their Google account, we collect the following
+            information:
+            <br />
+            <ol>
+              <li>
+                <b>Email Address:</b> We retrieve the user’s email address to
+                create a personalized experience and communicate important
+                updates related to their account.
+              </li>
+              <li>
+                <b>Name:</b> The user’s name is used to personalize their
+                interactions within our platform. It helps us address them
+                appropriately and enhance their overall experience.
+              </li>
+              <li>
+                <b>Profile Picture:</b> We may display the user’s profile
+                picture within our application. This feature aims to create a
+                more engaging and visually appealing experience for our users.
+              </li>
+            </ol>
+          </p>
+          <p>
+            <b>3.3. How We Use This Data</b>
+            <br />
+            <ol>
+              <li>
+                <b>Enhancing User Experience:</b> We use the collected data to
+                tailor our services to each user. Personalization allows us to
+                provide relevant content, recommendations, and features based on
+                their preferences.
+              </li>
+              <li>
+                <b>Communication:</b> We may send email notifications related to
+                account updates, security alerts, or new features. The user’s
+                email address is essential for effective communication.
+              </li>
+              <li>
+                <b>Displaying Profile Pictures:</b> Users’ profile pictures may
+                appear in their profiles, comments, or other relevant sections
+                of our platform. This feature fosters a sense of community and
+                identity.
+              </li>
+            </ol>
+          </p>
+          <p>
+            <b>3.5 Data Security: </b>
+            <br />
+            We take data security seriously. All user information is stored
+            securely, and we follow industry best practices to protect it from
+            unauthorized access, misuse, or disclosure.
+          </p>
+          <p>
+            <b>3.6. Third-Party Services: </b>
+            <br />
+            Our website integrates with Google services, including Google OAuth.
+            Users should review Google’s privacy policies to understand how
+            their data is handled by Google.
           </p>
           <p>
             <b>4. Data Retention</b>
@@ -175,10 +237,11 @@ const PrivacyPolicy: NextPage = () => {
           <p>
             <b>7. Children&apos;s Privacy</b>
             <br />
-            {appName} is not intended for use by children under the age of 13.
-            We do not knowingly collect personal information from children under
-            13. If you believe that we may have collected personal information
-            from a child under 13, please contact us immediately.
+            {appName} is not intended for use by children under the age of{" "}
+            {minAge}. We do not knowingly collect personal information from
+            children under {minAge}. If you believe that we may have collected
+            personal information from a child under {minAge}, please contact us
+            immediately.
           </p>
           <p>
             <b>8. Changes to this Privacy Policy</b>
