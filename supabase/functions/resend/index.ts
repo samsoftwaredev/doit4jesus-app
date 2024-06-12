@@ -66,7 +66,7 @@ Deno.serve(async (req) => {
     );
     // And we can run queries in the context of our authenticated user
     const { data, error } = await supabaseClient.auth.admin.listUsers();
-    if (error) throw error;
+    if (error) throw new Error(error);
     const userEmails: string[] = data.users.map(({ email }) => email);
 
     const promises = userEmails.map((userEmail) => {
