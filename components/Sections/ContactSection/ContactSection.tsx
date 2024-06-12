@@ -35,7 +35,7 @@ const ContactSection = () => {
 
   const onSubmit = async ({ email, name, message }: IFormInputs) => {
     setLoading(true);
-    const { data, error } = await supabase.functions.invoke("invite-friend", {
+    const { data, error } = await supabase.functions.invoke("contact-us", {
       body: {
         userEmail: email,
         userName: name,

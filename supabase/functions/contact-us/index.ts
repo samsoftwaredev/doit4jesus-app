@@ -53,18 +53,17 @@ Deno.serve(async (req) => {
     return new Response("ok", { headers: corsHeaders });
   }
 
-  if (!payload.userName || validateName(payload.userName) === false) {
-    throw new Error("Invalid Name or is empty");
-  }
-  if (!payload.userMessage || payload.userMessage.length < 2) {
-    throw new Error("Invalid Message or message is too short");
-  }
-  if (!payload.userEmail || validateEmail(payload.userEmail) === false) {
-    throw new Error("Invalid Email or is empty");
-  }
-
   try {
     const payload = await req.json();
+    if (!payload.userName || validateName(payload.userName) === false) {
+      throw new Error("Invalid Name or is empty");
+    }
+    if (!payload.userMessage || payload.userMessage.length < 2) {
+      throw new Error("Invalid Message or message is too short");
+    }
+    if (!payload.userEmail || validateEmail(payload.userEmail) === false) {
+      throw new Error("Invalid Email or is empty");
+    }
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
