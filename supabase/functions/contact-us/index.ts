@@ -71,8 +71,8 @@ Deno.serve(async (req) => {
         Authorization: `Bearer ${Deno.env.get("RESEND_API_KEY")}`,
       },
       body: JSON.stringify({
-        from: `${payload.userName} <admin@doit4jesus.com>`,
-        to: ["admin@doit4jesus.com"],
+        from: `${payload.userName} <admin@doitforjesus.com>`,
+        to: ["admin@doitforjesus.com"],
         subject: `${payload.userName} is trying to contact you!`,
         html: emailBody({
           message: `User: ${payload.userName}\nEmail: ${payload.userEmail}\n\n${payload.userMessage}`,
