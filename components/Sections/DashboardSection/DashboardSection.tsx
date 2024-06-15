@@ -3,6 +3,7 @@ import styles from "./dashboardSection.module.scss";
 import { Card, TodaysRosary } from "@/components";
 import InviteFriend from "@/components/InviteFriend";
 import RosaryStats from "@/components/RosaryStats";
+import ProgressLevelsSection from "../ProgressLevelsSection";
 
 const DashboardSection = () => {
   return (
@@ -38,6 +39,12 @@ const DashboardSection = () => {
               <Button disabled color="success" variant="outlined">
                 Donate Today
               </Button>
+            </Card>
+          </div>
+
+          <div className={styles.Levels}>
+            <Card>
+              <ProgressLevelsSection />
             </Card>
           </div>
         </Box>

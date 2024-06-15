@@ -18,7 +18,7 @@
     "RosariesCompleted"
     "Friends"
     "Donations"
-    "NumCatholics";
+    "Levels";
 
   @include tablet {
     grid-template-columns: 1fr 1fr;
@@ -27,7 +27,7 @@
       "TodayRosary TodayRosary"
       "RosariesCompleted Friends"
       "Donations Donations"
-      "NumCatholics NumCatholics";
+      "Levels Levels";
   }
   @include desktop {
     grid-template-columns: 1fr 1fr 1fr;
@@ -35,7 +35,7 @@
     grid-template-areas:
       "TodayRosary TodayRosary RosariesCompleted"
       "Friends Donations Donations"
-      "NumCatholics NumCatholics NumCatholics";
+      "Levels Levels Levels";
   }
 }
 
@@ -62,6 +62,6 @@
   grid-area: Donations;
 }
 
-.NumCatholics {
-  grid-area: NumCatholics;
+.Levels {
+  grid-area: Levels;
 }
