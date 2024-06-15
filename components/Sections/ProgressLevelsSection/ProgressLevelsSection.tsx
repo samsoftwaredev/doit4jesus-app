@@ -75,10 +75,9 @@ const ProgressLevelsSection = () => {
                   alt={label}
                 />
               </Box>
-              <Box display="flex" alignItems="center">
+              <Box className={styles.levelInfo}>
                 <Typography
                   component="h2"
-                  mr={2}
                   fontWeight="bold"
                   sx={{ fontSize: { sm: "1.2em", md: "1.5em" } }}
                 >
