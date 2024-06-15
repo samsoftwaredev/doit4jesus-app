@@ -38,7 +38,7 @@ const emailBody = ({ userName, friendName }) => `
   <p>${friendName} don’t go solo on your prayer journey.</p>
   <p>Team up with friends and let your spirituality soar to divine heights.</p>
   <p>Will you answer the call to uplift your spirit?</p>
-  <b><a href="https://www.doitforjesus.com/sign-up">Accept Invite</a></b>
+  <b><a href="https://www.doit4jesus.com/sign-up">Accept Invite</a></b>
   <br />
   <p>DoIt4Jesus</p>
   <p>Pray with millions around the world!</p>
@@ -59,7 +59,7 @@ Deno.serve(async (req) => {
         Authorization: `Bearer ${Deno.env.get("RESEND_API_KEY")}`,
       },
       body: JSON.stringify({
-        from: `${payload.fullName} - DoIt4Jesus <team@doitforjesus.com>`,
+        from: `${payload.fullName} - DoIt4Jesus <admin@doit4jesus.com>`,
         to: payload.friendEmail,
         subject: `${payload.friendName}, it’s time to level up in faith together!`,
         html: emailBody({

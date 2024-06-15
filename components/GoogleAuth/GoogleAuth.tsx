@@ -25,7 +25,7 @@ const GoogleAuth = ({ isSignUp }: Props) => {
     supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `https://www.doitforjesus.com/app`,
+        redirectTo: `https://www.doit4jesus.com/app`,
       },
     });
     navigate.push(NAV_APP_LINKS.app.link);

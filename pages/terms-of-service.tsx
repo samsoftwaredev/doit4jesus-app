@@ -109,7 +109,7 @@ const TermsOfService: NextPage = () => {
             <b>12. Contact Us</b>
             <br /> If you have any questions or concerns about these Terms of
             Service, please contact us at{" "}
-            <a href="mailto:admin@doitforjesus.com">admin@doitforjesus.com</a>.
+            <a href="mailto:admin@doit4jesus.com">admin@doit4jesus.com</a>.
           </p>
           Thank you for using {appName}! We hope you find our platform to be a
           valuable resource for connecting with others in prayer.

@@ -35,7 +35,7 @@ const DashboardSection = () => {
               <Typography my={2} component="h1" variant="h4">
                 Wanna become a contributor?
               </Typography>
-              <Button color="success" variant="outlined">
+              <Button disabled color="success" variant="outlined">
                 Donate Today
               </Button>
             </Card>

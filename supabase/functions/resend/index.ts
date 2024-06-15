@@ -35,7 +35,7 @@ const emailBody = `
 
   <h2>Ready for a chill vibe? 🎧</h2>
   <p>Let’s hit pause on the daily grind and tune into the rosary’s rhythm. It’s not just a prayer; it’s a spiritual playlist that drops beats of peace and wisdom.</p>
-  <b><a href="https://www.doitforjesus.com/app/dashboard">Start praying the Rosary</a></b>
+  <b><a href="https://www.doit4jesus.com/app/dashboard">Start praying the Rosary</a></b>
   <p>Join our prayer party and let’s vibe with the divine. Can’t wait to sync our souls in harmony.</p>
   <p>Peace out,</p>
   <br />
@@ -77,7 +77,7 @@ Deno.serve(async (req) => {
           Authorization: `Bearer ${Deno.env.get("RESEND_API_KEY")}`,
         },
         body: JSON.stringify({
-          from: "Samuel Ruiz - DoIt4Jesus <team@doitforjesus.com>",
+          from: "Samuel Ruiz - DoIt4Jesus <admin@doit4jesus.com>",
           to: [userEmail],
           subject: "Bead by Bead: Unveil the Power of Prayer with the Rosary",
           html: emailBody,
