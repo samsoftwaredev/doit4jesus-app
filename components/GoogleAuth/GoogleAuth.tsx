@@ -28,7 +28,7 @@ const GoogleAuth = ({ isSignUp }: Props) => {
         redirectTo: `https://www.doit4jesus.com/app`,
       },
     });
-    navigate.push(NAV_APP_LINKS.app.link);
+    navigate.push(NAV_APP_LINKS.dashboard.link);
   };
 
   return <GoogleLogin onSuccess={isSignUp ? onSignUp : onLogin} />;

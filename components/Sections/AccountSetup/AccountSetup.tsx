@@ -289,7 +289,7 @@ const AccountSetup = () => {
       setCurrentStep((step) => {
         if (step >= steps.length - 1) {
           if (user && dob) setUser({ ...user, dateOfBirth: dob.toUTCString() });
-          router.push(NAV_APP_LINKS.app.link);
+          router.push(NAV_APP_LINKS.dashboard.link);
           return step;
         }
         return step + 1;

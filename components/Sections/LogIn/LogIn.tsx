@@ -37,7 +37,7 @@ const LogIn = () => {
         async (event, session) => {
           if (event === "SIGNED_IN") {
             await getProfile(session);
-            router.push(NAV_APP_LINKS.app.link);
+            router.push(NAV_APP_LINKS.dashboard.link);
           }
         }
       );

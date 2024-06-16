@@ -48,7 +48,7 @@ const TopNavbar = ({ handleMenu }: Props) => {
   };
 
   const goToDashboard = () => {
-    navigate.push(NAV_APP_LINKS.app.link);
+    navigate.push(NAV_APP_LINKS.dashboard.link);
   };
 
   useEffect(() => {

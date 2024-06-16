@@ -33,7 +33,7 @@ const AppWrapper = ({ children }: Props) => {
   if (
     isAuth &&
     !user?.dateOfBirth &&
-    pathname.includes(NAV_APP_LINKS.app.link)
+    pathname.includes(NAV_APP_LINKS.dashboard.link)
   ) {
     return (
       <ProtectedRoute>

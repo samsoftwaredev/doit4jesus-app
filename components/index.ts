@@ -35,6 +35,7 @@ export { default as TodaysRosary } from "./TodaysRosary";
 export { default as Card } from "./Card";
 export { default as HorizontalDivider } from "./HorizontalDivider";
 export { default as GoogleAuth } from "./GoogleAuth";
+export { default as RosaryLevel } from "./RosaryLevel";
 
 export * from "./Navbars";
 export * from "./Fields";
