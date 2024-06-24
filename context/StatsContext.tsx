@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useUserContext } from "./UserContext";
-import { db } from "../classes";
+import { supabase } from "../classes";
 import dayjs from "dayjs";
 import { useAudioContext } from "./AudioContext";
 
@@ -18,24 +18,28 @@ const StatsContextProvider = ({ children }: Props) => {
   const registerRosaryCompleted = async () => {
     if (!user?.userId) return null;
     // check if user completed today's rosary
-    const todaysDate = dayjs();
-    const todaysDateFormatted = todaysDate.format("MM/DD/YYYY");
-    const found = user.stats.rosaryGraph?.find(
-      (date) => dayjs(date).format("MM/DD/YYYY") === todaysDateFormatted
+    const todaysDateFormatted = dayjs().format("MM/DD/YYYY");
+
+    const { data, error } = await supabase.functions.invoke(
+      "rosary-completed",
+      {
+        body: {
+          usersOnline: [],
+        },
+      }
     );
 
-    if (found !== undefined) return null;
-    const { data, error } = await db
-      .getRosaryStats()
-      .insert({
-        completed_at: todaysDate.format("YYYY/MM/DD"),
-        user_id: user.userId,
-      })
-      .eq("user_id", user.userId!)
-      .select();
+    if (error) {
+      console.log(error);
+      toast.error("Unable to store rosary count", {
+        toastId: "unable to save stats",
+      });
+    }
 
     if (data) {
-      toast.success("⭐God Bless. You completed the rosary!⭐");
+      toast.success("⭐God Bless. You completed the rosary!⭐", {
+        toastId: "rosary completed to save stats",
+      });
       const rosaryGraph = Array.isArray(user.stats.rosaryGraph)
         ? [...user.stats.rosaryGraph, todaysDateFormatted]
         : [todaysDateFormatted];
@@ -49,8 +53,6 @@ const StatsContextProvider = ({ children }: Props) => {
         },
       });
     }
-
-    if (error) toast.error("Unable to store rosary count");
   };
 
   useEffect(() => {

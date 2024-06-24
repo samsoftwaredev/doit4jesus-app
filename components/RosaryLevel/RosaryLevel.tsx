@@ -3,7 +3,6 @@ import Image from "next/image";
 
 import styles from "./rosaryLevel.module.scss";
 import { levels } from "@/utils/levels";
-import Logo from "../Logo";
 
 interface Props {
   levelNum: number;
@@ -76,6 +75,7 @@ const RosaryLevel = ({
           component="h2"
           fontWeight="bold"
           sx={{
+            opacity: highlight ? 1 : 0.5,
             fontSize: {
               sm: "1.2em",
               md: "1.5em",
@@ -86,7 +86,10 @@ const RosaryLevel = ({
         </Typography>
         <Typography
           fontWeight="light"
-          sx={{ fontSize: { sm: "0.5em", md: "1em" } }}
+          sx={{
+            opacity: highlight ? 1 : 0.5,
+            fontSize: { sm: "0.5em", md: "1em" },
+          }}
         >
           Complete {requirement} Rosaries
         </Typography>

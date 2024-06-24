@@ -4,7 +4,6 @@ import { toast } from "react-toastify";
 import { db, supabase } from "@/class";
 import { useState } from "react";
 import { Loading } from "../..";
-import { useRouter } from "next/router";
 
 const AccountSection = () => {
   const [loading, setLoading] = useState(false);

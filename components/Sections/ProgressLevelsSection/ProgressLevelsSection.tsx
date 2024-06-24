@@ -12,16 +12,14 @@ const ProgressLevelsSection = () => {
   return (
     <>
       <Typography fontSize="small" fontWeight="light">
-        Rosary Levels
+        Race to Heaven
       </Typography>
-      <Typography variant="h4">Levels</Typography>
-      <Box>
-        <RosaryLevel levelNum={currentLevel.levelNum} highlight />
-      </Box>
+      <Typography variant="h4">Rosary Levels</Typography>
       <Box mt={2} display="flex" justifyContent="center">
         <Alert sx={{ opacity: 0.8, maxWidth: "500px" }} severity="warning">
           IMPORTANT: If you want to progress faster in levels, pray the Holy
-          Rosary with others; those prayers will also count toward your level.
+          Rosary with others; their prayers will also count toward your
+          progress.
         </Alert>
       </Box>
       <Box>
