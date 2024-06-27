@@ -11,6 +11,7 @@ interface Props {
 }
 
 const StatsContext = createContext<undefined>(undefined);
+let alreadyInvoked = false;
 
 const StatsContextProvider = ({ children }: Props) => {
   const { setCallbackOnCompleteVideo, audioProgress } = useAudioContext();
@@ -19,28 +20,7 @@ const StatsContextProvider = ({ children }: Props) => {
 
   const registerRosaryCompleted = async () => {
     if (!user?.userId) return null;
-    let shouldTrackRosaryProgress = true;
-    let joinedRosaryWithFriends: string[] = [];
-    const onlineUsersIds = onlineUsers
-      ?.filter(({ userId }) => userId !== user.userId)
-      .map(({ userId }) => userId);
-
-    const todaysDateFormatted = formatDate();
-    const completedRosary = user.stats.joinedRosary?.filter(
-      (stats) => formatDate(stats.date) === todaysDateFormatted
-    );
-    // check if user completed today's rosary
-    if (!!completedRosary === true && completedRosary.length > 0) {
-      joinedRosaryWithFriends =
-        onlineUsersIds?.filter((friendUserId) =>
-          completedRosary.find((stats) =>
-            stats.userId === null ? false : stats.userId !== friendUserId
-          )
-        ) ?? [];
-      shouldTrackRosaryProgress = joinedRosaryWithFriends.length > 0;
-    }
-
-    if (shouldTrackRosaryProgress === false) return null;
+    const onlineUsersIds = onlineUsers?.map(({ userId }) => userId) || [];
 
     const { data, error } = await supabase.functions.invoke(
       "rosary-completed",
@@ -54,7 +34,8 @@ const StatsContextProvider = ({ children }: Props) => {
       });
     }
 
-    if (data) {
+    if (data && alreadyInvoked === false) {
+      alreadyInvoked = true;
       toast.success("⭐God Bless. You completed the rosary!⭐", {
         toastId: "rosary completed to save stats",
       });
@@ -63,7 +44,7 @@ const StatsContextProvider = ({ children }: Props) => {
         ...user.stats.joinedRosary,
         ...(onlineUsersIds?.map((userId) => ({
           userId,
-          date: todaysDateFormatted,
+          date: formatDate(),
         })) ?? []),
       ];
 

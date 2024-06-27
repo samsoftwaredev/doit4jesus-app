@@ -9,9 +9,7 @@ export const capitalizeFirstLetter = (str: string) => {
 export const css = (...args: string[]) => [...args].join(" ");
 
 export const formatDate = (date: string | Date = new Date()) => {
-  let todayDate = new Date(new Date(date).toDateString())
-    .toISOString()
-    .slice(0, 10);
+  let todayDate = new Date(new Date(date).toDateString());
   return dayjs(todayDate).format("MM/DD/YYYY");
 };
 
