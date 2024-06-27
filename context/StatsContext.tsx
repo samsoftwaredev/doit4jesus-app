@@ -19,14 +19,7 @@ const StatsContextProvider = ({ children }: Props) => {
 
   const registerRosaryCompleted = async () => {
     if (!user?.userId) return null;
-    const onlineUsersIds =
-      onlineUsers
-        ?.map(({ userId }) => userId)
-        .filter((userId) => user.userId !== userId) || [];
-
-    const rosaryCompletedToday = user.stats.joinedRosary.filter((stats) => {
-      return formatDate(stats.date) === formatDate(new Date());
-    });
+    const onlineUsersIds = onlineUsers?.map(({ userId }) => userId) || [];
 
     const { data, error } = await supabase.functions.invoke(
       "rosary-completed",
@@ -39,8 +32,12 @@ const StatsContextProvider = ({ children }: Props) => {
         toastId: "unable to save stats",
       });
     }
-
-    if (data && rosaryCompletedToday.length === 0) {
+    console.log(
+      "todaysRosaryCompleted: ",
+      user.stats.todaysRosaryCompleted,
+      user.stats
+    );
+    if (data && user.stats.todaysRosaryCompleted === false) {
       toast.success("⭐God Bless. You completed the rosary!⭐", {
         toastId: "rosary completed to save stats",
       });
@@ -57,6 +54,7 @@ const StatsContextProvider = ({ children }: Props) => {
         ...user,
         stats: {
           ...user.stats,
+          todaysRosaryCompleted: true,
           rosaryTotalCount: user.stats.rosaryTotalCount + 1,
           joinedRosary,
         },

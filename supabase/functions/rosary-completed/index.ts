@@ -9,7 +9,7 @@ const formatDate = (date) => {
 
 Deno.serve(async (req) => {
   try {
-    const todaysDate = new Date();
+    const todaysDateFormatted = formatDate(new Date());
     // This is needed if you're planning to invoke your function from a browser.
     if (req.method === "OPTIONS") {
       return new Response("ok", { headers: corsHeaders });
@@ -40,14 +40,14 @@ Deno.serve(async (req) => {
       usersWhoPrayedRosary = payload.onlineUsers.map((userId) => ({
         user_id: user.id,
         join_rosary_user_id: userId === user.id ? null : userId,
-        completed_at: formatDate(todaysDate),
+        completed_at: todaysDateFormatted,
       }));
     } else {
       usersWhoPrayedRosary = [
         {
           user_id: user.id,
           join_rosary_user_id: null,
-          completed_at: formatDate(todaysDate),
+          completed_at: todaysDateFormatted,
         },
       ];
     }

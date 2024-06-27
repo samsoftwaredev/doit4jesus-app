@@ -73,7 +73,11 @@ export const normalizeUserProfile = (
 ): User => {
   const generateRosaryCount = (stats: RosaryStatsDB[] | null) => {
     if (stats === null) {
-      return { rosaryTotalCount: 0, joinedRosary: [] };
+      return {
+        rosaryTotalCount: 0,
+        joinedRosary: [],
+        todaysRosaryCompleted: false,
+      };
     }
 
     const joinedRosary = stats.map((s) => ({
@@ -81,7 +85,12 @@ export const normalizeUserProfile = (
       date: formatDate(s.completed_at),
     }));
 
+    const todaysRosaryCompleted = stats.find(
+      (s) => formatDate(s.completed_at) === formatDate()
+    );
+    console.log("todaysRosaryCompleted: ", todaysRosaryCompleted);
     return {
+      todaysRosaryCompleted: !!todaysRosaryCompleted,
       rosaryTotalCount: stats.length,
       joinedRosary: joinedRosary ?? [],
     };
