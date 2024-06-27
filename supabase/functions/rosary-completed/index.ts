@@ -2,9 +2,9 @@ import { serve } from "https://deno.land/std@0.182.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.14.0";
 import { corsHeaders } from "../_shared/cors.ts";
 
-const formatDate = (data = new Date()) => {
-  let todayDate = new Date(data).toISOString().slice(0, 10);
-  return todayDate.replace("-", "/");
+const formatDate = (date) => {
+  let todayDate = new Date(date).toISOString().slice(0, 10);
+  return todayDate;
 };
 
 Deno.serve(async (req) => {
@@ -37,9 +37,9 @@ Deno.serve(async (req) => {
 
     let usersWhoPrayedRosary = [];
     if (payload.onlineUsers?.length > 0) {
-      usersWhoPrayedRosary = payload.onlineUsers.map(({ userId }) => ({
+      usersWhoPrayedRosary = payload.onlineUsers.map((userId) => ({
         user_id: user.id,
-        join_rosary_user_id: userId,
+        join_rosary_user_id: userId === user.id ? null : userId,
         completed_at: formatDate(todaysDate),
       }));
     } else {
@@ -55,9 +55,9 @@ Deno.serve(async (req) => {
     const promises = usersWhoPrayedRosary.map(
       ({ user_id, join_rosary_user_id, completed_at }) => {
         return supabaseClient.rpc("insert_into_rosary_stats", {
-          user_id,
-          join_rosary_user_id,
-          completed_at: formatDate(todaysDate),
+          p_user_id: user_id,
+          p_join_rosary_user_id: join_rosary_user_id,
+          p_completed_at: completed_at,
         });
       }
     );
@@ -65,13 +65,13 @@ Deno.serve(async (req) => {
     await Promise.all(promises);
 
     // Return a response of the user completed the rosary of the day
-    return new Response("Rosary completed", {
+    return new Response(JSON.stringify({ message: "Rosary completed" }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
   } catch (error) {
     // Return an error with the error message should it run in to any issues
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ message: error.message }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 400,
     });

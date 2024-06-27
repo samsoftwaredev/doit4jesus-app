@@ -45,16 +45,13 @@ serve(async (request) => {
     if (deletion_error) throw new Error(deletion_error);
 
     // Return a response of the user which has been deleted
-    return new Response(
-      "User deleted: " + JSON.stringify(deletion_data, null, 2),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      }
-    );
+    return new Response(JSON.stringify({ message: "User deleted" }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 200,
+    });
   } catch (error) {
     // Return an error with the error message should it run in to any issues
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ message: error.message }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 400,
     });

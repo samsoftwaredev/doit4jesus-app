@@ -30,14 +30,14 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
                 hideMusicPlayer={hideMusicPlayer}
                 setHideMusicPlayer={setHideMusicPlayer}
               >
-                <StatsContextProvider>
-                  <PresenceContextProvider>
+                <PresenceContextProvider>
+                  <StatsContextProvider>
                     <ToastContainer autoClose={5000} />
                     <Component {...pageProps} />
                     <Analytics />
                     <MusicPlayer />
-                  </PresenceContextProvider>
-                </StatsContextProvider>
+                  </StatsContextProvider>
+                </PresenceContextProvider>
               </AudioContextProvider>
             </LanguageContextProvider>
           </ThemeProvider>

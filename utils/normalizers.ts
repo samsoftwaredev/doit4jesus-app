@@ -73,11 +73,21 @@ export const normalizeUserProfile = (
   rosaryStats: RosaryStatsDB[] | null
 ): User => {
   const generateRosaryCount = (stats: RosaryStatsDB[] | null) => {
-    if (stats === null) return { rosaryTotalCount: 0 };
-    const rosaryDates = stats.map((s) =>
-      dayjs(s.completed_at).format("MM/DD/YYYY")
-    );
-    return { rosaryTotalCount: stats.length, rosaryGraph: rosaryDates ?? [] };
+    if (stats === null) {
+      return { rosaryTotalCount: 0, joinedRosary: [] };
+    }
+    console.log("stats:", stats);
+    const joinedRosary = stats
+      .filter((s) => s.join_rosary_user_id !== null)
+      .map((s) => ({
+        userId: s.join_rosary_user_id,
+        date: dayjs(s.completed_at).format("MM/DD/YYYY"),
+      }));
+
+    return {
+      rosaryTotalCount: stats.length,
+      joinedRosary: joinedRosary ?? [],
+    };
   };
 
   return {
