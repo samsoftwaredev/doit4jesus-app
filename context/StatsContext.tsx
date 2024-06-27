@@ -20,7 +20,7 @@ const StatsContextProvider = ({ children }: Props) => {
   const registerRosaryCompleted = async () => {
     if (!user?.userId) return null;
     const onlineUsersIds = onlineUsers?.map(({ userId }) => userId) || [];
-
+    const todaysRosaryCompleted = user.stats.todaysRosaryCompleted === false;
     const { data, error } = await supabase.functions.invoke(
       "rosary-completed",
       { body: { onlineUsers: onlineUsersIds } }
@@ -32,12 +32,8 @@ const StatsContextProvider = ({ children }: Props) => {
         toastId: "unable to save stats",
       });
     }
-    console.log(
-      "todaysRosaryCompleted: ",
-      user.stats.todaysRosaryCompleted,
-      user.stats
-    );
-    if (data && user.stats.todaysRosaryCompleted === false) {
+
+    if (data && todaysRosaryCompleted === false) {
       toast.success("⭐God Bless. You completed the rosary!⭐", {
         toastId: "rosary completed to save stats",
       });
