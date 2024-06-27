@@ -2,9 +2,9 @@ import { createContext, useContext, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useUserContext } from "./UserContext";
 import { supabase } from "../classes";
-import dayjs from "dayjs";
 import { useAudioContext } from "./AudioContext";
 import { usePresenceContext } from "./PresenceContext";
+import { formatDate } from "../utils";
 
 interface Props {
   children: JSX.Element | JSX.Element[];
@@ -21,29 +21,25 @@ const StatsContextProvider = ({ children }: Props) => {
     if (!user?.userId) return null;
     let shouldTrackRosaryProgress = true;
     let joinedRosaryWithFriends: string[] = [];
-    const onlineUsersIds = onlineUsers?.map(({ userId }) => userId);
-    const todaysDateFormatted = dayjs().format("MM/DD/YYYY");
+    const onlineUsersIds = onlineUsers
+      ?.filter(({ userId }) => userId !== user.userId)
+      .map(({ userId }) => userId);
+
+    const todaysDateFormatted = formatDate();
     const completedRosary = user.stats.joinedRosary?.filter(
-      ({ date }) => dayjs(date).format("MM/DD/YYYY") === todaysDateFormatted
+      (stats) => formatDate(stats.date) === todaysDateFormatted
     );
     // check if user completed today's rosary
     if (!!completedRosary === true && completedRosary.length > 0) {
       joinedRosaryWithFriends =
         onlineUsersIds?.filter((friendUserId) =>
-          completedRosary.find((stats) => stats.userId !== friendUserId)
+          completedRosary.find((stats) =>
+            stats.userId === null ? false : stats.userId !== friendUserId
+          )
         ) ?? [];
       shouldTrackRosaryProgress = joinedRosaryWithFriends.length > 0;
     }
 
-    console.log("shouldTrackRosaryProgress: ", shouldTrackRosaryProgress);
-    console.log(
-      "joinedRosaryWithFriends: ",
-      user.stats.joinedRosary,
-      completedRosary,
-      joinedRosaryWithFriends,
-      onlineUsers,
-      user.userId
-    );
     if (shouldTrackRosaryProgress === false) return null;
 
     const { data, error } = await supabase.functions.invoke(

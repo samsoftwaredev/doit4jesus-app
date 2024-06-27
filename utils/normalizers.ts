@@ -20,8 +20,7 @@ import {
   YouTubeDB,
 } from "@/interfaces/databaseTable";
 import moment from "moment";
-import { numberToDollar } from "./helpers";
-import dayjs from "dayjs";
+import { formatDate, numberToDollar } from "./helpers";
 
 const nullToString = (val: string | null) => (val === null ? "" : val);
 const nullToNumber = (val: number | null) => (val === null ? 0 : val);
@@ -76,13 +75,11 @@ export const normalizeUserProfile = (
     if (stats === null) {
       return { rosaryTotalCount: 0, joinedRosary: [] };
     }
-    console.log("stats:", stats);
-    const joinedRosary = stats
-      .filter((s) => s.join_rosary_user_id !== null)
-      .map((s) => ({
-        userId: s.join_rosary_user_id,
-        date: dayjs(s.completed_at).format("MM/DD/YYYY"),
-      }));
+
+    const joinedRosary = stats.map((s) => ({
+      userId: s.join_rosary_user_id,
+      date: formatDate(s.completed_at),
+    }));
 
     return {
       rosaryTotalCount: stats.length,

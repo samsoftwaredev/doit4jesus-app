@@ -3,7 +3,9 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.14.0";
 import { corsHeaders } from "../_shared/cors.ts";
 
 const formatDate = (date) => {
-  let todayDate = new Date(date).toISOString().slice(0, 10);
+  let todayDate = new Date(new Date(date).toDateString())
+    .toISOString()
+    .slice(0, 10);
   return todayDate;
 };
 
