@@ -11,7 +11,6 @@ interface Props {
 }
 
 const StatsContext = createContext<undefined>(undefined);
-let alreadyInvoked = false;
 
 const StatsContextProvider = ({ children }: Props) => {
   const { setCallbackOnCompleteVideo, audioProgress } = useAudioContext();
@@ -20,7 +19,14 @@ const StatsContextProvider = ({ children }: Props) => {
 
   const registerRosaryCompleted = async () => {
     if (!user?.userId) return null;
-    const onlineUsersIds = onlineUsers?.map(({ userId }) => userId) || [];
+    const onlineUsersIds =
+      onlineUsers
+        ?.map(({ userId }) => userId)
+        .filter((userId) => user.userId !== userId) || [];
+
+    const rosaryCompletedToday = user.stats.joinedRosary.filter((stats) => {
+      return formatDate(stats.date) === formatDate(new Date());
+    });
 
     const { data, error } = await supabase.functions.invoke(
       "rosary-completed",
@@ -34,8 +40,7 @@ const StatsContextProvider = ({ children }: Props) => {
       });
     }
 
-    if (data && alreadyInvoked === false) {
-      alreadyInvoked = true;
+    if (data && rosaryCompletedToday.length === 0) {
       toast.success("⭐God Bless. You completed the rosary!⭐", {
         toastId: "rosary completed to save stats",
       });
