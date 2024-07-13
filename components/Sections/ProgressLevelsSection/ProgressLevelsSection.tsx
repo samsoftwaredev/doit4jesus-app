@@ -22,8 +22,6 @@ const ProgressLevelsSection = () => {
     );
   };
 
-  console.log(progressNextLevel());
-
   const onCloseLevels = () => {
     setIsOpenLevels(false);
   };
