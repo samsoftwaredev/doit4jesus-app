@@ -13,15 +13,16 @@ const ProgressLevelsSection = () => {
   const currentLevel = getCurrentLevel(numRosariesCompleted);
 
   const progressNextLevel = (): number => {
-    console.log(currentLevel);
     if (currentLevel.levelNum === -1) return 0;
     else if (currentLevel.levelNum + 1 === levels.length) return 100;
     return (
-      (levels[currentLevel.levelNum + 1].requirement -
-        levels[currentLevel.levelNum].requirement) /
-      levels[currentLevel.levelNum].requirement
+      (levels[currentLevel.levelNum].requirement /
+        levels[currentLevel.levelNum + 1].requirement) *
+      100
     );
   };
+
+  console.log(progressNextLevel());
 
   const onCloseLevels = () => {
     setIsOpenLevels(false);
