@@ -12,6 +12,17 @@ const ProgressLevelsSection = () => {
   const numRosariesCompleted = user?.stats.rosaryTotalCount ?? 0;
   const currentLevel = getCurrentLevel(numRosariesCompleted);
 
+  const progressNextLevel = (): number => {
+    console.log(currentLevel);
+    if (currentLevel.levelNum === -1) return 0;
+    else if (currentLevel.levelNum + 1 === levels.length) return 100;
+    return (
+      (levels[currentLevel.levelNum + 1].requirement -
+        levels[currentLevel.levelNum].requirement) /
+      levels[currentLevel.levelNum].requirement
+    );
+  };
+
   const onCloseLevels = () => {
     setIsOpenLevels(false);
   };
@@ -53,7 +64,11 @@ const ProgressLevelsSection = () => {
         </Box>
       </Box>
       <Box pb={2} px={4}>
-        <LinearProgress color="success" variant="determinate" value={50} />
+        <LinearProgress
+          color="success"
+          variant="determinate"
+          value={progressNextLevel()}
+        />
       </Box>
       <Box display="flex" justifyContent="space-between">
         <Button onClick={onOpenLevels} color="success" variant="outlined">
@@ -84,7 +99,7 @@ const ProgressLevelsSection = () => {
         open={isOpenLevels}
         handleClose={onCloseLevels}
       >
-        {levels.map(({ label, requirement }, index) => (
+        {levels.map(({ label }, index) => (
           <Box
             display="flex"
             alignItems="center"
