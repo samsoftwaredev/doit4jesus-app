@@ -1,11 +1,9 @@
 import { Button, Container, Typography } from "@mui/material";
 import styles from "./callToAction.module.scss";
-import { useRouter } from "next/router";
 import { NAV_MAIN_LINKS } from "@/constants/nav";
 import Link from "next/link";
 
 const WhyPrayRosary = () => {
-  const router = useRouter();
   return (
     <Container maxWidth="md" className={styles.container}>
       <Typography pb={5} component="h1" className={styles.title}>

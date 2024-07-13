@@ -1,14 +1,33 @@
-import React from "react";
-import { Alert, Box, Typography } from "@mui/material";
+import React, { useState } from "react";
+import { Alert, Box, Typography, Button, LinearProgress } from "@mui/material";
 
 import { useUserContext } from "@/context/UserContext";
-import { RosaryLevel } from "../..";
+import { Dialog, RosaryLevel } from "../..";
 import { getCurrentLevel, levels } from "@/utils/levels";
 
 const ProgressLevelsSection = () => {
+  const [isOpenLevels, setIsOpenLevels] = useState(false);
+  const [isOpenLeaderboards, setIsOpenLeaderboards] = useState(false);
   const { user } = useUserContext();
   const numRosariesCompleted = user?.stats.rosaryTotalCount ?? 0;
   const currentLevel = getCurrentLevel(numRosariesCompleted);
+
+  const onCloseLevels = () => {
+    setIsOpenLevels(false);
+  };
+
+  const onOpenLevels = () => {
+    setIsOpenLevels(true);
+  };
+
+  const onCloseLeaderboards = () => {
+    setIsOpenLeaderboards(false);
+  };
+
+  const onOpenLeaderboards = () => {
+    setIsOpenLeaderboards(true);
+  };
+
   return (
     <>
       <Typography fontSize="small" fontWeight="light">
@@ -22,15 +41,61 @@ const ProgressLevelsSection = () => {
           progress.
         </Alert>
       </Box>
-      <Box>
-        {levels.map(({ label, requirement }, index) => (
-          <RosaryLevel
-            key={label}
-            levelNum={index}
-            highlight={numRosariesCompleted >= requirement}
-          />
-        ))}
+
+      <Box pt={2} display="flex" px={4} justifyContent="space-between">
+        <Box display="flex" flexDirection="column" alignItems="center" my={2}>
+          <Typography>Current Level</Typography>
+          <RosaryLevel levelNum={currentLevel.levelNum} highlight />
+        </Box>
+        <Box display="flex" flexDirection="column" alignItems="center" my={2}>
+          <Typography>Next Level</Typography>
+          <RosaryLevel levelNum={currentLevel.levelNum + 1} highlight />
+        </Box>
       </Box>
+      <Box pb={2} px={4}>
+        <LinearProgress color="success" variant="determinate" value={50} />
+      </Box>
+      <Box display="flex" justifyContent="space-between">
+        <Button onClick={onOpenLevels} color="success" variant="outlined">
+          See Levels
+        </Button>
+        <Button
+          disabled
+          onClick={onOpenLeaderboards}
+          color="success"
+          variant="outlined"
+        >
+          Leaderboards
+        </Button>
+      </Box>
+      <Dialog
+        modalTitle="Leaderboards"
+        fullWidth
+        maxWidth="sm"
+        open={isOpenLeaderboards}
+        handleClose={onCloseLeaderboards}
+      >
+        {/* Leader */}
+      </Dialog>
+      <Dialog
+        modalTitle="Rosary Levels"
+        fullWidth
+        maxWidth="sm"
+        open={isOpenLevels}
+        handleClose={onCloseLevels}
+      >
+        {levels.map(({ label, requirement }, index) => (
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            key={label}
+            my={2}
+          >
+            <RosaryLevel key={label} levelNum={index} highlight={true} />
+          </Box>
+        ))}
+      </Dialog>
     </>
   );
 };

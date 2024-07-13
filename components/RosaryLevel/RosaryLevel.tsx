@@ -57,13 +57,7 @@ const RosaryLevel = ({
   }
 
   return (
-    <Box
-      display="flex"
-      alignItems="center"
-      justifyContent="space-between"
-      key={label}
-      my={2}
-    >
+    <>
       <LevelIcon
         color={color}
         highlight={highlight}
@@ -94,7 +88,7 @@ const RosaryLevel = ({
           Complete {requirement} Rosaries
         </Typography>
       </Box>
-    </Box>
+    </>
   );
 };
 
