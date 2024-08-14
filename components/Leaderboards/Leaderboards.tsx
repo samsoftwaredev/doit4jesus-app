@@ -50,7 +50,7 @@ const Leaderboards = () => {
 
   return (
     <Box>
-      <Typography>Top 10 Members</Typography>
+      <Typography>Top {userList?.length || 10} Members</Typography>
       <ol>
         {userList?.map((u) => {
           return (
