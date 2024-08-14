@@ -32,9 +32,6 @@ const InviteFriend = () => {
   });
 
   const onSubmit = async ({ friendEmail, friendName }: FormValues) => {
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
     const { data, error } = await supabase.functions.invoke("invite-friend", {
       body: {
         fullName: `${user?.firstName} ${user?.lastName}`,

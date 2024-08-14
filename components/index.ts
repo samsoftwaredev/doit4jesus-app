@@ -36,6 +36,7 @@ export { default as Card } from "./Card";
 export { default as HorizontalDivider } from "./HorizontalDivider";
 export { default as GoogleAuth } from "./GoogleAuth";
 export { default as RosaryLevel } from "./RosaryLevel";
+export { default as Leaderboards } from "./Leaderboards";
 
 export * from "./Navbars";
 export * from "./Fields";

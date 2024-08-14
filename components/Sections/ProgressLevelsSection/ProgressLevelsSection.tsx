@@ -4,6 +4,7 @@ import { Alert, Box, Typography, Button, LinearProgress } from "@mui/material";
 import { useUserContext } from "@/context/UserContext";
 import { Dialog, RosaryLevel } from "../..";
 import { getCurrentLevel, levels } from "@/utils/levels";
+import Leaderboards from "@/components/Leaderboards";
 
 const ProgressLevelsSection = () => {
   const [isOpenLevels, setIsOpenLevels] = useState(false);
@@ -73,12 +74,7 @@ const ProgressLevelsSection = () => {
         <Button onClick={onOpenLevels} color="success" variant="outlined">
           See Levels
         </Button>
-        <Button
-          disabled
-          onClick={onOpenLeaderboards}
-          color="success"
-          variant="outlined"
-        >
+        <Button onClick={onOpenLeaderboards} color="success" variant="outlined">
           Leaderboards
         </Button>
       </Box>
@@ -89,7 +85,7 @@ const ProgressLevelsSection = () => {
         open={isOpenLeaderboards}
         handleClose={onCloseLeaderboards}
       >
-        {/* Leader */}
+        <Leaderboards />
       </Dialog>
       <Dialog
         modalTitle="Rosary Levels"
