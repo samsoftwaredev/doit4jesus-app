@@ -1,8 +1,8 @@
 import { Box, Typography } from "@mui/material";
-import { useUserContext } from "@/context/UserContext";
-import { useEffect, useState } from "react";
-import { db, supabase } from "@/class/index";
 import { toast } from "react-toastify";
+import { useEffect, useState } from "react";
+import { supabase } from "@/class/index";
+import Loading from "../Loading";
 
 type UserLeaderboards = {
   userId: string;
@@ -12,6 +12,7 @@ type UserLeaderboards = {
 };
 
 const Leaderboards = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const [userList, setUserList] = useState<UserLeaderboards[]>();
 
   const normalizeLeaderboards = (
@@ -33,8 +34,9 @@ const Leaderboards = () => {
   };
 
   const getTopRosaryUser = async () => {
+    setIsLoading(true);
     const { data, error } = await supabase.functions.invoke("leaderboards");
-
+    setIsLoading(false);
     if (data) {
       const list = normalizeLeaderboards(data.data.data);
       setUserList(list);
@@ -48,18 +50,20 @@ const Leaderboards = () => {
     getTopRosaryUser();
   }, []);
 
+  if (isLoading) return <Loading isPage={false} />;
+
   return (
     <Box>
       <Typography>Top {userList?.length || 10} Members</Typography>
-      <ol>
+      <Box component={"ol"}>
         {userList?.map((u) => {
           return (
-            <li key={u.userId}>
+            <Typography component="li" px={1} key={u.userId}>
               {u.firstName} {u.lastName}: {u.count} rosaries
-            </li>
+            </Typography>
           );
         })}
-      </ol>
+      </Box>
     </Box>
   );
 };
