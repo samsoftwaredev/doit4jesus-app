@@ -69,6 +69,8 @@ const RosaryLevel = ({
           component="h2"
           fontWeight="bold"
           sx={{
+            width: "100%",
+            textAlign: "center",
             opacity: highlight ? 1 : 0.5,
             fontSize: {
               sm: "1.2em",
@@ -81,6 +83,8 @@ const RosaryLevel = ({
         <Typography
           fontWeight="light"
           sx={{
+            width: "100%",
+            textAlign: "center",
             opacity: highlight ? 1 : 0.5,
             fontSize: { sm: "0.5em", md: "1em" },
           }}

@@ -56,7 +56,11 @@ const ProgressLevelsSection = () => {
         </Alert>
       </Box>
 
-      <Box pt={2} display="flex" px={4} justifyContent="space-between">
+      <Box
+        sx={{ sm: { p: 0, m: 0 }, md: { padding: "2em", margin: "4em 0" } }}
+        display="flex"
+        justifyContent="space-between"
+      >
         <Box display="flex" flexDirection="column" alignItems="center" my={2}>
           <Typography>Current Level</Typography>
           <RosaryLevel levelNum={currentLevel.levelNum} highlight />
@@ -66,7 +70,7 @@ const ProgressLevelsSection = () => {
           <RosaryLevel levelNum={currentLevel.levelNum + 1} highlight />
         </Box>
       </Box>
-      <Box pb={2} px={4}>
+      <Box pb={2}>
         <LinearProgress
           color="success"
           variant="determinate"
