@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Alert, Box, Typography, Button, LinearProgress } from "@mui/material";
 
 import { useUserContext } from "@/context/UserContext";
-import { Dialog, RosaryLevel } from "../..";
 import { getCurrentLevel, levels } from "@/utils/levels";
 import Leaderboards from "@/components/Leaderboards";
+
+import { Dialog, RosaryLevel } from "../..";
 
 const ProgressLevelsSection = () => {
   const [isOpenLevels, setIsOpenLevels] = useState(false);
@@ -13,15 +14,17 @@ const ProgressLevelsSection = () => {
   const numRosariesCompleted = user?.stats.rosaryTotalCount ?? 0;
   const currentLevel = getCurrentLevel(numRosariesCompleted);
 
-  const progressNextLevel = (): number => {
-    if (currentLevel.levelNum === -1) return 0;
-    else if (currentLevel.levelNum + 1 === levels.length) return 100;
-    return (
-      (levels[currentLevel.levelNum].requirement /
-        levels[currentLevel.levelNum + 1].requirement) *
-      100
-    );
-  };
+  const progressNextLevel = useMemo((): number => {
+    if (currentLevel.levelNum === -1) {
+      return 0;
+    } else if (currentLevel.levelNum + 1 === levels.length) {
+      return 100;
+    } else {
+      const prevLevel = numRosariesCompleted;
+      const nextLevel = levels[currentLevel.levelNum + 1].requirement;
+      return (prevLevel / nextLevel) * 100;
+    }
+  }, [numRosariesCompleted]);
 
   const onCloseLevels = () => {
     setIsOpenLevels(false);
@@ -67,7 +70,7 @@ const ProgressLevelsSection = () => {
         <LinearProgress
           color="success"
           variant="determinate"
-          value={progressNextLevel()}
+          value={progressNextLevel}
         />
       </Box>
       <Box display="flex" justifyContent="space-between">

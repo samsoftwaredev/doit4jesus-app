@@ -11,6 +11,7 @@ import level10 from "@/public/assets/svgs/levels/level10.svg";
 import level11 from "@/public/assets/svgs/levels/level11.svg";
 import level12 from "@/public/assets/svgs/levels/level12.svg";
 import { theme } from "@/styles/mui-overwrite";
+import { reverse } from "lodash";
 
 const levels = [
   {
@@ -53,15 +54,15 @@ const levels = [
 ];
 
 const getCurrentLevel = (numRosaryCompleted: number) => {
-  const currentLevelNumber = levels.findIndex(
-    (level) => numRosaryCompleted >= level.requirement
+  const nextLevelIndex = levels.findIndex(
+    (level) => numRosaryCompleted < level.requirement
   );
-  return (
-    { levelNum: currentLevelNumber, ...levels[currentLevelNumber] } ?? {
-      levelNum: 0,
-      ...levels[0],
-    }
-  );
+  if (nextLevelIndex - 1 >= 0) {
+    const currentLevelIndex = nextLevelIndex - 1;
+    return { levelNum: currentLevelIndex, ...levels[currentLevelIndex] };
+  } else {
+    return { levelNum: 0, ...levels[0] };
+  }
 };
 
 export { levels, getCurrentLevel };
