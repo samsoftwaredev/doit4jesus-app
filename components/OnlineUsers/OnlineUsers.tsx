@@ -1,6 +1,6 @@
-import { AccountCircle } from "@mui/icons-material";
-import { Box, Tooltip } from "@mui/material";
+import { Box } from "@mui/material";
 import styles from "./onlineUsers.module.scss";
+import UserBubble from "../UserBubble";
 
 interface Props {
   users?: {
@@ -14,12 +14,12 @@ const OnlineUsers = ({ users }: Props) => {
   return (
     <Box component={"ul"} className={styles.container}>
       {users?.map(({ fullName, userId, pictureUrl }) => (
-        <Box key={userId} component={"li"} className={styles.avatar}>
-          <Tooltip title={`${fullName} is online.`} key={userId}>
-            <AccountCircle />
-            {/* <Image width={40} height={40} src={pictureUrl} alt={fullName} /> */}
-          </Tooltip>
-        </Box>
+        <UserBubble
+          key={userId}
+          userName={fullName}
+          userId={userId}
+          userPicture={pictureUrl}
+        />
       ))}
     </Box>
   );

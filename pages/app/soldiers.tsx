@@ -2,22 +2,22 @@ import type { NextPage } from "next";
 
 import { AppLayout } from "@/components/Templates";
 import AppWrapper from "@/components/AppWrapper";
-import DashboardSection from "@/components/Sections/DashboardSection";
+import { FriendsSection } from "@/components/Sections";
 
-const Dashboard: NextPage = () => {
+const Friends: NextPage = () => {
   return (
     <AppLayout>
-      <DashboardSection />
+      <FriendsSection />
     </AppLayout>
   );
 };
 
-const DashboardPageWrapper = () => {
+const FriendsWrapper = () => {
   return (
     <AppWrapper>
-      <Dashboard />
+      <Friends />
     </AppWrapper>
   );
 };
 
-export default DashboardPageWrapper;
+export default FriendsWrapper;

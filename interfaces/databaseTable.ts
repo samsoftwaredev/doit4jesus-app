@@ -4,6 +4,8 @@ export type EventsDB = Database["public"]["Tables"]["events"]["Row"];
 export type ProfilesDB = Database["public"]["Tables"]["profiles"]["Row"];
 export type RosaryStatsDB = Database["public"]["Tables"]["rosary_stats"]["Row"];
 export type PostsDB = Database["public"]["Tables"]["posts"]["Row"];
+export type GroupsDB = Database["public"]["Tables"]["groups"]["Row"];
+export type FriendsGroupsDB = Database["public"]["Tables"]["friends"]["Row"];
 export type YouTubeDB = Database["public"]["Tables"]["youtube"]["Row"];
 export type EventMessagesDB =
   Database["public"]["Tables"]["event_messages"]["Row"];

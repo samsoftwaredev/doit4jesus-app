@@ -1,5 +1,10 @@
 import { Json } from "./database";
 
+export type MenuItem = {
+  value: string;
+  label: string;
+};
+
 export interface CardProps {
   title: string;
   question: string;
@@ -177,4 +182,18 @@ export interface ResourcePost {
   publishedAt: string | null;
   slug: string;
   updatedAt: string | null;
+}
+
+export interface GroupItem {
+  id: string;
+  name: string;
+  createdAt: string | null;
+}
+
+export interface FriendsGroupItem {
+  friendId: string;
+  isFavorite: boolean | null;
+  createdAt: string | null;
+  userId: string;
+  groups: { [groupId: string]: string } | null;
 }

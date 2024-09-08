@@ -1,0 +1,69 @@
+.container {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  grid-auto-columns: 1fr;
+  gap: 10px;
+  grid-auto-flow: row;
+  grid-template-areas:
+    "SearchFriend"
+    "TodaysChallenge"
+    "UserLevel"
+    "Groups";
+
+  @include tablet {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas:
+      "SearchFriend SearchFriend"
+      "TodaysChallenge UserLevel"
+      "Groups Groups";
+  }
+  @include desktop {
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr;
+    grid-template-areas:
+      "SearchFriend SearchFriend UserLevel"
+      "TodaysChallenge Groups Groups";
+  }
+}
+
+.SearchFriend {
+  grid-area: SearchFriend;
+  text-align: center;
+  @include tablet {
+    text-align: left;
+  }
+  @include desktop {
+    text-align: left;
+  }
+}
+
+.TodaysChallenge {
+  grid-area: TodaysChallenge;
+}
+
+.UserLevel {
+  grid-area: UserLevel;
+}
+
+.Groups {
+  grid-area: Groups;
+}
+
+.Levels {
+  grid-row: auto;
+  grid-area: Levels;
+}
+
+.stats {
+  span:first-child {
+    color: $errorMain;
+  }
+  span:nth-child(2) {
+    color: $successMain;
+  }
+  span:last-child {
+    color: $successMain;
+  }
+}

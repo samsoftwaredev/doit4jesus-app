@@ -1,3 +1,4 @@
+import Link from "next/link";
 import * as React from "react";
 import {
   List,
@@ -9,11 +10,12 @@ import {
   IconButton,
 } from "@mui/material";
 import { useRouter } from "next/router";
-import styles from "./SideNavbar.module.scss";
-import Link from "next/link";
-import { Logo } from "../..";
 import { Close } from "@mui/icons-material";
+
 import { css } from "@/utils/helpers";
+
+import styles from "./SideNavbar.module.scss";
+import { Logo } from "../..";
 
 interface Props {
   handleDrawerClose: () => void;
@@ -29,7 +31,7 @@ const SideNavbar = ({ menuItems, handleDrawerClose }: Props) => {
 
   return (
     <List>
-      <Box sx={{ display: "flex", justifyContent: "space-between" }} px={1}>
+      <Box display="flex" justifyContent="space-between" px={1}>
         <Button disableRipple className={styles.logo}>
           <Logo type="white" />
         </Button>

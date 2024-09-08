@@ -2,7 +2,7 @@ import { digitRegEx, specialCharsRegEx } from "../utils";
 
 export const minPasswordLength = 8;
 export const maxAge = 120;
-export const minAge = 18;
+export const minAge = 13;
 
 export const passwordValidationRules = {
   required: true,

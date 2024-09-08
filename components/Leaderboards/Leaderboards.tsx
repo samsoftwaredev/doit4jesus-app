@@ -1,8 +1,12 @@
 import { Box, Typography } from "@mui/material";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
+
 import { supabase } from "@/class/index";
+import { getCurrentLevel } from "@/utils/levels";
+
 import Loading from "../Loading";
+import RosaryLevel from "../RosaryLevel";
 
 type UserLeaderboards = {
   userId: string;
@@ -55,12 +59,26 @@ const Leaderboards = () => {
   return (
     <Box>
       <Typography>Top {userList?.length || 10} Members</Typography>
-      <Box component={"ol"}>
-        {userList?.map((u) => {
+      <Box>
+        {userList?.map((u, index) => {
+          const { levelNum } = getCurrentLevel(u.count);
           return (
-            <Typography component="li" px={1} key={u.userId}>
-              {u.firstName} {u.lastName}: {u.count} rosaries
-            </Typography>
+            <Box my={5} key={u.userId} display="flex" alignItems="center">
+              <Box>
+                <Typography fontSize="4em">{index + 1}</Typography>
+              </Box>
+
+              <Box sx={{ width: "100%" }} display="flex" flexDirection="column">
+                <Typography fontSize="1.2em" fontWeight="bold" px={1}>
+                  {u.firstName} {u.lastName}
+                </Typography>
+                <Typography px={1}>{u.count} rosaries</Typography>
+              </Box>
+
+              <Box sx={{ width: "100%" }} textAlign="right">
+                <RosaryLevel levelNum={levelNum} />
+              </Box>
+            </Box>
           );
         })}
       </Box>

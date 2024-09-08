@@ -3,6 +3,8 @@ import { NAV_APP_LINKS } from "@/constants";
 import type { Database } from "@/interfaces/database";
 import { GENDER_TYPES } from "@/interfaces/enum";
 
+import { generateRandomStringId } from "../utils";
+
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_PROJECT_URL!;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PROJECT_KEY!;
 
@@ -15,6 +17,12 @@ class SupabaseDB {
   }
   getProfiles = () => {
     return supabase.from("profiles");
+  };
+  getGroups = () => {
+    return supabase.from("groups");
+  };
+  getFriends = () => {
+    return supabase.from("friends");
   };
   getRosaryStats = () => {
     return supabase.from("rosary_stats");
@@ -69,6 +77,10 @@ class SupabaseDB {
           first_name: userInput.firstName,
           last_name: userInput.lastName,
           gender: userGender as any,
+          username:
+            userInput.firstName +
+            userInput.lastName +
+            generateRandomStringId(3),
         },
         emailRedirectTo: redirectTo,
       },

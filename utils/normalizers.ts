@@ -7,6 +7,8 @@ import {
   EventMessages,
   ResourcePost,
   ResourceContent,
+  GroupItem,
+  FriendsGroupItem,
 } from "@/interfaces";
 import { User as UserSupabase } from "@supabase/supabase-js";
 import { Json } from "@/interfaces/database";
@@ -18,6 +20,8 @@ import {
   RosaryStatsDB,
   ProfilesDB,
   YouTubeDB,
+  GroupsDB,
+  FriendsGroupsDB,
 } from "@/interfaces/databaseTable";
 import moment from "moment";
 import { formatDate, numberToDollar } from "./helpers";
@@ -88,7 +92,7 @@ export const normalizeUserProfile = (
     const todaysRosaryCompleted = stats.find(
       (s) => formatDate(s.completed_at) === formatDate()
     );
-    console.log("todaysRosaryCompleted: ", todaysRosaryCompleted);
+
     return {
       todaysRosaryCompleted: !!todaysRosaryCompleted,
       rosaryTotalCount: stats.length,
@@ -161,5 +165,25 @@ export const normalizePost = (posts: PostsDB[]): ResourcePost[] => {
     publishedAt: data.published_at,
     slug: data.slug,
     updatedAt: data.updated_at,
+  }));
+};
+
+export const normalizeGroups = (groupList: GroupsDB[]): GroupItem[] => {
+  return groupList.map((g) => ({
+    createdAt: g.created_at,
+    name: g.group_name,
+    id: g.id,
+  }));
+};
+
+export const normalizeFriendsGroups = (
+  groupList: FriendsGroupsDB[]
+): FriendsGroupItem[] => {
+  return groupList.map((f) => ({
+    friendId: f.friend_id,
+    isFavorite: f.is_favorite,
+    createdAt: f.created_at,
+    userId: f.user_id,
+    groups: f.groups as { [groupId: string]: string },
   }));
 };

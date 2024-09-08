@@ -1,13 +1,13 @@
-import { Box, Card, CardContent, Container, Typography } from "@mui/material";
-import styles from "./allEventSection.module.scss";
-import { css } from "@/utils/helpers";
-
 import Link from "next/link";
+import { Box, Card, CardContent, Container, Typography } from "@mui/material";
+
+import { css } from "@/utils/helpers";
 import { YouTubeSubscribe } from "@/components/YouTubeVideo";
 import { DataEvent } from "@/interfaces";
 import CountdownDate from "@/components/CountdownDate";
 import { NAV_APP_LINKS } from "@/constants/nav";
 
+import styles from "./allEventSection.module.scss";
 interface Props {
   events: DataEvent[] | null;
 }
@@ -16,7 +16,7 @@ const AllEventSection = ({ events }: Props) => {
   if (events === null) return <p>No events</p>;
 
   return (
-    <Container className="container-box" maxWidth="lg">
+    <Container className="container-box" maxWidth="md">
       <Box className={styles.container}>
         {events.map(
           ({ title, description, startedAt, slug, pictureUrl }, index) => (

@@ -184,6 +184,77 @@ export type Database = {
         }
         Relationships: []
       }
+      friends: {
+        Row: {
+          created_at: string | null
+          friend_id: string
+          groups: Json | null
+          is_favorite: boolean | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          friend_id: string
+          groups?: Json | null
+          is_favorite?: boolean | null
+          user_id?: string
+        }
+        Update: {
+          created_at?: string | null
+          friend_id?: string
+          groups?: Json | null
+          is_favorite?: boolean | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Friends_friend_id_fkey"
+            columns: ["friend_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "Friends_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      groups: {
+        Row: {
+          created_at: string
+          group_name: string
+          id: string
+          picture_url: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          group_name: string
+          id?: string
+          picture_url?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          group_name?: string
+          id?: string
+          picture_url?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "groups_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       posts: {
         Row: {
           author: string
@@ -220,6 +291,7 @@ export type Database = {
       profiles: {
         Row: {
           birth_date: string | null
+          created_at: string | null
           first_name: string | null
           gender: string | null
           id: string
@@ -227,10 +299,11 @@ export type Database = {
           last_name: string | null
           picture_url: string | null
           updated_at: string | null
-          username: string | null
+          username: string
         }
         Insert: {
           birth_date?: string | null
+          created_at?: string | null
           first_name?: string | null
           gender?: string | null
           id: string
@@ -238,10 +311,11 @@ export type Database = {
           last_name?: string | null
           picture_url?: string | null
           updated_at?: string | null
-          username?: string | null
+          username?: string
         }
         Update: {
           birth_date?: string | null
+          created_at?: string | null
           first_name?: string | null
           gender?: string | null
           id?: string
@@ -249,7 +323,7 @@ export type Database = {
           last_name?: string | null
           picture_url?: string | null
           updated_at?: string | null
-          username?: string | null
+          username?: string
         }
         Relationships: [
           {
@@ -271,23 +345,33 @@ export type Database = {
       rosary_stats: {
         Row: {
           completed_at: string
+          created_at: string | null
           id: string
           join_rosary_user_id: string | null
           user_id: string
         }
         Insert: {
           completed_at: string
+          created_at?: string | null
           id?: string
           join_rosary_user_id?: string | null
-          user_id?: string
+          user_id: string
         }
         Update: {
           completed_at?: string
+          created_at?: string | null
           id?: string
           join_rosary_user_id?: string | null
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "rosary_stats_join_rosary_user_id_fkey"
+            columns: ["join_rosary_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "rosary_stats_user_id_fkey"
             columns: ["user_id"]
@@ -332,7 +416,34 @@ export type Database = {
       }
     }
     Functions: {
-      [_ in never]: never
+      get_top_10_user_profile: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          user_id: string
+          user_count: number
+          first_name: string
+          last_name: string
+          picture_url: string
+        }[]
+      }
+      insert_into_rosary_stats: {
+        Args: {
+          p_user_id: string
+          p_join_rosary_user_id: string
+          p_completed_at: string
+        }
+        Returns: undefined
+      }
+      search_profiles: {
+        Args: {
+          search_text: string
+        }
+        Returns: {
+          id: string
+          first_name: string
+          last_name: string
+        }[]
+      }
     }
     Enums: {
       age_group: "adult" | "teen" | "kid"

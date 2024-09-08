@@ -3,19 +3,22 @@ import { useRouter } from "next/router";
 import { TopNavbar, SideNavbar } from "@/components/Navbars";
 import GridViewIcon from "@mui/icons-material/GridView";
 import CellTowerIcon from "@mui/icons-material/CellTower";
+import SoldierIcon from "@mui/icons-material/MilitaryTech";
 import ConfessionIcon from "@mui/icons-material/PsychologyAlt";
 import TableChartIcon from "@mui/icons-material/TableChart";
 import { Box, Typography } from "@mui/material";
-import styles from "./AppLayout.module.scss";
+
 import { css } from "@/utils/helpers";
 import Meta from "@/components/Meta";
 
+import styles from "./AppLayout.module.scss";
 interface Props {
   children: React.ReactNode;
 }
 
 const menuItems = [
   { url: "/app/dashboard", label: "Dashboard", icon: <TableChartIcon /> },
+  // { url: "/app/soldiers", label: "Church Militant", icon: <SoldierIcon /> },
   { url: "/app", label: "All Events", icon: <GridViewIcon /> },
   { url: "/app/live-event", label: "Live Event", icon: <CellTowerIcon /> },
   // {

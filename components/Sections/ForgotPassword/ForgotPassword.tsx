@@ -1,9 +1,10 @@
+import { useState } from "react";
 import { toast } from "react-toastify";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { db } from "classes/SupabaseDB";
 import { Button, TextField } from "@mui/material";
+
 import FormErrorText from "@/components/FormErrorText";
-import { useState } from "react";
 
 interface IFormInputs {
   email: string;
