@@ -5,18 +5,26 @@ import Image from "next/image";
 import styles from "./userBubble.module.scss";
 
 interface Props {
-  userPicture?: string;
   userName: string;
-  userId: string;
+  userId?: string;
+  userPicture?: string;
+  isOnline?: boolean;
 }
 
-const UserBubble = ({ userId, userName, userPicture }: Props) => {
+const UserBubble = ({ userName, userPicture, isOnline = false }: Props) => {
+  const tooltipMessage = isOnline ? `${userName} is online.` : userName;
   return (
     <Box className={styles.avatar}>
-      <Tooltip title={`${userName} is online.`} key={userId}>
+      <Tooltip title={tooltipMessage}>
         <span>
           {userPicture ? (
-            <Image width={40} height={40} src={userPicture} alt={userName} />
+            <Image
+              width={20}
+              height={20}
+              src={userPicture}
+              alt={userName}
+              style={{ borderRadius: "50%" }}
+            />
           ) : (
             <AccountCircle />
           )}

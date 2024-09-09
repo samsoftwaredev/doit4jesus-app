@@ -27,6 +27,10 @@
   svg {
     font-size: 1.3em;
   }
+  img {
+    position: relative;
+    top: -3px;
+  }
   .userName {
     display: none;
     @include tablet {

@@ -9,7 +9,7 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import { Logo } from "../..";
+import { Logo, UserBubble } from "../..";
 import styles from "./TopNavbar.module.scss";
 import { db, supabase } from "classes/SupabaseDB";
 import { useEffect, useState } from "react";
@@ -92,18 +92,27 @@ const TopNavbar = ({ handleMenu }: Props) => {
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
         onClick={handleClick}
+        disableRipple
       >
-        <Typography fontWeight="bold" className={styles.userName}>
-          {user?.firstName} {user?.lastName}&nbsp;
+        <Typography fontWeight="bold" pr={2}>
+          {user?.firstName} {user?.lastName}
         </Typography>
-        <AccountCircle />
+        <UserBubble
+          userPicture={user?.pictureUrl}
+          userName={`${user?.firstName} ${user?.lastName}`}
+        />
       </IconButton>
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
         <MenuItem sx={{ width: 200, maxWidth: "100%" }} onClick={onViewProfile}>
-          <ListItemIcon>
-            <AccountCircle fontSize="small" />
+          <ListItemIcon sx={{ paddingLeft: "5px" }}>
+            <UserBubble
+              userPicture={user?.pictureUrl}
+              userName={`${user?.firstName} ${user?.lastName}`}
+            />
           </ListItemIcon>
-          <ListItemText>{NAV_APP_LINKS.account.label}</ListItemText>
+          <ListItemText sx={{ marginLeft: "-5px" }}>
+            {NAV_APP_LINKS.account.label}
+          </ListItemText>
         </MenuItem>
         <MenuItem sx={{ width: 200, maxWidth: "100%" }} onClick={onLogout}>
           <ListItemIcon>

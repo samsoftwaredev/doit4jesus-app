@@ -1,7 +1,9 @@
 import type { NextPage } from "next";
+import { Container, Typography } from "@mui/material";
+
 import { Meta } from "@/components";
 import { MainLayout } from "@/components/Templates";
-import { Container, Typography } from "@mui/material";
+
 import { COMPANY } from "../constants";
 
 const TermsOfService: NextPage = () => {

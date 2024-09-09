@@ -1,13 +1,16 @@
+import moment from "moment";
+
 import { theme } from "@/styles/mui-overwrite";
 import { dollarFormatter } from "@/utils/helpers";
-import { AccountCircle, Favorite } from "@mui/icons-material";
-import { Box, Button, Typography } from "@mui/material";
-import moment from "moment";
+import { Box, Typography } from "@mui/material";
+
+import UserBubble from "../UserBubble";
 
 interface Props {
   user: {
     firstName: string;
     lastName: string;
+    pictureUrl?: string;
   };
   children: JSX.Element | string;
   date?: Date;
@@ -37,7 +40,10 @@ const ChatMessage = ({
   return (
     <Box my="1em" display="flex" flexDirection="column" gap="1em">
       <Box display="flex" gap="0.5em" alignItems="center">
-        <AccountCircle />
+        <UserBubble
+          userName={`${user.firstName} ${user.lastName}`}
+          userPicture={user.pictureUrl}
+        />
         <Typography fontWeight="bold">
           {user.firstName} {user.lastName}
         </Typography>

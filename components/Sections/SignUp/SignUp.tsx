@@ -18,8 +18,6 @@ import { Controller, SubmitHandler, useForm, useWatch } from "react-hook-form";
 import FormErrorText from "@/components/FormErrorText";
 import { emailRegEx, nameRegEx } from "@/utils/regEx";
 import virginMaryLetter from "@/public/assets/images/art/virginMaryLetter.jpeg";
-import { useUserContext } from "@/context/UserContext";
-import { normalizeAuthDB } from "@/utils/normalizers";
 import { passwordValidationRules } from "@/constants";
 
 import {
@@ -38,7 +36,6 @@ interface IFormInputs {
 }
 
 const SignUp = () => {
-  const { setUser, user } = useUserContext();
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccessfulSigUp, setIsSuccessfulSigUp] = useState(false);
   const { handleSubmit, control } = useForm<IFormInputs>({

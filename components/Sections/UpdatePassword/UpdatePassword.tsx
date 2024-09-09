@@ -1,11 +1,13 @@
+import { useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 import { useForm, Controller, SubmitHandler, useWatch } from "react-hook-form";
 import { db } from "classes/SupabaseDB";
 import { Button, TextField } from "@mui/material";
+
 import FormErrorText from "@/components/FormErrorText";
 import { NAV_MAIN_LINKS, passwordValidationRules } from "@/constants";
-import { useState } from "react";
+
 import { PasswordValidator } from "../..";
 
 interface IFormInputs {
@@ -13,10 +15,10 @@ interface IFormInputs {
   confirmPassword: string;
 }
 
-const LogIn = () => {
+const UpdatePassword = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const { handleSubmit, control } = useForm<IFormInputs>({
+  const { handleSubmit, control, reset } = useForm<IFormInputs>({
     mode: "onChange",
     defaultValues: {
       password: "",
@@ -36,10 +38,12 @@ const LogIn = () => {
       setIsLoading(true);
       const { error } = await db.updatePassword(userInput.password);
       if (error) {
-        toast.error(error?.message);
+        console.error(error);
+        toast.error(error.message);
       } else {
         router.push(NAV_MAIN_LINKS.login.link);
         toast.success("Password was updated");
+        reset();
       }
       setIsLoading(false);
     } else {
@@ -99,4 +103,4 @@ const LogIn = () => {
   );
 };
 
-export default LogIn;
+export default UpdatePassword;

@@ -5,7 +5,7 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ["uieyknteyflglukepcdy.supabase.co"],
+    domains: ["uieyknteyflglukepcdy.supabase.co", "lh3.googleusercontent.com"],
   },
   sassOptions: {
     includePaths: [path.join(__dirname, "styles")],

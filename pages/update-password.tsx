@@ -1,8 +1,9 @@
+import type { NextPage } from "next";
+
 import { Box, Container, Typography } from "@mui/material";
 import { Meta } from "@/components";
 import { UpdatePassword } from "@/components/Sections";
 import { MainLayout } from "@/components/Templates";
-import type { NextPage } from "next";
 
 const Register: NextPage = () => {
   return (

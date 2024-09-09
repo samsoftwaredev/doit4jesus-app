@@ -1,10 +1,11 @@
+import type { NextPage } from "next";
 import { Box, Container, Typography } from "@mui/material";
-import { Meta } from "@/components";
 import { useEffect } from "react";
+import { useRouter } from "next/router";
+
+import { Meta } from "@/components";
 import { MainLayout } from "@/components/Templates";
 import { NAV_APP_LINKS } from "@/constants";
-import type { NextPage } from "next";
-import { useRouter } from "next/router";
 import { useUserContext } from "@/context/UserContext";
 import { pageView } from "@/constants/register";
 

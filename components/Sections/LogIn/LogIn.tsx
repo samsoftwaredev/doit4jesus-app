@@ -1,13 +1,14 @@
+import { useRouter } from "next/router";
+import Link from "next/link";
 import { toast } from "react-toastify";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { db, supabase } from "classes/SupabaseDB";
+import { useEffect, useState } from "react";
 import { Button, FormControl, TextField } from "@mui/material";
+
 import FormErrorText from "@/components/FormErrorText";
 import { useUserContext } from "@/context/UserContext";
-import { useEffect, useState } from "react";
 import { NAV_APP_LINKS, NAV_MAIN_LINKS } from "@/constants/nav";
-import { useRouter } from "next/router";
-import Link from "next/link";
 import { GoogleAuth, HorizontalDivider } from "@/components";
 
 interface IFormInputs {
@@ -31,7 +32,8 @@ const LogIn = () => {
     setIsLoading(true);
     const { error } = await db.logIn(userInput.email, userInput.password);
     if (error) {
-      toast.error(error?.message);
+      console.error(error);
+      toast.error(error.message);
     } else {
       const { data } = await supabase.auth.onAuthStateChange(
         async (event, session) => {

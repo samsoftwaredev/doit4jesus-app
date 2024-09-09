@@ -1,7 +1,9 @@
+import { Container, Typography } from "@mui/material";
 import type { NextPage } from "next";
+
 import { Meta } from "@/components";
 import { MainLayout } from "@/components/Templates";
-import { Container, Typography } from "@mui/material";
+
 import { COMPANY, minAge } from "../constants";
 
 const PrivacyPolicy: NextPage = () => {
