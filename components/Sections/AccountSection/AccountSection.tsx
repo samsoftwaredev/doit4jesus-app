@@ -1,9 +1,11 @@
-import { Box, Button, Container, Typography } from "@mui/material";
-import styles from "./accountSection.module.scss";
-import { toast } from "react-toastify";
-import { db, supabase } from "@/class";
 import { useState } from "react";
-import { Loading } from "../..";
+import { toast } from "react-toastify";
+import { Box, Button, Container, Typography } from "@mui/material";
+
+import { db, supabase } from "@/class";
+
+import styles from "./accountSection.module.scss";
+import { Card, Loading } from "../..";
 
 const AccountSection = () => {
   const [loading, setLoading] = useState(false);
@@ -32,13 +34,20 @@ const AccountSection = () => {
 
   return (
     <Container className={`container-box ${styles.container}`} maxWidth="sm">
-      <Typography fontSize="2em">My Account</Typography>
-      <Box my={2}>
-        <Typography my={2}>Do you want to delete your account?</Typography>
-        <Button onClick={onDelete} variant="contained" color="error">
-          Delete Account
-        </Button>
-      </Box>
+      <Card>
+        <Typography fontSize="2em">My Account</Typography>
+        <Box display="flex" my={2} flexDirection="column">
+          <Typography my={2}>Do you want to delete your account?</Typography>
+          <Button
+            sx={{ textAlign: "right" }}
+            onClick={onDelete}
+            variant="contained"
+            color="error"
+          >
+            Delete Account
+          </Button>
+        </Box>
+      </Card>
     </Container>
   );
 };
