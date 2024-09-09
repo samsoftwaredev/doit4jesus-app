@@ -299,7 +299,7 @@ export type Database = {
           last_name: string | null
           picture_url: string | null
           updated_at: string | null
-          username: string
+          username: string | null
         }
         Insert: {
           birth_date?: string | null
@@ -311,7 +311,7 @@ export type Database = {
           last_name?: string | null
           picture_url?: string | null
           updated_at?: string | null
-          username?: string
+          username?: string | null
         }
         Update: {
           birth_date?: string | null
@@ -323,7 +323,7 @@ export type Database = {
           last_name?: string | null
           picture_url?: string | null
           updated_at?: string | null
-          username?: string
+          username?: string | null
         }
         Relationships: [
           {
@@ -355,7 +355,7 @@ export type Database = {
           created_at?: string | null
           id?: string
           join_rosary_user_id?: string | null
-          user_id: string
+          user_id?: string
         }
         Update: {
           completed_at?: string

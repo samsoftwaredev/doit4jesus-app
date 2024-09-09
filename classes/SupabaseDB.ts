@@ -76,7 +76,7 @@ class SupabaseDB {
         data: {
           first_name: userInput.firstName,
           last_name: userInput.lastName,
-          gender: userGender as any,
+          gender: userGender,
           username:
             userInput.firstName +
             userInput.lastName +

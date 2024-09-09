@@ -83,7 +83,7 @@ const LiveEvent: NextPage = () => {
 
   return (
     <AppLayout>
-      <Container className="container-box" maxWidth="lg">
+      <Container className="container-box" maxWidth="md">
         {typeof dataEvent === "object" ? (
           <EventSection videoEvent={dataEvent} />
         ) : (
