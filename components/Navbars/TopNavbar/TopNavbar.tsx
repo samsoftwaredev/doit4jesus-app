@@ -94,7 +94,7 @@ const TopNavbar = ({ handleMenu }: Props) => {
         onClick={handleClick}
         disableRipple
       >
-        <Typography fontWeight="bold" pr={2}>
+        <Typography className={styles.userName} fontWeight="bold" pr={2}>
           {user?.firstName} {user?.lastName}
         </Typography>
         <UserBubble
