@@ -4,6 +4,8 @@ export const minPasswordLength = 8;
 export const maxAge = 120;
 export const minAge = 13;
 
+export const sessionFriendsKey = "friends";
+
 export const passwordValidationRules = {
   required: true,
   minLength: {

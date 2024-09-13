@@ -5,21 +5,28 @@ import { useEffect, useState } from "react";
 import {
   Card,
   CreateFriendGroup,
+  Loading,
   RosaryLevel,
   RosaryLevelInfo,
 } from "@/components";
 import FriendGroup from "@/components/FriendGroup";
 import { getCurrentLevel } from "@/utils/levels";
 import { useUserContext } from "@/context/UserContext";
-import { db } from "@/class/index";
-import { normalizeFriendsGroups, normalizeGroups } from "@/utils/normalizers";
+import { db, supabase } from "@/class/index";
+import {
+  normalizeFriendProfile,
+  normalizeFriendsGroups,
+  normalizeGroups,
+} from "@/utils/normalizers";
 import { FriendsGroupItem, GroupItem } from "@/interfaces/index";
 import FriendSearchGroup from "@/components/FriendSearchGroup";
+import { sessionFriendsKey } from "@/constants/global";
 
 import styles from "./FriendsSection.module.scss";
 
 const FriendsSection = () => {
   const { user } = useUserContext();
+  const [isLoading, setIsLoading] = useState(true);
   const [groups, setGroups] = useState<GroupItem[]>();
   const [friendGroups, setFriendGroups] = useState<FriendsGroupItem[]>();
   const numRosariesCompleted = user?.stats.rosaryTotalCount ?? 0;
@@ -39,24 +46,45 @@ const FriendsSection = () => {
     }
   };
 
+  const getFriendsProfiles = async (userIds: string[]) => {
+    let { data, error } = await supabase.rpc("get_profiles_by_user_ids", {
+      user_ids: userIds,
+    });
+    if (error) {
+      console.error(error);
+      toast.error("Unable to retrieve friends profile.");
+    } else {
+      const friendData = normalizeFriendProfile(data ?? []);
+      sessionStorage.setItem(sessionFriendsKey, JSON.stringify(friendData));
+    }
+  };
+
   const getFriendsByGroups = async () => {
+    await getMyGroups();
     let { data, error } = await db
       .getFriends()
       .select("*")
       .eq("user_id", user!.userId);
     if (error) {
+      console.error(error);
       toast.error("Unable to retrieve group of friends");
     }
     if (data) {
       const groupsFriendNormalized = normalizeFriendsGroups(data);
+      const friendIds = groupsFriendNormalized.map(({ friendId }) => friendId);
+      await getFriendsProfiles(friendIds);
       setFriendGroups(groupsFriendNormalized);
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
-    getMyGroups();
     getFriendsByGroups();
   }, []);
+
+  if (isLoading) {
+    return <Loading isPage />;
+  }
 
   return (
     <Container className="container-box" maxWidth="md">

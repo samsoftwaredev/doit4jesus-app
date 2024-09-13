@@ -1,26 +1,49 @@
 import { Box, Typography } from "@mui/material";
 
-import { FriendsGroupItem, GroupItem } from "@/interfaces/index";
+import { FriendProfile, FriendsGroupItem, GroupItem } from "@/interfaces/index";
+import { sessionFriendsKey } from "@/constants/global";
 
+import UserBubble from "../UserBubble";
 interface Props {
   groups?: GroupItem[];
   friendGroups?: FriendsGroupItem[];
 }
 
-const FriendGroup = ({ groups, friendGroups }: Props) => {
+const getUserProfile = (friendId: string) => {
+  const friendsProfile = sessionStorage.getItem(sessionFriendsKey);
+  const friendsList: FriendProfile[] = friendsProfile
+    ? JSON.parse(friendsProfile)
+    : [];
+  const friendData = friendsList.find(({ userId }) => userId === friendId);
+  return friendData;
+};
+
+const FriendGroup = ({ groups = [], friendGroups = [] }: Props) => {
+  const friendInGroups = friendGroups.map((friend) => {
+    const group = groups.find(({ id }) => {
+      return friend.groups && friend.groups[id];
+    });
+    return { groupData: group, ...friend };
+  });
+
   return (
     <Box>
       <Typography component="h2" fontWeight="bold">
         My Groups
       </Typography>
-      {groups?.map(({ name, id }) => {
-        const inGroup = friendGroups?.find((fg) => fg.groups && fg.groups[id]);
+      {friendInGroups.map(({ groupData, friendId }) => {
+        const friendData = getUserProfile(friendId);
         return (
-          <Box key={id}>
-            <Typography>{name}</Typography>
-            {inGroup?.userId}
+          <Box key={friendId}>
+            <Typography>{groupData?.name}</Typography>
+            <UserBubble
+              userName={`${friendData?.firstName} ${friendData?.lastName}`}
+              userPicture={friendData?.pictureUrl ?? ""}
+            />
+            {friendData?.firstName} {friendData?.lastName}
           </Box>
         );
+        return null;
       })}
     </Box>
   );

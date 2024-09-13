@@ -140,6 +140,13 @@ export interface OnlineUser {
   fullName: string;
 }
 
+export interface FriendProfile {
+  userId: string;
+  firstName: string;
+  lastName: string;
+  pictureUrl: string | null;
+}
+
 export interface EventMessages {
   id: string;
   createdAt: string;

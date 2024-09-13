@@ -416,6 +416,17 @@ export type Database = {
       }
     }
     Functions: {
+      get_profiles_by_user_ids: {
+        Args: {
+          user_ids: string[]
+        }
+        Returns: {
+          first_name: string
+          last_name: string
+          picture_url: string
+          id: string
+        }[]
+      }
       get_top_10_user_profile: {
         Args: Record<PropertyKey, never>
         Returns: {

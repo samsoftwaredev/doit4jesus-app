@@ -9,6 +9,7 @@ import {
   ResourceContent,
   GroupItem,
   FriendsGroupItem,
+  FriendProfile,
 } from "@/interfaces";
 import { User as UserSupabase } from "@supabase/supabase-js";
 import { Json } from "@/interfaces/database";
@@ -110,6 +111,24 @@ export const normalizeUserProfile = (
     pictureUrl: nullToString(userProfile.picture_url),
     stats: generateRosaryCount(rosaryStats),
   };
+};
+
+export const normalizeFriendProfile = (
+  userProfile: {
+    id: string;
+    first_name: string;
+    last_name: string;
+    picture_url: string | null;
+  }[]
+): FriendProfile[] => {
+  return userProfile.map((u) => {
+    return {
+      userId: nullToString(u.id),
+      firstName: nullToString(u.first_name),
+      lastName: nullToString(u.last_name),
+      pictureUrl: nullToString(u.picture_url),
+    };
+  });
 };
 
 export const normalizeOnlineUsers = (users: any[]): OnlineUser[] => {

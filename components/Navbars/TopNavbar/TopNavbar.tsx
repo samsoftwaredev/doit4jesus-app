@@ -43,6 +43,8 @@ const TopNavbar = ({ handleMenu }: Props) => {
 
   const onLogout = async () => {
     setIsLoading(true);
+    // Remove all saved data from sessionStorage
+    sessionStorage.clear();
     await db.logOut();
     setIsLoading(false);
   };
