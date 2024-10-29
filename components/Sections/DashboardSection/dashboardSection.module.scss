@@ -10,7 +10,8 @@
     "RosariesCompleted"
     "Friends"
     "Donations"
-    "Levels";
+    "Levels"
+    "Leaderboards";
 
   @include tablet {
     grid-template-columns: 1fr 1fr;
@@ -19,7 +20,8 @@
       "TodayRosary TodayRosary"
       "RosariesCompleted Friends"
       "Donations Donations"
-      "Levels Levels";
+      "Levels Levels"
+      "Leaderboards Leaderboards";
   }
   @include desktop {
     grid-template-columns: 1fr 1fr 1fr;
@@ -27,7 +29,8 @@
     grid-template-areas:
       "TodayRosary TodayRosary RosariesCompleted"
       "Levels Levels Levels"
-      "Friends Donations Donations";
+      "Friends Donations Donations"
+      "Leaderboards Leaderboards Leaderboards";
   }
 }
 
@@ -56,4 +59,8 @@
 
 .Levels {
   grid-area: Levels;
+}
+
+.Leaderboards {
+  grid-area: Leaderboards;
 }

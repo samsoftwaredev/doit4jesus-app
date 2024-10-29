@@ -26,7 +26,7 @@ const Leaderboards = () => {
       first_name: string;
       last_name: string;
       picture_url: string;
-    }[],
+    }[]
   ): UserLeaderboards[] => {
     return data.map((u) => ({
       userId: u.user_id,
@@ -54,34 +54,47 @@ const Leaderboards = () => {
     getTopRosaryUser();
   }, []);
 
-  if (isLoading) return <Loading isPage={false} />;
-
   return (
     <Box>
-      <Typography>Top {userList?.length || 10} Members</Typography>
-      <Box>
-        {userList?.map((u, index) => {
-          const { levelNum } = getCurrentLevel(u.count);
-          return (
-            <Box my={5} key={u.userId} display="flex" alignItems="center">
-              <Box>
-                <Typography fontSize="4em">{index + 1}</Typography>
-              </Box>
+      <Typography fontSize="small" fontWeight="light">
+        Top {userList?.length || 10} Members
+      </Typography>
+      <Typography variant="h4">Leaderboards</Typography>
+      {isLoading ? (
+        <Loading isFeature />
+      ) : (
+        <>
+          <Box>
+            {userList?.map((u, index) => {
+              const { levelNum } = getCurrentLevel(u.count);
+              return (
+                <Box my={5} key={u.userId} display="flex" alignItems="center">
+                  <Box>
+                    <Typography fontSize="4em">{index + 1}</Typography>
+                  </Box>
 
-              <Box sx={{ width: "100%" }} display="flex" flexDirection="column">
-                <Typography fontSize="1.2em" fontWeight="bold" px={1}>
-                  {u.firstName} {u.lastName}
-                </Typography>
-                <Typography px={1}>{u.count} rosaries</Typography>
-              </Box>
+                  <Box
+                    sx={{ width: "100%" }}
+                    display="flex"
+                    flexDirection="column"
+                  >
+                    <Typography fontSize="1.2em" fontWeight="bold" px={1}>
+                      {u.firstName} {u.lastName}
+                    </Typography>
+                    <Typography px={1}>
+                      {u.count} {u.count !== 1 ? "Rosaries" : "Rosary"}
+                    </Typography>
+                  </Box>
 
-              <Box sx={{ width: "100%" }} textAlign="right">
-                <RosaryLevel levelNum={levelNum} />
-              </Box>
-            </Box>
-          );
-        })}
-      </Box>
+                  <Box sx={{ width: "100%" }} textAlign="right">
+                    <RosaryLevel levelNum={levelNum} />
+                  </Box>
+                </Box>
+              );
+            })}
+          </Box>
+        </>
+      )}
     </Box>
   );
 };

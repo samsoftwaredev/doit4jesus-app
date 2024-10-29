@@ -3,13 +3,11 @@ import { Alert, Box, Typography, Button, LinearProgress } from "@mui/material";
 
 import { useUserContext } from "@/context/UserContext";
 import { getCurrentLevel, levels } from "@/utils/levels";
-import Leaderboards from "@/components/Leaderboards";
 
 import { Dialog, RosaryLevel, RosaryLevelInfo } from "../..";
 
 const ProgressLevelsSection = () => {
   const [isOpenLevels, setIsOpenLevels] = useState(false);
-  const [isOpenLeaderboards, setIsOpenLeaderboards] = useState(false);
   const { user } = useUserContext();
   const numRosariesCompleted = user?.stats.rosaryTotalCount ?? 0;
   const currentLevel = getCurrentLevel(numRosariesCompleted);
@@ -33,14 +31,6 @@ const ProgressLevelsSection = () => {
 
   const onOpenLevels = () => {
     setIsOpenLevels(true);
-  };
-
-  const onCloseLeaderboards = () => {
-    setIsOpenLeaderboards(false);
-  };
-
-  const onOpenLeaderboards = () => {
-    setIsOpenLeaderboards(true);
   };
 
   return (
@@ -98,19 +88,8 @@ const ProgressLevelsSection = () => {
         <Button onClick={onOpenLevels} color="success" variant="outlined">
           See Levels
         </Button>
-        <Button onClick={onOpenLeaderboards} color="success" variant="outlined">
-          Leaderboards
-        </Button>
       </Box>
-      <Dialog
-        modalTitle="Leaderboards"
-        fullWidth
-        maxWidth="xs"
-        open={isOpenLeaderboards}
-        handleClose={onCloseLeaderboards}
-      >
-        <Leaderboards />
-      </Dialog>
+
       <Dialog
         modalTitle="Rosary Levels"
         fullWidth
