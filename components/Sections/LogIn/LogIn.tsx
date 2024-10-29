@@ -41,7 +41,7 @@ const LogIn = () => {
             await getProfile(session);
             router.push(NAV_APP_LINKS.dashboard.link);
           }
-        }
+        },
       );
       data.subscription.unsubscribe();
     }

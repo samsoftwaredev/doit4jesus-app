@@ -298,6 +298,7 @@ export type Database = {
           invited_by: string | null
           last_name: string | null
           picture_url: string | null
+          rosary_count: number | null
           updated_at: string | null
           username: string | null
         }
@@ -310,6 +311,7 @@ export type Database = {
           invited_by?: string | null
           last_name?: string | null
           picture_url?: string | null
+          rosary_count?: number | null
           updated_at?: string | null
           username?: string | null
         }
@@ -322,6 +324,7 @@ export type Database = {
           invited_by?: string | null
           last_name?: string | null
           picture_url?: string | null
+          rosary_count?: number | null
           updated_at?: string | null
           username?: string | null
         }
@@ -424,6 +427,7 @@ export type Database = {
           first_name: string
           last_name: string
           picture_url: string
+          rosary_count: number
           id: string
         }[]
       }

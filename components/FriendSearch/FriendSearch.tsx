@@ -38,7 +38,7 @@ const FriendSearch = ({ onSelect }: Props) => {
 
   const onChange = (
     _: SyntheticEvent<Element, Event>,
-    user: string | MenuItem | null
+    user: string | MenuItem | null,
   ) => {
     if (user !== null && typeof user === "object") {
       const friendSelected = options.find((u) => u.label === user.label);

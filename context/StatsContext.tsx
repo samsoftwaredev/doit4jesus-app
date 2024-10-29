@@ -1,9 +1,10 @@
 import { createContext, useContext, useEffect } from "react";
 import { toast } from "react-toastify";
+
 import { useUserContext } from "./UserContext";
-import { supabase } from "../classes";
 import { useAudioContext } from "./AudioContext";
 import { usePresenceContext } from "./PresenceContext";
+import { supabase } from "../classes";
 import { formatDate } from "../utils";
 
 interface Props {
@@ -23,12 +24,12 @@ const StatsContextProvider = ({ children }: Props) => {
     const todaysRosaryCompleted = user.stats.todaysRosaryCompleted === false;
     const { data, error } = await supabase.functions.invoke(
       "rosary-completed",
-      { body: { onlineUsers: onlineUsersIds } }
+      { body: { onlineUsers: onlineUsersIds } },
     );
 
     if (error) {
       console.log(error);
-      toast.error("Unable to store rosary count", {
+      toast.error("Unable to update rosary count", {
         toastId: "unable to save stats",
       });
     }
@@ -42,16 +43,19 @@ const StatsContextProvider = ({ children }: Props) => {
         ...user.stats.joinedRosary,
         ...(onlineUsersIds?.map((userId) => ({
           userId,
-          date: formatDate(),
+          date: formatDate(new Date()),
         })) ?? []),
       ];
+
+      const numOfRosaryCompleted =
+        onlineUsersIds.length === 0 ? 1 : onlineUsersIds.length;
 
       setUser({
         ...user,
         stats: {
           ...user.stats,
           todaysRosaryCompleted: true,
-          rosaryTotalCount: user.stats.rosaryTotalCount + 1,
+          rosaryTotalCount: user.stats.rosaryTotalCount + numOfRosaryCompleted,
           joinedRosary,
         },
       });

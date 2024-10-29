@@ -1,11 +1,13 @@
-import { Box, Typography } from "@mui/material";
+import { useMemo } from "react";
+import { Box, Button, IconButton, Tooltip, Typography } from "@mui/material";
+import CreateIcon from "@mui/icons-material/ControlPoint";
 
 import { FriendProfile, FriendsGroupItem, GroupItem } from "@/interfaces/index";
 import { sessionFriendsKey } from "@/constants/global";
 
 import UserBubble from "../UserBubble";
 interface Props {
-  groups?: GroupItem[];
+  group: GroupItem;
   friendGroups?: FriendsGroupItem[];
 }
 
@@ -18,33 +20,57 @@ const getUserProfile = (friendId: string) => {
   return friendData;
 };
 
-const FriendGroup = ({ groups = [], friendGroups = [] }: Props) => {
-  const friendInGroups = friendGroups.map((friend) => {
-    const group = groups.find(({ id }) => {
-      return friend.groups && friend.groups[id];
+const FriendGroup = ({ group, friendGroups = [] }: Props) => {
+  const maxNumberOfUsers = 3;
+  const { id, name } = group;
+
+  const getGroupMembers = (groupId: string) => {
+    return friendGroups.filter(({ groups }) => {
+      if (groups !== null) {
+        const groupList = Object.entries(groups);
+        return !!groupList.find(([id]) => id === groupId);
+      }
     });
-    return { groupData: group, ...friend };
-  });
+  };
+
+  const members = useMemo(() => getGroupMembers(id), [id]).slice(
+    0,
+    maxNumberOfUsers
+  );
 
   return (
-    <Box>
-      <Typography component="h2" fontWeight="bold">
-        My Groups
-      </Typography>
-      {friendInGroups.map(({ groupData, friendId }) => {
+    <Box display="flex" flexDirection="column">
+      <Box display="flex" justifyContent="space-between">
+        <Typography fontWeight="900">{name}</Typography>
+        <Tooltip title="Add New Member">
+          <IconButton sx={{ p: 0 }} size="large" color="success">
+            <CreateIcon />
+          </IconButton>
+        </Tooltip>
+      </Box>
+      {members.length === 0 ? (
+        <Typography fontStyle="italic">No Members</Typography>
+      ) : (
+        <Typography>Leaderboards</Typography>
+      )}
+      {members.map(({ friendId }) => {
         const friendData = getUserProfile(friendId);
         return (
-          <Box key={friendId}>
-            <Typography>{groupData?.name}</Typography>
+          <Box ml={3} mt={1} key={friendId} display="flex" gap={1}>
             <UserBubble
               userName={`${friendData?.firstName} ${friendData?.lastName}`}
               userPicture={friendData?.pictureUrl ?? ""}
             />
-            {friendData?.firstName} {friendData?.lastName}
+            {friendData?.firstName} {friendData?.lastName} -{" "}
+            {friendData?.rosaryCount}
           </Box>
         );
-        return null;
       })}
+      {members.length > maxNumberOfUsers && (
+        <Button sx={{ mt: 2 }} size="small" variant="text" color="success">
+          View More
+        </Button>
+      )}
     </Box>
   );
 };

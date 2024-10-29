@@ -15,24 +15,26 @@ import Select from "../Select";
 import { db } from "@/class/index";
 import { toast } from "react-toastify";
 import dayjs from "dayjs";
+import { useUserContext } from "@/context/UserContext";
 
 interface Props {
   groups?: GroupItem[];
 }
 
 const FriendSearchGroup = ({ groups = [] }: Props) => {
+  const { user } = useUserContext();
   const groupMenuItem = groups.map((g) => ({ name: g.name, value: g.id }));
   const [isOpen, setIsOpen] = useState(false);
   const [userSelected, setUserSelected] = useState<MenuItem>();
-  const [friendGroup, setFriendGroup] = useState<string>("");
+  const [groupName, setGroupName] = useState("");
 
   const onGroupSelected = (event: SelectChangeEvent) => {
-    setFriendGroup(event.target.value);
+    setGroupName(event.target.value);
   };
 
   const onClose = () => {
     setIsOpen(false);
-    setFriendGroup("");
+    setGroupName("");
   };
 
   const onUserSelected = (friend: MenuItem) => {
@@ -43,12 +45,11 @@ const FriendSearchGroup = ({ groups = [] }: Props) => {
   const onAddUser = async () => {
     const { data, error } = await db
       .getFriends()
-      .insert([
-        {
-          friend_id: userSelected!.value,
-          groups: { friendGroup: dayjs().format("MM/DD/YYYY") },
-        },
-      ])
+      .insert({
+        friend_id: userSelected!.value,
+        groups: { [groupName]: dayjs().format("MM/DD/YYYY") },
+      })
+      .eq("friend_id", userSelected!.value)
       .select();
     if (error) {
       console.error(error);
@@ -56,7 +57,7 @@ const FriendSearchGroup = ({ groups = [] }: Props) => {
     }
     if (data) {
       setIsOpen(false);
-      setFriendGroup("");
+      setGroupName("");
     }
   };
 
@@ -86,7 +87,7 @@ const FriendSearchGroup = ({ groups = [] }: Props) => {
           </Typography>
           <FormControl size="small" sx={{ width: "100%" }}>
             <Select
-              value={friendGroup}
+              value={groupName}
               menuItems={groupMenuItem}
               onChange={onGroupSelected}
             />

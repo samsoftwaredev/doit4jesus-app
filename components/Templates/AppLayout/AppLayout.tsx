@@ -18,7 +18,7 @@ interface Props {
 
 const menuItems = [
   { url: "/app/dashboard", label: "Dashboard", icon: <TableChartIcon /> },
-  // { url: "/app/soldiers", label: "Church Militant", icon: <SoldierIcon /> },
+  // { url: "/app/soldiers", label: "Militant Church", icon: <SoldierIcon /> },
   { url: "/app", label: "All Events", icon: <GridViewIcon /> },
   { url: "/app/live-event", label: "Live Event", icon: <CellTowerIcon /> },
   // {

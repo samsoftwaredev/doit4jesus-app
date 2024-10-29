@@ -1,18 +1,20 @@
-import { Box, Card, Typography } from "@mui/material";
-import { css } from "@/utils/helpers";
-import styles from "./eventSection.module.scss";
-import { DataEvent, EventMessages, VideoEvent } from "@/interfaces/index";
-import moment from "moment";
-import { useUserContext } from "@/context/UserContext";
-import ChatTextbox from "@/components/ChatTextbox/ChatTextbox";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
+import { Box, Card, Typography } from "@mui/material";
+import { RealtimeChannel } from "@supabase/supabase-js";
+import moment from "moment";
+
+import { css } from "@/utils/helpers";
+import { DataEvent, EventMessages, VideoEvent } from "@/interfaces/index";
+import { useUserContext } from "@/context/UserContext";
 import { db, supabase } from "@/class/SupabaseDB";
 import { normalizeEventMessages } from "@/utils/normalizers";
+import ChatTextbox from "@/components/ChatTextbox/ChatTextbox";
 import ChatList from "@/components/ChatList";
-import { RealtimeChannel } from "@supabase/supabase-js";
 import { EventMessagesDB } from "@/interfaces/databaseTable";
 import { Json } from "@/interfaces/database";
+
+import styles from "./eventSection.module.scss";
 import DeleteMessageDialog from "./DeleteMessageDialog";
 
 interface Props {
@@ -95,7 +97,7 @@ const EventSection = ({ videoEvent }: Props) => {
             }
           }
           setMessages(msgs);
-        }
+        },
       )
       .subscribe();
     channel.current = eventMessages;
@@ -140,7 +142,7 @@ const EventSection = ({ videoEvent }: Props) => {
   const handleReport = async (messageId: string) => {
     // TODO: update database
     toast.success(
-      "Thanks for keeping our community safe. We are reviewing the comment."
+      "Thanks for keeping our community safe. We are reviewing the comment.",
     );
   };
 

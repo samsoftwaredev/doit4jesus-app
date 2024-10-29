@@ -32,14 +32,14 @@ class Rosary {
   };
 
   public getAudio = (
-    language: INTERFACE_LANGUAGES = INTERFACE_LANGUAGES.en
+    language: INTERFACE_LANGUAGES = INTERFACE_LANGUAGES.en,
   ): string => {
     const mystery = this.mysteryName as INTERFACE_ROSARY_MYSTERIES;
     return ROSARY_AUDIOS[mystery][language];
   };
 
   public getRosaryState = (
-    language: INTERFACE_LANGUAGES = INTERFACE_LANGUAGES.en
+    language: INTERFACE_LANGUAGES = INTERFACE_LANGUAGES.en,
   ): INTERFACE_ROSARY_STATE => {
     const subTitle = `The ${capitalizeFirstLetter(this.mysteryName)} Mysteries`;
     return {

@@ -5,7 +5,11 @@ interface Props {
 }
 
 const Card = ({ children }: Props) => {
-  return <div className={styles.container}>{children}</div>;
+  return (
+    <div className={styles.container}>
+      <div className={styles.content}>{children}</div>
+    </div>
+  );
 };
 
 export default Card;

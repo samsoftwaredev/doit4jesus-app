@@ -69,7 +69,7 @@ const ProgressLevelsSection = () => {
           justifyContent="space-between"
         >
           <Box display="flex" flexDirection="column" alignItems="center" my={2}>
-            <Typography>Current Level</Typography>
+            <Typography>Your Level</Typography>
             <RosaryLevel levelNum={currentLevel.levelNum} />
             <RosaryLevelInfo
               requirement={currentLevel.requirement}

@@ -3,23 +3,24 @@ import Logo from "../Logo";
 import { Box, CircularProgress } from "@mui/material";
 
 interface Props {
-  isPage?: boolean;
+  isFeature?: boolean;
 }
 
-const Loading = ({ isPage = true }: Props) => {
-  if (isPage) {
+const Loading = ({ isFeature = false }: Props) => {
+  if (isFeature) {
     return (
-      <Box className={styles.container}>
-        <Box className={styles.content}>
-          <Logo type="white" />
-          <CircularProgress sx={{ px: "1em" }} color="secondary" />
-        </Box>
+      <Box display="flex" justifyContent="center" alignItems="center">
+        <CircularProgress color="secondary" />
       </Box>
     );
   }
+
   return (
-    <Box sx={{ width: "100%", display: "flex", justifyContent: "center" }}>
-      <CircularProgress color="secondary" />
+    <Box className={styles.container}>
+      <Box className={styles.content}>
+        <Logo type="white" />
+        <CircularProgress sx={{ px: "1em" }} color="secondary" />
+      </Box>
     </Box>
   );
 };

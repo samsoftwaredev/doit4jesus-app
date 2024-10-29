@@ -1,12 +1,11 @@
 .container {
-  border-radius: 10px;
-  padding: 20px;
-  overflow: hidden;
+  height: 100%;
   color: $white;
   background-color: $primaryMain;
+  border-radius: 10px;
 }
 
-.description {
-  height: 50px;
-  text-overflow: ellipsis;
+.content {
+  padding: 20px;
+  overflow: hidden;
 }

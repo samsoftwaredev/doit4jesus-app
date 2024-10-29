@@ -55,7 +55,7 @@ const levels = [
 
 const getCurrentLevel = (numRosaryCompleted: number) => {
   const nextLevelIndex = levels.findIndex(
-    (level) => numRosaryCompleted < level.requirement
+    (level) => numRosaryCompleted < level.requirement,
   );
   if (nextLevelIndex - 1 >= 0) {
     const currentLevelIndex = nextLevelIndex - 1;

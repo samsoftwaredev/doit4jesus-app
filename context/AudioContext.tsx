@@ -9,12 +9,14 @@ import {
 } from "react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/router";
+
 import { YouTubeVideo } from "@/components";
 import {
   INTERFACE_AUDIO_STATE,
   INTERFACE_AUDIO_PROPS,
   INTERFACE_AUDIO_SEEK,
 } from "@/interfaces";
+
 import { NAV_APP_LINKS } from "../constants";
 
 type FunctionCallback = undefined | Function;
@@ -58,7 +60,7 @@ const AudioContextProvider = ({
   const [audioProgress, setAudioProgress] = useState(0);
   const [audioState, setAudioState] = useState(INTERFACE_AUDIO_STATE.PAUSED);
   const [audioTimer, setAudioTimer] = useState<INTERFACE_AUDIO_SEEK>(
-    INTERFACE_AUDIO_SEEK.NEUTRAL
+    INTERFACE_AUDIO_SEEK.NEUTRAL,
   );
 
   const toggleIsAudioMute = () => {

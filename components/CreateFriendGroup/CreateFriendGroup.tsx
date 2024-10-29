@@ -107,18 +107,16 @@ const CreateFriendGroup = () => {
   };
 
   return (
-    <>
-      <Box
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <IconButton onClick={openDialog} color="success" size="large">
-          <CreateIcon sx={{ fontSize: "4em" }} />
-        </IconButton>
-        <Typography>Create Group</Typography>
-      </Box>
+    <Box
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+      alignItems="center"
+    >
+      <IconButton onClick={openDialog} color="success" size="large">
+        <CreateIcon sx={{ fontSize: "4em" }} />
+      </IconButton>
+      <Typography>Create Group</Typography>
       <Dialog
         maxWidth="sm"
         open={isOpen}
@@ -127,7 +125,7 @@ const CreateFriendGroup = () => {
       >
         <CreateGroupForm onSubmitted={onCreateGroup} />
       </Dialog>
-    </>
+    </Box>
   );
 };
 

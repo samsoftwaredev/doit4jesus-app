@@ -27,7 +27,7 @@ const ChatList = ({
   const [isEditMode, setIsEditMode] = useState(false);
   const { user } = useUserContext();
   const [numLikes, setNumLikes] = useState(
-    messagesLikes ? Object.values(messagesLikes).length : 0
+    messagesLikes ? Object.values(messagesLikes).length : 0,
   );
   // @ts-ignore
   const prevLikes: { [key: string]: Json | undefined } =

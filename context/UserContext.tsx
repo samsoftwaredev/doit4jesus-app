@@ -1,6 +1,7 @@
 import { db, supabase } from "classes/SupabaseDB";
 import { Session } from "@supabase/supabase-js";
-import { normalizeUserProfile } from "@/utils";
+import { toast } from "react-toastify";
+import { useRouter } from "next/router";
 import {
   Dispatch,
   SetStateAction,
@@ -10,11 +11,12 @@ import {
   useMemo,
   useState,
 } from "react";
-import { User } from "../interfaces";
+
 import { Loading } from "@/components";
-import { useRouter } from "next/router";
+import { normalizeUserProfile } from "@/utils";
+
+import { User } from "../interfaces";
 import { NAV_MAIN_LINKS } from "../constants";
-import { toast } from "react-toastify";
 
 interface UserContext {
   user: User | null | undefined;
@@ -48,7 +50,7 @@ const UserContextProvider = ({ children }: Props) => {
   const [isLoading, setIsLoading] = useState(true);
 
   const getProfile = async (
-    userSession: Session | null
+    userSession: Session | null,
   ): Promise<User | undefined> => {
     setIsLoading(true);
     try {
@@ -109,10 +111,10 @@ const UserContextProvider = ({ children }: Props) => {
       setUser,
       getProfile,
     }),
-    [user]
+    [user, setUser],
   );
 
-  if (isLoading) return <Loading isPage={true} />;
+  if (isLoading) return <Loading />;
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };

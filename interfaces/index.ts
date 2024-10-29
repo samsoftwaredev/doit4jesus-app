@@ -145,6 +145,7 @@ export interface FriendProfile {
   firstName: string;
   lastName: string;
   pictureUrl: string | null;
+  rosaryCount: number;
 }
 
 export interface EventMessages {

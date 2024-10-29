@@ -33,11 +33,9 @@ const FriendsSection = () => {
   const currentLevel = getCurrentLevel(numRosariesCompleted);
 
   const getMyGroups = async () => {
-    let { data, error } = await db
-      .getGroups()
-      .select("*")
-      .eq("user_id", user!.userId);
+    let { data, error } = await db.getGroups().select("*");
     if (error) {
+      console.error(error);
       toast.error("Unable to retrieve groups");
     }
     if (data) {
@@ -61,10 +59,7 @@ const FriendsSection = () => {
 
   const getFriendsByGroups = async () => {
     await getMyGroups();
-    let { data, error } = await db
-      .getFriends()
-      .select("*")
-      .eq("user_id", user!.userId);
+    let { data, error } = await db.getFriends().select("*");
     if (error) {
       console.error(error);
       toast.error("Unable to retrieve group of friends");
@@ -82,16 +77,16 @@ const FriendsSection = () => {
     getFriendsByGroups();
   }, []);
 
-  if (isLoading) {
-    return <Loading isPage />;
-  }
-
   return (
     <Container className="container-box" maxWidth="md">
       <Box className={styles.container}>
         <div className={styles.SearchFriend}>
           <Card>
-            <FriendSearchGroup groups={groups} />
+            {isLoading ? (
+              <Loading isFeature />
+            ) : (
+              <FriendSearchGroup groups={groups} />
+            )}
           </Card>
         </div>
         <div className={styles.TodaysChallenge}>
@@ -124,11 +119,19 @@ const FriendsSection = () => {
             </Box>
           </Card>
         </div>
-        <div className={styles.Groups}>
-          <Card>
-            <FriendGroup groups={groups} friendGroups={friendGroups} />
-          </Card>
-        </div>
+        {isLoading ? (
+          <Loading isFeature />
+        ) : (
+          groups?.map((group) => {
+            return (
+              <div key={group.id}>
+                <Card>
+                  <FriendGroup group={group} friendGroups={friendGroups} />
+                </Card>
+              </div>
+            );
+          })
+        )}
         <div className={styles.CreateGroups}>
           <Card>
             <CreateFriendGroup />

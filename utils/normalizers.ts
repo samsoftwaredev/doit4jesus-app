@@ -119,6 +119,7 @@ export const normalizeFriendProfile = (
     first_name: string;
     last_name: string;
     picture_url: string | null;
+    rosary_count: number;
   }[]
 ): FriendProfile[] => {
   return userProfile.map((u) => {
@@ -127,6 +128,7 @@ export const normalizeFriendProfile = (
       firstName: nullToString(u.first_name),
       lastName: nullToString(u.last_name),
       pictureUrl: nullToString(u.picture_url),
+      rosaryCount: u.rosary_count,
     };
   });
 };
