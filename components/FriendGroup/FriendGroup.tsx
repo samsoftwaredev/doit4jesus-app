@@ -35,7 +35,7 @@ const FriendGroup = ({ group, friendGroups = [] }: Props) => {
 
   const members = useMemo(() => getGroupMembers(id), [id]).slice(
     0,
-    maxNumberOfUsers
+    maxNumberOfUsers,
   );
 
   return (

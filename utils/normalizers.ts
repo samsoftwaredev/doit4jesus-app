@@ -74,7 +74,7 @@ export const normalizeVideo = (dataList: YouTubeDB[]): VideoEvent[] => {
 
 export const normalizeUserProfile = (
   userProfile: ProfilesDB,
-  rosaryStats: RosaryStatsDB[] | null
+  rosaryStats: RosaryStatsDB[] | null,
 ): User => {
   const generateRosaryCount = (stats: RosaryStatsDB[] | null) => {
     if (stats === null) {
@@ -91,7 +91,7 @@ export const normalizeUserProfile = (
     }));
 
     const todaysRosaryCompleted = stats.find(
-      (s) => formatDate(s.completed_at) === formatDate()
+      (s) => formatDate(s.completed_at) === formatDate(),
     );
 
     return {
@@ -120,7 +120,7 @@ export const normalizeFriendProfile = (
     last_name: string;
     picture_url: string | null;
     rosary_count: number;
-  }[]
+  }[],
 ): FriendProfile[] => {
   return userProfile.map((u) => {
     return {
@@ -146,7 +146,7 @@ type EventMessagesJoinActions = EventMessagesDB & {
 };
 
 export const normalizeEventMessages = (
-  data: EventMessagesJoinActions[]
+  data: EventMessagesJoinActions[],
 ): EventMessages[] => {
   return data.map((message) => ({
     firstName: message.first_name,
@@ -198,7 +198,7 @@ export const normalizeGroups = (groupList: GroupsDB[]): GroupItem[] => {
 };
 
 export const normalizeFriendsGroups = (
-  groupList: FriendsGroupsDB[]
+  groupList: FriendsGroupsDB[],
 ): FriendsGroupItem[] => {
   return groupList.map((f) => ({
     friendId: f.friend_id,

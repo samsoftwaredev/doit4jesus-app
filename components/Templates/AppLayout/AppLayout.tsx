@@ -46,7 +46,7 @@ const AppLayout = ({ children }: Props) => {
 
   const pageTitle = useMemo(
     () => menuItems.find((menu) => menu.url === navigate.pathname),
-    [navigate.pathname]
+    [navigate.pathname],
   );
 
   return (
@@ -65,7 +65,7 @@ const AppLayout = ({ children }: Props) => {
           component="menu"
           className={css(
             styles.sideNavbar,
-            drawerOpen ? styles.sideNavbarOpen : styles.sideNavbarClose
+            drawerOpen ? styles.sideNavbarOpen : styles.sideNavbarClose,
           )}
         >
           <SideNavbar
