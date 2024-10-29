@@ -33,11 +33,7 @@ const App: NextPage = () => {
 
   return (
     <AppLayout>
-      {isLoading ? (
-        <Loading isPage={false} />
-      ) : (
-        <AllEventSection events={events} />
-      )}
+      {isLoading ? <Loading /> : <AllEventSection events={events} />}
     </AppLayout>
   );
 };

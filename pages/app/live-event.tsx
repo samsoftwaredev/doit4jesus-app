@@ -65,7 +65,7 @@ const LiveEvent: NextPage = () => {
   if (isLoading) {
     return (
       <AppLayout>
-        <Loading isPage={false} />
+        <Loading />
       </AppLayout>
     );
   }

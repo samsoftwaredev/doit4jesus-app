@@ -65,7 +65,7 @@ const TopNavbar = ({ handleMenu }: Props) => {
   if (isLoading) {
     return (
       <AppLayout>
-        <Loading isPage />
+        <Loading />
       </AppLayout>
     );
   }

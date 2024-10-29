@@ -59,7 +59,7 @@ function ResourcesPost() {
     getArticle();
   }, []);
 
-  if (isLoading) return <Loading isPage={false} />;
+  if (isLoading) return <Loading />;
 
   if (!article?.content) return <PageNotFound />;
 

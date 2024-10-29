@@ -65,7 +65,7 @@ const SignUp = () => {
   };
 
   if (isLoading) {
-    return <Loading isPage={false} />;
+    return <Loading />;
   }
 
   if (isSuccessfulSigUp) {

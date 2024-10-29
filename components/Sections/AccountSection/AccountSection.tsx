@@ -29,7 +29,7 @@ const AccountSection = () => {
   };
 
   if (loading) {
-    return <Loading isPage={true} />;
+    return <Loading />;
   }
 
   return (
