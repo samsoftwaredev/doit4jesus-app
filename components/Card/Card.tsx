@@ -1,4 +1,4 @@
-import styles from "./card.module.scss";
+import styles from './card.module.scss';
 
 interface Props {
   children: JSX.Element | JSX.Element[] | string;

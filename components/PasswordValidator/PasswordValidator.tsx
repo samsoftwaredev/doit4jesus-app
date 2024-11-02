@@ -1,8 +1,9 @@
-import { Box, Typography } from "@mui/material";
-import CheckIcon from "@mui/icons-material/Check";
-import CloseIcon from "@mui/icons-material/Close";
-import { digitRegEx, specialCharsRegEx } from "@/utils/regEx";
-import { minPasswordLength } from "@/constants/global";
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
+import { Box, Typography } from '@mui/material';
+
+import { minPasswordLength } from '@/constants/global';
+import { digitRegEx, specialCharsRegEx } from '@/utils/regEx';
 
 interface Props {
   password: string;
@@ -11,7 +12,7 @@ interface Props {
 }
 
 const ValidationCheck = ({ isValid }: { isValid: boolean }) => (
-  <Box component="span" sx={{ verticalAlign: "middle", lineHeight: "18px" }}>
+  <Box component="span" sx={{ verticalAlign: 'middle', lineHeight: '18px' }}>
     {isValid ? <CheckIcon color="success" /> : <CloseIcon color="error" />}
   </Box>
 );
@@ -23,19 +24,19 @@ const PasswordValidator = ({
 }: Props) => {
   const lengthIsValid = {
     regEx: password.length >= minPasswordLength,
-    text: "Has 8 characters or more",
+    text: 'Has 8 characters or more',
   };
   const hasSpecialCharacters = {
     regex: specialCharsRegEx.test(password),
-    text: "Has special characters",
+    text: 'Has special characters',
   };
   const hasNumbersCharacters = {
     regex: digitRegEx.test(password),
-    text: "Has numbers",
+    text: 'Has numbers',
   };
   const passwordMatch = {
-    regex: password !== "" && password === confirmPassword,
-    text: "Password match",
+    regex: password !== '' && password === confirmPassword,
+    text: 'Password match',
   };
 
   if (comparePasswords) {

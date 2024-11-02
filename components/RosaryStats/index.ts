@@ -1,1 +1,1 @@
-export { default } from "./RosaryStats";
+export { default } from './RosaryStats';

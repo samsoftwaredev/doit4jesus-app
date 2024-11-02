@@ -1,1 +1,1 @@
-export { default } from "./CardDeck";
+export { default } from './CardDeck';

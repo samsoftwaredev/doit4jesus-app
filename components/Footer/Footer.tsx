@@ -1,10 +1,12 @@
-import styles from "./footer.module.scss";
-import { useRouter } from "next/router";
-import { NAV_FOOTER_LINKS, NAV_MAIN_LINKS } from "@/constants";
-import { Button, Container } from "@mui/material";
-import Logo from "../Logo/Logo";
-import { YouTubeSubscribe } from "../YouTubeVideo";
-import Link from "next/link";
+import { Button, Container } from '@mui/material';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+
+import { NAV_FOOTER_LINKS, NAV_MAIN_LINKS } from '@/constants';
+
+import Logo from '../Logo/Logo';
+import { YouTubeSubscribe } from '../YouTubeVideo';
+import styles from './footer.module.scss';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();

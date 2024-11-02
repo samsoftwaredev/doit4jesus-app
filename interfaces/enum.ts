@@ -1,4 +1,4 @@
 export enum GENDER_TYPES {
-  male = "male",
-  female = "female",
+  male = 'male',
+  female = 'female',
 }

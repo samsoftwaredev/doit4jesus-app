@@ -1,12 +1,14 @@
-import styles from "./ocean.module.scss";
-import eucharistColumn from "@/public/assets/images/dream/eucharist-column.svg";
-import maryColumn from "@/public/assets/images/dream/mary-column.svg";
-import ship from "@/public/assets/images/dream/ship.svg";
-import { css } from "@/utils/helpers";
-import Image from "next/image";
-import Link from "next/link";
-import Pulse from "../Pulse";
-import { NAV_APP_LINKS } from "@/constants/nav";
+import Image from 'next/image';
+import Link from 'next/link';
+
+import { NAV_APP_LINKS } from '@/constants/nav';
+import eucharistColumn from '@/public/assets/images/dream/eucharist-column.svg';
+import maryColumn from '@/public/assets/images/dream/mary-column.svg';
+import ship from '@/public/assets/images/dream/ship.svg';
+import { css } from '@/utils/helpers';
+
+import Pulse from '../Pulse';
+import styles from './ocean.module.scss';
 
 const Ocean = () => {
   return (

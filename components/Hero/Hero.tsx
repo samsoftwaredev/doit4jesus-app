@@ -1,10 +1,12 @@
-import Image from "next/image";
-import { Box, Button, Container, Typography } from "@mui/material";
-import smartPhoneHand from "@/public/assets/images/hero/smartPhoneHand.svg";
-import { NAV_MAIN_LINKS } from "@/constants/nav";
-import { css } from "@/utils";
-import styles from "./hero.module.scss";
-import Link from "next/link";
+import { Box, Button, Container, Typography } from '@mui/material';
+import Image from 'next/image';
+import Link from 'next/link';
+
+import { NAV_MAIN_LINKS } from '@/constants/nav';
+import smartPhoneHand from '@/public/assets/images/hero/smartPhoneHand.svg';
+import { css } from '@/utils';
+
+import styles from './hero.module.scss';
 
 const Hero = () => {
   return (
@@ -13,19 +15,19 @@ const Hero = () => {
         <Box className={styles.header}>
           <Typography
             component="h1"
-            className={css(styles.title, "sectionTitle")}
+            className={css(styles.title, 'sectionTitle')}
           >
             Find Peace In The Rosary
           </Typography>
           <Typography
             mb={2}
             component="h5"
-            className={css(styles.subTitle, "sectionSubTitle")}
+            className={css(styles.subTitle, 'sectionSubTitle')}
           >
             Pray with millions around the world and multiply your blessings
           </Typography>
           <Link
-            style={{ padding: "1em 0" }}
+            style={{ padding: '1em 0' }}
             passHref
             href={NAV_MAIN_LINKS.signup.link}
           >

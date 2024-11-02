@@ -1,9 +1,11 @@
-import { Box } from "@mui/material";
-import moment from "moment";
-import { useEffect, useState } from "react";
-import styles from "./countdownDate.module.scss";
-import { css } from "@/utils/helpers";
-import CircleIcon from "@mui/icons-material/Circle";
+import CircleIcon from '@mui/icons-material/Circle';
+import { Box } from '@mui/material';
+import moment from 'moment';
+import { useEffect, useState } from 'react';
+
+import { css } from '@/utils/helpers';
+
+import styles from './countdownDate.module.scss';
 
 interface Props {
   targetTime: Date;
@@ -13,7 +15,7 @@ const CountdownDate = ({ targetTime }: Props) => {
   const [intervalId, setIntervalId] = useState<undefined | any>();
   const [currentTime, setCurrentTime] = useState(moment());
   const timeRemaining = moment.duration(moment(targetTime).diff(currentTime));
-  const isNotLive = moment(currentTime) > moment(targetTime).add(1, "h");
+  const isNotLive = moment(currentTime) > moment(targetTime).add(1, 'h');
 
   // calculate time remaining
   const showYears = timeRemaining.years() > 0;
@@ -71,7 +73,7 @@ const CountdownDate = ({ targetTime }: Props) => {
 
   return (
     <Box className={css(styles.pill, styles.error)}>
-      <CircleIcon sx={{ fontSize: "1em" }} />
+      <CircleIcon sx={{ fontSize: '1em' }} />
       &nbsp;Live
     </Box>
   );

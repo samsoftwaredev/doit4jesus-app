@@ -1,8 +1,8 @@
-import { AccountCircle } from "@mui/icons-material";
-import { Box, Tooltip } from "@mui/material";
-import Image from "next/image";
+import { AccountCircle } from '@mui/icons-material';
+import { Box, Tooltip } from '@mui/material';
+import Image from 'next/image';
 
-import styles from "./userBubble.module.scss";
+import styles from './userBubble.module.scss';
 
 interface Props {
   userName: string;
@@ -23,7 +23,7 @@ const UserBubble = ({ userName, userPicture, isOnline = false }: Props) => {
               height={20}
               src={userPicture}
               alt={userName}
-              style={{ borderRadius: "50%" }}
+              style={{ borderRadius: '50%' }}
             />
           ) : (
             <AccountCircle />

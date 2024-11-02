@@ -1,21 +1,21 @@
-import { useEffect, useRef, useState } from "react";
-import { toast } from "react-toastify";
-import { Box, Card, Typography } from "@mui/material";
-import { RealtimeChannel } from "@supabase/supabase-js";
-import moment from "moment";
+import { Box, Card, Typography } from '@mui/material';
+import { RealtimeChannel } from '@supabase/supabase-js';
+import moment from 'moment';
+import { useEffect, useRef, useState } from 'react';
+import { toast } from 'react-toastify';
 
-import { css } from "@/utils/helpers";
-import { DataEvent, EventMessages, VideoEvent } from "@/interfaces/index";
-import { useUserContext } from "@/context/UserContext";
-import { db, supabase } from "@/class/SupabaseDB";
-import { normalizeEventMessages } from "@/utils/normalizers";
-import ChatTextbox from "@/components/ChatTextbox/ChatTextbox";
-import ChatList from "@/components/ChatList";
-import { EventMessagesDB } from "@/interfaces/databaseTable";
-import { Json } from "@/interfaces/database";
+import { db, supabase } from '@/class/SupabaseDB';
+import ChatList from '@/components/ChatList';
+import ChatTextbox from '@/components/ChatTextbox/ChatTextbox';
+import { useUserContext } from '@/context/UserContext';
+import { Json } from '@/interfaces/database';
+import { EventMessagesDB } from '@/interfaces/databaseTable';
+import { DataEvent, EventMessages, VideoEvent } from '@/interfaces/index';
+import { css } from '@/utils/helpers';
+import { normalizeEventMessages } from '@/utils/normalizers';
 
-import styles from "./eventSection.module.scss";
-import DeleteMessageDialog from "./DeleteMessageDialog";
+import DeleteMessageDialog from './DeleteMessageDialog';
+import styles from './eventSection.module.scss';
 
 interface Props {
   videoEvent: VideoEvent & DataEvent;
@@ -37,13 +37,13 @@ const EventSection = ({ videoEvent }: Props) => {
     const { data, error } = await db
       .getEventMessages()
       .select(joinTables)
-      .order("created_at", { ascending: false })
-      .eq("event_id", id);
+      .order('created_at', { ascending: false })
+      .eq('event_id', id);
     if (!error) {
       return normalizeEventMessages(data);
     } else {
       console.error(error);
-      toast.error("Unable to retrieve messages");
+      toast.error('Unable to retrieve messages');
     }
   };
 
@@ -61,7 +61,7 @@ const EventSection = ({ videoEvent }: Props) => {
       .select();
     if (error) {
       console.error(error);
-      toast.error("Unable to send message");
+      toast.error('Unable to send message');
     }
   };
 
@@ -69,8 +69,8 @@ const EventSection = ({ videoEvent }: Props) => {
     const eventMessages = await supabase
       .channel(`event-id-${videoEvent.eventId}-messages`)
       .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "event_messages" },
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'event_messages' },
         (payload) => {
           const msgs = messages ? [...messages] : [];
           const newMessage = payload.new as EventMessagesDB;
@@ -78,26 +78,26 @@ const EventSection = ({ videoEvent }: Props) => {
           if (normalizedMessages[0].eventId !== videoEvent.eventId) return;
 
           switch (payload.eventType) {
-            case "INSERT": {
+            case 'INSERT': {
               msgs.unshift(normalizedMessages[0]);
               setMessages(msgs);
               break;
             }
 
-            case "UPDATE": {
+            case 'UPDATE': {
               const index = msgs.findIndex(({ id }) => id === newMessage.id);
               if (index > -1) msgs.splice(index, 1, normalizedMessages[0]);
               break;
             }
 
-            case "DELETE":
+            case 'DELETE':
             default: {
               const index = msgs.findIndex(({ id }) => id === newMessage.id);
               if (index > -1) msgs.splice(index, 1);
             }
           }
           setMessages(msgs);
-        },
+        }
       )
       .subscribe();
     channel.current = eventMessages;
@@ -121,9 +121,9 @@ const EventSection = ({ videoEvent }: Props) => {
       .update({
         deleted_at: new Date().toISOString(),
       })
-      .eq("id", messageId)
+      .eq('id', messageId)
       .select();
-    if (error) toast.error("Unable to delete message");
+    if (error) toast.error('Unable to delete message');
     if (data) handleCloseDeleteDialog();
   };
 
@@ -134,15 +134,15 @@ const EventSection = ({ videoEvent }: Props) => {
         message: newMessage,
         updated_at: new Date().toISOString(),
       })
-      .eq("id", messageId)
+      .eq('id', messageId)
       .select();
-    if (error) toast.error("Unable to update message");
+    if (error) toast.error('Unable to update message');
   };
 
   const handleReport = async (messageId: string) => {
     // TODO: update database
     toast.success(
-      "Thanks for keeping our community safe. We are reviewing the comment.",
+      'Thanks for keeping our community safe. We are reviewing the comment.'
     );
   };
 
@@ -151,7 +151,7 @@ const EventSection = ({ videoEvent }: Props) => {
       .getEventMessagesActions()
       .upsert({ likes, id: messageId })
       .select();
-    if (error) toast.error("Unable to complete the action.");
+    if (error) toast.error('Unable to complete the action.');
   };
 
   const handleCloseDeleteDialog = () => {
@@ -182,7 +182,7 @@ const EventSection = ({ videoEvent }: Props) => {
           frameBorder={0} // don't remove this attribute
         />
       </Box>
-      <Card className={css(styles.eventDetails, "appCard")}>
+      <Card className={css(styles.eventDetails, 'appCard')}>
         <Box display="flex" gap={1} className={styles.eventHeader}>
           <Typography component="h1">{videoEvent.title}</Typography>
           {/* <Box sx={{ flexGrow: 1 }} />
@@ -209,7 +209,7 @@ const EventSection = ({ videoEvent }: Props) => {
         </Typography>
         <Typography fontWeight="light">{videoEvent.description}</Typography>
       </Card>
-      <Card className={css(styles.eventDetails, "appCard")}>
+      <Card className={css(styles.eventDetails, 'appCard')}>
         <Typography fontWeight="bold" component="h4" variant="h4">
           <span>{numberOfPrayers > 1 ? numberOfPrayers : null} Prayers</span>
         </Typography>

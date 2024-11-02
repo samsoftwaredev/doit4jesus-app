@@ -1,23 +1,23 @@
+import { usePathname } from 'next/navigation';
+import { useRouter } from 'next/router';
 import {
-  createContext,
   Dispatch,
   MouseEventHandler,
   SetStateAction,
+  createContext,
   useContext,
   useEffect,
   useState,
-} from "react";
-import { usePathname } from "next/navigation";
-import { useRouter } from "next/router";
+} from 'react';
 
-import { YouTubeVideo } from "@/components";
+import { YouTubeVideo } from '@/components';
 import {
-  INTERFACE_AUDIO_STATE,
   INTERFACE_AUDIO_PROPS,
   INTERFACE_AUDIO_SEEK,
-} from "@/interfaces";
+  INTERFACE_AUDIO_STATE,
+} from '@/interfaces';
 
-import { NAV_APP_LINKS } from "../constants";
+import { NAV_APP_LINKS } from '../constants';
 
 type FunctionCallback = undefined | Function;
 
@@ -60,7 +60,7 @@ const AudioContextProvider = ({
   const [audioProgress, setAudioProgress] = useState(0);
   const [audioState, setAudioState] = useState(INTERFACE_AUDIO_STATE.PAUSED);
   const [audioTimer, setAudioTimer] = useState<INTERFACE_AUDIO_SEEK>(
-    INTERFACE_AUDIO_SEEK.NEUTRAL,
+    INTERFACE_AUDIO_SEEK.NEUTRAL
   );
 
   const toggleIsAudioMute = () => {
@@ -89,7 +89,7 @@ const AudioContextProvider = ({
 
   useEffect(() => {
     const videoNearCompletion = audioProgress > 85;
-    if (videoNearCompletion && typeof onCompletedCallback === "function") {
+    if (videoNearCompletion && typeof onCompletedCallback === 'function') {
       onCompletedCallback();
       onResetAudio();
     }
@@ -144,7 +144,7 @@ const AudioContextProvider = ({
 const useAudioContext = () => {
   const context = useContext(AudioContext);
   if (context === undefined) {
-    throw new Error("useAudioContext must be used within a ContextProvider");
+    throw new Error('useAudioContext must be used within a ContextProvider');
   }
   return context;
 };

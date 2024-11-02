@@ -1,1 +1,1 @@
-export { default } from "./AudioPrevious";
+export { default } from './AudioPrevious';

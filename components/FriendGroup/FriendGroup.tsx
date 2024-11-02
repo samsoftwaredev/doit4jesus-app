@@ -1,11 +1,12 @@
-import { useMemo } from "react";
-import { Box, Button, IconButton, Tooltip, Typography } from "@mui/material";
-import CreateIcon from "@mui/icons-material/ControlPoint";
+import CreateIcon from '@mui/icons-material/ControlPoint';
+import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material';
+import { useMemo } from 'react';
 
-import { FriendProfile, FriendsGroupItem, GroupItem } from "@/interfaces/index";
-import { sessionFriendsKey } from "@/constants/global";
+import { sessionFriendsKey } from '@/constants/global';
+import { FriendProfile, FriendsGroupItem, GroupItem } from '@/interfaces/index';
 
-import UserBubble from "../UserBubble";
+import UserBubble from '../UserBubble';
+
 interface Props {
   group: GroupItem;
   friendGroups?: FriendsGroupItem[];
@@ -35,7 +36,7 @@ const FriendGroup = ({ group, friendGroups = [] }: Props) => {
 
   const members = useMemo(() => getGroupMembers(id), [id]).slice(
     0,
-    maxNumberOfUsers,
+    maxNumberOfUsers
   );
 
   return (
@@ -59,9 +60,9 @@ const FriendGroup = ({ group, friendGroups = [] }: Props) => {
           <Box ml={3} mt={1} key={friendId} display="flex" gap={1}>
             <UserBubble
               userName={`${friendData?.firstName} ${friendData?.lastName}`}
-              userPicture={friendData?.pictureUrl ?? ""}
+              userPicture={friendData?.pictureUrl ?? ''}
             />
-            {friendData?.firstName} {friendData?.lastName} -{" "}
+            {friendData?.firstName} {friendData?.lastName} -{' '}
             {friendData?.rosaryCount}
           </Box>
         );

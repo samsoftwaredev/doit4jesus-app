@@ -1,8 +1,9 @@
-import { Rosary } from "@/class/Rosary";
-import { db } from "@/class/SupabaseDB";
-import { NAV_APP_LINKS } from "@/constants/nav";
-import { Button, Typography } from "@mui/material";
-import { useRouter } from "next/router";
+import { Button, Typography } from '@mui/material';
+import { useRouter } from 'next/router';
+
+import { Rosary } from '@/class/Rosary';
+import { db } from '@/class/SupabaseDB';
+import { NAV_APP_LINKS } from '@/constants/nav';
 
 const TodayRosary = () => {
   const navigate = useRouter();
@@ -13,8 +14,8 @@ const TodayRosary = () => {
     const rosaryId = rosary.getRosaryState().mysteryAudio;
     let { data, error } = await db
       .getYouTubeVideo()
-      .select("*")
-      .eq("video_id", rosaryId);
+      .select('*')
+      .eq('video_id', rosaryId);
     if (data) return data[0];
     console.error(error);
   };
@@ -22,8 +23,8 @@ const TodayRosary = () => {
   const getEvents = async (id: string) => {
     let { data, error } = await db
       .getEvents()
-      .select("*")
-      .eq("event_source", id);
+      .select('*')
+      .eq('event_source', id);
     if (data) return data[0];
     console.error(error);
   };

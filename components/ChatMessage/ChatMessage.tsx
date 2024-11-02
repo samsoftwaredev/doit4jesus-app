@@ -1,10 +1,10 @@
-import moment from "moment";
+import { Box, Typography } from '@mui/material';
+import moment from 'moment';
 
-import { theme } from "@/styles/mui-overwrite";
-import { dollarFormatter } from "@/utils/helpers";
-import { Box, Typography } from "@mui/material";
+import { theme } from '@/styles/mui-overwrite';
+import { dollarFormatter } from '@/utils/helpers';
 
-import UserBubble from "../UserBubble";
+import UserBubble from '../UserBubble';
 
 interface Props {
   user: {
@@ -54,7 +54,7 @@ const ChatMessage = ({
         {/* <Button color="secondary" variant="text">
           Reply
         </Button> */}
-        {typeof donationAmount === "number" && (
+        {typeof donationAmount === 'number' && (
           <Typography
             color={theme.palette.success.main}
             fontWeight="bold"

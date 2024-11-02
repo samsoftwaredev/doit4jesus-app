@@ -1,21 +1,21 @@
-import Link from "next/link";
-import * as React from "react";
+import { Close } from '@mui/icons-material';
 import {
+  Box,
+  Button,
+  IconButton,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
-  Box,
-  Button,
-  IconButton,
-} from "@mui/material";
-import { useRouter } from "next/router";
-import { Close } from "@mui/icons-material";
+} from '@mui/material';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 
-import { css } from "@/utils/helpers";
+import { css } from '@/utils/helpers';
 
-import styles from "./SideNavbar.module.scss";
-import { Logo } from "../..";
+import { Logo } from '../..';
+import styles from './SideNavbar.module.scss';
 
 interface Props {
   handleDrawerClose: () => void;
@@ -45,11 +45,11 @@ const SideNavbar = ({ menuItems, handleDrawerClose }: Props) => {
             href={url}
             className={css(
               styles.linkItem,
-              navigate.pathname === url ? styles.active : "",
+              navigate.pathname === url ? styles.active : ''
             )}
           >
             <ListItemIcon
-              className={navigate.pathname === url ? styles.active : ""}
+              className={navigate.pathname === url ? styles.active : ''}
             >
               {icon}
             </ListItemIcon>

@@ -1,7 +1,8 @@
-import { NAV_MAIN_LINKS } from "@/constants/nav";
-import { useUserContext } from "@/context/UserContext";
-import { useRouter } from "next/router";
-import { ReactElement, useEffect } from "react";
+import { useRouter } from 'next/router';
+import { ReactElement, useEffect } from 'react';
+
+import { NAV_MAIN_LINKS } from '@/constants/nav';
+import { useUserContext } from '@/context/UserContext';
 
 interface Props {
   children: JSX.Element | ReactElement<any, any>;

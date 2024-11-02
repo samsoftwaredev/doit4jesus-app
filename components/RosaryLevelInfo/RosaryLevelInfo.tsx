@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { Typography } from '@mui/material';
 
 interface Props {
   label: string;
@@ -12,11 +12,11 @@ const RosaryLevelInfo = ({ label, requirement }: Props) => {
         component="h2"
         fontWeight="bold"
         sx={{
-          width: "100%",
-          textAlign: "center",
+          width: '100%',
+          textAlign: 'center',
           fontSize: {
-            sm: "1.2em",
-            md: "1.5em",
+            sm: '1.2em',
+            md: '1.5em',
           },
         }}
       >
@@ -25,9 +25,9 @@ const RosaryLevelInfo = ({ label, requirement }: Props) => {
       <Typography
         fontWeight="light"
         sx={{
-          width: "100%",
-          textAlign: "center",
-          fontSize: { sm: "0.8em", md: "1em" },
+          width: '100%',
+          textAlign: 'center',
+          fontSize: { sm: '0.8em', md: '1em' },
         }}
       >
         Complete {requirement} Rosaries

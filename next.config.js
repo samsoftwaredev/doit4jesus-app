@@ -1,17 +1,17 @@
 /** @type {import('next').NextConfig} */
-const path = require("path");
+const path = require('path');
 
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ["uieyknteyflglukepcdy.supabase.co", "lh3.googleusercontent.com"],
+    domains: ['uieyknteyflglukepcdy.supabase.co', 'lh3.googleusercontent.com'],
   },
   sassOptions: {
-    includePaths: [path.join(__dirname, "styles")],
+    includePaths: [path.join(__dirname, 'styles')],
     prependData: `@import "@/styles/variable.scss";`,
   },
-  exclude: ["supabase"],
+  exclude: ['supabase'],
   webpack(config, options) {
     const { isServer } = options;
     config.module.rules.push({
@@ -19,13 +19,13 @@ const nextConfig = {
       exclude: config.exclude,
       use: [
         {
-          loader: require.resolve("url-loader"),
+          loader: require.resolve('url-loader'),
           options: {
             limit: config.inlineImageLimit,
-            fallback: require.resolve("file-loader"),
+            fallback: require.resolve('file-loader'),
             publicPath: `${config.assetPrefix}/_next/static/images/`,
-            outputPath: `${isServer ? "../" : ""}static/images/`,
-            name: "[name]-[hash].[ext]",
+            outputPath: `${isServer ? '../' : ''}static/images/`,
+            name: '[name]-[hash].[ext]',
             esModule: config.esModule || false,
           },
         },

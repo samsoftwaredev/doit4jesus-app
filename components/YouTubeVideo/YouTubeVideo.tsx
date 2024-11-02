@@ -1,13 +1,15 @@
-import { useState, useEffect, useRef, SetStateAction, Dispatch } from "react";
-import { generateRandomStringId, isClientSideRender } from "@/utils";
-import { YouTubeClass } from "classes";
+import { YouTubeClass } from 'classes';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+
+import { INITIAL_VOLUME } from '@/constants/mysteries';
 import {
   INTERFACE_AUDIO_SEEK,
   INTERFACE_AUDIO_SPEED,
   INTERFACE_AUDIO_STATE,
-} from "@/interfaces";
-import { INITIAL_VOLUME } from "@/constants/mysteries";
-import styles from "./youTubeVideo.module.scss";
+} from '@/interfaces';
+import { generateRandomStringId, isClientSideRender } from '@/utils';
+
+import styles from './youTubeVideo.module.scss';
 
 interface Props {
   id: string;
@@ -80,14 +82,14 @@ const YouTubeVideo = ({
   };
 
   const pauseVideo = () => {
-    if (typeof player?.pauseVideo === "function") {
+    if (typeof player?.pauseVideo === 'function') {
       player.pauseVideo();
       onChange(INTERFACE_AUDIO_STATE.PAUSED);
     }
   };
 
   const playVideo = () => {
-    if (typeof player?.playVideo === "function") {
+    if (typeof player?.playVideo === 'function') {
       player.playVideo();
       onChange(INTERFACE_AUDIO_STATE.PLAYING);
     }
@@ -96,10 +98,10 @@ const YouTubeVideo = ({
   const seekTo = (
     type: INTERFACE_AUDIO_SEEK,
     seconds: number = 15,
-    allowSeekAhead: Boolean = true,
+    allowSeekAhead: Boolean = true
   ) => {
     if (
-      typeof player?.seekTo === "function" &&
+      typeof player?.seekTo === 'function' &&
       type !== INTERFACE_AUDIO_SEEK.NEUTRAL
     ) {
       let newSecondsPointer = 0;
@@ -116,19 +118,19 @@ const YouTubeVideo = ({
   };
 
   const setSpeed = (suggestedRate = 1) => {
-    if (typeof player?.getPlaybackRate === "function") {
+    if (typeof player?.getPlaybackRate === 'function') {
       player.setPlaybackRate(suggestedRate);
     }
   };
 
   const setLoop = (bool: Boolean) => {
-    if (typeof player?.getPlaybackRate === "function") {
+    if (typeof player?.getPlaybackRate === 'function') {
       player.setLoop(bool);
     }
   };
 
   const setVolume = (volume: number) => {
-    if (typeof player?.playVideo === "function") {
+    if (typeof player?.playVideo === 'function') {
       player.setVolume(volume);
     }
   };
@@ -168,7 +170,7 @@ const YouTubeVideo = ({
   return (
     <div
       className={styles.container}
-      style={{ visibility: showVideo ? "visible" : "hidden" }}
+      style={{ visibility: showVideo ? 'visible' : 'hidden' }}
     >
       <div className="video" ref={youtubeEleRef} id={youtubeId} />
     </div>

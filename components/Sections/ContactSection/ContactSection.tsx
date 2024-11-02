@@ -1,19 +1,21 @@
-import FormErrorText from "@/components/FormErrorText";
-import womanComputer from "@/public/assets/images/womanComputer.jpeg";
-import { emailRegEx, nameRegEx } from "@/utils/regEx";
 import {
   Button,
   Container,
   FormControl,
   TextField,
   Typography,
-} from "@mui/material";
-import Image from "next/image";
-import { Controller, useForm } from "react-hook-form";
-import styles from "./ContactSection.module.scss";
-import { supabase } from "@/class/index";
-import { toast } from "react-toastify";
-import { useState } from "react";
+} from '@mui/material';
+import Image from 'next/image';
+import { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
+
+import { supabase } from '@/class/index';
+import FormErrorText from '@/components/FormErrorText';
+import womanComputer from '@/public/assets/images/womanComputer.jpeg';
+import { emailRegEx, nameRegEx } from '@/utils/regEx';
+
+import styles from './ContactSection.module.scss';
 
 interface IFormInputs {
   email: string;
@@ -25,17 +27,17 @@ const ContactSection = () => {
   const [loading, setLoading] = useState(false);
   const [submittedSuccessfully, setSubmittedSuccessfully] = useState(false);
   const { handleSubmit, reset, control } = useForm<IFormInputs>({
-    mode: "onChange",
+    mode: 'onChange',
     defaultValues: {
-      email: "",
-      name: "",
-      message: "",
+      email: '',
+      name: '',
+      message: '',
     },
   });
 
   const onSubmit = async ({ email, name, message }: IFormInputs) => {
     setLoading(true);
-    const { data, error } = await supabase.functions.invoke("contact-us", {
+    const { data, error } = await supabase.functions.invoke('contact-us', {
       body: {
         userEmail: email,
         userName: name,
@@ -43,11 +45,11 @@ const ContactSection = () => {
       },
     });
     if (data) {
-      toast.success("Message sent! We will contact you shortly.");
+      toast.success('Message sent! We will contact you shortly.');
       setSubmittedSuccessfully(true);
       reset();
     }
-    if (error) toast.error("Unable to send message");
+    if (error) toast.error('Unable to send message');
     setLoading(false);
   };
 
@@ -77,11 +79,11 @@ const ContactSection = () => {
             required: true,
             pattern: {
               value: emailRegEx,
-              message: "Invalid email address",
+              message: 'Invalid email address',
             },
             maxLength: {
               value: 100,
-              message: "The email exceed max length",
+              message: 'The email exceed max length',
             },
           }}
           render={({ field }) => (
@@ -96,11 +98,11 @@ const ContactSection = () => {
             required: true,
             pattern: {
               value: nameRegEx,
-              message: "Invalid name",
+              message: 'Invalid name',
             },
             maxLength: {
               value: 100,
-              message: "The name exceed max length",
+              message: 'The name exceed max length',
             },
           }}
           render={({ field }) => (
@@ -115,7 +117,7 @@ const ContactSection = () => {
             required: true,
             minLength: {
               value: 10,
-              message: "The message is too short",
+              message: 'The message is too short',
             },
           }}
           render={({ field }) => (
@@ -130,7 +132,7 @@ const ContactSection = () => {
         />
         <FormErrorText control={control} name="message" />
         <Button
-          sx={{ marginTop: "1em" }}
+          sx={{ marginTop: '1em' }}
           fullWidth
           type="submit"
           disabled={loading || submittedSuccessfully}

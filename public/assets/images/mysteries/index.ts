@@ -1,34 +1,31 @@
 import {
-  firstSorrowful,
-  secondSorrowful,
-  thirdSorrowful,
-  fourthSorrowful,
-  fifthSorrowful,
-} from "./sorrowful";
-
-import {
-  firstJoyful,
-  secondJoyful,
-  thirdJoyful,
-  fourthJoyful,
-  fifthJoyful,
-} from "./joyful";
-
-import {
+  fifthGlorious,
   firstGlorious,
+  fourthGlorious,
   secondGlorious,
   thirdGlorious,
-  fourthGlorious,
-  fifthGlorious,
-} from "./glorious";
-
+} from './glorious';
 import {
+  fifthJoyful,
+  firstJoyful,
+  fourthJoyful,
+  secondJoyful,
+  thirdJoyful,
+} from './joyful';
+import {
+  fifthLuminous,
   firstLuminous,
+  fourthLuminous,
   secondLuminous,
   thirdLuminous,
-  fourthLuminous,
-  fifthLuminous,
-} from "./luminous";
+} from './luminous';
+import {
+  fifthSorrowful,
+  firstSorrowful,
+  fourthSorrowful,
+  secondSorrowful,
+  thirdSorrowful,
+} from './sorrowful';
 
 export {
   firstSorrowful,

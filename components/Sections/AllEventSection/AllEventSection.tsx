@@ -1,13 +1,14 @@
-import Link from "next/link";
-import { Box, Card, CardContent, Container, Typography } from "@mui/material";
+import { Box, Card, CardContent, Container, Typography } from '@mui/material';
+import Link from 'next/link';
 
-import { css } from "@/utils/helpers";
-import { YouTubeSubscribe } from "@/components/YouTubeVideo";
-import { DataEvent } from "@/interfaces";
-import CountdownDate from "@/components/CountdownDate";
-import { NAV_APP_LINKS } from "@/constants/nav";
+import CountdownDate from '@/components/CountdownDate';
+import { YouTubeSubscribe } from '@/components/YouTubeVideo';
+import { NAV_APP_LINKS } from '@/constants/nav';
+import { DataEvent } from '@/interfaces';
+import { css } from '@/utils/helpers';
 
-import styles from "./allEventSection.module.scss";
+import styles from './allEventSection.module.scss';
+
 interface Props {
   events: DataEvent[] | null;
 }
@@ -29,7 +30,7 @@ const AllEventSection = ({ events }: Props) => {
               <Box
                 style={{ backgroundImage: `url(${pictureUrl})` }}
                 className={css(
-                  index === 0 ? styles.mainImage : styles.cardImage,
+                  index === 0 ? styles.mainImage : styles.cardImage
                 )}
               />
               {startedAt && (
@@ -43,7 +44,7 @@ const AllEventSection = ({ events }: Props) => {
               )}
               <Box
                 className={css(
-                  index === 0 ? styles.mainEventDetails : styles.eventDetails,
+                  index === 0 ? styles.mainEventDetails : styles.eventDetails
                 )}
               >
                 <CardContent>
@@ -58,7 +59,7 @@ const AllEventSection = ({ events }: Props) => {
                     component="p"
                     fontWeight="light"
                     className={css(
-                      index === 0 ? styles.mainDescription : styles.description,
+                      index === 0 ? styles.mainDescription : styles.description
                     )}
                   >
                     {description}
@@ -67,7 +68,7 @@ const AllEventSection = ({ events }: Props) => {
                 </CardContent>
               </Box>
             </Card>
-          ),
+          )
         )}
       </Box>
     </Container>

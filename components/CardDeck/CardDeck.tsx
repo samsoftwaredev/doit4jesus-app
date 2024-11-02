@@ -1,19 +1,20 @@
-import * as React from "react";
+import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
+import CancelIcon from '@mui/icons-material/Cancel';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import {
   Box,
   Button,
-  Typography,
+  Divider,
   Grid,
   IconButton,
   Tooltip,
-  Divider,
-} from "@mui/material";
-import { CardProps } from "@/interfaces/index";
-import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import CancelIcon from "@mui/icons-material/Cancel";
-import { StarButton } from "@/components";
-import { theme } from "@/styles/mui-overwrite";
+  Typography,
+} from '@mui/material';
+import * as React from 'react';
+
+import { StarButton } from '@/components';
+import { CardProps } from '@/interfaces/index';
+import { theme } from '@/styles/mui-overwrite';
 
 interface Props {
   steps: CardProps[];
@@ -87,7 +88,7 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
                       color="secondary"
                       disabled={index === 0}
                       onClick={handleBack}
-                      style={{ transform: "scale(1.8)" }}
+                      style={{ transform: 'scale(1.8)' }}
                     >
                       <ArrowCircleLeftIcon />
                     </IconButton>
@@ -98,7 +99,7 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
                 <Tooltip title="Yes">
                   <IconButton
                     onClick={() => handleSaveSin(index)}
-                    style={{ transform: "scale(1.8)" }}
+                    style={{ transform: 'scale(1.8)' }}
                     color="error"
                   >
                     <CheckCircleIcon />
@@ -110,7 +111,7 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
                   <IconButton
                     color="error"
                     onClick={handleSkip}
-                    style={{ transform: "scale(1.8)" }}
+                    style={{ transform: 'scale(1.8)' }}
                   >
                     <CancelIcon />
                   </IconButton>
@@ -132,7 +133,7 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
         .slice(activeStep, activeStep + 1)}
       {activeStep === steps.length && (
         <Box minHeight="250px" display="flex" flexDirection="column">
-          <Typography variant="h5" my={2} textAlign={"center"}>
+          <Typography variant="h5" my={2} textAlign={'center'}>
             Examination of Conscience Completed!
           </Typography>
           {sinsCommitted.length > 0 ? (
@@ -152,7 +153,7 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
               <Typography color={theme.palette.secondary.main} ml={2} mb={2}>
                 {step.question}
               </Typography>
-              <Divider sx={{ backgroundColor: "white" }} />
+              <Divider sx={{ backgroundColor: 'white' }} />
             </Grid>
           ))}
           <Box alignSelf="center">
@@ -160,7 +161,7 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
               variant="contained"
               color="error"
               onClick={handleReset}
-              sx={{ mt: 1, mr: 1, width: "300px" }}
+              sx={{ mt: 1, mr: 1, width: '300px' }}
             >
               Start Over
             </Button>

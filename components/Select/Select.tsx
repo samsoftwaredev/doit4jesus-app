@@ -2,14 +2,14 @@ import {
   MenuItem as MenuItemMUI,
   Select as SelectMUI,
   SelectProps,
-} from "@mui/material";
+} from '@mui/material';
 
 type Props = {
   menuItems: {
     value: string;
     name: string;
   }[];
-} & Omit<SelectProps<any, any>, "variant">;
+} & Omit<SelectProps<any, any>, 'variant'>;
 
 const Select = ({ menuItems, ...props }: Props) => {
   return (

@@ -1,9 +1,10 @@
-import { Box } from "@mui/material";
-import Image from "next/image";
+import { Box } from '@mui/material';
+import Image from 'next/image';
 
-import { levels } from "@/utils/levels";
+import { levels } from '@/utils/levels';
 
-import styles from "./rosaryLevel.module.scss";
+import styles from './rosaryLevel.module.scss';
+
 interface Props {
   levelNum: number;
   onlyIcon?: boolean;
@@ -17,7 +18,7 @@ interface LevelIconProps {
 
 const LevelIcon = ({ color, icon, label }: LevelIconProps) => {
   return (
-    <Box sx={{ borderRadius: "50%" }}>
+    <Box sx={{ borderRadius: '50%' }}>
       <Image
         style={{
           borderColor: color,

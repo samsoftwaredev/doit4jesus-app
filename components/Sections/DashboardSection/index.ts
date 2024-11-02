@@ -1,1 +1,1 @@
-export { default } from "./DashboardSection";
+export { default } from './DashboardSection';

@@ -1,10 +1,10 @@
-import React, { useMemo, useState } from "react";
-import { Alert, Box, Typography, Button, LinearProgress } from "@mui/material";
+import { Alert, Box, Button, LinearProgress, Typography } from '@mui/material';
+import React, { useMemo, useState } from 'react';
 
-import { useUserContext } from "@/context/UserContext";
-import { getCurrentLevel, levels } from "@/utils/levels";
+import { useUserContext } from '@/context/UserContext';
+import { getCurrentLevel, levels } from '@/utils/levels';
 
-import { Dialog, RosaryLevel, RosaryLevelInfo } from "../..";
+import { Dialog, RosaryLevel, RosaryLevelInfo } from '../..';
 
 const ProgressLevelsSection = () => {
   const [isOpenLevels, setIsOpenLevels] = useState(false);
@@ -43,7 +43,7 @@ const ProgressLevelsSection = () => {
         display="flex"
         flexDirection="column"
         justifyContent="center"
-        sx={{ maxWidth: "600px", margin: "0 auto" }}
+        sx={{ maxWidth: '600px', margin: '0 auto' }}
       >
         <Box mt={2} display="flex" justifyContent="center">
           <Alert sx={{ opacity: 0.8 }} severity="warning">
@@ -54,7 +54,7 @@ const ProgressLevelsSection = () => {
         </Box>
 
         <Box
-          sx={{ sm: { p: 0, m: 0 }, md: { padding: "2em", margin: "4em 0" } }}
+          sx={{ sm: { p: 0, m: 0 }, md: { padding: '2em', margin: '4em 0' } }}
           display="flex"
           justifyContent="space-between"
         >
@@ -111,12 +111,12 @@ const ProgressLevelsSection = () => {
                 component="h2"
                 fontWeight="bold"
                 sx={{
-                  color: "black",
-                  width: "100%",
-                  textAlign: "center",
+                  color: 'black',
+                  width: '100%',
+                  textAlign: 'center',
                   fontSize: {
-                    sm: "1.2em",
-                    md: "1.5em",
+                    sm: '1.2em',
+                    md: '1.5em',
                   },
                 }}
               >
@@ -125,10 +125,10 @@ const ProgressLevelsSection = () => {
               <Typography
                 fontWeight="light"
                 sx={{
-                  color: "black",
-                  width: "100%",
-                  textAlign: "center",
-                  fontSize: { sm: "0.8em", md: "1em" },
+                  color: 'black',
+                  width: '100%',
+                  textAlign: 'center',
+                  fontSize: { sm: '0.8em', md: '1em' },
                 }}
               >
                 Complete {requirement} Rosaries

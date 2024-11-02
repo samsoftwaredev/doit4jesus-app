@@ -1,6 +1,7 @@
-import { MouseEventHandler } from "react";
-import { IconButton, Box, Tooltip } from "@mui/material";
-import styles from "./audioNavigation.module.scss";
+import { Box, IconButton, Tooltip } from '@mui/material';
+import { MouseEventHandler } from 'react';
+
+import styles from './audioNavigation.module.scss';
 
 interface Props {
   buttons: {

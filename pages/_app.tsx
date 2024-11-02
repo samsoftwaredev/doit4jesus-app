@@ -1,22 +1,21 @@
-import { useState } from "react";
-import type { AppProps } from "next/app";
-import { ToastContainer } from "react-toastify";
-import { ThemeProvider } from "@emotion/react";
-import { GoogleOAuthProvider } from "@react-oauth/google";
-import { Analytics } from "@vercel/analytics/react";
-import { StyledEngineProvider } from "@mui/material/styles";
+import { ThemeProvider } from '@emotion/react';
+import { StyledEngineProvider } from '@mui/material/styles';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import { Analytics } from '@vercel/analytics/react';
+import type { AppProps } from 'next/app';
+import { useState } from 'react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-import { LanguageContextProvider } from "@/context/LanguageContext";
-import { theme } from "@/styles/mui-overwrite";
-import MusicPlayer from "@/components/MusicPlayer";
-import { UserContextProvider } from "@/context/UserContext";
-import { AudioContextProvider } from "@/context/AudioContext";
-import { PresenceContextProvider } from "@/context/PresenceContext";
-import { StatsContextProvider } from "@/context/StatsContext";
-
-import "@/styles/normalize.css";
-import "@/styles/global.scss";
-import "react-toastify/dist/ReactToastify.css";
+import MusicPlayer from '@/components/MusicPlayer';
+import { AudioContextProvider } from '@/context/AudioContext';
+import { LanguageContextProvider } from '@/context/LanguageContext';
+import { PresenceContextProvider } from '@/context/PresenceContext';
+import { StatsContextProvider } from '@/context/StatsContext';
+import { UserContextProvider } from '@/context/UserContext';
+import '@/styles/global.scss';
+import { theme } from '@/styles/mui-overwrite';
+import '@/styles/normalize.css';
 
 const googleKey = process.env.NEXT_PUBLIC_GOOGLE_AUTH_KEY!;
 

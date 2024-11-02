@@ -1,1 +1,1 @@
-export { default } from "./HorizontalDivider";
+export { default } from './HorizontalDivider';

@@ -1,8 +1,8 @@
-import type { NextPage } from "next";
+import type { NextPage } from 'next';
 
-import { AppLayout } from "@/components/Templates";
-import AppWrapper from "@/components/AppWrapper";
-import { FriendsSection } from "@/components/Sections";
+import AppWrapper from '@/components/AppWrapper';
+import { FriendsSection } from '@/components/Sections';
+import { AppLayout } from '@/components/Templates';
 
 const Friends: NextPage = () => {
   return (

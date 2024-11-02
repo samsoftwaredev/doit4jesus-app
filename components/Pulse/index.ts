@@ -1,1 +1,1 @@
-export { default } from "./Pulse";
+export { default } from './Pulse';

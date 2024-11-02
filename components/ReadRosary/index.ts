@@ -1,1 +1,1 @@
-export { default } from "./ReadRosary";
+export { default } from './ReadRosary';

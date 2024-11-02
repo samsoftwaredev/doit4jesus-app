@@ -1,36 +1,38 @@
+import { User as UserSupabase } from '@supabase/supabase-js';
+import moment from 'moment';
+
 import {
-  EventTypes,
   DataEvent,
-  VideoEvent,
-  User,
-  OnlineUser,
   EventMessages,
-  ResourcePost,
-  ResourceContent,
-  GroupItem,
-  FriendsGroupItem,
+  EventTypes,
   FriendProfile,
-} from "@/interfaces";
-import { User as UserSupabase } from "@supabase/supabase-js";
-import { Json } from "@/interfaces/database";
+  FriendsGroupItem,
+  GroupItem,
+  OnlineUser,
+  ResourceContent,
+  ResourcePost,
+  User,
+  VideoEvent,
+} from '@/interfaces';
+import { Json } from '@/interfaces/database';
 import {
   EventMessagesActionsDB,
   EventMessagesDB,
   EventsDB,
-  PostsDB,
-  RosaryStatsDB,
-  ProfilesDB,
-  YouTubeDB,
-  GroupsDB,
   FriendsGroupsDB,
-} from "@/interfaces/databaseTable";
-import moment from "moment";
-import { formatDate, numberToDollar } from "./helpers";
+  GroupsDB,
+  PostsDB,
+  ProfilesDB,
+  RosaryStatsDB,
+  YouTubeDB,
+} from '@/interfaces/databaseTable';
 
-const nullToString = (val: string | null) => (val === null ? "" : val);
+import { formatDate, numberToDollar } from './helpers';
+
+const nullToString = (val: string | null) => (val === null ? '' : val);
 const nullToNumber = (val: number | null) => (val === null ? 0 : val);
 const nullToDate = (val: string | null) =>
-  val === null ? "" : moment(val).format("MM/DD/YYYY");
+  val === null ? '' : moment(val).format('MM/DD/YYYY');
 
 export const normalizeEvent = (dataList: EventsDB[]): DataEvent[] => {
   return dataList.map((data) => {
@@ -38,10 +40,10 @@ export const normalizeEvent = (dataList: EventsDB[]): DataEvent[] => {
       attendees ? Object.keys(attendees).length : 0;
     const getEventType = (type: string | null): EventTypes => {
       switch (type) {
-        case "youtube_video":
-          return "youtubeVideo" as EventTypes;
+        case 'youtube_video':
+          return 'youtubeVideo' as EventTypes;
         default:
-          return "text" as EventTypes;
+          return 'text' as EventTypes;
       }
     };
     return {
@@ -74,7 +76,7 @@ export const normalizeVideo = (dataList: YouTubeDB[]): VideoEvent[] => {
 
 export const normalizeUserProfile = (
   userProfile: ProfilesDB,
-  rosaryStats: RosaryStatsDB[] | null,
+  rosaryStats: RosaryStatsDB[] | null
 ): User => {
   const generateRosaryCount = (stats: RosaryStatsDB[] | null) => {
     if (stats === null) {
@@ -91,7 +93,7 @@ export const normalizeUserProfile = (
     }));
 
     const todaysRosaryCompleted = stats.find(
-      (s) => formatDate(s.completed_at) === formatDate(),
+      (s) => formatDate(s.completed_at) === formatDate()
     );
 
     return {
@@ -106,7 +108,7 @@ export const normalizeUserProfile = (
     userId: nullToString(userProfile.id),
     firstName: nullToString(userProfile.first_name),
     lastName: nullToString(userProfile.last_name),
-    genderMale: userProfile.gender === "male",
+    genderMale: userProfile.gender === 'male',
     dateOfBirth: nullToDate(userProfile.birth_date),
     pictureUrl: nullToString(userProfile.picture_url),
     stats: generateRosaryCount(rosaryStats),
@@ -120,7 +122,7 @@ export const normalizeFriendProfile = (
     last_name: string;
     picture_url: string | null;
     rosary_count: number;
-  }[],
+  }[]
 ): FriendProfile[] => {
   return userProfile.map((u) => {
     return {
@@ -146,7 +148,7 @@ type EventMessagesJoinActions = EventMessagesDB & {
 };
 
 export const normalizeEventMessages = (
-  data: EventMessagesJoinActions[],
+  data: EventMessagesJoinActions[]
 ): EventMessages[] => {
   return data.map((message) => ({
     firstName: message.first_name,
@@ -198,7 +200,7 @@ export const normalizeGroups = (groupList: GroupsDB[]): GroupItem[] => {
 };
 
 export const normalizeFriendsGroups = (
-  groupList: FriendsGroupsDB[],
+  groupList: FriendsGroupsDB[]
 ): FriendsGroupItem[] => {
   return groupList.map((f) => ({
     friendId: f.friend_id,

@@ -1,1 +1,1 @@
-export { default } from "./AppWrapper";
+export { default } from './AppWrapper';

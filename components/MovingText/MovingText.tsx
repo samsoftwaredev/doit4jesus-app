@@ -1,4 +1,4 @@
-import styles from "./movingText.module.scss";
+import styles from './movingText.module.scss';
 
 interface Props {
   children?: JSX.Element | string;

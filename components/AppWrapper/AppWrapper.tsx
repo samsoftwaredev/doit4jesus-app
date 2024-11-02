@@ -1,12 +1,14 @@
-import ProtectedRoute from "../ProtectedRoute";
-import { useUserContext } from "@/context/UserContext";
-import { usePathname } from "next/navigation";
-import { NAV_APP_LINKS } from "@/constants/nav";
-import { COMPANY } from "@/constants/company";
-import AccountSetup from "@/components/Sections/AccountSetup";
-import Meta from "../Meta";
-import { useAudioContext } from "@/context/AudioContext";
-import { useEffect } from "react";
+import { usePathname } from 'next/navigation';
+import { useEffect } from 'react';
+
+import AccountSetup from '@/components/Sections/AccountSetup';
+import { COMPANY } from '@/constants/company';
+import { NAV_APP_LINKS } from '@/constants/nav';
+import { useAudioContext } from '@/context/AudioContext';
+import { useUserContext } from '@/context/UserContext';
+
+import Meta from '../Meta';
+import ProtectedRoute from '../ProtectedRoute';
 
 interface Props {
   children: any;

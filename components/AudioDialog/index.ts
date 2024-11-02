@@ -1,1 +1,1 @@
-export { default } from "./AudioDialog";
+export { default } from './AudioDialog';

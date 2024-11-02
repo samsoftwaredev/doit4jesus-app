@@ -1,10 +1,10 @@
-import { Container, Typography } from "@mui/material";
-import type { NextPage } from "next";
+import { Container, Typography } from '@mui/material';
+import type { NextPage } from 'next';
 
-import { Meta } from "@/components";
-import { MainLayout } from "@/components/Templates";
+import { Meta } from '@/components';
+import { MainLayout } from '@/components/Templates';
 
-import { COMPANY, minAge } from "../constants";
+import { COMPANY, minAge } from '../constants';
 
 const PrivacyPolicy: NextPage = () => {
   const appName = COMPANY.nameAbbr;
@@ -28,7 +28,7 @@ const PrivacyPolicy: NextPage = () => {
             <br />
             <ul>
               <li>
-                <b>Personal Information:</b> When you create an account on{" "}
+                <b>Personal Information:</b> When you create an account on{' '}
                 {appName}, we may collect certain personal information, such as
                 your name, email address, and any other information you choose
                 to provide.
@@ -121,7 +121,7 @@ const PrivacyPolicy: NextPage = () => {
               <li>
                 <b>Privacy Controls:</b> Google provides easy-to-use tools for
                 managing your privacy. The Privacy Checkup feature allows you to
-                choose privacy settings that suit your preferences.{" "}
+                choose privacy settings that suit your preferences.{' '}
                 <a href="https://support.google.com/a/answer/7281227?hl=en">
                   You can also control what data is saved in your account and
                   delete specific information by date, product, and topic.
@@ -239,7 +239,7 @@ const PrivacyPolicy: NextPage = () => {
           <p>
             <b>7. Children&apos;s Privacy</b>
             <br />
-            {appName} is not intended for use by children under the age of{" "}
+            {appName} is not intended for use by children under the age of{' '}
             {minAge}. We do not knowingly collect personal information from
             children under {minAge}. If you believe that we may have collected
             personal information from a child under {minAge}, please contact us
@@ -257,7 +257,7 @@ const PrivacyPolicy: NextPage = () => {
             <b>9. Contact Us</b>
             <br />
             If you have any questions or concerns about this Privacy Policy,
-            please contact us at{" "}
+            please contact us at{' '}
             <a href="mailto:admin@doit4jesus.com">admin@doit4jesus.com</a>.
           </p>
           Thank you for trusting {appName} with your personal information. We

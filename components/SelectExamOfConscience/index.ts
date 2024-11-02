@@ -1,1 +1,1 @@
-export { default } from "./SelectExamOfConscience";
+export { default } from './SelectExamOfConscience';

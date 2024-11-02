@@ -1,12 +1,14 @@
-import { EventMessages } from "@/interfaces/index";
-import ChatMessage from "../ChatMessage";
-import { Box, Button, Typography } from "@mui/material";
-import { useState } from "react";
-import { useUserContext } from "@/context/UserContext";
-import ChatTextbox from "../ChatTextbox";
-import { Favorite } from "@mui/icons-material";
-import { Json } from "@/interfaces/database";
-import ActionMenu from "./ActionMenu";
+import { Favorite } from '@mui/icons-material';
+import { Box, Button, Typography } from '@mui/material';
+import { useState } from 'react';
+
+import { useUserContext } from '@/context/UserContext';
+import { Json } from '@/interfaces/database';
+import { EventMessages } from '@/interfaces/index';
+
+import ChatMessage from '../ChatMessage';
+import ChatTextbox from '../ChatTextbox';
+import ActionMenu from './ActionMenu';
 
 interface Props {
   message: EventMessages;
@@ -27,11 +29,11 @@ const ChatList = ({
   const [isEditMode, setIsEditMode] = useState(false);
   const { user } = useUserContext();
   const [numLikes, setNumLikes] = useState(
-    messagesLikes ? Object.values(messagesLikes).length : 0,
+    messagesLikes ? Object.values(messagesLikes).length : 0
   );
   // @ts-ignore
   const prevLikes: { [key: string]: Json | undefined } =
-    typeof messagesLikes === "object" ? { ...messagesLikes } : {};
+    typeof messagesLikes === 'object' ? { ...messagesLikes } : {};
 
   const handleSaveMessage = (newMessage: string) => {
     if (message.message !== newMessage) {
@@ -49,7 +51,7 @@ const ChatList = ({
       } else {
         const newLikes = {
           ...prevLikes,
-          [user.userId]: "liked",
+          [user.userId]: 'liked',
         };
         handleLike(message.id, newLikes);
         setNumLikes(Object.values(newLikes).length);
@@ -92,8 +94,8 @@ const ChatList = ({
             updatedAt={message.updatedAt}
             deletedAt={message.deletedAt}
             user={{
-              firstName: message.firstName || "",
-              lastName: message.lastName || "",
+              firstName: message.firstName || '',
+              lastName: message.lastName || '',
             }}
           >
             <Typography fontWeight="light">{message.message}</Typography>
@@ -104,7 +106,7 @@ const ChatList = ({
               color="secondary"
               variant="contained"
               startIcon={
-                <Favorite color={numLikes > 0 ? "error" : "inherit"} />
+                <Favorite color={numLikes > 0 ? 'error' : 'inherit'} />
               }
               onClick={handleMessageLike}
             >

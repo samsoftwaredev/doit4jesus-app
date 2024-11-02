@@ -1,1 +1,1 @@
-export { default } from "./MovingText";
+export { default } from './MovingText';

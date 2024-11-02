@@ -1,8 +1,10 @@
-import Image from "next/image";
-import { Box, Container, Grid, Typography } from "@mui/material";
-import rosary from "@/public/assets/images/rosary.svg";
-import styles from "./community.module.scss";
-import { css } from "@/utils/helpers";
+import { Box, Container, Grid, Typography } from '@mui/material';
+import Image from 'next/image';
+
+import rosary from '@/public/assets/images/rosary.svg';
+import { css } from '@/utils/helpers';
+
+import styles from './community.module.scss';
 
 const Hero = () => {
   return (
@@ -11,7 +13,7 @@ const Hero = () => {
         <Grid>
           <Typography
             my={5}
-            className={css(styles.title, "sectionTitle")}
+            className={css(styles.title, 'sectionTitle')}
             variant="h2"
           >
             About The Rosary

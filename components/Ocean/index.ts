@@ -1,1 +1,1 @@
-export { default } from "./Ocean";
+export { default } from './Ocean';

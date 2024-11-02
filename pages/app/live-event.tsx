@@ -1,41 +1,42 @@
-import type { NextPage } from "next";
-import { AppLayout } from "@/components/Templates";
-import { useEffect, useState } from "react";
-import { DataEvent, EventTypes, VideoEvent } from "@/interfaces";
-import { normalizeEvent, normalizeVideo } from "@/utils";
-import { db, supabase } from "classes/SupabaseDB";
-import { toast } from "react-toastify";
-import { usePresenceContext } from "@/context/PresenceContext";
-import Loading from "@/components/Loading";
-import { useAudioContext } from "@/context/AudioContext";
-import { Container, Typography } from "@mui/material";
-import EventSection from "@/components/Sections/EventSection";
-import AppWrapper from "@/components/AppWrapper/AppWrapper";
-import moment from "moment";
+import { Container, Typography } from '@mui/material';
+import { db, supabase } from 'classes/SupabaseDB';
+import moment from 'moment';
+import type { NextPage } from 'next';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+
+import AppWrapper from '@/components/AppWrapper/AppWrapper';
+import Loading from '@/components/Loading';
+import EventSection from '@/components/Sections/EventSection';
+import { AppLayout } from '@/components/Templates';
+import { useAudioContext } from '@/context/AudioContext';
+import { usePresenceContext } from '@/context/PresenceContext';
+import { DataEvent, EventTypes, VideoEvent } from '@/interfaces';
+import { normalizeEvent, normalizeVideo } from '@/utils';
 
 const LiveEvent: NextPage = () => {
   const { setChannel } = usePresenceContext();
   const { setAudioPlayer, setHideMusicPlayer } = useAudioContext();
-  const liveEvent = supabase.channel("live-event");
+  const liveEvent = supabase.channel('live-event');
   const [isLoading, setIsLoading] = useState(true);
   const [dataEvent, setDataEvent] = useState<VideoEvent & DataEvent>();
   const timeRemaining = moment(dataEvent?.startedAt) > moment();
 
   const getYouTube = async (id: string | null) => {
     if (!id) return;
-    const { data, error } = await db.getYouTubeVideo().select("*").eq("id", id);
+    const { data, error } = await db.getYouTubeVideo().select('*').eq('id', id);
     if (data) return normalizeVideo(data)[0];
-    if (error) toast.error("Unable to display video");
+    if (error) toast.error('Unable to display video');
   };
 
   const getEvent = async () => {
     const { data, error } = await db
       .getEvents()
-      .select("*")
-      .order("started_at", { ascending: true })
+      .select('*')
+      .order('started_at', { ascending: true })
       .limit(1);
     if (data) return normalizeEvent(data)[0];
-    if (error) toast.error("Unable to get event");
+    if (error) toast.error('Unable to get event');
   };
 
   const getData = async () => {
@@ -65,7 +66,7 @@ const LiveEvent: NextPage = () => {
   if (isLoading) {
     return (
       <AppLayout>
-        <Loading />
+        <Loading isFeature />
       </AppLayout>
     );
   }
@@ -84,7 +85,7 @@ const LiveEvent: NextPage = () => {
   return (
     <AppLayout>
       <Container className="container-box" maxWidth="md">
-        {typeof dataEvent === "object" ? (
+        {typeof dataEvent === 'object' ? (
           <EventSection videoEvent={dataEvent} />
         ) : (
           <Typography variant="h3" color="secondary">

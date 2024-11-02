@@ -1,1 +1,1 @@
-export { default } from "./ShareRosary";
+export { default } from './ShareRosary';

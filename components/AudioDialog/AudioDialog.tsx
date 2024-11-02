@@ -1,7 +1,9 @@
-import { css } from "@/utils/helpers";
-import { Box, IconButton, Typography } from "@mui/material";
-import { Close } from "@mui/icons-material";
-import styles from "./audioDialog.module.scss";
+import { Close } from '@mui/icons-material';
+import { Box, IconButton, Typography } from '@mui/material';
+
+import { css } from '@/utils/helpers';
+
+import styles from './audioDialog.module.scss';
 
 interface Props {
   children: React.ReactNode;
@@ -12,7 +14,7 @@ interface Props {
 
 const AudioDialog = ({
   children,
-  title = "",
+  title = '',
   isOpen = false,
   onClose,
 }: Props) => {

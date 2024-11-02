@@ -1,12 +1,14 @@
-import { Box, Card, CardContent, Link, Typography } from "@mui/material";
-import adultExamOfConscience from "@/data/adultExamOfConscience.json";
-import teenExamOfConscience from "@/data/teenExamOfConscience.json";
-import childExamOfConscience from "@/data/childExamOfConscience.json";
-import adultPraying from "@/public/assets/images/art/adultPraying.jpeg";
-import teenPraying from "@/public/assets/images/art/teenPraying.jpeg";
-import kidPraying from "@/public/assets/images/art/kidPraying.jpeg";
-import styles from "./SelectExamOfConscience.module.scss";
-import Image from "next/image";
+import { Box, Card, CardContent, Link, Typography } from '@mui/material';
+import Image from 'next/image';
+
+import adultExamOfConscience from '@/data/adultExamOfConscience.json';
+import childExamOfConscience from '@/data/childExamOfConscience.json';
+import teenExamOfConscience from '@/data/teenExamOfConscience.json';
+import adultPraying from '@/public/assets/images/art/adultPraying.jpeg';
+import kidPraying from '@/public/assets/images/art/kidPraying.jpeg';
+import teenPraying from '@/public/assets/images/art/teenPraying.jpeg';
+
+import styles from './SelectExamOfConscience.module.scss';
 
 interface Props {
   onExamSelected: (exam: string) => void;
@@ -15,25 +17,25 @@ interface Props {
 const SelectExamOfConscience = ({ onExamSelected }: Props) => {
   const exams = [
     {
-      label: "For Kids",
+      label: 'For Kids',
       value: childExamOfConscience,
       image: kidPraying,
       description:
-        "This can assist children in developing a better understanding of themselves, their moral value, attitudes toward others and their relationship with God.",
+        'This can assist children in developing a better understanding of themselves, their moral value, attitudes toward others and their relationship with God.',
     },
     {
-      label: "For Teens",
+      label: 'For Teens',
       value: teenExamOfConscience,
       image: teenPraying,
       description:
-        "This examination enables teens to recognize and manage their emotions, actions, and attitudes as well as their personal relationship with the spiritual.",
+        'This examination enables teens to recognize and manage their emotions, actions, and attitudes as well as their personal relationship with the spiritual.',
     },
     {
-      label: "For Adults",
+      label: 'For Adults',
       value: adultExamOfConscience,
       image: adultPraying,
       description:
-        "This exam encourages adults to question and analyze their thoughts and daily actions. This process promotes critical thinking skills, helping them approach situations with thoughtfulness, an analytical mindset, and faith.",
+        'This exam encourages adults to question and analyze their thoughts and daily actions. This process promotes critical thinking skills, helping them approach situations with thoughtfulness, an analytical mindset, and faith.',
     },
   ];
 
@@ -51,7 +53,7 @@ const SelectExamOfConscience = ({ onExamSelected }: Props) => {
         {exams.map(({ label, description, image }) => (
           <Card
             key={label}
-            sx={{ textDecoration: "none" }}
+            sx={{ textDecoration: 'none' }}
             component={Link}
             onClick={() => onExamSelected(label)}
             className={styles.card}
@@ -61,8 +63,8 @@ const SelectExamOfConscience = ({ onExamSelected }: Props) => {
               src={image}
               alt="Mary holding the Holy Rosary"
             />
-            <Box sx={{ display: "flex", flexDirection: "column" }}>
-              <CardContent sx={{ flex: "1 0 auto" }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+              <CardContent sx={{ flex: '1 0 auto' }}>
                 <Typography
                   component="div"
                   variant="h5"

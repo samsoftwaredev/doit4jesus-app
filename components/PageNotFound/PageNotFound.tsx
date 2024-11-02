@@ -1,8 +1,10 @@
-import { MainLayout } from "@/components/Templates/index";
-import { Container, Typography } from "@mui/material";
-import Image from "next/image";
-import ship from "@/public/assets/images/dream/ship.svg";
-import styles from "./pageNotFound.module.scss";
+import { Container, Typography } from '@mui/material';
+import Image from 'next/image';
+
+import { MainLayout } from '@/components/Templates/index';
+import ship from '@/public/assets/images/dream/ship.svg';
+
+import styles from './pageNotFound.module.scss';
 
 interface Props {
   title?: string;
@@ -12,10 +14,10 @@ interface Props {
 }
 
 const PageNotFound = ({
-  title = "404",
-  description = "Page Not Found",
+  title = '404',
+  description = 'Page Not Found',
   imagePath = ship,
-  imageAlt = "Not Found",
+  imageAlt = 'Not Found',
 }: Props) => {
   return (
     <MainLayout>

@@ -2,17 +2,17 @@ import {
   ROSARY_AUDIOS,
   ROSARY_DAYS,
   ROSARY_LENGTH,
-} from "@/constants/mysteries";
-import crossImage from "@/public/assets/images/crucifixion.svg";
+} from '@/constants/mysteries';
 import {
   INTERFACE_LANGUAGES,
   INTERFACE_ROSARY_MYSTERIES,
   INTERFACE_ROSARY_STATE,
-} from "@/interfaces";
-import { capitalizeFirstLetter } from "@/utils";
+} from '@/interfaces';
+import crossImage from '@/public/assets/images/crucifixion.svg';
+import { capitalizeFirstLetter } from '@/utils';
 
 class Rosary {
-  private rosaryAudioCover = "";
+  private rosaryAudioCover = '';
   private mysteryName = INTERFACE_ROSARY_MYSTERIES.GLORIOUS;
 
   constructor() {
@@ -32,18 +32,18 @@ class Rosary {
   };
 
   public getAudio = (
-    language: INTERFACE_LANGUAGES = INTERFACE_LANGUAGES.en,
+    language: INTERFACE_LANGUAGES = INTERFACE_LANGUAGES.en
   ): string => {
     const mystery = this.mysteryName as INTERFACE_ROSARY_MYSTERIES;
     return ROSARY_AUDIOS[mystery][language];
   };
 
   public getRosaryState = (
-    language: INTERFACE_LANGUAGES = INTERFACE_LANGUAGES.en,
+    language: INTERFACE_LANGUAGES = INTERFACE_LANGUAGES.en
   ): INTERFACE_ROSARY_STATE => {
     const subTitle = `The ${capitalizeFirstLetter(this.mysteryName)} Mysteries`;
     return {
-      title: "The Holy Rosary",
+      title: 'The Holy Rosary',
       mystery: subTitle,
       mysteryAudio: this.getAudio(language),
       audioCover: this.rosaryAudioCover,

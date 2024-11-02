@@ -1,5 +1,6 @@
-import { createContext, useContext, useState } from "react";
-import { INTERFACE_LANGUAGES } from "@/interfaces";
+import { createContext, useContext, useState } from 'react';
+
+import { INTERFACE_LANGUAGES } from '@/interfaces';
 
 interface LanguageContext {
   /** Unique id of the item */
@@ -35,7 +36,7 @@ const LanguageContextProvider = ({
 const useLanguageContext = () => {
   const context = useContext(LanguageContext);
   if (context === undefined) {
-    throw new Error("useLanguageContext must be used within a ContextProvider");
+    throw new Error('useLanguageContext must be used within a ContextProvider');
   }
   return context;
 };

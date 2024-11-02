@@ -1,14 +1,14 @@
-import type { NextPage } from "next";
+import type { NextPage } from 'next';
+
 import {
-  Meta,
-  Hero,
-  Features,
+  CallToAction, // RosaryWeapon,
   Community,
+  Features,
+  Hero,
+  Meta,
   WhyPrayRosary,
-  CallToAction,
-  // RosaryWeapon,
-} from "@/components";
-import { MainLayout } from "@/components/Templates";
+} from '@/components';
+import { MainLayout } from '@/components/Templates';
 
 const Home: NextPage = () => {
   return (

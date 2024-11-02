@@ -1,21 +1,21 @@
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
 
-export const isClientSideRender = () => typeof window !== "undefined";
+export const isClientSideRender = () => typeof window !== 'undefined';
 
 export const capitalizeFirstLetter = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
-export const css = (...args: string[]) => [...args].join(" ");
+export const css = (...args: string[]) => [...args].join(' ');
 
 export const formatDate = (date: string | Date = new Date()) => {
-  return dayjs(date).format("MM/DD/YYYY");
+  return dayjs(date).format('MM/DD/YYYY');
 };
 
 export const generateRandomStringId = (length: number) => {
-  let result = "";
+  let result = '';
   const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   const charactersLength = characters.length;
   let counter = 0;
   while (counter < length) {
@@ -26,16 +26,16 @@ export const generateRandomStringId = (length: number) => {
 };
 
 export const dollarFormatter = (amount: number) => {
-  const formatter = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
+  const formatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
   });
   return formatter.format(amount);
 };
 
 export const numberToDollar = (dollar: number) => {
-  const dollarArrStr = dollar.toString().split("");
-  dollarArrStr.splice(dollarArrStr.length - 2, 0, ".");
-  const dollarNumber = dollarArrStr.join("");
+  const dollarArrStr = dollar.toString().split('');
+  dollarArrStr.splice(dollarArrStr.length - 2, 0, '.');
+  const dollarNumber = dollarArrStr.join('');
   return +dollarNumber;
 };

@@ -1,14 +1,14 @@
-import { useState } from "react";
-import { toast } from "react-toastify";
-import { useRouter } from "next/router";
-import { useForm, Controller, SubmitHandler, useWatch } from "react-hook-form";
-import { db } from "classes/SupabaseDB";
-import { Button, TextField } from "@mui/material";
+import { Button, TextField } from '@mui/material';
+import { db } from 'classes/SupabaseDB';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
+import { Controller, SubmitHandler, useForm, useWatch } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
-import FormErrorText from "@/components/FormErrorText";
-import { NAV_MAIN_LINKS, passwordValidationRules } from "@/constants";
+import FormErrorText from '@/components/FormErrorText';
+import { NAV_MAIN_LINKS, passwordValidationRules } from '@/constants';
 
-import { PasswordValidator } from "../..";
+import { PasswordValidator } from '../..';
 
 interface IFormInputs {
   password: string;
@@ -19,16 +19,16 @@ const UpdatePassword = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const { handleSubmit, control, reset } = useForm<IFormInputs>({
-    mode: "onChange",
+    mode: 'onChange',
     defaultValues: {
-      password: "",
-      confirmPassword: "",
+      password: '',
+      confirmPassword: '',
     },
   });
-  const password = useWatch({ control, name: "password" });
+  const password = useWatch({ control, name: 'password' });
   const confirmPassword = useWatch({
     control,
-    name: "confirmPassword",
+    name: 'confirmPassword',
   });
 
   const onSubmit: SubmitHandler<IFormInputs> = async (userInput) => {
@@ -42,12 +42,12 @@ const UpdatePassword = () => {
         toast.error(error.message);
       } else {
         router.push(NAV_MAIN_LINKS.login.link);
-        toast.success("Password was updated");
+        toast.success('Password was updated');
         reset();
       }
       setIsLoading(false);
     } else {
-      toast.warning("Passwords do not match. Please confirm your password.");
+      toast.warning('Passwords do not match. Please confirm your password.');
     }
   };
 
@@ -92,7 +92,7 @@ const UpdatePassword = () => {
       />
       <Button
         disabled={isLoading}
-        sx={{ marginTop: "1em" }}
+        sx={{ marginTop: '1em' }}
         fullWidth
         type="submit"
         variant="contained"

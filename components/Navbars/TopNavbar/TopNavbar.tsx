@@ -1,23 +1,25 @@
-import { AccountCircle, Logout, Menu as MenuIcon } from "@mui/icons-material";
+import { AccountCircle, Logout, Menu as MenuIcon } from '@mui/icons-material';
 import {
   Box,
   Button,
   IconButton,
-  MenuItem,
-  Typography,
-  Menu,
   ListItemIcon,
   ListItemText,
-} from "@mui/material";
-import { Logo, UserBubble } from "../..";
-import styles from "./TopNavbar.module.scss";
-import { db, supabase } from "classes/SupabaseDB";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { NAV_APP_LINKS } from "@/constants";
-import { useUserContext } from "@/context/UserContext";
-import { Loading } from "@/components";
-import { AppLayout } from "../../Templates";
+  Menu,
+  MenuItem,
+  Typography,
+} from '@mui/material';
+import { db, supabase } from 'classes/SupabaseDB';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+
+import { Loading } from '@/components';
+import { NAV_APP_LINKS } from '@/constants';
+import { useUserContext } from '@/context/UserContext';
+
+import { Logo, UserBubble } from '../..';
+import { AppLayout } from '../../Templates';
+import styles from './TopNavbar.module.scss';
 
 interface Props {
   handleMenu: () => void;
@@ -55,7 +57,7 @@ const TopNavbar = ({ handleMenu }: Props) => {
 
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_OUT") getProfile(null);
+      if (event === 'SIGNED_OUT') getProfile(null);
     });
     return () => {
       data.subscription.unsubscribe();
@@ -73,9 +75,9 @@ const TopNavbar = ({ handleMenu }: Props) => {
   return (
     <Box
       sx={{
-        display: "flex",
-        justifyContent: "space-between",
-        width: "100%",
+        display: 'flex',
+        justifyContent: 'space-between',
+        width: '100%',
       }}
     >
       <IconButton className={styles.topNavbarMenu} onClick={handleMenu}>
@@ -90,9 +92,9 @@ const TopNavbar = ({ handleMenu }: Props) => {
       </Button>
       <IconButton
         className={styles.topNavbarProfile}
-        aria-controls={open ? "basic-menu" : undefined}
+        aria-controls={open ? 'basic-menu' : undefined}
         aria-haspopup="true"
-        aria-expanded={open ? "true" : undefined}
+        aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}
         disableRipple
       >
@@ -105,18 +107,18 @@ const TopNavbar = ({ handleMenu }: Props) => {
         />
       </IconButton>
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-        <MenuItem sx={{ width: 200, maxWidth: "100%" }} onClick={onViewProfile}>
-          <ListItemIcon sx={{ paddingLeft: "5px" }}>
+        <MenuItem sx={{ width: 200, maxWidth: '100%' }} onClick={onViewProfile}>
+          <ListItemIcon sx={{ paddingLeft: '5px' }}>
             <UserBubble
               userPicture={user?.pictureUrl}
               userName={`${user?.firstName} ${user?.lastName}`}
             />
           </ListItemIcon>
-          <ListItemText sx={{ marginLeft: "-5px" }}>
+          <ListItemText sx={{ marginLeft: '-5px' }}>
             {NAV_APP_LINKS.account.label}
           </ListItemText>
         </MenuItem>
-        <MenuItem sx={{ width: 200, maxWidth: "100%" }} onClick={onLogout}>
+        <MenuItem sx={{ width: 200, maxWidth: '100%' }} onClick={onLogout}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>

@@ -1,1 +1,1 @@
-export { default } from "./CountdownDate";
+export { default } from './CountdownDate';

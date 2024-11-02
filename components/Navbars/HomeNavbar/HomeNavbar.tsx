@@ -1,7 +1,8 @@
-import * as React from "react";
+import MenuIcon from '@mui/icons-material/Menu';
 import {
   AppBar,
   Box,
+  Button,
   CssBaseline,
   Divider,
   Drawer,
@@ -11,13 +12,14 @@ import {
   ListItemButton,
   ListItemText,
   Toolbar,
-  Button,
-} from "@mui/material";
-import { Logo } from "../..";
-import MenuIcon from "@mui/icons-material/Menu";
-import styles from "./homeNavbar.module.scss";
-import { NAV_FOOTER_LINKS, NAV_MAIN_LINKS } from "@/constants/nav";
-import Link from "next/link";
+} from '@mui/material';
+import Link from 'next/link';
+import * as React from 'react';
+
+import { NAV_FOOTER_LINKS, NAV_MAIN_LINKS } from '@/constants/nav';
+
+import { Logo } from '../..';
+import styles from './homeNavbar.module.scss';
 
 interface Props {
   window?: () => Window;
@@ -35,29 +37,29 @@ function HomeNavbar(props: Props) {
 
   const navItems = [
     {
-      label: "About",
+      label: 'About',
       goTo: NAV_FOOTER_LINKS.about.link,
-      sx: { color: "#fff" },
+      sx: { color: '#fff' },
     },
     {
-      label: "Resources",
+      label: 'Resources',
       goTo: NAV_MAIN_LINKS.resources.link,
-      sx: { color: "#fff" },
+      sx: { color: '#fff' },
     },
     {
-      label: "Why Pray The Rosary?",
-      goTo: "/#why-pray-rosary",
-      sx: { color: "#fff" },
+      label: 'Why Pray The Rosary?',
+      goTo: '/#why-pray-rosary',
+      sx: { color: '#fff' },
     },
     {
-      label: "Log In",
+      label: 'Log In',
       goTo: NAV_MAIN_LINKS.login.link,
-      sx: { color: "#fff" },
+      sx: { color: '#fff' },
     },
   ];
 
   const drawer = (
-    <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
+    <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
       <Button href={NAV_MAIN_LINKS.home.link}>
         <Logo type="black" />
       </Button>
@@ -65,7 +67,7 @@ function HomeNavbar(props: Props) {
       <List>
         {navItems.map(({ label, goTo }) => (
           <ListItem key={label} disablePadding>
-            <ListItemButton sx={{ textAlign: "center" }} href={goTo}>
+            <ListItemButton sx={{ textAlign: 'center' }} href={goTo}>
               <ListItemText primary={label} />
             </ListItemButton>
           </ListItem>
@@ -78,7 +80,7 @@ function HomeNavbar(props: Props) {
     window !== undefined ? () => window().document.body : undefined;
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <AppBar component="nav" position="static" className={styles.appBar}>
         <Toolbar className={styles.toolbar}>
@@ -87,12 +89,12 @@ function HomeNavbar(props: Props) {
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ display: { sm: "none" } }}
+            sx={{ display: { sm: 'none' } }}
           >
             <MenuIcon />
           </IconButton>
           <Link
-            style={{ textAlign: "center" }}
+            style={{ textAlign: 'center' }}
             passHref
             href={NAV_MAIN_LINKS.home.link}
           >
@@ -100,8 +102,8 @@ function HomeNavbar(props: Props) {
               <Logo type="white" />
             </Button>
           </Link>
-          <Box sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }} />
-          <Box sx={{ display: { xs: "none", sm: "block" } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }} />
+          <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
             {navItems.map(({ label, goTo, sx }) => (
               <Link key={label} passHref href={goTo}>
                 <Button key={label} sx={sx}>
@@ -122,9 +124,9 @@ function HomeNavbar(props: Props) {
             keepMounted: true, // Better open performance on mobile.
           }}
           sx={{
-            display: { xs: "block", sm: "none" },
-            "& .MuiDrawer-paper": {
-              boxSizing: "border-box",
+            display: { xs: 'block', sm: 'none' },
+            '& .MuiDrawer-paper': {
+              boxSizing: 'border-box',
               width: drawerWidth,
             },
           }}

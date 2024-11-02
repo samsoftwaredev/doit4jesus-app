@@ -1,6 +1,6 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography } from '@mui/material';
 
-import { Dialog } from "../..";
+import { Dialog } from '../..';
 
 interface Props {
   currentMessageId?: string;

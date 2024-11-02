@@ -1,6 +1,7 @@
-import styles from "./loading.module.scss";
-import Logo from "../Logo";
-import { Box, CircularProgress } from "@mui/material";
+import { Box, CircularProgress } from '@mui/material';
+
+import Logo from '../Logo';
+import styles from './loading.module.scss';
 
 interface Props {
   isFeature?: boolean;
@@ -19,7 +20,7 @@ const Loading = ({ isFeature = false }: Props) => {
     <Box className={styles.container}>
       <Box className={styles.content}>
         <Logo type="white" />
-        <CircularProgress sx={{ px: "1em" }} color="secondary" />
+        <CircularProgress sx={{ px: '1em' }} color="secondary" />
       </Box>
     </Box>
   );

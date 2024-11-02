@@ -1,1 +1,1 @@
-export { default } from "./FriendsSection";
+export { default } from './FriendsSection';

@@ -1,8 +1,9 @@
-import FitScreenIcon from "@mui/icons-material/FitScreen";
-import { IconButton, Tooltip } from "@mui/material";
-import { useAudioContext } from "@/context/AudioContext";
-import { NAV_APP_LINKS } from "@/constants/nav";
-import { usePathname } from "next/navigation";
+import FitScreenIcon from '@mui/icons-material/FitScreen';
+import { IconButton, Tooltip } from '@mui/material';
+import { usePathname } from 'next/navigation';
+
+import { NAV_APP_LINKS } from '@/constants/nav';
+import { useAudioContext } from '@/context/AudioContext';
 
 const MusicVideo = () => {
   const pathname = usePathname();

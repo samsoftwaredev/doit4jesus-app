@@ -1,1 +1,1 @@
-export { default } from "./InviteFriend";
+export { default } from './InviteFriend';

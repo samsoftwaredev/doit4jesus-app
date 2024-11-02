@@ -1,6 +1,6 @@
-import { MouseEventHandler } from "react";
-import { Container, Grid, Typography } from "@mui/material";
-import Image from "next/image";
+import { Container, Grid, Typography } from '@mui/material';
+import Image from 'next/image';
+import { MouseEventHandler } from 'react';
 
 interface Props {
   title: string;
@@ -41,7 +41,7 @@ const AudioCover = ({
             />
           </div>
         )}
-        <Grid item sx={{ minHeight: "300px", height: "100%", width: "90%" }}>
+        <Grid item sx={{ minHeight: '300px', height: '100%', width: '90%' }}>
           {children}
         </Grid>
         <Grid textAlign="center" item>

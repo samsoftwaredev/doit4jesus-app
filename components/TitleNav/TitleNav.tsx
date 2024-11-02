@@ -1,7 +1,9 @@
-import styles from "./titleNav.module.scss";
-import { IconButton, Typography } from "@mui/material";
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import { css } from "@/utils/helpers";
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import { IconButton, Typography } from '@mui/material';
+
+import { css } from '@/utils/helpers';
+
+import styles from './titleNav.module.scss';
 
 type Props = {
   title: string;

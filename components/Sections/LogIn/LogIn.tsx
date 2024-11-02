@@ -1,15 +1,15 @@
-import { useRouter } from "next/router";
-import Link from "next/link";
-import { toast } from "react-toastify";
-import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { db, supabase } from "classes/SupabaseDB";
-import { useEffect, useState } from "react";
-import { Button, FormControl, TextField } from "@mui/material";
+import { Button, FormControl, TextField } from '@mui/material';
+import { db, supabase } from 'classes/SupabaseDB';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
-import FormErrorText from "@/components/FormErrorText";
-import { useUserContext } from "@/context/UserContext";
-import { NAV_APP_LINKS, NAV_MAIN_LINKS } from "@/constants/nav";
-import { GoogleAuth, HorizontalDivider } from "@/components";
+import { GoogleAuth, HorizontalDivider } from '@/components';
+import FormErrorText from '@/components/FormErrorText';
+import { NAV_APP_LINKS, NAV_MAIN_LINKS } from '@/constants/nav';
+import { useUserContext } from '@/context/UserContext';
 
 interface IFormInputs {
   password: string;
@@ -21,10 +21,10 @@ const LogIn = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { getProfile } = useUserContext();
   const { handleSubmit, control } = useForm<IFormInputs>({
-    mode: "onChange",
+    mode: 'onChange',
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
   });
 
@@ -37,11 +37,11 @@ const LogIn = () => {
     } else {
       const { data } = await supabase.auth.onAuthStateChange(
         async (event, session) => {
-          if (event === "SIGNED_IN") {
+          if (event === 'SIGNED_IN') {
             await getProfile(session);
             router.push(NAV_APP_LINKS.dashboard.link);
           }
-        },
+        }
       );
       data.subscription.unsubscribe();
     }
@@ -50,7 +50,7 @@ const LogIn = () => {
 
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_IN") getProfile(session);
+      if (event === 'SIGNED_IN') getProfile(session);
     });
     return () => {
       data.subscription.unsubscribe();
@@ -86,7 +86,7 @@ const LogIn = () => {
       <FormErrorText control={control} name="password" />
       <Button
         disabled={isLoading}
-        sx={{ marginTop: "1em" }}
+        sx={{ marginTop: '1em' }}
         fullWidth
         type="submit"
         variant="contained"
@@ -94,7 +94,7 @@ const LogIn = () => {
         Log In
       </Button>
       <Link passHref href={NAV_MAIN_LINKS.forgotPassword.link}>
-        <Button fullWidth sx={{ marginTop: "1em" }}>
+        <Button fullWidth sx={{ marginTop: '1em' }}>
           Forgot password?
         </Button>
       </Link>

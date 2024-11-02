@@ -1,6 +1,8 @@
-import { Footer, HomeNavbar } from "@/components";
-import { ReactNode } from "react";
-import styles from "./mainLayout.module.scss";
+import { ReactNode } from 'react';
+
+import { Footer, HomeNavbar } from '@/components';
+
+import styles from './mainLayout.module.scss';
 
 interface Props {
   children?: ReactNode;

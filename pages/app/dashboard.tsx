@@ -1,8 +1,8 @@
-import type { NextPage } from "next";
+import type { NextPage } from 'next';
 
-import { AppLayout } from "@/components/Templates";
-import AppWrapper from "@/components/AppWrapper";
-import DashboardSection from "@/components/Sections/DashboardSection";
+import AppWrapper from '@/components/AppWrapper';
+import DashboardSection from '@/components/Sections/DashboardSection';
+import { AppLayout } from '@/components/Templates';
 
 const Dashboard: NextPage = () => {
   return (

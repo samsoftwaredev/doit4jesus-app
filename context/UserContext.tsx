@@ -1,7 +1,6 @@
-import { db, supabase } from "classes/SupabaseDB";
-import { Session } from "@supabase/supabase-js";
-import { toast } from "react-toastify";
-import { useRouter } from "next/router";
+import { Session } from '@supabase/supabase-js';
+import { db, supabase } from 'classes/SupabaseDB';
+import { useRouter } from 'next/router';
 import {
   Dispatch,
   SetStateAction,
@@ -10,13 +9,14 @@ import {
   useEffect,
   useMemo,
   useState,
-} from "react";
+} from 'react';
+import { toast } from 'react-toastify';
 
-import { Loading } from "@/components";
-import { normalizeUserProfile } from "@/utils";
+import { Loading } from '@/components';
+import { normalizeUserProfile } from '@/utils';
 
-import { User } from "../interfaces";
-import { NAV_MAIN_LINKS } from "../constants";
+import { NAV_MAIN_LINKS } from '../constants';
+import { User } from '../interfaces';
 
 interface UserContext {
   user: User | null | undefined;
@@ -38,9 +38,9 @@ const updateProfileGoogle = async (userSession: Session, userProfile: any) => {
         first_name: userSession.user.user_metadata.name,
         picture_url: userSession.user.user_metadata.picture,
       })
-      .eq("id", userSession.user.id)
+      .eq('id', userSession.user.id)
       .select();
-    if (error) toast.error("Unable to update profile");
+    if (error) toast.error('Unable to update profile');
   }
 };
 
@@ -50,18 +50,18 @@ const UserContextProvider = ({ children }: Props) => {
   const [isLoading, setIsLoading] = useState(true);
 
   const getProfile = async (
-    userSession: Session | null,
+    userSession: Session | null
   ): Promise<User | undefined> => {
     setIsLoading(true);
     try {
-      if (!userSession) throw Error("No session");
+      if (!userSession) throw Error('No session');
       const { data: userProfile, error: profileErr } = await db
         .getProfiles()
-        .select("*")
-        .eq("id", userSession.user.id)
+        .select('*')
+        .eq('id', userSession.user.id)
         .single();
 
-      if (userSession.user.app_metadata.provider === "google") {
+      if (userSession.user.app_metadata.provider === 'google') {
         updateProfileGoogle(userSession, userProfile);
       }
 
@@ -69,8 +69,8 @@ const UserContextProvider = ({ children }: Props) => {
 
       const { data: rosaryStats, error: statsErr } = await db
         .getRosaryStats()
-        .select("*")
-        .eq("user_id", userSession.user.id);
+        .select('*')
+        .eq('user_id', userSession.user.id);
 
       if (statsErr) throw Error(statsErr.message);
 
@@ -94,7 +94,7 @@ const UserContextProvider = ({ children }: Props) => {
     try {
       const res = await supabase.auth.getSession();
       if (res.data.session) getProfile(res.data.session);
-      else throw new Error("No session");
+      else throw new Error('No session');
     } catch (err) {
       console.error(err);
       setIsLoading(false);
@@ -111,7 +111,7 @@ const UserContextProvider = ({ children }: Props) => {
       setUser,
       getProfile,
     }),
-    [user, setUser],
+    [user, setUser]
   );
 
   if (isLoading) return <Loading />;
@@ -122,7 +122,7 @@ const UserContextProvider = ({ children }: Props) => {
 const useUserContext = () => {
   const context = useContext(UserContext);
   if (context === undefined) {
-    throw new Error("useUserContext must be used within a ContextProvider");
+    throw new Error('useUserContext must be used within a ContextProvider');
   }
   return context;
 };

@@ -1,9 +1,10 @@
-import { AuthResponse, createClient } from "@supabase/supabase-js";
-import { NAV_APP_LINKS } from "@/constants";
-import type { Database } from "@/interfaces/database";
-import { GENDER_TYPES } from "@/interfaces/enum";
+import { AuthResponse, createClient } from '@supabase/supabase-js';
 
-import { generateRandomStringId } from "../utils";
+import { NAV_APP_LINKS } from '@/constants';
+import type { Database } from '@/interfaces/database';
+import { GENDER_TYPES } from '@/interfaces/enum';
+
+import { generateRandomStringId } from '../utils';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_PROJECT_URL!;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PROJECT_KEY!;
@@ -16,37 +17,37 @@ class SupabaseDB {
     return supabase;
   }
   getProfiles = () => {
-    return supabase.from("profiles");
+    return supabase.from('profiles');
   };
   getGroups = () => {
-    return supabase.from("groups");
+    return supabase.from('groups');
   };
   getFriends = () => {
-    return supabase.from("friends");
+    return supabase.from('friends');
   };
   getRosaryStats = () => {
-    return supabase.from("rosary_stats");
+    return supabase.from('rosary_stats');
   };
   getEvents = () => {
-    return supabase.from("events");
+    return supabase.from('events');
   };
   getPosts = () => {
-    return supabase.from("posts");
+    return supabase.from('posts');
   };
   getYouTubeVideo = () => {
-    return supabase.from("youtube");
+    return supabase.from('youtube');
   };
   getEventMessages = () => {
-    return supabase.from("event_messages");
+    return supabase.from('event_messages');
   };
   getEventMessagesActions = () => {
-    return supabase.from("event_messages_actions");
+    return supabase.from('event_messages_actions');
   };
   updatePassword = async (password: string) => {
     return await supabase.auth.updateUser({ password });
   };
   resetPassword = async (email: string) => {
-    const redirectTo = window.location.origin + "/update-password";
+    const redirectTo = window.location.origin + '/update-password';
     return await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: redirectTo,
     });

@@ -1,7 +1,8 @@
-import { NAV_APP_LINKS } from "@/constants/nav";
-import { useUserContext } from "@/context/UserContext";
-import { Button, Typography } from "@mui/material";
-import { useRouter } from "next/router";
+import { Button, Typography } from '@mui/material';
+import { useRouter } from 'next/router';
+
+import { NAV_APP_LINKS } from '@/constants/nav';
+import { useUserContext } from '@/context/UserContext';
 
 const RosaryStats = () => {
   const { user } = useUserContext();

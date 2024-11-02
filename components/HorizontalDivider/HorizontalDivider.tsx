@@ -1,4 +1,4 @@
-import styles from "./HorizontalDivider.module.scss";
+import styles from './HorizontalDivider.module.scss';
 
 const HorizontalDivider = () => {
   return (

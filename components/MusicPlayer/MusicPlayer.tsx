@@ -1,12 +1,14 @@
-import { Box, Typography } from "@mui/material";
-import styles from "./musicPlayer.module.scss";
-import MusicSettings from "../MusicSettings";
-import MusicVideo from "../MusicVideo";
-import { AudioNext, AudioPrevious, AudioPlay } from "../AudioControllers";
-import { useAudioContext } from "@/context/AudioContext";
-import OnlineUsers from "../OnlineUsers";
-import { usePresenceContext } from "@/context/PresenceContext";
-import MovingText from "../MovingText";
+import { Box, Typography } from '@mui/material';
+
+import { useAudioContext } from '@/context/AudioContext';
+import { usePresenceContext } from '@/context/PresenceContext';
+
+import { AudioNext, AudioPlay, AudioPrevious } from '../AudioControllers';
+import MovingText from '../MovingText';
+import MusicSettings from '../MusicSettings';
+import MusicVideo from '../MusicVideo';
+import OnlineUsers from '../OnlineUsers';
+import styles from './musicPlayer.module.scss';
 
 const MusicPlayer = () => {
   const { users } = usePresenceContext();

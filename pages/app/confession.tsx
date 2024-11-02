@@ -1,7 +1,8 @@
-import { AppLayout } from "@/components/Templates";
-import type { NextPage } from "next";
-import { ConfessionGuide } from "@/components/Sections";
-import AppWrapper from "@/components/AppWrapper";
+import type { NextPage } from 'next';
+
+import AppWrapper from '@/components/AppWrapper';
+import { ConfessionGuide } from '@/components/Sections';
+import { AppLayout } from '@/components/Templates';
 
 const Confession: NextPage = () => {
   return (

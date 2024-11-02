@@ -1,6 +1,6 @@
-import _ from "lodash";
-import { FormHelperText } from "@mui/material";
-import { Control, useFormState } from "react-hook-form";
+import { FormHelperText } from '@mui/material';
+import _ from 'lodash';
+import { Control, useFormState } from 'react-hook-form';
 
 interface Props {
   control: Control<any>;
@@ -8,7 +8,7 @@ interface Props {
   fieldName?: string;
 }
 
-const FormErrorText = ({ control, name, fieldName = "" }: Props) => {
+const FormErrorText = ({ control, name, fieldName = '' }: Props) => {
   const { touchedFields, errors, isSubmitted, isValid } = useFormState({
     control,
   });
@@ -18,7 +18,7 @@ const FormErrorText = ({ control, name, fieldName = "" }: Props) => {
 
   if (fieldTouched === false && isSubmitted === false) return null;
 
-  if (errors[name]?.type === "required") {
+  if (errors[name]?.type === 'required') {
     return (
       <FormHelperText error>
         {_.capitalize(fieldName || name)} required

@@ -1,23 +1,25 @@
-import { NAV_APP_LINKS } from "@/constants/nav";
-import { theme } from "@/styles/mui-overwrite";
-import { ChevronRight } from "@mui/icons-material";
-import { Box, Button, Container, Grid, Typography } from "@mui/material";
-import { useRouter } from "next/router";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import Image from "next/image";
-import styles from "./accountSetup.module.scss";
-import jesusCross from "@/public/assets/images/hero/jesusCross.svg";
-import jesusFish from "@/public/assets/images/hero/jesusFish.svg";
-import maryRosary from "@/public/assets/images/rosary.svg";
-import birthDay from "@/public/assets/images/hero/birthDay.svg";
-import { DateCalendar, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs from "dayjs";
-import moment from "moment";
-import { toast } from "react-toastify";
-import { db } from "classes/SupabaseDB";
-import { useUserContext } from "@/context/UserContext";
-import { maxAge, minAge } from "@/constants/global";
+import { ChevronRight } from '@mui/icons-material';
+import { Box, Button, Container, Grid, Typography } from '@mui/material';
+import { DateCalendar, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { db } from 'classes/SupabaseDB';
+import dayjs from 'dayjs';
+import moment from 'moment';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+
+import { maxAge, minAge } from '@/constants/global';
+import { NAV_APP_LINKS } from '@/constants/nav';
+import { useUserContext } from '@/context/UserContext';
+import birthDay from '@/public/assets/images/hero/birthDay.svg';
+import jesusCross from '@/public/assets/images/hero/jesusCross.svg';
+import jesusFish from '@/public/assets/images/hero/jesusFish.svg';
+import maryRosary from '@/public/assets/images/rosary.svg';
+import { theme } from '@/styles/mui-overwrite';
+
+import styles from './accountSetup.module.scss';
 
 interface StepProps {
   next: (skipToEnd?: boolean) => void;
@@ -25,21 +27,21 @@ interface StepProps {
 
 const KnowledgeStep = ({ next }: StepProps) => {
   const onClick = (quantity: string) => {
-    if (quantity === "always") next(true);
+    if (quantity === 'always') next(true);
     else next();
   };
 
   return (
     <Box className={styles.stepperContent}>
       <Typography
-        style={{ color: "black" }}
+        style={{ color: 'black' }}
         variant="h3"
         className={styles.title}
       >
         How Often You Pray The Rosary?
       </Typography>
       <Typography
-        style={{ color: "black" }}
+        style={{ color: 'black' }}
         textAlign="center"
         className={styles.body}
       >
@@ -49,21 +51,21 @@ const KnowledgeStep = ({ next }: StepProps) => {
       </Typography>
       <Grid container className={styles.buttons} gap={2}>
         <Button
-          onClick={() => onClick("always")}
+          onClick={() => onClick('always')}
           variant="contained"
           color="secondary"
         >
           Daily
         </Button>
         <Button
-          onClick={() => onClick("sometimes")}
+          onClick={() => onClick('sometimes')}
           variant="contained"
           color="secondary"
         >
           Sometimes
         </Button>
         <Button
-          onClick={() => onClick("never")}
+          onClick={() => onClick('never')}
           variant="contained"
           color="secondary"
         >
@@ -155,7 +157,7 @@ const WhenIsYourBirthDay = ({ next, setDob, dob }: DobProps) => {
 
   const setDateOfBirth = (date: Date) => {
     const userBirthDay = new Date(date);
-    const isLegal = moment().diff(moment(userBirthDay), "years") >= minAge;
+    const isLegal = moment().diff(moment(userBirthDay), 'years') >= minAge;
     if (isLegal) {
       setDob(userBirthDay);
     } else {
@@ -169,10 +171,10 @@ const WhenIsYourBirthDay = ({ next, setDob, dob }: DobProps) => {
       const { error } = await db
         .getProfiles()
         .update({ birth_date: dob.toUTCString() })
-        .eq("id", user.userId)
+        .eq('id', user.userId)
         .select();
       if (error) {
-        toast.error("Unable to save your date of birth");
+        toast.error('Unable to save your date of birth');
       } else {
         next();
       }
@@ -190,13 +192,13 @@ const WhenIsYourBirthDay = ({ next, setDob, dob }: DobProps) => {
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DateCalendar
           maxDate={dayjs()}
-          minDate={dayjs().subtract(maxAge, "year")}
+          minDate={dayjs().subtract(maxAge, 'year')}
           sx={{
-            "backdrop-filter": "blur(10px)",
-            borderRadius: "20px",
-            color: "white",
-            "& .MuiTypography-root": { color: "white" },
-            "& .MuiButtonBase-root": { color: "white" },
+            'backdrop-filter': 'blur(10px)',
+            borderRadius: '20px',
+            color: 'white',
+            '& .MuiTypography-root': { color: 'white' },
+            '& .MuiButtonBase-root': { color: 'white' },
           }}
           defaultValue={dayjs(new Date())}
           onChange={setDateOfBirth}
@@ -312,7 +314,7 @@ const AccountSetup = () => {
     },
     {
       component: <KnowledgeStep next={nextStep} />,
-      color: "#ffffff",
+      color: '#ffffff',
     },
     {
       component: <WhatsTheRosary next={nextStep} />,

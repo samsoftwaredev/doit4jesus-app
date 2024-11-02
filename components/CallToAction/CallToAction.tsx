@@ -1,7 +1,9 @@
-import { Button, Container, Typography } from "@mui/material";
-import styles from "./callToAction.module.scss";
-import { NAV_MAIN_LINKS } from "@/constants/nav";
-import Link from "next/link";
+import { Button, Container, Typography } from '@mui/material';
+import Link from 'next/link';
+
+import { NAV_MAIN_LINKS } from '@/constants/nav';
+
+import styles from './callToAction.module.scss';
 
 const WhyPrayRosary = () => {
   return (

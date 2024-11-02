@@ -1,1 +1,1 @@
-export { default } from "./ConfessionGuide";
+export { default } from './ConfessionGuide';

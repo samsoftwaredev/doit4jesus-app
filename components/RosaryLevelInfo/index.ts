@@ -1,1 +1,1 @@
-export { default } from "./RosaryLevelInfo";
+export { default } from './RosaryLevelInfo';

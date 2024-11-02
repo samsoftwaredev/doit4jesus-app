@@ -1,21 +1,21 @@
-import { useState } from "react";
 import {
   Box,
   Button,
   FormControl,
   SelectChangeEvent,
   Typography,
-} from "@mui/material";
+} from '@mui/material';
+import dayjs from 'dayjs';
+import { useState } from 'react';
+import { toast } from 'react-toastify';
 
-import { GroupItem, MenuItem } from "@/interfaces/index";
+import { db } from '@/class/index';
+import { useUserContext } from '@/context/UserContext';
+import { GroupItem, MenuItem } from '@/interfaces/index';
 
-import FriendSearch from "../FriendSearch/FriendSearch";
-import Dialog from "../Dialog";
-import Select from "../Select";
-import { db } from "@/class/index";
-import { toast } from "react-toastify";
-import dayjs from "dayjs";
-import { useUserContext } from "@/context/UserContext";
+import Dialog from '../Dialog';
+import FriendSearch from '../FriendSearch/FriendSearch';
+import Select from '../Select';
 
 interface Props {
   groups?: GroupItem[];
@@ -26,7 +26,7 @@ const FriendSearchGroup = ({ groups = [] }: Props) => {
   const groupMenuItem = groups.map((g) => ({ name: g.name, value: g.id }));
   const [isOpen, setIsOpen] = useState(false);
   const [userSelected, setUserSelected] = useState<MenuItem>();
-  const [groupName, setGroupName] = useState("");
+  const [groupName, setGroupName] = useState('');
 
   const onGroupSelected = (event: SelectChangeEvent) => {
     setGroupName(event.target.value);
@@ -34,7 +34,7 @@ const FriendSearchGroup = ({ groups = [] }: Props) => {
 
   const onClose = () => {
     setIsOpen(false);
-    setGroupName("");
+    setGroupName('');
   };
 
   const onUserSelected = (friend: MenuItem) => {
@@ -47,17 +47,17 @@ const FriendSearchGroup = ({ groups = [] }: Props) => {
       .getFriends()
       .insert({
         friend_id: userSelected!.value,
-        groups: { [groupName]: dayjs().format("MM/DD/YYYY") },
+        groups: { [groupName]: dayjs().format('MM/DD/YYYY') },
       })
-      .eq("friend_id", userSelected!.value)
+      .eq('friend_id', userSelected!.value)
       .select();
     if (error) {
       console.error(error);
-      toast.error("Unable to add user to group");
+      toast.error('Unable to add user to group');
     }
     if (data) {
       setIsOpen(false);
-      setGroupName("");
+      setGroupName('');
     }
   };
 
@@ -81,11 +81,11 @@ const FriendSearchGroup = ({ groups = [] }: Props) => {
         handleClose={onClose}
       >
         <Box>
-          Do you want to add {userSelected?.label ?? ""} as a friend?
+          Do you want to add {userSelected?.label ?? ''} as a friend?
           <Typography pt={2}>
             Your friend will be added to this group:
           </Typography>
-          <FormControl size="small" sx={{ width: "100%" }}>
+          <FormControl size="small" sx={{ width: '100%' }}>
             <Select
               value={groupName}
               menuItems={groupMenuItem}

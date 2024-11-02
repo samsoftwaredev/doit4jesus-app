@@ -7,24 +7,24 @@
   grid-template-rows: 1fr 70px 1fr;
   gap: 20px;
   grid-template-areas:
-    "image"
-    "title"
-    "content";
+    'image'
+    'title'
+    'content';
 
   @include tablet {
     grid-template-columns: 500px 1fr;
     grid-template-rows: 70px 1fr;
     grid-template-areas:
-      "image title"
-      "image content";
+      'image title'
+      'image content';
   }
   @include desktop {
     padding: 0px;
     grid-template-columns: 500px 1fr;
     grid-template-rows: 70px 1fr;
     grid-template-areas:
-      "image title"
-      "image content";
+      'image title'
+      'image content';
   }
 }
 .image {

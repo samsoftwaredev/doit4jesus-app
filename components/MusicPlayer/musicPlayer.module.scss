@@ -11,7 +11,7 @@
     right: 0;
     left: 0;
     z-index: -100;
-    content: "";
+    content: '';
     height: 20px;
     width: 100%;
     background-color: black;
@@ -30,8 +30,8 @@
   gap: 1em 1em;
   grid-auto-flow: row;
   grid-template-areas:
-    "buttonControl buttonControl"
-    "title mystery";
+    'buttonControl buttonControl'
+    'title mystery';
 
   height: 80px;
   padding: 0 14px;
@@ -43,7 +43,7 @@
     grid-template-rows: 1fr;
     gap: 1em 1em;
     grid-auto-flow: row;
-    grid-template-areas: "title buttonControl mystery";
+    grid-template-areas: 'title buttonControl mystery';
     align-items: center;
   }
   @include desktop {
@@ -51,7 +51,7 @@
     grid-template-rows: 1fr;
     gap: 1em 1em;
     grid-auto-flow: row;
-    grid-template-areas: "title buttonControl mystery";
+    grid-template-areas: 'title buttonControl mystery';
     align-items: center;
   }
 }

@@ -1,3 +1,4 @@
+import { RealtimeChannel, RealtimePresenceState } from '@supabase/supabase-js';
 import {
   Dispatch,
   SetStateAction,
@@ -5,11 +6,12 @@ import {
   useContext,
   useEffect,
   useState,
-} from "react";
-import { OnlineUser } from "@/interfaces";
-import { RealtimeChannel, RealtimePresenceState } from "@supabase/supabase-js";
-import { normalizeOnlineUsers } from "@/utils";
-import { useUserContext } from "./UserContext";
+} from 'react';
+
+import { OnlineUser } from '@/interfaces';
+import { normalizeOnlineUsers } from '@/utils';
+
+import { useUserContext } from './UserContext';
 
 interface PresenceContext {
   users: OnlineUser[] | undefined;
@@ -38,15 +40,15 @@ const PresenceContextProvider = ({ children }: Props) => {
   const subscribeToPresence = async () => {
     try {
       await channel!
-        .on("presence", { event: "sync" }, () => {
+        .on('presence', { event: 'sync' }, () => {
           onlineUsers = channel!.presenceState();
           setUsers(flattenArr(onlineUsers));
         })
-        .on("presence", { event: "join" }, ({ key, newPresences }) => {
+        .on('presence', { event: 'join' }, ({ key, newPresences }) => {
           onlineUsers[key] = newPresences; // add user to list
           setUsers(flattenArr(onlineUsers));
         })
-        .on("presence", { event: "leave" }, ({ key, leftPresences }) => {
+        .on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
           delete onlineUsers[key]; // remove user from list
           setUsers(flattenArr(onlineUsers));
         })
@@ -84,7 +86,7 @@ const PresenceContextProvider = ({ children }: Props) => {
 const usePresenceContext = () => {
   const context = useContext(PresenceContext);
   if (context === undefined) {
-    throw new Error("usePresenceContext must be used within a ContextProvider");
+    throw new Error('usePresenceContext must be used within a ContextProvider');
   }
   return context;
 };

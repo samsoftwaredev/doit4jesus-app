@@ -1,6 +1,7 @@
-import { Box } from "@mui/material";
-import styles from "./onlineUsers.module.scss";
-import UserBubble from "../UserBubble";
+import { Box } from '@mui/material';
+
+import UserBubble from '../UserBubble';
+import styles from './onlineUsers.module.scss';
 
 interface Props {
   users?: {
@@ -12,7 +13,7 @@ interface Props {
 
 const OnlineUsers = ({ users }: Props) => {
   return (
-    <Box component={"ul"} className={styles.container}>
+    <Box component={'ul'} className={styles.container}>
       {users?.map(({ fullName, userId, pictureUrl }) => (
         <UserBubble
           key={userId}

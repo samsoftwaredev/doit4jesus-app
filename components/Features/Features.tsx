@@ -1,29 +1,31 @@
-import { Box, Container, Grid, Typography } from "@mui/material";
-import { theme } from "@/styles/mui-overwrite";
-import josephPraying from "@/public/assets/images/art/josephPraying.jpeg";
-import jesusPrayingHands from "@/public/assets/images/art/jesusPrayingHands.jpeg";
-import maryMoon from "@/public/assets/images/art/maryMoon.jpeg";
-import styles from "./features.module.scss";
-import Image from "next/image";
+import { Box, Container, Grid, Typography } from '@mui/material';
+import Image from 'next/image';
+
+import jesusPrayingHands from '@/public/assets/images/art/jesusPrayingHands.jpeg';
+import josephPraying from '@/public/assets/images/art/josephPraying.jpeg';
+import maryMoon from '@/public/assets/images/art/maryMoon.jpeg';
+import { theme } from '@/styles/mui-overwrite';
+
+import styles from './features.module.scss';
 
 const features = [
   {
     thumbnail: maryMoon,
-    title: "Find Peace",
+    title: 'Find Peace',
     description:
-      "The act of praying the Rosary has a calming effect, bringing a sense of tranquility and well-being.",
+      'The act of praying the Rosary has a calming effect, bringing a sense of tranquility and well-being.',
   },
   {
     thumbnail: jesusPrayingHands,
-    title: "Spiritual Well-Being",
+    title: 'Spiritual Well-Being',
     description:
-      "Turn to the Rosary during times of distress, seeking solace and comfort through prayer.",
+      'Turn to the Rosary during times of distress, seeking solace and comfort through prayer.',
   },
   {
     thumbnail: josephPraying,
-    title: "Pray Together",
+    title: 'Pray Together',
     description:
-      "Prayer unites us and help support millions of souls while sharing our faith and intentions.",
+      'Prayer unites us and help support millions of souls while sharing our faith and intentions.',
   },
 ];
 
@@ -45,7 +47,7 @@ const Features = () => {
               <Box
                 className={styles.arcs}
                 sx={{
-                  textAlign: "center",
+                  textAlign: 'center',
                   borderColor: theme.palette.secondary.main,
                 }}
               >

@@ -1,6 +1,7 @@
-import { IconButton, Tooltip } from "@mui/material";
-import RedoIcon from "@mui/icons-material/Redo";
-import { useAudioContext } from "context/AudioContext";
+import RedoIcon from '@mui/icons-material/Redo';
+import { IconButton, Tooltip } from '@mui/material';
+
+import { useAudioContext } from '@/context/AudioContext';
 
 const AudioControllers = () => {
   const { forwardAudio, audioPlayer } = useAudioContext();

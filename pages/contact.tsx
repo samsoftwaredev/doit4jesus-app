@@ -1,8 +1,8 @@
-import type { NextPage } from "next";
+import type { NextPage } from 'next';
 
-import { MainLayout } from "@/components/Templates";
-import { Meta } from "@/components";
-import { ContactSection } from "@/components/Sections";
+import { Meta } from '@/components';
+import { ContactSection } from '@/components/Sections';
+import { MainLayout } from '@/components/Templates';
 
 const Contact: NextPage = () => {
   return (

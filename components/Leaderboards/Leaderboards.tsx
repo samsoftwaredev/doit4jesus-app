@@ -1,12 +1,12 @@
-import { Box, Typography } from "@mui/material";
-import { toast } from "react-toastify";
-import { useEffect, useState } from "react";
+import { Box, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
-import { supabase } from "@/class/index";
-import { getCurrentLevel } from "@/utils/levels";
+import { supabase } from '@/class/index';
+import { getCurrentLevel } from '@/utils/levels';
 
-import Loading from "../Loading";
-import RosaryLevel from "../RosaryLevel";
+import Loading from '../Loading';
+import RosaryLevel from '../RosaryLevel';
 
 type UserLeaderboards = {
   userId: string;
@@ -26,7 +26,7 @@ const Leaderboards = () => {
       first_name: string;
       last_name: string;
       picture_url: string;
-    }[],
+    }[]
   ): UserLeaderboards[] => {
     return data.map((u) => ({
       userId: u.user_id,
@@ -39,14 +39,14 @@ const Leaderboards = () => {
 
   const getTopRosaryUser = async () => {
     setIsLoading(true);
-    const { data, error } = await supabase.functions.invoke("leaderboards");
+    const { data, error } = await supabase.functions.invoke('leaderboards');
     setIsLoading(false);
     if (data) {
       const list = normalizeLeaderboards(data.data.data);
       setUserList(list);
     }
     if (error) {
-      toast.error("Unable to display leaderboards");
+      toast.error('Unable to display leaderboards');
     }
   };
 
@@ -74,7 +74,7 @@ const Leaderboards = () => {
                   </Box>
 
                   <Box
-                    sx={{ width: "100%" }}
+                    sx={{ width: '100%' }}
                     display="flex"
                     flexDirection="column"
                   >
@@ -82,11 +82,11 @@ const Leaderboards = () => {
                       {u.firstName} {u.lastName}
                     </Typography>
                     <Typography px={1}>
-                      {u.count} {u.count !== 1 ? "Rosaries" : "Rosary"}
+                      {u.count} {u.count !== 1 ? 'Rosaries' : 'Rosary'}
                     </Typography>
                   </Box>
 
-                  <Box sx={{ width: "100%" }} textAlign="right">
+                  <Box sx={{ width: '100%' }} textAlign="right">
                     <RosaryLevel levelNum={levelNum} />
                   </Box>
                 </Box>

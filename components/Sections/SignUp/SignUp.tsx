@@ -1,6 +1,3 @@
-import Image from "next/image";
-import { toast } from "react-toastify";
-import { useState } from "react";
 import {
   Box,
   Button,
@@ -11,21 +8,24 @@ import {
   RadioGroup,
   TextField,
   Typography,
-} from "@mui/material";
-import { db } from "classes/SupabaseDB";
-import { Controller, SubmitHandler, useForm, useWatch } from "react-hook-form";
+} from '@mui/material';
+import { db } from 'classes/SupabaseDB';
+import Image from 'next/image';
+import { useState } from 'react';
+import { Controller, SubmitHandler, useForm, useWatch } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
-import FormErrorText from "@/components/FormErrorText";
-import { emailRegEx, nameRegEx } from "@/utils/regEx";
-import virginMaryLetter from "@/public/assets/images/art/virginMaryLetter.jpeg";
-import { passwordValidationRules } from "@/constants";
+import FormErrorText from '@/components/FormErrorText';
+import { passwordValidationRules } from '@/constants';
+import virginMaryLetter from '@/public/assets/images/art/virginMaryLetter.jpeg';
+import { emailRegEx, nameRegEx } from '@/utils/regEx';
 
 import {
   GoogleAuth,
   HorizontalDivider,
   Loading,
   PasswordValidator,
-} from "../..";
+} from '../..';
 
 interface IFormInputs {
   password: string;
@@ -39,16 +39,16 @@ const SignUp = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccessfulSigUp, setIsSuccessfulSigUp] = useState(false);
   const { handleSubmit, control } = useForm<IFormInputs>({
-    mode: "onChange",
+    mode: 'onChange',
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
       genderMale: undefined,
-      firstName: "",
-      lastName: "",
+      firstName: '',
+      lastName: '',
     },
   });
-  const password = useWatch({ control, name: "password" });
+  const password = useWatch({ control, name: 'password' });
 
   const onSubmit: SubmitHandler<IFormInputs> = async (userInput) => {
     setIsLoading(true);
@@ -59,30 +59,28 @@ const SignUp = () => {
       console.error(error);
     }
     if (data) {
-      toast.success("We have sent a confirmation link to your email");
+      toast.success('We have sent a confirmation link to your email');
       setIsSuccessfulSigUp(true);
     }
   };
 
-  if (isLoading) {
-    return <Loading />;
-  }
+  if (isLoading) return <Loading />;
 
   if (isSuccessfulSigUp) {
     return (
       <>
         <div
           style={{
-            width: "100%",
-            height: "200px",
-            position: "relative",
+            width: '100%',
+            height: '200px',
+            position: 'relative',
           }}
         >
           <Image
             style={{
-              width: "100%",
-              borderTopLeftRadius: "50%",
-              borderTopRightRadius: "50%",
+              width: '100%',
+              borderTopLeftRadius: '50%',
+              borderTopRightRadius: '50%',
             }}
             alt="Virgin Mary Letter"
             src={virginMaryLetter}
@@ -112,15 +110,15 @@ const SignUp = () => {
           required: true,
           pattern: {
             value: nameRegEx,
-            message: "Invalid name",
+            message: 'Invalid name',
           },
           minLength: {
             value: 1,
-            message: "The first name is too short",
+            message: 'The first name is too short',
           },
           maxLength: {
             value: 100,
-            message: "The first name exceed max length",
+            message: 'The first name exceed max length',
           },
         }}
         render={({ field }) => (
@@ -139,15 +137,15 @@ const SignUp = () => {
           required: true,
           pattern: {
             value: nameRegEx,
-            message: "Invalid name",
+            message: 'Invalid name',
           },
           minLength: {
             value: 1,
-            message: "The last name is too short",
+            message: 'The last name is too short',
           },
           maxLength: {
             value: 100,
-            message: "The last name exceed max length",
+            message: 'The last name exceed max length',
           },
         }}
         render={({ field }) => (
@@ -162,11 +160,11 @@ const SignUp = () => {
           required: true,
           pattern: {
             value: emailRegEx,
-            message: "Invalid email address",
+            message: 'Invalid email address',
           },
           maxLength: {
             value: 100,
-            message: "The email exceed max length",
+            message: 'The email exceed max length',
           },
         }}
         render={({ field }) => (
@@ -199,9 +197,9 @@ const SignUp = () => {
             <RadioGroup
               id="gender"
               sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-around",
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-around',
               }}
               defaultValue="male"
               {...field}
@@ -217,13 +215,13 @@ const SignUp = () => {
         />
         <FormErrorText name="genderMale" fieldName="gender" control={control} />
         <Button
-          sx={{ marginTop: "1em" }}
+          sx={{ marginTop: '1em' }}
           disabled={isLoading}
           fullWidth
           type="submit"
           variant="contained"
         >
-          {isLoading ? "Loading..." : "Sign Up"}
+          {isLoading ? 'Loading...' : 'Sign Up'}
         </Button>
       </Box>
     </FormControl>

@@ -6,31 +6,31 @@
   gap: 10px;
   grid-auto-flow: row;
   grid-template-areas:
-    "TodayRosary"
-    "RosariesCompleted"
-    "Friends"
-    "Donations"
-    "Levels"
-    "Leaderboards";
+    'TodayRosary'
+    'RosariesCompleted'
+    'Friends'
+    'Donations'
+    'Levels'
+    'Leaderboards';
 
   @include tablet {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
     grid-template-areas:
-      "TodayRosary TodayRosary"
-      "RosariesCompleted Friends"
-      "Donations Donations"
-      "Levels Levels"
-      "Leaderboards Leaderboards";
+      'TodayRosary TodayRosary'
+      'RosariesCompleted Friends'
+      'Donations Donations'
+      'Levels Levels'
+      'Leaderboards Leaderboards';
   }
   @include desktop {
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr;
     grid-template-areas:
-      "TodayRosary TodayRosary RosariesCompleted"
-      "Levels Levels Levels"
-      "Friends Donations Donations"
-      "Leaderboards Leaderboards Leaderboards";
+      'TodayRosary TodayRosary RosariesCompleted'
+      'Levels Levels Levels'
+      'Friends Donations Donations'
+      'Leaderboards Leaderboards Leaderboards';
   }
 }
 

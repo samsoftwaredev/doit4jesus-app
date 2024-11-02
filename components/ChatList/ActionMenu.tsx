@@ -1,11 +1,12 @@
-import { EventMessages } from "@/interfaces/index";
-import { Box, IconButton, ListItemIcon, Menu, MenuItem } from "@mui/material";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { useState } from "react";
-import { useUserContext } from "@/context/UserContext";
-import AnnouncementIcon from "@mui/icons-material/Announcement";
-import DeleteIcon from "@mui/icons-material/Delete";
-import BorderColorIcon from "@mui/icons-material/BorderColor";
+import AnnouncementIcon from '@mui/icons-material/Announcement';
+import BorderColorIcon from '@mui/icons-material/BorderColor';
+import DeleteIcon from '@mui/icons-material/Delete';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { Box, IconButton, ListItemIcon, Menu, MenuItem } from '@mui/material';
+import { useState } from 'react';
+
+import { useUserContext } from '@/context/UserContext';
+import { EventMessages } from '@/interfaces/index';
 
 interface Props {
   message: EventMessages;
@@ -43,8 +44,8 @@ const ActionMenu = ({
       <IconButton
         aria-label="more"
         id="event-message-actions"
-        aria-controls={open ? "event-message" : undefined}
-        aria-expanded={open ? "true" : undefined}
+        aria-controls={open ? 'event-message' : undefined}
+        aria-expanded={open ? 'true' : undefined}
         aria-haspopup="true"
         onClick={handleActionMenuClick}
       >
@@ -53,7 +54,7 @@ const ActionMenu = ({
       <Menu
         id="event-message"
         MenuListProps={{
-          "aria-labelledby": "event-message-actions",
+          'aria-labelledby': 'event-message-actions',
         }}
         anchorEl={anchorEl}
         open={open}

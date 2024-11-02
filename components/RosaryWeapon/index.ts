@@ -1,1 +1,1 @@
-export { default } from "./RosaryWeapon";
+export { default } from './RosaryWeapon';

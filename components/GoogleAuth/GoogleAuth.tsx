@@ -1,9 +1,10 @@
-import React from "react";
-import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
-import { supabase } from "@/class/index";
-import { toast } from "react-toastify";
-import { useRouter } from "next/router";
-import { NAV_APP_LINKS } from "@/constants/nav";
+import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
+import { useRouter } from 'next/router';
+import React from 'react';
+import { toast } from 'react-toastify';
+
+import { supabase } from '@/class/index';
+import { NAV_APP_LINKS } from '@/constants/nav';
 
 interface Props {
   isSignUp: boolean;
@@ -14,16 +15,16 @@ const GoogleAuth = ({ isSignUp }: Props) => {
   const onLogin = async (response: CredentialResponse) => {
     if (response.credential) {
       const { error } = await supabase.auth.signInWithIdToken({
-        provider: "google",
+        provider: 'google',
         token: response.credential,
       });
-      if (error) toast.error("Fail to authenticate");
+      if (error) toast.error('Fail to authenticate');
     }
   };
 
   const onSignUp = () => {
     supabase.auth.signInWithOAuth({
-      provider: "google",
+      provider: 'google',
       options: {
         redirectTo: `https://www.doit4jesus.com/app`,
       },

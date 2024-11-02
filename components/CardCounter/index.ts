@@ -1,1 +1,1 @@
-export { default } from "./CardCounter";
+export { default } from './CardCounter';

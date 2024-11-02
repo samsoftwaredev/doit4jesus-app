@@ -1,13 +1,14 @@
-import { db } from "classes/SupabaseDB";
-import Loading from "@/components/Loading";
-import { DataEvent } from "@/interfaces";
-import { AppLayout } from "@/components/Templates";
-import AllEventSection from "@/components/Sections/AllEventSection";
-import type { NextPage } from "next";
-import { normalizeEvent } from "@/utils";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import AppWrapper from "@/components/AppWrapper";
+import { db } from 'classes/SupabaseDB';
+import type { NextPage } from 'next';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+
+import AppWrapper from '@/components/AppWrapper';
+import Loading from '@/components/Loading';
+import AllEventSection from '@/components/Sections/AllEventSection';
+import { AppLayout } from '@/components/Templates';
+import { DataEvent } from '@/interfaces';
+import { normalizeEvent } from '@/utils';
 
 const App: NextPage = () => {
   const [events, setEvents] = useState<DataEvent[] | null>(null);
@@ -17,12 +18,12 @@ const App: NextPage = () => {
     setIsLoading(true);
     const { data, error } = await db
       .getEvents()
-      .select("*")
-      .order("started_at", { ascending: true });
+      .select('*')
+      .order('started_at', { ascending: true });
     if (!error) setEvents(normalizeEvent(data));
     else {
       console.error(error);
-      toast.error("Unable to get list of events");
+      toast.error('Unable to get list of events');
     }
     setIsLoading(false);
   };
@@ -33,7 +34,7 @@ const App: NextPage = () => {
 
   return (
     <AppLayout>
-      {isLoading ? <Loading /> : <AllEventSection events={events} />}
+      {isLoading ? <Loading isFeature /> : <AllEventSection events={events} />}
     </AppLayout>
   );
 };

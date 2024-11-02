@@ -1,10 +1,11 @@
-import React from "react";
-import MuiDialog, { DialogProps } from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
-import { Box } from "@mui/material";
-import { theme } from "@/styles/mui-overwrite";
+import CloseIcon from '@mui/icons-material/Close';
+import { Box } from '@mui/material';
+import MuiDialog, { DialogProps } from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import IconButton from '@mui/material/IconButton';
+import React from 'react';
+
+import { theme } from '@/styles/mui-overwrite';
 
 type Props = {
   handleClose: () => void;
@@ -15,7 +16,7 @@ type Props = {
 
 const Dialog = ({
   handleClose,
-  modalTitle = "",
+  modalTitle = '',
   children = null,
   actions = null,
   ...props
@@ -35,7 +36,7 @@ const Dialog = ({
         </DialogTitle>
         <IconButton
           sx={{
-            marginRight: "0.5em",
+            marginRight: '0.5em',
           }}
           aria-label="close"
           onClick={handleClose}

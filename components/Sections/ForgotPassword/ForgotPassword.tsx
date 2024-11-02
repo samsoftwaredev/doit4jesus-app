@@ -1,10 +1,10 @@
-import { useState } from "react";
-import { toast } from "react-toastify";
-import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { db } from "classes/SupabaseDB";
-import { Button, TextField } from "@mui/material";
+import { Button, TextField } from '@mui/material';
+import { db } from 'classes/SupabaseDB';
+import { useState } from 'react';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
-import FormErrorText from "@/components/FormErrorText";
+import FormErrorText from '@/components/FormErrorText';
 
 interface IFormInputs {
   email: string;
@@ -13,9 +13,9 @@ interface IFormInputs {
 const ForgotPassword = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { handleSubmit, control } = useForm<IFormInputs>({
-    mode: "onChange",
+    mode: 'onChange',
     defaultValues: {
-      email: "",
+      email: '',
     },
   });
 
@@ -25,7 +25,7 @@ const ForgotPassword = () => {
     if (error) {
       toast.error(error?.message);
     } else {
-      toast.success("Password reset sent");
+      toast.success('Password reset sent');
     }
     setIsLoading(false);
   };
@@ -43,7 +43,7 @@ const ForgotPassword = () => {
       <FormErrorText control={control} name="email" />
       <Button
         disabled={isLoading}
-        sx={{ marginTop: "1em" }}
+        sx={{ marginTop: '1em' }}
         fullWidth
         type="submit"
         variant="contained"

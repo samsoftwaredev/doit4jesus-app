@@ -1,3 +1,5 @@
+import AddIcon from '@mui/icons-material/Add';
+import CreateIcon from '@mui/icons-material/ControlPoint';
 import {
   Box,
   Button,
@@ -5,16 +7,16 @@ import {
   IconButton,
   TextField,
   Typography,
-} from "@mui/material";
-import CreateIcon from "@mui/icons-material/ControlPoint";
-import { db } from "@/class/index";
-import AddIcon from "@mui/icons-material/Add";
-import { toast } from "react-toastify";
-import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { alphaNumericRegEx } from "@/utils/regEx";
-import FormErrorText from "../FormErrorText";
-import Dialog from "../Dialog";
+} from '@mui/material';
+import { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
+
+import { db } from '@/class/index';
+import { alphaNumericRegEx } from '@/utils/regEx';
+
+import Dialog from '../Dialog';
+import FormErrorText from '../FormErrorText';
 
 interface FormInputs {
   name: string;
@@ -26,9 +28,9 @@ const CreateGroupForm = ({
   onSubmitted: (inputs: FormInputs) => void;
 }) => {
   const { handleSubmit, reset, control } = useForm<FormInputs>({
-    mode: "onTouched",
+    mode: 'onTouched',
     defaultValues: {
-      name: "",
+      name: '',
     },
   });
 
@@ -50,11 +52,11 @@ const CreateGroupForm = ({
           required: true,
           pattern: {
             value: alphaNumericRegEx,
-            message: "Use letters to start; only letters and numbers allowed.",
+            message: 'Use letters to start; only letters and numbers allowed.',
           },
           maxLength: {
             value: 100,
-            message: "The name exceed max length",
+            message: 'The name exceed max length',
           },
         }}
         render={({ field }) => (
@@ -64,9 +66,9 @@ const CreateGroupForm = ({
       <FormErrorText control={control} name="name" />
       <Button
         sx={{
-          display: "flex",
-          alignSelf: "flex-end",
-          marginTop: "2em",
+          display: 'flex',
+          alignSelf: 'flex-end',
+          marginTop: '2em',
         }}
         color="success"
         type="submit"
@@ -98,10 +100,10 @@ const CreateFriendGroup = () => {
       })
       .select();
     if (error) {
-      toast.error("Unable to create group");
+      toast.error('Unable to create group');
     }
     if (data) {
-      toast.success("Group was created");
+      toast.success('Group was created');
       setIsOpen(false);
     }
   };
@@ -114,7 +116,7 @@ const CreateFriendGroup = () => {
       alignItems="center"
     >
       <IconButton onClick={openDialog} color="success" size="large">
-        <CreateIcon sx={{ fontSize: "4em" }} />
+        <CreateIcon sx={{ fontSize: '4em' }} />
       </IconButton>
       <Typography>Create Group</Typography>
       <Dialog

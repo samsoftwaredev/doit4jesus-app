@@ -1,4 +1,5 @@
-import { MainLayout } from "@/components/Templates/index";
+import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
+import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import {
   Box,
   Button,
@@ -8,17 +9,17 @@ import {
   IconButton,
   LinearProgress,
   Typography,
-} from "@mui/material";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { Loading, Meta, PageNotFound } from "@/components";
-import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
-import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
-import { NAV_MAIN_LINKS } from "@/constants/nav";
-import { db } from "@/class/index";
-import { normalizePost } from "@/utils/normalizers";
-import { ResourcePost } from "@/interfaces/index";
-import { toast } from "react-toastify";
+} from '@mui/material';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+
+import { db } from '@/class/index';
+import { Loading, Meta, PageNotFound } from '@/components';
+import { MainLayout } from '@/components/Templates/index';
+import { NAV_MAIN_LINKS } from '@/constants/nav';
+import { ResourcePost } from '@/interfaces/index';
+import { normalizePost } from '@/utils/normalizers';
 
 function ResourcesPost() {
   const router = useRouter();
@@ -47,10 +48,10 @@ function ResourcesPost() {
   const getArticle = async () => {
     setIsLoading(true);
     const { slug } = router.query;
-    if (typeof slug === "string") {
-      let { data, error } = await db.getPosts().select("*").eq("slug", slug);
+    if (typeof slug === 'string') {
+      let { data, error } = await db.getPosts().select('*').eq('slug', slug);
       if (data) setArticle(normalizePost(data)[0]);
-      if (error) toast.error("Unable to display article");
+      if (error) toast.error('Unable to display article');
       setIsLoading(false);
     }
   };
@@ -74,8 +75,8 @@ function ResourcesPost() {
           <CardMedia
             sx={{
               height: 240,
-              textAlign: "right",
-              color: "white",
+              textAlign: 'right',
+              color: 'white',
               textShadow: `1px 1px 2px black`,
             }}
             image={article.content.image}

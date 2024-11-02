@@ -7,25 +7,25 @@
   gap: 10px;
   grid-auto-flow: row;
   grid-template-areas:
-    "SearchFriend"
-    "TodaysChallenge"
-    "UserLevel"
-    "CreateGroups";
+    'SearchFriend'
+    'TodaysChallenge'
+    'UserLevel'
+    'CreateGroups';
 
   @include tablet {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
     grid-template-areas:
-      "SearchFriend SearchFriend"
-      "TodaysChallenge UserLevel"
-      "CreateGroups Groups";
+      'SearchFriend SearchFriend'
+      'TodaysChallenge UserLevel'
+      'CreateGroups Groups';
   }
   @include desktop {
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: auto;
     grid-template-areas:
-      "SearchFriend SearchFriend UserLevel"
-      "TodaysChallenge CreateGroups Groups";
+      'SearchFriend SearchFriend UserLevel'
+      'TodaysChallenge CreateGroups Groups';
   }
 }
 

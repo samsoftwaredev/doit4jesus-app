@@ -1,4 +1,4 @@
-import { Json } from "./database";
+import { Json } from './database';
 
 export type MenuItem = {
   value: string;
@@ -19,19 +19,19 @@ export interface ExamTypes {
 }
 
 export enum INTERFACE_AUDIO_TYPE {
-  AUDIO_FILE = "AUDIO FILE",
-  YOUTUBE_LINK = "YOUTUBE LINK",
+  AUDIO_FILE = 'AUDIO FILE',
+  YOUTUBE_LINK = 'YOUTUBE LINK',
 }
 
 export enum INTERFACE_VIEW_SIZE {
-  SMALL = "sm",
-  MEDIUM = "md",
+  SMALL = 'sm',
+  MEDIUM = 'md',
 }
 
 export enum INTERFACE_LANGUAGES {
-  es = "es",
-  la = "la",
-  en = "en",
+  es = 'es',
+  la = 'la',
+  en = 'en',
 }
 
 export enum INTERFACE_AUDIO_STATE {
@@ -50,18 +50,18 @@ export enum INTERFACE_AUDIO_SEEK {
 }
 
 export enum INTERFACE_BACKGROUND_ITEM {
-  NONE = "NONE",
-  AVE_MARIA = "AVE_MARIA",
-  OCEAN_WAVE = "OCEAN_WAVE",
-  LIGHT_PIANO = "LIGHT_PIANO",
-  GENTLE_RAIN = "GENTLE_RAIN",
+  NONE = 'NONE',
+  AVE_MARIA = 'AVE_MARIA',
+  OCEAN_WAVE = 'OCEAN_WAVE',
+  LIGHT_PIANO = 'LIGHT_PIANO',
+  GENTLE_RAIN = 'GENTLE_RAIN',
 }
 
 export enum INTERFACE_ROSARY_MYSTERIES {
-  GLORIOUS = "glorious",
-  SORROWFUL = "sorrowful",
-  JOYFUL = "joyful",
-  LUMINOUS = "luminous",
+  GLORIOUS = 'glorious',
+  SORROWFUL = 'sorrowful',
+  JOYFUL = 'joyful',
+  LUMINOUS = 'luminous',
 }
 
 export enum INTERFACE_AUDIO_SPEED {
@@ -89,8 +89,8 @@ export interface INTERFACE_ROSARY_STATE {
 }
 
 export enum EventTypes {
-  youtubeVideo = "youtubeVideo",
-  text = "text",
+  youtubeVideo = 'youtubeVideo',
+  text = 'text',
 }
 
 export type DataEvent = {

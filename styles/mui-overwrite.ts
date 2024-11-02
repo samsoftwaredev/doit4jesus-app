@@ -1,43 +1,43 @@
-import { createTheme } from "@mui/material";
+import { createTheme } from '@mui/material';
 
 export const theme = createTheme({
   palette: {
     primary: {
-      light: "#00bcd4",
-      main: "#163755",
+      light: '#00bcd4',
+      main: '#163755',
     },
     secondary: {
-      main: "#E8D1CB",
+      main: '#E8D1CB',
     },
     warning: {
-      light: "#955f27",
-      main: "#ff9800",
-      dark: "#844d42",
+      light: '#955f27',
+      main: '#ff9800',
+      dark: '#844d42',
     },
     error: {
-      light: "#c09397",
-      main: "#b47a84",
-      dark: "#9f4435",
+      light: '#c09397',
+      main: '#b47a84',
+      dark: '#9f4435',
     },
     info: {
-      main: "#ffffff",
-      dark: "#fafafa",
+      main: '#ffffff',
+      dark: '#fafafa',
     },
     success: {
-      light: "#a69540",
-      main: "#009688",
+      light: '#a69540',
+      main: '#009688',
     },
   },
   typography: {
     button: {
-      textTransform: "none",
+      textTransform: 'none',
     },
   },
   components: {
     MuiButton: {
       styleOverrides: {
         contained: {
-          borderRadius: "50px",
+          borderRadius: '50px',
         },
       },
     },

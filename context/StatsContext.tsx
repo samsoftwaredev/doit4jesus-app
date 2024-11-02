@@ -1,11 +1,11 @@
-import { createContext, useContext, useEffect } from "react";
-import { toast } from "react-toastify";
+import { createContext, useContext, useEffect } from 'react';
+import { toast } from 'react-toastify';
 
-import { useUserContext } from "./UserContext";
-import { useAudioContext } from "./AudioContext";
-import { usePresenceContext } from "./PresenceContext";
-import { supabase } from "../classes";
-import { formatDate } from "../utils";
+import { supabase } from '../classes';
+import { formatDate } from '../utils';
+import { useAudioContext } from './AudioContext';
+import { usePresenceContext } from './PresenceContext';
+import { useUserContext } from './UserContext';
 
 interface Props {
   children: JSX.Element | JSX.Element[];
@@ -23,20 +23,20 @@ const StatsContextProvider = ({ children }: Props) => {
     const onlineUsersIds = onlineUsers?.map(({ userId }) => userId) || [];
     const todaysRosaryCompleted = user.stats.todaysRosaryCompleted === false;
     const { data, error } = await supabase.functions.invoke(
-      "rosary-completed",
-      { body: { onlineUsers: onlineUsersIds } },
+      'rosary-completed',
+      { body: { onlineUsers: onlineUsersIds } }
     );
 
     if (error) {
       console.log(error);
-      toast.error("Unable to update rosary count", {
-        toastId: "unable to save stats",
+      toast.error('Unable to update rosary count', {
+        toastId: 'unable to save stats',
       });
     }
 
     if (data && todaysRosaryCompleted === false) {
-      toast.success("⭐God Bless. You completed the rosary!⭐", {
-        toastId: "rosary completed to save stats",
+      toast.success('⭐God Bless. You completed the rosary!⭐', {
+        toastId: 'rosary completed to save stats',
       });
 
       const joinedRosary = [
@@ -76,7 +76,7 @@ const StatsContextProvider = ({ children }: Props) => {
 const useStatsContext = () => {
   const context = useContext(StatsContext);
   if (context === undefined) {
-    throw new Error("useStatsContext must be used within a ContextProvider");
+    throw new Error('useStatsContext must be used within a ContextProvider');
   }
   return context;
 };

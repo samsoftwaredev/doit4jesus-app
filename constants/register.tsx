@@ -1,12 +1,14 @@
-import { ForgotPassword, LogIn, SignUp } from "@/components/Sections";
-import { Button } from "@mui/material";
-import { NAV_MAIN_LINKS } from "./nav";
-import Link from "next/link";
+import { Button } from '@mui/material';
+import Link from 'next/link';
+
+import { ForgotPassword, LogIn, SignUp } from '@/components/Sections';
+
+import { NAV_MAIN_LINKS } from './nav';
 
 export const pageView = {
   signUp: {
-    title: "Sing Up",
-    header: "Join Our Catholic Community!",
+    title: 'Sing Up',
+    header: 'Join Our Catholic Community!',
     component: <SignUp />,
     footer: (
       <>
@@ -18,8 +20,8 @@ export const pageView = {
     ),
   },
   logIn: {
-    title: "Log In",
-    header: "Welcome back!",
+    title: 'Log In',
+    header: 'Welcome back!',
     component: <LogIn />,
     footer: (
       <>
@@ -31,8 +33,8 @@ export const pageView = {
     ),
   },
   forgotPassword: {
-    title: "Forgot Password",
-    header: "",
+    title: 'Forgot Password',
+    header: '',
     component: <ForgotPassword />,
     footer: (
       <>

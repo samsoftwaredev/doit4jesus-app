@@ -1,10 +1,11 @@
-import type { NextPage } from "next";
-import { Container, Typography } from "@mui/material";
+import { Container, Typography } from '@mui/material';
+import type { NextPage } from 'next';
+import Link from 'next/link';
 
-import { Meta } from "@/components";
-import { MainLayout } from "@/components/Templates";
+import { Meta } from '@/components';
+import { MainLayout } from '@/components/Templates';
 
-import { COMPANY } from "../constants";
+import { COMPANY } from '../constants';
 
 const TermsOfService: NextPage = () => {
   const appName = COMPANY.nameAbbr;
@@ -69,13 +70,13 @@ const TermsOfService: NextPage = () => {
           </p>
           <p>
             <b> 6. Privacy</b>
-            <br /> Your privacy is important to us. Please review our{" "}
-            <a href="/privacy-policy">Privacy Policy</a> to understand how we
-            collect, use, and disclose your personal information.
+            <br /> Your privacy is important to us. Please review our{' '}
+            <Link href="/privacy-policy">Privacy Policy</Link> to understand how
+            we collect, use, and disclose your personal information.
           </p>
           <p>
             <b>7. Termination</b>
-            <br /> We reserve the right to suspend or terminate your access to{" "}
+            <br /> We reserve the right to suspend or terminate your access to{' '}
             {appName} at any time and for any reason, without prior notice or
             liability.
           </p>
@@ -110,8 +111,9 @@ const TermsOfService: NextPage = () => {
           <p>
             <b>12. Contact Us</b>
             <br /> If you have any questions or concerns about these Terms of
-            Service, please contact us at{" "}
-            <a href="mailto:admin@doit4jesus.com">admin@doit4jesus.com</a>.
+            Service, please contact us at{' '}
+            <Link href="mailto:admin@doit4jesus.com">admin@doit4jesus.com</Link>
+            .
           </p>
           Thank you for using {appName}! We hope you find our platform to be a
           valuable resource for connecting with others in prayer.

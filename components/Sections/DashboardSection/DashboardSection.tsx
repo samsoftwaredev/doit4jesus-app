@@ -1,9 +1,11 @@
-import { Box, Button, Container, Typography } from "@mui/material";
-import styles from "./dashboardSection.module.scss";
-import { Card, Leaderboards, TodaysRosary } from "@/components";
-import InviteFriend from "@/components/InviteFriend";
-import RosaryStats from "@/components/RosaryStats";
-import ProgressLevelsSection from "../ProgressLevelsSection";
+import { Box, Button, Container, Typography } from '@mui/material';
+
+import { Card, Leaderboards, TodaysRosary } from '@/components';
+import InviteFriend from '@/components/InviteFriend';
+import RosaryStats from '@/components/RosaryStats';
+
+import ProgressLevelsSection from '../ProgressLevelsSection';
+import styles from './dashboardSection.module.scss';
 
 const DashboardSection = () => {
   return (

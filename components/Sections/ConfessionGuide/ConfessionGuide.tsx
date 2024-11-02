@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import { CardProps, ExamTypes } from "@/interfaces";
-import { CardDeck, SelectExamOfConscience } from "@/components";
-import adultExamOfConscience from "@/data/adultExamOfConscience.json";
-import teenExamOfConscience from "@/data/teenExamOfConscience.json";
-import childExamOfConscience from "@/data/childExamOfConscience.json";
-import { Alert, Box, Collapse, Container, LinearProgress } from "@mui/material";
+import { Alert, Box, Collapse, Container, LinearProgress } from '@mui/material';
+import React, { useState } from 'react';
+
+import { CardDeck, SelectExamOfConscience } from '@/components';
+import adultExamOfConscience from '@/data/adultExamOfConscience.json';
+import childExamOfConscience from '@/data/childExamOfConscience.json';
+import teenExamOfConscience from '@/data/teenExamOfConscience.json';
+import { CardProps, ExamTypes } from '@/interfaces';
 
 enum ActiveScreen {
   selectExam = 0,
@@ -13,15 +14,15 @@ enum ActiveScreen {
 
 const exams: ExamTypes = {
   child: {
-    label: "Child Examination of Conscience",
+    label: 'Child Examination of Conscience',
     value: childExamOfConscience,
   },
   teen: {
-    label: "Teen Examination of Conscience",
+    label: 'Teen Examination of Conscience',
     value: teenExamOfConscience,
   },
   adult: {
-    label: "Adult Examination of Conscience",
+    label: 'Adult Examination of Conscience',
     value: adultExamOfConscience,
   },
 };
@@ -30,7 +31,7 @@ const ConfessionGuide = () => {
   const [exam, setExam] = useState<CardProps[]>(exams.adult.value);
   const [activeStep, setActiveStep] = useState(0);
   const [activeScreen, setActiveScreen] = useState<ActiveScreen>(
-    ActiveScreen.selectExam,
+    ActiveScreen.selectExam
   );
   const [openWarning, setOpenWarning] = useState(true);
   const [openNote, setOpenNote] = useState(true);
@@ -47,17 +48,17 @@ const ConfessionGuide = () => {
   const onExamSelected = (type: string) => {
     setActiveScreen(ActiveScreen.examOfConscience);
     switch (type) {
-      case "Child Examination of Conscience":
+      case 'Child Examination of Conscience':
         setExam(exams.child.value);
         break;
-      case "Teen Examination of Conscience":
+      case 'Teen Examination of Conscience':
         setExam(exams.teen.value);
         break;
-      case "Adult Examination of Conscience":
+      case 'Adult Examination of Conscience':
         setExam(exams.adult.value);
         break;
       default:
-        console.error("Invalid type for exam selected " + type);
+        console.error('Invalid type for exam selected ' + type);
     }
   };
 

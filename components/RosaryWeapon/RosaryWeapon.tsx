@@ -1,8 +1,10 @@
-import Image from "next/image";
-import { Box, Container, Grid, Typography } from "@mui/material";
-import rosary from "@/public/assets/images/rosary.svg";
-import styles from "./rosaryWeapon.module.scss";
-import { css } from "@/utils/helpers";
+import { Box, Container, Grid, Typography } from '@mui/material';
+import Image from 'next/image';
+
+import rosary from '@/public/assets/images/rosary.svg';
+import { css } from '@/utils/helpers';
+
+import styles from './rosaryWeapon.module.scss';
 
 const RosaryWeapon = () => {
   return (
@@ -11,7 +13,7 @@ const RosaryWeapon = () => {
         <Grid>
           <Typography
             my={5}
-            className={css(styles.title, "sectionTitle")}
+            className={css(styles.title, 'sectionTitle')}
             variant="h2"
           >
             Become A Soldier
@@ -19,7 +21,7 @@ const RosaryWeapon = () => {
           <Image style={{ opacity: 0.4 }} src={rosary} alt="Rosary" />
           <Box className={styles.content}>
             <iframe
-              style={{ width: "100%", height: "100%" }}
+              style={{ width: '100%', height: '100%' }}
               src="https://www.youtube-nocookie.com/embed/x1tH_zQ-Cz0?si=0lnC4o44EfJRf-Cu"
               title="YouTube video player"
               frameBorder="0"

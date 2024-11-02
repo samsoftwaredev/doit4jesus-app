@@ -1,10 +1,12 @@
-import { theme } from "@/styles/mui-overwrite";
-import { AccountCircle, AttachMoney, Send } from "@mui/icons-material";
-import { Box, Button, Paper, TextField } from "@mui/material";
-import { ChangeEvent, useState } from "react";
-import CloseIcon from "@mui/icons-material/Close";
-import UserBubble from "../UserBubble";
-import { useUserContext } from "@/context/UserContext";
+import { AccountCircle, AttachMoney, Send } from '@mui/icons-material';
+import CloseIcon from '@mui/icons-material/Close';
+import { Box, Button, Paper, TextField } from '@mui/material';
+import { ChangeEvent, useState } from 'react';
+
+import { useUserContext } from '@/context/UserContext';
+import { theme } from '@/styles/mui-overwrite';
+
+import UserBubble from '../UserBubble';
 
 interface Props {
   onSendMessage: (message: string) => void;
@@ -16,12 +18,12 @@ interface Props {
 const ChatTextbox = ({
   onSendMessage,
   onCloseEditMode = () => {},
-  text = "",
+  text = '',
   isEditMode = false,
 }: Props) => {
   const { user } = useUserContext();
-  const [message, setMessage] = useState(text ?? "");
-  const isSendBtnValid = message.trim() === "";
+  const [message, setMessage] = useState(text ?? '');
+  const isSendBtnValid = message.trim() === '';
 
   const onChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setMessage(e.target.value as string);
@@ -29,7 +31,7 @@ const ChatTextbox = ({
 
   const onSubmit = () => {
     onSendMessage(message);
-    setMessage("");
+    setMessage('');
   };
 
   return (
@@ -38,12 +40,12 @@ const ChatTextbox = ({
         <Box
           style={{
             color: theme.palette.secondary.main,
-            zIndex: "10",
-            position: "absolute",
-            top: "-15px",
-            left: "20px",
+            zIndex: '10',
+            position: 'absolute',
+            top: '-15px',
+            left: '20px',
             backgroundColor: theme.palette.primary.main,
-            borderRadius: "50%",
+            borderRadius: '50%',
           }}
         >
           <UserBubble
@@ -51,11 +53,11 @@ const ChatTextbox = ({
             userName={`${user?.firstName} ${user?.lastName}`}
           />
         </Box>
-        <Paper sx={{ marginLeft: "15px", width: "100%" }}>
+        <Paper sx={{ marginLeft: '15px', width: '100%' }}>
           <TextField
             value={message}
             onChange={onChange}
-            sx={{ width: "100%" }}
+            sx={{ width: '100%' }}
             color="secondary"
             placeholder="Add your prayer..."
             rows={2}
@@ -86,7 +88,7 @@ const ChatTextbox = ({
           variant="contained"
           startIcon={<Send />}
         >
-          {!isEditMode ? "Send" : "Update"}
+          {!isEditMode ? 'Send' : 'Update'}
         </Button>
       </Box>
     </Box>

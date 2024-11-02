@@ -1,7 +1,9 @@
-import Image from "next/image";
-import { Container, Typography } from "@mui/material";
-import virginPrayingHeaven from "@/public/assets/images/art/virginPrayingHeaven.jpeg";
-import styles from "./aboutSection.module.scss";
+import { Container, Typography } from '@mui/material';
+import Image from 'next/image';
+
+import virginPrayingHeaven from '@/public/assets/images/art/virginPrayingHeaven.jpeg';
+
+import styles from './aboutSection.module.scss';
 
 const AboutSection = () => {
   return (

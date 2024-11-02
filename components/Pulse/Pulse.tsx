@@ -1,5 +1,6 @@
-import React from "react";
-import styles from "./pulse.module.scss";
+import React from 'react';
+
+import styles from './pulse.module.scss';
 
 const Pulse = () => {
   return <div className={styles.pulseLoader} />;

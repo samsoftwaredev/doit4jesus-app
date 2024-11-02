@@ -1,1 +1,1 @@
-export { default } from "./AllEventSection";
+export { default } from './AllEventSection';

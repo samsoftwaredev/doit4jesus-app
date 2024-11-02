@@ -1,4 +1,19 @@
 {
   "extends": ["next"],
-  "rules": {}
+  "rules": {
+    "react-hooks/exhaustive-deps": "off",
+    "import/order": [
+      1,
+      {
+        "groups": [
+          "external",
+          "builtin",
+          "internal",
+          "sibling",
+          "parent",
+          "index"
+        ]
+      }
+    ]
+  }
 }

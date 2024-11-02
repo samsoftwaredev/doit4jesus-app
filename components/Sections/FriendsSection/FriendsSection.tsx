@@ -1,28 +1,28 @@
-import { Box, Container, Typography } from "@mui/material";
-import { toast } from "react-toastify";
-import { useEffect, useState } from "react";
+import { Box, Container, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
+import { db, supabase } from '@/class/index';
 import {
   Card,
   CreateFriendGroup,
   Loading,
   RosaryLevel,
   RosaryLevelInfo,
-} from "@/components";
-import FriendGroup from "@/components/FriendGroup";
-import { getCurrentLevel } from "@/utils/levels";
-import { useUserContext } from "@/context/UserContext";
-import { db, supabase } from "@/class/index";
+} from '@/components';
+import FriendGroup from '@/components/FriendGroup';
+import FriendSearchGroup from '@/components/FriendSearchGroup';
+import { sessionFriendsKey } from '@/constants/global';
+import { useUserContext } from '@/context/UserContext';
+import { FriendsGroupItem, GroupItem } from '@/interfaces/index';
+import { getCurrentLevel } from '@/utils/levels';
 import {
   normalizeFriendProfile,
   normalizeFriendsGroups,
   normalizeGroups,
-} from "@/utils/normalizers";
-import { FriendsGroupItem, GroupItem } from "@/interfaces/index";
-import FriendSearchGroup from "@/components/FriendSearchGroup";
-import { sessionFriendsKey } from "@/constants/global";
+} from '@/utils/normalizers';
 
-import styles from "./FriendsSection.module.scss";
+import styles from './FriendsSection.module.scss';
 
 const FriendsSection = () => {
   const { user } = useUserContext();
@@ -33,10 +33,10 @@ const FriendsSection = () => {
   const currentLevel = getCurrentLevel(numRosariesCompleted);
 
   const getMyGroups = async () => {
-    let { data, error } = await db.getGroups().select("*");
+    let { data, error } = await db.getGroups().select('*');
     if (error) {
       console.error(error);
-      toast.error("Unable to retrieve groups");
+      toast.error('Unable to retrieve groups');
     }
     if (data) {
       const groupsNormalized = normalizeGroups(data);
@@ -45,12 +45,12 @@ const FriendsSection = () => {
   };
 
   const getFriendsProfiles = async (userIds: string[]) => {
-    let { data, error } = await supabase.rpc("get_profiles_by_user_ids", {
+    let { data, error } = await supabase.rpc('get_profiles_by_user_ids', {
       user_ids: userIds,
     });
     if (error) {
       console.error(error);
-      toast.error("Unable to retrieve friends profile.");
+      toast.error('Unable to retrieve friends profile.');
     } else {
       const friendData = normalizeFriendProfile(data ?? []);
       sessionStorage.setItem(sessionFriendsKey, JSON.stringify(friendData));
@@ -59,10 +59,10 @@ const FriendsSection = () => {
 
   const getFriendsByGroups = async () => {
     await getMyGroups();
-    let { data, error } = await db.getFriends().select("*");
+    let { data, error } = await db.getFriends().select('*');
     if (error) {
       console.error(error);
-      toast.error("Unable to retrieve group of friends");
+      toast.error('Unable to retrieve group of friends');
     }
     if (data) {
       const groupsFriendNormalized = normalizeFriendsGroups(data);
@@ -98,7 +98,7 @@ const FriendsSection = () => {
                 fontWeight="900"
                 className={styles.stats}
               >
-                <span>{user?.stats.todaysRosaryCompleted ? 1 : 0}</span>{" "}
+                <span>{user?.stats.todaysRosaryCompleted ? 1 : 0}</span>{' '}
                 <span>/</span> <span>1</span>
               </Typography>
               <Typography fontSize="small">Pray One Rosary</Typography>

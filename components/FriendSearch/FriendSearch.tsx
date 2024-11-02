@@ -1,11 +1,11 @@
-import React, { SyntheticEvent, useEffect, useState } from "react";
-import { Autocomplete, Box, Paper, TextField, Typography } from "@mui/material";
-import { toast } from "react-toastify";
+import { Autocomplete, Box, Paper, TextField, Typography } from '@mui/material';
+import React, { SyntheticEvent, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
-import { supabase } from "@/class/index";
-import { MenuItem } from "@/interfaces/index";
+import { supabase } from '@/class/index';
+import { MenuItem } from '@/interfaces/index';
 
-import UserBubble from "../UserBubble";
+import UserBubble from '../UserBubble';
 
 interface Props {
   onSelect: (user: MenuItem) => void;
@@ -18,18 +18,18 @@ const FriendSearch = ({ onSelect }: Props) => {
 
   const filterUsers = async (userName: string) => {
     setIsLoading(true);
-    let { data, error } = await supabase.rpc("search_profiles", {
+    let { data, error } = await supabase.rpc('search_profiles', {
       search_text: userName,
     });
 
     if (error) {
       console.error(error);
-      toast.error("Unable to filter users");
+      toast.error('Unable to filter users');
     }
     if (data) {
       const normalizeFriend = data.map((u) => ({
         value: u.id,
-        label: `${u.first_name ?? ""} ${u.last_name ?? ""}`,
+        label: `${u.first_name ?? ''} ${u.last_name ?? ''}`,
       }));
       setOptions(normalizeFriend);
     }
@@ -38,9 +38,9 @@ const FriendSearch = ({ onSelect }: Props) => {
 
   const onChange = (
     _: SyntheticEvent<Element, Event>,
-    user: string | MenuItem | null,
+    user: string | MenuItem | null
   ) => {
-    if (user !== null && typeof user === "object") {
+    if (user !== null && typeof user === 'object') {
       const friendSelected = options.find((u) => u.label === user.label);
       if (friendSelected) onSelect(friendSelected);
     }

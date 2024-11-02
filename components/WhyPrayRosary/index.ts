@@ -1,1 +1,1 @@
-export { default } from "./WhyPrayRosary";
+export { default } from './WhyPrayRosary';

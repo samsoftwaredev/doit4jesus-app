@@ -1,1 +1,1 @@
-export { default } from "./MusicSettings";
+export { default } from './MusicSettings';

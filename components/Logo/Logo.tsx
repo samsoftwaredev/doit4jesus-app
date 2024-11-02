@@ -498,11 +498,11 @@ const WhiteCompanyLogo = () => (
 );
 
 interface Props {
-  type?: "black" | "white";
+  type?: 'black' | 'white';
 }
 
-const Logo = ({ type = "black" }: Props) => {
-  if (type === "black") return <BlackCompanyLogo />;
+const Logo = ({ type = 'black' }: Props) => {
+  if (type === 'black') return <BlackCompanyLogo />;
   return <WhiteCompanyLogo />;
 };
 

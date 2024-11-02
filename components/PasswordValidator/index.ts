@@ -1,1 +1,1 @@
-export { default } from "./PasswordValidator";
+export { default } from './PasswordValidator';

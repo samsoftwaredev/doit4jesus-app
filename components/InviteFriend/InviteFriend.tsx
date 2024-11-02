@@ -5,15 +5,20 @@ import {
   Grid,
   TextField,
   Typography,
-} from "@mui/material";
-import Dialog from "../Dialog";
-import { useState } from "react";
-import { useUserContext } from "@/context/UserContext";
-import { toast } from "react-toastify";
-import { supabase } from "@/class/index";
-import { Controller, useForm } from "react-hook-form";
-import FormErrorText from "../FormErrorText";
-import { emailRegEx, nameRegEx } from "@/utils/regEx";
+} from '@mui/material';
+import Image from 'next/image';
+import QRCode from 'qrcode';
+import { useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
+
+import { supabase } from '@/class/index';
+import { useUserContext } from '@/context/UserContext';
+import { emailRegEx, nameRegEx } from '@/utils/regEx';
+
+import Dialog from '../Dialog';
+import FormErrorText from '../FormErrorText';
+import HorizontalDivider from '../HorizontalDivider';
 
 type FormValues = {
   friendName: string;
@@ -23,16 +28,17 @@ type FormValues = {
 const InviteFriend = () => {
   const { user } = useUserContext();
   const [isOpen, setIsOpen] = useState(false);
+  const [imageQRBase64, setImageQRBase64] = useState('');
   const { control, reset, handleSubmit } = useForm<FormValues>({
-    mode: "onChange",
+    mode: 'onChange',
     defaultValues: {
-      friendEmail: "",
-      friendName: "",
+      friendEmail: '',
+      friendName: '',
     },
   });
 
   const onSubmit = async ({ friendEmail, friendName }: FormValues) => {
-    const { data, error } = await supabase.functions.invoke("invite-friend", {
+    const { data, error } = await supabase.functions.invoke('invite-friend', {
       body: {
         fullName: `${user?.firstName} ${user?.lastName}`,
         friendName: friendName,
@@ -41,12 +47,12 @@ const InviteFriend = () => {
     });
 
     if (data) {
-      toast.success("An invite was sent to " + friendName);
+      toast.success('An invite was sent to ' + friendName);
       setIsOpen(false);
       reset();
     }
     if (error) {
-      toast.error("Unable to send invite to " + friendName);
+      toast.error('Unable to send invite to ' + friendName);
     }
   };
 
@@ -58,6 +64,20 @@ const InviteFriend = () => {
     setIsOpen(false);
     reset();
   };
+
+  const generateQR = async () => {
+    const text = window.location.origin + '/app/friend-request/' + user?.userId;
+    try {
+      const base64Image = await QRCode.toDataURL(text);
+      setImageQRBase64(base64Image);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    generateQR();
+  }, []);
 
   return (
     <>
@@ -86,10 +106,17 @@ const InviteFriend = () => {
               We&apos;re gathering a bunch of cool souls to pray the rosary. Who
               knows better than you?
             </Typography>
-            <Typography>
-              Spread the word and let&apos;s turn this rosary rally into a
-              spiritual fiesta.
-            </Typography>
+            <Typography>Ask your friend to scan the code below:</Typography>
+            <Box display="flex" justifyContent="center">
+              <Image
+                width="200"
+                height="200"
+                src={imageQRBase64}
+                alt="Friend Request QR code"
+              />
+            </Box>
+            <HorizontalDivider />
+            <Typography>Send and invite via email:</Typography>
             <Grid
               mt={2}
               container
@@ -107,7 +134,7 @@ const InviteFriend = () => {
                     required: true,
                     pattern: {
                       value: nameRegEx,
-                      message: "Invalid name",
+                      message: 'Invalid name',
                     },
                     minLength: {
                       value: 1,
@@ -140,11 +167,11 @@ const InviteFriend = () => {
                     required: true,
                     pattern: {
                       value: emailRegEx,
-                      message: "Invalid email address",
+                      message: 'Invalid email address',
                     },
                     maxLength: {
                       value: 100,
-                      message: "The email exceed max length",
+                      message: 'The email exceed max length',
                     },
                   }}
                   render={({ field }) => (

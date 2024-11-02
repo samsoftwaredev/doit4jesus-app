@@ -1,6 +1,3 @@
-import type { NextPage } from "next";
-import { MainLayout } from "@/components/Templates";
-import { Meta } from "@/components";
 import {
   Card,
   CardContent,
@@ -8,27 +5,31 @@ import {
   Container,
   Grid,
   Typography,
-} from "@mui/material";
-import { useRouter } from "next/router";
-import { NAV_MAIN_LINKS } from "@/constants/nav";
-import { useEffect, useState } from "react";
-import { db } from "@/class/index";
-import { normalizePost } from "@/utils/normalizers";
-import { ResourcePost } from "@/interfaces/index";
-import { toast } from "react-toastify";
+} from '@mui/material';
+import type { NextPage } from 'next';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+
+import { db } from '@/class/index';
+import { Meta } from '@/components';
+import { MainLayout } from '@/components/Templates';
+import { NAV_MAIN_LINKS } from '@/constants/nav';
+import { ResourcePost } from '@/interfaces/index';
+import { normalizePost } from '@/utils/normalizers';
 
 const Resources: NextPage = () => {
   const [resources, setResources] = useState<ResourcePost[]>();
   const router = useRouter();
 
   const goToResources = (id: string) => {
-    router.push(NAV_MAIN_LINKS.resources.link + "/" + id);
+    router.push(NAV_MAIN_LINKS.resources.link + '/' + id);
   };
 
   const getAllResources = async () => {
-    let { data, error } = await db.getPosts().select("*");
+    let { data, error } = await db.getPosts().select('*');
     if (data) setResources(normalizePost(data));
-    if (error) toast.error("Unable to get resources");
+    if (error) toast.error('Unable to get resources');
   };
 
   useEffect(() => {

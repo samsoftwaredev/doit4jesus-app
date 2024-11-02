@@ -6,8 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "lint-stage": "prettier --write .",
+    "lint": "next lint --fix .",
+    "lint-stage": "prettier --write . --config .prettierrc.js",
     "export": "next export",
     "fe-ts": "supabase gen types typescript --project-id uieyknteyflglukepcdy > interfaces/database.ts",
     "db-webhook-ts": "supabase gen types typescript --project-id uieyknteyflglukepcdy > supabase/functions/database-webhook/types.ts",
@@ -27,6 +27,7 @@
     "@supabase/auth-helpers-nextjs": "^0.8.7",
     "@vercel/analytics": "^1.2.2",
     "dayjs": "^1.11.10",
+    "eslint-plugin-import": "^2.31.0",
     "i": "^0.3.7",
     "lodash": "^4.17.21",
     "moment": "^2.30.1",
@@ -44,6 +45,7 @@
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "@types/lodash": "^4.14.202",
     "@types/node": "18.11.0",
+    "@types/qrcode": "^1.5.5",
     "@types/react": "18.0.21",
     "@types/react-dom": "18.0.6",
     "@types/styled-components": "^5.1.34",
@@ -57,7 +59,8 @@
     "url-loader": "^4.1.1"
   },
   "lint-staged": {
-    "*.js": "eslint --cache --fix",
-    "*.{js,css,md}": "prettier --write"
+    "*.{ts,tsx}": [
+      "npm run lint-stage"
+    ]
   }
 }
