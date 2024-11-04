@@ -98,7 +98,7 @@ const YouTubeVideo = ({
   const seekTo = (
     type: INTERFACE_AUDIO_SEEK,
     seconds: number = 15,
-    allowSeekAhead: Boolean = true
+    allowSeekAhead: Boolean = true,
   ) => {
     if (
       typeof player?.seekTo === 'function' &&

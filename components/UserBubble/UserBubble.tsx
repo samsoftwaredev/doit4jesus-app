@@ -5,7 +5,7 @@ import Image from 'next/image';
 import styles from './userBubble.module.scss';
 
 interface Props {
-  userName: string;
+  userName?: string;
   userId?: string;
   userPicture?: string;
   isOnline?: boolean;
@@ -22,7 +22,7 @@ const UserBubble = ({ userName, userPicture, isOnline = false }: Props) => {
               width={20}
               height={20}
               src={userPicture}
-              alt={userName}
+              alt={userName || 'User Name'}
               style={{ borderRadius: '50%' }}
             />
           ) : (

@@ -45,7 +45,7 @@ const SideNavbar = ({ menuItems, handleDrawerClose }: Props) => {
             href={url}
             className={css(
               styles.linkItem,
-              navigate.pathname === url ? styles.active : ''
+              navigate.pathname === url ? styles.active : '',
             )}
           >
             <ListItemIcon

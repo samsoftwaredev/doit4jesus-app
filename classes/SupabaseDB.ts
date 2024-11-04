@@ -43,6 +43,9 @@ class SupabaseDB {
   getEventMessagesActions = () => {
     return supabase.from('event_messages_actions');
   };
+  getFriendRequests = () => {
+    return supabase.from('friend_requests');
+  };
   updatePassword = async (password: string) => {
     return await supabase.auth.updateUser({ password });
   };

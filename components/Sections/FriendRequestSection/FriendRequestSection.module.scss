@@ -1,0 +1,13 @@
+.profile {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  @include desktop {
+    width: 100px;
+    height: 100px;
+  }
+  @include desktop {
+    width: 120px;
+    height: 120px;
+  }
+}

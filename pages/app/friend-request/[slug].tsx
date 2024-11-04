@@ -16,7 +16,7 @@ const FriendRequest: NextPage = () => {
 const FriendRequestWrapper = () => {
   return (
     <AppWrapper>
-      <Meta pageTitle={'Friend Request'} />
+      <Meta pageTitle="Friend Request" />
       <FriendRequest />
     </AppWrapper>
   );

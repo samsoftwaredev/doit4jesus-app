@@ -60,7 +60,7 @@ const AudioContextProvider = ({
   const [audioProgress, setAudioProgress] = useState(0);
   const [audioState, setAudioState] = useState(INTERFACE_AUDIO_STATE.PAUSED);
   const [audioTimer, setAudioTimer] = useState<INTERFACE_AUDIO_SEEK>(
-    INTERFACE_AUDIO_SEEK.NEUTRAL
+    INTERFACE_AUDIO_SEEK.NEUTRAL,
   );
 
   const toggleIsAudioMute = () => {

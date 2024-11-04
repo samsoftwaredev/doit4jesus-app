@@ -1,5 +1,12 @@
 import { Json } from './database';
 
+export type PostgrestError = {
+  message: string;
+  details: string;
+  hint: string;
+  code: string;
+};
+
 export type MenuItem = {
   value: string;
   label: string;
@@ -118,6 +125,7 @@ export type VideoEvent = {
 export interface User {
   userId: string;
   email?: string;
+  fullName?: string;
   firstName?: string;
   lastName?: string;
   genderMale?: boolean;
@@ -142,6 +150,7 @@ export interface OnlineUser {
 
 export interface FriendProfile {
   userId: string;
+  fullName: string;
   firstName: string;
   lastName: string;
   pictureUrl: string | null;

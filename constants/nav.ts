@@ -30,6 +30,7 @@ export const NAV_APP_LINKS = {
   app: { link: '/app', label: 'App', value: 'app' },
   rosary: { link: '/app/rosary', label: 'Rosary', value: 'rosary' },
   dashboard: { link: '/app/dashboard', label: 'Dashboard', value: 'dashboard' },
+  friends: { link: '/app/friends', label: 'friends', value: 'friends' },
   liveEvent: {
     link: '/app/live-event',
     label: 'Live Event',

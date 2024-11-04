@@ -7,25 +7,28 @@
   gap: 10px;
   grid-auto-flow: row;
   grid-template-areas:
-    'SearchFriend'
+    'FriendRequests'
     'TodaysChallenge'
     'UserLevel'
-    'CreateGroups';
+    'CodeQR'
+    'Friends';
 
   @include tablet {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
     grid-template-areas:
-      'SearchFriend SearchFriend'
+      'FriendRequests FriendRequests'
       'TodaysChallenge UserLevel'
-      'CreateGroups Groups';
+      'CodeQR CodeQR'
+      'Friends Friends';
   }
   @include desktop {
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: auto;
     grid-template-areas:
-      'SearchFriend SearchFriend UserLevel'
-      'TodaysChallenge CreateGroups Groups';
+      'FriendRequests FriendRequests FriendRequests'
+      'CodeQR TodaysChallenge UserLevel'
+      'Friends Friends Friends';
   }
 }
 
@@ -38,6 +41,18 @@
   @include desktop {
     text-align: left;
   }
+}
+
+.Friends {
+  grid-area: Friends;
+}
+
+.CodeQR {
+  grid-area: CodeQR;
+}
+
+.FriendRequests {
+  grid-area: FriendRequests;
 }
 
 .TodaysChallenge {

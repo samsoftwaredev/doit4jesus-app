@@ -12,7 +12,7 @@ const audioText = (isPlaying: boolean) => (isPlaying ? 'play' : 'pause');
 const AudioPlay = () => {
   const { setAudioState, audioState, audioPlayer } = useAudioContext();
   const [buttonState, setButtonState] = useState<INTERFACE_AUDIO_STATE>(
-    INTERFACE_AUDIO_STATE.PAUSED
+    INTERFACE_AUDIO_STATE.PAUSED,
   );
 
   const handleToggleAudioPlaying = () => {

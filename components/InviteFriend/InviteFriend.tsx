@@ -13,6 +13,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
 import { supabase } from '@/class/index';
+import { NAV_APP_LINKS } from '@/constants/nav';
 import { useUserContext } from '@/context/UserContext';
 import { emailRegEx, nameRegEx } from '@/utils/regEx';
 
@@ -66,9 +67,10 @@ const InviteFriend = () => {
   };
 
   const generateQR = async () => {
-    const text = window.location.origin + '/app/friend-request/' + user?.userId;
+    const textQR =
+      window.location.origin + NAV_APP_LINKS.friends.link + user?.userId;
     try {
-      const base64Image = await QRCode.toDataURL(text);
+      const base64Image = await QRCode.toDataURL(textQR);
       setImageQRBase64(base64Image);
     } catch (err) {
       console.error(err);

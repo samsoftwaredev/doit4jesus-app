@@ -50,7 +50,7 @@ const ChatTextbox = ({
         >
           <UserBubble
             userPicture={user?.pictureUrl}
-            userName={`${user?.firstName} ${user?.lastName}`}
+            userName={user?.fullName}
           />
         </Box>
         <Paper sx={{ marginLeft: '15px', width: '100%' }}>

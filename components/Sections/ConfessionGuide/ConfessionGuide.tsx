@@ -31,7 +31,7 @@ const ConfessionGuide = () => {
   const [exam, setExam] = useState<CardProps[]>(exams.adult.value);
   const [activeStep, setActiveStep] = useState(0);
   const [activeScreen, setActiveScreen] = useState<ActiveScreen>(
-    ActiveScreen.selectExam
+    ActiveScreen.selectExam,
   );
   const [openWarning, setOpenWarning] = useState(true);
   const [openNote, setOpenNote] = useState(true);

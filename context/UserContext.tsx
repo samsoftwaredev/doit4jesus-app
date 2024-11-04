@@ -50,7 +50,7 @@ const UserContextProvider = ({ children }: Props) => {
   const [isLoading, setIsLoading] = useState(true);
 
   const getProfile = async (
-    userSession: Session | null
+    userSession: Session | null,
   ): Promise<User | undefined> => {
     setIsLoading(true);
     try {
@@ -77,6 +77,7 @@ const UserContextProvider = ({ children }: Props) => {
       const userDataNormalized = normalizeUserProfile(userProfile, rosaryStats);
       const userData = {
         ...userDataNormalized,
+        fullName: `${userDataNormalized.firstName} ${userDataNormalized.lastName}`,
         userId: userSession.user.id,
       };
       setUser(userData);
@@ -111,7 +112,7 @@ const UserContextProvider = ({ children }: Props) => {
       setUser,
       getProfile,
     }),
-    [user, setUser]
+    [user, setUser],
   );
 
   if (isLoading) return <Loading />;

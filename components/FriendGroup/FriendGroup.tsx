@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 
 import { sessionFriendsKey } from '@/constants/global';
 import { FriendProfile, FriendsGroupItem, GroupItem } from '@/interfaces/index';
+import { getUserProfile } from '@/utils/helpers';
 
 import UserBubble from '../UserBubble';
 
@@ -11,15 +12,6 @@ interface Props {
   group: GroupItem;
   friendGroups?: FriendsGroupItem[];
 }
-
-const getUserProfile = (friendId: string) => {
-  const friendsProfile = sessionStorage.getItem(sessionFriendsKey);
-  const friendsList: FriendProfile[] = friendsProfile
-    ? JSON.parse(friendsProfile)
-    : [];
-  const friendData = friendsList.find(({ userId }) => userId === friendId);
-  return friendData;
-};
 
 const FriendGroup = ({ group, friendGroups = [] }: Props) => {
   const maxNumberOfUsers = 3;
@@ -36,7 +28,7 @@ const FriendGroup = ({ group, friendGroups = [] }: Props) => {
 
   const members = useMemo(() => getGroupMembers(id), [id]).slice(
     0,
-    maxNumberOfUsers
+    maxNumberOfUsers,
   );
 
   return (
@@ -59,11 +51,10 @@ const FriendGroup = ({ group, friendGroups = [] }: Props) => {
         return (
           <Box ml={3} mt={1} key={friendId} display="flex" gap={1}>
             <UserBubble
-              userName={`${friendData?.firstName} ${friendData?.lastName}`}
+              userName={friendData?.fullName}
               userPicture={friendData?.pictureUrl ?? ''}
             />
-            {friendData?.firstName} {friendData?.lastName} -{' '}
-            {friendData?.rosaryCount}
+            {friendData?.fullName} - {friendData?.rosaryCount}
           </Box>
         );
       })}

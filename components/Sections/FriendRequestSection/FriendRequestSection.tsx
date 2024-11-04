@@ -2,12 +2,21 @@ import { Box, Button, Container, Typography } from '@mui/material';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
+import { db, supabase } from '@/class/index';
+import Card from '@/components/Card';
+import { NAV_APP_LINKS } from '@/constants/nav';
 import { useUserContext } from '@/context/UserContext';
+import { FriendProfile } from '@/interfaces/index';
+import { orderUUIDs } from '@/utils/helpers';
+import { normalizeFriendProfile } from '@/utils/normalizers';
+
+import styles from './FriendRequestSection.module.scss';
 
 interface UserProfileProps {
-  name: string;
-  pictureUrl?: string;
+  name?: string;
+  pictureUrl?: string | null;
   uid?: string;
 }
 
@@ -16,64 +25,108 @@ const UserProfile = ({ name, pictureUrl, uid }: UserProfileProps) => {
     <Box>
       {pictureUrl && (
         <Image
-          width={20}
-          height={20}
+          width="100"
+          height="100"
+          className={styles.profile}
           src={pictureUrl}
-          alt={name}
-          style={{ borderRadius: '50%' }}
+          alt={name || 'User Name'}
         />
       )}
-      <Typography component={'h3'}>{name}</Typography>
+      <Typography textAlign="center" component={'h3'}>
+        {name}
+      </Typography>
     </Box>
   );
 };
 
 const FriendRequestSection = () => {
-  const router = useRouter();
-  const [friend, setFriend] = useState<{
-    name: string;
-    pictureUrl: string;
-  }>({
-    name: 'Samuel Ruiz',
-    pictureUrl: '',
-  });
+  const navigate = useRouter();
+  const [friend, setFriend] = useState<FriendProfile>();
   const { user } = useUserContext();
 
-  const onCancel = () => {};
+  const onCancel = () => {
+    navigate.back();
+  };
 
-  const onConfirm = () => {};
+  const onConfirm = async () => {
+    if (!user?.userId || !friend?.userId) return;
+    const [uuid1, uuid2] = orderUUIDs(user?.userId, friend?.userId);
+    const { data, error } = await db
+      .getFriendRequests()
+      .insert([
+        {
+          uuid1_accepted: uuid1 === user?.userId,
+          uuid2_accepted: uuid2 === user?.userId,
+          uuid1: uuid1,
+          uuid2: uuid2,
+        },
+      ])
+      .select();
+    if (data) {
+      toast.success('Friend request sent');
+      navigate.push(NAV_APP_LINKS.friends.link);
+    }
+    if (error) {
+      toast.error('Unable to send friend request');
+    }
+  };
 
-  const getUserProfile = () => {
-    const { slug } = router.query;
-    if (typeof slug === 'string') {
+  const getUserProfile = async () => {
+    const { slug: userId } = navigate.query;
+    if (typeof userId === 'string' && user?.userId !== userId) {
+      let { data, error } = await supabase.rpc('get_profiles_by_user_ids', {
+        user_ids: [userId],
+      });
+      if (error) {
+        console.error(error);
+        toast.error('Unable to retrieve friends profile.');
+      } else {
+        const friendsData = normalizeFriendProfile(data ?? []);
+        setFriend(friendsData[0]);
+      }
     }
   };
 
   useEffect(() => {
+    // TODO: cover edge case when user enters his own uuid. Show exception page.
     getUserProfile();
   }, []);
 
   return (
     <Container className="container-box" maxWidth="sm">
-      <Typography component="h1">Friend Requests</Typography>
-      <Typography>{friend.name} wants to be your friend.</Typography>
-      <Box display="flex" flexDirection="row" justifyContent="space-between">
-        <UserProfile
-          name={`${user?.firstName} ${user?.lastName}`}
-          pictureUrl={user?.pictureUrl}
-        />
-        <UserProfile name={friend.name} pictureUrl={friend.pictureUrl} />
-      </Box>
-      <Typography>
-        You will be sharing info such the number of rosaries completed, profile
-        info among other things.
-      </Typography>
-      <Box display="flex" justifyContent="space-between">
-        <Button onClick={onCancel}>Cancel</Button>
-        <Button variant="contained" onClick={onConfirm}>
-          Confirm
-        </Button>
-      </Box>
+      <Card>
+        <Typography textAlign="center" my={2} component="h1" variant="h4">
+          Friend Request
+        </Typography>
+        <Typography textAlign="center">
+          Add {friend?.fullName} as a friend
+        </Typography>
+        <Box
+          display="flex"
+          flexDirection="row"
+          justifyContent="space-around"
+          my={5}
+        >
+          <UserProfile name={user?.fullName} pictureUrl={user?.pictureUrl} />
+          <UserProfile
+            name={friend?.fullName}
+            pictureUrl={friend?.pictureUrl}
+          />
+        </Box>
+        <Typography>
+          You will be sharing information, including profile details and
+          relevant statistics such as the number of completed rosaries, along
+          with other pertinent data.
+        </Typography>
+        <Box mt={2} display="flex" justifyContent="space-between">
+          <Button color="success" onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button color="success" variant="contained" onClick={onConfirm}>
+            Send Friend Request
+          </Button>
+        </Box>
+      </Card>
     </Container>
   );
 };

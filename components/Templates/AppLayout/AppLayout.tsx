@@ -20,6 +20,7 @@ interface Props {
 const menuItems = [
   { url: '/app/dashboard', label: 'Dashboard', icon: <TableChartIcon /> },
   // { url: "/app/soldiers", label: "Militant Church", icon: <SoldierIcon /> },
+  { url: '/app/friends', label: 'Friends', icon: <SoldierIcon /> },
   { url: '/app', label: 'All Events', icon: <GridViewIcon /> },
   { url: '/app/live-event', label: 'Live Event', icon: <CellTowerIcon /> },
   // {
@@ -47,7 +48,7 @@ const AppLayout = ({ children }: Props) => {
 
   const pageTitle = useMemo(
     () => menuItems.find((menu) => menu.url === navigate.pathname),
-    [navigate.pathname]
+    [navigate.pathname],
   );
 
   return (
@@ -66,7 +67,7 @@ const AppLayout = ({ children }: Props) => {
           component="menu"
           className={css(
             styles.sideNavbar,
-            drawerOpen ? styles.sideNavbarOpen : styles.sideNavbarClose
+            drawerOpen ? styles.sideNavbarOpen : styles.sideNavbarClose,
           )}
         >
           <SideNavbar

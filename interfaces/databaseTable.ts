@@ -7,6 +7,9 @@ export type PostsDB = Database['public']['Tables']['posts']['Row'];
 export type GroupsDB = Database['public']['Tables']['groups']['Row'];
 export type FriendsGroupsDB = Database['public']['Tables']['friends']['Row'];
 export type YouTubeDB = Database['public']['Tables']['youtube']['Row'];
+export type FriendsDB = Database['public']['Tables']['friends']['Row'];
+export type FriendRequestsDB =
+  Database['public']['Tables']['friend_requests']['Row'];
 export type EventMessagesDB =
   Database['public']['Tables']['event_messages']['Row'];
 export type EventMessagesActionsDB =

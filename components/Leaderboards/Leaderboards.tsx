@@ -26,7 +26,7 @@ const Leaderboards = () => {
       first_name: string;
       last_name: string;
       picture_url: string;
-    }[]
+    }[],
   ): UserLeaderboards[] => {
     return data.map((u) => ({
       userId: u.user_id,

@@ -24,11 +24,11 @@ const StatsContextProvider = ({ children }: Props) => {
     const todaysRosaryCompleted = user.stats.todaysRosaryCompleted === false;
     const { data, error } = await supabase.functions.invoke(
       'rosary-completed',
-      { body: { onlineUsers: onlineUsersIds } }
+      { body: { onlineUsers: onlineUsersIds } },
     );
 
     if (error) {
-      console.log(error);
+      console.error(error);
       toast.error('Unable to update rosary count', {
         toastId: 'unable to save stats',
       });

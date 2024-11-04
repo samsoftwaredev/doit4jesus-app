@@ -43,6 +43,7 @@ export { default as UserBubble } from './UserBubble';
 export { default as CreateFriendGroup } from './CreateFriendGroup';
 export { default as Select } from './Select';
 export { default as RosaryLevelInfo } from './RosaryLevelInfo';
+export { default as AllFriends } from './AllFriends';
 
 export * from './Navbars';
 export * from './Fields';

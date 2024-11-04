@@ -97,7 +97,7 @@ const EventSection = ({ videoEvent }: Props) => {
             }
           }
           setMessages(msgs);
-        }
+        },
       )
       .subscribe();
     channel.current = eventMessages;
@@ -142,7 +142,7 @@ const EventSection = ({ videoEvent }: Props) => {
   const handleReport = async (messageId: string) => {
     // TODO: update database
     toast.success(
-      'Thanks for keeping our community safe. We are reviewing the comment.'
+      'Thanks for keeping our community safe. We are reviewing the comment.',
     );
   };
 

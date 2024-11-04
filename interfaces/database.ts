@@ -184,39 +184,81 @@ export type Database = {
         };
         Relationships: [];
       };
+      friend_requests: {
+        Row: {
+          created_at: string;
+          id: string;
+          uuid1: string | null;
+          uuid1_accepted: boolean | null;
+          uuid2: string | null;
+          uuid2_accepted: boolean | null;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          uuid1?: string | null;
+          uuid1_accepted?: boolean | null;
+          uuid2?: string | null;
+          uuid2_accepted?: boolean | null;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          uuid1?: string | null;
+          uuid1_accepted?: boolean | null;
+          uuid2?: string | null;
+          uuid2_accepted?: boolean | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'friend_requests_friend_id_fkey';
+            columns: ['uuid2'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'friend_requests_user_id_fkey';
+            columns: ['uuid1'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       friends: {
         Row: {
           created_at: string | null;
-          friend_id: string;
-          groups: Json | null;
+          id: string;
           is_favorite: boolean | null;
-          user_id: string;
+          uuid1: string;
+          uuid2: string;
         };
         Insert: {
           created_at?: string | null;
-          friend_id: string;
-          groups?: Json | null;
+          id?: string;
           is_favorite?: boolean | null;
-          user_id?: string;
+          uuid1: string;
+          uuid2: string;
         };
         Update: {
           created_at?: string | null;
-          friend_id?: string;
-          groups?: Json | null;
+          id?: string;
           is_favorite?: boolean | null;
-          user_id?: string;
+          uuid1?: string;
+          uuid2?: string;
         };
         Relationships: [
           {
             foreignKeyName: 'Friends_friend_id_fkey';
-            columns: ['friend_id'];
+            columns: ['uuid1'];
             isOneToOne: false;
             referencedRelation: 'profiles';
             referencedColumns: ['id'];
           },
           {
             foreignKeyName: 'Friends_user_id_fkey';
-            columns: ['user_id'];
+            columns: ['uuid2'];
             isOneToOne: false;
             referencedRelation: 'profiles';
             referencedColumns: ['id'];
@@ -329,13 +371,6 @@ export type Database = {
           username?: string | null;
         };
         Relationships: [
-          {
-            foreignKeyName: 'profiles_id_fkey';
-            columns: ['id'];
-            isOneToOne: true;
-            referencedRelation: 'users';
-            referencedColumns: ['id'];
-          },
           {
             foreignKeyName: 'profiles_invited_by_fkey';
             columns: ['invited_by'];
@@ -552,4 +587,19 @@ export type Enums<
   ? Database[PublicEnumNameOrOptions['schema']]['Enums'][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema['Enums']
     ? PublicSchema['Enums'][PublicEnumNameOrOptions]
+    : never;
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof PublicSchema['CompositeTypes']
+    | { schema: keyof Database },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof Database;
+  }
+    ? keyof Database[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes']
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes'][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema['CompositeTypes']
+    ? PublicSchema['CompositeTypes'][PublicCompositeTypeNameOrOptions]
     : never;
