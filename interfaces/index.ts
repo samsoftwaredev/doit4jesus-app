@@ -208,9 +208,8 @@ export interface GroupItem {
 }
 
 export interface FriendsGroupItem {
-  friendId: string;
+  uuid1: string;
   isFavorite: boolean | null;
   createdAt: string | null;
-  userId: string;
-  groups: { [groupId: string]: string } | null;
+  uuid2: string;
 }

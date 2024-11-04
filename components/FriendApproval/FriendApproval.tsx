@@ -3,14 +3,9 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { getUserProfileAPI } from 'services';
 
-import { db, supabase } from '@/class/index';
+import { db } from '@/class/index';
 import { useUserContext } from '@/context/UserContext';
 import { FriendProfile } from '@/interfaces/index';
-import {
-  getUserProfileLocally,
-  storeUserProfileLocally,
-} from '@/utils/helpers';
-import { normalizeFriendProfile } from '@/utils/normalizers';
 
 import UserBubble from '../UserBubble';
 
@@ -48,7 +43,7 @@ const FriendApproval = () => {
     const uuidKey = data.uuid1 === data.friendId ? 'uuid1' : 'uuid2';
     const { data: friendData, error } = await db
       .getFriendRequests()
-      .update({ [uuidKey]: 'TRUE' })
+      .update({ [`${uuidKey}_accepted`]: true })
       .eq('id', data.id)
       .select();
     if (error) {

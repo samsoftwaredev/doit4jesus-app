@@ -37,13 +37,14 @@ export { default as HorizontalDivider } from './HorizontalDivider';
 export { default as GoogleAuth } from './GoogleAuth';
 export { default as RosaryLevel } from './RosaryLevel';
 export { default as Leaderboards } from './Leaderboards';
-export { default as FriendGroup } from './FriendGroup';
 export { default as FriendSearch } from './FriendSearch';
 export { default as UserBubble } from './UserBubble';
 export { default as CreateFriendGroup } from './CreateFriendGroup';
 export { default as Select } from './Select';
 export { default as RosaryLevelInfo } from './RosaryLevelInfo';
 export { default as AllFriends } from './AllFriends';
+export { default as ErrorPage } from './ErrorPage';
+export { default as CopyLinkButton } from './CopyLinkButton';
 
 export * from './Navbars';
 export * from './Fields';

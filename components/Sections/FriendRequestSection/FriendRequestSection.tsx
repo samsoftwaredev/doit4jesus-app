@@ -13,6 +13,7 @@ import { FriendProfile } from '@/interfaces/index';
 import { orderUUIDs } from '@/utils/helpers';
 import { normalizeFriendProfile } from '@/utils/normalizers';
 
+import { ErrorPage } from '../..';
 import styles from './FriendRequestSection.module.scss';
 
 interface UserProfileProps {
@@ -44,6 +45,8 @@ const UserProfile = ({ name, pictureUrl, uid }: UserProfileProps) => {
 
 const FriendRequestSection = () => {
   const navigate = useRouter();
+  const { slug: paramsUserId } = navigate.query;
+  const [errorPage, setErrorPage] = useState<string>();
   const [friend, setFriend] = useState<FriendProfile>();
   const { user } = useUserContext();
 
@@ -75,10 +78,9 @@ const FriendRequestSection = () => {
   };
 
   const getUserProfile = async () => {
-    const { slug: userId } = navigate.query;
-    if (typeof userId === 'string' && user?.userId !== userId) {
+    if (typeof paramsUserId === 'string' && user?.userId !== paramsUserId) {
       let { data, error } = await supabase.rpc('get_profiles_by_user_ids', {
-        user_ids: [userId],
+        user_ids: [paramsUserId],
       });
       if (error) {
         console.error(error);
@@ -91,9 +93,18 @@ const FriendRequestSection = () => {
   };
 
   useEffect(() => {
-    // TODO: cover edge case when user enters his own uuid. Show exception page.
-    getUserProfile();
+    if (user?.userId === paramsUserId) {
+      // cover edge case when user enters his own uuid. Show exception page.
+      setErrorPage("Oops! You can't add yourself as a friend");
+    } else {
+      getUserProfile();
+      setErrorPage(undefined);
+    }
   }, []);
+
+  if (errorPage) {
+    return <ErrorPage text={errorPage} />;
+  }
 
   return (
     <Container className="container-box" maxWidth="sm">

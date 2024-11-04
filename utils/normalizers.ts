@@ -204,10 +204,9 @@ export const normalizeFriendsGroups = (
   groupList: FriendsGroupsDB[],
 ): FriendsGroupItem[] => {
   return groupList.map((f) => ({
-    friendId: f.friend_id,
+    uuid1: f.uuid1,
     isFavorite: f.is_favorite,
     createdAt: f.created_at,
-    userId: f.user_id,
-    groups: f.groups as { [groupId: string]: string },
+    uuid2: f.uuid2,
   }));
 };

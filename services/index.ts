@@ -15,17 +15,17 @@ export const getUserProfileAPI = async (
   userIds: string[],
 ): Promise<[FriendProfile[] | null, PostgrestError | null]> => {
   const emptyProfilesIds: string[] = [];
-  const localProfiles = userIds
-    .map((uid) => {
-      const profile = getUserProfileLocally(uid);
-      if (profile === undefined) {
-        emptyProfilesIds.push(uid);
-        return undefined;
-      } else {
-        return profile;
-      }
-    })
-    .filter((profile) => profile !== undefined);
+  const profiles = userIds.map((uid) => {
+    const profile = getUserProfileLocally(uid);
+    if (profile === undefined) {
+      emptyProfilesIds.push(uid);
+      return undefined;
+    }
+    return profile;
+  });
+  const localProfiles: any[] = profiles.filter(
+    (profile) => profile !== undefined,
+  );
 
   if (emptyProfilesIds.length > 0) {
     let { data, error } = await supabase.rpc('get_profiles_by_user_ids', {
