@@ -1,5 +1,4 @@
-import { AccountCircle, AttachMoney, Send } from '@mui/icons-material';
-import CloseIcon from '@mui/icons-material/Close';
+import { AttachMoney, Send } from '@mui/icons-material';
 import { Box, Button, Paper, TextField } from '@mui/material';
 import { ChangeEvent, useState } from 'react';
 

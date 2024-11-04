@@ -1,3 +1,4 @@
+import { AccountCircle } from '@mui/icons-material';
 import { Box, Button, Container, Typography } from '@mui/material';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -22,8 +23,8 @@ interface UserProfileProps {
 
 const UserProfile = ({ name, pictureUrl, uid }: UserProfileProps) => {
   return (
-    <Box>
-      {pictureUrl && (
+    <Box display="flex" justifyContent="center" flexDirection="column">
+      {pictureUrl ? (
         <Image
           width="100"
           height="100"
@@ -31,6 +32,8 @@ const UserProfile = ({ name, pictureUrl, uid }: UserProfileProps) => {
           src={pictureUrl}
           alt={name || 'User Name'}
         />
+      ) : (
+        <AccountCircle className={styles.profileIcon} />
       )}
       <Typography textAlign="center" component={'h3'}>
         {name}

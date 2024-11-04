@@ -11,3 +11,13 @@
     height: 120px;
   }
 }
+
+.profileIcon{
+font-size: 5em;
+  @include desktop {
+font-size: 8em;
+  }
+  @include desktop {
+font-size: 8em;
+  }
+}
