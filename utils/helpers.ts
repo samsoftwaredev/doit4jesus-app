@@ -58,9 +58,8 @@ export const getUserProfileLocally = (
   friendId: string,
 ): FriendProfile | undefined => {
   const friendsProfile = sessionStorage.getItem(sessionFriendsKey);
-  const friendsList: FriendProfile[] = Array.isArray(friendsProfile)
-    ? JSON.parse(friendsProfile)
-    : [];
+  const friendsList: FriendProfile[] =
+    typeof friendsProfile === 'string' ? JSON.parse(friendsProfile) : [];
 
   const friendData = friendsList.find(({ userId }) => userId === friendId);
   return friendData;
@@ -70,13 +69,15 @@ export const storeUserProfileLocally = (friendsData: FriendProfile[] = []) => {
   const friendsProfile = sessionStorage.getItem(sessionFriendsKey);
   const prevFriendsData: FriendProfile[] =
     typeof friendsProfile === 'string' ? JSON.parse(friendsProfile) : [];
-  const prevFriendsDataIds = prevFriendsData.map(({ userId }) => userId);
-  const friendsDataIds = friendsData.map(({ userId }) => userId);
-  const noDuplicatesIds = new Set([...prevFriendsDataIds, ...friendsDataIds]);
-  const friends = Array.from(noDuplicatesIds).map((uid) => {
-    let found = prevFriendsData.find(({ userId }) => userId === uid);
-    if (found) return found;
-    return friendsData.find(({ userId }) => userId === uid);
-  });
-  sessionStorage.setItem(sessionFriendsKey, JSON.stringify(friends));
+  if (Array.isArray(prevFriendsData)) {
+    const prevFriendsDataIds = prevFriendsData.map(({ userId }) => userId);
+    const friendsDataIds = friendsData.map(({ userId }) => userId);
+    const noDuplicatesIds = new Set([...prevFriendsDataIds, ...friendsDataIds]);
+    const friends = Array.from(noDuplicatesIds).map((uid) => {
+      let found = prevFriendsData.find(({ userId }) => userId === uid);
+      if (found) return found;
+      return friendsData.find(({ userId }) => userId === uid);
+    });
+    sessionStorage.setItem(sessionFriendsKey, JSON.stringify(friends));
+  }
 };

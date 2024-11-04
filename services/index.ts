@@ -15,7 +15,6 @@ export const getUserProfileAPI = async (
   userIds: string[],
 ): Promise<[FriendProfile[] | null, PostgrestError | null]> => {
   const emptyProfilesIds: string[] = [];
-
   const localProfiles = userIds
     .map((uid) => {
       const profile = getUserProfileLocally(uid);
@@ -28,7 +27,7 @@ export const getUserProfileAPI = async (
     })
     .filter((profile) => profile !== undefined);
 
-  if (emptyProfilesIds) {
+  if (emptyProfilesIds.length > 0) {
     let { data, error } = await supabase.rpc('get_profiles_by_user_ids', {
       user_ids: emptyProfilesIds,
     });

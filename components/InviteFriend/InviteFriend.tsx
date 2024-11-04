@@ -17,6 +17,7 @@ import { NAV_APP_LINKS } from '@/constants/nav';
 import { useUserContext } from '@/context/UserContext';
 import { emailRegEx, nameRegEx } from '@/utils/regEx';
 
+import CopyLinkButton from '../CopyLinkButton/CopyLinkButton';
 import Dialog from '../Dialog';
 import FormErrorText from '../FormErrorText';
 import HorizontalDivider from '../HorizontalDivider';
@@ -28,6 +29,8 @@ type FormValues = {
 
 const InviteFriend = () => {
   const { user } = useUserContext();
+  const textQR =
+    window.location.origin + NAV_APP_LINKS.friendRequest.link + user?.userId;
   const [isOpen, setIsOpen] = useState(false);
   const [imageQRBase64, setImageQRBase64] = useState('');
   const { control, reset, handleSubmit } = useForm<FormValues>({
@@ -67,8 +70,6 @@ const InviteFriend = () => {
   };
 
   const generateQR = async () => {
-    const textQR =
-      window.location.origin + NAV_APP_LINKS.friends.link + user?.userId;
     try {
       const base64Image = await QRCode.toDataURL(textQR);
       setImageQRBase64(base64Image);
@@ -117,6 +118,9 @@ const InviteFriend = () => {
                 alt="Friend Request QR code"
               />
             </Box>
+            <HorizontalDivider />
+            <Typography>Share link:</Typography>
+            <CopyLinkButton link={textQR} />
             <HorizontalDivider />
             <Typography>Send and invite via email:</Typography>
             <Grid
