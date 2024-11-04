@@ -5,16 +5,14 @@ import { getUserProfileAPI } from 'services';
 
 import { db } from '@/class/index';
 import { useUserContext } from '@/context/UserContext';
+import { FriendRequestsDB } from '@/interfaces/databaseTable';
 import { FriendProfile } from '@/interfaces/index';
 
 import UserBubble from '../UserBubble';
 
 type FriendRequests = {
-  id: string;
   friendId: string;
-  uuid1: string;
-  uuid2: string;
-};
+} & FriendRequestsDB;
 
 const FriendApproval = () => {
   const [friends, setFriends] = useState<FriendProfile[]>([]);
@@ -35,12 +33,12 @@ const FriendApproval = () => {
     if (error) {
       toast.error('Unable to decline friend request');
     } else {
-      setFriendsIds((prevState) => prevState.filter((f) => f.id === id));
+      setFriendsIds((prevState) => prevState.filter((f) => f.id !== id));
     }
   };
 
   const onApprove = async (data: FriendRequests) => {
-    const uuidKey = data.uuid1 === data.friendId ? 'uuid1' : 'uuid2';
+    const uuidKey = data.uuid1 !== data.friendId ? 'uuid1' : 'uuid2';
     const { data: friendData, error } = await db
       .getFriendRequests()
       .update({ [`${uuidKey}_accepted`]: true })
@@ -50,7 +48,7 @@ const FriendApproval = () => {
       toast.error('Unable to confirm friend request');
     }
     if (friendData) {
-      setFriendsIds((prevState) => prevState.filter((f) => f.id === data.id));
+      setFriendsIds((prevState) => prevState.filter((f) => f.id !== data.id));
     }
   };
 
@@ -62,7 +60,7 @@ const FriendApproval = () => {
     if (data) {
       const friends = data.map((u) => {
         const uid = u.uuid1 !== user?.userId ? u.uuid1 : u.uuid2;
-        return { id: u.id, friendId: uid!, uuid1: u.uuid1!, uuid2: u.uuid2! };
+        return { ...u, friendId: uid! };
       });
       const friendUserIds = friends.map(({ friendId }) => friendId);
       setFriendsIds(friends);
@@ -85,9 +83,12 @@ const FriendApproval = () => {
       <Box ml={4}>
         {friendsIds.length === 0 && <>None</>}
         {friendsIds.map((data) => {
+          const uuidKey = data.uuid1 === data.friendId ? 'uuid1' : 'uuid2';
+          const accepted = data[`${uuidKey}_accepted`];
           const friend = friends.find(({ userId }) => userId === data.friendId);
           return (
             <Box
+              my={2}
               alignItems="center"
               key={friend?.userId}
               display="flex"
@@ -98,20 +99,26 @@ const FriendApproval = () => {
                 userPicture={friend?.pictureUrl ?? ''}
               />
               {friend?.fullName} - {friend?.rosaryCount}
-              <Button
-                onClick={() => onDecline(data.id)}
-                variant="text"
-                color="success"
-              >
-                Decline
-              </Button>
-              <Button
-                onClick={() => onApprove(data)}
-                variant="contained"
-                color="success"
-              >
-                Approve
-              </Button>
+              {accepted === true ? (
+                <Box>
+                  <Button
+                    onClick={() => onDecline(data.id)}
+                    variant="text"
+                    color="success"
+                  >
+                    Decline
+                  </Button>
+                  <Button
+                    onClick={() => onApprove(data)}
+                    variant="contained"
+                    color="success"
+                  >
+                    Approve
+                  </Button>
+                </Box>
+              ) : (
+                <Box>(Waiting for approval)</Box>
+              )}
             </Box>
           );
         })}

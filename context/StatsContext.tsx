@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect } from 'react';
 import { toast } from 'react-toastify';
 
 import { supabase } from '../classes';
-import { formatDate } from '../utils';
+import { formatDate, formatDateDash } from '../utils';
 import { useAudioContext } from './AudioContext';
 import { usePresenceContext } from './PresenceContext';
 import { useUserContext } from './UserContext';
@@ -43,7 +43,7 @@ const StatsContextProvider = ({ children }: Props) => {
         ...user.stats.joinedRosary,
         ...(onlineUsersIds?.map((userId) => ({
           userId,
-          date: formatDate(new Date()),
+          date: formatDateDash(new Date().toString()),
         })) ?? []),
       ];
 

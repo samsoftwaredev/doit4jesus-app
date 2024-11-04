@@ -7,6 +7,7 @@ import { AllFriends, Card, RosaryLevel, RosaryLevelInfo } from '@/components';
 import FriendApproval from '@/components/FriendApproval';
 import { NAV_APP_LINKS } from '@/constants/nav';
 import { useUserContext } from '@/context/UserContext';
+import { theme } from '@/styles/mui-overwrite';
 import { getCurrentLevel } from '@/utils/levels';
 
 import styles from './FriendsSection.module.scss';
@@ -16,15 +17,15 @@ const FriendsSection = () => {
   const [imageQRBase64, setImageQRBase64] = useState('');
   const numRosariesCompleted = user?.stats.rosaryTotalCount ?? 0;
   const currentLevel = getCurrentLevel(numRosariesCompleted);
+  const textQR =
+    window.location.origin + NAV_APP_LINKS.friends.link + user?.userId;
 
   const generateQR = async () => {
-    const textQR =
-      window.location.origin + NAV_APP_LINKS.friends.link + user?.userId;
     try {
       const base64Image = await QRCode.toDataURL(textQR);
       setImageQRBase64(base64Image);
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -49,14 +50,25 @@ const FriendsSection = () => {
               justifyContent="space-between"
               height="100%"
             >
-              <Typography fontWeight="bold">Today&apos;s Challenge</Typography>
+              <Typography fontWeight="bold" mb={1}>
+                Today&apos;s Challenge
+              </Typography>
               <Typography
-                fontSize="6.1em"
-                fontWeight="900"
+                fontSize="7.5em"
+                fontWeight="500"
                 className={styles.stats}
+                lineHeight="1"
               >
-                <span>{user?.stats.todaysRosaryCompleted ? 1 : 0}</span>{' '}
-                <span>/</span> <span>1</span>
+                <span
+                  style={{
+                    color: user?.stats.todaysRosaryCompleted
+                      ? theme.palette.success.main
+                      : theme.palette.error.main,
+                  }}
+                >
+                  {user?.stats.todaysRosaryCompleted ? 1 : 0}
+                </span>
+                <span>/1</span>
               </Typography>
               <Typography>
                 Pray the rosary to complete the today&apos;s challenge.
@@ -77,8 +89,8 @@ const FriendsSection = () => {
               </Typography>
               {imageQRBase64 && (
                 <Image
-                  width="130"
-                  height="130"
+                  width="110"
+                  height="110"
                   src={imageQRBase64}
                   alt="Friend Request QR code"
                 />

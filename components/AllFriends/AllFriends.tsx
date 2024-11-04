@@ -92,7 +92,13 @@ const AllFriends = () => {
         {friendsProfiles.length === 0 && <>None</>}
         {friendsProfiles.map((friend) => {
           return (
-            <Box alignItems="center" key={friend.userId} display="flex" gap={1}>
+            <Box
+              my={2}
+              alignItems="center"
+              key={friend.userId}
+              display="flex"
+              gap={1}
+            >
               <UserBubble
                 userName={friend?.fullName}
                 userPicture={friend?.pictureUrl ?? ''}

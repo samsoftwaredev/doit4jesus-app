@@ -15,6 +15,14 @@ export const formatDate = (date: string | Date = new Date()) => {
   return dayjs(date).format('MM/DD/YYYY');
 };
 
+export const formatDateDash = (date: string) => {
+  return dayjs(date).format('YYYY-MM-DD');
+};
+
+export const setDateTimeZero = (date: string) => {
+  return formatDateDash(date) + 'T00:00:00.000Z';
+};
+
 export const generateRandomStringId = (length: number) => {
   let result = '';
   const characters =

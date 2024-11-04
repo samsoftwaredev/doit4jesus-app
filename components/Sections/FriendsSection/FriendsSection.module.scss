@@ -72,12 +72,6 @@
 }
 
 .stats {
-  span:first-child {
-    color: $errorMain;
-  }
-  span:nth-child(2) {
-    color: $successMain;
-  }
   span:last-child {
     color: $successMain;
   }
