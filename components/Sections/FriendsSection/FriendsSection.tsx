@@ -1,11 +1,8 @@
 import { Box, Container, Typography } from '@mui/material';
-import Image from 'next/image';
-import QRCode from 'qrcode';
-import { useEffect, useState } from 'react';
 
 import { AllFriends, Card, RosaryLevel, RosaryLevelInfo } from '@/components';
 import FriendApproval from '@/components/FriendApproval';
-import { NAV_APP_LINKS } from '@/constants/nav';
+import InviteFriend from '@/components/InviteFriend';
 import { useUserContext } from '@/context/UserContext';
 import { theme } from '@/styles/mui-overwrite';
 import { getCurrentLevel } from '@/utils/levels';
@@ -14,24 +11,8 @@ import styles from './FriendsSection.module.scss';
 
 const FriendsSection = () => {
   const { user } = useUserContext();
-  const [imageQRBase64, setImageQRBase64] = useState('');
   const numRosariesCompleted = user?.stats.rosaryTotalCount ?? 0;
   const currentLevel = getCurrentLevel(numRosariesCompleted);
-  const textQR =
-    window.location.origin + NAV_APP_LINKS.friends.link + user?.userId;
-
-  const generateQR = async () => {
-    try {
-      const base64Image = await QRCode.toDataURL(textQR);
-      setImageQRBase64(base64Image);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  useEffect(() => {
-    generateQR();
-  }, []);
 
   return (
     <Container className="container-box" maxWidth="md">
@@ -82,22 +63,9 @@ const FriendsSection = () => {
               display="flex"
               alignItems="center"
               flexDirection="column"
-              justifyContent="center"
+              rowGap="34px"
             >
-              <Typography mb={1} fontWeight="bold" variant="body1">
-                Invite Friend
-              </Typography>
-              {imageQRBase64 && (
-                <Image
-                  width="110"
-                  height="110"
-                  src={imageQRBase64}
-                  alt="Friend Request QR code"
-                />
-              )}
-              <Typography mt={1}>
-                Your friend can scan QR code and send you a friend request.
-              </Typography>
+              <InviteFriend />
             </Box>
           </Card>
         </div>
