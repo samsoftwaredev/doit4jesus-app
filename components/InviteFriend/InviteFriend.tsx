@@ -11,10 +11,12 @@ import QRCode from 'qrcode';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
+import { getUserProfileAPI } from 'services';
 
-import { supabase } from '@/class/index';
+import { db, supabase } from '@/class/index';
 import { NAV_APP_LINKS } from '@/constants/nav';
 import { useUserContext } from '@/context/UserContext';
+import { FriendProfile } from '@/interfaces/index';
 import { emailRegEx, nameRegEx } from '@/utils/regEx';
 
 import CopyLinkButton from '../CopyLinkButton/CopyLinkButton';
@@ -32,6 +34,7 @@ const InviteFriend = () => {
   const textQR =
     window.location.origin + NAV_APP_LINKS.friendRequest.link + user?.userId;
   const [isOpen, setIsOpen] = useState(false);
+  const [friendsProfiles, setFriendProfiles] = useState<FriendProfile[]>([]);
   const [imageQRBase64, setImageQRBase64] = useState('');
   const { control, reset, handleSubmit } = useForm<FormValues>({
     mode: 'onChange',
@@ -78,7 +81,34 @@ const InviteFriend = () => {
     }
   };
 
+  const getFriendsProfiles = async (userIds: string[]) => {
+    const [data, error] = await getUserProfileAPI(userIds);
+    if (error) {
+      console.error(error);
+      toast.error('Unable to retrieve friends profile.');
+    }
+    if (data) setFriendProfiles(data);
+  };
+
+  const getFriends = async () => {
+    let { data, error } = await db
+      .getFriends()
+      .select('*')
+      .or(`uuid1.eq.${user?.userId!},uuid2.eq.${user?.userId!}`);
+    if (data) {
+      const friendUserIds = data.map((u) => {
+        const uid = u.uuid1 !== user?.userId ? u.uuid1 : u.uuid2;
+        return uid!;
+      });
+      getFriendsProfiles(friendUserIds);
+    }
+    if (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
+    getFriends();
     generateQR();
   }, []);
 
@@ -93,7 +123,7 @@ const InviteFriend = () => {
         component="h3"
         variant="h2"
       >
-        0
+        {friendsProfiles.length}
       </Typography>
       <Button onClick={onOpen} fullWidth color="success" variant="outlined">
         Invite Friend

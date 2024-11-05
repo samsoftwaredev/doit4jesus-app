@@ -37,7 +37,7 @@ export const getUserProfileAPI = async (
       storeUserProfileLocally(friendData);
       return [[...friendData, ...localProfiles], null];
     }
-    return [null, error];
+    return [[], error];
   }
   return [localProfiles, null];
 };

@@ -13,11 +13,11 @@ import Dialog from '../Dialog';
 import UserBubble from '../UserBubble';
 
 const AllFriends = () => {
-  let friendUserId = '';
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useUserContext();
   const [friendsProfiles, setFriendProfiles] = useState<FriendProfile[]>([]);
   const [friends, setFriends] = useState<FriendsDB[]>([]);
+  const [friendSelected, setFriendSelected] = useState<FriendProfile>();
 
   const onClose = () => {
     setIsOpen(false);
@@ -27,9 +27,9 @@ const AllFriends = () => {
     setIsOpen(true);
   };
 
-  const onSelect = (id: string) => {
+  const onSelect = (friend: FriendProfile) => {
     openDialog();
-    friendUserId = id;
+    setFriendSelected(friend);
   };
 
   const getFriendsProfiles = async (userIds: string[]) => {
@@ -41,28 +41,11 @@ const AllFriends = () => {
     if (data) setFriendProfiles(data);
   };
 
-  const getFriendsApproval = async () => {
-    let { data, error } = await db
-      .getFriends()
-      .select('*')
-      .or(`uuid1.eq.${user?.userId!},uuid2.eq.${user?.userId!}`);
-    if (data) {
-      setFriends(data);
-      const friends = data.map((u) => {
-        const uid = u.uuid1 !== user?.userId ? u.uuid1 : u.uuid2;
-        return { id: u.id, friendId: uid!, uuid1: u.uuid1!, uuid2: u.uuid2! };
-      });
-      const friendUserIds = friends.map(({ friendId }) => friendId);
-      getFriendsProfiles(friendUserIds);
-    }
-    if (error) {
-      console.error(error);
-    }
-  };
-
   const onEndFriendship = async () => {
     const relationship = friends.find(
-      (u) => u.uuid1 === friendUserId || u.uuid2 === friendUserId,
+      (u) =>
+        u.uuid1 === friendSelected?.userId ||
+        u.uuid2 === friendSelected?.userId,
     );
     if (relationship !== undefined) {
       const { error } = await db
@@ -72,15 +55,34 @@ const AllFriends = () => {
       if (error) {
         toast.error('Unable to decline friend request');
       } else {
+        onClose();
         setFriendProfiles((prevState) =>
-          prevState.filter((f) => f.userId !== friendUserId),
+          prevState.filter((f) => f.userId !== friendSelected?.userId),
         );
       }
     }
   };
 
+  const getFriends = async () => {
+    let { data, error } = await db
+      .getFriends()
+      .select('*')
+      .or(`uuid1.eq.${user?.userId!},uuid2.eq.${user?.userId!}`);
+    if (data) {
+      setFriends(data);
+      const friendUserIds = data.map((u) => {
+        const uid = u.uuid1 !== user?.userId ? u.uuid1 : u.uuid2;
+        return uid!;
+      });
+      getFriendsProfiles(friendUserIds);
+    }
+    if (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
-    getFriendsApproval();
+    getFriends();
   }, []);
 
   return (
@@ -104,7 +106,7 @@ const AllFriends = () => {
                 userPicture={friend?.pictureUrl ?? ''}
               />
               {friend?.fullName} - {friend?.rosaryCount}
-              <IconButton onClick={() => onSelect(friend.userId!)}>
+              <IconButton onClick={() => onSelect(friend)}>
                 <DeleteIcon color="error" />
               </IconButton>
             </Box>
@@ -115,10 +117,17 @@ const AllFriends = () => {
         maxWidth="sm"
         open={isOpen}
         handleClose={onClose}
-        modalTitle="Create Group"
+        modalTitle="Remove Friend"
       >
-        Are you sure you want to end this relationship?
-        <Button onClick={onEndFriendship}>Delete</Button>
+        <Typography my={5}>
+          Are you sure you want to remove {friendSelected?.fullName}?
+        </Typography>
+        <Box display="flex" justifyContent="space-between">
+          <Button onClick={onClose}>Cancel</Button>
+          <Button variant="outlined" color="error" onClick={onEndFriendship}>
+            Delete
+          </Button>
+        </Box>
       </Dialog>
     </>
   );

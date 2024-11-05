@@ -33,7 +33,9 @@
       "@/styles/*": ["styles/*"],
       "@/styles": ["styles/index"],
       "@/data/*": ["data/*"],
-      "@/data": ["data/index"]
+      "@/data": ["data/index"],
+      "@/services/*": ["services/*"],
+      "@/services": ["services/index"]
     }
   },
   "include": [

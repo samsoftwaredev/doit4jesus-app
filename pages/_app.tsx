@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import MusicPlayer from '@/components/MusicPlayer';
 import { AudioContextProvider } from '@/context/AudioContext';
+import { FriendsContextProvider } from '@/context/FriendsContext';
 import { LanguageContextProvider } from '@/context/LanguageContext';
 import { PresenceContextProvider } from '@/context/PresenceContext';
 import { StatsContextProvider } from '@/context/StatsContext';
@@ -33,10 +34,12 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
               >
                 <PresenceContextProvider>
                   <StatsContextProvider>
-                    <ToastContainer autoClose={5000} />
-                    <Component {...pageProps} />
-                    <Analytics />
-                    <MusicPlayer />
+                    <FriendsContextProvider>
+                      <ToastContainer autoClose={5000} />
+                      <Component {...pageProps} />
+                      <Analytics />
+                      <MusicPlayer />
+                    </FriendsContextProvider>
                   </StatsContextProvider>
                 </PresenceContextProvider>
               </AudioContextProvider>
