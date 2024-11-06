@@ -68,9 +68,9 @@ const AccountSection = () => {
         modalTitle="Delete Account"
       >
         <Typography my={5}>
-          Are you sure you want to delete your account? Once you do, you won't
-          be able to undo this action, and all your data will be permanently
-          deleted.
+          Are you sure you want to delete your account? Once you do, you
+          won&apos;t be able to undo this action, and all your data will be
+          permanently deleted.
         </Typography>
         <Box display="flex" justifyContent="space-between">
           <Button onClick={onClose}>Cancel</Button>
