@@ -1,0 +1,39 @@
+.image {
+  width: 100%;
+  height: auto;
+  max-height: 200px;
+  border-radius: $borderRadius;
+}
+
+.bg {
+  border-radius: $borderRadius;
+  filter: blur(8px);
+  height: 370px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  gap: 1em;
+  background-color: rgba(0, 0, 0, 0.5); /* Black w/opacity/see-through */
+  z-index: 2;
+  padding: 20px;
+  text-align: center;
+  border-radius: $borderRadius;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column-reverse;
+  @include tablet {
+    flex-direction: column-reverse;
+  }
+  @include tablet {
+    flex-direction: row;
+  }
+}

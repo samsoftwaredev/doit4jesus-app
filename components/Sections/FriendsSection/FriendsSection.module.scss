@@ -10,16 +10,16 @@
     'FriendRequests'
     'TodaysChallenge'
     'UserLevel'
-    'CodeQR'
+    'InviteFriend'
     'Friends';
 
   @include tablet {
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: auto;
     grid-template-areas:
       'FriendRequests FriendRequests'
       'TodaysChallenge UserLevel'
-      'CodeQR CodeQR'
+      'InviteFriend InviteFriend'
       'Friends Friends';
   }
   @include desktop {
@@ -27,7 +27,7 @@
     grid-template-rows: auto;
     grid-template-areas:
       'FriendRequests FriendRequests FriendRequests'
-      'CodeQR TodaysChallenge UserLevel'
+      'InviteFriend TodaysChallenge UserLevel'
       'Friends Friends Friends';
   }
 }
@@ -47,8 +47,8 @@
   grid-area: Friends;
 }
 
-.CodeQR {
-  grid-area: CodeQR;
+.InviteFriend {
+  grid-area: InviteFriend;
 }
 
 .FriendRequests {

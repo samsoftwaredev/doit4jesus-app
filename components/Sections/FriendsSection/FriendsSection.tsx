@@ -17,11 +17,6 @@ const FriendsSection = () => {
   return (
     <Container className="container-box" maxWidth="md">
       <Box className={styles.container}>
-        <div className={styles.FriendRequests}>
-          <Card>
-            <FriendApproval />
-          </Card>
-        </div>
         <div className={styles.TodaysChallenge}>
           <Card>
             <Box
@@ -30,13 +25,15 @@ const FriendsSection = () => {
               alignItems="center"
               justifyContent="space-between"
               height="100%"
+              fontWeight="900"
+              rowGap="26px"
             >
               <Typography fontWeight="bold" mb={1}>
                 Today&apos;s Challenge
               </Typography>
               <Typography
-                fontSize="7.5em"
-                fontWeight="500"
+                fontSize="4em"
+                fontWeight="900"
                 className={styles.stats}
                 lineHeight="1"
               >
@@ -51,7 +48,7 @@ const FriendsSection = () => {
                 </span>
                 <span>/1</span>
               </Typography>
-              <Typography>
+              <Typography fontWeight="100">
                 Pray the rosary to complete the today&apos;s challenge.
               </Typography>
             </Box>
@@ -63,7 +60,7 @@ const FriendsSection = () => {
               display="flex"
               alignItems="center"
               flexDirection="column"
-              rowGap="34px"
+              rowGap="29px"
             >
               <InviteFriend />
             </Box>
@@ -86,6 +83,11 @@ const FriendsSection = () => {
         <div className={styles.Friends}>
           <Card>
             <AllFriends />
+          </Card>
+        </div>
+        <div className={styles.FriendRequests}>
+          <Card>
+            <FriendApproval />
           </Card>
         </div>
       </Box>

@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect } from 'react';
 import { toast } from 'react-toastify';
 
 import { supabase } from '../classes';
-import { formatDate, formatDateDash } from '../utils';
+import { setDateTimeZero } from '../utils';
 import { useAudioContext } from './AudioContext';
 import { usePresenceContext } from './PresenceContext';
 import { useUserContext } from './UserContext';
@@ -21,7 +21,7 @@ const StatsContextProvider = ({ children }: Props) => {
   const registerRosaryCompleted = async () => {
     if (!user?.userId) return null;
     const onlineUsersIds = onlineUsers?.map(({ userId }) => userId) || [];
-    const todaysRosaryCompleted = user.stats.todaysRosaryCompleted === false;
+    const todaysRosaryCompleted = user.stats.todaysRosaryCompleted;
     const { data, error } = await supabase.functions.invoke(
       'rosary-completed',
       { body: { onlineUsers: onlineUsersIds } },
@@ -37,13 +37,14 @@ const StatsContextProvider = ({ children }: Props) => {
     if (data && todaysRosaryCompleted === false) {
       toast.success('⭐God Bless. You completed the rosary!⭐', {
         toastId: 'rosary completed to save stats',
+        autoClose: 50_000,
       });
 
       const joinedRosary = [
         ...user.stats.joinedRosary,
         ...(onlineUsersIds?.map((userId) => ({
           userId,
-          date: formatDateDash(new Date().toString()),
+          date: setDateTimeZero(new Date().toISOString()),
         })) ?? []),
       ];
 

@@ -72,7 +72,7 @@ const InviteFriend = () => {
 
   return (
     <>
-      <Typography fontSize="small" textAlign="center" fontWeight="light">
+      <Typography fontWeight="bold" textAlign="center">
         Number of Friends
       </Typography>
       <Typography

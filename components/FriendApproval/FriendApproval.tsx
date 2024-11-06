@@ -98,7 +98,7 @@ const FriendApproval = () => {
                 userName={friend?.fullName}
                 userPicture={friend?.pictureUrl ?? ''}
               />
-              {friend?.fullName} - {friend?.rosaryCount}
+              {friend?.fullName}
               {accepted === true ? (
                 <Box>
                   <Button

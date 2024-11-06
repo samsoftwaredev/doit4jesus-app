@@ -105,7 +105,8 @@ const AllFriends = () => {
                 userName={friend?.fullName}
                 userPicture={friend?.pictureUrl ?? ''}
               />
-              {friend?.fullName} - {friend?.rosaryCount}
+              {friend?.fullName} - {friend?.rosaryCount}{' '}
+              {friend?.rosaryCount > 1 ? 'rosaries' : 'rosary'}
               <IconButton onClick={() => onSelect(friend)}>
                 <DeleteIcon color="error" />
               </IconButton>
@@ -120,7 +121,7 @@ const AllFriends = () => {
         modalTitle="Remove Friend"
       >
         <Typography my={5}>
-          Are you sure you want to remove {friendSelected?.fullName}?
+          Are you sure you want to remove {friendSelected?.fullName} as friend?
         </Typography>
         <Box display="flex" justifyContent="space-between">
           <Button onClick={onClose}>Cancel</Button>

@@ -20,9 +20,9 @@ interface Props {
 const menuItems = [
   { url: '/app/dashboard', label: 'Dashboard', icon: <TableChartIcon /> },
   // { url: "/app/soldiers", label: "Militant Church", icon: <SoldierIcon /> },
+  { url: '/app', label: 'Rosary Mysteries', icon: <GridViewIcon /> },
   { url: '/app/friends', label: 'Friends', icon: <SoldierIcon /> },
-  { url: '/app', label: 'All Events', icon: <GridViewIcon /> },
-  { url: '/app/live-event', label: 'Live Event', icon: <CellTowerIcon /> },
+  // { url: '/app/live-event', label: 'Live Event', icon: <CellTowerIcon /> },
   // {
   //   url: "/app/attending-events",
   //   label: "Attending Events",

@@ -12,7 +12,7 @@ const DashboardSection = () => {
     <Container className="container-box" maxWidth="md">
       <Box className={styles.container}>
         <div className={styles.TodayRosary}>
-          <Card>
+          <Card style={{ padding: 0 }}>
             <TodaysRosary />
           </Card>
         </div>

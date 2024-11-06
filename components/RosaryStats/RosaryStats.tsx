@@ -14,7 +14,7 @@ const RosaryStats = () => {
 
   return (
     <>
-      <Typography fontSize="small" textAlign="center" fontWeight="light">
+      <Typography textAlign="center" fontWeight="bold">
         Rosaries Completed
       </Typography>
       <Typography

@@ -15,7 +15,7 @@
 
   @include tablet {
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: auto auto;
     grid-template-areas:
       'TodayRosary TodayRosary'
       'RosariesCompleted Friends'
@@ -25,24 +25,18 @@
   }
   @include desktop {
     grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr;
+    grid-template-rows: auto;
     grid-template-areas:
       'TodayRosary TodayRosary RosariesCompleted'
+      'TodayRosary TodayRosary Friends'
       'Levels Levels Levels'
-      'Friends Donations Donations'
+      'Donations Donations Donations'
       'Leaderboards Leaderboards Leaderboards';
   }
 }
 
 .TodayRosary {
   grid-area: TodayRosary;
-  text-align: center;
-  @include tablet {
-    text-align: left;
-  }
-  @include desktop {
-    text-align: left;
-  }
 }
 
 .RosariesCompleted {
