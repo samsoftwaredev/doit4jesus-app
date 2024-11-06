@@ -13,7 +13,7 @@ import { capitalizeFirstLetter } from '@/utils/helpers';
 import styles from './TodaysRosary.module.scss';
 
 const TodayRosary = () => {
-  let eventURL = '';
+  const [eventURL, setEventURL] = useState('');
   const navigate = useRouter();
   const rosary = new Rosary();
   const todayMystery = rosary.getRosaryState().mystery;
@@ -49,7 +49,7 @@ const TodayRosary = () => {
     if (youtube) {
       const events = await getEvents(youtube.id);
       if (events) {
-        eventURL = `${NAV_APP_LINKS.event.link}/${events.slug}`;
+        setEventURL(`${NAV_APP_LINKS.event.link}/${events.slug}`);
         setImage(events.picture_url ?? '');
       }
     }
