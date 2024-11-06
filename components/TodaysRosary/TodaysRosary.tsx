@@ -1,11 +1,14 @@
 import { Box, Button, Typography } from '@mui/material';
+import dayjs from 'dayjs';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
 import { Rosary } from '@/class/Rosary';
 import { db } from '@/class/SupabaseDB';
+import { ROSARY_DAYS } from '@/constants/mysteries';
 import { NAV_APP_LINKS } from '@/constants/nav';
+import { capitalizeFirstLetter } from '@/utils/helpers';
 
 import styles from './TodaysRosary.module.scss';
 
@@ -15,6 +18,8 @@ const TodayRosary = () => {
   const rosary = new Rosary();
   const todayMystery = rosary.getRosaryState().mystery;
   const [image, setImage] = useState<string>('');
+  const weekDayNum = dayjs().day();
+  const weekDay = capitalizeFirstLetter(Object.keys(ROSARY_DAYS)[weekDayNum]);
 
   const getYoutubeVideo = async () => {
     const rosaryId = rosary.getRosaryState().mysteryAudio;
@@ -44,7 +49,6 @@ const TodayRosary = () => {
     if (youtube) {
       const events = await getEvents(youtube.id);
       if (events) {
-        console.log(events, events.picture_url);
         eventURL = `${NAV_APP_LINKS.event.link}/${events.slug}`;
         setImage(events.picture_url ?? '');
       }
@@ -56,7 +60,7 @@ const TodayRosary = () => {
   }, []);
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div style={{ position: 'relative', padding: '20px 0' }}>
       <Box
         className={styles.bg}
         style={{ backgroundImage: `url("${image}")` }}
@@ -64,7 +68,7 @@ const TodayRosary = () => {
       <Box className={styles.content}>
         <Box>
           <Typography fontSize="small" fontWeight="light">
-            Today&apos;s Rosary
+            Today&apos;s Rosary - {weekDay}
           </Typography>
           <Typography my={2} component="h1" variant="h4">
             {todayMystery}
