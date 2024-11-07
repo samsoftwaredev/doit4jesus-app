@@ -1,4 +1,5 @@
-import { createContext, useContext, useEffect } from 'react';
+import useConfetti from 'hooks/useConfetti';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { supabase } from '../classes';
@@ -11,12 +12,37 @@ interface Props {
   children: JSX.Element | JSX.Element[];
 }
 
+const successMessages = [
+  'God Bless. You completed the rosary!⭐',
+  "Congratulations! You've finished praying the rosary. God bless! 🌟",
+  "Well done! You've completed the rosary. Blessings to you! ✨",
+  'Fantastic! You just completed the rosary. May God bless you! ⭐',
+  "You've reached the end of the rosary. God bless you abundantly! 🌹",
+  "Great job! The rosary is complete. May God's blessings be upon you! 🙏",
+  "You've successfully completed the rosary. Blessings from above! 🌟",
+  'Well done on finishing the rosary. God bless you! 💖',
+  'The rosary is done. May you be blessed richly! 🌟',
+  'You’ve prayed the rosary completely. God bless you! ✨',
+  'You’ve reached the end of the rosary. Blessings on you! 🌹',
+];
+
+const getSuccessMessage = () => {
+  const randNum = Math.floor(Math.random() * successMessages.length);
+  return successMessages[randNum];
+};
+
 const StatsContext = createContext<undefined>(undefined);
 
 const StatsContextProvider = ({ children }: Props) => {
   const { setCallbackOnCompleteVideo, audioProgress } = useAudioContext();
   const { users: onlineUsers } = usePresenceContext();
   const { user, setUser } = useUserContext();
+  const [showConfetti, setShowConfetti] = useState(false);
+
+  const onRosaryCompleted = () => {
+    setShowConfetti(true);
+    setTimeout(() => setShowConfetti(false), 5000);
+  };
 
   const registerRosaryCompleted = async () => {
     if (!user?.userId) return null;
@@ -35,7 +61,8 @@ const StatsContextProvider = ({ children }: Props) => {
     }
 
     if (data && todaysRosaryCompleted === false) {
-      toast.success('⭐God Bless. You completed the rosary!⭐', {
+      onRosaryCompleted();
+      toast.success(getSuccessMessage(), {
         toastId: 'rosary completed to save stats',
         autoClose: 50_000,
       });
@@ -70,7 +97,10 @@ const StatsContextProvider = ({ children }: Props) => {
   }, [audioProgress]);
 
   return (
-    <StatsContext.Provider value={undefined}>{children}</StatsContext.Provider>
+    <StatsContext.Provider value={undefined}>
+      {useConfetti(showConfetti)}
+      {children}
+    </StatsContext.Provider>
   );
 };
 

@@ -10,8 +10,8 @@ interface Props {
 const Loading = ({ isFeature = false }: Props) => {
   if (isFeature) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center">
-        <CircularProgress color="secondary" />
+      <Box className={styles.featureContainer}>
+        <CircularProgress className={styles.featureSpinner} color="secondary" />
       </Box>
     );
   }

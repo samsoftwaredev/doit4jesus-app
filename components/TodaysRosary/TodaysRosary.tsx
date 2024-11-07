@@ -10,6 +10,7 @@ import { ROSARY_DAYS } from '@/constants/mysteries';
 import { NAV_APP_LINKS } from '@/constants/nav';
 import { capitalizeFirstLetter } from '@/utils/helpers';
 
+import Loading from '../Loading';
 import styles from './TodaysRosary.module.scss';
 
 const TodayRosary = () => {
@@ -17,7 +18,7 @@ const TodayRosary = () => {
   const navigate = useRouter();
   const rosary = new Rosary();
   const todayMystery = rosary.getRosaryState().mystery;
-  const [image, setImage] = useState<string>('');
+  const [image, setImage] = useState<string>();
   const weekDayNum = dayjs().day();
   const weekDay = capitalizeFirstLetter(Object.keys(ROSARY_DAYS)[weekDayNum]);
 
@@ -58,6 +59,8 @@ const TodayRosary = () => {
   useEffect(() => {
     init();
   }, []);
+
+  if (image === undefined) return <Loading isFeature />;
 
   return (
     <div style={{ position: 'relative', padding: '20px 0' }}>
