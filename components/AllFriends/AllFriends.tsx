@@ -106,7 +106,7 @@ const AllFriends = () => {
                 userPicture={friend?.pictureUrl ?? ''}
               />
               {friend?.fullName} - {friend?.rosaryCount}{' '}
-              {friend?.rosaryCount > 1 ? 'rosaries' : 'rosary'}
+              {friend?.rosaryCount === 1 ? 'rosary' : 'rosaries'}
               <IconButton onClick={() => onSelect(friend)}>
                 <DeleteIcon color="error" />
               </IconButton>

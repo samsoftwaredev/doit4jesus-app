@@ -54,7 +54,7 @@ const FriendsSection = () => {
             </Box>
           </Card>
         </div>
-        <div className={styles.CodeQR}>
+        <div className={styles.InviteFriend}>
           <Card>
             <Box
               display="flex"
