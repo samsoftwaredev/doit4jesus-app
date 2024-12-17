@@ -51,8 +51,14 @@ const SignUp = () => {
   const password = useWatch({ control, name: 'password' });
 
   const onSubmit: SubmitHandler<IFormInputs> = async (userInput) => {
+    const { firstName, lastName } = userInput;
     setIsLoading(true);
-    const { error, data } = await db.signUp(userInput);
+    // validate no Jesus or Christ allowed for first and last name
+    const { error, data } = await db.signUp({
+      ...userInput,
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+    });
     setIsLoading(false);
     if (error) {
       toast.error(error.message);

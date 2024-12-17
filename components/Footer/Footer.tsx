@@ -1,6 +1,8 @@
-import { Button, Container } from '@mui/material';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import InstagramIcon from '@mui/icons-material/Instagram';
+import YouTubeIcon from '@mui/icons-material/YouTube';
+import { Box, Button, Container, IconButton } from '@mui/material';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 
 import { NAV_FOOTER_LINKS, NAV_MAIN_LINKS } from '@/constants';
 
@@ -13,15 +15,43 @@ const Footer = () => {
 
   return (
     <Container className={styles.container} maxWidth={false}>
-      <div className={styles.logo}>
+      <Box className={styles.logo}>
         <Logo />
-      </div>
-      <div className={styles.copyRights}>
-        &copy; {currentYear} DoIt4Jesus. All rights reserved.
-      </div>
-      <div className={styles.socialMedia}>
+      </Box>
+      <Box
+        className={styles.copyRights}
+        gap={1}
+        display="flex"
+        flexDirection="column"
+      >
+        <small>&copy; {currentYear} DoIt4Jesus. All rights reserved.</small>
+        <Box display="flex" justifyContent="center" gap={1}>
+          <IconButton
+            target="media"
+            href="https://www.facebook.com/profile.php?id=61571010650020"
+            color="primary"
+          >
+            <FacebookIcon />
+          </IconButton>
+          <IconButton
+            target="media"
+            href="https://www.youtube.com/@DoIt4Jesus"
+            color="primary"
+          >
+            <YouTubeIcon />
+          </IconButton>
+          <IconButton
+            target="media"
+            href="https://www.instagram.com/doitforjesuschristofnazareth/"
+            color="primary"
+          >
+            <InstagramIcon />
+          </IconButton>
+        </Box>
+      </Box>
+      <Box className={styles.socialMedia}>
         <YouTubeSubscribe />
-      </div>
+      </Box>
       <Link passHref href={NAV_FOOTER_LINKS.about.link}>
         <Button className={styles.about}>{NAV_FOOTER_LINKS.about.label}</Button>
       </Link>
