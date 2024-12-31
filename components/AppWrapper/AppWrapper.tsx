@@ -1,9 +1,8 @@
-import { usePathname } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 
 import AccountSetup from '@/components/Sections/AccountSetup';
 import { COMPANY } from '@/constants/company';
-import { NAV_APP_LINKS } from '@/constants/nav';
 import { useAudioContext } from '@/context/AudioContext';
 import { useUserContext } from '@/context/UserContext';
 
@@ -17,26 +16,24 @@ interface Props {
 const AppWrapper = ({ children }: Props) => {
   const { user } = useUserContext();
   const { setHideMusicPlayer } = useAudioContext();
-  const pathname = usePathname();
+  const params = useSearchParams();
+  const isNewUser = params.get('newUser');
+
   const isAuth = !!user;
 
   useEffect(() => {
     if (!isAuth) {
       // hide music player if user is not auth
       setHideMusicPlayer(true);
-    } else if (!user.dateOfBirth && isAuth) {
+    } else if (isNewUser === 'true' && isAuth) {
       // hide music player if user is setting up account
       setHideMusicPlayer(true);
     } else {
       setHideMusicPlayer(false);
     }
-  }, [!!user]);
+  }, [!!user, isNewUser]);
 
-  if (
-    isAuth &&
-    !user?.dateOfBirth &&
-    pathname.includes(NAV_APP_LINKS.dashboard.link)
-  ) {
+  if (isAuth && isNewUser === 'true') {
     return (
       <ProtectedRoute>
         <>

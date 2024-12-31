@@ -69,7 +69,8 @@ class SupabaseDB {
     lastName: string;
     genderMale: boolean;
   }): Promise<AuthResponse> => {
-    const redirectTo = window.location.origin + NAV_APP_LINKS.dashboard.link;
+    const redirectTo =
+      window.location.origin + NAV_APP_LINKS.dashboard.link + '?newUser=true';
     const userGender = userInput.genderMale
       ? GENDER_TYPES.male
       : GENDER_TYPES.female;

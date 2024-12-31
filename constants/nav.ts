@@ -26,6 +26,7 @@ export const NAV_MAIN_LINKS = {
   },
 };
 
+// app routes
 export const NAV_APP_LINKS = {
   app: { link: '/app', label: 'App', value: 'app' },
   rosary: { link: '/app/rosary', label: 'Rosary', value: 'rosary' },
