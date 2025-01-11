@@ -45,6 +45,7 @@ class YouTubeClass {
       height: 0,
       playerVars: {
         playsinline: 1,
+        rel: 0,
       },
       events: {
         onStateChange: callback,
