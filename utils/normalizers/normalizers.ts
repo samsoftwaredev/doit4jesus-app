@@ -27,12 +27,17 @@ import {
   YouTubeDB,
 } from '@/interfaces/databaseTable';
 
-import { formatDate, numberToDollar } from './helpers';
+import {
+  formatDateDash,
+  formatDateSlash,
+  numberToDollar,
+  setDateTimeZero,
+} from '../helpers';
 
 const nullToString = (val: string | null) => (val === null ? '' : val);
 const nullToNumber = (val: number | null) => (val === null ? 0 : val);
 const nullToDate = (val: string | null) =>
-  val === null ? '' : moment(val).format('MM/DD/YYYY');
+  val === null ? '' : formatDateSlash(val);
 
 export const normalizeEvent = (dataList: EventsDB[]): DataEvent[] => {
   return dataList.map((data) => {
@@ -89,11 +94,11 @@ export const normalizeUserProfile = (
 
     const joinedRosary = stats.map((s) => ({
       userId: s.join_rosary_user_id,
-      date: formatDate(s.completed_at),
+      date: formatDateSlash(s.completed_at),
     }));
 
     const todaysRosaryCompleted = stats.find(
-      (s) => formatDate(s.completed_at) === formatDate(),
+      (s) => formatDateSlash(s.completed_at) === formatDateSlash(new Date()),
     );
 
     return {

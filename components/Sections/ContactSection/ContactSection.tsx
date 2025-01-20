@@ -13,7 +13,7 @@ import { toast } from 'react-toastify';
 import { supabase } from '@/classes';
 import FormErrorText from '@/components/FormErrorText';
 import womanComputer from '@/public/assets/images/womanComputer.jpeg';
-import { emailRegEx, nameRegEx } from '@/utils/regEx';
+import { emailRegEx, nameRegEx } from '@/utils';
 
 import styles from './ContactSection.module.scss';
 

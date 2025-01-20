@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import moment from 'moment';
 
 import { sessionFriendsKey } from '../constants';
 import { FriendProfile } from '../interfaces';
@@ -11,16 +12,29 @@ export const capitalizeFirstLetter = (str: string) => {
 
 export const css = (...args: string[]) => [...args].join(' ');
 
-export const formatDate = (date: string | Date = new Date()) => {
-  return dayjs(date).format('MM/DD/YYYY');
+const convertDate = (dateString: string | Date) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {
+    month: '2-digit',
+    day: '2-digit',
+    year: 'numeric',
+  });
 };
 
-export const formatDateDash = (date: string) => {
-  return dayjs(date).format('YYYY-MM-DD');
+export const setDateTimeZero = (
+  dateString: string | Date = new Date(),
+): string => {
+  const date = new Date(convertDate(dateString));
+  date.setHours(0, 0, 0, 0);
+  return date.toISOString();
 };
 
-export const setDateTimeZero = (date: string) => {
-  return formatDateDash(date) + 'T00:00:00.000Z';
+export const formatDateDash = (dateString: string | Date): string => {
+  return convertDate(moment(setDateTimeZero(dateString)).format('YYYY-MM-DD'));
+};
+
+export const formatDateSlash = (dateString: string | Date): string => {
+  return convertDate(moment(setDateTimeZero(dateString)).format('MM/DD/YYYY'));
 };
 
 export const generateRandomStringId = (length: number) => {

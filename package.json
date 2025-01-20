@@ -15,6 +15,7 @@
     "db-ts": "npm run fe-ts && npm run resend-ts && npm run db-webhook-ts",
     "prepare": "husky install",
     "test": "jest --watch=false",
+    "test-coverage": "jest --coverage",
     "test:watch": "jest"
   },
   "dependencies": {

@@ -13,7 +13,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
 import { db } from '@/classes';
-import { alphaNumericRegEx } from '@/utils/regEx';
+import { alphaNumericRegEx } from '@/utils';
 
 import Dialog from '../Dialog';
 import FormErrorText from '../FormErrorText';

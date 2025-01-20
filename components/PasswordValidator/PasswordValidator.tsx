@@ -3,7 +3,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Box, Typography } from '@mui/material';
 
 import { minPasswordLength } from '@/constants/global';
-import { digitRegEx, specialCharsRegEx } from '@/utils/regEx';
+import { digitRegEx, specialCharsRegEx } from '@/utils';
 
 interface Props {
   password: string;

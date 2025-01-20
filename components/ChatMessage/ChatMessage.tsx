@@ -2,7 +2,7 @@ import { Box, Typography } from '@mui/material';
 import moment from 'moment';
 
 import { theme } from '@/styles/mui-overwrite';
-import { dollarFormatter } from '@/utils/helpers';
+import { dollarFormatter } from '@/utils';
 
 import UserBubble from '../UserBubble';
 

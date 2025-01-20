@@ -18,7 +18,7 @@ import { db } from '@/classes/SupabaseDB';
 import FormErrorText from '@/components/FormErrorText';
 import { passwordValidationRules } from '@/constants';
 import virginMaryLetter from '@/public/assets/images/art/virginMaryLetter.jpeg';
-import { emailRegEx, nameRegEx } from '@/utils/regEx';
+import { emailRegEx, nameRegEx } from '@/utils';
 
 import {
   GoogleAuth,
