@@ -3,12 +3,12 @@ import Image from 'next/image';
 import QRCode from 'qrcode';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { getUserProfileAPI } from 'services';
 
-import { db } from '@/class/index';
+import { db } from '@/classes';
 import { NAV_APP_LINKS } from '@/constants/nav';
 import { useUserContext } from '@/context/UserContext';
-import { FriendProfile } from '@/interfaces/index';
+import { FriendProfile } from '@/interfaces';
+import { getUserProfileAPI } from '@/services';
 
 import CopyLinkButton from '../CopyLinkButton/CopyLinkButton';
 import Dialog from '../Dialog';

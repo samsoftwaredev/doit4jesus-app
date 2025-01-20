@@ -2,8 +2,9 @@ import useConfetti from 'hooks/useConfetti';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { supabase } from '../classes';
-import { setDateTimeZero } from '../utils';
+import { supabase } from '@/classes';
+import { setDateTimeZero } from '@/utils';
+
 import { useAudioContext } from './AudioContext';
 import { usePresenceContext } from './PresenceContext';
 import { useUserContext } from './UserContext';

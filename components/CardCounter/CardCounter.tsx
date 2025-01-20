@@ -1,4 +1,4 @@
-import { CardProps } from '@/interfaces/index';
+import { CardProps } from '@/interfaces';
 import { css } from '@/utils/helpers';
 
 import styles from './cardCounter.module.scss';

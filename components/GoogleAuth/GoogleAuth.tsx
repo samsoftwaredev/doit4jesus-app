@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { toast } from 'react-toastify';
 
-import { supabase } from '@/class/index';
+import { supabase } from '@/classes';
 import { NAV_APP_LINKS } from '@/constants/nav';
 
 interface Props {

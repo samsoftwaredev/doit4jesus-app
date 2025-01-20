@@ -1,11 +1,11 @@
 import { Button, FormControl, TextField } from '@mui/material';
-import { db, supabase } from 'classes/SupabaseDB';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
+import { db, supabase } from '@/classes/SupabaseDB';
 import { GoogleAuth, HorizontalDivider } from '@/components';
 import FormErrorText from '@/components/FormErrorText';
 import { NAV_APP_LINKS, NAV_MAIN_LINKS } from '@/constants/nav';

@@ -2,7 +2,7 @@ import { Box, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { supabase } from '@/class/index';
+import { supabase } from '@/classes';
 import { getCurrentLevel } from '@/utils/levels';
 
 import Loading from '../Loading';

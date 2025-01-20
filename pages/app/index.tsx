@@ -1,8 +1,8 @@
-import { db } from 'classes/SupabaseDB';
 import type { NextPage } from 'next';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
+import { db } from '@/classes/SupabaseDB';
 import AppWrapper from '@/components/AppWrapper';
 import Loading from '@/components/Loading';
 import AllEventSection from '@/components/Sections/AllEventSection';

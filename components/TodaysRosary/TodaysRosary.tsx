@@ -4,8 +4,8 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
-import { Rosary } from '@/class/Rosary';
-import { db } from '@/class/SupabaseDB';
+import { Rosary } from '@/classes/Rosary';
+import { db } from '@/classes/SupabaseDB';
 import { ROSARY_DAYS } from '@/constants/mysteries';
 import { NAV_APP_LINKS } from '@/constants/nav';
 import { capitalizeFirstLetter } from '@/utils/helpers';

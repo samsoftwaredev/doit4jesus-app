@@ -2,8 +2,8 @@ import { Autocomplete, Box, Paper, TextField, Typography } from '@mui/material';
 import React, { SyntheticEvent, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { supabase } from '@/class/index';
-import { MenuItem } from '@/interfaces/index';
+import { supabase } from '@/classes';
+import { MenuItem } from '@/interfaces';
 
 import UserBubble from '../UserBubble';
 

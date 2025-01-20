@@ -5,11 +5,11 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { db, supabase } from '@/class/index';
+import { db, supabase } from '@/classes';
 import Card from '@/components/Card';
 import { NAV_APP_LINKS } from '@/constants/nav';
 import { useUserContext } from '@/context/UserContext';
-import { FriendProfile } from '@/interfaces/index';
+import { FriendProfile } from '@/interfaces';
 import { orderUUIDs } from '@/utils/helpers';
 import { normalizeFriendProfile } from '@/utils/normalizers';
 

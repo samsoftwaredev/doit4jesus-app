@@ -2,10 +2,10 @@ import { Box, Button, Container, Typography } from '@mui/material';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { db, supabase } from '@/class';
+import { db, supabase } from '@/classes';
 import { Card, Dialog, Loading } from '@/components';
 import { useAudioContext } from '@/context/AudioContext';
-import { INTERFACE_AUDIO_STATE } from '@/interfaces/index';
+import { INTERFACE_AUDIO_STATE } from '@/interfaces';
 
 import styles from './accountSection.module.scss';
 

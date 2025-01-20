@@ -16,8 +16,8 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@/class/*": ["classes/*"],
-      "@/class": ["classes/index"],
+      "@/classes/*": ["classes/*"],
+      "@/classes": ["classes/index"],
       "@/components/*": ["components/*"],
       "@/components": ["components/index"],
       "@/constants/*": ["constants/*"],

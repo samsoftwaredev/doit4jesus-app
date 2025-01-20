@@ -9,10 +9,10 @@ import {
   MenuItem,
   Typography,
 } from '@mui/material';
-import { db, supabase } from 'classes/SupabaseDB';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
+import { db, supabase } from '@/classes/SupabaseDB';
 import { Loading } from '@/components';
 import { NAV_APP_LINKS } from '@/constants';
 import { useUserContext } from '@/context/UserContext';

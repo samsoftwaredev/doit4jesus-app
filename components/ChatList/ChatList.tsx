@@ -3,8 +3,8 @@ import { Box, Button, Typography } from '@mui/material';
 import { useState } from 'react';
 
 import { useUserContext } from '@/context/UserContext';
+import { EventMessages } from '@/interfaces';
 import { Json } from '@/interfaces/database';
-import { EventMessages } from '@/interfaces/index';
 
 import ChatMessage from '../ChatMessage';
 import ChatTextbox from '../ChatTextbox';

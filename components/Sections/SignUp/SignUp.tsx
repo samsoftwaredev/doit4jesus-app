@@ -9,12 +9,12 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { db } from 'classes/SupabaseDB';
 import Image from 'next/image';
 import { useState } from 'react';
 import { Controller, SubmitHandler, useForm, useWatch } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
+import { db } from '@/classes/SupabaseDB';
 import FormErrorText from '@/components/FormErrorText';
 import { passwordValidationRules } from '@/constants';
 import virginMaryLetter from '@/public/assets/images/art/virginMaryLetter.jpeg';

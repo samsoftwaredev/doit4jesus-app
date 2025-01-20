@@ -1,12 +1,12 @@
 import { Box, Button, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { getUserProfileAPI } from 'services';
 
-import { db } from '@/class/index';
+import { db } from '@/classes';
 import { useUserContext } from '@/context/UserContext';
+import { FriendProfile } from '@/interfaces';
 import { FriendRequestsDB } from '@/interfaces/databaseTable';
-import { FriendProfile } from '@/interfaces/index';
+import { getUserProfileAPI } from '@/services';
 
 import UserBubble from '../UserBubble';
 

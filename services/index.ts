@@ -1,4 +1,5 @@
-import { supabase } from '../classes';
+import { supabase } from '@/classes';
+
 import { FriendProfile, PostgrestError } from '../interfaces';
 import {
   getUserProfileLocally,

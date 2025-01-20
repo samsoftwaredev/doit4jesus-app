@@ -11,11 +11,11 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { db } from '@/class/index';
+import { db } from '@/classes';
 import { Meta } from '@/components';
 import { MainLayout } from '@/components/Templates';
 import { NAV_MAIN_LINKS } from '@/constants/nav';
-import { ResourcePost } from '@/interfaces/index';
+import { ResourcePost } from '@/interfaces';
 import { normalizePost } from '@/utils/normalizers';
 
 const Resources: NextPage = () => {

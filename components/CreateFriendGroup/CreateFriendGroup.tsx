@@ -12,7 +12,7 @@ import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
-import { db } from '@/class/index';
+import { db } from '@/classes';
 import { alphaNumericRegEx } from '@/utils/regEx';
 
 import Dialog from '../Dialog';

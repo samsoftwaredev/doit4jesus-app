@@ -1,3 +1,4 @@
+import { Box } from '@mui/material';
 import Confetti from 'react-confetti';
 
 function getPageDimensions() {
@@ -11,11 +12,12 @@ const useConfetti = (showConfetti: boolean) => {
   return (
     showConfetti && (
       <Confetti
+        style={{ zIndex: 1100, position: 'fixed' }}
         width={width}
         height={height}
-        recycle={false}
-        numberOfPieces={500}
-        gravity={0.2}
+        recycle={true}
+        numberOfPieces={200}
+        gravity={0.1}
       />
     )
   );

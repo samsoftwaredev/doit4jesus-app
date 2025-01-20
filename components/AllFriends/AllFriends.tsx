@@ -2,12 +2,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Box, Button, IconButton, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { getUserProfileAPI } from 'services';
 
-import { db } from '@/class/SupabaseDB';
+import { db } from '@/classes';
 import { useUserContext } from '@/context/UserContext';
+import { FriendProfile } from '@/interfaces';
 import { FriendsDB } from '@/interfaces/databaseTable';
-import { FriendProfile } from '@/interfaces/index';
+import { getUserProfileAPI } from '@/services';
 
 import Dialog from '../Dialog';
 import UserBubble from '../UserBubble';

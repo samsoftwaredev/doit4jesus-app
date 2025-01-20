@@ -6,7 +6,7 @@ import { Box, IconButton, ListItemIcon, Menu, MenuItem } from '@mui/material';
 import { useState } from 'react';
 
 import { useUserContext } from '@/context/UserContext';
-import { EventMessages } from '@/interfaces/index';
+import { EventMessages } from '@/interfaces';
 
 interface Props {
   message: EventMessages;

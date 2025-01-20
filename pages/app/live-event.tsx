@@ -1,10 +1,10 @@
 import { Container, Typography } from '@mui/material';
-import { db, supabase } from 'classes/SupabaseDB';
 import moment from 'moment';
 import type { NextPage } from 'next';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
+import { db, supabase } from '@/classes/SupabaseDB';
 import AppWrapper from '@/components/AppWrapper/AppWrapper';
 import Loading from '@/components/Loading';
 import EventSection from '@/components/Sections/EventSection';

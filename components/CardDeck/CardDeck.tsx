@@ -13,7 +13,7 @@ import {
 import * as React from 'react';
 
 import { StarButton } from '@/components';
-import { CardProps } from '@/interfaces/index';
+import { CardProps } from '@/interfaces';
 import { theme } from '@/styles/mui-overwrite';
 
 interface Props {

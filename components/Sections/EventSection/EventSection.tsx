@@ -4,13 +4,12 @@ import moment from 'moment';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { db, supabase } from '@/class/SupabaseDB';
-import ChatList from '@/components/ChatList';
-import ChatTextbox from '@/components/ChatTextbox/ChatTextbox';
+import { db, supabase } from '@/classes/SupabaseDB';
+import { ChatList, ChatTextbox } from '@/components';
 import { useUserContext } from '@/context/UserContext';
+import { DataEvent, EventMessages, VideoEvent } from '@/interfaces';
 import { Json } from '@/interfaces/database';
 import { EventMessagesDB } from '@/interfaces/databaseTable';
-import { DataEvent, EventMessages, VideoEvent } from '@/interfaces/index';
 import { css } from '@/utils/helpers';
 import { normalizeEventMessages } from '@/utils/normalizers';
 

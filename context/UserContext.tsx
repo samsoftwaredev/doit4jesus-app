@@ -1,5 +1,4 @@
 import { Session } from '@supabase/supabase-js';
-import { db, supabase } from 'classes/SupabaseDB';
 import { useRouter } from 'next/router';
 import {
   Dispatch,
@@ -12,6 +11,7 @@ import {
 } from 'react';
 import { toast } from 'react-toastify';
 
+import { db, supabase } from '@/classes/SupabaseDB';
 import { Loading } from '@/components';
 import { normalizeUserProfile } from '@/utils';
 

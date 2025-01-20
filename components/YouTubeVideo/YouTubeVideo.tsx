@@ -1,6 +1,6 @@
-import { YouTubeClass } from 'classes';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 
+import { YouTubeClass } from '@/classes';
 import { INITIAL_VOLUME } from '@/constants/mysteries';
 import {
   INTERFACE_AUDIO_SEEK,

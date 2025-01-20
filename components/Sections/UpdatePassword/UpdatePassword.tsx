@@ -1,10 +1,10 @@
 import { Button, TextField } from '@mui/material';
-import { db } from 'classes/SupabaseDB';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { Controller, SubmitHandler, useForm, useWatch } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
+import { db } from '@/classes/SupabaseDB';
 import FormErrorText from '@/components/FormErrorText';
 import { NAV_MAIN_LINKS, passwordValidationRules } from '@/constants';
 

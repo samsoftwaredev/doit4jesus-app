@@ -1,7 +1,7 @@
 import { Container, Typography } from '@mui/material';
 import Image from 'next/image';
 
-import { MainLayout } from '@/components/Templates/index';
+import { MainLayout } from '@/components/Templates';
 import ship from '@/public/assets/images/dream/ship.svg';
 
 import styles from './pageNotFound.module.scss';
