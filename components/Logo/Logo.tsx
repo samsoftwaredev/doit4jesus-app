@@ -502,8 +502,11 @@ interface Props {
 }
 
 const Logo = ({ type = 'black' }: Props) => {
-  if (type === 'black') return <BlackCompanyLogo />;
-  return <WhiteCompanyLogo />;
+  return (
+    <span data-testid="logo">
+      {type === 'black' ? <BlackCompanyLogo /> : <WhiteCompanyLogo />}
+    </span>
+  );
 };
 
 export default Logo;

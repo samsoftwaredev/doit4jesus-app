@@ -6,7 +6,7 @@ import Footer from './Footer';
 describe('Footer', () => {
   it('renders the logo', () => {
     render(<Footer />);
-    const logoElement = screen.getByAltText(/logo/i);
+    const logoElement = screen.getByTestId(/logo/i);
     expect(logoElement).toBeInTheDocument();
   });
 
@@ -21,9 +21,9 @@ describe('Footer', () => {
 
   it('renders social media icons', () => {
     render(<Footer />);
-    const facebookIcon = screen.getByLabelText(/facebook/i);
-    const youtubeIcon = screen.getByLabelText(/youtube/i);
-    const instagramIcon = screen.getByLabelText(/instagram/i);
+    const facebookIcon = screen.getByTestId(/facebook/i);
+    const youtubeIcon = screen.getByTestId(/youtube/i);
+    const instagramIcon = screen.getByTestId(/instagram/i);
     expect(facebookIcon).toBeInTheDocument();
     expect(youtubeIcon).toBeInTheDocument();
     expect(instagramIcon).toBeInTheDocument();
