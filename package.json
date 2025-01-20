@@ -14,7 +14,8 @@
     "resend-ts": "supabase gen types typescript --project-id uieyknteyflglukepcdy > supabase/functions/resend/types.ts",
     "db-ts": "npm run fe-ts && npm run resend-ts && npm run db-webhook-ts",
     "prepare": "husky install",
-    "test": "jest"
+    "test": "jest --watch=false",
+    "test:watch": "jest"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
@@ -72,7 +73,8 @@
   },
   "lint-staged": {
     "*.{ts,tsx}": [
-      "npm run lint-stage"
+      "npm run lint-stage",
+      "npm run test"
     ]
   }
 }
