@@ -19,7 +19,7 @@ const App: NextPage = () => {
     const { data, error } = await db
       .getEvents()
       .select('*')
-      .order('started_at', { ascending: true });
+      .order('started_at', { ascending: false });
     if (!error) setEvents(normalizeEvent(data));
     else {
       console.error(error);

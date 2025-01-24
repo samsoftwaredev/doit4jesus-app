@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import moment from 'moment';
 
 import { sessionFriendsKey } from '../constants';
@@ -30,11 +29,11 @@ export const setDateTimeZero = (
 };
 
 export const formatDateDash = (dateString: string | Date): string => {
-  return convertDate(moment(setDateTimeZero(dateString)).format('YYYY-MM-DD'));
+  return moment(setDateTimeZero(dateString)).format('YYYY-MM-DD');
 };
 
 export const formatDateSlash = (dateString: string | Date): string => {
-  return convertDate(moment(setDateTimeZero(dateString)).format('MM/DD/YYYY'));
+  return moment(setDateTimeZero(dateString)).format('MM/DD/YYYY');
 };
 
 export const generateRandomStringId = (length: number) => {
