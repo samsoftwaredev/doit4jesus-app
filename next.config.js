@@ -3,12 +3,23 @@ const path = require('path');
 
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   images: {
-    domains: [
-      'uieyknteyflglukepcdy.supabase.co',
-      'lh3.googleusercontent.com',
-      'i.ytimg.com',
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'uieyknteyflglukepcdy.supabase.co',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.ytimg.com',
+        pathname: '/**',
+      },
     ],
   },
   sassOptions: {
