@@ -1,15 +1,18 @@
 import PauseIcon from '@mui/icons-material/Pause';
 import PlayIcon from '@mui/icons-material/PlayArrow';
 import { CircularProgress, IconButton, Tooltip } from '@mui/material';
+import { track } from '@vercel/analytics';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useAudioContext } from '@/context/AudioContext';
+import { useUserContext } from '@/context/UserContext';
 import { INTERFACE_AUDIO_STATE } from '@/interfaces';
 import { theme } from '@/styles/mui-overwrite';
 
 const audioText = (isPlaying: boolean) => (isPlaying ? 'play' : 'pause');
 
 const AudioPlay = () => {
+  const { user } = useUserContext();
   const { setAudioState, audioState, audioPlayer } = useAudioContext();
   const [buttonState, setButtonState] = useState<INTERFACE_AUDIO_STATE>(
     INTERFACE_AUDIO_STATE.PAUSED,
@@ -21,6 +24,7 @@ const AudioPlay = () => {
         ? INTERFACE_AUDIO_STATE.PAUSED
         : INTERFACE_AUDIO_STATE.PLAYING;
     setAudioState(state);
+    track('PlayRosaryClicked', { userId: user?.userId! });
   };
 
   const toggleText = useCallback(() => {
@@ -38,6 +42,7 @@ const AudioPlay = () => {
       case INTERFACE_AUDIO_STATE.VIDEO_CUED:
         return (
           <CircularProgress
+            data-testid="loading-icon"
             sx={{
               height: '10px',
               width: '10px',
@@ -60,6 +65,7 @@ const AudioPlay = () => {
       <span>
         <IconButton
           color="info"
+          data-testid="play-button"
           disabled={
             audioState === INTERFACE_AUDIO_STATE.BUFFERING ||
             audioPlayer?.audio === undefined

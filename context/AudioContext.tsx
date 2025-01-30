@@ -27,8 +27,8 @@ interface AudioContext {
   setAudioState: Function;
   isAudioMute: boolean;
   toggleIsAudioMute: Function;
-  forwardAudio: MouseEventHandler<HTMLAnchorElement>;
-  backwardAudio: MouseEventHandler<HTMLAnchorElement>;
+  forwardAudio: () => void;
+  backwardAudio: () => void;
   audioPlayer?: INTERFACE_AUDIO_PROPS;
   setAudioPlayer: Dispatch<SetStateAction<INTERFACE_AUDIO_PROPS | undefined>>;
   goToEvent: () => void;
