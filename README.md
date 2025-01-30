@@ -10,6 +10,14 @@ First, run the development server:
 npm run dev
 ```
 
+## Run Tests
+
+To execute all test do:
+
+```bash
+npm run test:watch
+```
+
 ## Get database schema
 
 Generate TS types for supabase DB schema:
