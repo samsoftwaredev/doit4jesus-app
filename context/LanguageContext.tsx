@@ -1,31 +1,43 @@
-import { createContext, useContext, useState } from 'react';
+import enJSON from 'locales/en.json';
+import esJSON from 'locales/es.json';
+import { usePathname } from 'next/navigation';
+import { useRouter } from 'next/router';
+import { createContext, useContext } from 'react';
 
-import { INTERFACE_LANGUAGES } from '@/interfaces';
+import { LANG } from '@/interfaces';
 
 interface LanguageContext {
   /** Unique id of the item */
-  language: INTERFACE_LANGUAGES;
-  setLanguage: Function;
+  t: typeof enJSON | typeof esJSON;
+  lang: LANG;
+  changeLang: Function;
 }
 
 interface Props {
   children: JSX.Element | JSX.Element[];
-  type?: INTERFACE_LANGUAGES;
+  type?: LANG;
 }
 
 const LanguageContext = createContext<LanguageContext | undefined>(undefined);
 
-const LanguageContextProvider = ({
-  children,
-  type = INTERFACE_LANGUAGES.en,
-}: Props) => {
-  const [language, setLanguage] = useState<INTERFACE_LANGUAGES>(type);
+const LanguageContextProvider = ({ children }: Props) => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const { locale } = router;
+  const t = locale === LANG.en ? enJSON : esJSON;
+  const language = locale === LANG.en ? LANG.es : LANG.en;
+
+  const changeLanguage = () => {
+    const newLang = router.locale === LANG.en ? LANG.es : LANG.en;
+    router.push(pathname, pathname, { locale: newLang });
+  };
 
   return (
     <LanguageContext.Provider
       value={{
-        language,
-        setLanguage,
+        t,
+        lang: language,
+        changeLang: changeLanguage,
       }}
     >
       {children}

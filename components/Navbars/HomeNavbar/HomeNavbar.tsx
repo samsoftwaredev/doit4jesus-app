@@ -11,12 +11,16 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
+  MenuItem,
+  Select,
   Toolbar,
 } from '@mui/material';
 import Link from 'next/link';
 import * as React from 'react';
 
 import { NAV_FOOTER_LINKS, NAV_MAIN_LINKS } from '@/constants/nav';
+import { useLanguageContext } from '@/context/LanguageContext';
+import { LANG } from '@/interfaces/index';
 
 import { Logo } from '../..';
 import styles from './homeNavbar.module.scss';
@@ -29,6 +33,7 @@ const drawerWidth = 240;
 
 function HomeNavbar(props: Props) {
   const { window } = props;
+  const { lang, changeLang, t } = useLanguageContext();
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
   const handleDrawerToggle = () => {
@@ -37,22 +42,22 @@ function HomeNavbar(props: Props) {
 
   const navItems = [
     {
-      label: 'About',
+      label: t.aboutPage,
       goTo: NAV_FOOTER_LINKS.about.link,
       sx: { color: '#fff' },
     },
     {
-      label: 'Resources',
+      label: t.resourcesPage,
       goTo: NAV_MAIN_LINKS.resources.link,
       sx: { color: '#fff' },
     },
     {
-      label: 'Why Pray The Rosary?',
+      label: t.whyPraySectionTitle,
       goTo: '/#why-pray-rosary',
       sx: { color: '#fff' },
     },
     {
-      label: 'Log In',
+      label: t.logIn,
       goTo: NAV_MAIN_LINKS.login.link,
       sx: { color: '#fff' },
     },
@@ -103,6 +108,17 @@ function HomeNavbar(props: Props) {
             </Button>
           </Link>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }} />
+          <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
+            <Select
+              sx={{ color: '#fff' }}
+              defaultValue={lang}
+              value={lang}
+              onChange={() => changeLang()}
+            >
+              <MenuItem value={LANG.en}>English</MenuItem>
+              <MenuItem value={LANG.es}>Español</MenuItem>
+            </Select>
+          </Box>
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
             {navItems.map(({ label, goTo, sx }) => (
               <Link key={label} passHref href={goTo}>
@@ -111,6 +127,15 @@ function HomeNavbar(props: Props) {
                 </Button>
               </Link>
             ))}
+            <Select
+              sx={{ color: '#fff' }}
+              defaultValue={lang}
+              value={lang}
+              onChange={() => changeLang()}
+            >
+              <MenuItem value={LANG.en}>English</MenuItem>
+              <MenuItem value={LANG.es}>Español</MenuItem>
+            </Select>
           </Box>
         </Toolbar>
       </AppBar>

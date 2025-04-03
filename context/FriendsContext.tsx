@@ -7,7 +7,7 @@ import {
 } from 'react';
 import { toast } from 'react-toastify';
 
-import { FriendProfile, INTERFACE_LANGUAGES } from '@/interfaces';
+import { FriendProfile, LANG } from '@/interfaces';
 import { getUserProfileAPI } from '@/services';
 
 interface FriendsContext {
@@ -22,7 +22,7 @@ interface FriendsContext {
 
 interface Props {
   children: JSX.Element | JSX.Element[];
-  type?: INTERFACE_LANGUAGES;
+  type?: LANG;
 }
 
 const FriendsContext = createContext<FriendsContext | undefined>(undefined);

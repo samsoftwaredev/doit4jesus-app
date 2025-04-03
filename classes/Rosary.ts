@@ -4,9 +4,9 @@ import {
   ROSARY_LENGTH,
 } from '@/constants/mysteries';
 import {
-  INTERFACE_LANGUAGES,
   INTERFACE_ROSARY_MYSTERIES,
   INTERFACE_ROSARY_STATE,
+  LANG,
 } from '@/interfaces';
 import crossImage from '@/public/assets/images/crucifixion.svg';
 import { capitalizeFirstLetter } from '@/utils';
@@ -31,15 +31,13 @@ class Rosary {
     this.rosaryAudioCover = imageSrc;
   };
 
-  public getAudio = (
-    language: INTERFACE_LANGUAGES = INTERFACE_LANGUAGES.en,
-  ): string => {
+  public getAudio = (language: LANG = LANG.en): string => {
     const mystery = this.mysteryName as INTERFACE_ROSARY_MYSTERIES;
     return ROSARY_AUDIOS[mystery][language];
   };
 
   public getRosaryState = (
-    language: INTERFACE_LANGUAGES = INTERFACE_LANGUAGES.en,
+    language: LANG = LANG.en,
   ): INTERFACE_ROSARY_STATE => {
     const subTitle = `The ${capitalizeFirstLetter(this.mysteryName)} Mysteries`;
     return {

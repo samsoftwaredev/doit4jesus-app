@@ -1,5 +1,6 @@
 import { Box, Container, Grid, Typography } from '@mui/material';
 
+import { useLanguageContext } from '@/context/LanguageContext';
 import { css } from '@/utils/helpers';
 
 import styles from './whyPrayRosary.module.scss';
@@ -23,11 +24,12 @@ const features = [
 ];
 
 const WhyPrayRosary = () => {
+  const { t } = useLanguageContext();
   return (
     <div className={styles.container} id="why-pray-rosary">
       <Container>
         <Typography className={css(styles.title, 'sectionTitle')} variant="h2">
-          Why Pray The Rosary?
+          {t.whyPraySectionTitle}
         </Typography>
         <Grid gap={1} container justifyContent="space-around">
           {features.map(({ title, description }, index) => (

@@ -35,7 +35,7 @@ export enum INTERFACE_VIEW_SIZE {
   MEDIUM = 'md',
 }
 
-export enum INTERFACE_LANGUAGES {
+export enum LANG {
   es = 'es',
   la = 'la',
   en = 'en',

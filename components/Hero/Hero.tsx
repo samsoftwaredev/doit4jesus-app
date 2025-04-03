@@ -3,12 +3,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { NAV_MAIN_LINKS } from '@/constants/nav';
+import { useLanguageContext } from '@/context/LanguageContext';
 import smartPhoneHand from '@/public/assets/images/hero/smartPhoneHand.svg';
 import { css } from '@/utils';
 
 import styles from './hero.module.scss';
 
 const Hero = () => {
+  const { t } = useLanguageContext();
   return (
     <div className={styles.content}>
       <Container maxWidth={false} className={styles.container}>
@@ -17,14 +19,14 @@ const Hero = () => {
             component="h1"
             className={css(styles.title, 'sectionTitle')}
           >
-            Find Peace In The Rosary
+            {t.heroTitle}
           </Typography>
           <Typography
             mb={2}
             component="h5"
             className={css(styles.subTitle, 'sectionSubTitle')}
           >
-            Pray with millions around the world and multiply your blessings
+            {t.headline}
           </Typography>
           <Link
             style={{ padding: '1em 0' }}
@@ -32,7 +34,7 @@ const Hero = () => {
             href={NAV_MAIN_LINKS.signup.link}
           >
             <Button className={styles.cta} variant="contained" size="large">
-              Start Today
+              {t.heroCTA}
             </Button>
           </Link>
         </Box>
