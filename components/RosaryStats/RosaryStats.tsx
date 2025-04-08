@@ -2,9 +2,11 @@ import { Button, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
 
 import { NAV_APP_LINKS } from '@/constants/nav';
+import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
 
 const RosaryStats = () => {
+  const { t } = useLanguageContext();
   const { user } = useUserContext();
   const navigate = useRouter();
 
@@ -15,7 +17,7 @@ const RosaryStats = () => {
   return (
     <>
       <Typography textAlign="center" fontWeight="bold">
-        Rosaries Completed
+        {t.rosariesCompleted}
       </Typography>
       <Typography
         textAlign="center"
@@ -26,7 +28,7 @@ const RosaryStats = () => {
         {user?.stats.rosaryTotalCount}
       </Typography>
       <Button onClick={onClick} fullWidth color="success" variant="outlined">
-        Start Praying
+        {t.startPraying}
       </Button>
     </>
   );

@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 
 import { db } from '@/classes';
 import { NAV_APP_LINKS } from '@/constants/nav';
+import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
 import { FriendProfile } from '@/interfaces';
 import { getUserProfileAPI } from '@/services';
@@ -15,6 +16,7 @@ import Dialog from '../Dialog';
 import HorizontalDivider from '../HorizontalDivider';
 
 const InviteFriend = () => {
+  const { t } = useLanguageContext();
   const { user } = useUserContext();
   const textQR =
     window.location.origin + NAV_APP_LINKS.friendRequest.link + user?.userId;
@@ -73,7 +75,7 @@ const InviteFriend = () => {
   return (
     <>
       <Typography fontWeight="bold" textAlign="center">
-        Number of Friends
+        {t.numberOfFriends}
       </Typography>
       <Typography
         textAlign="center"
@@ -84,15 +86,12 @@ const InviteFriend = () => {
         {friendsProfiles.length}
       </Typography>
       <Button onClick={onOpen} fullWidth color="success" variant="outlined">
-        Invite Friend
+        {t.inviteFriends}
       </Button>
       <Dialog open={isOpen} handleClose={onClose} modalTitle="Invite Friend">
         <Box sx={{ maxWidth: `500px` }}>
-          <Typography mb={1}>
-            We&apos;re gathering a bunch of cool souls to pray the rosary. Who
-            knows better than you?
-          </Typography>
-          <Typography>Ask your friend to scan the code below:</Typography>
+          <Typography mb={1}>{t.inviteFriendsDescription}</Typography>
+          <Typography>{t.scanQRCode}</Typography>
           <Box display="flex" justifyContent="center">
             <Image
               width="200"
@@ -102,7 +101,7 @@ const InviteFriend = () => {
             />
           </Box>
           <HorizontalDivider />
-          <Typography>Share link:</Typography>
+          <Typography>{t.shareLink}</Typography>
           <CopyLinkButton link={textQR} />
         </Box>
       </Dialog>

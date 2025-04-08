@@ -23,7 +23,8 @@ const TodayRosary = () => {
   const todayMystery = rosary.getRosaryState(lang).mystery;
   const [image, setImage] = useState<string>();
   const weekDayNum = dayjs().day();
-  const weekDay = capitalizeFirstLetter(Object.keys(ROSARY_DAYS)[weekDayNum]);
+  const weekDayName = Object.keys(ROSARY_DAYS)[weekDayNum];
+  const weekDay = capitalizeFirstLetter(t[weekDayName as keyof typeof t]);
 
   const getYoutubeVideo = async (language: LANG) => {
     const rosaryId = rosary.getRosaryState(language).mysteryAudio;
@@ -74,10 +75,10 @@ const TodayRosary = () => {
       <Box className={styles.content}>
         <Box>
           <Typography fontSize="small" fontWeight="light">
-            Today&apos;s Rosary - {weekDay}
+            {t.todaysRosary} - {weekDay}
           </Typography>
           <Typography my={2} component="h1" variant="h4">
-            {todayMystery}
+            {t[todayMystery as keyof typeof t]}
           </Typography>
           <Button onClick={goToRosary} color="success" variant="contained">
             {t.prayTodaysRosary}
