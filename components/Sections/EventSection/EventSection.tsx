@@ -32,73 +32,86 @@ const EventSection = ({ videoEvent }: Props) => {
     created_at, deleted_at, donation_amount, event_id, first_name, id, last_name, message, reply_id, updated_at, user_id,
     event_messages_actions(id, likes, flagged, created_at)
     `;
-    const { data, error } = await db
-      .getEventMessages()
-      .select(joinTables)
-      .order('created_at', { ascending: false })
-      .eq('event_id', id);
-    if (!error) {
-      return normalizeEventMessages(data);
-    } else {
+    try {
+      const { data, error } = await db
+        .getEventMessages()
+        .select(joinTables)
+        .order('created_at', { ascending: false })
+        .eq('event_id', id);
+      if (!error) {
+        return normalizeEventMessages(data);
+      } else {
+        throw new Error(error.message);
+      }
+    } catch (error) {
       console.error(error);
       toast.error('Unable to retrieve messages');
     }
   };
 
   const onSendMessage = async (message: string) => {
-    const { error } = await db
-      .getEventMessages()
-      .insert([
-        {
-          message,
-          first_name: user?.firstName,
-          last_name: user?.lastName,
-          event_id: videoEvent.eventId,
-        },
-      ])
-      .select();
-    if (error) {
+    try {
+      const { error } = await db
+        .getEventMessages()
+        .insert([
+          {
+            message,
+            first_name: user?.firstName,
+            last_name: user?.lastName,
+            event_id: videoEvent.eventId,
+          },
+        ])
+        .select();
+      if (error) {
+        throw new Error(error.message);
+      }
+    } catch (error) {
       console.error(error);
       toast.error('Unable to send message');
     }
   };
 
   const subscribeToMessages = async () => {
-    const eventMessages = await supabase
-      .channel(`event-id-${videoEvent.eventId}-messages`)
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'event_messages' },
-        (payload) => {
-          const msgs = messages ? [...messages] : [];
-          const newMessage = payload.new as EventMessagesDB;
-          const normalizedMessages = normalizeEventMessages([newMessage]);
-          if (normalizedMessages[0].eventId !== videoEvent.eventId) return;
+    try {
+      const eventMessages = await supabase
+        .channel(`event-id-${videoEvent.eventId}-messages`)
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'event_messages' },
+          (payload) => {
+            const msgs = messages ? [...messages] : [];
+            const newMessage = payload.new as EventMessagesDB;
+            const normalizedMessages = normalizeEventMessages([newMessage]);
+            if (normalizedMessages[0].eventId !== videoEvent.eventId) return;
 
-          switch (payload.eventType) {
-            case 'INSERT': {
-              msgs.unshift(normalizedMessages[0]);
-              setMessages(msgs);
-              break;
-            }
+            switch (payload.eventType) {
+              case 'INSERT': {
+                msgs.unshift(normalizedMessages[0]);
+                setMessages(msgs);
+                break;
+              }
 
-            case 'UPDATE': {
-              const index = msgs.findIndex(({ id }) => id === newMessage.id);
-              if (index > -1) msgs.splice(index, 1, normalizedMessages[0]);
-              break;
-            }
+              case 'UPDATE': {
+                const index = msgs.findIndex(({ id }) => id === newMessage.id);
+                if (index > -1) msgs.splice(index, 1, normalizedMessages[0]);
+                break;
+              }
 
-            case 'DELETE':
-            default: {
-              const index = msgs.findIndex(({ id }) => id === newMessage.id);
-              if (index > -1) msgs.splice(index, 1);
+              case 'DELETE':
+              default: {
+                const index = msgs.findIndex(({ id }) => id === newMessage.id);
+                if (index > -1) msgs.splice(index, 1);
+              }
             }
-          }
-          setMessages(msgs);
-        },
-      )
-      .subscribe();
-    channel.current = eventMessages;
+            setMessages(msgs);
+          },
+        )
+        .subscribe();
+      channel.current = eventMessages;
+    } catch (error) {
+      console.error(error);
+      toast.error('Unable to subscribe to messages');
+    }
   };
 
   const untrackMessages = async () => {
@@ -114,27 +127,39 @@ const EventSection = ({ videoEvent }: Props) => {
 
   const handleDelete = async (messageId?: string) => {
     if (messageId === undefined) return;
-    const { data, error } = await db
-      .getEventMessages()
-      .update({
-        deleted_at: new Date().toISOString(),
-      })
-      .eq('id', messageId)
-      .select();
-    if (error) toast.error('Unable to delete message');
-    if (data) handleCloseDeleteDialog();
+    try {
+      const { data, error } = await db
+        .getEventMessages()
+        .update({
+          deleted_at: new Date().toISOString(),
+        })
+        .eq('id', messageId)
+        .select();
+      if (error) throw new Error(error.message);
+      if (data) handleCloseDeleteDialog();
+    } catch (error) {
+      console.error(error);
+      toast.error('Unable to delete message');
+    }
   };
 
   const handleEdit = async (messageId: string, newMessage: string) => {
-    const { error } = await db
-      .getEventMessages()
-      .update({
-        message: newMessage,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', messageId)
-      .select();
-    if (error) toast.error('Unable to update message');
+    try {
+      const { error } = await db
+        .getEventMessages()
+        .update({
+          message: newMessage,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', messageId)
+        .select();
+      if (error) {
+        throw new Error(error.message);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error('Unable to update message');
+    }
   };
 
   const handleReport = async (messageId: string) => {
@@ -145,11 +170,18 @@ const EventSection = ({ videoEvent }: Props) => {
   };
 
   const handleLike = async (messageId: string, likes: Json) => {
-    const { error } = await db
-      .getEventMessagesActions()
-      .upsert({ likes, id: messageId })
-      .select();
-    if (error) toast.error('Unable to complete the action.');
+    try {
+      const { error } = await db
+        .getEventMessagesActions()
+        .upsert({ likes, id: messageId })
+        .select();
+      if (error) {
+        throw new Error(error.message);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error('Unable to complete the action.');
+    }
   };
 
   const handleCloseDeleteDialog = () => {

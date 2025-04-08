@@ -6,5 +6,10 @@
   "logIn": "Iniciar sesión",
   "signUp": "Regístrate",
   "heroCTA": "Comienza Hoy",
-  "whyPraySectionTitle": "¿Por qué rezar el Rosario?"
+  "whyPraySectionTitle": "¿Por qué rezar el Rosario?",
+  "prayTodaysRosary": "Reza el Rosario de hoy",
+  "theJoyfulMysteries": "Los Misterios Gozosos",
+  "theSorrowfulMysteries": "Los Misterios Dolorosos",
+  "theGloriousMysteries": "Los Misterios Gloriosos",
+  "theLuminousMysteries": "Los Misterios Luminosos"
 }

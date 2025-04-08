@@ -9,13 +9,14 @@ import { db } from '@/classes/SupabaseDB';
 import { ROSARY_DAYS } from '@/constants/mysteries';
 import { NAV_APP_LINKS } from '@/constants/nav';
 import { useLanguageContext } from '@/context/LanguageContext';
+import { LANG } from '@/interfaces/index';
 import { capitalizeFirstLetter } from '@/utils/helpers';
 
 import Loading from '../Loading';
 import styles from './TodaysRosary.module.scss';
 
 const TodayRosary = () => {
-  const { lang } = useLanguageContext();
+  const { lang, t } = useLanguageContext();
   const [eventURL, setEventURL] = useState('');
   const navigate = useRouter();
   const rosary = new Rosary();
@@ -24,8 +25,8 @@ const TodayRosary = () => {
   const weekDayNum = dayjs().day();
   const weekDay = capitalizeFirstLetter(Object.keys(ROSARY_DAYS)[weekDayNum]);
 
-  const getYoutubeVideo = async () => {
-    const rosaryId = rosary.getRosaryState(lang).mysteryAudio;
+  const getYoutubeVideo = async (language: LANG) => {
+    const rosaryId = rosary.getRosaryState(language).mysteryAudio;
     let { data, error } = await db
       .getYouTubeVideo()
       .select('*')
@@ -47,8 +48,8 @@ const TodayRosary = () => {
     navigate.push(eventURL);
   };
 
-  const init = async () => {
-    const youtube = await getYoutubeVideo();
+  const init = async (language: LANG) => {
+    const youtube = await getYoutubeVideo(language);
     if (youtube) {
       const events = await getEvents(youtube.id);
       if (events) {
@@ -59,7 +60,7 @@ const TodayRosary = () => {
   };
 
   useEffect(() => {
-    init();
+    init(lang);
   }, [lang]);
 
   if (image === undefined) return <Loading isFeature />;
@@ -79,7 +80,7 @@ const TodayRosary = () => {
             {todayMystery}
           </Typography>
           <Button onClick={goToRosary} color="success" variant="contained">
-            Pray Today&apos;s Rosary
+            {t.prayTodaysRosary}
           </Button>
         </Box>
         <Box>
