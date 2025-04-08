@@ -1,4 +1,4 @@
-import { AccountCircle, Logout, Menu as MenuIcon } from '@mui/icons-material';
+import { LanguageRounded, Logout, Menu as MenuIcon } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -7,6 +7,8 @@ import {
   ListItemText,
   Menu,
   MenuItem,
+  Stack,
+  Switch,
   Typography,
 } from '@mui/material';
 import { useRouter } from 'next/router';
@@ -15,7 +17,9 @@ import { useEffect, useState } from 'react';
 import { db, supabase } from '@/classes/SupabaseDB';
 import { Loading } from '@/components';
 import { NAV_APP_LINKS } from '@/constants';
+import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
+import { LANG } from '@/interfaces/index';
 
 import { Logo, UserBubble } from '../..';
 import { AppLayout } from '../../Templates';
@@ -26,6 +30,7 @@ interface Props {
 }
 
 const TopNavbar = ({ handleMenu }: Props) => {
+  const { lang, changeLang } = useLanguageContext();
   const { getProfile } = useUserContext();
   const { user } = useUserContext();
   const navigate = useRouter();
@@ -116,6 +121,18 @@ const TopNavbar = ({ handleMenu }: Props) => {
           </ListItemIcon>
           <ListItemText sx={{ marginLeft: '-5px' }}>
             {NAV_APP_LINKS.account.label}
+          </ListItemText>
+        </MenuItem>
+        <MenuItem>
+          <ListItemIcon>
+            <LanguageRounded fontSize="small" />
+          </ListItemIcon>
+          <ListItemText sx={{ marginLeft: '-5px' }}>
+            <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+              <Typography>EN</Typography>
+              <Switch onChange={() => changeLang()} value={LANG.en === lang} />
+              <Typography>ES</Typography>
+            </Stack>
           </ListItemText>
         </MenuItem>
         <MenuItem sx={{ width: 200, maxWidth: '100%' }} onClick={onLogout}>

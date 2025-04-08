@@ -8,22 +8,24 @@ import { Rosary } from '@/classes/Rosary';
 import { db } from '@/classes/SupabaseDB';
 import { ROSARY_DAYS } from '@/constants/mysteries';
 import { NAV_APP_LINKS } from '@/constants/nav';
+import { useLanguageContext } from '@/context/LanguageContext';
 import { capitalizeFirstLetter } from '@/utils/helpers';
 
 import Loading from '../Loading';
 import styles from './TodaysRosary.module.scss';
 
 const TodayRosary = () => {
+  const { lang } = useLanguageContext();
   const [eventURL, setEventURL] = useState('');
   const navigate = useRouter();
   const rosary = new Rosary();
-  const todayMystery = rosary.getRosaryState().mystery;
+  const todayMystery = rosary.getRosaryState(lang).mystery;
   const [image, setImage] = useState<string>();
   const weekDayNum = dayjs().day();
   const weekDay = capitalizeFirstLetter(Object.keys(ROSARY_DAYS)[weekDayNum]);
 
   const getYoutubeVideo = async () => {
-    const rosaryId = rosary.getRosaryState().mysteryAudio;
+    const rosaryId = rosary.getRosaryState(lang).mysteryAudio;
     let { data, error } = await db
       .getYouTubeVideo()
       .select('*')
@@ -58,7 +60,7 @@ const TodayRosary = () => {
 
   useEffect(() => {
     init();
-  }, []);
+  }, [lang]);
 
   if (image === undefined) return <Loading isFeature />;
 

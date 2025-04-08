@@ -37,7 +37,6 @@ export enum INTERFACE_VIEW_SIZE {
 
 export enum LANG {
   es = 'es',
-  la = 'la',
   en = 'en',
 }
 
