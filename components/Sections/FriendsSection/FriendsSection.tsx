@@ -3,6 +3,7 @@ import { Box, Container, Typography } from '@mui/material';
 import { AllFriends, Card, RosaryLevel, RosaryLevelInfo } from '@/components';
 import FriendApproval from '@/components/FriendApproval';
 import InviteFriend from '@/components/InviteFriend';
+import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
 import { theme } from '@/styles/mui-overwrite';
 import { getCurrentLevel } from '@/utils/levels';
@@ -10,6 +11,7 @@ import { getCurrentLevel } from '@/utils/levels';
 import styles from './FriendsSection.module.scss';
 
 const FriendsSection = () => {
+  const { t } = useLanguageContext();
   const { user } = useUserContext();
   const numRosariesCompleted = user?.stats.rosaryTotalCount ?? 0;
   const currentLevel = getCurrentLevel(numRosariesCompleted);
@@ -29,7 +31,7 @@ const FriendsSection = () => {
               rowGap="26px"
             >
               <Typography fontWeight="bold" mb={1}>
-                Today&apos;s Challenge
+                {t.todaysChallenge}
               </Typography>
               <Typography
                 fontSize="4em"
@@ -49,7 +51,7 @@ const FriendsSection = () => {
                 <span>/1</span>
               </Typography>
               <Typography fontWeight="100">
-                Pray the rosary to complete the today&apos;s challenge.
+                {t.todaysChallengeDescription2}
               </Typography>
             </Box>
           </Card>
@@ -69,13 +71,13 @@ const FriendsSection = () => {
         <div className={styles.UserLevel}>
           <Card>
             <Typography textAlign="center" fontWeight="bold" fontSize="large">
-              Your Level
+              {t.currentLevel}
             </Typography>
             <Box display="flex" flexDirection="column" textAlign="center">
               <RosaryLevel levelNum={currentLevel.levelNum} />
               <RosaryLevelInfo
                 requirement={currentLevel.requirement}
-                label={currentLevel.label}
+                value={currentLevel.value}
               />
             </Box>
           </Card>

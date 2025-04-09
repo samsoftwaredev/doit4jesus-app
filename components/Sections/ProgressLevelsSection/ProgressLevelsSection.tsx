@@ -1,12 +1,14 @@
 import { Alert, Box, Button, LinearProgress, Typography } from '@mui/material';
 import React, { useMemo, useState } from 'react';
 
+import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
 import { getCurrentLevel, levels } from '@/utils/levels';
 
 import { Dialog, RosaryLevel, RosaryLevelInfo } from '../..';
 
 const ProgressLevelsSection = () => {
+  const { t } = useLanguageContext();
   const [isOpenLevels, setIsOpenLevels] = useState(false);
   const { user } = useUserContext();
   const numRosariesCompleted = user?.stats.rosaryTotalCount ?? 0;
@@ -36,9 +38,9 @@ const ProgressLevelsSection = () => {
   return (
     <>
       <Typography fontSize="small" fontWeight="light">
-        Race to Heaven
+        {t.raceToHeaven}
       </Typography>
-      <Typography variant="h4">Rosary Levels</Typography>
+      <Typography variant="h4">{t.rosaryLevels}</Typography>
       <Box
         display="flex"
         flexDirection="column"
@@ -47,9 +49,7 @@ const ProgressLevelsSection = () => {
       >
         <Box mt={2} display="flex" justifyContent="center">
           <Alert sx={{ opacity: 0.8 }} severity="warning">
-            IMPORTANT: If you want to progress faster in levels, pray the Holy
-            Rosary with others; their prayers will also count toward your
-            progress.
+            {t.howToProgressFasterDescription}
           </Alert>
         </Box>
 
@@ -59,19 +59,19 @@ const ProgressLevelsSection = () => {
           justifyContent="space-between"
         >
           <Box display="flex" flexDirection="column" alignItems="center" my={2}>
-            <Typography>Your Level</Typography>
+            <Typography>{t.currentLevel}</Typography>
             <RosaryLevel levelNum={currentLevel.levelNum} />
             <RosaryLevelInfo
+              value={currentLevel.value}
               requirement={currentLevel.requirement}
-              label={currentLevel.label}
             />
           </Box>
           <Box display="flex" flexDirection="column" alignItems="center" my={2}>
-            <Typography>Next Level</Typography>
+            <Typography>{t.nextLevel}</Typography>
             <RosaryLevel levelNum={currentLevel.levelNum + 1} />
             <RosaryLevelInfo
               requirement={nextLevel.requirement}
-              label={nextLevel.label}
+              value={nextLevel.value}
             />
           </Box>
         </Box>
@@ -86,18 +86,18 @@ const ProgressLevelsSection = () => {
 
       <Box display="flex" justifyContent="space-between">
         <Button onClick={onOpenLevels} color="success" variant="outlined">
-          See Levels
+          {t.seeLevels}
         </Button>
       </Box>
 
       <Dialog
-        modalTitle="Rosary Levels"
+        modalTitle={t.rosaryLevels}
         fullWidth
         maxWidth="sm"
         open={isOpenLevels}
         handleClose={onCloseLevels}
       >
-        {levels.map(({ label, requirement }, index) => (
+        {levels.map(({ label, value, requirement }, index) => (
           <Box
             display="flex"
             alignItems="center"
@@ -120,7 +120,7 @@ const ProgressLevelsSection = () => {
                   },
                 }}
               >
-                {label} Level
+                {t[value as keyof typeof t]}
               </Typography>
               <Typography
                 fontWeight="light"
@@ -131,7 +131,7 @@ const ProgressLevelsSection = () => {
                   fontSize: { sm: '0.8em', md: '1em' },
                 }}
               >
-                Complete {requirement} Rosaries
+                {t.complete} {requirement} {t.rosaries}
               </Typography>
             </Box>
           </Box>

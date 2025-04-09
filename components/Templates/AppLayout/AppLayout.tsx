@@ -9,6 +9,7 @@ import React, { useMemo, useState } from 'react';
 
 import Meta from '@/components/Meta';
 import { SideNavbar, TopNavbar } from '@/components/Navbars';
+import { useLanguageContext } from '@/context/LanguageContext';
 import { css } from '@/utils/helpers';
 
 import styles from './AppLayout.module.scss';
@@ -17,28 +18,30 @@ interface Props {
   children: React.ReactNode;
 }
 
-const menuItems = [
-  { url: '/app/dashboard', label: 'Dashboard', icon: <TableChartIcon /> },
-  // { url: "/app/soldiers", label: "Militant Church", icon: <SoldierIcon /> },
-  { url: '/app', label: 'Rosary Mysteries', icon: <GridViewIcon /> },
-  { url: '/app/friends', label: 'Friends', icon: <SoldierIcon /> },
-  // { url: '/app/live-event', label: 'Live Event', icon: <CellTowerIcon /> },
-  // {
-  //   url: "/app/attending-events",
-  //   label: "Attending Events",
-  //   icon: <StarIcon />,
-  // },
-  // TODO: enable confession once module is completed
-  // {
-  //   url: "/app/confession",
-  //   label: "Exam of Conscience",
-  //   icon: <ConfessionIcon />,
-  // },
-  // { url: "/app/settings", label: "Settings", icon: <SettingsIcon /> },
-  // { url: "/app/support", label: "Support", icon: <SupportAgentIcon /> },
-];
-
 const AppLayout = ({ children }: Props) => {
+  const { t } = useLanguageContext();
+
+  const menuItems = [
+    { url: '/app/dashboard', label: t.dashboard, icon: <TableChartIcon /> },
+    // { url: "/app/soldiers", label: "Militant Church", icon: <SoldierIcon /> },
+    { url: '/app', label: t.rosaryMysteries, icon: <GridViewIcon /> },
+    { url: '/app/friends', label: t.friends, icon: <SoldierIcon /> },
+    // { url: '/app/live-event', label: 'Live Event', icon: <CellTowerIcon /> },
+    // {
+    //   url: "/app/attending-events",
+    //   label: "Attending Events",
+    //   icon: <StarIcon />,
+    // },
+    // TODO: enable confession once module is completed
+    // {
+    //   url: "/app/confession",
+    //   label: "Exam of Conscience",
+    //   icon: <ConfessionIcon />,
+    // },
+    // { url: "/app/settings", label: "Settings", icon: <SettingsIcon /> },
+    // { url: "/app/support", label: "Support", icon: <SupportAgentIcon /> },
+  ];
+
   const navigate = useRouter();
   const [drawerOpen, setDrawerOpen] = useState(false);
 

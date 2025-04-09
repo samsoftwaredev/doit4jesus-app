@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { db } from '@/classes';
+import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
 import { FriendProfile } from '@/interfaces';
 import { FriendsDB } from '@/interfaces/databaseTable';
@@ -13,6 +14,7 @@ import Dialog from '../Dialog';
 import UserBubble from '../UserBubble';
 
 const AllFriends = () => {
+  const { t } = useLanguageContext();
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useUserContext();
   const [friendsProfiles, setFriendProfiles] = useState<FriendProfile[]>([]);
@@ -88,10 +90,10 @@ const AllFriends = () => {
   return (
     <>
       <Typography fontWeight="bold" fontSize="large">
-        Friends
+        {t.friends}
       </Typography>
       <Box ml={4}>
-        {friendsProfiles.length === 0 && <>None</>}
+        {friendsProfiles.length === 0 && <>{t.none}</>}
         {friendsProfiles.map((friend) => {
           return (
             <Box
@@ -106,7 +108,7 @@ const AllFriends = () => {
                 userPicture={friend?.pictureUrl ?? ''}
               />
               {friend?.fullName} - {friend?.rosaryCount}{' '}
-              {friend?.rosaryCount === 1 ? 'rosary' : 'rosaries'}
+              {friend?.rosaryCount === 1 ? t.rosary : t.rosaries}
               <IconButton onClick={() => onSelect(friend)}>
                 <DeleteIcon color="error" />
               </IconButton>
@@ -118,15 +120,18 @@ const AllFriends = () => {
         maxWidth="sm"
         open={isOpen}
         handleClose={onClose}
-        modalTitle="Remove Friend"
+        modalTitle={t.removeFriend}
       >
         <Typography my={5}>
-          Are you sure you want to remove {friendSelected?.fullName} as friend?
+          {t.removeFriendDescription.replace(
+            '{{name}}',
+            friendSelected?.fullName || '',
+          )}
         </Typography>
         <Box display="flex" justifyContent="space-between">
-          <Button onClick={onClose}>Cancel</Button>
+          <Button onClick={onClose}>{t.cancel}</Button>
           <Button variant="outlined" color="error" onClick={onEndFriendship}>
-            Delete
+            {t.delete}
           </Button>
         </Box>
       </Dialog>

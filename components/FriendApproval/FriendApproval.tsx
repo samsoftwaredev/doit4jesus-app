@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { db } from '@/classes';
+import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
 import { FriendProfile } from '@/interfaces';
 import { FriendRequestsDB } from '@/interfaces/databaseTable';
@@ -15,6 +16,7 @@ type FriendRequests = {
 } & FriendRequestsDB;
 
 const FriendApproval = () => {
+  const { t } = useLanguageContext();
   const [friends, setFriends] = useState<FriendProfile[]>([]);
   const [friendsIds, setFriendsIds] = useState<FriendRequests[]>([]);
   const { user } = useUserContext();
@@ -78,10 +80,10 @@ const FriendApproval = () => {
   return (
     <>
       <Typography fontWeight="bold" fontSize="large">
-        Friend Requests
+        {t.friendRequest}
       </Typography>
       <Box ml={4}>
-        {friendsIds.length === 0 && <>None</>}
+        {friendsIds.length === 0 && <>{t.none}</>}
         {friendsIds.map((data) => {
           const uuidKey = data.uuid1 === data.friendId ? 'uuid1' : 'uuid2';
           const accepted = data[`${uuidKey}_accepted`];
@@ -106,18 +108,18 @@ const FriendApproval = () => {
                     variant="text"
                     color="success"
                   >
-                    Decline
+                    {t.declineFriendRequest}
                   </Button>
                   <Button
                     onClick={() => onApprove(data)}
                     variant="contained"
                     color="success"
                   >
-                    Approve
+                    {t.approveFriendRequest}
                   </Button>
                 </Box>
               ) : (
-                <Box>(Waiting for approval)</Box>
+                <Box>({t.waitingForApproval})</Box>
               )}
             </Box>
           );

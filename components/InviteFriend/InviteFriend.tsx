@@ -88,7 +88,7 @@ const InviteFriend = () => {
       <Button onClick={onOpen} fullWidth color="success" variant="outlined">
         {t.inviteFriends}
       </Button>
-      <Dialog open={isOpen} handleClose={onClose} modalTitle="Invite Friend">
+      <Dialog open={isOpen} handleClose={onClose} modalTitle={t.inviteFriends}>
         <Box sx={{ maxWidth: `500px` }}>
           <Typography mb={1}>{t.inviteFriendsDescription}</Typography>
           <Typography>{t.scanQRCode}</Typography>

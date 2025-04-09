@@ -1,11 +1,14 @@
 import { Typography } from '@mui/material';
 
+import { useLanguageContext } from '@/context/LanguageContext';
+
 interface Props {
-  label: string;
+  value: string;
   requirement: number;
 }
 
-const RosaryLevelInfo = ({ label, requirement }: Props) => {
+const RosaryLevelInfo = ({ requirement, value }: Props) => {
+  const { t } = useLanguageContext();
   return (
     <>
       <Typography
@@ -20,7 +23,7 @@ const RosaryLevelInfo = ({ label, requirement }: Props) => {
           },
         }}
       >
-        {label} Level
+        {t[value as keyof typeof t]}
       </Typography>
       <Typography
         fontWeight="light"
@@ -30,7 +33,7 @@ const RosaryLevelInfo = ({ label, requirement }: Props) => {
           fontSize: { sm: '0.8em', md: '1em' },
         }}
       >
-        Complete {requirement} Rosaries
+        {t.complete} {requirement} {t.rosaries}
       </Typography>
     </>
   );

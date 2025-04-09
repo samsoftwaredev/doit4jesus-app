@@ -29,20 +29,6 @@ const DashboardSection = () => {
           </Card>
         </div>
 
-        <div className={styles.Donations}>
-          <Card>
-            <Typography fontSize="small" fontWeight="light">
-              Help share the love for the Holy Rosary
-            </Typography>
-            <Typography my={2} component="h1" variant="h4">
-              Wanna become a contributor?
-            </Typography>
-            <Button disabled color="success" variant="outlined">
-              Donate Today
-            </Button>
-          </Card>
-        </div>
-
         <div className={styles.Levels}>
           <Card>
             <ProgressLevelsSection />

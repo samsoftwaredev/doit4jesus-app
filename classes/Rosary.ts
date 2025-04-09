@@ -9,7 +9,6 @@ import {
   LANG,
 } from '@/interfaces';
 import crossImage from '@/public/assets/images/crucifixion.svg';
-import { capitalizeFirstLetter } from '@/utils';
 
 class Rosary {
   private rosaryAudioCover = '';

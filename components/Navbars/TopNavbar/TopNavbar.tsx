@@ -30,7 +30,7 @@ interface Props {
 }
 
 const TopNavbar = ({ handleMenu }: Props) => {
-  const { lang, changeLang } = useLanguageContext();
+  const { lang, changeLang, t } = useLanguageContext();
   const { getProfile } = useUserContext();
   const { user } = useUserContext();
   const navigate = useRouter();
@@ -120,7 +120,7 @@ const TopNavbar = ({ handleMenu }: Props) => {
             />
           </ListItemIcon>
           <ListItemText sx={{ marginLeft: '-5px' }}>
-            {NAV_APP_LINKS.account.label}
+            {t[NAV_APP_LINKS.account.value as keyof typeof t]}
           </ListItemText>
         </MenuItem>
         <MenuItem>
@@ -139,7 +139,7 @@ const TopNavbar = ({ handleMenu }: Props) => {
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>
-          <ListItemText>Logout</ListItemText>
+          <ListItemText>{t.logout}</ListItemText>
         </MenuItem>
       </Menu>
     </Box>

@@ -5,11 +5,13 @@ import { toast } from 'react-toastify';
 import { db, supabase } from '@/classes';
 import { Card, Dialog, Loading } from '@/components';
 import { useAudioContext } from '@/context/AudioContext';
+import { useLanguageContext } from '@/context/LanguageContext';
 import { INTERFACE_AUDIO_STATE } from '@/interfaces';
 
 import styles from './accountSection.module.scss';
 
 const AccountSection = () => {
+  const { t } = useLanguageContext();
   const { setAudioState } = useAudioContext();
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -47,16 +49,16 @@ const AccountSection = () => {
     <>
       <Container className={`container-box ${styles.container}`} maxWidth="sm">
         <Card>
-          <Typography fontSize="2em">My Account</Typography>
+          <Typography fontSize="2em">{t.account}</Typography>
           <Box display="flex" my={2} flexDirection="column">
-            <Typography my={2}>Do you want to delete your account?</Typography>
+            <Typography my={2}>{t.deleteAccountQuestion}</Typography>
             <Button
               sx={{ textAlign: 'right' }}
               onClick={openDialog}
               variant="contained"
               color="error"
             >
-              Delete Account
+              {t.deleteAccount}
             </Button>
           </Box>
         </Card>
@@ -65,17 +67,13 @@ const AccountSection = () => {
         maxWidth="sm"
         open={isOpen}
         handleClose={onClose}
-        modalTitle="Delete Account"
+        modalTitle={t.deleteAccount}
       >
-        <Typography my={5}>
-          Are you sure you want to delete your account? Once you do, you
-          won&apos;t be able to undo this action, and all your data will be
-          permanently deleted.
-        </Typography>
+        <Typography my={5}>{t.deleteAccountConfirmation}</Typography>
         <Box display="flex" justifyContent="space-between">
-          <Button onClick={onClose}>Cancel</Button>
+          <Button onClick={onClose}>{t.cancel}</Button>
           <Button variant="outlined" color="error" onClick={onDelete}>
-            Delete Account
+            {t.deleteAccount}
           </Button>
         </Box>
       </Dialog>

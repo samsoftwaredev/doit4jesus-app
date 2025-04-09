@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { supabase } from '@/classes';
+import { useLanguageContext } from '@/context/LanguageContext';
 import { getCurrentLevel } from '@/utils/levels';
 
 import Loading from '../Loading';
@@ -16,6 +17,7 @@ type UserLeaderboards = {
 };
 
 const Leaderboards = () => {
+  const { t } = useLanguageContext();
   const [isLoading, setIsLoading] = useState(true);
   const [userList, setUserList] = useState<UserLeaderboards[]>();
 
@@ -57,9 +59,9 @@ const Leaderboards = () => {
   return (
     <Box>
       <Typography fontSize="small" fontWeight="light">
-        Top {userList?.length || 10} Members
+        {t.top10warriors}
       </Typography>
-      <Typography variant="h4">Leaderboards</Typography>
+      <Typography variant="h4">{t.leaderboard}</Typography>
       {isLoading ? (
         <Loading isFeature />
       ) : (
@@ -82,7 +84,7 @@ const Leaderboards = () => {
                       {u.firstName} {u.lastName}
                     </Typography>
                     <Typography px={1}>
-                      {u.count} {u.count !== 1 ? 'Rosaries' : 'Rosary'}
+                      {u.count} {u.count !== 1 ? t.rosaries : t.rosary}
                     </Typography>
                   </Box>
 
