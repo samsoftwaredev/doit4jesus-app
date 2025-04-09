@@ -10,7 +10,7 @@
   &:last-child() {
     margin-left: -20em;
   }
-  @media screen and (min-width: $sm) {
+  @media screen and (min-width: $md) {
     display: flex;
   }
 }

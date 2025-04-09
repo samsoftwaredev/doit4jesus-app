@@ -77,6 +77,18 @@ function HomeNavbar(props: Props) {
             </ListItemButton>
           </ListItem>
         ))}
+        <ListItem>
+          <Select
+            sx={{ backgroundColor: 'white', height: '36px', width: '100%' }}
+            variant="outlined"
+            defaultValue={lang}
+            value={lang}
+            onChange={() => changeLang()}
+          >
+            <MenuItem value={LANG.es}>English</MenuItem>
+            <MenuItem value={LANG.en}>Español</MenuItem>
+          </Select>
+        </ListItem>
       </List>
     </Box>
   );
@@ -94,7 +106,7 @@ function HomeNavbar(props: Props) {
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ display: { sm: 'none' } }}
+            sx={{ display: { md: 'none' } }}
           >
             <MenuIcon />
           </IconButton>
@@ -107,19 +119,8 @@ function HomeNavbar(props: Props) {
               <Logo type="white" />
             </Button>
           </Link>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }} />
-          <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
-            <Select
-              sx={{ color: '#fff' }}
-              defaultValue={lang}
-              value={lang}
-              onChange={() => changeLang()}
-            >
-              <MenuItem value={LANG.en}>English</MenuItem>
-              <MenuItem value={LANG.es}>Español</MenuItem>
-            </Select>
-          </Box>
-          <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+          <Box sx={{ flexGrow: 1, display: { sm: 'none', md: 'block' } }} />
+          <Box sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}>
             {navItems.map(({ label, goTo, sx }) => (
               <Link key={label} passHref href={goTo}>
                 <Button key={label} sx={sx}>
@@ -128,13 +129,14 @@ function HomeNavbar(props: Props) {
               </Link>
             ))}
             <Select
-              sx={{ color: '#fff' }}
+              sx={{ backgroundColor: 'white', height: '36px' }}
+              variant="outlined"
               defaultValue={lang}
               value={lang}
               onChange={() => changeLang()}
             >
-              <MenuItem value={LANG.en}>English</MenuItem>
-              <MenuItem value={LANG.es}>Español</MenuItem>
+              <MenuItem value={LANG.es}>English</MenuItem>
+              <MenuItem value={LANG.en}>Español</MenuItem>
             </Select>
           </Box>
         </Toolbar>
@@ -149,7 +151,7 @@ function HomeNavbar(props: Props) {
             keepMounted: true, // Better open performance on mobile.
           }}
           sx={{
-            display: { xs: 'block', sm: 'none' },
+            display: { sm: 'block', md: 'none' },
             '& .MuiDrawer-paper': {
               boxSizing: 'border-box',
               width: drawerWidth,

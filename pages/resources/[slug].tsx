@@ -18,10 +18,12 @@ import { db } from '@/classes';
 import { Loading, Meta, PageNotFound } from '@/components';
 import { MainLayout } from '@/components/Templates';
 import { NAV_MAIN_LINKS } from '@/constants/nav';
+import { useLanguageContext } from '@/context/LanguageContext';
 import { ResourcePost } from '@/interfaces';
 import { normalizePost } from '@/utils';
 
 function ResourcesPost() {
+  const { t } = useLanguageContext();
   const router = useRouter();
   const [article, setArticle] = useState<ResourcePost>();
   const [isLoading, setIsLoading] = useState(true);
@@ -101,7 +103,7 @@ function ResourcesPost() {
             </IconButton>
           ) : (
             <Button variant="contained" onClick={onFinish}>
-              Completed
+              {t.completed}
             </Button>
           )}
         </Grid>
