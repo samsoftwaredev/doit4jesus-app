@@ -25,7 +25,7 @@ export const pageView = {
     component: <LogIn />,
     footer: (
       <>
-        Don't have an account?
+        Don&apos;t have an account?
         <Link passHref href={NAV_MAIN_LINKS.signup.link}>
           <Button>Sign Up</Button>
         </Link>

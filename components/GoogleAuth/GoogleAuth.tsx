@@ -11,28 +11,54 @@ interface Props {
 }
 
 const GoogleAuth = ({ isSignUp }: Props) => {
-  const navigate = useRouter();
-  const onLogin = async (response: CredentialResponse) => {
+  const router = useRouter();
+
+  const handleLoginSuccess = async (response: CredentialResponse) => {
     if (response.credential) {
-      const { error } = await supabase.auth.signInWithIdToken({
-        provider: 'google',
-        token: response.credential,
-      });
-      if (error) toast.error('Fail to authenticate');
+      try {
+        const { error } = await supabase.auth.signInWithIdToken({
+          provider: 'google',
+          token: response.credential,
+        });
+        if (error) {
+          toast.error('Failed to authenticate');
+        } else {
+          toast.success('Login successful');
+          router.push(NAV_APP_LINKS.dashboard.link);
+        }
+      } catch (err) {
+        toast.error('An unexpected error occurred');
+      }
+    } else {
+      toast.error('No credentials received');
     }
   };
 
-  const onSignUp = () => {
-    supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `https://www.doit4jesus.com/app`,
-      },
-    });
-    navigate.push(NAV_APP_LINKS.dashboard.link);
+  const handleSignUp = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin + NAV_APP_LINKS.dashboard.link,
+        },
+      });
+
+      if (error) {
+        toast.error('Failed to sign up');
+      } else {
+        toast.success('Sign-up successful');
+      }
+    } catch (err) {
+      toast.error('Failed to sign up');
+    }
   };
 
-  return <GoogleLogin onSuccess={isSignUp ? onSignUp : onLogin} />;
+  return (
+    <GoogleLogin
+      onSuccess={isSignUp ? handleSignUp : handleLoginSuccess}
+      onError={() => toast.error('Google authentication failed')}
+    />
+  );
 };
 
 export default GoogleAuth;
