@@ -62,6 +62,15 @@ const TodayRosary = () => {
 
   useEffect(() => {
     init(lang);
+
+    const interval = setInterval(
+      () => {
+        init(lang); // Call every 2 minutes
+      },
+      2 * 60 * 1000,
+    ); // 2 minutes in milliseconds
+
+    return () => clearInterval(interval); // Cleanup on unmount
   }, [lang]);
 
   if (image === undefined) return <Loading isFeature />;
