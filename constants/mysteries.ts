@@ -15,7 +15,7 @@ export const ROSARY_MYSTERIES = ['glorious', 'sorrowful', 'joyful', 'luminous'];
 
 export const ROSARY_AUDIOS = {
   glorious: {
-    es: 'FJFYQzDqWiI',
+    es: 'qPpPFubUB2A',
     en: 'F7I4KTiYoOE',
   },
   sorrowful: {
@@ -44,26 +44,3 @@ export const VIEW_SIZE = {
 };
 
 export const INITIAL_VOLUME = 21;
-
-export const BG_AUDIOS = [
-  {
-    id: INTERFACE_BACKGROUND_ITEM.AVE_MARIA,
-    label: 'Ave Maria',
-    audio: '7XO9uLEz2WY',
-  },
-  {
-    id: INTERFACE_BACKGROUND_ITEM.OCEAN_WAVE,
-    label: 'Ocean Waves',
-    audio: 'vPhg6sc1Mk4',
-  },
-  {
-    id: INTERFACE_BACKGROUND_ITEM.LIGHT_PIANO,
-    label: 'Light Piano',
-    audio: 'fOB73qRVGJs',
-  },
-  {
-    id: INTERFACE_BACKGROUND_ITEM.GENTLE_RAIN,
-    label: 'Gentle Rain',
-    audio: 'q76bMs-NwRk',
-  },
-];
