@@ -81,7 +81,7 @@ const TodayRosary = () => {
         className={styles.bg}
         style={{ backgroundImage: `url("${image}")` }}
       />
-      <Box className={styles.content}>
+      <Box className={styles.content} onClick={goToRosary}>
         <Box>
           <Typography fontSize="small" fontWeight="light">
             {t.todaysRosary} - {weekDay}
@@ -89,7 +89,7 @@ const TodayRosary = () => {
           <Typography my={2} component="h1" variant="h4">
             {t[todayMystery as keyof typeof t]}
           </Typography>
-          <Button onClick={goToRosary} color="success" variant="contained">
+          <Button color="success" variant="contained">
             {t.prayTodaysRosary}
           </Button>
         </Box>
