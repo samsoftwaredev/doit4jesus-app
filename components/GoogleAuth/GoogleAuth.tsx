@@ -1,3 +1,5 @@
+import GoogleIcon from '@mui/icons-material/Google';
+import { Button } from '@mui/material';
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import { useRouter } from 'next/router';
 import React from 'react';
@@ -53,9 +55,23 @@ const GoogleAuth = ({ isSignUp }: Props) => {
     }
   };
 
+  if (isSignUp) {
+    return (
+      <Button
+        startIcon={<GoogleIcon />}
+        variant="outlined"
+        color="primary"
+        onClick={handleSignUp}
+      >
+        Sign Up with Google
+      </Button>
+    );
+  }
+
   return (
     <GoogleLogin
-      onSuccess={isSignUp ? handleSignUp : handleLoginSuccess}
+      auto_select={true}
+      onSuccess={handleLoginSuccess}
       onError={() => toast.error('Google authentication failed')}
     />
   );

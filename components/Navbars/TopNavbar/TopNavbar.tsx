@@ -11,6 +11,7 @@ import {
   Switch,
   Typography,
 } from '@mui/material';
+import { googleLogout } from '@react-oauth/google';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
@@ -53,6 +54,7 @@ const TopNavbar = ({ handleMenu }: Props) => {
     // Remove all saved data from sessionStorage
     sessionStorage.clear();
     await db.logOut();
+    googleLogout();
     setIsLoading(false);
   };
 
