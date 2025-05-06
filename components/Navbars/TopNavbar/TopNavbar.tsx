@@ -130,7 +130,11 @@ const TopNavbar = ({ handleMenu }: Props) => {
           <ListItemText sx={{ marginLeft: '-5px' }}>
             <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
               <Typography>EN</Typography>
-              <Switch onChange={() => changeLang()} value={LANG.en === lang} />
+              <Switch
+                onChange={() => changeLang()}
+                value={lang}
+                defaultValue={lang}
+              />
               <Typography>ES</Typography>
             </Stack>
           </ListItemText>

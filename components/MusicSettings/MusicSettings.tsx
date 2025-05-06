@@ -1,13 +1,9 @@
 import SettingsIcon from '@mui/icons-material/Settings';
-import { Tooltip } from '@mui/material';
+import { Box, SwipeableDrawer, Tooltip, Typography } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
 import React from 'react';
 
 import { theme } from '@/styles/mui-overwrite';
-
-const options = ['Settings', 'Rosary Mysteries'];
 
 const MusicSettings = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -17,9 +13,17 @@ const MusicSettings = () => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const toggleDrawer =
+    (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
+      if (
+        event &&
+        event.type === 'keydown' &&
+        ((event as React.KeyboardEvent).key === 'Tab' ||
+          (event as React.KeyboardEvent).key === 'Shift')
+      ) {
+        return;
+      }
+    };
 
   return (
     <>
@@ -38,21 +42,23 @@ const MusicSettings = () => {
         </span>
       </Tooltip>
 
-      <Menu
-        id="rosary-menu"
-        MenuListProps={{
-          'aria-labelledby': 'music-options',
-        }}
-        anchorEl={anchorEl}
+      <SwipeableDrawer
+        anchor={'bottom'}
         open={open}
-        onClose={handleClose}
+        onClose={toggleDrawer(false)}
+        onOpen={toggleDrawer(true)}
       >
-        {options.map((option) => (
-          <MenuItem key={option} onClick={handleClose}>
-            {option}
-          </MenuItem>
-        ))}
-      </Menu>
+        <Box
+          sx={{ width: 'auto' }}
+          role="presentation"
+          onClick={toggleDrawer(false)}
+          onKeyDown={toggleDrawer(false)}
+        >
+          <Typography variant="h6" sx={{ padding: 2 }}>
+            Music Settings
+          </Typography>
+        </Box>
+      </SwipeableDrawer>
     </>
   );
 };

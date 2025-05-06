@@ -2,7 +2,7 @@ import enJSON from 'locales/en.json';
 import esJSON from 'locales/es.json';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useEffect } from 'react';
 
 import { LANG } from '@/interfaces';
 
@@ -31,6 +31,11 @@ const LanguageContextProvider = ({ children }: Props) => {
     const newLang = router.locale === LANG.en ? LANG.es : LANG.en;
     router.push(pathname, pathname, { locale: newLang });
   };
+
+  useEffect(() => {
+    const newLang = router.locale === LANG.es ? LANG.es : LANG.en;
+    router.push(pathname, pathname, { locale: newLang });
+  }, [pathname]);
 
   return (
     <LanguageContext.Provider
