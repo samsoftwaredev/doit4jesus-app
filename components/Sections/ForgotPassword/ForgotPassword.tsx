@@ -5,12 +5,14 @@ import { toast } from 'react-toastify';
 
 import { db } from '@/classes/SupabaseDB';
 import FormErrorText from '@/components/FormErrorText';
+import { useLanguageContext } from '@/context/LanguageContext';
 
 interface IFormInputs {
   email: string;
 }
 
 const ForgotPassword = () => {
+  const { t } = useLanguageContext();
   const [isLoading, setIsLoading] = useState(false);
   const { handleSubmit, control } = useForm<IFormInputs>({
     mode: 'onChange',
@@ -37,7 +39,7 @@ const ForgotPassword = () => {
         control={control}
         rules={{ required: true }}
         render={({ field }) => (
-          <TextField fullWidth placeholder="Email" {...field} />
+          <TextField fullWidth placeholder={t.email} {...field} />
         )}
       />
       <FormErrorText control={control} name="email" />
@@ -48,7 +50,7 @@ const ForgotPassword = () => {
         type="submit"
         variant="contained"
       >
-        Reset Password
+        {t.resetPassword}
       </Button>
     </form>
   );

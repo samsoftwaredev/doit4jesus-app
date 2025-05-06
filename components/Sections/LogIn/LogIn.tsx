@@ -9,6 +9,7 @@ import { db, supabase } from '@/classes/SupabaseDB';
 import { GoogleAuth, HorizontalDivider } from '@/components';
 import FormErrorText from '@/components/FormErrorText';
 import { NAV_APP_LINKS, NAV_MAIN_LINKS } from '@/constants/nav';
+import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
 
 interface IFormInputs {
@@ -18,6 +19,7 @@ interface IFormInputs {
 
 const LogIn = () => {
   const router = useRouter();
+  const { t } = useLanguageContext();
   const [isLoading, setIsLoading] = useState(false);
   const { getProfile } = useUserContext();
   const { handleSubmit, control } = useForm<IFormInputs>({
@@ -66,7 +68,7 @@ const LogIn = () => {
         control={control}
         rules={{ required: true }}
         render={({ field }) => (
-          <TextField fullWidth placeholder="Email" {...field} />
+          <TextField fullWidth placeholder={t.email} {...field} />
         )}
       />
       <FormErrorText control={control} name="email" />
@@ -78,7 +80,7 @@ const LogIn = () => {
           <TextField
             fullWidth
             type="password"
-            placeholder="Password"
+            placeholder={t.password}
             {...field}
           />
         )}
@@ -91,11 +93,11 @@ const LogIn = () => {
         type="submit"
         variant="contained"
       >
-        Log In
+        {t.logIn}
       </Button>
       <Link passHref href={NAV_MAIN_LINKS.forgotPassword.link}>
         <Button fullWidth sx={{ marginTop: '1em' }}>
-          Forgot password?
+          {t.forgotPassword}
         </Button>
       </Link>
     </FormControl>

@@ -7,9 +7,11 @@ import { Meta } from '@/components';
 import { MainLayout } from '@/components/Templates';
 import { NAV_APP_LINKS } from '@/constants';
 import { pageView } from '@/constants/register';
+import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
 
 const ForgotPassword: NextPage = () => {
+  const { t } = useLanguageContext();
   const navigate = useRouter();
   const { user } = useUserContext();
   const isAuth = !!user;

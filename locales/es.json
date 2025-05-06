@@ -79,5 +79,17 @@
   "account": "Mi Cuenta",
   "deleteAccount": "Eliminar Cuenta",
   "deleteAccountConfirmation": "¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer y perderás todos tus datos.",
-  "deleteAccountQuestion": "¿Estás seguro de que deseas eliminar tu cuenta?"
+  "deleteAccountQuestion": "¿Estás seguro de que deseas eliminar tu cuenta?",
+  "email": "Correo Electrónico",
+  "password": "Contraseña",
+  "confirmPassword": "Confirmar Contraseña",
+  "name": "Nombre",
+  "firstName": "Nombre",
+  "lastName": "Apellido",
+  "forgotPassword": "¿Olvidaste tu contraseña?",
+  "or": "O",
+  "resetPassword": "Restablecer Contraseña",
+  "male": "Hombre",
+  "female": "Mujer",
+  "selectGender": "Selecciona tu género"
 }

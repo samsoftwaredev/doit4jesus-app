@@ -79,5 +79,17 @@
   "account": "My Account",
   "deleteAccount": "Delete Account",
   "deleteAccountConfirmation": "Do you want to delete your account? This action cannot be undone and all your data will be lost.",
-  "deleteAccountQuestion": "Are you sure you want to delete your account?"
+  "deleteAccountQuestion": "Are you sure you want to delete your account?",
+  "email": "Email",
+  "password": "Password",
+  "confirmPassword": "Confirm Password",
+  "name": "Name",
+  "firstName": "First Name",
+  "lastName": "Last Name",
+  "forgotPassword": "Forgot Password?",
+  "or": "OR",
+  "resetPassword": "Reset Password",
+  "male": "Male",
+  "female": "Female",
+  "selectGender": "Select Gender"
 }

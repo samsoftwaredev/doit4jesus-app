@@ -17,6 +17,7 @@ import { toast } from 'react-toastify';
 import { db } from '@/classes/SupabaseDB';
 import FormErrorText from '@/components/FormErrorText';
 import { passwordValidationRules } from '@/constants';
+import { useLanguageContext } from '@/context/LanguageContext';
 import virginMaryLetter from '@/public/assets/images/art/virginMaryLetter.jpeg';
 import { emailRegEx, nameRegEx } from '@/utils';
 
@@ -36,6 +37,7 @@ interface IFormInputs {
 }
 
 const SignUp = () => {
+  const { t } = useLanguageContext();
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccessfulSigUp, setIsSuccessfulSigUp] = useState(false);
   const { handleSubmit, control } = useForm<IFormInputs>({
@@ -128,7 +130,7 @@ const SignUp = () => {
           },
         }}
         render={({ field }) => (
-          <TextField fullWidth placeholder="First Name" {...field} />
+          <TextField fullWidth placeholder={t.firstName} {...field} />
         )}
       />
       <FormErrorText
@@ -155,7 +157,7 @@ const SignUp = () => {
           },
         }}
         render={({ field }) => (
-          <TextField fullWidth placeholder="Last Name" {...field} />
+          <TextField fullWidth placeholder={t.lastName} {...field} />
         )}
       />
       <FormErrorText fieldName="Last name" name="lastName" control={control} />
@@ -174,7 +176,7 @@ const SignUp = () => {
           },
         }}
         render={({ field }) => (
-          <TextField fullWidth placeholder="Email" {...field} />
+          <TextField fullWidth placeholder={t.email} {...field} />
         )}
       />
       <FormErrorText control={control} name="email" />
@@ -186,7 +188,7 @@ const SignUp = () => {
           <TextField
             fullWidth
             type="password"
-            placeholder="Password"
+            placeholder={t.password}
             {...field}
           />
         )}
@@ -194,7 +196,7 @@ const SignUp = () => {
       <FormErrorText name="password" control={control} />
       <PasswordValidator password={password} />
       <Box my={1}>
-        <FormLabel id="gender">Select Gender:</FormLabel>
+        <FormLabel id="gender">{t.selectGender}:</FormLabel>
         <Controller
           name="genderMale"
           control={control}
@@ -227,7 +229,7 @@ const SignUp = () => {
           type="submit"
           variant="contained"
         >
-          {isLoading ? 'Loading...' : 'Sign Up'}
+          {isLoading ? 'Loading...' : t.signUp}
         </Button>
       </Box>
     </FormControl>
