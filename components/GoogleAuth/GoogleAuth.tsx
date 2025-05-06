@@ -8,6 +8,8 @@ import { toast } from 'react-toastify';
 import { supabase } from '@/classes';
 import { NAV_APP_LINKS } from '@/constants/nav';
 
+import { handleLoginSuccess } from './GoogleAuth.tools';
+
 interface Props {
   isSignUp: boolean;
 }
@@ -15,25 +17,10 @@ interface Props {
 const GoogleAuth = ({ isSignUp }: Props) => {
   const router = useRouter();
 
-  const handleLoginSuccess = async (response: CredentialResponse) => {
-    if (response.credential) {
-      try {
-        const { error } = await supabase.auth.signInWithIdToken({
-          provider: 'google',
-          token: response.credential,
-        });
-        if (error) {
-          toast.error('Failed to authenticate');
-        } else {
-          toast.success('Login successful');
-          router.push(NAV_APP_LINKS.dashboard.link);
-        }
-      } catch (err) {
-        toast.error('An unexpected error occurred');
-      }
-    } else {
-      toast.error('No credentials received');
-    }
+  const onLogin = (response: CredentialResponse) => {
+    handleLoginSuccess(response, () => {
+      router.push(NAV_APP_LINKS.dashboard.link);
+    });
   };
 
   const handleSignUp = async () => {
@@ -70,8 +57,9 @@ const GoogleAuth = ({ isSignUp }: Props) => {
 
   return (
     <GoogleLogin
+      useOneTap
       auto_select={true}
-      onSuccess={handleLoginSuccess}
+      onSuccess={onLogin}
       onError={() => toast.error('Google authentication failed')}
     />
   );
