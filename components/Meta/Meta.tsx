@@ -9,6 +9,8 @@ interface Props {
 const Meta = ({ pageTitle = COMPANY.name }: Props) => {
   return (
     <Head>
+      <link rel="manifest" href="/site.webmanifest" />
+      <meta name="theme-color" content="#ffffff" />
       <title>{pageTitle} - Pray the Holy Rosary Together</title>
       <meta
         name="description"
