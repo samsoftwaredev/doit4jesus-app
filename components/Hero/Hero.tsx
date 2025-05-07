@@ -12,10 +12,16 @@ import styles from './hero.module.scss';
 const Hero = () => {
   const { t } = useLanguageContext();
   return (
-    <div className={styles.content}>
-      <Container maxWidth={false} className={styles.container}>
+    <section className={styles.content} aria-labelledby="hero-title">
+      <Container
+        maxWidth={false}
+        className={styles.container}
+        component="div"
+        role="banner"
+      >
         <Box className={styles.header}>
           <Typography
+            id="hero-title"
             component="h1"
             className={css(styles.title, 'sectionTitle')}
           >
@@ -23,7 +29,7 @@ const Hero = () => {
           </Typography>
           <Typography
             mb={2}
-            component="h5"
+            component="p"
             className={css(styles.subTitle, 'sectionSubTitle')}
           >
             {t.headline}
@@ -33,7 +39,12 @@ const Hero = () => {
             passHref
             href={NAV_MAIN_LINKS.signup.link}
           >
-            <Button className={styles.cta} variant="contained" size="large">
+            <Button
+              className={styles.cta}
+              variant="contained"
+              size="large"
+              aria-label={t.heroCTA}
+            >
               {t.heroCTA}
             </Button>
           </Link>
@@ -41,11 +52,12 @@ const Hero = () => {
         <Image
           className={styles.image}
           src={smartPhoneHand}
-          alt="Hand holding phone"
+          alt={'Hand holding phone'}
+          priority
         />
       </Container>
-      <div className={styles.imageBottomGradient} />
-    </div>
+      <div className={styles.imageBottomGradient} aria-hidden="true" />
+    </section>
   );
 };
 

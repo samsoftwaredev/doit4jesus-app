@@ -1,6 +1,5 @@
 import { LanguageRounded, Logout, Menu as MenuIcon } from '@mui/icons-material';
 import {
-  Box,
   Button,
   IconButton,
   ListItemIcon,
@@ -50,7 +49,6 @@ const TopNavbar = ({ handleMenu }: Props) => {
 
   const onLogout = async () => {
     setIsLoading(true);
-    // Remove all saved data from sessionStorage
     sessionStorage.clear();
     await db.logOut();
     googleLogout();
@@ -79,20 +77,26 @@ const TopNavbar = ({ handleMenu }: Props) => {
   }
 
   return (
-    <Box
-      sx={{
+    <nav
+      aria-label="Top navigation bar"
+      style={{
         display: 'flex',
         justifyContent: 'space-between',
         width: '100%',
       }}
     >
-      <IconButton className={styles.topNavbarMenu} onClick={handleMenu}>
+      <IconButton
+        className={styles.topNavbarMenu}
+        onClick={handleMenu}
+        aria-label="Open menu"
+      >
         <MenuIcon />
       </IconButton>
       <Button
         disableRipple
         className={styles.topNavbarLogo}
         onClick={goToDashboard}
+        aria-label="Go to dashboard"
       >
         <Logo type="white" />
       </Button>
@@ -103,6 +107,7 @@ const TopNavbar = ({ handleMenu }: Props) => {
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}
         disableRipple
+        aria-label="Open user menu"
       >
         <Typography className={styles.userName} fontWeight="bold" pr={2}>
           {user?.firstName} {user?.lastName}
@@ -113,7 +118,11 @@ const TopNavbar = ({ handleMenu }: Props) => {
         />
       </IconButton>
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-        <MenuItem sx={{ width: 200, maxWidth: '100%' }} onClick={onViewProfile}>
+        <MenuItem
+          sx={{ width: 200, maxWidth: '100%' }}
+          onClick={onViewProfile}
+          aria-label="View profile"
+        >
           <ListItemIcon sx={{ paddingLeft: '5px' }}>
             <UserBubble
               userPicture={user?.pictureUrl}
@@ -124,7 +133,7 @@ const TopNavbar = ({ handleMenu }: Props) => {
             {t[NAV_APP_LINKS.account.value as keyof typeof t]}
           </ListItemText>
         </MenuItem>
-        <MenuItem>
+        <MenuItem aria-label="Change language">
           <ListItemIcon>
             <LanguageRounded fontSize="small" />
           </ListItemIcon>
@@ -135,19 +144,24 @@ const TopNavbar = ({ handleMenu }: Props) => {
                 onChange={() => changeLang()}
                 value={lang}
                 defaultValue={lang}
+                aria-label="Toggle language"
               />
               <Typography>ES</Typography>
             </Stack>
           </ListItemText>
         </MenuItem>
-        <MenuItem sx={{ width: 200, maxWidth: '100%' }} onClick={onLogout}>
+        <MenuItem
+          sx={{ width: 200, maxWidth: '100%' }}
+          onClick={onLogout}
+          aria-label="Log out"
+        >
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>
           <ListItemText>{t.logout}</ListItemText>
         </MenuItem>
       </Menu>
-    </Box>
+    </nav>
   );
 };
 

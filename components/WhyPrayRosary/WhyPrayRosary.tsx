@@ -26,20 +26,39 @@ const features = [
 const WhyPrayRosary = () => {
   const { t } = useLanguageContext();
   return (
-    <div className={styles.container} id="why-pray-rosary">
+    <section
+      className={styles.container}
+      id="why-pray-rosary"
+      aria-labelledby="why-pray-rosary-title"
+    >
       <Container>
-        <Typography className={css(styles.title, 'sectionTitle')} variant="h2">
+        <Typography
+          id="why-pray-rosary-title"
+          className={css(styles.title, 'sectionTitle')}
+          variant="h2"
+        >
           {t.whyPraySectionTitle}
         </Typography>
         <Grid gap={1} container justifyContent="space-around">
           {features.map(({ title, description }, index) => (
-            <Grid item key={title} md={3} textAlign="center">
+            <Grid
+              item
+              key={title}
+              md={3}
+              textAlign="center"
+              component="article"
+              aria-labelledby={`feature-title-${index}`}
+            >
               <Box
                 id={styles[`arc-${index + 1}` as string]}
                 className={styles.arcs}
               >
                 <Typography className={styles.step}>{index + 1}</Typography>
-                <Typography variant="h5" gutterBottom>
+                <Typography
+                  id={`feature-title-${index}`}
+                  variant="h5"
+                  gutterBottom
+                >
                   {title}
                 </Typography>
                 <Box>
@@ -56,7 +75,7 @@ const WhyPrayRosary = () => {
           ))}
         </Grid>
       </Container>
-    </div>
+    </section>
   );
 };
 
