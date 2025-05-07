@@ -109,6 +109,7 @@ const AllFriends = () => {
               />
               {friend?.fullName} - {friend?.rosaryCount}{' '}
               {friend?.rosaryCount === 1 ? t.rosary : t.rosaries}
+              <Box display="flex" flexGrow={1} />
               <IconButton onClick={() => onSelect(friend)}>
                 <DeleteIcon color="error" />
               </IconButton>

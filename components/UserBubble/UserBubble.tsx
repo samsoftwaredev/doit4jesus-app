@@ -1,7 +1,7 @@
 import { AccountCircle } from '@mui/icons-material';
 import { Box, Tooltip } from '@mui/material';
-import Image from 'next/image';
 
+import SafeImage from '../SafeImage';
 import styles from './userBubble.module.scss';
 
 interface Props {
@@ -18,7 +18,7 @@ const UserBubble = ({ userName, userPicture, isOnline = false }: Props) => {
       <Tooltip title={tooltipMessage}>
         <span>
           {userPicture ? (
-            <Image
+            <SafeImage
               width={20}
               height={20}
               src={userPicture}

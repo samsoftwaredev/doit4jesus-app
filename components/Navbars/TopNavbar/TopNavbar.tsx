@@ -20,7 +20,6 @@ import { Loading } from '@/components';
 import { NAV_APP_LINKS } from '@/constants';
 import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
-import { LANG } from '@/interfaces/index';
 
 import { Logo, UserBubble } from '../..';
 import { AppLayout } from '../../Templates';

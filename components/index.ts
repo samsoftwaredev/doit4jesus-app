@@ -46,6 +46,7 @@ export { default as AllFriends } from './AllFriends';
 export { default as ErrorPage } from './ErrorPage';
 export { default as CopyLinkButton } from './CopyLinkButton';
 export { default as ChatList } from './ChatList';
+export { default as SafeImage } from './SafeImage';
 
 export * from './Navbars';
 export * from './Fields';
