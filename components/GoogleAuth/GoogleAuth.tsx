@@ -1,5 +1,5 @@
 import GoogleIcon from '@mui/icons-material/Google';
-import { Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import { useRouter } from 'next/router';
 import React from 'react';
@@ -56,12 +56,20 @@ const GoogleAuth = ({ isSignUp }: Props) => {
   }
 
   return (
-    <GoogleLogin
-      useOneTap
-      auto_select={true}
-      onSuccess={onLogin}
-      onError={() => toast.error('Google authentication failed')}
-    />
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <GoogleLogin
+        useOneTap
+        auto_select={true}
+        onSuccess={onLogin}
+        onError={() => toast.error('Google authentication failed')}
+      />
+    </Box>
   );
 };
 

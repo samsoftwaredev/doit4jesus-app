@@ -65,7 +65,7 @@ function HomeNavbar(props: Props) {
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
-      <Button href={NAV_MAIN_LINKS.home.link}>
+      <Button disableRipple href={NAV_MAIN_LINKS.home.link}>
         <Logo type="black" />
       </Button>
       <Divider />
@@ -115,9 +115,7 @@ function HomeNavbar(props: Props) {
             passHref
             href={NAV_MAIN_LINKS.home.link}
           >
-            <Button>
-              <Logo type="white" />
-            </Button>
+            <Logo type="white" />
           </Link>
           <Box sx={{ flexGrow: 1, display: { sm: 'none', md: 'block' } }} />
           <Box sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}>
