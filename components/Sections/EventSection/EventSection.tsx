@@ -2,6 +2,7 @@ import { Box, Card, Typography } from '@mui/material';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import moment from 'moment';
 import { useEffect, useRef, useState } from 'react';
+import Markdown from 'react-markdown';
 import { toast } from 'react-toastify';
 
 import { db, supabase } from '@/classes';
@@ -206,41 +207,41 @@ const EventSection = ({ videoEvent }: Props) => {
   if (isLoading) return null;
 
   return (
-    <Box className={styles.container}>
-      <Box className="video">
+    <Box component="section" className={styles.container}>
+      <Box className="video" sx={{ aspectRatio: '16/9', width: '100%' }}>
         <iframe
           frameBorder={0} // don't remove this attribute
         />
       </Box>
-      <Card className={css(styles.eventDetails, 'appCard')}>
+      <Card component="article" className={css(styles.eventDetails, 'appCard')}>
         <Box display="flex" gap={1} className={styles.eventHeader}>
-          <Typography component="h1">{videoEvent.title}</Typography>
-          {/* <Box sx={{ flexGrow: 1 }} />
-          <Button
-            color="secondary"
-            variant="contained"
-            startIcon={<Favorite />}
-          >
-            Like
-          </Button>
-          <Button color="secondary" variant="contained" startIcon={<Reply />}>
-            Share
-          </Button>
-          <Button
-            color="success"
-            variant="contained"
-            startIcon={<AttachMoney />}
-          >
-            Donate
-          </Button> */}
+          <Typography component="h1" variant="h2">
+            {videoEvent.title}
+          </Typography>
         </Box>
-        <Typography textAlign="right" fontSize="small">
+        <Typography
+          component="time"
+          dateTime={videoEvent.startedAt}
+          textAlign="right"
+          fontSize="small"
+        >
           {moment(videoEvent.startedAt).fromNow()}
         </Typography>
-        <Typography fontWeight="light">{videoEvent.description}</Typography>
+        <Typography fontWeight="light" component="div">
+          <Markdown>{videoEvent.description}</Markdown>
+        </Typography>
       </Card>
-      <Card className={css(styles.eventDetails, 'appCard')}>
-        <Typography fontWeight="bold" component="h4" variant="h4">
+      <Card
+        component="section"
+        aria-labelledby="prayers-heading"
+        className={css(styles.eventDetails, 'appCard')}
+      >
+        <Typography
+          id="prayers-heading"
+          fontWeight="bold"
+          component="h2"
+          variant="h4"
+        >
           <span>{numberOfPrayers > 1 ? numberOfPrayers : null} Prayers</span>
         </Typography>
         <Box mb={3}>
