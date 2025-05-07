@@ -219,12 +219,7 @@ const EventSection = ({ videoEvent }: Props) => {
             {videoEvent.title}
           </Typography>
         </Box>
-        <Typography
-          component="time"
-          dateTime={videoEvent.startedAt}
-          textAlign="right"
-          fontSize="small"
-        >
+        <Typography textAlign="right" fontSize="small">
           {moment(videoEvent.startedAt).fromNow()}
         </Typography>
         <Typography fontWeight="light" component="div">
