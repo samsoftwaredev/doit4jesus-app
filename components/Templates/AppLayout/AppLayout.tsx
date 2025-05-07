@@ -1,7 +1,5 @@
-import CellTowerIcon from '@mui/icons-material/CellTower';
 import GridViewIcon from '@mui/icons-material/GridView';
 import SoldierIcon from '@mui/icons-material/MilitaryTech';
-import ConfessionIcon from '@mui/icons-material/PsychologyAlt';
 import TableChartIcon from '@mui/icons-material/TableChart';
 import { Box, Typography } from '@mui/material';
 import { useRouter } from 'next/router';

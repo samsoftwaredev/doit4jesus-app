@@ -79,14 +79,14 @@ function HomeNavbar(props: Props) {
         ))}
         <ListItem>
           <Select
-            sx={{ backgroundColor: 'white', height: '36px', width: '100%' }}
+            sx={{ height: '36px', width: '100%' }}
             variant="outlined"
             defaultValue={lang}
             value={lang}
             onChange={() => changeLang()}
           >
-            <MenuItem value={LANG.es}>English</MenuItem>
-            <MenuItem value={LANG.en}>Español</MenuItem>
+            <MenuItem value={LANG.es}>🇺🇸 English</MenuItem>
+            <MenuItem value={LANG.en}>🇪🇸 Español</MenuItem>
           </Select>
         </ListItem>
       </List>
@@ -129,14 +129,21 @@ function HomeNavbar(props: Props) {
               </Link>
             ))}
             <Select
-              sx={{ backgroundColor: 'white', height: '36px' }}
+              sx={{
+                color: 'white',
+                height: '36px',
+                border: '1px solid white',
+                '.MuiSelect-icon': {
+                  color: 'white', // Makes the caret (dropdown arrow) white
+                },
+              }}
               variant="outlined"
               defaultValue={lang}
               value={lang}
               onChange={() => changeLang()}
             >
-              <MenuItem value={LANG.es}>English</MenuItem>
-              <MenuItem value={LANG.en}>Español</MenuItem>
+              <MenuItem value={LANG.es}>🇺🇸 English</MenuItem>
+              <MenuItem value={LANG.en}>🇪🇸 Español</MenuItem>
             </Select>
           </Box>
         </Toolbar>

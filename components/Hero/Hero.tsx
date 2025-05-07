@@ -23,6 +23,7 @@ const Hero = () => {
           <Typography
             id="hero-title"
             component="h1"
+            variant="h3" // Use Material-UI's responsive typography
             className={css(styles.title, 'sectionTitle')}
           >
             {t.heroTitle}
@@ -30,6 +31,7 @@ const Hero = () => {
           <Typography
             mb={2}
             component="p"
+            variant="body1" // Use responsive body text
             className={css(styles.subTitle, 'sectionSubTitle')}
           >
             {t.headline}
