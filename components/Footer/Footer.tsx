@@ -15,7 +15,7 @@ const Footer = () => {
 
   return (
     <footer className={styles.container}>
-      <Container maxWidth={false}>
+      <Container maxWidth="lg">
         <Box className={styles.logo} aria-label="Website Logo">
           <Logo />
         </Box>
@@ -70,26 +70,31 @@ const Footer = () => {
               {NAV_FOOTER_LINKS.about.label}
             </Button>
           </Link>
+          |
           <Link passHref href={NAV_FOOTER_LINKS.resources.link}>
             <Button className={styles.resources}>
               {NAV_FOOTER_LINKS.resources.label}
             </Button>
           </Link>
+          |
           <Link passHref href={NAV_FOOTER_LINKS.contact.link}>
             <Button className={styles.contact}>
               {NAV_FOOTER_LINKS.contact.label}
             </Button>
           </Link>
+          |
           <Link passHref href={NAV_FOOTER_LINKS.termsOfService.link}>
             <Button className={styles.termsOfService}>
               {NAV_FOOTER_LINKS.termsOfService.label}
             </Button>
           </Link>
+          |
           <Link passHref href={NAV_FOOTER_LINKS.privacyPolicy.link}>
             <Button className={styles.privacyPolicy}>
               {NAV_FOOTER_LINKS.privacyPolicy.label}
             </Button>
           </Link>
+          |
           <Link passHref href={NAV_MAIN_LINKS.login.link}>
             <Button className={styles.login}>
               {NAV_MAIN_LINKS.login.label}
