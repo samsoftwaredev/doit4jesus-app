@@ -32,6 +32,25 @@ export const ROSARY_AUDIOS = {
   },
 };
 
+export const ROSARY_AUDIOS_SHORT = {
+  glorious: {
+    es: 'nuWJgIvcoxY',
+    en: 'Wn0GSZPMc7w',
+  },
+  sorrowful: {
+    es: 'LCJ-FB4S4EU',
+    en: 'nE77xS3aRjc',
+  },
+  joyful: {
+    es: '7INHyxWpKVs',
+    en: '4fYI7CMRpkw',
+  },
+  luminous: {
+    es: 'X-hFsQkuTnI',
+    en: 'SYSEUI4y1rw',
+  },
+};
+
 export const ROSARY_LENGTH = {
   short: 'short',
   medium: 'medium',

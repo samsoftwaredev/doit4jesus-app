@@ -17,7 +17,7 @@ const AllEventSection = ({ events }: Props) => {
   if (events === null) return <p>No events</p>;
 
   return (
-    <Container className="container-box" maxWidth="md">
+    <Container className="container-box" maxWidth="lg">
       <Box className={styles.container}>
         {events.map(
           ({ title, description, startedAt, slug, pictureUrl }, index) => (
@@ -48,11 +48,7 @@ const AllEventSection = ({ events }: Props) => {
                 )}
               >
                 <CardContent>
-                  <Typography
-                    component="div"
-                    variant="h5"
-                    className={styles.title}
-                  >
+                  <Typography variant="h4" className={styles.title}>
                     {title}
                   </Typography>
                   <Typography
