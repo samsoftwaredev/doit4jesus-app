@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 
 import {
-  CallToAction, // RosaryWeapon,
+  CallToAction,
   Community,
   Features,
   Hero,
@@ -14,7 +14,6 @@ import { MainLayout } from '@/components/Templates';
 const Home: NextPage = () => {
   return (
     <MainLayout>
-      <Meta />
       <Hero />
       <HowItWorks />
       <Features />

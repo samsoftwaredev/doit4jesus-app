@@ -19,6 +19,8 @@ import '@/styles/global.scss';
 import { theme } from '@/styles/mui-overwrite';
 import '@/styles/normalize.css';
 
+import { Meta } from '../components';
+
 const googleKey = process.env.NEXT_PUBLIC_GOOGLE_AUTH_KEY!;
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
@@ -26,6 +28,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 
   return (
     <>
+      <Meta />
       <SpeedInsights />
       <UserContextProvider>
         <GoogleOAuthProvider clientId={googleKey}>
