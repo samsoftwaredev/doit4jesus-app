@@ -47,6 +47,7 @@ export { default as ErrorPage } from './ErrorPage';
 export { default as CopyLinkButton } from './CopyLinkButton';
 export { default as ChatList } from './ChatList';
 export { default as SafeImage } from './SafeImage';
+export { default as HowItWorks } from './HowItWorks';
 
 export * from './Navbars';
 export * from './Fields';

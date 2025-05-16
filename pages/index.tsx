@@ -5,6 +5,7 @@ import {
   Community,
   Features,
   Hero,
+  HowItWorks,
   Meta,
   WhyPrayRosary,
 } from '@/components';
@@ -15,6 +16,7 @@ const Home: NextPage = () => {
     <MainLayout>
       <Meta />
       <Hero />
+      <HowItWorks />
       <Features />
       {/* <RosaryWeapon /> */}
       <Community />
