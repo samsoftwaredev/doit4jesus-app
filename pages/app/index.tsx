@@ -7,18 +7,21 @@ import AppWrapper from '@/components/AppWrapper';
 import Loading from '@/components/Loading';
 import AllEventSection from '@/components/Sections/AllEventSection';
 import { AppLayout } from '@/components/Templates';
-import { DataEvent } from '@/interfaces';
+import { useLanguageContext } from '@/context/LanguageContext';
+import { DataEvent, LANG } from '@/interfaces';
 import { normalizeEvent } from '@/utils';
 
 const App: NextPage = () => {
+  const { lang } = useLanguageContext();
   const [events, setEvents] = useState<DataEvent[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const getEvents = async () => {
+  const getEvents = async (lang: LANG) => {
     setIsLoading(true);
     const { data, error } = await db
       .getEvents()
       .select('*')
+      .or(`language.eq.${lang},language.is.null`)
       .order('started_at', { ascending: false });
     if (!error) setEvents(normalizeEvent(data));
     else {
@@ -29,8 +32,8 @@ const App: NextPage = () => {
   };
 
   useEffect(() => {
-    getEvents();
-  }, []);
+    getEvents(lang);
+  }, [lang]);
 
   return (
     <AppLayout>
