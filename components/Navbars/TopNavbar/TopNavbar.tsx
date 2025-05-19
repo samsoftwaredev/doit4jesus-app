@@ -19,6 +19,7 @@ import { Loading } from '@/components';
 import { NAV_APP_LINKS } from '@/constants';
 import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
+import { LANG } from '@/interfaces';
 
 import { Logo, UserBubble } from '../..';
 import { AppLayout } from '../../Templates';
@@ -142,8 +143,8 @@ const TopNavbar = ({ handleMenu }: Props) => {
               <Typography>EN</Typography>
               <Switch
                 onChange={() => changeLang()}
+                defaultChecked={lang === LANG.es}
                 value={lang}
-                defaultValue={lang}
                 aria-label="Toggle language"
               />
               <Typography>ES</Typography>

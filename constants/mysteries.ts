@@ -15,20 +15,20 @@ export const ROSARY_MYSTERIES = ['glorious', 'sorrowful', 'joyful', 'luminous'];
 
 export const ROSARY_AUDIOS = {
   glorious: {
-    es: 'qPpPFubUB2A',
-    en: 'F7I4KTiYoOE',
+    es: 'F7I4KTiYoOE',
+    en: 'qPpPFubUB2A',
   },
   sorrowful: {
-    es: 'hjZCpxnkEFA',
-    en: 'ZVxA-2qfykQ',
+    es: 'ZVxA-2qfykQ',
+    en: 'hjZCpxnkEFA',
   },
   joyful: {
-    es: 'jmpdz27YAgg',
-    en: 'if85VqzxHYg',
+    es: 'if85VqzxHYg',
+    en: 'jmpdz27YAgg',
   },
   luminous: {
-    es: 'rozmRSvZuhs',
-    en: 'z0gJ_J4BKeo',
+    es: 'z0gJ_J4BKeo',
+    en: 'rozmRSvZuhs',
   },
 };
 
