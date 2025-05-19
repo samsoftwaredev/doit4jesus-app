@@ -3,6 +3,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Box, Typography } from '@mui/material';
 
 import { minPasswordLength } from '@/constants/global';
+import { useLanguageContext } from '@/context/LanguageContext';
 import { digitRegEx, specialCharsRegEx } from '@/utils';
 
 interface Props {
@@ -22,21 +23,22 @@ const PasswordValidator = ({
   confirmPassword,
   comparePasswords = false,
 }: Props) => {
+  const { t } = useLanguageContext();
   const lengthIsValid = {
     regEx: password.length >= minPasswordLength,
-    text: 'Has 8 characters or more',
+    text: t.hasAtLeast8Characters,
   };
   const hasSpecialCharacters = {
     regex: specialCharsRegEx.test(password),
-    text: 'Has special characters',
+    text: t.hasSpecialCharacter,
   };
   const hasNumbersCharacters = {
     regex: digitRegEx.test(password),
-    text: 'Has numbers',
+    text: t.hasNumber,
   };
   const passwordMatch = {
     regex: password !== '' && password === confirmPassword,
-    text: 'Password match',
+    text: t.hasPasswordMatch,
   };
 
   if (comparePasswords) {
@@ -63,7 +65,7 @@ const PasswordValidator = ({
   }
   return (
     <Box py={3}>
-      <Typography fontSize="small">Your password must have:</Typography>
+      <Typography fontSize="small">{t.yourPasswordMustHave}</Typography>
       <Typography>
         <ValidationCheck isValid={lengthIsValid.regEx} />
         {lengthIsValid.text}

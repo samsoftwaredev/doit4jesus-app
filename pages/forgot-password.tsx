@@ -1,7 +1,7 @@
 import { Box, Container, Typography } from '@mui/material';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { Meta } from '@/components';
 import { MainLayout } from '@/components/Templates';
@@ -11,10 +11,12 @@ import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
 
 const ForgotPassword: NextPage = () => {
-  const { t } = useLanguageContext();
+  const { lang } = useLanguageContext() as { lang: keyof typeof pageView };
   const navigate = useRouter();
   const { user } = useUserContext();
   const isAuth = !!user;
+
+  const pageLanguage = useMemo(() => pageView[lang], [lang]);
 
   useEffect(() => {
     // if user is auth, navigate user to application
@@ -28,14 +30,14 @@ const ForgotPassword: NextPage = () => {
       <Meta pageTitle="ForgotPassword" />
       <Container maxWidth="xs">
         <Typography mt={3} variant="h4" component="h1">
-          {pageView.forgotPassword.title}
+          {pageLanguage.forgotPassword.title}
         </Typography>
         <Typography variant="body1" component="p">
-          {pageView.forgotPassword.header}
+          {pageLanguage.forgotPassword.header}
         </Typography>
-        <Box my={2}>{pageView.forgotPassword?.component}</Box>
+        <Box my={2}>{pageLanguage.forgotPassword?.component}</Box>
         <Typography textAlign="center" variant="body1" component="p">
-          {pageView.forgotPassword.footer}
+          {pageLanguage.forgotPassword.footer}
         </Typography>
       </Container>
     </MainLayout>

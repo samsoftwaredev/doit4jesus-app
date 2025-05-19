@@ -25,7 +25,7 @@ const LanguageContextProvider = ({ children }: Props) => {
   const pathname = usePathname();
   const { locale } = router;
   const t = locale === LANG.en ? enJSON : esJSON;
-  const language = locale === LANG.en ? LANG.es : LANG.en;
+  const language = locale === LANG.en ? LANG.en : LANG.es;
 
   const changeLanguage = () => {
     const newLang = router.locale === LANG.en ? LANG.es : LANG.en;

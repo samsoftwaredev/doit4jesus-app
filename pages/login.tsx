@@ -1,15 +1,17 @@
 import { Box, Container, Typography } from '@mui/material';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { Meta } from '@/components';
 import { MainLayout } from '@/components/Templates';
 import { NAV_APP_LINKS } from '@/constants';
 import { pageView } from '@/constants/register';
+import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
 
 const Login: NextPage = () => {
+  const { lang } = useLanguageContext() as { lang: keyof typeof pageView };
   const navigate = useRouter();
   const { user } = useUserContext();
   const isAuth = !!user;
@@ -19,6 +21,8 @@ const Login: NextPage = () => {
     if (isAuth) navigate.push(NAV_APP_LINKS.dashboard.link);
   }, []);
 
+  const pageLanguage = useMemo(() => pageView[lang], [lang]);
+
   if (isAuth) return null;
 
   return (
@@ -26,12 +30,12 @@ const Login: NextPage = () => {
       <Meta pageTitle="Register" />
       <Container maxWidth="xs">
         <Typography mt={3} variant="h4" component="h1">
-          {pageView.logIn.title}
+          {pageLanguage.logIn.title}
         </Typography>
-        <Typography component="p">{pageView.logIn.header}</Typography>
-        <Box my={2}>{pageView.logIn?.component}</Box>
+        <Typography component="p">{pageLanguage.logIn.header}</Typography>
+        <Box my={2}>{pageLanguage.logIn?.component}</Box>
         <Typography textAlign="center" component="p">
-          {pageView.logIn.footer}
+          {pageLanguage.logIn.footer}
         </Typography>
       </Container>
     </MainLayout>

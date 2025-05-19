@@ -140,8 +140,8 @@ function HomeNavbar(props: Props) {
               value={lang}
               onChange={() => changeLang()}
             >
-              <MenuItem value={LANG.es}>🇺🇸 English</MenuItem>
-              <MenuItem value={LANG.en}>🇪🇸 Español</MenuItem>
+              <MenuItem value={LANG.en}>🇺🇸 English</MenuItem>
+              <MenuItem value={LANG.es}>🇪🇸 Español</MenuItem>
             </Select>
           </Box>
         </Toolbar>

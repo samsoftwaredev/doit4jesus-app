@@ -1,12 +1,13 @@
 import { Box, Container, Typography } from '@mui/material';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { Meta } from '@/components';
 import { MainLayout } from '@/components/Templates';
 import { NAV_APP_LINKS } from '@/constants';
 import { pageView } from '@/constants/register';
+import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
 
 /**
@@ -15,9 +16,11 @@ import { useUserContext } from '@/context/UserContext';
  */
 
 const Register: NextPage = () => {
+  const { lang } = useLanguageContext() as { lang: keyof typeof pageView };
   const navigate = useRouter();
   const { user } = useUserContext();
   const isAuth = !!user;
+  const pageLanguage = useMemo(() => pageView[lang], [lang]);
 
   useEffect(() => {
     // if user is auth, navigate user to application
@@ -31,14 +34,14 @@ const Register: NextPage = () => {
       <Meta pageTitle="Register" />
       <Container maxWidth="xs">
         <Typography mt={3} variant="h4" component="h1">
-          {pageView.signUp.title}
+          {pageLanguage.signUp.title}
         </Typography>
         <Typography variant="body1" component="p">
-          {pageView.signUp.header}
+          {pageLanguage.signUp.header}
         </Typography>
-        <Box my={2}>{pageView.signUp?.component}</Box>
+        <Box my={2}>{pageLanguage.signUp?.component}</Box>
         <Typography textAlign="center" variant="body1" component="p">
-          {pageView.signUp.footer}
+          {pageLanguage.signUp.footer}
         </Typography>
       </Container>
     </MainLayout>

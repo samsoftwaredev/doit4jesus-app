@@ -97,11 +97,10 @@ const SignUp = () => {
           />
         </div>
         <Typography my={2} textAlign="center" variant="h5">
-          Check Your Inbox
+          {t.checkYourEmail}
         </Typography>
         <Typography mb={3} textAlign="center">
-          A verification email is on the way! <br />
-          If it doesn&apos;t arrive, check your spam folder.
+          {t.checkYourEmailDescription}
         </Typography>
       </>
     );
@@ -118,15 +117,15 @@ const SignUp = () => {
           required: true,
           pattern: {
             value: nameRegEx,
-            message: 'Invalid name',
+            message: t.errorInvalidFirstName,
           },
           minLength: {
             value: 1,
-            message: 'The first name is too short',
+            message: t.errorFirstNameIsTooShort,
           },
           maxLength: {
             value: 100,
-            message: 'The first name exceed max length',
+            message: t.errorLastNameIsTooLong,
           },
         }}
         render={({ field }) => (
@@ -145,15 +144,15 @@ const SignUp = () => {
           required: true,
           pattern: {
             value: nameRegEx,
-            message: 'Invalid name',
+            message: t.errorInvalidLastName,
           },
           minLength: {
             value: 1,
-            message: 'The last name is too short',
+            message: t.errorLastNameIsTooShort,
           },
           maxLength: {
             value: 100,
-            message: 'The last name exceed max length',
+            message: t.errorLastNameIsTooLong,
           },
         }}
         render={({ field }) => (
@@ -168,11 +167,11 @@ const SignUp = () => {
           required: true,
           pattern: {
             value: emailRegEx,
-            message: 'Invalid email address',
+            message: t.errorInvalidEmail,
           },
           maxLength: {
             value: 100,
-            message: 'The email exceed max length',
+            message: t.errorEmailIsTooLong,
           },
         }}
         render={({ field }) => (
@@ -209,14 +208,18 @@ const SignUp = () => {
                 flexDirection: 'row',
                 justifyContent: 'space-around',
               }}
-              defaultValue="male"
+              defaultValue={t.male}
               {...field}
             >
-              <FormControlLabel value={true} control={<Radio />} label="Male" />
+              <FormControlLabel
+                value={true}
+                control={<Radio />}
+                label={t.male}
+              />
               <FormControlLabel
                 value={false}
                 control={<Radio />}
-                label="Female"
+                label={t.female}
               />
             </RadioGroup>
           )}
@@ -229,7 +232,7 @@ const SignUp = () => {
           type="submit"
           variant="contained"
         >
-          {isLoading ? 'Loading...' : t.signUp}
+          {isLoading ? t.loading : t.signUp}
         </Button>
       </Box>
     </FormControl>

@@ -14,11 +14,11 @@ const Meta = ({ pageTitle = COMPANY.name }: Props) => {
       <title>{pageTitle} - Pray the Holy Rosary Together</title>
       <meta
         name="description"
-        content="Join the DoIt4Jesus app to pray the Holy Rosary as a community of faith. Strengthen spiritual bonds, fight evil, and bring comfort to souls in purgatory through prayer."
+        content="Join DoIt4Jesus, a Catholic prayer app that unites people in real-time Rosary prayer. Grow spiritually through community and faith."
       />
       <meta
         name="keywords"
-        content="Holy Rosary, Christian prayer app, community prayer, DoIt4Jesus, spiritual community, comfort souls, prayer group, Catholic app"
+        content="Rosary app, Catholic prayer, pray together, spiritual growth, Christian community, DoIt4Jesus, do it for Jesus, prayer app, faith-based app"
       />
       <meta
         property="og:title"
