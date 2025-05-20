@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { db } from '@/classes/SupabaseDB';
 import FormErrorText from '@/components/FormErrorText';
 import { NAV_MAIN_LINKS, passwordValidationRules } from '@/constants';
+import { useLanguageContext } from '@/context/LanguageContext';
 
 import { PasswordValidator } from '../..';
 
@@ -16,6 +17,7 @@ interface IFormInputs {
 }
 
 const UpdatePassword = () => {
+  const { t } = useLanguageContext();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const { handleSubmit, control, reset } = useForm<IFormInputs>({
@@ -42,12 +44,12 @@ const UpdatePassword = () => {
         toast.error(error.message);
       } else {
         router.push(NAV_MAIN_LINKS.login.link);
-        toast.success('Password was updated');
+        toast.success(t.passwordUpdated);
         reset();
       }
       setIsLoading(false);
     } else {
-      toast.warning('Passwords do not match. Please confirm your password.');
+      toast.warning(t.passwordDontMatchDescription);
     }
   };
 
@@ -61,7 +63,7 @@ const UpdatePassword = () => {
           <TextField
             fullWidth
             type="password"
-            placeholder="Password"
+            placeholder={t.password}
             {...field}
           />
         )}
@@ -75,7 +77,7 @@ const UpdatePassword = () => {
           <TextField
             fullWidth
             type="password"
-            placeholder="Confirm Password"
+            placeholder={t.confirmPassword}
             {...field}
           />
         )}
@@ -97,7 +99,7 @@ const UpdatePassword = () => {
         type="submit"
         variant="contained"
       >
-        Update Password
+        {t.updatePassword}
       </Button>
     </form>
   );

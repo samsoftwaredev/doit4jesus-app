@@ -13,10 +13,9 @@ import { toast } from 'react-toastify';
 
 import { db, supabase } from '@/classes/SupabaseDB';
 import { Loading } from '@/components';
+import { NAV_MAIN_LINKS } from '@/constants';
+import { User } from '@/interfaces';
 import { normalizeUserProfile } from '@/utils';
-
-import { NAV_MAIN_LINKS } from '../constants';
-import { User } from '../interfaces';
 
 interface UserContext {
   user: User | null | undefined;

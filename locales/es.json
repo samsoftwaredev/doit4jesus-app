@@ -109,5 +109,9 @@
   "errorLastNameIsTooLong": "El apellido es demasiado largo",
   "errorEmailIsTooLong": "El correo electrónico es demasiado largo",
   "checkYourEmail": "Verifica tu correo electrónico",
-  "checkYourEmailDescription": "Revisa tu bandeja de entrada para un correo electrónico de verificación. Si no lo ves, revisa tu carpeta de spam."
+  "checkYourEmailDescription": "Revisa tu bandeja de entrada para un correo electrónico de verificación. Si no lo ves, revisa tu carpeta de spam.",
+  "updatePassword": "Actualizar Contraseña",
+  "updatePasswordDescription": "Introduce una nueva contraseña para restablecer la contraseña de tu cuenta. Te la pediremos cada vez que inicies sesión.",
+  "passwordUpdated": "Contraseña actualizada con éxito",
+  "passwordDontMatchDescription": "Las contraseñas no coinciden. Por favor, confirma tu contraseña."
 }

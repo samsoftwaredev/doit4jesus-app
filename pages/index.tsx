@@ -14,6 +14,7 @@ import { MainLayout } from '@/components/Templates';
 const Home: NextPage = () => {
   return (
     <MainLayout>
+      <Meta />
       <Hero />
       <HowItWorks />
       <Features />

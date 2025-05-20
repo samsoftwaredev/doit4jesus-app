@@ -109,5 +109,9 @@
   "errorLastNameIsTooLong": "Last name is too long",
   "errorEmailIsTooLong": "Email is too long",
   "checkYourEmail": "Check Your Email Inbox",
-  "checkYourEmailDescription": "A verification email is on the way! \n If it doesn't arrive, check your spam folder."
+  "checkYourEmailDescription": "A verification email is on the way! \n If it doesn't arrive, check your spam folder.",
+  "updatePassword": "Update Password",
+  "updatePasswordDescription": "Enter a new password to reset your account password. We will ask for this password whenever you log in.",
+  "passwordUpdated": "Password updated successfully!",
+  "passwordDontMatchDescription": "Passwords do not match. Please confirm your password."
 }

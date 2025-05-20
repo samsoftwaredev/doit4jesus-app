@@ -3,10 +3,8 @@ import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo } from 'react';
 
-import { Meta } from '@/components';
-import { MainLayout } from '@/components/Templates';
-import { NAV_APP_LINKS } from '@/constants';
-import { pageView } from '@/constants/register';
+import { MainLayout, Meta } from '@/components';
+import { NAV_APP_LINKS, pageView } from '@/constants';
 import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
 
