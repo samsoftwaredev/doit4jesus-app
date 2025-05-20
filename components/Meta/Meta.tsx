@@ -11,7 +11,7 @@ const Meta = ({ pageTitle = COMPANY.name }: Props) => {
     <Head>
       <link rel="manifest" href="/site.webmanifest" />
       <meta name="theme-color" content="#ffffff" />
-      <title>{pageTitle} - DoiIt4Jesus</title>
+      <title>{pageTitle} - DoIt4Jesus</title>
       <meta
         name="description"
         content="Join DoIt4Jesus, a Catholic prayer app that unites people in real-time Rosary prayer. Grow spiritually through community and faith."
