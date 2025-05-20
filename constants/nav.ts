@@ -18,6 +18,7 @@ export const NAV_MAIN_LINKS = {
   home: { link: '/', label: 'Home', value: 'home' },
   login: { link: '/login', label: 'Login', value: 'login' },
   signup: { link: '/sign-up', label: 'Sign Up', value: 'signup' },
+  register: { link: '/register', label: 'Register', value: 'register' },
   resources: { link: '/resources', label: 'Resources', value: 'resources' },
   forgotPassword: {
     link: '/forgot-password',

@@ -20,18 +20,21 @@ import '@/styles/global.scss';
 import { theme } from '@/styles/mui-overwrite';
 import '@/styles/normalize.css';
 
+import { NAV_APP_LINKS, NAV_MAIN_LINKS } from '../constants';
+
 const googleKey = process.env.NEXT_PUBLIC_GOOGLE_AUTH_KEY!;
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   const [hideMusicPlayer, setHideMusicPlayer] = useState(true);
   const { pathname } = useRouter();
+  const authPaths =
+    pathname.includes(NAV_APP_LINKS.app.link) ||
+    pathname.includes(NAV_MAIN_LINKS.login.link) ||
+    pathname.includes(NAV_MAIN_LINKS.signup.link) ||
+    pathname.includes(NAV_MAIN_LINKS.register.link) ||
+    pathname.includes(NAV_MAIN_LINKS.forgotPassword.link);
 
-  if (
-    pathname.includes('/app') ||
-    pathname.includes('/login') ||
-    pathname.includes('/sign-up') ||
-    pathname.includes('/forgot-password')
-  ) {
+  if (authPaths) {
     return (
       <>
         <SpeedInsights />
