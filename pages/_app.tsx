@@ -26,20 +26,40 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   const [hideMusicPlayer, setHideMusicPlayer] = useState(true);
   const { pathname } = useRouter();
 
-  if (!pathname.includes('/app')) {
+  if (
+    pathname.includes('/app') ||
+    pathname === '/login' ||
+    pathname === '/sign-up' ||
+    pathname === '/forgot-password'
+  ) {
     return (
       <>
         <SpeedInsights />
-        <GoogleOAuthProvider clientId={googleKey}>
-          <StyledEngineProvider injectFirst>
-            <ThemeProvider theme={theme}>
-              <LanguageContextProvider>
-                <Component {...pageProps} />
-                <Analytics />
-              </LanguageContextProvider>
-            </ThemeProvider>
-          </StyledEngineProvider>
-        </GoogleOAuthProvider>
+        <UserContextProvider>
+          <GoogleOAuthProvider clientId={googleKey}>
+            <StyledEngineProvider injectFirst>
+              <ThemeProvider theme={theme}>
+                <LanguageContextProvider>
+                  <AudioContextProvider
+                    hideMusicPlayer={hideMusicPlayer}
+                    setHideMusicPlayer={setHideMusicPlayer}
+                  >
+                    <PresenceContextProvider>
+                      <StatsContextProvider>
+                        <FriendsContextProvider>
+                          <ToastContainer autoClose={5000} />
+                          <Component {...pageProps} />
+                          <Analytics />
+                          <MusicPlayer />
+                        </FriendsContextProvider>
+                      </StatsContextProvider>
+                    </PresenceContextProvider>
+                  </AudioContextProvider>
+                </LanguageContextProvider>
+              </ThemeProvider>
+            </StyledEngineProvider>
+          </GoogleOAuthProvider>
+        </UserContextProvider>
       </>
     );
   }
@@ -47,31 +67,16 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
     <>
       <SpeedInsights />
-      <UserContextProvider>
-        <GoogleOAuthProvider clientId={googleKey}>
-          <StyledEngineProvider injectFirst>
-            <ThemeProvider theme={theme}>
-              <LanguageContextProvider>
-                <AudioContextProvider
-                  hideMusicPlayer={hideMusicPlayer}
-                  setHideMusicPlayer={setHideMusicPlayer}
-                >
-                  <PresenceContextProvider>
-                    <StatsContextProvider>
-                      <FriendsContextProvider>
-                        <ToastContainer autoClose={5000} />
-                        <Component {...pageProps} />
-                        <Analytics />
-                        <MusicPlayer />
-                      </FriendsContextProvider>
-                    </StatsContextProvider>
-                  </PresenceContextProvider>
-                </AudioContextProvider>
-              </LanguageContextProvider>
-            </ThemeProvider>
-          </StyledEngineProvider>
-        </GoogleOAuthProvider>
-      </UserContextProvider>
+      <GoogleOAuthProvider clientId={googleKey}>
+        <StyledEngineProvider injectFirst>
+          <ThemeProvider theme={theme}>
+            <LanguageContextProvider>
+              <Component {...pageProps} />
+              <Analytics />
+            </LanguageContextProvider>
+          </ThemeProvider>
+        </StyledEngineProvider>
+      </GoogleOAuthProvider>
     </>
   );
 };
