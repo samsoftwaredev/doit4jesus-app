@@ -28,9 +28,9 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 
   if (
     pathname.includes('/app') ||
-    pathname === '/login' ||
-    pathname === '/sign-up' ||
-    pathname === '/forgot-password'
+    pathname.includes('/login') ||
+    pathname.includes('/sign-up') ||
+    pathname.includes('/forgot-password')
   ) {
     return (
       <>
