@@ -27,7 +27,7 @@ const Login: NextPage = () => {
 
   return (
     <MainLayout>
-      <Meta pageTitle="Register" />
+      <Meta pageTitle="Log In" />
       <Container maxWidth="xs">
         <Typography mt={3} variant="h4" component="h1">
           {pageLanguage.logIn.title}

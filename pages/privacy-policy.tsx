@@ -10,7 +10,7 @@ const PrivacyPolicy: NextPage = () => {
   const appName = COMPANY.nameAbbr;
   return (
     <MainLayout>
-      <Meta pageTitle="Register" />
+      <Meta pageTitle="Privacy Policy" />
       <Container maxWidth="lg">
         <Typography mt={3} variant="h4" component="h1">
           Privacy Policy

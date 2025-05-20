@@ -14,7 +14,7 @@ import { MainLayout } from '@/components/Templates';
 const Home: NextPage = () => {
   return (
     <MainLayout>
-      <Meta />
+      <Meta pageTitle="Pray the Rosary" />
       <Hero />
       <HowItWorks />
       <Features />

@@ -7,7 +7,7 @@ import { MainLayout } from '@/components/Templates';
 const Contact: NextPage = () => {
   return (
     <MainLayout>
-      <Meta pageTitle="Contact" />
+      <Meta pageTitle="Contact Us" />
       <ContactSection />
     </MainLayout>
   );

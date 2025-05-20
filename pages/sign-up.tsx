@@ -26,7 +26,7 @@ const Register: NextPage = () => {
 
   return (
     <MainLayout>
-      <Meta pageTitle="Register" />
+      <Meta pageTitle="Sign Up" />
       <Container maxWidth="xs">
         <Typography mt={3} variant="h4" component="h1">
           {pageLanguage.signUp.title}

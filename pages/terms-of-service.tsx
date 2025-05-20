@@ -11,7 +11,7 @@ const TermsOfService: NextPage = () => {
   const appName = COMPANY.nameAbbr;
   return (
     <MainLayout>
-      <Meta pageTitle="Register" />
+      <Meta pageTitle="Terms of Service" />
       <Container maxWidth="lg">
         <Typography mt={3} variant="h4" component="h1">
           Terms of Service
