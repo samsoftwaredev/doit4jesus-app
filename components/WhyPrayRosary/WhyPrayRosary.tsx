@@ -5,26 +5,23 @@ import { css } from '@/utils/helpers';
 
 import styles from './whyPrayRosary.module.scss';
 
-const features = [
-  {
-    title: 'Strengthen Faith',
-    description:
-      'Join our community as we embark on a transformative journey, praying the Rosary together for spiritual fortitude.',
-  },
-  {
-    title: 'Save Souls',
-    description:
-      "By praying the Rosary, we intercede for the salvation of souls, asking for God's mercy and grace to be bestowed upon those in need.",
-  },
-  {
-    title: 'Combat Darkness',
-    description:
-      "Let's stand united against the challenges of our times, seeking solace and strength in the power of collective prayer.",
-  },
-];
-
 const WhyPrayRosary = () => {
   const { t } = useLanguageContext();
+
+  const features = [
+    {
+      title: t.whyPrayRosaryTitle1,
+      description: t.whyPrayRosaryDescription1,
+    },
+    {
+      title: t.whyPrayRosaryTitle2,
+      description: t.whyPrayRosaryDescription2,
+    },
+    {
+      title: t.whyPrayRosaryTitle3,
+      description: t.whyPrayRosaryDescription3,
+    },
+  ];
   return (
     <section
       className={styles.container}

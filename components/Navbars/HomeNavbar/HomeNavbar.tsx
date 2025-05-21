@@ -14,10 +14,12 @@ import {
   MenuItem,
   Select,
   Toolbar,
+  Typography,
 } from '@mui/material';
 import Link from 'next/link';
 import * as React from 'react';
 
+import { COMPANY } from '@/constants/company';
 import { NAV_FOOTER_LINKS, NAV_MAIN_LINKS } from '@/constants/nav';
 import { useLanguageContext } from '@/context/LanguageContext';
 import { LANG } from '@/interfaces/index';
@@ -66,6 +68,7 @@ function HomeNavbar(props: Props) {
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
       <Button disableRipple href={NAV_MAIN_LINKS.home.link}>
+        <Typography sx={{ display: 'none' }}>{COMPANY.name}</Typography>
         <Logo type="black" />
       </Button>
       <Divider />

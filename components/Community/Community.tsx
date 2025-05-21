@@ -1,12 +1,14 @@
 import { Box, Container, Grid, Typography } from '@mui/material';
 import Image from 'next/image';
 
+import { useLanguageContext } from '@/context/LanguageContext';
 import rosary from '@/public/assets/images/rosary.svg';
-import { css } from '@/utils/helpers';
+import { css } from '@/utils';
 
 import styles from './community.module.scss';
 
 const Hero = () => {
+  const { t } = useLanguageContext();
   return (
     <section className={styles.container}>
       <Container component="div" maxWidth="md">
@@ -17,7 +19,7 @@ const Hero = () => {
             className={css(styles.title, 'sectionTitle')}
             variant="h2"
           >
-            About The Rosary
+            {t.aboutRosaryTitle}
           </Typography>
           <Image
             style={{ opacity: 0.4 }}
@@ -27,14 +29,7 @@ const Hero = () => {
           />
           <Box component="div" className={styles.content}>
             <Typography component="p" className={styles.description}>
-              The purpose of the Rosary lies in bringing people together in
-              prayer to combat darkness and work towards the salvation of souls.
-            </Typography>
-            <Typography component="p" className={styles.description}>
-              The Mother of God, in an apparition to Santo Domingo, taught him
-              to pray the Rosary, in the year 1208. She told him to spread this
-              devotion and use it as a powerful weapon against the enemies of
-              the Faith.
+              {t.aboutRosaryDescription}
             </Typography>
           </Box>
         </Grid>

@@ -32,6 +32,8 @@ const Meta = ({ pageTitle = COMPANY.name }: Props) => {
       <meta property="og:type" content="website" />
       <meta property="og:image" content="https://doit4jesus.com/og-image.jpg" />
       <meta property="og:site_name" content="DoIt4Jesus" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       <meta name="twitter:card" content="summary_large_image" />
       <meta
         name="twitter:title"

@@ -1,6 +1,7 @@
 import type { NextPage } from 'next';
 
 import {
+  AppIntroduction,
   CallToAction,
   Community,
   Features,
@@ -16,6 +17,7 @@ const Home: NextPage = () => {
     <MainLayout>
       <Meta pageTitle="Pray the Rosary" />
       <Hero />
+      <AppIntroduction />
       <HowItWorks />
       <Features />
       {/* <RosaryWeapon /> */}

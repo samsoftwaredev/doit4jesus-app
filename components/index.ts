@@ -49,6 +49,7 @@ export { default as ChatList } from './ChatList';
 export { default as SafeImage } from './SafeImage';
 export { default as HowItWorks } from './HowItWorks';
 export { default as MusicPlayer } from './MusicPlayer';
+export { default as AppIntroduction } from './AppIntroduction';
 
 export * from './Navbars';
 export * from './Fields';

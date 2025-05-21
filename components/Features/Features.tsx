@@ -1,6 +1,7 @@
 import { Box, Container, Grid, Typography } from '@mui/material';
 import Image from 'next/image';
 
+import { useLanguageContext } from '@/context/LanguageContext';
 import jesusPrayingHands from '@/public/assets/images/art/jesusPrayingHands.jpeg';
 import josephPraying from '@/public/assets/images/art/josephPraying.jpeg';
 import maryMoon from '@/public/assets/images/art/maryMoon.jpeg';
@@ -8,31 +9,29 @@ import { theme } from '@/styles/mui-overwrite';
 
 import styles from './features.module.scss';
 
-const features = [
-  {
-    thumbnail: maryMoon,
-    title: 'Find Peace',
-    description:
-      'The act of praying the Rosary has a calming effect, bringing a sense of tranquility and well-being.',
-    alt: 'Artistic depiction of Mary under the moonlight',
-  },
-  {
-    thumbnail: jesusPrayingHands,
-    title: 'Spiritual Well-Being',
-    description:
-      'Turn to the Rosary during times of distress, seeking solace and comfort through prayer.',
-    alt: 'Artistic depiction of Jesus with praying hands',
-  },
-  {
-    thumbnail: josephPraying,
-    title: 'Pray Together',
-    description:
-      'Prayer unites us and helps support millions of souls while sharing our faith and intentions.',
-    alt: 'Artistic depiction of Joseph praying',
-  },
-];
-
 const Features = () => {
+  const { t } = useLanguageContext();
+
+  const features = [
+    {
+      thumbnail: maryMoon,
+      title: t.useTheAppToTitle1,
+      description: t.useTheAppToDescription1,
+      alt: 'Artistic depiction of Mary under the moonlight',
+    },
+    {
+      thumbnail: jesusPrayingHands,
+      title: t.useTheAppToTitle2,
+      description: t.useTheAppToDescription2,
+      alt: 'Artistic depiction of Jesus with praying hands',
+    },
+    {
+      thumbnail: josephPraying,
+      title: t.useTheAppToTitle3,
+      description: t.useTheAppToDescription3,
+      alt: 'Artistic depiction of Joseph praying',
+    },
+  ];
   return (
     <section className={styles.container} aria-labelledby="features-title">
       <Container>
@@ -43,7 +42,7 @@ const Features = () => {
           variant="h2"
           gutterBottom
         >
-          The Rosary App
+          {t.theRosaryAppTitle}
         </Typography>
         <Grid container justifyContent="space-around">
           {features.map(({ thumbnail, title, description, alt }) => (
