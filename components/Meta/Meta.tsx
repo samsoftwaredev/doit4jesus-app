@@ -10,7 +10,7 @@ const Meta = ({ pageTitle = COMPANY.name }: Props) => {
   return (
     <Head>
       <link rel="manifest" href="/site.webmanifest" />
-      <meta name="theme-color" content="#ffffff" />
+      <meta name="theme-color" content="#0b1c2b" />
       <title>{pageTitle} - DoIt4Jesus</title>
       <meta
         name="description"
