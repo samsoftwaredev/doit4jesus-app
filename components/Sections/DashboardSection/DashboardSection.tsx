@@ -1,6 +1,13 @@
 import { Box, Button, Container, Typography } from '@mui/material';
 
-import { Card, Leaderboards, TodaysRosary } from '@/components';
+import {
+  Card,
+  Leaderboards,
+  RosaryStreak,
+  RosaryWinnerChallenge,
+  TodaysRosary,
+  TotalRosariesPrayed,
+} from '@/components';
 import InviteFriend from '@/components/InviteFriend';
 import RosaryStats from '@/components/RosaryStats';
 
@@ -32,6 +39,24 @@ const DashboardSection = () => {
         <div className={styles.Levels}>
           <Card>
             <ProgressLevelsSection />
+          </Card>
+        </div>
+
+        <div className={styles.TotalRosaries}>
+          <Card>
+            <TotalRosariesPrayed />
+          </Card>
+        </div>
+
+        {/* <div className={styles.RosaryWinnerChallenge}>
+          <Card>
+            <RosaryWinnerChallenge />
+          </Card>
+        </div> */}
+
+        <div className={styles.RosaryStreak}>
+          <Card>
+            <RosaryStreak />
           </Card>
         </div>
 

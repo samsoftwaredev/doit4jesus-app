@@ -9,6 +9,93 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      churches: {
+        Row: {
+          background_image_url: string | null;
+          confession_end_time: string | null;
+          confession_occurrence:
+            | Database['public']['Enums']['event_occurrance']
+            | null;
+          confession_start_time: string | null;
+          created_at: string;
+          description: string | null;
+          eucharistic_adoration_end_time: string | null;
+          eucharistic_adoration_occurrence:
+            | Database['public']['Enums']['event_occurrance']
+            | null;
+          eucharistic_adoration_start_time: string | null;
+          id: string;
+          location: string | null;
+          mass_duration_time: string | null;
+          mass_occurrence:
+            | Database['public']['Enums']['event_occurrance']
+            | null;
+          name: string;
+          office_end_time: string | null;
+          office_start_time: string | null;
+          picture_url: string | null;
+          rating_score: number | null;
+          updated_at: string | null;
+          website_url: string | null;
+        };
+        Insert: {
+          background_image_url?: string | null;
+          confession_end_time?: string | null;
+          confession_occurrence?:
+            | Database['public']['Enums']['event_occurrance']
+            | null;
+          confession_start_time?: string | null;
+          created_at?: string;
+          description?: string | null;
+          eucharistic_adoration_end_time?: string | null;
+          eucharistic_adoration_occurrence?:
+            | Database['public']['Enums']['event_occurrance']
+            | null;
+          eucharistic_adoration_start_time?: string | null;
+          id?: string;
+          location?: string | null;
+          mass_duration_time?: string | null;
+          mass_occurrence?:
+            | Database['public']['Enums']['event_occurrance']
+            | null;
+          name: string;
+          office_end_time?: string | null;
+          office_start_time?: string | null;
+          picture_url?: string | null;
+          rating_score?: number | null;
+          updated_at?: string | null;
+          website_url?: string | null;
+        };
+        Update: {
+          background_image_url?: string | null;
+          confession_end_time?: string | null;
+          confession_occurrence?:
+            | Database['public']['Enums']['event_occurrance']
+            | null;
+          confession_start_time?: string | null;
+          created_at?: string;
+          description?: string | null;
+          eucharistic_adoration_end_time?: string | null;
+          eucharistic_adoration_occurrence?:
+            | Database['public']['Enums']['event_occurrance']
+            | null;
+          eucharistic_adoration_start_time?: string | null;
+          id?: string;
+          location?: string | null;
+          mass_duration_time?: string | null;
+          mass_occurrence?:
+            | Database['public']['Enums']['event_occurrance']
+            | null;
+          name?: string;
+          office_end_time?: string | null;
+          office_start_time?: string | null;
+          picture_url?: string | null;
+          rating_score?: number | null;
+          updated_at?: string | null;
+          website_url?: string | null;
+        };
+        Relationships: [];
+      };
       event_messages: {
         Row: {
           created_at: string;
@@ -89,6 +176,7 @@ export type Database = {
           event_type: Database['public']['Enums']['event_type'] | null;
           id: number;
           keywords: string | null;
+          language: Database['public']['Enums']['language'] | null;
           picture_url: string | null;
           price: number | null;
           slug: string | null;
@@ -104,6 +192,7 @@ export type Database = {
           event_type?: Database['public']['Enums']['event_type'] | null;
           id?: number;
           keywords?: string | null;
+          language?: Database['public']['Enums']['language'] | null;
           picture_url?: string | null;
           price?: number | null;
           slug?: string | null;
@@ -119,6 +208,7 @@ export type Database = {
           event_type?: Database['public']['Enums']['event_type'] | null;
           id?: number;
           keywords?: string | null;
+          language?: Database['public']['Enums']['language'] | null;
           picture_url?: string | null;
           price?: number | null;
           slug?: string | null;
@@ -139,7 +229,6 @@ export type Database = {
       exam_consciousness: {
         Row: {
           commandment: number | null;
-          created_at: string;
           description: string | null;
           for_adults: boolean | null;
           for_children: boolean | null;
@@ -154,7 +243,6 @@ export type Database = {
         };
         Insert: {
           commandment?: number | null;
-          created_at?: string;
           description?: string | null;
           for_adults?: boolean | null;
           for_children?: boolean | null;
@@ -169,7 +257,6 @@ export type Database = {
         };
         Update: {
           commandment?: number | null;
-          created_at?: string;
           description?: string | null;
           for_adults?: boolean | null;
           for_children?: boolean | null;
@@ -267,25 +354,76 @@ export type Database = {
       };
       groups: {
         Row: {
+          audience_age: Database['public']['Enums']['event_target_age'] | null;
+          background_image_url: string | null;
           created_at: string;
+          description: string | null;
           group_name: string;
           id: string;
+          is_private: boolean | null;
+          location: string | null;
+          meeting_duration_length: number | null;
+          meeting_duration_time: string | null;
+          meeting_end_date: string | null;
+          meeting_occurrence:
+            | Database['public']['Enums']['event_occurrance']
+            | null;
+          meeting_start_date: string | null;
           picture_url: string | null;
+          rating_score: number | null;
+          target_audience:
+            | Database['public']['Enums']['event_target_group']
+            | null;
           user_id: string | null;
+          website_url: string | null;
         };
         Insert: {
+          audience_age?: Database['public']['Enums']['event_target_age'] | null;
+          background_image_url?: string | null;
           created_at?: string;
+          description?: string | null;
           group_name: string;
           id?: string;
+          is_private?: boolean | null;
+          location?: string | null;
+          meeting_duration_length?: number | null;
+          meeting_duration_time?: string | null;
+          meeting_end_date?: string | null;
+          meeting_occurrence?:
+            | Database['public']['Enums']['event_occurrance']
+            | null;
+          meeting_start_date?: string | null;
           picture_url?: string | null;
+          rating_score?: number | null;
+          target_audience?:
+            | Database['public']['Enums']['event_target_group']
+            | null;
           user_id?: string | null;
+          website_url?: string | null;
         };
         Update: {
+          audience_age?: Database['public']['Enums']['event_target_age'] | null;
+          background_image_url?: string | null;
           created_at?: string;
+          description?: string | null;
           group_name?: string;
           id?: string;
+          is_private?: boolean | null;
+          location?: string | null;
+          meeting_duration_length?: number | null;
+          meeting_duration_time?: string | null;
+          meeting_end_date?: string | null;
+          meeting_occurrence?:
+            | Database['public']['Enums']['event_occurrance']
+            | null;
+          meeting_start_date?: string | null;
           picture_url?: string | null;
+          rating_score?: number | null;
+          target_audience?:
+            | Database['public']['Enums']['event_target_group']
+            | null;
           user_id?: string | null;
+          website_url?: string | null;
         };
         Relationships: [
           {
@@ -454,16 +592,25 @@ export type Database = {
       };
     };
     Functions: {
+      get_all_rosary_count: {
+        Args: Record<PropertyKey, never>;
+        Returns: number;
+      };
       get_profiles_by_user_ids: {
-        Args: {
-          user_ids: string[];
-        };
+        Args: { user_ids: string[] };
         Returns: {
           first_name: string;
           last_name: string;
           picture_url: string;
           rosary_count: number;
           id: string;
+        }[];
+      };
+      get_top_10_user_ids: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          user_id: string;
+          user_count: number;
         }[];
       };
       get_top_10_user_profile: {
@@ -485,9 +632,7 @@ export type Database = {
         Returns: undefined;
       };
       search_profiles: {
-        Args: {
-          search_text: string;
-        };
+        Args: { search_text: string };
         Returns: {
           id: string;
           first_name: string;
@@ -496,10 +641,44 @@ export type Database = {
       };
     };
     Enums: {
-      age_group: 'adult' | 'teen' | 'kid';
-      event_type: 'youtube_video';
+      event_occurrance:
+        | 'weekly'
+        | 'daily'
+        | 'bi_weekly'
+        | 'monthly'
+        | 'quarterly'
+        | 'annually'
+        | 'on_demand';
+      event_target_age:
+        | 'all'
+        | 'children'
+        | 'adolescents'
+        | 'adults'
+        | 'seniors'
+        | 'custom'
+        | 'young_adults';
+      event_target_group:
+        | 'married'
+        | 'single'
+        | 'cohabiting'
+        | 'separated'
+        | 'widowed'
+        | 'all';
+      event_type:
+        | 'youtube_video'
+        | 'cultural_arts'
+        | 'educational'
+        | 'social_community'
+        | 'sports_recreation'
+        | 'political_civic'
+        | 'business_networking'
+        | 'holiday_seasonal'
+        | 'health_wellness'
+        | 'miscellaneous'
+        | 'online';
       gender: 'male' | 'famale';
-      sin_type: 'mortal' | 'venial';
+      language: 'en' | 'es';
+      sin_type: 'mortal' | 'venial' | 'both';
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -507,27 +686,29 @@ export type Database = {
   };
 };
 
-type PublicSchema = Database[Extract<keyof Database, 'public'>];
+type DefaultSchema = Database[Extract<keyof Database, 'public'>];
 
 export type Tables<
-  PublicTableNameOrOptions extends
-    | keyof (PublicSchema['Tables'] & PublicSchema['Views'])
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema['Tables'] & DefaultSchema['Views'])
     | { schema: keyof Database },
-  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
-    ? keyof (Database[PublicTableNameOrOptions['schema']]['Tables'] &
-        Database[PublicTableNameOrOptions['schema']]['Views'])
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof Database;
+  }
+    ? keyof (Database[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
+        Database[DefaultSchemaTableNameOrOptions['schema']]['Views'])
     : never = never,
-> = PublicTableNameOrOptions extends { schema: keyof Database }
-  ? (Database[PublicTableNameOrOptions['schema']]['Tables'] &
-      Database[PublicTableNameOrOptions['schema']]['Views'])[TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
+  ? (Database[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
+      Database[DefaultSchemaTableNameOrOptions['schema']]['Views'])[TableName] extends {
       Row: infer R;
     }
     ? R
     : never
-  : PublicTableNameOrOptions extends keyof (PublicSchema['Tables'] &
-        PublicSchema['Views'])
-    ? (PublicSchema['Tables'] &
-        PublicSchema['Views'])[PublicTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema['Tables'] &
+        DefaultSchema['Views'])
+    ? (DefaultSchema['Tables'] &
+        DefaultSchema['Views'])[DefaultSchemaTableNameOrOptions] extends {
         Row: infer R;
       }
       ? R
@@ -535,20 +716,22 @@ export type Tables<
     : never;
 
 export type TablesInsert<
-  PublicTableNameOrOptions extends
-    | keyof PublicSchema['Tables']
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema['Tables']
     | { schema: keyof Database },
-  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
-    ? keyof Database[PublicTableNameOrOptions['schema']]['Tables']
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof Database;
+  }
+    ? keyof Database[DefaultSchemaTableNameOrOptions['schema']]['Tables']
     : never = never,
-> = PublicTableNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicTableNameOrOptions['schema']]['Tables'][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
+  ? Database[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
       Insert: infer I;
     }
     ? I
     : never
-  : PublicTableNameOrOptions extends keyof PublicSchema['Tables']
-    ? PublicSchema['Tables'][PublicTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
+    ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
         Insert: infer I;
       }
       ? I
@@ -556,20 +739,22 @@ export type TablesInsert<
     : never;
 
 export type TablesUpdate<
-  PublicTableNameOrOptions extends
-    | keyof PublicSchema['Tables']
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema['Tables']
     | { schema: keyof Database },
-  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
-    ? keyof Database[PublicTableNameOrOptions['schema']]['Tables']
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof Database;
+  }
+    ? keyof Database[DefaultSchemaTableNameOrOptions['schema']]['Tables']
     : never = never,
-> = PublicTableNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicTableNameOrOptions['schema']]['Tables'][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
+  ? Database[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
       Update: infer U;
     }
     ? U
     : never
-  : PublicTableNameOrOptions extends keyof PublicSchema['Tables']
-    ? PublicSchema['Tables'][PublicTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
+    ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
         Update: infer U;
       }
       ? U
@@ -577,21 +762,23 @@ export type TablesUpdate<
     : never;
 
 export type Enums<
-  PublicEnumNameOrOptions extends
-    | keyof PublicSchema['Enums']
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema['Enums']
     | { schema: keyof Database },
-  EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
-    ? keyof Database[PublicEnumNameOrOptions['schema']]['Enums']
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof Database;
+  }
+    ? keyof Database[DefaultSchemaEnumNameOrOptions['schema']]['Enums']
     : never = never,
-> = PublicEnumNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicEnumNameOrOptions['schema']]['Enums'][EnumName]
-  : PublicEnumNameOrOptions extends keyof PublicSchema['Enums']
-    ? PublicSchema['Enums'][PublicEnumNameOrOptions]
+> = DefaultSchemaEnumNameOrOptions extends { schema: keyof Database }
+  ? Database[DefaultSchemaEnumNameOrOptions['schema']]['Enums'][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema['Enums']
+    ? DefaultSchema['Enums'][DefaultSchemaEnumNameOrOptions]
     : never;
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
-    | keyof PublicSchema['CompositeTypes']
+    | keyof DefaultSchema['CompositeTypes']
     | { schema: keyof Database },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
     schema: keyof Database;
@@ -600,6 +787,55 @@ export type CompositeTypes<
     : never = never,
 > = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
   ? Database[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes'][CompositeTypeName]
-  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema['CompositeTypes']
-    ? PublicSchema['CompositeTypes'][PublicCompositeTypeNameOrOptions]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema['CompositeTypes']
+    ? DefaultSchema['CompositeTypes'][PublicCompositeTypeNameOrOptions]
     : never;
+
+export const Constants = {
+  public: {
+    Enums: {
+      event_occurrance: [
+        'weekly',
+        'daily',
+        'bi_weekly',
+        'monthly',
+        'quarterly',
+        'annually',
+        'on_demand',
+      ],
+      event_target_age: [
+        'all',
+        'children',
+        'adolescents',
+        'adults',
+        'seniors',
+        'custom',
+        'young_adults',
+      ],
+      event_target_group: [
+        'married',
+        'single',
+        'cohabiting',
+        'separated',
+        'widowed',
+        'all',
+      ],
+      event_type: [
+        'youtube_video',
+        'cultural_arts',
+        'educational',
+        'social_community',
+        'sports_recreation',
+        'political_civic',
+        'business_networking',
+        'holiday_seasonal',
+        'health_wellness',
+        'miscellaneous',
+        'online',
+      ],
+      gender: ['male', 'famale'],
+      language: ['en', 'es'],
+      sin_type: ['mortal', 'venial', 'both'],
+    },
+  },
+} as const;

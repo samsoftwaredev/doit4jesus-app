@@ -9,6 +9,8 @@
     'TodayRosary'
     'RosariesCompleted'
     'Friends'
+    'TotalRosaries'
+    'RosaryWinnerChallenge'
     'Donations'
     'Levels'
     'Leaderboards';
@@ -19,6 +21,8 @@
     grid-template-areas:
       'TodayRosary TodayRosary'
       'RosariesCompleted Friends'
+      'TotalRosaries RosaryStreak'
+      'RosaryWinnerChallenge RosaryWinnerChallenge'
       'Donations Donations'
       'Levels Levels'
       'Leaderboards Leaderboards';
@@ -29,6 +33,7 @@
     grid-template-areas:
       'TodayRosary TodayRosary RosariesCompleted'
       'TodayRosary TodayRosary Friends'
+      'TotalRosaries TotalRosaries RosaryStreak'
       'Levels Levels Levels'
       'Donations Donations Donations'
       'Leaderboards Leaderboards Leaderboards';
@@ -57,4 +62,16 @@
 
 .Leaderboards {
   grid-area: Leaderboards;
+}
+
+.TotalRosaries {
+  grid-area: TotalRosaries;
+}
+
+.RosaryWinnerChallenge {
+  grid-area: RosaryWinnerChallenge;
+}
+
+.RosaryStreak {
+  grid-area: RosaryStreak;
 }

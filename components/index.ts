@@ -50,6 +50,9 @@ export { default as SafeImage } from './SafeImage';
 export { default as HowItWorks } from './HowItWorks';
 export { default as MusicPlayer } from './MusicPlayer';
 export { default as AppIntroduction } from './AppIntroduction';
+export { default as TotalRosariesPrayed } from './TotalRosariesPrayed';
+export { default as RosaryWinnerChallenge } from './RosaryWinnerChallenge';
+export { default as RosaryStreak } from './RosaryStreak';
 
 export * from './Navbars';
 export * from './Fields';
