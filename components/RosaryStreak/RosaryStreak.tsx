@@ -75,6 +75,8 @@ const RosaryStreak = () => {
   const { t } = useLanguageContext();
   const { user } = useUserContext();
   const [streakNum, setStreakNum] = useState<number | null>(0);
+  const hasStreak = streakNum && streakNum > 0;
+  const hasLongStreak = hasStreak && streakNum > 2;
 
   const getRosaryStreak = async () => {
     const { data, error } = await supabase.functions.invoke(
@@ -109,9 +111,7 @@ const RosaryStreak = () => {
           alignItems="center"
           justifyContent="center"
         >
-          <Box position="absolute">
-            <FlameAnimation />
-          </Box>
+          <Box position="absolute">{hasLongStreak && <FlameAnimation />}</Box>
           <Typography
             sx={{
               zIndex: 300,
@@ -125,8 +125,7 @@ const RosaryStreak = () => {
             {streakNum}
           </Typography>
         </Box>
-
-        {streakNum !== null && streakNum > 0 && (
+        {hasStreak && (
           <Typography fontSize="small" textAlign="center">
             Keep the streak going!
           </Typography>
