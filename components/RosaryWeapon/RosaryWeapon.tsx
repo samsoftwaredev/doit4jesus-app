@@ -1,25 +1,28 @@
-import { Box, Container, Grid, Typography } from '@mui/material';
-import Image from 'next/image';
+import { Container, Grid, Typography } from '@mui/material';
 
-import rosary from '@/public/assets/images/rosary.svg';
-import { css } from '@/utils/helpers';
+import { useLanguageContext } from '@/context/LanguageContext';
 
 import styles from './rosaryWeapon.module.scss';
 
 const RosaryWeapon = () => {
+  const { t } = useLanguageContext();
   return (
     <div className={styles.container}>
       <Container maxWidth="md">
-        <Grid>
+        <Grid container spacing={2}>
           <Typography
-            my={5}
-            className={css(styles.title, 'sectionTitle')}
+            id="features-title"
+            textAlign="center"
+            className="sectionTitle"
             variant="h2"
+            gutterBottom
           >
-            Become A Soldier
+            {t.rosaryWeaponTitle}
           </Typography>
-          <Image style={{ opacity: 0.4 }} src={rosary} alt="Rosary" />
-          <Box className={styles.content}>
+          <Grid item xs={12} md={6} className={styles.descriptionContainer}>
+            <Typography>{t.rosaryWeaponDescription}</Typography>
+          </Grid>
+          <Grid item xs={12} md={6} minHeight={300}>
             <iframe
               style={{ width: '100%', height: '100%' }}
               src="https://www.youtube-nocookie.com/embed/x1tH_zQ-Cz0?si=0lnC4o44EfJRf-Cu"
@@ -27,17 +30,7 @@ const RosaryWeapon = () => {
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             />
-            <Typography className={styles.description}>
-              The purpose of the Rosary lies in bringing people together in
-              prayer to combat darkness and work towards the salvation of souls.
-            </Typography>
-            <Typography className={styles.description}>
-              The Mother of God, in an apparition to Santo Domingo, taught him
-              to pray the Rosary, in the year 1208. She told him to spread this
-              devotion and use it as a powerful weapon against the enemies of
-              the Faith.
-            </Typography>
-          </Box>
+          </Grid>
         </Grid>
       </Container>
     </div>

@@ -10,6 +10,7 @@ import {
   Meta,
   WhyPrayRosary,
 } from '@/components';
+import RosaryWeapon from '@/components/RosaryWeapon';
 import { MainLayout } from '@/components/Templates';
 
 const Home: NextPage = () => {
@@ -20,7 +21,7 @@ const Home: NextPage = () => {
       <AppIntroduction />
       <HowItWorks />
       <Features />
-      {/* <RosaryWeapon /> */}
+      <RosaryWeapon />
       <Community />
       <WhyPrayRosary />
       <CallToAction />

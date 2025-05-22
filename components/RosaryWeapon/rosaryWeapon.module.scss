@@ -1,19 +1,11 @@
 .container {
-  min-height: 900px;
+  min-height: 530px;
+  padding: 20px 0;
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  text-shadow: 1px 1px 3px $black;
-  color: #ffffff;
-  background: $primaryMain;
-  background: linear-gradient(
-    180deg,
-    $primaryMain 0%,
-    $primaryMain 20%,
-    $warningDark 100%
-  );
 
   img {
     position: absolute;
@@ -24,7 +16,6 @@
 
 .title {
   position: relative;
-  text-shadow: 1px 1px 3px $black;
   z-index: 100;
 }
 
