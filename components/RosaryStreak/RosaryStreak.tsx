@@ -5,13 +5,16 @@ import { supabase } from '@/classes/index';
 import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
 
+import Loading from '../Loading';
+
 const RosaryStreak = () => {
   const { t } = useLanguageContext();
   const { user } = useUserContext();
+  const [isLoading, setIsLoading] = useState(true);
   const [streakNum, setStreakNum] = useState<number | null>(0);
-  const hasStreak = streakNum && streakNum === 1;
-  const hasLongStreak = streakNum && streakNum > 2;
-  const hasFlame = streakNum && streakNum > 4;
+  const hasStreak = streakNum !== null && streakNum === 1;
+  const hasLongStreak = streakNum !== null && streakNum > 2;
+  const hasFlame = streakNum !== null && streakNum > 4;
 
   const getRosaryStreak = async () => {
     const { data, error } = await supabase.functions.invoke(
@@ -20,6 +23,7 @@ const RosaryStreak = () => {
         body: { user_id: user?.userId },
       },
     );
+    setIsLoading(false);
     if (error) {
       console.error(error);
     } else {
@@ -51,16 +55,20 @@ const RosaryStreak = () => {
               <Typography fontSize="4em">🔥</Typography>
             </Box>
           )}
-          <Typography
-            sx={{
-              zIndex: 300,
-              fontWeight: '900',
-              fontSize: '3em',
-              textShadow: '0 0 10px rgb(98, 61, 4)',
-            }}
-          >
-            {streakNum}
-          </Typography>
+          {isLoading ? (
+            <Loading isFeature />
+          ) : (
+            <Typography
+              sx={{
+                zIndex: 300,
+                fontWeight: '900',
+                fontSize: '3em',
+                textShadow: '0 0 10px rgb(98, 61, 4)',
+              }}
+            >
+              {streakNum}
+            </Typography>
+          )}
         </Box>
         {hasLongStreak && (
           <Typography fontSize="small" textAlign="center">
