@@ -97,9 +97,19 @@ export const normalizeUserProfile = (
       date: formatDateSlash(s.completed_at),
     }));
 
-    const todaysRosaryCompleted = stats.find(
-      (s) => formatDateSlash(s.completed_at) === formatDateSlash(new Date()),
-    );
+    // Sort by completed_at in descending order
+    const sortedDates = stats.sort((a, b) => {
+      const dateDiff = a.completed_at.localeCompare(b.completed_at);
+      if (dateDiff !== 0) return dateDiff;
+
+      // Fallback: sort by created_at if completed_at is the same
+      return (a.created_at ?? '').localeCompare(b.created_at ?? '');
+    });
+    // Removed invalid Map creation from array of objects
+    const lastCompletedDate = sortedDates[sortedDates.length - 1]?.completed_at;
+
+    const todaysRosaryCompleted =
+      lastCompletedDate == formatDateDash(new Date());
 
     return {
       todaysRosaryCompleted: !!todaysRosaryCompleted,
