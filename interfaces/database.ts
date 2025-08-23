@@ -9,6 +9,51 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      challenges: {
+        Row: {
+          completed_by: Json | null;
+          created_at: string;
+          deadline: string | null;
+          deleted_at: string | null;
+          description: string | null;
+          goal_amount: number | null;
+          id: string;
+          participants: Json | null;
+          picture_url: string | null;
+          reward: string | null;
+          title: string | null;
+          updated_at: string | null;
+        };
+        Insert: {
+          completed_by?: Json | null;
+          created_at?: string;
+          deadline?: string | null;
+          deleted_at?: string | null;
+          description?: string | null;
+          goal_amount?: number | null;
+          id?: string;
+          participants?: Json | null;
+          picture_url?: string | null;
+          reward?: string | null;
+          title?: string | null;
+          updated_at?: string | null;
+        };
+        Update: {
+          completed_by?: Json | null;
+          created_at?: string;
+          deadline?: string | null;
+          deleted_at?: string | null;
+          description?: string | null;
+          goal_amount?: number | null;
+          id?: string;
+          participants?: Json | null;
+          picture_url?: string | null;
+          reward?: string | null;
+          title?: string | null;
+          updated_at?: string | null;
+        };
+        Relationships: [];
+      };
       churches: {
         Row: {
           background_image_url: string | null;

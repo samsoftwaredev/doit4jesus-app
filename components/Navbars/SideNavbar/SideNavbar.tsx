@@ -31,10 +31,20 @@ const SideNavbar = ({ menuItems, handleDrawerClose }: Props) => {
 
   return (
     <List>
-      <Box display="flex" justifyContent="space-between" px={1}>
+      <Box
+        sx={{
+          display: {
+            md: 'none',
+            sm: 'flex',
+          },
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+        }}
+      >
         <Button disableRipple className={styles.logo}>
           <Logo type="white" />
         </Button>
+        <Box flex={1} />
         <IconButton onClick={handleDrawerClose} className={styles.close}>
           <Close />
         </IconButton>

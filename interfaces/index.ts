@@ -147,6 +147,21 @@ export interface OnlineUser {
   fullName: string;
 }
 
+export interface Challenge {
+  completed_by: {} | null;
+  created_at: string;
+  deadline: string | null;
+  deleted_at: string | null;
+  description: string | null;
+  goal_amount: number | null;
+  id: string;
+  participants: {} | null;
+  reward: string | null;
+  title: string | null;
+  updated_at: string | null;
+  picture_url: string | null;
+}
+
 export interface FriendProfile {
   userId: string;
   fullName: string;

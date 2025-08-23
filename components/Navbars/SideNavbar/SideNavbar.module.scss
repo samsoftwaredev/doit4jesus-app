@@ -29,7 +29,7 @@
 }
 
 .logo {
-  display: flex;
+  display: block;
   @include tablet {
     display: none;
   }
@@ -39,8 +39,11 @@
 }
 
 .close {
-  display: flex;
+  display: block;
   color: $white;
+  svg {
+    color: $white;
+  }
   @include tablet {
     display: none;
   }

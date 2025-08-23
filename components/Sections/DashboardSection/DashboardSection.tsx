@@ -1,4 +1,4 @@
-import { Box, Button, Container, Typography } from '@mui/material';
+import { Box, Container } from '@mui/material';
 
 import {
   Card,
@@ -48,11 +48,11 @@ const DashboardSection = () => {
           </Card>
         </div>
 
-        {/* <div className={styles.RosaryWinnerChallenge}>
+        <div className={styles.RosaryWinnerChallenge}>
           <Card>
             <RosaryWinnerChallenge />
           </Card>
-        </div> */}
+        </div>
 
         <div className={styles.RosaryStreak}>
           <Card>
