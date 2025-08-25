@@ -1,5 +1,4 @@
 import { User as UserSupabase } from '@supabase/supabase-js';
-import moment from 'moment';
 
 import {
   DataEvent,
@@ -99,11 +98,7 @@ export const normalizeUserProfile = (
 
     // Sort by completed_at in descending order
     const sortedDates = stats.sort((a, b) => {
-      const dateDiff = a.completed_at.localeCompare(b.completed_at);
-      if (dateDiff !== 0) return dateDiff;
-
-      // Fallback: sort by created_at if completed_at is the same
-      return (a.created_at ?? '').localeCompare(b.created_at ?? '');
+      return a.completed_at.localeCompare(b.completed_at);
     });
     // Removed invalid Map creation from array of objects
     const lastCompletedDate = sortedDates[sortedDates.length - 1]?.completed_at;

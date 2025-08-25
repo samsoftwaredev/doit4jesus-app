@@ -1,5 +1,7 @@
 .topNavbarMenu {
-  color: $white;
+  svg {
+    color: $white;
+  }
   display: block;
   margin-left: -30px;
   @include tablet {
