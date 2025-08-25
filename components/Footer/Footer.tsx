@@ -35,7 +35,7 @@ const Footer = () => {
             <IconButton
               target="_blank"
               rel="noopener noreferrer"
-              href="https://www.facebook.com/profile.php?id=61571010650020"
+              href="https://www.facebook.com/people/DoIt4Jesus/61579821511072/"
               color="primary"
               aria-label="Facebook"
             >
