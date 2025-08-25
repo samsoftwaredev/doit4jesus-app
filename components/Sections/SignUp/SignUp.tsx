@@ -107,7 +107,12 @@ const SignUp = () => {
   }
 
   return (
-    <FormControl fullWidth component="form" onSubmit={handleSubmit(onSubmit)}>
+    <FormControl
+      fullWidth
+      component="form"
+      onSubmit={handleSubmit(onSubmit)}
+      sx={{ gap: 0.5 }}
+    >
       <GoogleAuth isSignUp />
       <HorizontalDivider />
       <Controller
@@ -129,7 +134,12 @@ const SignUp = () => {
           },
         }}
         render={({ field }) => (
-          <TextField fullWidth placeholder={t.firstName} {...field} />
+          <TextField
+            label={t.firstName}
+            fullWidth
+            placeholder={t.firstName}
+            {...field}
+          />
         )}
       />
       <FormErrorText
@@ -156,7 +166,12 @@ const SignUp = () => {
           },
         }}
         render={({ field }) => (
-          <TextField fullWidth placeholder={t.lastName} {...field} />
+          <TextField
+            label={t.lastName}
+            fullWidth
+            placeholder={t.lastName}
+            {...field}
+          />
         )}
       />
       <FormErrorText fieldName="Last name" name="lastName" control={control} />
@@ -175,7 +190,12 @@ const SignUp = () => {
           },
         }}
         render={({ field }) => (
-          <TextField fullWidth placeholder={t.email} {...field} />
+          <TextField
+            label={t.email}
+            fullWidth
+            placeholder={t.email}
+            {...field}
+          />
         )}
       />
       <FormErrorText control={control} name="email" />
@@ -185,6 +205,7 @@ const SignUp = () => {
         rules={passwordValidationRules}
         render={({ field }) => (
           <TextField
+            label={t.password}
             fullWidth
             type="password"
             placeholder={t.password}

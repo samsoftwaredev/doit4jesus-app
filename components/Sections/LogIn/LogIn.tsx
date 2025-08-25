@@ -60,7 +60,12 @@ const LogIn = () => {
   });
 
   return (
-    <FormControl fullWidth component="form" onSubmit={handleSubmit(onSubmit)}>
+    <FormControl
+      fullWidth
+      component="form"
+      onSubmit={handleSubmit(onSubmit)}
+      sx={{ gap: 0.5 }}
+    >
       <GoogleAuth isSignUp={false} />
       <HorizontalDivider />
       <Controller
@@ -68,7 +73,12 @@ const LogIn = () => {
         control={control}
         rules={{ required: true }}
         render={({ field }) => (
-          <TextField fullWidth placeholder={t.email} {...field} />
+          <TextField
+            label={t.email}
+            fullWidth
+            placeholder={t.email}
+            {...field}
+          />
         )}
       />
       <FormErrorText control={control} name="email" />
@@ -78,6 +88,7 @@ const LogIn = () => {
         rules={{ required: true }}
         render={({ field }) => (
           <TextField
+            label={t.password}
             fullWidth
             type="password"
             placeholder={t.password}

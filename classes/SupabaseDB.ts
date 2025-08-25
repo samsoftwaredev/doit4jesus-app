@@ -46,13 +46,12 @@ class SupabaseDB {
   getFriendRequests = () => {
     return supabase.from('friend_requests');
   };
-  updatePassword = async (password: string) => {
-    return await supabase.auth.updateUser({ password });
+  updatePassword = async (newPassword: string) => {
+    return await supabase.auth.updateUser({ password: newPassword });
   };
   resetPassword = async (email: string) => {
-    const redirectTo = window.location.origin + '/update-password';
     return await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: redirectTo,
+      redirectTo: window.location.origin + '/update-password',
     });
   };
   logOut = async () => await supabase.auth.signOut();

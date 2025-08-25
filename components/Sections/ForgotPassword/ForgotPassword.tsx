@@ -39,7 +39,12 @@ const ForgotPassword = () => {
         control={control}
         rules={{ required: true }}
         render={({ field }) => (
-          <TextField fullWidth placeholder={t.email} {...field} />
+          <TextField
+            label={t.email}
+            fullWidth
+            placeholder={t.email}
+            {...field}
+          />
         )}
       />
       <FormErrorText control={control} name="email" />

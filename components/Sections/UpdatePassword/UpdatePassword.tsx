@@ -41,7 +41,7 @@ const UpdatePassword = () => {
       const { error } = await db.updatePassword(userInput.password);
       if (error) {
         console.error(error);
-        toast.error(error.message);
+        toast.error(t.errorUpdatingPassword);
       } else {
         router.push(NAV_MAIN_LINKS.login.link);
         toast.success(t.passwordUpdated);
@@ -62,6 +62,7 @@ const UpdatePassword = () => {
         render={({ field }) => (
           <TextField
             fullWidth
+            label={t.password}
             type="password"
             placeholder={t.password}
             {...field}
@@ -75,7 +76,9 @@ const UpdatePassword = () => {
         rules={{ required: true }}
         render={({ field }) => (
           <TextField
+            sx={{ marginTop: '1em' }}
             fullWidth
+            label={t.confirmPassword}
             type="password"
             placeholder={t.confirmPassword}
             {...field}
