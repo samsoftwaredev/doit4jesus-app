@@ -135,5 +135,15 @@
   "footerCTA": "¡Lucha contra el mal, un Rosario a la vez!",
   "rosaryWeaponTitle": "Un Arma Poderosa",
   "rosaryWeaponDescription": "Según el Padre Don Calloway (sí, ese sacerdote que es fan #1 del Rosario), el Rosario no son solo cuentas… ¡es como un sable de luz espiritual! En un mundo lleno de caos, mentiras y drama hasta en TikTok, esta oración antigua es tu mejor arma para contraatacar. \n Seamos honestos: no solo enfrentamos tentaciones—estamos en una guerra espiritual. Y Dios no busca espectadores, ¡quiere guerreros! El Rosario entrena tu alma como si hicieras lagartijas espirituales: te da valor, fe y fuerza para defender lo que es bueno y verdadero, aunque cueste.",
-  "errorUpdatingPassword": "Error al actualizar la contraseña. Por favor, inténtalo de nuevo."
+  "errorUpdatingPassword": "Error al actualizar la contraseña. Por favor, inténtalo de nuevo.",
+  "continue": "Continuar",
+  "skip": "Saltar",
+  "finish": "Finalizar",
+  "whatIsTheRosary": "¿Qué es el Rosario?",
+  "whatIsTheRosaryDescription": "En su esencia, el Rosario es una oración profundamente arraigada en las Escrituras, que nos guía a través de la vida de Cristo con el ritmo de las Ave Marías. El término 'rosario' proviene del latín 'garland of roses', y cada rosa representa una oración y un tributo a la Virgen María.",
+  "whyPrayTheRosary": "¿Por qué rezar el Rosario?",
+  "whyPrayTheRosaryDescription": "Descubre el poder secreto que millones de personas están utilizando para transformar sus vidas. 🙏✨ Sintoniza el elocuente discurso del Padre Don Calloway sobre el Rosario y su profundo significado.",
+  "welcomeTitle": "¡Reza con millones de personas en todo el mundo!",
+  "welcomeDescription": "Bienvenido a bordo {{firstName}} {{lastName}}, DoIt4Jesus es un compañero espiritual que te ayuda a acercarte más a Jesús a través de la oración diaria y la devoción al Rosario. ✨",
+  "joinedAppBadge": "Has completado el logro divino de unirte al grupo de oración del Rosario más animado en línea."
 }

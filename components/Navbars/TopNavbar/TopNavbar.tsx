@@ -33,7 +33,7 @@ const TopNavbar = ({ handleMenu }: Props) => {
   const { lang, changeLang, t } = useLanguageContext();
   const { getProfile } = useUserContext();
   const { user } = useUserContext();
-  const navigate = useRouter();
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -45,7 +45,7 @@ const TopNavbar = ({ handleMenu }: Props) => {
   };
 
   const onViewProfile = () => {
-    navigate.push(NAV_APP_LINKS.account.link);
+    router.push(NAV_APP_LINKS.account.link);
   };
 
   const onLogout = async () => {
@@ -57,7 +57,7 @@ const TopNavbar = ({ handleMenu }: Props) => {
   };
 
   const goToDashboard = () => {
-    navigate.push(NAV_APP_LINKS.dashboard.link);
+    router.push(NAV_APP_LINKS.dashboard.link);
   };
 
   useEffect(() => {

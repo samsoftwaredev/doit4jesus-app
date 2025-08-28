@@ -34,7 +34,8 @@ const LanguageContextProvider = ({ children }: Props) => {
 
   useEffect(() => {
     const newLang = router.locale === LANG.es ? LANG.es : LANG.en;
-    router.push(pathname, pathname, { locale: newLang });
+    const fullPath = { pathname, query: router.query };
+    router.push(fullPath, fullPath, { locale: newLang });
   }, [pathname]);
 
   return (

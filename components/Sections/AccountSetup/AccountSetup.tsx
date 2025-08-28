@@ -1,11 +1,14 @@
-import { ChevronRight } from '@mui/icons-material';
+import { ChevronRight, Close } from '@mui/icons-material';
 import { Box, Button, Container, Grid, Typography } from '@mui/material';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
+import { ConfettiCelebration } from '@/components';
 import { NAV_APP_LINKS } from '@/constants/nav';
+import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
+import joinedAppBadge from '@/public/assets/images/badges/divineRosaryPrayerParticipationBadge.png';
 import jesusCross from '@/public/assets/images/hero/jesusCross.svg';
 import jesusFish from '@/public/assets/images/hero/jesusFish.svg';
 import maryRosary from '@/public/assets/images/rosary.svg';
@@ -18,10 +21,11 @@ interface StepProps {
 }
 
 const WhatsTheRosary = ({ next }: StepProps) => {
+  const { t } = useLanguageContext();
   return (
     <Box className={styles.stepperContent}>
       <Typography variant="h3" className={styles.title}>
-        What is The Rosary?
+        {t.whatIsTheRosary}
       </Typography>
       <Typography
         my={5}
@@ -29,12 +33,7 @@ const WhatsTheRosary = ({ next }: StepProps) => {
         color="secondary"
         className={styles.body}
       >
-        At its heart, the Rosary is a prayer deeply rooted in Scripture, guiding
-        us through the life of Christ with the rhythm of Hail Marys.
-        <br />
-        <br /> The term &apos;rosary&apos; derives from the Latin for
-        &apos;garland of roses,&apos; with each rose representing a prayer and a
-        tribute to the Virgin Mary.
+        {t.whatIsTheRosaryDescription}
       </Typography>
       <Grid mt={2} container justifyContent="flex-end">
         <Button
@@ -44,7 +43,7 @@ const WhatsTheRosary = ({ next }: StepProps) => {
           endIcon={<ChevronRight />}
           onClick={() => next()}
         >
-          Continue
+          {t.continue}
         </Button>
       </Grid>
     </Box>
@@ -52,15 +51,14 @@ const WhatsTheRosary = ({ next }: StepProps) => {
 };
 
 const WhyPray = ({ next }: StepProps) => {
+  const { t } = useLanguageContext();
   return (
     <Box className={styles.stepperContent}>
       <Typography variant="h3" className={styles.title}>
-        Why Pray The Rosary?
+        {t.whyPrayTheRosary}
       </Typography>
-      <Typography color="secondary" className={styles.body}>
-        Discover the secret power that millions of people are using to transform
-        their lives. 🙏✨ Tune in to Father Don Calloway’s eloquent discourse on
-        the Rosary and its profound significance.
+      <Typography my={3} color="secondary" className={styles.body}>
+        {t.whyPrayTheRosaryDescription}
       </Typography>
       <iframe
         className="iframeYoutube"
@@ -77,7 +75,7 @@ const WhyPray = ({ next }: StepProps) => {
           endIcon={<ChevronRight />}
           onClick={() => next()}
         >
-          Continue
+          {t.finish}
         </Button>
       </Grid>
     </Box>
@@ -86,11 +84,12 @@ const WhyPray = ({ next }: StepProps) => {
 
 const Intro = ({ next }: StepProps) => {
   const { user } = useUserContext();
+  const { t } = useLanguageContext();
 
   return (
     <Box className={styles.stepperContent}>
       <Typography variant="h3" className={styles.title}>
-        Pray with millions around the world!
+        {t.welcomeTitle}
       </Typography>
       <Typography
         my={5}
@@ -98,19 +97,34 @@ const Intro = ({ next }: StepProps) => {
         color="secondary"
         className={styles.body}
       >
-        Welcome aboard {user?.firstName} {user?.lastName}, and may your WiFi be
-        as uninterrupted as your prayers. ✨
+        {t.welcomeDescription
+          .replace('{{firstName}}', user?.firstName || '')
+          .replace('{{lastName}}', user?.lastName || '')}
       </Typography>
+      <ConfettiCelebration />
+      <Image
+        className={styles.badge}
+        src={joinedAppBadge}
+        alt="You've just completed the divine achievement."
+      />
       <Typography
         my={5}
         textAlign="center"
         color="secondary"
         className={styles.body}
       >
-        You&apos;ve just completed the divine achievement of joining the most
-        spirited Rosary prayer group online.
+        {t.joinedAppBadge}
       </Typography>
-      <Grid container justifyContent="flex-end">
+
+      <Grid container justifyContent="space-between">
+        <Button
+          size="large"
+          variant="contained"
+          startIcon={<Close />}
+          onClick={() => next(true)}
+        >
+          {t.skip}
+        </Button>
         <Button
           size="large"
           color="secondary"
@@ -118,7 +132,7 @@ const Intro = ({ next }: StepProps) => {
           endIcon={<ChevronRight />}
           onClick={() => next()}
         >
-          Start
+          {t.continue}
         </Button>
       </Grid>
     </Box>
@@ -162,7 +176,7 @@ const AccountSetup = () => {
     },
     {
       component: <WhyPray next={nextStep} />,
-      color: theme.palette.success.dark,
+      color: '#000000',
       backgroundImage: jesusCross,
     },
   ];

@@ -25,7 +25,7 @@ const AppWrapper = ({ children }: Props) => {
     if (!isAuth) {
       // hide music player if user is not auth
       setHideMusicPlayer(true);
-    } else if (isNewUser === 'true' && isAuth) {
+    } else if (isNewUser && isAuth) {
       // hide music player if user is setting up account
       setHideMusicPlayer(true);
     } else {
@@ -33,7 +33,7 @@ const AppWrapper = ({ children }: Props) => {
     }
   }, [!!user, isNewUser]);
 
-  if (isAuth && isNewUser === 'true') {
+  if (isAuth && isNewUser) {
     return (
       <ProtectedRoute>
         <>

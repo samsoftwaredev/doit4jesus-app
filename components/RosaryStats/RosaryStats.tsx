@@ -8,10 +8,10 @@ import { useUserContext } from '@/context/UserContext';
 const RosaryStats = () => {
   const { t } = useLanguageContext();
   const { user } = useUserContext();
-  const navigate = useRouter();
+  const router = useRouter();
 
   const onClick = () => {
-    navigate.push(NAV_APP_LINKS.app.link);
+    router.push(NAV_APP_LINKS.app.link);
   };
 
   return (

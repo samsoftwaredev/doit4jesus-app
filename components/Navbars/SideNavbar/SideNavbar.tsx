@@ -27,7 +27,7 @@ interface Props {
 }
 
 const SideNavbar = ({ menuItems, handleDrawerClose }: Props) => {
-  const navigate = useRouter();
+  const router = useRouter();
 
   return (
     <List>
@@ -45,11 +45,11 @@ const SideNavbar = ({ menuItems, handleDrawerClose }: Props) => {
             href={url}
             className={css(
               styles.linkItem,
-              navigate.pathname === url ? styles.active : '',
+              router.pathname === url ? styles.active : '',
             )}
           >
             <ListItemIcon
-              className={navigate.pathname === url ? styles.active : ''}
+              className={router.pathname === url ? styles.active : ''}
             >
               {icon}
             </ListItemIcon>

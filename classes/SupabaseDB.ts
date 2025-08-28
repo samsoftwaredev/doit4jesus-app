@@ -1,6 +1,6 @@
 import { AuthResponse, createClient } from '@supabase/supabase-js';
 
-import { NAV_APP_LINKS } from '@/constants';
+import { NAV_APP_LINKS, NAV_MAIN_LINKS } from '@/constants';
 import type { Database } from '@/interfaces/database';
 import { GENDER_TYPES } from '@/interfaces/enum';
 
@@ -51,7 +51,7 @@ class SupabaseDB {
   };
   resetPassword = async (email: string) => {
     return await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin + '/update-password',
+      redirectTo: window.location.origin + NAV_MAIN_LINKS.updatePassword.link,
     });
   };
   logOut = async () => await supabase.auth.signOut();

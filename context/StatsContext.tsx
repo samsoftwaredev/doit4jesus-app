@@ -1,8 +1,8 @@
-import useConfetti from 'hooks/useConfetti';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { supabase } from '@/classes';
+import { ConfettiCelebration } from '@/components';
 import { setDateTimeZero } from '@/utils';
 
 import { useAudioContext } from './AudioContext';
@@ -42,7 +42,6 @@ const StatsContextProvider = ({ children }: Props) => {
 
   const onRosaryCompleted = () => {
     setShowConfetti(true);
-    setTimeout(() => setShowConfetti(false), 5000);
   };
 
   const registerRosaryCompleted = async () => {
@@ -99,7 +98,7 @@ const StatsContextProvider = ({ children }: Props) => {
 
   return (
     <StatsContext.Provider value={undefined}>
-      {useConfetti(showConfetti)}
+      {showConfetti && <ConfettiCelebration />}
       {children}
     </StatsContext.Provider>
   );

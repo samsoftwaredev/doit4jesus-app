@@ -43,14 +43,14 @@ const UserProfile = ({ name, pictureUrl, uid }: UserProfileProps) => {
 };
 
 const FriendRequestSection = () => {
-  const navigate = useRouter();
-  const { slug: paramsUserId } = navigate.query;
+  const router = useRouter();
+  const { slug: paramsUserId } = router.query;
   const [errorPage, setErrorPage] = useState<string>();
   const [friend, setFriend] = useState<FriendProfile>();
   const { user } = useUserContext();
 
   const onCancel = () => {
-    navigate.back();
+    router.back();
   };
 
   const onConfirm = async () => {
@@ -69,7 +69,7 @@ const FriendRequestSection = () => {
       .select();
     if (data) {
       toast.success('Friend request sent');
-      navigate.push(NAV_APP_LINKS.friends.link);
+      router.push(NAV_APP_LINKS.friends.link);
     }
     if (error) {
       toast.error('Unable to send friend request');

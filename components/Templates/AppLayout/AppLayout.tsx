@@ -40,7 +40,7 @@ const AppLayout = ({ children }: Props) => {
     // { url: "/app/support", label: "Support", icon: <SupportAgentIcon /> },
   ];
 
-  const navigate = useRouter();
+  const router = useRouter();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const handleDrawerOpen = () => {
@@ -48,8 +48,8 @@ const AppLayout = ({ children }: Props) => {
   };
 
   const pageTitle = useMemo(
-    () => menuItems.find((menu) => menu.url === navigate.pathname),
-    [navigate.pathname],
+    () => menuItems.find((menu) => menu.url === router.pathname),
+    [router.pathname],
   );
 
   return (

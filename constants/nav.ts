@@ -20,6 +20,11 @@ export const NAV_MAIN_LINKS = {
   signup: { link: '/sign-up', label: 'Sign Up', value: 'signup' },
   register: { link: '/register', label: 'Register', value: 'register' },
   resources: { link: '/resources', label: 'Resources', value: 'resources' },
+  updatePassword: {
+    link: '/update-password',
+    label: 'Update Password',
+    value: 'updatePassword',
+  },
   forgotPassword: {
     link: '/forgot-password',
     label: 'Forgot Password',

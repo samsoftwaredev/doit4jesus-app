@@ -14,7 +14,7 @@ interface IFormInputs {
 const ForgotPassword = () => {
   const { t } = useLanguageContext();
   const [isLoading, setIsLoading] = useState(false);
-  const { handleSubmit, control } = useForm<IFormInputs>({
+  const { handleSubmit, control, reset } = useForm<IFormInputs>({
     mode: 'onChange',
     defaultValues: {
       email: '',
@@ -27,7 +27,8 @@ const ForgotPassword = () => {
     if (error) {
       toast.error(error?.message);
     } else {
-      toast.success('Password reset sent');
+      toast.success('Password reset sent. Check your email for instructions.');
+      reset();
     }
     setIsLoading(false);
   };

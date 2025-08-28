@@ -53,6 +53,7 @@ export { default as AppIntroduction } from './AppIntroduction';
 export { default as TotalRosariesPrayed } from './TotalRosariesPrayed';
 export { default as RosaryWinnerChallenge } from './RosaryWinnerChallenge';
 export { default as RosaryStreak } from './RosaryStreak';
+export { default as ConfettiCelebration } from './ConfettiCelebration';
 
 export * from './Navbars';
 export * from './Fields';

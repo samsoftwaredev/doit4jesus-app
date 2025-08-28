@@ -41,5 +41,12 @@ export const theme = createTheme({
         },
       },
     },
+    MuiTypography: {
+      styleOverrides: {
+        root: {
+          whiteSpace: 'pre-line',
+        },
+      },
+    },
   },
 });

@@ -10,7 +10,7 @@ import { useUserContext } from '@/context/UserContext';
 
 const ForgotPassword: NextPage = () => {
   const { lang } = useLanguageContext() as { lang: keyof typeof pageView };
-  const navigate = useRouter();
+  const router = useRouter();
   const { user } = useUserContext();
   const isAuth = !!user;
 
@@ -18,7 +18,7 @@ const ForgotPassword: NextPage = () => {
 
   useEffect(() => {
     // if user is auth, navigate user to application
-    if (isAuth) navigate.push(NAV_APP_LINKS.dashboard.link);
+    if (isAuth) router.push(NAV_APP_LINKS.dashboard.link);
   }, []);
 
   if (isAuth) return null;
