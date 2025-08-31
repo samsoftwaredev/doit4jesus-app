@@ -1,11 +1,10 @@
 import { Box, Card, CardContent, Container, Typography } from '@mui/material';
 import Link from 'next/link';
 
-import CountdownDate from '@/components/CountdownDate';
-import { YouTubeSubscribe } from '@/components/YouTubeVideo';
-import { NAV_APP_LINKS } from '@/constants/nav';
+import { CountdownDate, YouTubeSubscribe } from '@/components';
+import { NAV_APP_LINKS } from '@/constants';
 import { DataEvent } from '@/interfaces';
-import { css } from '@/utils/helpers';
+import { css } from '@/utils';
 
 import styles from './allEventSection.module.scss';
 

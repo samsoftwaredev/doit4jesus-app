@@ -28,8 +28,11 @@
   }
 }
 
-.logo {
+.sideNavHeader {
   display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+
   @include tablet {
     display: none;
   }
@@ -38,13 +41,11 @@
   }
 }
 
+.logo {
+  display: flex;
+}
+
 .close {
   display: flex;
   color: $white;
-  @include tablet {
-    display: none;
-  }
-  @include desktop {
-    display: none;
-  }
 }

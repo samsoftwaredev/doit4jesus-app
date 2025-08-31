@@ -1,7 +1,7 @@
 import moment from 'moment';
 
-import { sessionFriendsKey } from '../constants';
-import { FriendProfile } from '../interfaces';
+import { sessionFriendsKey } from '@/constants';
+import { FriendProfile } from '@/interfaces';
 
 export const isClientSideRender = () => typeof window !== 'undefined';
 

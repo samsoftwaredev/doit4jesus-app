@@ -4,10 +4,9 @@ import YouTubeIcon from '@mui/icons-material/YouTube';
 import { Box, Button, Container, IconButton } from '@mui/material';
 import Link from 'next/link';
 
+import { Logo, YouTubeSubscribe } from '@/components';
 import { NAV_FOOTER_LINKS, NAV_MAIN_LINKS } from '@/constants';
 
-import Logo from '../Logo/Logo';
-import { YouTubeSubscribe } from '../YouTubeVideo';
 import styles from './footer.module.scss';
 
 const Footer = () => {

@@ -6,7 +6,7 @@ import Footer from './Footer';
 describe('Footer', () => {
   it('renders the logo', () => {
     render(<Footer />);
-    const logoElement = screen.getByTestId(/logo/i);
+    const logoElement = screen.getByTestId('logo');
     expect(logoElement).toBeInTheDocument();
   });
 

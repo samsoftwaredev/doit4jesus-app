@@ -31,12 +31,12 @@ const SideNavbar = ({ menuItems, handleDrawerClose }: Props) => {
 
   return (
     <List>
-      <Box display="flex" justifyContent="space-between" px={1}>
+      <Box className={styles.sideNavHeader}>
         <Button disableRipple className={styles.logo}>
           <Logo type="white" />
         </Button>
         <IconButton onClick={handleDrawerClose} className={styles.close}>
-          <Close />
+          <Close color="secondary" />
         </IconButton>
       </Box>
       {menuItems.map(({ label, icon, url }) => (

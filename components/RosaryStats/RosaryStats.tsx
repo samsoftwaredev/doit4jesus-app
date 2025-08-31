@@ -27,7 +27,13 @@ const RosaryStats = () => {
       >
         {user?.stats.rosaryTotalCount}
       </Typography>
-      <Button onClick={onClick} fullWidth color="success" variant="outlined">
+      <Button
+        data-testid="startPraying"
+        onClick={onClick}
+        fullWidth
+        color="success"
+        variant="outlined"
+      >
         {t.startPraying}
       </Button>
     </>

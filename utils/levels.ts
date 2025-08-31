@@ -1,5 +1,3 @@
-import { reverse } from 'lodash';
-
 import level1 from '@/public/assets/svgs/levels/level1.svg';
 import level2 from '@/public/assets/svgs/levels/level2.svg';
 import level3 from '@/public/assets/svgs/levels/level3.svg';

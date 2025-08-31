@@ -1,12 +1,12 @@
 .topNavbarMenu {
   color: $white;
-  display: block;
+  visibility: visible;
   margin-left: -30px;
   @include tablet {
-    display: none;
+    visibility: hidden;
   }
   @include desktop {
-    display: none;
+    visibility: hidden;
   }
 }
 

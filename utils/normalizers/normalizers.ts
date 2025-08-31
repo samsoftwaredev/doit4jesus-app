@@ -1,5 +1,4 @@
 import { User as UserSupabase } from '@supabase/supabase-js';
-import moment from 'moment';
 
 import {
   DataEvent,
@@ -27,12 +26,7 @@ import {
   YouTubeDB,
 } from '@/interfaces/databaseTable';
 
-import {
-  formatDateDash,
-  formatDateSlash,
-  numberToDollar,
-  setDateTimeZero,
-} from '../helpers';
+import { formatDateDash, formatDateSlash, numberToDollar } from '../helpers';
 
 const nullToString = (val: string | null) => (val === null ? '' : val);
 const nullToNumber = (val: number | null) => (val === null ? 0 : val);
@@ -97,7 +91,7 @@ export const normalizeUserProfile = (
       date: formatDateSlash(s.completed_at),
     }));
 
-    // Sort by completed_at in descending order
+    // Sort by completed_at in ascending order
     const sortedDates = stats.sort((a, b) => {
       const dateDiff = a.completed_at.localeCompare(b.completed_at);
       if (dateDiff !== 0) return dateDiff;
@@ -109,7 +103,8 @@ export const normalizeUserProfile = (
     const lastCompletedDate = sortedDates[sortedDates.length - 1]?.completed_at;
 
     const todaysRosaryCompleted =
-      lastCompletedDate == formatDateDash(new Date());
+      formatDateDash(lastCompletedDate) ===
+      formatDateDash(new Date().toISOString());
 
     return {
       todaysRosaryCompleted: !!todaysRosaryCompleted,
