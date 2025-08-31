@@ -1,8 +1,9 @@
-import { ChevronRight, Close } from '@mui/icons-material';
+import { ChevronLeft, ChevronRight, Close } from '@mui/icons-material';
 import { Box, Button, Container, Grid, Typography } from '@mui/material';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import Markdown from 'react-markdown';
 
 import { ConfettiCelebration } from '@/components';
 import { NAV_APP_LINKS } from '@/constants/nav';
@@ -17,10 +18,11 @@ import { theme } from '@/styles/mui-overwrite';
 import styles from './accountSetup.module.scss';
 
 interface StepProps {
-  next: (skipToEnd?: boolean) => void;
+  prevStep: () => void;
+  nextStep: (skipToEnd?: boolean) => void;
 }
 
-const WhatsTheRosary = ({ next }: StepProps) => {
+const WhatsTheRosary = ({ nextStep, prevStep }: StepProps) => {
   const { t } = useLanguageContext();
   return (
     <Box className={styles.stepperContent}>
@@ -35,13 +37,22 @@ const WhatsTheRosary = ({ next }: StepProps) => {
       >
         {t.whatIsTheRosaryDescription}
       </Typography>
-      <Grid mt={2} container justifyContent="flex-end">
+      <Grid mt={2} container justifyContent="space-between">
+        <Button
+          size="large"
+          color="secondary"
+          variant="text"
+          startIcon={<ChevronLeft />}
+          onClick={() => prevStep()}
+        >
+          {t.back}
+        </Button>
         <Button
           size="large"
           color="secondary"
           variant="contained"
           endIcon={<ChevronRight />}
-          onClick={() => next()}
+          onClick={() => nextStep()}
         >
           {t.continue}
         </Button>
@@ -50,7 +61,7 @@ const WhatsTheRosary = ({ next }: StepProps) => {
   );
 };
 
-const WhyPray = ({ next }: StepProps) => {
+const WhyPray = ({ prevStep, nextStep }: StepProps) => {
   const { t } = useLanguageContext();
   return (
     <Box className={styles.stepperContent}>
@@ -67,13 +78,22 @@ const WhyPray = ({ next }: StepProps) => {
         frameBorder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
       />
-      <Grid mt={2} container justifyContent="flex-end">
+      <Grid mt={2} container justifyContent="space-between">
+        <Button
+          size="large"
+          color="secondary"
+          variant="text"
+          startIcon={<ChevronLeft />}
+          onClick={() => prevStep()}
+        >
+          {t.back}
+        </Button>
         <Button
           size="large"
           color="secondary"
           variant="contained"
           endIcon={<ChevronRight />}
-          onClick={() => next()}
+          onClick={() => nextStep()}
         >
           {t.finish}
         </Button>
@@ -82,7 +102,44 @@ const WhyPray = ({ next }: StepProps) => {
   );
 };
 
-const Intro = ({ next }: StepProps) => {
+const WhatAreTheBenefits = ({ prevStep, nextStep }: StepProps) => {
+  const { t } = useLanguageContext();
+  return (
+    <Box className={styles.stepperContent}>
+      <Typography variant="h3" className={styles.title}>
+        {t.whatAreTheBenefits}
+      </Typography>
+      <Typography my={3} color="secondary" className={styles.body}>
+        {t.whatAreTheBenefitsDescription}
+      </Typography>
+      <Typography my={3} color="secondary" className={styles.body}>
+        <Markdown>{t.whatAreTheBenefitsOfRosary}</Markdown>
+      </Typography>
+      <Grid mt={2} container justifyContent="space-between">
+        <Button
+          size="large"
+          color="secondary"
+          variant="text"
+          startIcon={<ChevronLeft />}
+          onClick={() => prevStep()}
+        >
+          {t.back}
+        </Button>
+        <Button
+          size="large"
+          color="secondary"
+          variant="contained"
+          endIcon={<ChevronRight />}
+          onClick={() => nextStep()}
+        >
+          {t.continue}
+        </Button>
+      </Grid>
+    </Box>
+  );
+};
+
+const Intro = ({ nextStep }: StepProps) => {
   const { user } = useUserContext();
   const { t } = useLanguageContext();
 
@@ -121,7 +178,7 @@ const Intro = ({ next }: StepProps) => {
           size="large"
           variant="contained"
           startIcon={<Close />}
-          onClick={() => next(true)}
+          onClick={() => nextStep(true)}
         >
           {t.skip}
         </Button>
@@ -130,7 +187,7 @@ const Intro = ({ next }: StepProps) => {
           color="secondary"
           variant="contained"
           endIcon={<ChevronRight />}
-          onClick={() => next()}
+          onClick={() => nextStep()}
         >
           {t.continue}
         </Button>
@@ -149,6 +206,15 @@ const AccountSetup = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [bgColor, setBgColor] = useState(theme.palette.error.dark);
 
+  const prevStep = () => {
+    setCurrentStep((step) => {
+      if (step <= 0) {
+        return step;
+      }
+      return step - 1;
+    });
+  };
+
   const nextStep = (skipToEnd = false) => {
     if (skipToEnd === true) {
       setCurrentStep(steps.length - 1);
@@ -165,17 +231,22 @@ const AccountSetup = () => {
 
   steps = [
     {
-      component: <Intro next={nextStep} />,
+      component: <Intro prevStep={prevStep} nextStep={nextStep} />,
       color: theme.palette.success.main,
       backgroundImage: jesusFish,
     },
     {
-      component: <WhatsTheRosary next={nextStep} />,
+      component: <WhatsTheRosary prevStep={prevStep} nextStep={nextStep} />,
       color: theme.palette.error.dark,
       backgroundImage: maryRosary,
     },
     {
-      component: <WhyPray next={nextStep} />,
+      component: <WhatAreTheBenefits prevStep={prevStep} nextStep={nextStep} />,
+      color: theme.palette.secondary.dark,
+      backgroundImage: jesusCross,
+    },
+    {
+      component: <WhyPray prevStep={prevStep} nextStep={nextStep} />,
       color: '#000000',
       backgroundImage: jesusCross,
     },
