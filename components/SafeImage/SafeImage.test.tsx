@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 
 import SafeImage from './SafeImage';
 
@@ -25,21 +25,18 @@ describe('SafeImage Component', () => {
   });
 
   it('should use empty string for alt when not provided', () => {
-    render(<SafeImage src={mockSrc} />);
-    const image = screen.getByRole('img');
+    const { container } = render(<SafeImage src={mockSrc} />);
+    const image = container.querySelector('img');
 
     expect(image).toHaveAttribute('alt', '');
   });
 
   it('should render null when image fails to load', () => {
-    const { container, rerender } = render(<SafeImage src={mockSrc} />);
-    const image = screen.getByRole('img');
+    const { container } = render(<SafeImage src={mockSrc} />);
+    const image = container.querySelector('img')!;
 
     // Simulate image load error
     fireEvent.error(image);
-
-    // Re-render to reflect state change
-    rerender(<SafeImage src={mockSrc} />);
 
     // After error, component should render null
     expect(container.firstChild).toBeNull();

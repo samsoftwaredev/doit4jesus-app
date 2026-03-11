@@ -23,6 +23,8 @@ describe('CallToAction Component', () => {
     (useRouter as jest.Mock).mockReturnValue({
       locale: 'en',
       pathname: '/',
+      push: jest.fn(),
+      query: {},
     });
   });
   it('renders the call to action heading', () => {
@@ -40,12 +42,15 @@ describe('CallToAction Component', () => {
   it('renders the sign up link with correct href', () => {
     render(component());
     const linkElement = screen.getByRole('link');
-    expect(linkElement).toHaveAttribute('href', '/signup');
+    expect(linkElement).toHaveAttribute('href', '/sign-up');
   });
 
   it('button has aria-label for accessibility', () => {
     render(component());
     const buttonElement = screen.getByRole('button', { name: /sign up/i });
-    expect(buttonElement).toHaveAttribute('aria-label', 'Sign up for free to start praying with others');
+    expect(buttonElement).toHaveAttribute(
+      'aria-label',
+      'Sign up for free to start praying with others',
+    );
   });
 });

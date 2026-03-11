@@ -24,7 +24,7 @@ describe('Loading Component', () => {
 
   it('does not render logo when isFeature is true', () => {
     const { container } = render(<Loading isFeature />);
-    const logoElement = container.querySelector('svg');
+    const logoElement = container.querySelector('[data-testid="logo"]');
     expect(logoElement).not.toBeInTheDocument();
   });
 

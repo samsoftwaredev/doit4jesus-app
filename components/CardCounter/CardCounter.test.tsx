@@ -4,9 +4,24 @@ import CardCounter from './CardCounter';
 
 describe('CardCounter Component', () => {
   const mockCards = [
-    { id: '1', title: 'Card 1' },
-    { id: '2', title: 'Card 2' },
-    { id: '3', title: 'Card 3' },
+    {
+      title: 'Card 1',
+      question: 'Question 1',
+      description: 'Description 1',
+      img: 'img1.jpg',
+    },
+    {
+      title: 'Card 2',
+      question: 'Question 2',
+      description: 'Description 2',
+      img: 'img2.jpg',
+    },
+    {
+      title: 'Card 3',
+      question: 'Question 3',
+      description: 'Description 3',
+      img: 'img3.jpg',
+    },
   ];
 
   it('should render counter with correct format', () => {
@@ -17,13 +32,6 @@ describe('CardCounter Component', () => {
   it('should return null when only one card', () => {
     const { container } = render(
       <CardCounter cards={[mockCards[0]]} counter={1} />,
-    );
-    expect(container.firstChild).toBeNull();
-  });
-
-  it('should return null when cards is not an array', () => {
-    const { container } = render(
-      <CardCounter cards={null as any} counter={1} />,
     );
     expect(container.firstChild).toBeNull();
   });

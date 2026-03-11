@@ -1,4 +1,10 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 
 import CopyLinkButton from './CopyLinkButton';
 
@@ -29,49 +35,55 @@ describe('CopyLinkButton Component', () => {
 
   it('should render Copy button initially', () => {
     render(<CopyLinkButton link={testLink} />);
-    expect(screen.getByText('Copy')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Copy' })).toBeInTheDocument();
   });
 
   it('should change button text to "Copied!" when clicked', () => {
     render(<CopyLinkButton link={testLink} />);
-    const button = screen.getByText('Copy');
+    const button = screen.getByRole('button', { name: 'Copy' });
 
     fireEvent.click(button);
 
-    expect(screen.getByText('Copied!')).toBeInTheDocument();
-    expect(screen.queryByText('Copy')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Copied!' })).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Copy' }),
+    ).not.toBeInTheDocument();
   });
 
   it('should reset button text back to "Copy" after 1.5 seconds', async () => {
     render(<CopyLinkButton link={testLink} />);
-    const button = screen.getByText('Copy');
+    const button = screen.getByRole('button', { name: 'Copy' });
 
     fireEvent.click(button);
-    expect(screen.getByText('Copied!')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Copied!' })).toBeInTheDocument();
 
     // Fast-forward time by 1.5 seconds
     jest.advanceTimersByTime(1500);
 
     await waitFor(() => {
-      expect(screen.getByText('Copy')).toBeInTheDocument();
-      expect(screen.queryByText('Copied!')).not.toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Copy' })).toBeInTheDocument();
+      expect(
+        screen.queryByRole('button', { name: 'Copied!' }),
+      ).not.toBeInTheDocument();
     });
   });
 
   it('should handle multiple clicks correctly', () => {
     render(<CopyLinkButton link={testLink} />);
-    const button = screen.getByText('Copy');
+    const button = screen.getByRole('button', { name: 'Copy' });
 
     // First click
     fireEvent.click(button);
-    expect(screen.getByText('Copied!')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Copied!' })).toBeInTheDocument();
 
     // Fast-forward time
-    jest.advanceTimersByTime(1500);
+    act(() => {
+      jest.advanceTimersByTime(1500);
+    });
 
     // Second click
-    fireEvent.click(screen.getByText('Copy'));
-    expect(screen.getByText('Copied!')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Copy' }));
+    expect(screen.getByRole('button', { name: 'Copied!' })).toBeInTheDocument();
   });
 
   it('should render with proper MUI components', () => {
