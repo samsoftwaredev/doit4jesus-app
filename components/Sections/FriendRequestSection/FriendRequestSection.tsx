@@ -67,12 +67,13 @@ const FriendRequestSection = () => {
         },
       ])
       .select();
+    if (error) {
+      console.error('Error in FriendRequestSection (onConfirm):', error);
+      toast.error('Unable to send friend request');
+    }
     if (data) {
       toast.success('Friend request sent');
       router.push(NAV_APP_LINKS.friends.link);
-    }
-    if (error) {
-      toast.error('Unable to send friend request');
     }
   };
 

@@ -33,6 +33,7 @@ const FriendApproval = () => {
   const onDecline = async (id: string) => {
     const { error } = await db.getFriendRequests().delete().eq('id', id);
     if (error) {
+      console.error('Error in FriendApproval (onDecline):', error);
       toast.error('Unable to decline friend request');
     } else {
       setFriendsIds((prevState) => prevState.filter((f) => f.id !== id));
@@ -47,6 +48,7 @@ const FriendApproval = () => {
       .eq('id', data.id)
       .select();
     if (error) {
+      console.error('Error in FriendApproval (onApprove):', error);
       toast.error('Unable to confirm friend request');
     }
     if (friendData) {

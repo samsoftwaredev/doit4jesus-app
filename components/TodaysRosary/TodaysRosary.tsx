@@ -32,8 +32,8 @@ const TodayRosary = () => {
       .getYouTubeVideo()
       .select('*')
       .eq('video_id', rosaryId);
+    if (error) console.error('Error in TodaysRosary (getYoutubeVideo):', error);
     if (data) return data[0];
-    console.error(error);
   };
 
   const getEvents = async (id: string) => {
@@ -41,8 +41,8 @@ const TodayRosary = () => {
       .getEvents()
       .select('*')
       .eq('event_source', id);
+    if (error) console.error('Error in TodaysRosary (getEvents):', error);
     if (data) return data[0];
-    console.error(error);
   };
 
   const goToRosary = async () => {

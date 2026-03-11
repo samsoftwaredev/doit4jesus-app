@@ -55,6 +55,7 @@ const AllFriends = () => {
         .delete()
         .eq('id', relationship.id);
       if (error) {
+        console.error('Error in AllFriends (onEndFriendship):', error);
         toast.error('Unable to decline friend request');
       } else {
         onClose();
