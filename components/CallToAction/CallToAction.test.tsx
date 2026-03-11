@@ -1,9 +1,14 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
+import { useRouter } from 'next/router';
 
 import { LanguageContextProvider } from '@/context/LanguageContext';
 
 import CallToAction from './CallToAction';
+
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(),
+}));
 
 const component = () => {
   return (
@@ -14,6 +19,12 @@ const component = () => {
 };
 
 describe('CallToAction Component', () => {
+  beforeEach(() => {
+    (useRouter as jest.Mock).mockReturnValue({
+      locale: 'en',
+      pathname: '/',
+    });
+  });
   it('renders the call to action heading', () => {
     render(component());
     const headingElement = screen.getByRole('heading', { level: 2 });
