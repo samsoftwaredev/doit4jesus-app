@@ -14,16 +14,19 @@ import { FriendsContextProvider } from '@/context/FriendsContext';
 import { LanguageContextProvider } from '@/context/LanguageContext';
 import { PresenceContextProvider } from '@/context/PresenceContext';
 import { StatsContextProvider } from '@/context/StatsContext';
+import { ThemeContextProvider, useThemeContext } from '@/context/ThemeContext';
 import { UserContextProvider } from '@/context/UserContext';
 import '@/styles/global.scss';
-import { theme } from '@/styles/mui-overwrite';
+import { getTheme } from '@/styles/mui-overwrite';
 import '@/styles/normalize.css';
 
 import { NAV_APP_LINKS, NAV_MAIN_LINKS } from '../constants';
 
 const googleKey = process.env.NEXT_PUBLIC_GOOGLE_AUTH_KEY!;
 
-const MyApp = ({ Component, pageProps }: AppProps) => {
+const AppContent = ({ Component, pageProps }: AppProps) => {
+  const { mode } = useThemeContext();
+  const theme = getTheme(mode);
   const [hideMusicPlayer, setHideMusicPlayer] = useState(true);
   const { pathname } = useRouter();
   const authPaths =
@@ -80,6 +83,14 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         </StyledEngineProvider>
       </GoogleOAuthProvider>
     </>
+  );
+};
+
+const MyApp = (props: AppProps) => {
+  return (
+    <ThemeContextProvider>
+      <AppContent {...props} />
+    </ThemeContextProvider>
   );
 };
 

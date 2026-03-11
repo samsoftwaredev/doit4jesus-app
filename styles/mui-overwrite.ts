@@ -1,8 +1,8 @@
-import { createTheme } from '@mui/material/styles';
+import { createTheme, ThemeOptions } from '@mui/material/styles';
 
-export const theme = createTheme({
-  palette: {
-    mode: 'light',
+const getTheme = (mode: 'light' | 'dark') => {
+  const lightPalette = {
+    mode: 'light' as const,
     primary: {
       light: '#4a7694',
       main: '#163755',
@@ -48,8 +48,39 @@ export const theme = createTheme({
       secondary: 'rgba(0, 0, 0, 0.6)',
       disabled: 'rgba(0, 0, 0, 0.38)',
     },
-  },
-  typography: {
+  };
+
+  const darkPalette = {
+    mode: 'dark' as const,
+    primary: {
+      light: '#64b5f6',
+      main: '#42a5f5',
+      dark: '#1976d2',
+      contrastText: '#ffffff',
+    },
+    secondary: {
+      light: '#f5e6e0',
+      main: '#E8D1CB',
+      dark: '#c5a89f',
+      contrastText: '#000000',
+    },
+    background: {
+      default: '#121212',
+      paper: '#1e1e1e',
+    },
+    text: {
+      primary: '#ffffff',
+      secondary: 'rgba(255, 255, 255, 0.7)',
+      disabled: 'rgba(255, 255, 255, 0.5)',
+    },
+    divider: 'rgba(255, 255, 255, 0.12)',
+  };
+
+  const palette = mode === 'light' ? lightPalette : darkPalette;
+
+  return createTheme({
+    palette,
+    typography: {
     fontFamily: [
       '-apple-system',
       'BlinkMacSystemFont',
@@ -147,4 +178,8 @@ export const theme = createTheme({
       },
     },
   },
-});
+  });
+};
+
+export const theme = getTheme('light');
+export { getTheme };

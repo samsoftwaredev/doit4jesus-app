@@ -16,6 +16,7 @@ import { useEffect, useState } from 'react';
 
 import { db, supabase } from '@/classes/SupabaseDB';
 import { Loading } from '@/components';
+import ThemeToggle from '@/components/ThemeToggle';
 import { NAV_APP_LINKS } from '@/constants';
 import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
@@ -101,7 +102,9 @@ const TopNavbar = ({ handleMenu }: Props) => {
       >
         <Logo type="white" />
       </Button>
-      <IconButton
+      <Stack direction="row" alignItems="center" spacing={1}>
+        <ThemeToggle />
+        <IconButton
         className={styles.topNavbarProfile}
         aria-controls={open ? 'basic-menu' : undefined}
         aria-haspopup="true"
@@ -118,6 +121,7 @@ const TopNavbar = ({ handleMenu }: Props) => {
           userName={`${user?.firstName} ${user?.lastName}`}
         />
       </IconButton>
+      </Stack>
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
         <MenuItem
           sx={{ width: 200, maxWidth: '100%' }}

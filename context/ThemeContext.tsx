@@ -1,0 +1,50 @@
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+
+type ThemeMode = 'light' | 'dark';
+
+interface ThemeContextType {
+  mode: ThemeMode;
+  toggleTheme: () => void;
+}
+
+const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+
+export const useThemeContext = () => {
+  const context = useContext(ThemeContext);
+  if (!context) {
+    throw new Error('useThemeContext must be used within ThemeContextProvider');
+  }
+  return context;
+};
+
+interface Props {
+  children: ReactNode;
+}
+
+export const ThemeContextProvider = ({ children }: Props) => {
+  const [mode, setMode] = useState<ThemeMode>('light');
+
+  useEffect(() => {
+    // Load theme from localStorage on mount
+    const savedTheme = localStorage.getItem('theme-mode') as ThemeMode;
+    if (savedTheme) {
+      setMode(savedTheme);
+    } else {
+      // Check system preference
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setMode(prefersDark ? 'dark' : 'light');
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const newMode = mode === 'light' ? 'dark' : 'light';
+    setMode(newMode);
+    localStorage.setItem('theme-mode', newMode);
+  };
+
+  return (
+    <ThemeContext.Provider value={{ mode, toggleTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+};
