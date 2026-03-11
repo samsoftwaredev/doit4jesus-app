@@ -1,43 +1,115 @@
-import { createTheme } from '@mui/material';
+import { createTheme } from '@mui/material/styles';
 
 export const theme = createTheme({
   palette: {
+    mode: 'light',
     primary: {
-      light: '#00bcd4',
+      light: '#4a7694',
       main: '#163755',
+      dark: '#0d2539',
+      contrastText: '#ffffff',
     },
     secondary: {
+      light: '#f0dfd9',
       main: '#E8D1CB',
+      dark: '#d4bdb7',
+      contrastText: '#000000',
     },
     warning: {
-      light: '#955f27',
+      light: '#ffb74d',
       main: '#ff9800',
-      dark: '#844d42',
+      dark: '#f57c00',
+      contrastText: '#ffffff',
     },
     error: {
-      light: '#c09397',
-      main: '#b47a84',
-      dark: '#9f4435',
+      light: '#e57373',
+      main: '#f44336',
+      dark: '#d32f2f',
+      contrastText: '#ffffff',
     },
     info: {
-      main: '#ffffff',
-      dark: '#fafafa',
+      light: '#64b5f6',
+      main: '#2196f3',
+      dark: '#1976d2',
+      contrastText: '#ffffff',
     },
     success: {
-      light: '#a69540',
-      main: '#009688',
+      light: '#81c784',
+      main: '#4caf50',
+      dark: '#388e3c',
+      contrastText: '#ffffff',
+    },
+    background: {
+      default: '#fafafa',
+      paper: '#ffffff',
+    },
+    text: {
+      primary: 'rgba(0, 0, 0, 0.87)',
+      secondary: 'rgba(0, 0, 0, 0.6)',
+      disabled: 'rgba(0, 0, 0, 0.38)',
     },
   },
   typography: {
+    fontFamily: [
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+    ].join(','),
     button: {
       textTransform: 'none',
+      fontWeight: 600,
+    },
+    h1: {
+      fontWeight: 700,
+    },
+    h2: {
+      fontWeight: 700,
+    },
+    h3: {
+      fontWeight: 600,
     },
   },
+  shape: {
+    borderRadius: 8,
+  },
+  spacing: 8,
   components: {
     MuiButton: {
+      defaultProps: {
+        disableElevation: true,
+      },
       styleOverrides: {
-        contained: {
+        root: {
           borderRadius: '50px',
+          padding: '10px 24px',
+          fontWeight: 600,
+        },
+        contained: {
+          boxShadow: 'none',
+          '&:hover': {
+            boxShadow: 'none',
+          },
+        },
+        outlined: {
+          borderWidth: '2px',
+          '&:hover': {
+            borderWidth: '2px',
+          },
+        },
+      },
+    },
+    MuiCard: {
+      defaultProps: {
+        elevation: 0,
+      },
+      styleOverrides: {
+        root: {
+          borderRadius: 12,
+          border: '1px solid rgba(0, 0, 0, 0.08)',
         },
       },
     },
@@ -45,6 +117,32 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           whiteSpace: 'pre-line',
+        },
+      },
+    },
+    MuiTextField: {
+      defaultProps: {
+        variant: 'outlined',
+      },
+      styleOverrides: {
+        root: {
+          '& .MuiOutlinedInput-root': {
+            borderRadius: 8,
+          },
+        },
+      },
+    },
+    MuiChip: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
+        },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        rounded: {
+          borderRadius: 12,
         },
       },
     },
