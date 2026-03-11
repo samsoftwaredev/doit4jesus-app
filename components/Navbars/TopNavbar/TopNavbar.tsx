@@ -105,22 +105,22 @@ const TopNavbar = ({ handleMenu }: Props) => {
       <Stack direction="row" alignItems="center" spacing={1}>
         <ThemeToggle />
         <IconButton
-        className={styles.topNavbarProfile}
-        aria-controls={open ? 'basic-menu' : undefined}
-        aria-haspopup="true"
-        aria-expanded={open ? 'true' : undefined}
-        onClick={handleClick}
-        disableRipple
-        aria-label="Open user menu"
-      >
-        <Typography className={styles.userName} fontWeight="bold" pr={2}>
-          {user?.firstName} {user?.lastName}
-        </Typography>
-        <UserBubble
-          userPicture={user?.pictureUrl}
-          userName={`${user?.firstName} ${user?.lastName}`}
-        />
-      </IconButton>
+          className={styles.topNavbarProfile}
+          aria-controls={open ? 'basic-menu' : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? 'true' : undefined}
+          onClick={handleClick}
+          disableRipple
+          aria-label="Open user menu"
+        >
+          <Typography className={styles.userName} fontWeight="bold" pr={2}>
+            {user?.firstName} {user?.lastName}
+          </Typography>
+          <UserBubble
+            userPicture={user?.pictureUrl}
+            userName={`${user?.firstName} ${user?.lastName}`}
+          />
+        </IconButton>
       </Stack>
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
         <MenuItem

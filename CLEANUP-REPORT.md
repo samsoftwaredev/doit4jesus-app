@@ -9,15 +9,15 @@ Removed **8 unused components** from the codebase, reducing maintenance burden a
 
 ## Components Removed
 
-| Component | Reason | LOC Saved |
-|-----------|--------|-----------|
-| `AudioCover` | Never imported or used | ~30 lines |
-| `AudioNavigation` | Never imported or used | ~35 lines |
-| `ShareRosary` | Never imported or used | ~7 lines |
-| `ReadRosary` | Never imported or used | ~5 lines |
-| `Ocean` | Never imported or used | ~40 lines |
-| `AudioDialog` | Never imported or used | ~50 lines |
-| `FriendSearch` | Never imported or used | ~60 lines |
+| Component           | Reason                 | LOC Saved |
+| ------------------- | ---------------------- | --------- |
+| `AudioCover`        | Never imported or used | ~30 lines |
+| `AudioNavigation`   | Never imported or used | ~35 lines |
+| `ShareRosary`       | Never imported or used | ~7 lines  |
+| `ReadRosary`        | Never imported or used | ~5 lines  |
+| `Ocean`             | Never imported or used | ~40 lines |
+| `AudioDialog`       | Never imported or used | ~50 lines |
+| `FriendSearch`      | Never imported or used | ~60 lines |
 | `CreateFriendGroup` | Never imported or used | ~70 lines |
 
 **Total Lines Removed:** ~297 lines of dead code
@@ -32,6 +32,7 @@ Removed **8 unused components** from the codebase, reducing maintenance burden a
 Script used: `scripts/find-unused-components-v2.sh`
 
 This script:
+
 - Checks all exported components from `components/index.ts`
 - Searches entire codebase for imports and JSX usage
 - Excludes false positives (node_modules, .git, component's own directory)
@@ -61,6 +62,7 @@ Focus testing efforts on the remaining **62 active components**, starting with t
 10. **CopyLinkButton** (29 lines) - Copy to clipboard
 
 These small components are:
+
 - ✅ Easy to test (simple logic)
 - ✅ Quick wins (can knock out multiple per day)
 - ✅ High value (used throughout the app)

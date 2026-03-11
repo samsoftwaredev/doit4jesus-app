@@ -27,16 +27,19 @@ const LiveEvent: NextPage = () => {
       console.error('getYouTube: No video ID provided');
       return;
     }
-    
+
     try {
-      const { data, error } = await db.getYouTubeVideo().select('*').eq('id', id);
-      
+      const { data, error } = await db
+        .getYouTubeVideo()
+        .select('*')
+        .eq('id', id);
+
       if (error) {
         console.error('Error fetching YouTube video:', { videoId: id, error });
         toast.error('Unable to display video');
         return;
       }
-      
+
       if (data) return normalizeVideo(data)[0];
     } catch (error) {
       console.error('Exception in getYouTube:', error);
@@ -51,13 +54,13 @@ const LiveEvent: NextPage = () => {
         .select('*')
         .order('started_at', { ascending: true })
         .limit(1);
-      
+
       if (error) {
         console.error('Error fetching event:', error);
         toast.error('Unable to get event');
         return;
       }
-      
+
       if (data) return normalizeEvent(data)[0];
     } catch (error) {
       console.error('Exception in getEvent:', error);

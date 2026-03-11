@@ -1,4 +1,10 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 
 type ThemeMode = 'light' | 'dark';
 
@@ -31,7 +37,9 @@ export const ThemeContextProvider = ({ children }: Props) => {
       setMode(savedTheme);
     } else {
       // Check system preference
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const prefersDark = window.matchMedia(
+        '(prefers-color-scheme: dark)',
+      ).matches;
       setMode(prefersDark ? 'dark' : 'light');
     }
   }, []);

@@ -40,7 +40,7 @@ const updateProfileGoogle = async (userSession: Session, userProfile: any) => {
         })
         .eq('id', userSession.user.id)
         .select();
-      
+
       if (error) {
         console.error('Error updating Google profile:', error);
         toast.error('Unable to update profile');

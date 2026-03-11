@@ -11,47 +11,49 @@ export interface NotificationSettings {
 /**
  * Request notification permission from browser
  */
-export const requestNotificationPermission = async (): Promise<NotificationPermission> => {
-  if (!('Notification' in window)) {
-    console.error('This browser does not support notifications');
-    return 'denied';
-  }
+export const requestNotificationPermission =
+  async (): Promise<NotificationPermission> => {
+    if (!('Notification' in window)) {
+      console.error('This browser does not support notifications');
+      return 'denied';
+    }
 
-  if (Notification.permission === 'granted') {
-    return 'granted';
-  }
+    if (Notification.permission === 'granted') {
+      return 'granted';
+    }
 
-  if (Notification.permission !== 'denied') {
-    return await Notification.requestPermission();
-  }
+    if (Notification.permission !== 'denied') {
+      return await Notification.requestPermission();
+    }
 
-  return Notification.permission;
-};
+    return Notification.permission;
+  };
 
 /**
  * Register service worker for push notifications
  */
-export const registerServiceWorker = async (): Promise<ServiceWorkerRegistration | null> => {
-  if (!('serviceWorker' in navigator)) {
-    console.error('Service workers are not supported');
-    return null;
-  }
+export const registerServiceWorker =
+  async (): Promise<ServiceWorkerRegistration | null> => {
+    if (!('serviceWorker' in navigator)) {
+      console.error('Service workers are not supported');
+      return null;
+    }
 
-  try {
-    const registration = await navigator.serviceWorker.register('/sw.js');
-    console.log('Service Worker registered successfully');
-    return registration;
-  } catch (error) {
-    console.error('Service Worker registration failed:', error);
-    return null;
-  }
-};
+    try {
+      const registration = await navigator.serviceWorker.register('/sw.js');
+      console.log('Service Worker registered successfully');
+      return registration;
+    } catch (error) {
+      console.error('Service Worker registration failed:', error);
+      return null;
+    }
+  };
 
 /**
  * Subscribe to push notifications
  */
 export const subscribeToPushNotifications = async (
-  registration: ServiceWorkerRegistration
+  registration: ServiceWorkerRegistration,
 ): Promise<PushSubscription | null> => {
   try {
     const subscription = await registration.pushManager.subscribe({
@@ -70,7 +72,7 @@ export const subscribeToPushNotifications = async (
  */
 export const savePushSubscription = async (
   userId: string,
-  subscription: PushSubscription
+  subscription: PushSubscription,
 ): Promise<boolean> => {
   try {
     const { error } = await supabase.from('push_subscriptions').upsert({
@@ -96,7 +98,7 @@ export const savePushSubscription = async (
  */
 export const saveNotificationSettings = async (
   userId: string,
-  settings: NotificationSettings
+  settings: NotificationSettings,
 ): Promise<boolean> => {
   try {
     const { error } = await supabase.from('notification_settings').upsert({
@@ -124,7 +126,7 @@ export const saveNotificationSettings = async (
  * Get notification settings from database
  */
 export const getNotificationSettings = async (
-  userId: string
+  userId: string,
 ): Promise<NotificationSettings | null> => {
   try {
     const { data, error } = await supabase
@@ -153,7 +155,11 @@ export const getNotificationSettings = async (
 /**
  * Show local notification (for testing/immediate feedback)
  */
-export const showLocalNotification = (title: string, body: string, url?: string) => {
+export const showLocalNotification = (
+  title: string,
+  body: string,
+  url?: string,
+) => {
   if (!('Notification' in window) || Notification.permission !== 'granted') {
     return;
   }
@@ -188,12 +194,12 @@ export const calculateStreakExpiry = (lastPrayerDate: string): Date => {
  */
 export const needsStreakReminder = (
   lastPrayerDate: string,
-  hoursBefore: number
+  hoursBefore: number,
 ): boolean => {
   const expiry = calculateStreakExpiry(lastPrayerDate);
   const reminderTime = new Date(expiry);
   reminderTime.setHours(reminderTime.getHours() - hoursBefore);
-  
+
   const now = new Date();
   return now >= reminderTime && now < expiry;
 };
@@ -202,7 +208,9 @@ export const needsStreakReminder = (
  * Initialize push notifications
  * Call this when user enables notifications
  */
-export const initializePushNotifications = async (userId: string): Promise<boolean> => {
+export const initializePushNotifications = async (
+  userId: string,
+): Promise<boolean> => {
   try {
     // Request permission
     const permission = await requestNotificationPermission();

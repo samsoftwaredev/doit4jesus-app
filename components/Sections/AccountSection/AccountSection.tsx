@@ -52,7 +52,7 @@ const AccountSection = () => {
         <Box mb={3}>
           <NotificationSettings />
         </Box>
-        
+
         <Card>
           <Typography fontSize="2em">{t.account}</Typography>
           <Box display="flex" my={2} flexDirection="column">

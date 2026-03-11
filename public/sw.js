@@ -1,16 +1,13 @@
 // Service Worker for Push Notifications
 const CACHE_NAME = 'doit4jesus-v1';
-const STATIC_ASSETS = [
-  '/',
-  '/manifest.json',
-];
+const STATIC_ASSETS = ['/', '/manifest.json'];
 
 // Install event - cache static assets
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(STATIC_ASSETS);
-    })
+    }),
   );
   self.skipWaiting();
 });
@@ -24,9 +21,9 @@ self.addEventListener('activate', (event) => {
           if (cacheName !== CACHE_NAME) {
             return caches.delete(cacheName);
           }
-        })
+        }),
       );
-    })
+    }),
   );
   self.clients.claim();
 });
@@ -63,7 +60,7 @@ self.addEventListener('push', (event) => {
   };
 
   event.waitUntil(
-    self.registration.showNotification(data.title || 'DoIt4Jesus', options)
+    self.registration.showNotification(data.title || 'DoIt4Jesus', options),
   );
 });
 
@@ -73,7 +70,7 @@ self.addEventListener('notificationclick', (event) => {
 
   if (event.action === 'pray-now') {
     event.waitUntil(
-      clients.openWindow(event.notification.data.url || '/app/dashboard')
+      clients.openWindow(event.notification.data.url || '/app/dashboard'),
     );
   } else if (event.action === 'remind-later') {
     // Schedule another notification in 1 hour
@@ -86,7 +83,7 @@ self.addEventListener('notificationclick', (event) => {
   } else {
     // Default action - open the app
     event.waitUntil(
-      clients.openWindow(event.notification.data.url || '/app/dashboard')
+      clients.openWindow(event.notification.data.url || '/app/dashboard'),
     );
   }
 });

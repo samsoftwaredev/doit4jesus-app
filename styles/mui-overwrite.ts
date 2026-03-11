@@ -1,4 +1,4 @@
-import { createTheme, ThemeOptions } from '@mui/material/styles';
+import { ThemeOptions, createTheme } from '@mui/material/styles';
 
 const getTheme = (mode: 'light' | 'dark') => {
   const lightPalette = {
@@ -81,103 +81,103 @@ const getTheme = (mode: 'light' | 'dark') => {
   return createTheme({
     palette,
     typography: {
-    fontFamily: [
-      '-apple-system',
-      'BlinkMacSystemFont',
-      '"Segoe UI"',
-      'Roboto',
-      '"Helvetica Neue"',
-      'Arial',
-      'sans-serif',
-    ].join(','),
-    button: {
-      textTransform: 'none',
-      fontWeight: 600,
-    },
-    h1: {
-      fontWeight: 700,
-    },
-    h2: {
-      fontWeight: 700,
-    },
-    h3: {
-      fontWeight: 600,
-    },
-  },
-  shape: {
-    borderRadius: 8,
-  },
-  spacing: 8,
-  components: {
-    MuiButton: {
-      defaultProps: {
-        disableElevation: true,
+      fontFamily: [
+        '-apple-system',
+        'BlinkMacSystemFont',
+        '"Segoe UI"',
+        'Roboto',
+        '"Helvetica Neue"',
+        'Arial',
+        'sans-serif',
+      ].join(','),
+      button: {
+        textTransform: 'none',
+        fontWeight: 600,
       },
-      styleOverrides: {
-        root: {
-          borderRadius: '50px',
-          padding: '10px 24px',
-          fontWeight: 600,
+      h1: {
+        fontWeight: 700,
+      },
+      h2: {
+        fontWeight: 700,
+      },
+      h3: {
+        fontWeight: 600,
+      },
+    },
+    shape: {
+      borderRadius: 8,
+    },
+    spacing: 8,
+    components: {
+      MuiButton: {
+        defaultProps: {
+          disableElevation: true,
         },
-        contained: {
-          boxShadow: 'none',
-          '&:hover': {
+        styleOverrides: {
+          root: {
+            borderRadius: '50px',
+            padding: '10px 24px',
+            fontWeight: 600,
+          },
+          contained: {
             boxShadow: 'none',
+            '&:hover': {
+              boxShadow: 'none',
+            },
           },
-        },
-        outlined: {
-          borderWidth: '2px',
-          '&:hover': {
+          outlined: {
             borderWidth: '2px',
+            '&:hover': {
+              borderWidth: '2px',
+            },
           },
         },
       },
-    },
-    MuiCard: {
-      defaultProps: {
-        elevation: 0,
-      },
-      styleOverrides: {
-        root: {
-          borderRadius: 12,
-          border: '1px solid rgba(0, 0, 0, 0.08)',
+      MuiCard: {
+        defaultProps: {
+          elevation: 0,
+        },
+        styleOverrides: {
+          root: {
+            borderRadius: 12,
+            border: '1px solid rgba(0, 0, 0, 0.08)',
+          },
         },
       },
-    },
-    MuiTypography: {
-      styleOverrides: {
-        root: {
-          whiteSpace: 'pre-line',
+      MuiTypography: {
+        styleOverrides: {
+          root: {
+            whiteSpace: 'pre-line',
+          },
         },
       },
-    },
-    MuiTextField: {
-      defaultProps: {
-        variant: 'outlined',
+      MuiTextField: {
+        defaultProps: {
+          variant: 'outlined',
+        },
+        styleOverrides: {
+          root: {
+            '& .MuiOutlinedInput-root': {
+              borderRadius: 8,
+            },
+          },
+        },
       },
-      styleOverrides: {
-        root: {
-          '& .MuiOutlinedInput-root': {
+      MuiChip: {
+        styleOverrides: {
+          root: {
             borderRadius: 8,
           },
         },
       },
-    },
-    MuiChip: {
-      styleOverrides: {
-        root: {
-          borderRadius: 8,
+      MuiPaper: {
+        styleOverrides: {
+          rounded: {
+            borderRadius: 12,
+          },
         },
       },
     },
-    MuiPaper: {
-      styleOverrides: {
-        rounded: {
-          borderRadius: 12,
-        },
-      },
-    },
-  },
   });
 };
 

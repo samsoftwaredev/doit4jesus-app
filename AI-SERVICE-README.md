@@ -48,13 +48,11 @@ LOCAL_MODEL_URL=http://localhost:11434
 import { aiService } from '@/utils/ai-service';
 
 // Simple generation
-const response = await aiService.generateText(
-  'Write a prayer for peace'
-);
+const response = await aiService.generateText('Write a prayer for peace');
 
-console.log(response.text);      // Generated text
-console.log(response.model);     // 'claude-3-sonnet'
-console.log(response.provider);  // 'claude'
+console.log(response.text); // Generated text
+console.log(response.model); // 'claude-3-sonnet'
+console.log(response.provider); // 'claude'
 ```
 
 ### With Options
@@ -63,10 +61,10 @@ console.log(response.provider);  // 'claude'
 const response = await aiService.generateText(
   'Explain the mysteries of the rosary',
   {
-    temperature: 0.7,           // Creativity (0-1)
-    maxTokens: 500,            // Length limit
-    systemPrompt: 'You are a Catholic theologian.'
-  }
+    temperature: 0.7, // Creativity (0-1)
+    maxTokens: 500, // Length limit
+    systemPrompt: 'You are a Catholic theologian.',
+  },
 );
 ```
 
@@ -75,7 +73,7 @@ const response = await aiService.generateText(
 ```typescript
 // For semantic search, RAG, etc.
 const embedding = await aiService.generateEmbeddings(
-  'Our Father who art in heaven'
+  'Our Father who art in heaven',
 );
 
 // Returns: number[] (1536 dimensions)
@@ -92,15 +90,15 @@ import { aiService } from '@/utils/ai-service';
 export default async function handler(req, res) {
   try {
     const { mysteryName } = req.body;
-    
+
     const response = await aiService.generateText(
       `Write a brief reflection on the ${mysteryName} of the rosary.`,
       {
         systemPrompt: 'You are a Catholic spiritual director.',
-        maxTokens: 300
-      }
+        maxTokens: 300,
+      },
     );
-    
+
     res.json({ reflection: response.text, model: response.model });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -113,7 +111,7 @@ export default async function handler(req, res) {
 ```typescript
 const response = await aiService.generateText(
   `Suggest 5 prayer intentions for someone struggling with ${userInput}`,
-  { temperature: 0.8, maxTokens: 200 }
+  { temperature: 0.8, maxTokens: 200 },
 );
 ```
 
@@ -124,8 +122,8 @@ const response = await aiService.generateText(
   'Guide me through meditating on the Joyful Mysteries',
   {
     systemPrompt: 'You are a contemplative prayer guide.',
-    temperature: 0.6
-  }
+    temperature: 0.6,
+  },
 );
 ```
 
@@ -136,14 +134,15 @@ const response = await aiService.generateText(
   `What Bible verses relate to the ${mystery}?`,
   {
     systemPrompt: 'You are a Biblical scholar. Cite specific verses.',
-    maxTokens: 400
-  }
+    maxTokens: 400,
+  },
 );
 ```
 
 ## Error Handling
 
 The service automatically handles:
+
 - ✅ Rate limits (429 errors)
 - ✅ API errors
 - ✅ Network failures
@@ -163,21 +162,21 @@ try {
 
 ### Per 1,000 Requests
 
-| Provider | Model | Input Cost | Output Cost | Total (avg) |
-|----------|-------|------------|-------------|-------------|
-| Claude | Sonnet | $3.00 | $15.00 | ~$9.00 |
-| OpenAI | GPT-4 Turbo | $10.00 | $30.00 | ~$20.00 |
-| Local | Llama2 | $0.00 | $0.00 | **$0.00** |
+| Provider | Model       | Input Cost | Output Cost | Total (avg) |
+| -------- | ----------- | ---------- | ----------- | ----------- |
+| Claude   | Sonnet      | $3.00      | $15.00      | ~$9.00      |
+| OpenAI   | GPT-4 Turbo | $10.00     | $30.00      | ~$20.00     |
+| Local    | Llama2      | $0.00      | $0.00       | **$0.00**   |
 
 **Recommendation:** Use Claude as primary (best quality/cost), OpenAI as fallback, local for testing/dev.
 
 ## Rate Limits
 
-| Provider | Free Tier | Paid Tier |
-|----------|-----------|-----------|
-| Claude | 50 req/min | 1000 req/min |
-| OpenAI | 3 req/min | 500 req/min |
-| Local | Unlimited | Unlimited |
+| Provider | Free Tier  | Paid Tier    |
+| -------- | ---------- | ------------ |
+| Claude   | 50 req/min | 1000 req/min |
+| OpenAI   | 3 req/min  | 500 req/min  |
+| Local    | Unlimited  | Unlimited    |
 
 ## Best Practices
 
@@ -200,7 +199,7 @@ if (!reflection) {
 ```typescript
 // Instead of 10 separate calls:
 const responses = await Promise.all(
-  mysteries.map(m => aiService.generateText(m.prompt))
+  mysteries.map((m) => aiService.generateText(m.prompt)),
 );
 ```
 
@@ -209,7 +208,7 @@ const responses = await Promise.all(
 ```typescript
 // Short responses = lower cost
 const response = await aiService.generateText(prompt, {
-  maxTokens: 200  // Don't generate more than needed
+  maxTokens: 200, // Don't generate more than needed
 });
 ```
 
@@ -218,7 +217,7 @@ const response = await aiService.generateText(prompt, {
 ```typescript
 // Better quality with system prompts
 const response = await aiService.generateText(prompt, {
-  systemPrompt: 'You are concise and reverent. No flowery language.'
+  systemPrompt: 'You are concise and reverent. No flowery language.',
 });
 ```
 
@@ -238,7 +237,9 @@ Track usage in production:
 
 ```typescript
 // Log AI usage
-console.log(`AI Request: ${response.provider}/${response.model} - ${response.tokensUsed} tokens`);
+console.log(
+  `AI Request: ${response.provider}/${response.model} - ${response.tokensUsed} tokens`,
+);
 
 // Track costs
 const cost = calculateCost(response.provider, response.tokensUsed);
@@ -250,22 +251,27 @@ logToAnalytics({ provider: response.provider, cost });
 Potential features using this service:
 
 1. **AI Prayer Companion**
+
    - Chat with AI about spiritual struggles
    - Get personalized prayer suggestions
 
 2. **Mystery Explanations**
+
    - AI-generated insights for each mystery
    - Different perspectives (historical, theological, personal)
 
 3. **Prayer Journal Analysis**
+
    - AI analyzes journal entries
    - Identifies spiritual patterns and growth
 
 4. **Confession Prep Helper**
+
    - AI guides examination of conscience
    - Suggests areas for reflection
 
 5. **Scripture Study**
+
    - AI explains difficult passages
    - Connects scripture to rosary mysteries
 
@@ -284,15 +290,18 @@ Potential features using this service:
 ## Troubleshooting
 
 ### "Claude API key not configured"
+
 - Add `ANTHROPIC_API_KEY` to `.env.local`
 - Get key from: https://console.anthropic.com
 
 ### "All AI services unavailable"
+
 - Check API keys are valid
 - Verify rate limits not exceeded
 - Test local model: `curl http://localhost:11434/api/generate`
 
 ### High costs
+
 - Reduce `maxTokens`
 - Implement caching
 - Use cheaper models for simple tasks

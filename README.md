@@ -56,19 +56,22 @@ doit4jesus-app/
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/samsoftwaredev/doit4jesus-app.git
    cd doit4jesus-app
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Set up environment variables**
-   
+
    Create a `.env.local` file in the root directory:
+
    ```env
    NEXT_PUBLIC_SUPABASE_PROJECT_URL=your_supabase_url
    NEXT_PUBLIC_SUPABASE_PROJECT_KEY=your_supabase_anon_key
@@ -76,6 +79,7 @@ doit4jesus-app/
    ```
 
 4. **Run the development server**
+
    ```bash
    npm run dev
    ```
@@ -95,6 +99,7 @@ doit4jesus-app/
 1. **Install Docker Desktop** and **Supabase CLI**
 
 2. **Start local Supabase instance**
+
    ```bash
    supabase start --ignore-health-check
    ```
@@ -102,27 +107,32 @@ doit4jesus-app/
    > **Note:** The `--ignore-health-check` flag is required for local development. See [Supabase docs](https://supabase.com/docs/reference/cli/supabase-start) for details.
 
 3. **Generate TypeScript types from database schema**
+
    ```bash
    npm run db-ts
    ```
 
    This generates type definitions in:
+
    - `interfaces/database.ts` (for frontend)
    - `supabase/functions/*/types.ts` (for edge functions)
 
 ## 🧪 Testing
 
 Run all tests:
+
 ```bash
 npm test
 ```
 
 Watch mode for development:
+
 ```bash
 npm run test:watch
 ```
 
 Generate coverage report:
+
 ```bash
 npm run test-coverage
 ```
@@ -142,6 +152,7 @@ Before creating a pull request, create a branch following these conventions:
 ### Pre-commit Hooks
 
 This project uses Husky for pre-commit hooks:
+
 - **Linting:** ESLint auto-fixes code style issues
 - **Formatting:** Prettier formats code
 - **Testing:** Runs tests on staged files
@@ -185,17 +196,17 @@ npm run export
 
 ## 📜 Available Scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start development server |
-| `npm run build` | Build for production |
-| `npm start` | Start production server |
-| `npm run lint` | Lint and fix code |
-| `npm test` | Run tests once |
-| `npm run test:watch` | Run tests in watch mode |
-| `npm run test-coverage` | Generate coverage report |
-| `npm run db-ts` | Generate TypeScript types from database |
-| `npm run export` | Export static site |
+| Command                 | Description                             |
+| ----------------------- | --------------------------------------- |
+| `npm run dev`           | Start development server                |
+| `npm run build`         | Build for production                    |
+| `npm start`             | Start production server                 |
+| `npm run lint`          | Lint and fix code                       |
+| `npm test`              | Run tests once                          |
+| `npm run test:watch`    | Run tests in watch mode                 |
+| `npm run test-coverage` | Generate coverage report                |
+| `npm run db-ts`         | Generate TypeScript types from database |
+| `npm run export`        | Export static site                      |
 
 ## 🤝 Contributing
 
@@ -206,6 +217,7 @@ npm run export
 5. Open a Pull Request
 
 Please ensure:
+
 - Code passes all tests
 - Code follows ESLint and Prettier rules
 - Commit messages are clear and descriptive

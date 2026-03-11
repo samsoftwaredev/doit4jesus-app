@@ -3,11 +3,13 @@
 ## Features Implemented
 
 ✅ **Daily Rosary Reminders**
+
 - Customizable reminder time (6 AM - 10 PM)
 - Browser push notifications
 - Service worker with offline support
 
 ✅ **Streak Protection**
+
 - Automatic reminder if user hasn't prayed today
 - Configurable hours before midnight (1-4 hours)
 - Only triggers if rosary not completed
@@ -36,6 +38,7 @@ VAPID_SUBJECT=mailto:your-email@example.com
 See `DATABASE-MIGRATIONS.md` for SQL scripts.
 
 Run in Supabase SQL Editor:
+
 1. Create `push_subscriptions` table
 2. Create `notification_settings` table
 3. Set up RLS policies
@@ -56,7 +59,7 @@ const supabase = createClient(
 serve(async (req) => {
   try {
     const { type } = await req.json(); // 'daily' or 'streak'
-    
+
     // Get users with notifications enabled
     const { data: settings } = await supabase
       .from('notification_settings')
@@ -120,7 +123,7 @@ serve(async (req) => {
 
 async function sendPushNotification(subscription: any, payload: any) {
   const webpush = await import('npm:web-push@3.5.0');
-  
+
   webpush.setVapidDetails(
     Deno.env.get('VAPID_SUBJECT') ?? '',
     Deno.env.get('NEXT_PUBLIC_VAPID_PUBLIC_KEY') ?? '',
@@ -132,6 +135,7 @@ async function sendPushNotification(subscription: any, payload: any) {
 ```
 
 Deploy the function:
+
 ```bash
 supabase functions deploy send-notifications
 ```
@@ -141,6 +145,7 @@ supabase functions deploy send-notifications
 In Supabase Dashboard → Database → Cron Jobs:
 
 **Daily Reminders** (runs every hour):
+
 ```sql
 SELECT cron.schedule(
   'send-daily-reminders',
@@ -156,6 +161,7 @@ SELECT cron.schedule(
 ```
 
 **Streak Protection** (runs every hour from 8 PM to 11 PM):
+
 ```sql
 SELECT cron.schedule(
   'send-streak-reminders',
@@ -212,19 +218,22 @@ SELECT cron.schedule(
 ### Notifications not showing up
 
 1. **Check browser permissions:**
+
    - Chrome: Settings → Privacy → Notifications
    - Firefox: Settings → Privacy → Permissions → Notifications
    - Safari: Settings → Websites → Notifications
 
 2. **Check Service Worker:**
+
    - Open DevTools → Application → Service Workers
    - Should see `sw.js` registered
 
 3. **Check Database:**
+
    ```sql
    -- Verify subscription saved
    SELECT * FROM push_subscriptions WHERE user_id = 'your-user-id';
-   
+
    -- Verify settings saved
    SELECT * FROM notification_settings WHERE user_id = 'your-user-id';
    ```
@@ -269,11 +278,13 @@ SELECT cron.schedule(
 ## Cost Analysis
 
 ### Free Tier (Sufficient for most apps):
+
 - Supabase: 50K free database requests/day
 - Vercel: Unlimited static files (sw.js)
 - Web Push: Free (browser native)
 
 ### At Scale (10,000 users):
+
 - Daily notifications: 10,000 per day
 - Streak protection: ~3,000-5,000 per day
 - **Total:** ~15,000 notifications/day
@@ -282,6 +293,7 @@ SELECT cron.schedule(
 ## Support
 
 For issues:
+
 1. Check browser console
 2. Check Supabase logs
 3. Verify environment variables

@@ -6,9 +6,7 @@ import HorizontalDivider from './HorizontalDivider';
 
 // Helper to render with context
 const renderWithContext = (component: React.ReactElement) => {
-  return render(
-    <LanguageContextProvider>{component}</LanguageContextProvider>,
-  );
+  return render(<LanguageContextProvider>{component}</LanguageContextProvider>);
 };
 
 describe('HorizontalDivider Component', () => {

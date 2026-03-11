@@ -1,6 +1,6 @@
 /**
  * AI Service with Fallback Models
- * 
+ *
  * Fallback chain: Claude → OpenAI → Local Model
  * Handles rate limits, errors, and retries automatically
  */
@@ -32,13 +32,17 @@ class AIService {
    */
   async generateText(
     prompt: string,
-    options: AIServiceOptions = {}
+    options: AIServiceOptions = {},
   ): Promise<AIResponse> {
     const { temperature = 0.7, maxTokens = 1000, systemPrompt } = options;
 
     // Try Claude first
     try {
-      return await this.callClaude(prompt, { temperature, maxTokens, systemPrompt });
+      return await this.callClaude(prompt, {
+        temperature,
+        maxTokens,
+        systemPrompt,
+      });
     } catch (error: any) {
       console.error('Claude failed:', error.message);
 
@@ -49,7 +53,11 @@ class AIService {
 
       // Fallback to OpenAI
       try {
-        return await this.callOpenAI(prompt, { temperature, maxTokens, systemPrompt });
+        return await this.callOpenAI(prompt, {
+          temperature,
+          maxTokens,
+          systemPrompt,
+        });
       } catch (openaiError: any) {
         console.error('OpenAI failed:', openaiError.message);
 
@@ -60,10 +68,16 @@ class AIService {
 
         // Final fallback: Local model
         try {
-          return await this.callLocalModel(prompt, { temperature, maxTokens, systemPrompt });
+          return await this.callLocalModel(prompt, {
+            temperature,
+            maxTokens,
+            systemPrompt,
+          });
         } catch (localError: any) {
           console.error('All AI services failed:', localError.message);
-          throw new Error('All AI services unavailable. Please try again later.');
+          throw new Error(
+            'All AI services unavailable. Please try again later.',
+          );
         }
       }
     }
@@ -74,7 +88,7 @@ class AIService {
    */
   private async callClaude(
     prompt: string,
-    options: AIServiceOptions
+    options: AIServiceOptions,
   ): Promise<AIResponse> {
     if (!this.claudeApiKey) {
       throw new Error('Claude API key not configured');
@@ -115,7 +129,7 @@ class AIService {
    */
   private async callOpenAI(
     prompt: string,
-    options: AIServiceOptions
+    options: AIServiceOptions,
   ): Promise<AIResponse> {
     if (!this.openaiApiKey) {
       throw new Error('OpenAI API key not configured');
@@ -131,7 +145,7 @@ class AIService {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.openaiApiKey}`,
+        Authorization: `Bearer ${this.openaiApiKey}`,
       },
       body: JSON.stringify({
         model: 'gpt-4-turbo-preview',
@@ -160,9 +174,10 @@ class AIService {
    */
   private async callLocalModel(
     prompt: string,
-    options: AIServiceOptions
+    options: AIServiceOptions,
   ): Promise<AIResponse> {
-    const localModelUrl = process.env.LOCAL_MODEL_URL || 'http://localhost:11434';
+    const localModelUrl =
+      process.env.LOCAL_MODEL_URL || 'http://localhost:11434';
 
     const response = await fetch(`${localModelUrl}/api/generate`, {
       method: 'POST',
@@ -171,8 +186,8 @@ class AIService {
       },
       body: JSON.stringify({
         model: 'llama2',
-        prompt: options.systemPrompt 
-          ? `${options.systemPrompt}\n\n${prompt}` 
+        prompt: options.systemPrompt
+          ? `${options.systemPrompt}\n\n${prompt}`
           : prompt,
         stream: false,
         options: {
@@ -200,7 +215,7 @@ class AIService {
   private isRateLimited(error: any): boolean {
     const message = error.message?.toLowerCase() || '';
     const status = error.status;
-    
+
     return (
       status === 429 ||
       message.includes('rate limit') ||
@@ -221,7 +236,7 @@ class AIService {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.openaiApiKey}`,
+        Authorization: `Bearer ${this.openaiApiKey}`,
       },
       body: JSON.stringify({
         model: 'text-embedding-3-small',

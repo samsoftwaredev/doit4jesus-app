@@ -91,6 +91,7 @@ VAPID_SUBJECT=mailto:your-email@example.com
 ## How to Run Migrations
 
 ### Option 1: Supabase Dashboard
+
 1. Go to https://app.supabase.com
 2. Select your project
 3. Go to SQL Editor
@@ -98,6 +99,7 @@ VAPID_SUBJECT=mailto:your-email@example.com
 5. Run each CREATE TABLE statement
 
 ### Option 2: Supabase CLI
+
 ```bash
 # Create migration file
 supabase migration new add_push_notifications
@@ -113,8 +115,8 @@ After running migrations, test with:
 
 ```sql
 -- Check tables were created
-SELECT table_name FROM information_schema.tables 
-WHERE table_schema = 'public' 
+SELECT table_name FROM information_schema.tables
+WHERE table_schema = 'public'
 AND table_name IN ('push_subscriptions', 'notification_settings');
 
 -- Test insert (replace with your user_id)

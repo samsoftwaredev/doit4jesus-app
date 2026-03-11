@@ -58,7 +58,9 @@ const NotificationSettings = () => {
         // Initialize push notifications
         const success = await initializePushNotifications(user.userId);
         if (!success) {
-          toast.error('Failed to enable notifications. Please check your browser permissions.');
+          toast.error(
+            'Failed to enable notifications. Please check your browser permissions.',
+          );
           setLoading(false);
           return;
         }
@@ -67,7 +69,7 @@ const NotificationSettings = () => {
         showLocalNotification(
           'Notifications Enabled! 🎉',
           'You will now receive daily rosary reminders and streak protection alerts.',
-          '/app/dashboard'
+          '/app/dashboard',
         );
       }
 
@@ -76,7 +78,9 @@ const NotificationSettings = () => {
 
       if (saved) {
         setSettings(newSettings);
-        toast.success(enabled ? 'Notifications enabled!' : 'Notifications disabled');
+        toast.success(
+          enabled ? 'Notifications enabled!' : 'Notifications disabled',
+        );
       } else {
         toast.error('Failed to save notification settings');
       }
@@ -96,12 +100,12 @@ const NotificationSettings = () => {
       const saved = await saveNotificationSettings(user.userId, settings);
       if (saved) {
         toast.success('Notification settings saved!');
-        
+
         // Show preview notification
         showLocalNotification(
           'Settings Updated! ✅',
           `Daily reminder: ${settings.dailyReminderTime}. Streak protection: ${settings.streakProtection ? 'ON' : 'OFF'}`,
-          '/app/dashboard'
+          '/app/dashboard',
         );
       } else {
         toast.error('Failed to save settings');
@@ -118,7 +122,7 @@ const NotificationSettings = () => {
     showLocalNotification(
       'Test Notification 🔔',
       'This is how your daily reminder will look!',
-      '/app/dashboard'
+      '/app/dashboard',
     );
   };
 
@@ -129,7 +133,8 @@ const NotificationSettings = () => {
           🔔 Notification Settings
         </Typography>
         <Typography variant="body2" color="textSecondary" paragraph>
-          Get reminders to pray your daily rosary and protect your prayer streak.
+          Get reminders to pray your daily rosary and protect your prayer
+          streak.
         </Typography>
 
         {/* Enable/Disable Toggle */}
@@ -166,7 +171,10 @@ const NotificationSettings = () => {
                   value={settings.dailyReminderTime}
                   label="Daily Reminder Time"
                   onChange={(e) =>
-                    setSettings({ ...settings, dailyReminderTime: e.target.value })
+                    setSettings({
+                      ...settings,
+                      dailyReminderTime: e.target.value,
+                    })
                   }
                   disabled={loading}
                 >
@@ -191,7 +199,10 @@ const NotificationSettings = () => {
                   <Switch
                     checked={settings.streakProtection}
                     onChange={(e) =>
-                      setSettings({ ...settings, streakProtection: e.target.checked })
+                      setSettings({
+                        ...settings,
+                        streakProtection: e.target.checked,
+                      })
                     }
                     disabled={loading}
                     color="primary"
@@ -231,7 +242,12 @@ const NotificationSettings = () => {
                     <MenuItem value={4}>4 hours before (8:00 PM)</MenuItem>
                   </Select>
                 </FormControl>
-                <Typography variant="caption" color="textSecondary" display="block" mt={1}>
+                <Typography
+                  variant="caption"
+                  color="textSecondary"
+                  display="block"
+                  mt={1}
+                >
                   Only sends if you haven't prayed your rosary today
                 </Typography>
               </Box>
@@ -263,8 +279,8 @@ const NotificationSettings = () => {
         {!('Notification' in window) && (
           <Box mt={3} p={2} bgcolor="warning.light" borderRadius={2}>
             <Typography variant="body2" color="warning.dark">
-              ⚠️ Your browser doesn't support push notifications. Please use Chrome, Firefox,
-              Safari, or Edge.
+              ⚠️ Your browser doesn't support push notifications. Please use
+              Chrome, Firefox, Safari, or Edge.
             </Typography>
           </Box>
         )}
