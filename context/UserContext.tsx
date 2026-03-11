@@ -31,15 +31,24 @@ const UserContext = createContext<UserContext | undefined>(undefined);
 
 const updateProfileGoogle = async (userSession: Session, userProfile: any) => {
   if (userProfile?.first_name === null) {
-    const { error } = await db
-      .getProfiles()
-      .update({
-        first_name: userSession.user.user_metadata.name,
-        picture_url: userSession.user.user_metadata.picture,
-      })
-      .eq('id', userSession.user.id)
-      .select();
-    if (error) toast.error('Unable to update profile');
+    try {
+      const { error } = await db
+        .getProfiles()
+        .update({
+          first_name: userSession.user.user_metadata.name,
+          picture_url: userSession.user.user_metadata.picture,
+        })
+        .eq('id', userSession.user.id)
+        .select();
+      
+      if (error) {
+        console.error('Error updating Google profile:', error);
+        toast.error('Unable to update profile');
+      }
+    } catch (error) {
+      console.error('Exception updating Google profile:', error);
+      toast.error('Unable to update profile');
+    }
   }
 };
 
@@ -53,25 +62,41 @@ const UserContextProvider = ({ children }: Props) => {
   ): Promise<User | undefined> => {
     setIsLoading(true);
     try {
-      if (!userSession) throw Error('No session');
+      if (!userSession) {
+        console.error('getProfile: No user session provided');
+        throw Error('No session');
+      }
+
       const { data: userProfile, error: profileErr } = await db
         .getProfiles()
         .select('*')
         .eq('id', userSession.user.id)
         .single();
 
+      if (profileErr) {
+        console.error('Error fetching user profile:', {
+          userId: userSession.user.id,
+          error: profileErr,
+        });
+        throw Error(profileErr.message);
+      }
+
       if (userSession.user.app_metadata.provider === 'google') {
         updateProfileGoogle(userSession, userProfile);
       }
-
-      if (profileErr) throw Error(profileErr.message);
 
       const { data: rosaryStats, error: statsErr } = await db
         .getRosaryStats()
         .select('*')
         .eq('user_id', userSession.user.id);
 
-      if (statsErr) throw Error(statsErr.message);
+      if (statsErr) {
+        console.error('Error fetching rosary stats:', {
+          userId: userSession.user.id,
+          error: statsErr,
+        });
+        throw Error(statsErr.message);
+      }
 
       const userDataNormalized = normalizeUserProfile(userProfile, rosaryStats);
       const userData = {
@@ -82,6 +107,7 @@ const UserContextProvider = ({ children }: Props) => {
       setUser(userData);
       return userData;
     } catch (error) {
+      console.error('getProfile failed:', error);
       setUser(null);
       router.push(NAV_MAIN_LINKS.login.link);
     } finally {

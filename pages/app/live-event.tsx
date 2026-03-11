@@ -23,39 +23,71 @@ const LiveEvent: NextPage = () => {
   const timeRemaining = moment(dataEvent?.startedAt) > moment();
 
   const getYouTube = async (id: string | null) => {
-    if (!id) return;
-    const { data, error } = await db.getYouTubeVideo().select('*').eq('id', id);
-    if (data) return normalizeVideo(data)[0];
-    if (error) toast.error('Unable to display video');
+    if (!id) {
+      console.error('getYouTube: No video ID provided');
+      return;
+    }
+    
+    try {
+      const { data, error } = await db.getYouTubeVideo().select('*').eq('id', id);
+      
+      if (error) {
+        console.error('Error fetching YouTube video:', { videoId: id, error });
+        toast.error('Unable to display video');
+        return;
+      }
+      
+      if (data) return normalizeVideo(data)[0];
+    } catch (error) {
+      console.error('Exception in getYouTube:', error);
+      toast.error('Unable to display video');
+    }
   };
 
   const getEvent = async () => {
-    const { data, error } = await db
-      .getEvents()
-      .select('*')
-      .order('started_at', { ascending: true })
-      .limit(1);
-    if (data) return normalizeEvent(data)[0];
-    if (error) toast.error('Unable to get event');
+    try {
+      const { data, error } = await db
+        .getEvents()
+        .select('*')
+        .order('started_at', { ascending: true })
+        .limit(1);
+      
+      if (error) {
+        console.error('Error fetching event:', error);
+        toast.error('Unable to get event');
+        return;
+      }
+      
+      if (data) return normalizeEvent(data)[0];
+    } catch (error) {
+      console.error('Exception in getEvent:', error);
+      toast.error('Unable to get event');
+    }
   };
 
   const getData = async () => {
-    const eventRes = await getEvent();
-    if (eventRes?.eventType === EventTypes.youtubeVideo) {
-      const videoRes = await getYouTube(eventRes.eventSource);
-      if (videoRes) {
-        setDataEvent({
-          ...eventRes,
-          ...videoRes,
-        });
-        setAudioPlayer({
-          audio: videoRes.videoId,
-          audioTitle: videoRes.title,
-          id: eventRes.slug,
-        });
+    try {
+      const eventRes = await getEvent();
+      if (eventRes?.eventType === EventTypes.youtubeVideo) {
+        const videoRes = await getYouTube(eventRes.eventSource);
+        if (videoRes) {
+          setDataEvent({
+            ...eventRes,
+            ...videoRes,
+          });
+          setAudioPlayer({
+            audio: videoRes.videoId,
+            audioTitle: videoRes.title,
+            id: eventRes.slug,
+          });
+        }
       }
+    } catch (error) {
+      console.error('Error in getData:', error);
+      toast.error('Unable to load event data');
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   useEffect(() => {
