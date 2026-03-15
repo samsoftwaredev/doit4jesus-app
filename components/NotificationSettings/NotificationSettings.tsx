@@ -214,7 +214,7 @@ const NotificationSettings = () => {
                       Streak Protection 🔥
                     </Typography>
                     <Typography variant="body2" color="textSecondary">
-                      Get reminded if you haven't prayed today
+                      Get reminded if you haven&apos;t prayed today
                     </Typography>
                   </Box>
                 }
@@ -248,7 +248,7 @@ const NotificationSettings = () => {
                   display="block"
                   mt={1}
                 >
-                  Only sends if you haven't prayed your rosary today
+                  Only sends if you haven&apos;t prayed your rosary today
                 </Typography>
               </Box>
             )}
@@ -279,8 +279,8 @@ const NotificationSettings = () => {
         {!('Notification' in window) && (
           <Box mt={3} p={2} bgcolor="warning.light" borderRadius={2}>
             <Typography variant="body2" color="warning.dark">
-              ⚠️ Your browser doesn't support push notifications. Please use
-              Chrome, Firefox, Safari, or Edge.
+              ⚠️ Your browser doesn&apos;t support push notifications. Please
+              use Chrome, Firefox, Safari, or Edge.
             </Typography>
           </Box>
         )}
