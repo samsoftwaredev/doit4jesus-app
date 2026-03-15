@@ -21,7 +21,11 @@ const ThemeToggle = () => {
           },
         }}
       >
-        {mode === 'light' ? <DarkMode /> : <LightMode />}
+        {mode === 'light' ? (
+          <DarkMode />
+        ) : (
+          <LightMode sx={{ color: 'white' }} />
+        )}
       </IconButton>
     </Tooltip>
   );
