@@ -1,4 +1,3 @@
-import styled from '@emotion/styled';
 import { Close } from '@mui/icons-material';
 import {
   Box,
@@ -9,39 +8,40 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 
 import { Logo } from '../..';
 
-const LinkItem = styled(Link)({
+const LinkItem = styled(Link)(({ theme }) => ({
   transition: 'color 0.3s',
   display: 'flex',
   flexDirection: 'row',
   alignItems: 'center',
   width: '100%',
   borderRadius: '10px',
-  color: '#71706a',
+  color: theme.palette.text.secondary,
   padding: '5px',
   margin: '5px',
   '& svg': {
     transition: 'color 0.3s',
-    color: '#71706a',
+    color: theme.palette.text.secondary,
   },
   '&:hover, &:hover svg': {
-    color: '#ffffff',
-    backgroundColor: '#0b1c2b',
+    color: theme.palette.text.primary,
+    backgroundColor: theme.palette.action.hover,
     borderRadius: '10px',
   },
-});
+}));
 
-const ActiveLinkItem = styled(LinkItem)({
-  color: '#ffffff',
+const ActiveLinkItem = styled(LinkItem)(({ theme }) => ({
+  color: theme.palette.text.primary,
   '& svg': {
-    color: '#ffffff',
+    color: theme.palette.text.primary,
   },
-});
+}));
 
 const SideNavHeader = styled(Box)({
   display: 'flex',
@@ -56,10 +56,10 @@ const LogoButton = styled(Button)({
   display: 'flex',
 });
 
-const CloseButton = styled(IconButton)({
+const CloseButton = styled(IconButton)(({ theme }) => ({
   display: 'flex',
-  color: '#ffffff',
-});
+  color: theme.palette.text.primary,
+}));
 
 interface Props {
   handleDrawerClose: () => void;
@@ -92,7 +92,10 @@ const SideNavbar = ({ menuItems, handleDrawerClose }: Props) => {
               <ListItemIcon
                 sx={
                   isActive
-                    ? { color: '#ffffff', '& svg': { color: '#ffffff' } }
+                    ? {
+                        color: 'text.primary',
+                        '& svg': { color: 'text.primary' },
+                      }
                     : undefined
                 }
               >

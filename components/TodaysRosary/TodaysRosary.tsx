@@ -1,5 +1,5 @@
-import styled from '@emotion/styled';
 import { Box, Button, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -24,7 +24,7 @@ const BgBox = styled(Box)({
   backgroundSize: 'cover',
 });
 
-const ContentBox = styled(Box)({
+const ContentBox = styled(Box)(({ theme }) => ({
   cursor: 'pointer',
   position: 'absolute',
   top: 0,
@@ -32,7 +32,10 @@ const ContentBox = styled(Box)({
   right: 0,
   bottom: 0,
   gap: '1em',
-  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  backgroundColor:
+    theme.palette.mode === 'dark'
+      ? 'rgba(0, 0, 0, 0.5)'
+      : 'rgba(0, 0, 0, 0.35)',
   zIndex: 2,
   padding: '20px',
   textAlign: 'center',
@@ -44,7 +47,7 @@ const ContentBox = styled(Box)({
   '@media (min-width: 768px)': {
     flexDirection: 'row',
   },
-});
+}));
 
 const RosaryImage = styled(Image)({
   width: '100%',

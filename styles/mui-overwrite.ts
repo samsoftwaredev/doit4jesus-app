@@ -1,4 +1,4 @@
-import { ThemeOptions, createTheme } from '@mui/material/styles';
+import { createTheme } from '@mui/material/styles';
 
 const getTheme = (mode: 'light' | 'dark') => {
   const lightPalette = {
@@ -64,9 +64,33 @@ const getTheme = (mode: 'light' | 'dark') => {
       dark: '#c5a89f',
       contrastText: '#000000',
     },
+    warning: {
+      light: '#ffb74d',
+      main: '#ff9800',
+      dark: '#f57c00',
+      contrastText: '#ffffff',
+    },
+    error: {
+      light: '#e57373',
+      main: '#f44336',
+      dark: '#d32f2f',
+      contrastText: '#ffffff',
+    },
+    info: {
+      light: '#64b5f6',
+      main: '#2196f3',
+      dark: '#1976d2',
+      contrastText: '#ffffff',
+    },
+    success: {
+      light: '#81c784',
+      main: '#4caf50',
+      dark: '#388e3c',
+      contrastText: '#ffffff',
+    },
     background: {
-      default: '#121212',
-      paper: '#1e1e1e',
+      default: '#0b1c2b',
+      paper: '#163755',
     },
     text: {
       primary: '#ffffff',
@@ -140,7 +164,10 @@ const getTheme = (mode: 'light' | 'dark') => {
         styleOverrides: {
           root: {
             borderRadius: 12,
-            border: '1px solid rgba(0, 0, 0, 0.08)',
+            border:
+              mode === 'dark'
+                ? '1px solid rgba(255, 255, 255, 0.12)'
+                : '1px solid rgba(0, 0, 0, 0.08)',
           },
         },
       },
@@ -181,5 +208,5 @@ const getTheme = (mode: 'light' | 'dark') => {
   });
 };
 
-export const theme = getTheme('light');
+export const theme = getTheme('dark');
 export { getTheme };

@@ -1,6 +1,26 @@
+/* Dark theme (default) */
+:root {
+  --app-card-bg: #163755;
+  --app-card-color: #ffffff;
+  --link-color: #42a5f5;
+  --divider-color: rgba(255, 255, 255, 0.12);
+  --divider-text-color: #ffffff;
+  --divider-text-bg: #163755;
+}
+
+/* Light theme overrides */
+[data-theme='light'] {
+  --app-card-bg: #ffffff;
+  --app-card-color: rgba(0, 0, 0, 0.87);
+  --link-color: #163755;
+  --divider-color: rgba(0, 0, 0, 0.12);
+  --divider-text-color: #163755;
+  --divider-text-bg: #f5f7fa;
+}
+
 a {
   text-decoration: none;
-  color: #00bcd4;
+  color: var(--link-color);
 }
 
 .sectionTitle {
@@ -37,8 +57,8 @@ a {
 }
 
 .appCard {
-  background-color: #163755;
-  color: #ffffff;
+  background-color: var(--app-card-bg);
+  color: var(--app-card-color);
   border-radius: 10px;
   padding: 1em;
 }

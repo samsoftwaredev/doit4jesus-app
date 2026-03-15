@@ -1,4 +1,5 @@
-import { Box, Button, Container, Typography } from '@mui/material';
+import { DarkMode, LightMode } from '@mui/icons-material';
+import { Box, Button, Container, Switch, Typography } from '@mui/material';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -6,11 +7,13 @@ import { db, supabase } from '@/classes';
 import { Card, Dialog, Loading } from '@/components';
 import { useAudioContext } from '@/context/AudioContext';
 import { useLanguageContext } from '@/context/LanguageContext';
+import { useThemeContext } from '@/context/ThemeContext';
 import { INTERFACE_AUDIO_STATE } from '@/interfaces';
 
 const AccountSection = () => {
   const { t } = useLanguageContext();
   const { setAudioState } = useAudioContext();
+  const { mode, toggleTheme } = useThemeContext();
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -48,6 +51,21 @@ const AccountSection = () => {
       <Container className="container-box" maxWidth="sm">
         <Card>
           <Typography fontSize="2em">{t.account}</Typography>
+          <Box display="flex" my={2} flexDirection="column">
+            <Typography fontWeight="bold">{t.theme}</Typography>
+            <Box display="flex" alignItems="center" my={1}>
+              <LightMode color={mode === 'light' ? 'warning' : 'disabled'} />
+              <Switch
+                checked={mode === 'dark'}
+                onChange={toggleTheme}
+                inputProps={{ 'aria-label': 'toggle theme' }}
+              />
+              <DarkMode color={mode === 'dark' ? 'primary' : 'disabled'} />
+              <Typography ml={1}>
+                {mode === 'light' ? t.lightMode : t.darkMode}
+              </Typography>
+            </Box>
+          </Box>
           <Box display="flex" my={2} flexDirection="column">
             <Typography my={2}>{t.deleteAccountQuestion}</Typography>
             <Button

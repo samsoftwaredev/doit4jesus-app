@@ -1,13 +1,13 @@
-import styled from '@emotion/styled';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { IconButton, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
-const Container = styled('div')({
-  color: '#ffffff',
+const Container = styled('div')(({ theme }) => ({
+  color: theme.palette.text.primary,
   display: 'flex',
   alignItems: 'center',
   margin: '5px 0px',
-});
+}));
 
 const Title = styled(Typography)({
   textOverflow: 'ellipsis',

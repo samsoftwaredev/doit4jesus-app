@@ -1,12 +1,12 @@
-import styled from '@emotion/styled';
+import { styled } from '@mui/material/styles';
 import type { CSSProperties, JSX } from 'react';
 
-const Container = styled('div')({
+const Container = styled('div')(({ theme }) => ({
   height: '100%',
-  color: '#ffffff',
-  backgroundColor: '#163755',
+  color: theme.palette.text.primary,
+  backgroundColor: theme.palette.background.paper,
   borderRadius: '10px',
-});
+}));
 
 const Content = styled('div')({
   padding: '20px',

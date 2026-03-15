@@ -1,5 +1,5 @@
-import styled from '@emotion/styled';
 import { Box, Card, CardContent, Link, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import Image from 'next/image';
 
 import adultExamOfConscience from '@/data/adultExamOfConscience.json';

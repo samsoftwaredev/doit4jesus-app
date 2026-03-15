@@ -1,5 +1,5 @@
-import styled from '@emotion/styled';
 import { Box, Card, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import moment from 'moment';
 import { useEffect, useRef, useState } from 'react';

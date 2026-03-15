@@ -1,4 +1,3 @@
-import styled from '@emotion/styled';
 import {
   Button,
   Container,
@@ -6,6 +5,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import Image from 'next/image';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';

@@ -1,8 +1,8 @@
-import styled from '@emotion/styled';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import { Box, Button, Container, IconButton } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import Link from 'next/link';
 
 import { Logo, YouTubeSubscribe } from '@/components';

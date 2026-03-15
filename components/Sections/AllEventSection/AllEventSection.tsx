@@ -1,5 +1,5 @@
-import styled from '@emotion/styled';
 import { Box, Card, CardContent, Container, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import Link from 'next/link';
 
 import { CountdownDate, YouTubeSubscribe } from '@/components';
@@ -92,21 +92,21 @@ const Description = styled(Typography)({
   WebkitBoxOrient: 'vertical',
 });
 
-const EventDetails = styled(Box)({
+const EventDetails = styled(Box)(({ theme }) => ({
   width: '100%',
   display: 'flex',
   flexDirection: 'column',
-  color: '#ffffff',
-  backgroundColor: '#163755',
+  color: theme.palette.text.primary,
+  backgroundColor: theme.palette.background.paper,
   height: 'auto',
-});
+}));
 
-const MainEventDetails = styled(Box)({
+const MainEventDetails = styled(Box)(({ theme }) => ({
   width: '100%',
   display: 'flex',
   flexDirection: 'column',
-  color: '#ffffff',
-  backgroundColor: '#163755',
+  color: theme.palette.text.primary,
+  backgroundColor: theme.palette.background.paper,
   height: 'auto',
   '@media (min-width: 768px)': {
     width: '60%',
@@ -114,7 +114,7 @@ const MainEventDetails = styled(Box)({
   '@media (min-width: 1024px)': {
     width: '50%',
   },
-});
+}));
 
 interface Props {
   events: DataEvent[] | null;

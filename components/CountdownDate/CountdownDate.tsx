@@ -1,6 +1,6 @@
-import styled from '@emotion/styled';
 import CircleIcon from '@mui/icons-material/Circle';
 import { Box } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 

@@ -28,7 +28,7 @@ interface Props {
 }
 
 export const ThemeContextProvider = ({ children }: Props) => {
-  const [mode, setMode] = useState<ThemeMode>('light');
+  const [mode, setMode] = useState<ThemeMode>('dark');
 
   useEffect(() => {
     // Load theme from localStorage on mount
@@ -43,6 +43,10 @@ export const ThemeContextProvider = ({ children }: Props) => {
       setMode(prefersDark ? 'dark' : 'light');
     }
   }, []);
+
+  useEffect(() => {
+    document.body.dataset.theme = mode;
+  }, [mode]);
 
   const toggleTheme = () => {
     const newMode = mode === 'light' ? 'dark' : 'light';

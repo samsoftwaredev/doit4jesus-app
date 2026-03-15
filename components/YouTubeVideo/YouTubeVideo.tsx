@@ -1,4 +1,4 @@
-import styled from '@emotion/styled';
+import { styled } from '@mui/material/styles';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 
 import { YouTubeClass } from '@/classes';

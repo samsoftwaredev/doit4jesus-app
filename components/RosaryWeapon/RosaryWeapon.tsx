@@ -1,5 +1,5 @@
-import styled from '@emotion/styled';
 import { Container, Grid, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 import { useLanguageContext } from '@/context/LanguageContext';
 

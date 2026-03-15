@@ -1,8 +1,8 @@
-import styled from '@emotion/styled';
 import GridViewIcon from '@mui/icons-material/GridView';
 import SoldierIcon from '@mui/icons-material/MilitaryTech';
 import TableChartIcon from '@mui/icons-material/TableChart';
 import { Box, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 import React, { useMemo, useState } from 'react';
 
@@ -10,8 +10,8 @@ import Meta from '@/components/Meta';
 import { SideNavbar, TopNavbar } from '@/components/Navbars';
 import { useLanguageContext } from '@/context/LanguageContext';
 
-const LayoutContainer = styled(Box)({
-  backgroundColor: '#1a1a2e',
+const LayoutContainer = styled(Box)(({ theme }) => ({
+  backgroundColor: theme.palette.background.default,
   display: 'grid',
   gridTemplateColumns: '0px 1fr',
   gridTemplateRows: '60px 30px 1fr',
@@ -21,20 +21,20 @@ const LayoutContainer = styled(Box)({
   '@media (min-width: 768px)': {
     gridTemplateColumns: '300px 1fr',
   },
-});
+}));
 
-const PageTitle = styled(Box)({
+const PageTitle = styled(Box)(({ theme }) => ({
   textAlign: 'center',
   fontSize: '3em',
-  color: '#ffffff',
+  color: theme.palette.text.primary,
   gridColumnStart: 1,
   gridColumnEnd: 3,
-});
+}));
 
-const TopNavbarArea = styled(Box)({
+const TopNavbarArea = styled(Box)(({ theme }) => ({
   gridColumnStart: 1,
   gridColumnEnd: 3,
-  backgroundColor: '#1a1a2e',
+  backgroundColor: theme.palette.background.default,
   margin: 0,
   display: 'flex',
   justifyContent: 'space-between',
@@ -46,16 +46,18 @@ const TopNavbarArea = styled(Box)({
   '@media (min-width: 768px)': {
     justifyContent: 'flex-start',
   },
-});
+}));
 
-const SideNavbarArea = styled(Box)<{ open?: boolean }>(({ open }) => ({
+const SideNavbarArea = styled(Box, {
+  shouldForwardProp: (prop) => prop !== 'open',
+})<{ open?: boolean }>(({ theme, open }) => ({
   transition: 'all 0.3s',
   borderRadius: '10px',
   gridColumnStart: 1,
   gridColumnEnd: 2,
   margin: 0,
   width: '100%',
-  backgroundColor: '#163755',
+  backgroundColor: theme.palette.background.paper,
   paddingLeft: 0,
   position: 'fixed',
   top: 0,
@@ -66,7 +68,7 @@ const SideNavbarArea = styled(Box)<{ open?: boolean }>(({ open }) => ({
   '@media (min-width: 768px)': {
     position: 'relative',
     left: 0,
-    backgroundColor: '#163755',
+    backgroundColor: theme.palette.background.paper,
     marginRight: '0.5em',
     marginLeft: '1em',
     marginTop: '1em',

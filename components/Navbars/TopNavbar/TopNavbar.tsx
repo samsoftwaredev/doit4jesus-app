@@ -1,4 +1,3 @@
-import styled from '@emotion/styled';
 import { LanguageRounded, Logout, Menu as MenuIcon } from '@mui/icons-material';
 import {
   Button,
@@ -11,6 +10,7 @@ import {
   Switch,
   Typography,
 } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import { googleLogout } from '@react-oauth/google';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -26,14 +26,14 @@ import { LANG } from '@/interfaces';
 import { Logo, UserBubble } from '../..';
 import { AppLayout } from '../../Templates';
 
-const MenuButton = styled(IconButton)({
-  color: '#ffffff',
+const MenuButton = styled(IconButton)(({ theme }) => ({
+  color: theme.palette.text.primary,
   visibility: 'visible',
   marginLeft: '-30px',
   '@media (min-width: 768px)': {
     visibility: 'hidden',
   },
-});
+}));
 
 const LogoButton = styled(Button)({
   marginLeft: 0,
@@ -42,8 +42,8 @@ const LogoButton = styled(Button)({
   },
 });
 
-const ProfileButton = styled(IconButton)({
-  color: '#e8d1cb',
+const ProfileButton = styled(IconButton)(({ theme }) => ({
+  color: theme.palette.secondary.main,
   marginRight: '-30px',
   display: 'flex',
   '& svg': {
@@ -55,7 +55,7 @@ const ProfileButton = styled(IconButton)({
     position: 'relative',
     top: '-3px',
   },
-});
+}));
 
 const UserName = styled(Typography)({
   display: 'none',

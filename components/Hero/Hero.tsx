@@ -1,5 +1,5 @@
-import styled from '@emotion/styled';
 import { Box, Button, Container, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -7,11 +7,14 @@ import { NAV_MAIN_LINKS } from '@/constants/nav';
 import { useLanguageContext } from '@/context/LanguageContext';
 import smartPhoneHand from '@/public/assets/images/hero/smartPhoneHand.svg';
 
-const Content = styled('section')({
+const Content = styled('section')(({ theme }) => ({
   position: 'relative',
   color: '#ffffff',
-  background: 'linear-gradient(180deg, #163755 0%, #b71c1c 53%, #ffffff 100%)',
-});
+  background:
+    theme.palette.mode === 'dark'
+      ? 'linear-gradient(180deg, #0b1c2b 0%, #163755 30%, #feb9b9 70%, #0b1c2b 100%)'
+      : 'linear-gradient(180deg, #163755 0%, #feb9b9 53%, #ffffff 100%)',
+}));
 
 const HeroContainer = styled(Container)({
   minHeight: '1200px',
@@ -59,15 +62,17 @@ const SubTitle = styled(Typography)({
   },
 });
 
-const ImageBottomGradient = styled('div')({
+const ImageBottomGradient = styled('div')(({ theme }) => ({
   position: 'absolute',
   bottom: 0,
   zIndex: 100,
   height: '200px',
   width: '100%',
   background:
-    'linear-gradient(180deg, transparent 0%, #ffffff 90%, #ffffff 100%)',
-});
+    theme.palette.mode === 'dark'
+      ? `linear-gradient(180deg, transparent 0%, ${theme.palette.background.default} 90%, ${theme.palette.background.default} 100%)`
+      : 'linear-gradient(180deg, transparent 0%, #ffffff 90%, #ffffff 100%)',
+}));
 
 const HeroImage = styled(Image)({
   width: '350px',

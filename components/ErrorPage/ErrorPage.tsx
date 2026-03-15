@@ -1,10 +1,10 @@
-import styled from '@emotion/styled';
 import { Box, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 import Card from '../Card';
 import Logo from '../Logo';
 
-const FullScreenContainer = styled(Box)({
+const FullScreenContainer = styled(Box)(({ theme }) => ({
   zIndex: 1000,
   height: '100vh',
   position: 'fixed',
@@ -12,9 +12,9 @@ const FullScreenContainer = styled(Box)({
   left: 0,
   bottom: 0,
   right: 0,
-  backgroundColor: '#163755',
-  color: 'white',
-});
+  backgroundColor: theme.palette.background.paper,
+  color: theme.palette.text.primary,
+}));
 
 const CenteredContent = styled(Box)({
   display: 'flex',

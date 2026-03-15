@@ -1,4 +1,3 @@
-import styled from '@emotion/styled';
 import MenuIcon from '@mui/icons-material/Menu';
 import {
   AppBar,
@@ -17,6 +16,7 @@ import {
   Toolbar,
   Typography,
 } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import Link from 'next/link';
 import * as React from 'react';
 
@@ -27,10 +27,13 @@ import { LANG } from '@/interfaces/index';
 
 import { Logo } from '../..';
 
-const StyledAppBar = styled(AppBar)({
-  backgroundColor: '#163755',
+const StyledAppBar = styled(AppBar)(({ theme }) => ({
+  backgroundColor:
+    theme.palette.mode === 'dark'
+      ? theme.palette.background.default
+      : theme.palette.primary.main,
   boxShadow: 'none',
-});
+}));
 
 const StyledToolbar = styled(Toolbar)({
   display: 'grid',
@@ -60,22 +63,22 @@ function HomeNavbar(props: Props) {
     {
       label: t.aboutPage,
       goTo: NAV_FOOTER_LINKS.about.link,
-      sx: { color: '#fff' },
+      sx: { color: 'primary.contrastText' },
     },
     {
       label: t.resourcesPage,
       goTo: NAV_MAIN_LINKS.resources.link,
-      sx: { color: '#fff' },
+      sx: { color: 'primary.contrastText' },
     },
     {
       label: t.whyPraySectionTitle,
       goTo: '/#why-pray-rosary',
-      sx: { color: '#fff' },
+      sx: { color: 'primary.contrastText' },
     },
     {
       label: t.logIn,
       goTo: NAV_MAIN_LINKS.login.link,
-      sx: { color: '#fff' },
+      sx: { color: 'primary.contrastText' },
     },
   ];
 

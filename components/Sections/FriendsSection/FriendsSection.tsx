@@ -1,12 +1,11 @@
-import styled from '@emotion/styled';
 import { Box, Container, Typography } from '@mui/material';
+import { styled, useTheme } from '@mui/material/styles';
 
 import { AllFriends, Card, RosaryLevel, RosaryLevelInfo } from '@/components';
 import FriendApproval from '@/components/FriendApproval';
 import InviteFriend from '@/components/InviteFriend';
 import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
-import { theme } from '@/styles/mui-overwrite';
 import { getCurrentLevel } from '@/utils/levels';
 
 const FriendsGrid = styled(Box)({
@@ -42,13 +41,14 @@ const FriendsGrid = styled(Box)({
   },
 });
 
-const Stats = styled(Typography)({
+const Stats = styled(Typography)(({ theme }) => ({
   '& span:last-child': {
-    color: '#2e7d32',
+    color: theme.palette.success.main,
   },
-});
+}));
 
 const FriendsSection = () => {
+  const theme = useTheme();
   const { t } = useLanguageContext();
   const { user } = useUserContext();
   const numRosariesCompleted = user?.stats.rosaryTotalCount ?? 0;

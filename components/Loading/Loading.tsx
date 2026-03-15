@@ -1,9 +1,9 @@
-import styled from '@emotion/styled';
 import { Box, CircularProgress } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 import Logo from '../Logo';
 
-const FullScreenContainer = styled(Box)({
+const FullScreenContainer = styled(Box)(({ theme }) => ({
   zIndex: 1000,
   height: '100vh',
   position: 'fixed',
@@ -11,12 +11,12 @@ const FullScreenContainer = styled(Box)({
   left: 0,
   bottom: 0,
   right: 0,
-  backgroundColor: '#163755',
+  backgroundColor: theme.palette.background.paper,
   '& img': {
     width: '400px',
     margin: '0 20px',
   },
-});
+}));
 
 const CenteredContent = styled(Box)({
   position: 'fixed',

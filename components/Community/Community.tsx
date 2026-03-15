@@ -1,29 +1,32 @@
-import styled from '@emotion/styled';
 import { Box, Container, Grid, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import Image from 'next/image';
 
 import { useLanguageContext } from '@/context/LanguageContext';
 import rosary from '@/public/assets/images/rosary.svg';
 
-const Section = styled('section')({
+const Section = styled('section')(({ theme }) => ({
   minHeight: '900px',
   position: 'relative',
   display: 'flex',
   flexDirection: 'column',
-  textShadow: '1px 1px 3px #000000',
+  textShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
   color: '#ffffff',
-  background: 'linear-gradient(180deg, #163755 0%, #163755 20%, #844d42 100%)',
+  background:
+    theme.palette.mode === 'dark'
+      ? 'linear-gradient(180deg, #0b1c2b 0%, #163755 20%, #844d42 100%)'
+      : 'linear-gradient(180deg, #163755 0%, #163755 20%, #844d42 100%)',
   '& img': {
     position: 'absolute',
     top: 0,
     right: 0,
     zIndex: 1,
   },
-});
+}));
 
 const Title = styled(Typography)({
   position: 'relative',
-  textShadow: '1px 1px 3px #000000',
+  textShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
   zIndex: 100,
 });
 

@@ -7,6 +7,7 @@ export { default as ForgotPassword } from './ForgotPassword';
 export { default as UpdatePassword } from './UpdatePassword';
 export { default as ContactSection } from './ContactSection';
 export { default as AccountSetup } from './AccountSetup';
+export { default as AccountSection } from './AccountSection';
 export { default as DashboardSection } from './DashboardSection';
 export { default as FriendsSection } from './FriendsSection';
 export { default as FriendRequestSection } from './FriendRequestSection';

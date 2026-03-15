@@ -1,36 +1,39 @@
-import styled from '@emotion/styled';
 import { Box, Container, Grid, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 import { useLanguageContext } from '@/context/LanguageContext';
 
-const Section = styled('section')({
+const Section = styled('section')(({ theme }) => ({
   minHeight: '100vh',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   flexDirection: 'column',
-  background: 'linear-gradient(180deg, #844d42 0%, #ffffff 80%, #ffffff 100%)',
-});
+  background:
+    theme.palette.mode === 'dark'
+      ? 'linear-gradient(180deg, #844d42 0%, #0b1c2b 80%, #0b1c2b 100%)'
+      : 'linear-gradient(180deg, #844d42 0%, #ffffff 80%, #ffffff 100%)',
+}));
 
-const Title = styled(Typography)({
-  color: '#ffffff',
+const Title = styled(Typography)(({ theme }) => ({
+  color: theme.palette.mode === 'dark' ? theme.palette.text.primary : '#ffffff',
   marginBottom: '0.5em',
   textAlign: 'center',
-});
+}));
 
-const Arcs = styled(Box)({
+const Arcs = styled(Box)(({ theme }) => ({
   margin: '20px auto',
   borderRadius: '200px',
   padding: '5px',
   height: '600px',
-  border: '10px solid #ffffff',
-  backgroundColor: '#ffffff',
+  border: `10px solid ${theme.palette.background.paper}`,
+  backgroundColor: theme.palette.background.paper,
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
   alignItems: 'center',
   maxWidth: '550px',
-});
+}));
 
 const Step = styled(Typography)({
   fontSize: '5em',

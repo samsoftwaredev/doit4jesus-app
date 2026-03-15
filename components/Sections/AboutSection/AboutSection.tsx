@@ -1,5 +1,5 @@
-import styled from '@emotion/styled';
 import { Box, Button, Container, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import Image from 'next/image';
 import Link from 'next/link';
 

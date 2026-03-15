@@ -1,5 +1,5 @@
 import { keyframes } from '@emotion/react';
-import styled from '@emotion/styled';
+import { styled } from '@mui/material/styles';
 import type { JSX } from 'react';
 
 const marquee = keyframes`

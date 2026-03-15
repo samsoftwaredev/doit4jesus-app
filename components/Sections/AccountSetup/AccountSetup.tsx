@@ -1,6 +1,6 @@
-import styled from '@emotion/styled';
 import { ChevronLeft, ChevronRight, Close } from '@mui/icons-material';
 import { Box, Button, Container, Grid, Typography } from '@mui/material';
+import { styled, useTheme } from '@mui/material/styles';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -14,7 +14,6 @@ import joinedAppBadge from '@/public/assets/images/badges/divineRosaryPrayerPart
 import jesusCross from '@/public/assets/images/hero/jesusCross.svg';
 import jesusFish from '@/public/assets/images/hero/jesusFish.svg';
 import maryRosary from '@/public/assets/images/rosary.svg';
-import { theme } from '@/styles/mui-overwrite';
 
 const SetupContainer = styled('div')({
   zIndex: 2,
@@ -43,11 +42,11 @@ const BackgroundImg = styled(Image)({
   },
 });
 
-const StepTitle = styled(Typography)({
-  color: '#ffffff',
+const StepTitle = styled(Typography)(({ theme }) => ({
+  color: theme.palette.text.primary,
   textAlign: 'center',
   fontWeight: 100,
-});
+}));
 
 const ContentContainer = styled(Container)({
   display: 'flex',
@@ -235,6 +234,7 @@ const Intro = ({ nextStep }: StepProps) => {
 };
 
 const AccountSetup = () => {
+  const theme = useTheme();
   let steps: Array<{
     component: React.ReactNode;
     color: string;

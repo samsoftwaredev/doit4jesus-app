@@ -1,4 +1,4 @@
-import styled from '@emotion/styled';
+import { styled } from '@mui/material/styles';
 
 import { useLanguageContext } from '@/context/LanguageContext';
 
@@ -9,15 +9,15 @@ const Container = styled('div')({
   margin: 'auto',
 });
 
-const Bar = styled('div')({
+const Bar = styled('div')(({ theme }) => ({
   top: '50%',
   position: 'absolute',
   width: '100%',
-  backgroundColor: '#71706a',
+  backgroundColor: theme.palette.divider,
   height: '2px',
-});
+}));
 
-const Text = styled('div')({
+const Text = styled('div')(({ theme }) => ({
   width: '50%',
   height: '50%',
   overflow: 'auto',
@@ -28,9 +28,9 @@ const Text = styled('div')({
   bottom: 0,
   right: 0,
   textAlign: 'center',
-  color: '#163755',
-  backgroundColor: 'rgb(255, 255, 255)',
-});
+  color: theme.palette.text.primary,
+  backgroundColor: theme.palette.background.default,
+}));
 
 const HorizontalDivider = () => {
   const { t } = useLanguageContext();
