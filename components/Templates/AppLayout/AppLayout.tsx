@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import GridViewIcon from '@mui/icons-material/GridView';
 import SoldierIcon from '@mui/icons-material/MilitaryTech';
 import TableChartIcon from '@mui/icons-material/TableChart';
@@ -8,9 +9,78 @@ import React, { useMemo, useState } from 'react';
 import Meta from '@/components/Meta';
 import { SideNavbar, TopNavbar } from '@/components/Navbars';
 import { useLanguageContext } from '@/context/LanguageContext';
-import { css } from '@/utils/helpers';
 
-import styles from './AppLayout.module.scss';
+const LayoutContainer = styled(Box)({
+  backgroundColor: '#1a1a2e',
+  display: 'grid',
+  gridTemplateColumns: '0px 1fr',
+  gridTemplateRows: '60px 30px 1fr',
+  gridColumnGap: '0px',
+  gridRowGap: '0px',
+  minHeight: '100vh',
+  '@media (min-width: 768px)': {
+    gridTemplateColumns: '300px 1fr',
+  },
+});
+
+const PageTitle = styled(Box)({
+  textAlign: 'center',
+  fontSize: '3em',
+  color: '#ffffff',
+  gridColumnStart: 1,
+  gridColumnEnd: 3,
+});
+
+const TopNavbarArea = styled(Box)({
+  gridColumnStart: 1,
+  gridColumnEnd: 3,
+  backgroundColor: '#1a1a2e',
+  margin: 0,
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  padding: '0px 40px',
+  marginTop: '30px',
+  marginBottom: '30px',
+  zIndex: 889,
+  '@media (min-width: 768px)': {
+    justifyContent: 'flex-start',
+  },
+});
+
+const SideNavbarArea = styled(Box)<{ open?: boolean }>(({ open }) => ({
+  transition: 'all 0.3s',
+  borderRadius: '10px',
+  gridColumnStart: 1,
+  gridColumnEnd: 2,
+  margin: 0,
+  width: '100%',
+  backgroundColor: '#163755',
+  paddingLeft: 0,
+  position: 'fixed',
+  top: 0,
+  left: open ? 0 : '748px',
+  right: 0,
+  bottom: 0,
+  zIndex: 890,
+  '@media (min-width: 768px)': {
+    position: 'relative',
+    left: 0,
+    backgroundColor: '#163755',
+    marginRight: '0.5em',
+    marginLeft: '1em',
+    marginTop: '1em',
+    paddingLeft: '0.5em',
+    width: 'calc(100% - 40px)',
+  },
+}));
+
+const ContentArea = styled(Box)({
+  borderRadius: '10px',
+  gridColumnStart: 2,
+  gridColumnEnd: 3,
+  paddingBottom: '80px',
+});
 
 interface Props {
   children: React.ReactNode;
@@ -55,31 +125,23 @@ const AppLayout = ({ children }: Props) => {
   return (
     <>
       <Meta pageTitle={pageTitle?.label} />
-      <Box className={styles.container}>
-        <Box component="menu" className={styles.topNavbar}>
+      <LayoutContainer>
+        <TopNavbarArea>
           <TopNavbar handleMenu={handleDrawerOpen} />
-        </Box>
-        <Box component="header" className={styles.pageTitle}>
+        </TopNavbarArea>
+        <PageTitle>
           <Typography component="h1" variant="h4">
             {pageTitle?.label}
           </Typography>
-        </Box>
-        <Box
-          component="menu"
-          className={css(
-            styles.sideNavbar,
-            drawerOpen ? styles.sideNavbarOpen : styles.sideNavbarClose,
-          )}
-        >
+        </PageTitle>
+        <SideNavbarArea open={drawerOpen}>
           <SideNavbar
             menuItems={menuItems}
             handleDrawerClose={handleDrawerOpen}
           />
-        </Box>
-        <Box className={styles.content} component="main">
-          {children}
-        </Box>
-      </Box>
+        </SideNavbarArea>
+        <ContentArea>{children}</ContentArea>
+      </LayoutContainer>
     </>
   );
 };

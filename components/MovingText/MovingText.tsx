@@ -1,6 +1,20 @@
+import { keyframes } from '@emotion/react';
+import styled from '@emotion/styled';
 import type { JSX } from 'react';
 
-import styles from './movingText.module.scss';
+const marquee = keyframes`
+  from { transform: translateX(100%); }
+  to { transform: translateX(-200%); }
+`;
+
+const Container = styled('div')({
+  overflow: 'hidden',
+  width: '100%',
+});
+
+const MovingTextWrapper = styled('div')({
+  animation: `${marquee} 20s linear infinite`,
+});
 
 interface Props {
   children?: JSX.Element | string;
@@ -8,9 +22,9 @@ interface Props {
 
 const MovingText = ({ children }: Props) => {
   return (
-    <div className={styles.container}>
-      <div className={styles.movingText}>{children}</div>
-    </div>
+    <Container>
+      <MovingTextWrapper>{children}</MovingTextWrapper>
+    </Container>
   );
 };
 

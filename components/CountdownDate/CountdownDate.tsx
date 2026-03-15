@@ -1,11 +1,25 @@
+import styled from '@emotion/styled';
 import CircleIcon from '@mui/icons-material/Circle';
 import { Box } from '@mui/material';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 
-import { css } from '@/utils/helpers';
+const Pill = styled(Box)({
+  color: '#ffffff',
+  padding: '0px 5px',
+  borderRadius: '10px',
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+});
 
-import styles from './countdownDate.module.scss';
+const WarningPill = styled(Pill)({
+  backgroundColor: 'rgba(255, 152, 0, 0.7)',
+});
+
+const ErrorPill = styled(Pill)({
+  backgroundColor: 'rgba(255, 0, 0, 0.7)',
+});
 
 interface Props {
   targetTime: Date;
@@ -54,7 +68,7 @@ const CountdownDate = ({ targetTime }: Props) => {
 
   if (countdownIsNotZero) {
     return (
-      <Box className={css(styles.pill, styles.warning)}>
+      <WarningPill>
         Starts in&nbsp;
         {showYears ? <span>{timeRemaining.years()}yr&nbsp;</span> : null}
         {showMonths ? <span>{timeRemaining.months()}m&nbsp;</span> : null}
@@ -62,7 +76,7 @@ const CountdownDate = ({ targetTime }: Props) => {
         {showHours ? <span>{timeRemaining.hours()}h&nbsp;</span> : null}
         {showMinutes ? <span>{timeRemaining.minutes()}min&nbsp;</span> : null}
         {showSeconds ? <span>{timeRemaining.seconds()}s&nbsp;</span> : null}
-      </Box>
+      </WarningPill>
     );
   }
 
@@ -72,10 +86,10 @@ const CountdownDate = ({ targetTime }: Props) => {
   }
 
   return (
-    <Box className={css(styles.pill, styles.error)}>
+    <ErrorPill>
       <CircleIcon sx={{ fontSize: '1em' }} />
       &nbsp;Live
-    </Box>
+    </ErrorPill>
   );
 };
 

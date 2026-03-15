@@ -1,9 +1,47 @@
+import styled from '@emotion/styled';
 import { Box, Container, Grid, Typography } from '@mui/material';
 
 import { useLanguageContext } from '@/context/LanguageContext';
-import { css } from '@/utils/helpers';
 
-import styles from './whyPrayRosary.module.scss';
+const Section = styled('section')({
+  minHeight: '100vh',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  flexDirection: 'column',
+  background: 'linear-gradient(180deg, #844d42 0%, #ffffff 80%, #ffffff 100%)',
+});
+
+const Title = styled(Typography)({
+  color: '#ffffff',
+  marginBottom: '0.5em',
+  textAlign: 'center',
+});
+
+const Arcs = styled(Box)({
+  margin: '20px auto',
+  borderRadius: '200px',
+  padding: '5px',
+  height: '600px',
+  border: '10px solid #ffffff',
+  backgroundColor: '#ffffff',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center',
+  maxWidth: '550px',
+});
+
+const Step = styled(Typography)({
+  fontSize: '5em',
+  margin: '0 10px',
+  '@media (min-width: 768px) and (max-width: 1023px)': {
+    fontSize: '10em',
+  },
+  '@media (min-width: 1024px)': {
+    fontSize: '12em',
+  },
+});
 
 const WhyPrayRosary = () => {
   const { t } = useLanguageContext();
@@ -23,19 +61,11 @@ const WhyPrayRosary = () => {
     },
   ];
   return (
-    <section
-      className={styles.container}
-      id="why-pray-rosary"
-      aria-labelledby="why-pray-rosary-title"
-    >
+    <Section id="why-pray-rosary" aria-labelledby="why-pray-rosary-title">
       <Container>
-        <Typography
-          id="why-pray-rosary-title"
-          className={css(styles.title, 'sectionTitle')}
-          variant="h2"
-        >
+        <Title id="why-pray-rosary-title" className="sectionTitle" variant="h2">
           {t.whyPraySectionTitle}
-        </Typography>
+        </Title>
         <Grid gap={1} container justifyContent="space-around">
           {features.map(({ title, description }, index) => (
             <Grid
@@ -45,11 +75,8 @@ const WhyPrayRosary = () => {
               component="article"
               aria-labelledby={`feature-title-${index}`}
             >
-              <Box
-                id={styles[`arc-${index + 1}` as string]}
-                className={styles.arcs}
-              >
-                <Typography className={styles.step}>{index + 1}</Typography>
+              <Arcs>
+                <Step>{index + 1}</Step>
                 <Typography
                   id={`feature-title-${index}`}
                   variant="h5"
@@ -58,20 +85,16 @@ const WhyPrayRosary = () => {
                   {title}
                 </Typography>
                 <Box>
-                  <Typography
-                    className={styles.description}
-                    variant="body1"
-                    gutterBottom
-                  >
+                  <Typography variant="body1" gutterBottom>
                     {description}
                   </Typography>
                 </Box>
-              </Box>
+              </Arcs>
             </Grid>
           ))}
         </Grid>
       </Container>
-    </section>
+    </Section>
   );
 };
 

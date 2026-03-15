@@ -1,7 +1,12 @@
-import { CardProps } from '@/interfaces';
-import { css } from '@/utils/helpers';
+import styled from '@emotion/styled';
 
-import styles from './cardCounter.module.scss';
+import { CardProps } from '@/interfaces';
+
+const Container = styled('div')({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+});
 
 interface Props {
   cards: CardProps[];
@@ -14,9 +19,9 @@ const CardCounter = ({ cards, counter, theme = 'dark' }: Props) => {
   if (Array.isArray(cards)) {
     const total = cards.length;
     return (
-      <div className={css(styles.container, styles[`theme-${theme}`])}>
+      <Container>
         {counter}/{total}
-      </div>
+      </Container>
     );
   }
   return null;

@@ -251,27 +251,22 @@ logToAnalytics({ provider: response.provider, cost });
 Potential features using this service:
 
 1. **AI Prayer Companion**
-
    - Chat with AI about spiritual struggles
    - Get personalized prayer suggestions
 
 2. **Mystery Explanations**
-
    - AI-generated insights for each mystery
    - Different perspectives (historical, theological, personal)
 
 3. **Prayer Journal Analysis**
-
    - AI analyzes journal entries
    - Identifies spiritual patterns and growth
 
 4. **Confession Prep Helper**
-
    - AI guides examination of conscience
    - Suggests areas for reflection
 
 5. **Scripture Study**
-
    - AI explains difficult passages
    - Connects scripture to rosary mysteries
 

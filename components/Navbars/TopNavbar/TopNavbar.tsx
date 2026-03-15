@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import { LanguageRounded, Logout, Menu as MenuIcon } from '@mui/icons-material';
 import {
   Button,
@@ -24,7 +25,44 @@ import { LANG } from '@/interfaces';
 
 import { Logo, UserBubble } from '../..';
 import { AppLayout } from '../../Templates';
-import styles from './TopNavbar.module.scss';
+
+const MenuButton = styled(IconButton)({
+  color: '#ffffff',
+  visibility: 'visible',
+  marginLeft: '-30px',
+  '@media (min-width: 768px)': {
+    visibility: 'hidden',
+  },
+});
+
+const LogoButton = styled(Button)({
+  marginLeft: 0,
+  '@media (min-width: 768px)': {
+    marginLeft: '-30px',
+  },
+});
+
+const ProfileButton = styled(IconButton)({
+  color: '#e8d1cb',
+  marginRight: '-30px',
+  display: 'flex',
+  '& svg': {
+    position: 'relative',
+    top: '-3px',
+    fontSize: '1.3em',
+  },
+  '& img': {
+    position: 'relative',
+    top: '-3px',
+  },
+});
+
+const UserName = styled(Typography)({
+  display: 'none',
+  '@media (min-width: 768px)': {
+    display: 'block',
+  },
+});
 
 interface Props {
   handleMenu: () => void;
@@ -87,25 +125,19 @@ const TopNavbar = ({ handleMenu }: Props) => {
         width: '100%',
       }}
     >
-      <IconButton
-        className={styles.topNavbarMenu}
-        onClick={handleMenu}
-        aria-label="Open menu"
-      >
+      <MenuButton onClick={handleMenu} aria-label="Open menu">
         <MenuIcon color="secondary" />
-      </IconButton>
-      <Button
+      </MenuButton>
+      <LogoButton
         disableRipple
-        className={styles.topNavbarLogo}
         onClick={goToDashboard}
         aria-label="Go to dashboard"
       >
         <Logo type="white" />
-      </Button>
+      </LogoButton>
       <Stack direction="row" alignItems="center" spacing={1}>
         <ThemeToggle />
-        <IconButton
-          className={styles.topNavbarProfile}
+        <ProfileButton
           aria-controls={open ? 'basic-menu' : undefined}
           aria-haspopup="true"
           aria-expanded={open ? 'true' : undefined}
@@ -113,14 +145,14 @@ const TopNavbar = ({ handleMenu }: Props) => {
           disableRipple
           aria-label="Open user menu"
         >
-          <Typography className={styles.userName} fontWeight="bold" pr={2}>
+          <UserName fontWeight="bold" pr={2}>
             {user?.firstName} {user?.lastName}
-          </Typography>
+          </UserName>
           <UserBubble
             userPicture={user?.pictureUrl}
             userName={`${user?.firstName} ${user?.lastName}`}
           />
-        </IconButton>
+        </ProfileButton>
       </Stack>
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
         <MenuItem

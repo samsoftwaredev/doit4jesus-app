@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import MenuIcon from '@mui/icons-material/Menu';
 import {
   AppBar,
@@ -25,7 +26,20 @@ import { useLanguageContext } from '@/context/LanguageContext';
 import { LANG } from '@/interfaces/index';
 
 import { Logo } from '../..';
-import styles from './homeNavbar.module.scss';
+
+const StyledAppBar = styled(AppBar)({
+  backgroundColor: '#163755',
+  boxShadow: 'none',
+});
+
+const StyledToolbar = styled(Toolbar)({
+  display: 'grid',
+  gridTemplateColumns: '20px 1fr 20px',
+  gridTemplateRows: '1fr',
+  '@media (min-width: 900px)': {
+    display: 'flex',
+  },
+});
 
 interface Props {
   window?: () => Window;
@@ -102,8 +116,8 @@ function HomeNavbar(props: Props) {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar component="nav" position="static" className={styles.appBar}>
-        <Toolbar className={styles.toolbar}>
+      <StyledAppBar position="static">
+        <StyledToolbar>
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -147,8 +161,8 @@ function HomeNavbar(props: Props) {
               <MenuItem value={LANG.es}>🇪🇸 Español</MenuItem>
             </Select>
           </Box>
-        </Toolbar>
-      </AppBar>
+        </StyledToolbar>
+      </StyledAppBar>
       <nav>
         <Drawer
           container={container}

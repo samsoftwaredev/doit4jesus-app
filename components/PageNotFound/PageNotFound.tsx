@@ -1,10 +1,21 @@
+import styled from '@emotion/styled';
 import { Container, Typography } from '@mui/material';
 import Image from 'next/image';
 
 import { MainLayout } from '@/components/Templates';
 import ship from '@/public/assets/images/dream/ship.svg';
 
-import styles from './pageNotFound.module.scss';
+const StyledContainer = styled(Container)({
+  display: 'flex',
+  flexDirection: 'column',
+  height: '100vh',
+  justifyContent: 'center',
+  alignItems: 'center',
+  '& img': {
+    maxWidth: '200px',
+    maxHeight: '200px',
+  },
+});
 
 interface Props {
   title?: string;
@@ -21,11 +32,11 @@ const PageNotFound = ({
 }: Props) => {
   return (
     <MainLayout>
-      <Container maxWidth={false} className={styles.container}>
+      <StyledContainer maxWidth={false}>
         <Image src={imagePath} alt={imageAlt} />
         <Typography variant="h1">{title}</Typography>
         <Typography variant="h6">{description}</Typography>
-      </Container>
+      </StyledContainer>
     </MainLayout>
   );
 };

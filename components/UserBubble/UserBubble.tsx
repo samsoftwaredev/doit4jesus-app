@@ -1,8 +1,26 @@
+import styled from '@emotion/styled';
 import { AccountCircle } from '@mui/icons-material';
 import { Box, Tooltip } from '@mui/material';
 
 import SafeImage from '../SafeImage';
-import styles from './userBubble.module.scss';
+
+const Avatar = styled(Box)({
+  width: '20px',
+  height: '20px',
+  borderRadius: '50%',
+  border: '2px solid #e8d1cb',
+  display: 'inline-block',
+  position: 'relative',
+  boxShadow: '0px 1px 3px 0px rgba(0, 0, 0, 0.2)',
+  transition: '0.2s ease',
+  marginLeft: '-10px',
+  backgroundColor: 'black',
+  '& svg': {
+    width: '100%',
+    height: 'auto',
+    color: '#e8d1cb',
+  },
+});
 
 interface Props {
   userName?: string;
@@ -14,7 +32,7 @@ interface Props {
 const UserBubble = ({ userName, userPicture, isOnline = false }: Props) => {
   const tooltipMessage = isOnline ? `${userName} is online.` : userName;
   return (
-    <Box className={styles.avatar}>
+    <Avatar>
       <Tooltip title={tooltipMessage}>
         <span>
           {userPicture ? (
@@ -30,7 +48,7 @@ const UserBubble = ({ userName, userPicture, isOnline = false }: Props) => {
           )}
         </span>
       </Tooltip>
-    </Box>
+    </Avatar>
   );
 };
 

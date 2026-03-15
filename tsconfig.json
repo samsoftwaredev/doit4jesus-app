@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -20,66 +16,26 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@/classes/*": [
-        "classes/*"
-      ],
-      "@/classes": [
-        "classes/index"
-      ],
-      "@/components/*": [
-        "components/*"
-      ],
-      "@/components": [
-        "components/index"
-      ],
-      "@/constants/*": [
-        "constants/*"
-      ],
-      "@/constants": [
-        "constants/index"
-      ],
-      "@/public/*": [
-        "public/*"
-      ],
-      "@/public": [
-        "public/index"
-      ],
-      "@/utils/*": [
-        "utils/*"
-      ],
-      "@/utils": [
-        "utils/index"
-      ],
-      "@/interfaces/*": [
-        "interfaces/*"
-      ],
-      "@/interfaces": [
-        "interfaces/index"
-      ],
-      "@/context/*": [
-        "context/*"
-      ],
-      "@/context": [
-        "context/index"
-      ],
-      "@/styles/*": [
-        "styles/*"
-      ],
-      "@/styles": [
-        "styles/index"
-      ],
-      "@/data/*": [
-        "data/*"
-      ],
-      "@/data": [
-        "data/index"
-      ],
-      "@/services/*": [
-        "services/*"
-      ],
-      "@/services": [
-        "services/index"
-      ]
+      "@/classes/*": ["classes/*"],
+      "@/classes": ["classes/index"],
+      "@/components/*": ["components/*"],
+      "@/components": ["components/index"],
+      "@/constants/*": ["constants/*"],
+      "@/constants": ["constants/index"],
+      "@/public/*": ["public/*"],
+      "@/public": ["public/index"],
+      "@/utils/*": ["utils/*"],
+      "@/utils": ["utils/index"],
+      "@/interfaces/*": ["interfaces/*"],
+      "@/interfaces": ["interfaces/index"],
+      "@/context/*": ["context/*"],
+      "@/context": ["context/index"],
+      "@/styles/*": ["styles/*"],
+      "@/styles": ["styles/index"],
+      "@/data/*": ["data/*"],
+      "@/data": ["data/index"],
+      "@/services/*": ["services/*"],
+      "@/services": ["services/index"]
     }
   },
   "include": [
@@ -91,8 +47,5 @@
     "constants/*",
     "public/*"
   ],
-  "exclude": [
-    "node_modules",
-    ".vscode"
-  ]
+  "exclude": ["node_modules", ".vscode"]
 }

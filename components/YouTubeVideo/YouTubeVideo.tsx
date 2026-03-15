@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 
 import { YouTubeClass } from '@/classes';
@@ -9,7 +10,19 @@ import {
 } from '@/interfaces';
 import { generateRandomStringId, isClientSideRender } from '@/utils';
 
-import styles from './youTubeVideo.module.scss';
+const Container = styled('div')({
+  width: '100%',
+  display: 'flex',
+  justifyContent: 'center',
+  zIndex: 888,
+  position: 'absolute',
+  paddingTop: 'calc(70px + 30px)',
+  '@media (min-width: 768px)': {
+    position: 'absolute',
+    width: 'calc(100% - 320px)',
+    right: '10px',
+  },
+});
 
 interface Props {
   id: string;
@@ -168,12 +181,9 @@ const YouTubeVideo = ({
   }, [player]);
 
   return (
-    <div
-      className={styles.container}
-      style={{ visibility: showVideo ? 'visible' : 'hidden' }}
-    >
+    <Container style={{ visibility: showVideo ? 'visible' : 'hidden' }}>
       <div className="video" ref={youtubeEleRef} id={youtubeId} />
-    </div>
+    </Container>
   );
 };
 

@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import { Box, Card, Typography } from '@mui/material';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import moment from 'moment';
@@ -11,10 +12,37 @@ import { useUserContext } from '@/context/UserContext';
 import { DataEvent, EventMessages, VideoEvent } from '@/interfaces';
 import { Json } from '@/interfaces/database';
 import { EventMessagesDB } from '@/interfaces/databaseTable';
-import { css, normalizeEventMessages } from '@/utils';
+import { normalizeEventMessages } from '@/utils';
 
 import DeleteMessageDialog from './DeleteMessageDialog';
-import styles from './eventSection.module.scss';
+
+const EventContainer = styled(Box)({
+  zIndex: -1,
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '1em',
+});
+
+const EventDetailsCard = styled(Card)({
+  marginTop: '2em',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '1em',
+  width: '95%',
+  '& h1': {
+    fontSize: '2em',
+  },
+});
+
+const EventHeader = styled(Box)({
+  display: 'flex',
+  flexDirection: 'column',
+  '@media (min-width: 1024px)': {
+    flexDirection: 'row',
+  },
+});
 
 interface Props {
   videoEvent: VideoEvent & DataEvent;
@@ -207,30 +235,26 @@ const EventSection = ({ videoEvent }: Props) => {
   if (isLoading) return null;
 
   return (
-    <Box component="section" className={styles.container}>
+    <EventContainer>
       <Box className="video" sx={{ aspectRatio: '16/9', width: '100%' }}>
         <iframe
           frameBorder={0} // don't remove this attribute
         />
       </Box>
-      <Card component="article" className={css(styles.eventDetails, 'appCard')}>
-        <Box display="flex" gap={1} className={styles.eventHeader}>
+      <EventDetailsCard className="appCard">
+        <EventHeader>
           <Typography component="h1" variant="h2">
             {videoEvent.title}
           </Typography>
-        </Box>
+        </EventHeader>
         <Typography textAlign="right" fontSize="small">
           {moment(videoEvent.startedAt).fromNow()}
         </Typography>
         <Typography fontWeight="light" component="div">
           <Markdown>{videoEvent.description}</Markdown>
         </Typography>
-      </Card>
-      <Card
-        component="section"
-        aria-labelledby="prayers-heading"
-        className={css(styles.eventDetails, 'appCard')}
-      >
+      </EventDetailsCard>
+      <EventDetailsCard aria-labelledby="prayers-heading" className="appCard">
         <Typography
           id="prayers-heading"
           fontWeight="bold"
@@ -257,8 +281,8 @@ const EventSection = ({ videoEvent }: Props) => {
           handleCloseDelete={handleCloseDeleteDialog}
           handleDelete={handleDelete}
         />
-      </Card>
-    </Box>
+      </EventDetailsCard>
+    </EventContainer>
   );
 };
 

@@ -1,7 +1,13 @@
+import styled from '@emotion/styled';
 import { Box } from '@mui/material';
 
 import UserBubble from '../UserBubble';
-import styles from './onlineUsers.module.scss';
+
+const Container = styled(Box)({
+  listStyleType: 'none',
+  margin: 0,
+  padding: 0,
+});
 
 interface Props {
   users?: {
@@ -13,7 +19,7 @@ interface Props {
 
 const OnlineUsers = ({ users }: Props) => {
   return (
-    <Box component={'ul'} className={styles.container}>
+    <Container>
       {users?.map(({ fullName, userId, pictureUrl }) => (
         <UserBubble
           key={userId}
@@ -22,7 +28,7 @@ const OnlineUsers = ({ users }: Props) => {
           userPicture={pictureUrl}
         />
       ))}
-    </Box>
+    </Container>
   );
 };
 

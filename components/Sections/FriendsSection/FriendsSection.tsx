@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import { Box, Container, Typography } from '@mui/material';
 
 import { AllFriends, Card, RosaryLevel, RosaryLevelInfo } from '@/components';
@@ -8,7 +9,44 @@ import { useUserContext } from '@/context/UserContext';
 import { theme } from '@/styles/mui-overwrite';
 import { getCurrentLevel } from '@/utils/levels';
 
-import styles from './FriendsSection.module.scss';
+const FriendsGrid = styled(Box)({
+  display: 'grid',
+  gridTemplateColumns: '1fr',
+  gridTemplateRows: '1fr',
+  gridAutoColumns: '1fr',
+  gridAutoRows: 'auto',
+  gap: '10px',
+  gridAutoFlow: 'row',
+  gridTemplateAreas: `
+    'FriendRequests'
+    'TodaysChallenge'
+    'UserLevel'
+    'InviteFriend'
+    'Friends'`,
+  '@media (min-width: 768px)': {
+    gridTemplateColumns: '1fr 1fr',
+    gridTemplateRows: 'auto',
+    gridTemplateAreas: `
+      'FriendRequests FriendRequests'
+      'TodaysChallenge UserLevel'
+      'InviteFriend InviteFriend'
+      'Friends Friends'`,
+  },
+  '@media (min-width: 1024px)': {
+    gridTemplateColumns: '1fr 1fr 1fr',
+    gridTemplateRows: 'auto',
+    gridTemplateAreas: `
+      'FriendRequests FriendRequests FriendRequests'
+      'InviteFriend TodaysChallenge UserLevel'
+      'Friends Friends Friends'`,
+  },
+});
+
+const Stats = styled(Typography)({
+  '& span:last-child': {
+    color: '#2e7d32',
+  },
+});
 
 const FriendsSection = () => {
   const { t } = useLanguageContext();
@@ -18,8 +56,8 @@ const FriendsSection = () => {
 
   return (
     <Container className="container-box" maxWidth="md">
-      <Box className={styles.container}>
-        <div className={styles.TodaysChallenge}>
+      <FriendsGrid>
+        <div style={{ gridArea: 'TodaysChallenge' }}>
           <Card>
             <Box
               display="flex"
@@ -33,12 +71,7 @@ const FriendsSection = () => {
               <Typography fontWeight="bold" mb={1}>
                 {t.todaysChallenge}
               </Typography>
-              <Typography
-                fontSize="4em"
-                fontWeight="900"
-                className={styles.stats}
-                lineHeight="1"
-              >
+              <Stats fontSize="4em" fontWeight="900" lineHeight="1">
                 <span
                   style={{
                     color: user?.stats.todaysRosaryCompleted
@@ -49,14 +82,14 @@ const FriendsSection = () => {
                   {user?.stats.todaysRosaryCompleted ? 1 : 0}
                 </span>
                 <span>/1</span>
-              </Typography>
+              </Stats>
               <Typography fontWeight="100">
                 {t.todaysChallengeDescription2}
               </Typography>
             </Box>
           </Card>
         </div>
-        <div className={styles.InviteFriend}>
+        <div style={{ gridArea: 'InviteFriend' }}>
           <Card>
             <Box
               display="flex"
@@ -68,7 +101,7 @@ const FriendsSection = () => {
             </Box>
           </Card>
         </div>
-        <div className={styles.UserLevel}>
+        <div style={{ gridArea: 'UserLevel' }}>
           <Card>
             <Typography textAlign="center" fontWeight="bold" fontSize="large">
               {t.currentLevel}
@@ -82,17 +115,17 @@ const FriendsSection = () => {
             </Box>
           </Card>
         </div>
-        <div className={styles.Friends}>
+        <div style={{ gridArea: 'Friends' }}>
           <Card>
             <AllFriends />
           </Card>
         </div>
-        <div className={styles.FriendRequests}>
+        <div style={{ gridArea: 'FriendRequests' }}>
           <Card>
             <FriendApproval />
           </Card>
         </div>
-      </Box>
+      </FriendsGrid>
     </Container>
   );
 };

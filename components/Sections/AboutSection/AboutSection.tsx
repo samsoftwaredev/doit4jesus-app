@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import { Box, Button, Container, Typography } from '@mui/material';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -5,20 +6,52 @@ import Link from 'next/link';
 import { NAV_MAIN_LINKS } from '@/constants/nav';
 import virginPrayingHeaven from '@/public/assets/images/art/virginPrayingHeaven.jpeg';
 
-import styles from './aboutSection.module.scss';
+const AboutGrid = styled(Container)({
+  marginTop: '60px',
+  padding: '0 20px',
+  display: 'grid',
+  gridTemplateColumns: '1fr',
+  gridTemplateRows: '1fr 70px 1fr',
+  gap: '20px',
+  gridTemplateAreas: `
+    'image'
+    'title'
+    'content'`,
+  '@media (min-width: 768px)': {
+    gridTemplateColumns: '500px 1fr',
+    gridTemplateRows: '70px 1fr',
+    gridTemplateAreas: `
+      'title image'
+      'content image'`,
+  },
+  '@media (min-width: 1024px)': {
+    padding: '0px',
+    gridTemplateColumns: '500px 1fr',
+    gridTemplateRows: '70px 1fr',
+    gridTemplateAreas: `
+      'title image'
+      'content image'`,
+  },
+});
+
+const AboutImage = styled(Image)({
+  gridArea: 'image',
+  width: '100%',
+  height: 'auto',
+  borderRadius: '20px',
+});
 
 const AboutSection = () => {
   return (
-    <Container maxWidth="md" className={styles.container}>
-      <Image
-        className={styles.image}
+    <AboutGrid maxWidth="md">
+      <AboutImage
         src={virginPrayingHeaven}
         alt="Mary holding the Holy Rosary"
       />
-      <Typography className={styles.title} component="h1" variant="h2">
+      <Typography sx={{ gridArea: 'title' }} component="h1" variant="h2">
         About
       </Typography>
-      <Typography className={styles.content}>
+      <Typography sx={{ gridArea: 'content' }}>
         DoIt4Jesus is a faith-based platform created to bring together people of
         faith to pray the Holy Rosary as a community. We believe in the
         transformative power of prayer to fight evil, foster spiritual growth,
@@ -109,7 +142,7 @@ const AboutSection = () => {
           </Link>
         </Box>
       </Box>
-    </Container>
+    </AboutGrid>
   );
 };
 

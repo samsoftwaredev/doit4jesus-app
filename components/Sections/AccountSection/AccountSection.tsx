@@ -4,12 +4,9 @@ import { toast } from 'react-toastify';
 
 import { db, supabase } from '@/classes';
 import { Card, Dialog, Loading } from '@/components';
-import NotificationSettings from '@/components/NotificationSettings';
 import { useAudioContext } from '@/context/AudioContext';
 import { useLanguageContext } from '@/context/LanguageContext';
 import { INTERFACE_AUDIO_STATE } from '@/interfaces';
-
-import styles from './accountSection.module.scss';
 
 const AccountSection = () => {
   const { t } = useLanguageContext();
@@ -48,11 +45,7 @@ const AccountSection = () => {
 
   return (
     <>
-      <Container className={`container-box ${styles.container}`} maxWidth="sm">
-        <Box mb={3}>
-          <NotificationSettings />
-        </Box>
-
+      <Container className="container-box" maxWidth="sm">
         <Card>
           <Typography fontSize="2em">{t.account}</Typography>
           <Box display="flex" my={2} flexDirection="column">

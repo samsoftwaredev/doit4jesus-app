@@ -1,9 +1,30 @@
+import styled from '@emotion/styled';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { IconButton, Typography } from '@mui/material';
 
-import { css } from '@/utils/helpers';
+const Container = styled('div')({
+  color: '#ffffff',
+  display: 'flex',
+  alignItems: 'center',
+  margin: '5px 0px',
+});
 
-import styles from './titleNav.module.scss';
+const Title = styled(Typography)({
+  textOverflow: 'ellipsis',
+  height: '39px',
+  fontSize: '1.7em',
+});
+
+const SubTitle = styled(Typography)({
+  height: '15px',
+  fontSize: '0.7em',
+});
+
+const Description = styled(Typography)({
+  height: '15px',
+  textOverflow: 'ellipsis',
+  fontSize: '0.9em',
+});
 
 type Props = {
   title: string;
@@ -14,22 +35,16 @@ type Props = {
 
 const Card = ({ title, description, subTitle, onBack }: Props) => {
   return (
-    <div className={styles.container}>
+    <Container>
       <IconButton onClick={onBack}>
         <ArrowBackIosIcon />
       </IconButton>
-      <div className="content">
-        {subTitle && (
-          <Typography className={styles.subTitle}>{subTitle}</Typography>
-        )}
-        <Typography component="h2" className={css(styles.title)}>
-          {title}
-        </Typography>
-        <Typography variant="body2" className={styles.description}>
-          {description}
-        </Typography>
+      <div>
+        {subTitle && <SubTitle>{subTitle}</SubTitle>}
+        <Title>{title}</Title>
+        <Description variant="body2">{description}</Description>
       </div>
-    </div>
+    </Container>
   );
 };
 

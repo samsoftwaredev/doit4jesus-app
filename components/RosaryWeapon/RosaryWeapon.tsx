@@ -1,13 +1,27 @@
+import styled from '@emotion/styled';
 import { Container, Grid, Typography } from '@mui/material';
 
 import { useLanguageContext } from '@/context/LanguageContext';
 
-import styles from './rosaryWeapon.module.scss';
+const StyledContainer = styled('div')({
+  minHeight: '530px',
+  padding: '20px 0',
+  position: 'relative',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  '& img': {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+  },
+});
 
 const RosaryWeapon = () => {
   const { t } = useLanguageContext();
   return (
-    <div className={styles.container}>
+    <StyledContainer>
       <Container maxWidth="md">
         <Grid container spacing={2}>
           <Typography
@@ -19,10 +33,7 @@ const RosaryWeapon = () => {
           >
             {t.rosaryWeaponTitle}
           </Typography>
-          <Grid
-            size={{ xs: 12, md: 6 }}
-            className={styles.descriptionContainer}
-          >
+          <Grid size={{ xs: 12, md: 6 }}>
             <Typography>{t.rosaryWeaponDescription}</Typography>
           </Grid>
           <Grid size={{ xs: 12, md: 6 }} minHeight={300}>
@@ -36,7 +47,7 @@ const RosaryWeapon = () => {
           </Grid>
         </Grid>
       </Container>
-    </div>
+    </StyledContainer>
   );
 };
 

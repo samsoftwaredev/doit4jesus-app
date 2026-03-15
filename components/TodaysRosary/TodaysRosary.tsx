@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import { Box, Button, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import Image from 'next/image';
@@ -13,7 +14,44 @@ import { LANG } from '@/interfaces/index';
 import { capitalizeFirstLetter } from '@/utils/helpers';
 
 import Loading from '../Loading';
-import styles from './TodaysRosary.module.scss';
+
+const BgBox = styled(Box)({
+  borderRadius: '10px',
+  filter: 'blur(8px)',
+  height: '370px',
+  backgroundPosition: 'center',
+  backgroundRepeat: 'no-repeat',
+  backgroundSize: 'cover',
+});
+
+const ContentBox = styled(Box)({
+  cursor: 'pointer',
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  gap: '1em',
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  zIndex: 2,
+  padding: '20px',
+  textAlign: 'center',
+  borderRadius: '10px',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  flexDirection: 'column-reverse',
+  '@media (min-width: 768px)': {
+    flexDirection: 'row',
+  },
+});
+
+const RosaryImage = styled(Image)({
+  width: '100%',
+  height: 'auto',
+  maxHeight: '200px',
+  borderRadius: '10px',
+});
 
 const TodayRosary = () => {
   const { lang, t } = useLanguageContext();
@@ -77,11 +115,8 @@ const TodayRosary = () => {
 
   return (
     <div style={{ position: 'relative', padding: '20px 0' }}>
-      <Box
-        className={styles.bg}
-        style={{ backgroundImage: `url("${image}")` }}
-      />
-      <Box className={styles.content} onClick={goToRosary}>
+      <BgBox style={{ backgroundImage: `url("${image}")` }} />
+      <ContentBox onClick={goToRosary}>
         <Box>
           <Typography fontSize="small" fontWeight="light">
             {t.todaysRosary} - {weekDay}
@@ -94,16 +129,15 @@ const TodayRosary = () => {
           </Button>
         </Box>
         <Box>
-          <Image
+          <RosaryImage
             width="0"
             height="0"
             sizes="100vw"
-            className={styles.image}
             src={image}
             alt="Today's Rosary"
           />
         </Box>
-      </Box>
+      </ContentBox>
     </div>
   );
 };

@@ -1,5 +1,4 @@
 /** @type {import('next').NextConfig} */
-const path = require('path');
 
 const nextConfig = {
   reactStrictMode: true,
@@ -26,10 +25,7 @@ const nextConfig = {
       },
     ],
   },
-  sassOptions: {
-    includePaths: [path.join(__dirname, 'styles')],
-    prependData: `@import "@/styles/variable.scss";`,
-  },
+  turbopack: {},
   webpack(config, options) {
     const { isServer } = options;
     config.module.rules.push({

@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import {
   Button,
   Container,
@@ -15,7 +16,43 @@ import FormErrorText from '@/components/FormErrorText';
 import womanComputer from '@/public/assets/images/womanComputer.jpeg';
 import { emailRegEx, nameRegEx } from '@/utils';
 
-import styles from './ContactSection.module.scss';
+const ContactGrid = styled(Container)({
+  marginTop: '60px',
+  marginBottom: '60px',
+  padding: '0 20px',
+  display: 'grid',
+  gridTemplateColumns: '1fr',
+  gridTemplateRows: '1fr 70px 1fr',
+  gap: '20px',
+  gridTemplateAreas: `
+    'image'
+    'title'
+    'content'`,
+  '@media (min-width: 768px)': {
+    gridTemplateColumns: '500px 1fr',
+    gridTemplateRows: '70px 1fr',
+    gridTemplateAreas: `
+      'image title'
+      'image content'`,
+  },
+  '@media (min-width: 1024px)': {
+    padding: '0px',
+    gridTemplateColumns: '500px 1fr',
+    gridTemplateRows: '70px 1fr',
+    gridTemplateAreas: `
+      'image title'
+      'image content'`,
+  },
+});
+
+const ContactImage = styled(Image)({
+  gridArea: 'image',
+  width: '100%',
+  height: 'auto',
+  display: 'flex',
+  alignSelf: 'center',
+  borderRadius: '10px',
+});
 
 interface IFormInputs {
   email: string;
@@ -54,17 +91,13 @@ const ContactSection = () => {
   };
 
   return (
-    <Container maxWidth="md" className={styles.container}>
-      <Image
-        className={styles.image}
-        src={womanComputer}
-        alt="Mary holding the Holy Rosary"
-      />
-      <Typography className={styles.title} component="h1" variant="h2">
+    <ContactGrid maxWidth="md">
+      <ContactImage src={womanComputer} alt="Mary holding the Holy Rosary" />
+      <Typography sx={{ gridArea: 'title' }} component="h1" variant="h2">
         Contact Us
       </Typography>
       <FormControl
-        className={styles.content}
+        sx={{ gridArea: 'content' }}
         fullWidth
         component="form"
         onSubmit={handleSubmit(onSubmit)}
@@ -141,7 +174,7 @@ const ContactSection = () => {
           Send Message
         </Button>
       </FormControl>
-    </Container>
+    </ContactGrid>
   );
 };
 

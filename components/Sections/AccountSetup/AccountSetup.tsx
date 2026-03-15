@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import { ChevronLeft, ChevronRight, Close } from '@mui/icons-material';
 import { Box, Button, Container, Grid, Typography } from '@mui/material';
 import Image from 'next/image';
@@ -15,7 +16,68 @@ import jesusFish from '@/public/assets/images/hero/jesusFish.svg';
 import maryRosary from '@/public/assets/images/rosary.svg';
 import { theme } from '@/styles/mui-overwrite';
 
-import styles from './accountSetup.module.scss';
+const SetupContainer = styled('div')({
+  zIndex: 2,
+  margin: '60px 0',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+});
+
+const StepperContent = styled(Box)({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  marginBottom: '50px',
+});
+
+const BackgroundImg = styled(Image)({
+  maxHeight: '100vh',
+  display: 'none',
+  opacity: 0.1,
+  left: '-380px !important',
+  '@media (min-width: 768px)': {
+    display: 'block',
+    position: 'fixed',
+    left: 0,
+  },
+});
+
+const StepTitle = styled(Typography)({
+  color: '#ffffff',
+  textAlign: 'center',
+  fontWeight: 100,
+});
+
+const ContentContainer = styled(Container)({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center',
+  position: 'relative',
+});
+
+const Body = styled(Typography)({
+  margin: '20px auto',
+  maxWidth: '400px',
+});
+
+const Bg = styled('div')({
+  zIndex: -1,
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  transition: '1s all',
+});
+
+const Badge = styled(Image)({
+  width: '150px',
+  height: '150px',
+  borderRadius: '50%',
+  margin: '20px 0',
+});
 
 interface StepProps {
   prevStep: () => void;
@@ -25,18 +87,11 @@ interface StepProps {
 const WhatsTheRosary = ({ nextStep, prevStep }: StepProps) => {
   const { t } = useLanguageContext();
   return (
-    <Box className={styles.stepperContent}>
-      <Typography variant="h3" className={styles.title}>
-        {t.whatIsTheRosary}
-      </Typography>
-      <Typography
-        my={5}
-        textAlign="center"
-        color="secondary"
-        className={styles.body}
-      >
+    <StepperContent>
+      <StepTitle variant="h3">{t.whatIsTheRosary}</StepTitle>
+      <Body my={5} textAlign="center" color="secondary">
         {t.whatIsTheRosaryDescription}
-      </Typography>
+      </Body>
       <Grid mt={2} container justifyContent="space-between">
         <Button
           size="large"
@@ -57,20 +112,18 @@ const WhatsTheRosary = ({ nextStep, prevStep }: StepProps) => {
           {t.continue}
         </Button>
       </Grid>
-    </Box>
+    </StepperContent>
   );
 };
 
 const WhyPray = ({ prevStep, nextStep }: StepProps) => {
   const { t } = useLanguageContext();
   return (
-    <Box className={styles.stepperContent}>
-      <Typography variant="h3" className={styles.title}>
-        {t.whyPrayTheRosary}
-      </Typography>
-      <Typography my={3} color="secondary" className={styles.body}>
+    <StepperContent>
+      <StepTitle variant="h3">{t.whyPrayTheRosary}</StepTitle>
+      <Body my={3} color="secondary">
         {t.whyPrayTheRosaryDescription}
-      </Typography>
+      </Body>
       <iframe
         className="iframeYoutube"
         src="https://www.youtube.com/embed/x1tH_zQ-Cz0?si=f5nh--UPvn9ZIQ7v"
@@ -98,23 +151,21 @@ const WhyPray = ({ prevStep, nextStep }: StepProps) => {
           {t.finish}
         </Button>
       </Grid>
-    </Box>
+    </StepperContent>
   );
 };
 
 const WhatAreTheBenefits = ({ prevStep, nextStep }: StepProps) => {
   const { t } = useLanguageContext();
   return (
-    <Box className={styles.stepperContent}>
-      <Typography variant="h3" className={styles.title}>
-        {t.whatAreTheBenefits}
-      </Typography>
-      <Typography my={3} color="secondary" className={styles.body}>
+    <StepperContent>
+      <StepTitle variant="h3">{t.whatAreTheBenefits}</StepTitle>
+      <Body my={3} color="secondary">
         {t.whatAreTheBenefitsDescription}
-      </Typography>
-      <Typography my={3} color="secondary" className={styles.body}>
+      </Body>
+      <Body my={3} color="secondary">
         <Markdown>{t.whatAreTheBenefitsOfRosary}</Markdown>
-      </Typography>
+      </Body>
       <Grid mt={2} container justifyContent="space-between">
         <Button
           size="large"
@@ -135,7 +186,7 @@ const WhatAreTheBenefits = ({ prevStep, nextStep }: StepProps) => {
           {t.continue}
         </Button>
       </Grid>
-    </Box>
+    </StepperContent>
   );
 };
 
@@ -144,34 +195,21 @@ const Intro = ({ nextStep }: StepProps) => {
   const { t } = useLanguageContext();
 
   return (
-    <Box className={styles.stepperContent}>
-      <Typography variant="h3" className={styles.title}>
-        {t.welcomeTitle}
-      </Typography>
-      <Typography
-        my={5}
-        textAlign="center"
-        color="secondary"
-        className={styles.body}
-      >
+    <StepperContent>
+      <StepTitle variant="h3">{t.welcomeTitle}</StepTitle>
+      <Body my={5} textAlign="center" color="secondary">
         {t.welcomeDescription
           .replace('{{firstName}}', user?.firstName || '')
           .replace('{{lastName}}', user?.lastName || '')}
-      </Typography>
+      </Body>
       <ConfettiCelebration />
-      <Image
-        className={styles.badge}
+      <Badge
         src={joinedAppBadge}
         alt="You've just completed the divine achievement."
       />
-      <Typography
-        my={5}
-        textAlign="center"
-        color="secondary"
-        className={styles.body}
-      >
+      <Body my={5} textAlign="center" color="secondary">
         {t.joinedAppBadge}
-      </Typography>
+      </Body>
 
       <Grid container justifyContent="space-between">
         <Button
@@ -192,7 +230,7 @@ const Intro = ({ nextStep }: StepProps) => {
           {t.continue}
         </Button>
       </Grid>
-    </Box>
+    </StepperContent>
   );
 };
 
@@ -258,20 +296,19 @@ const AccountSetup = () => {
 
   return (
     <>
-      <div className={styles.bg} style={{ backgroundColor: bgColor }} />
+      <Bg style={{ backgroundColor: bgColor }} />
       {steps[currentStep].backgroundImage && (
-        <Image
-          className={styles.backgroundImg}
+        <BackgroundImg
           fill
           src={steps[currentStep].backgroundImage!}
           alt="Jesus Cross"
         />
       )}
-      <div className={styles.container}>
-        <Container className={styles.content} maxWidth="md">
+      <SetupContainer>
+        <ContentContainer maxWidth="md">
           {steps[currentStep].component}
-        </Container>
-      </div>
+        </ContentContainer>
+      </SetupContainer>
     </>
   );
 };

@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import { Box, Card, CardContent, Link, Typography } from '@mui/material';
 import Image from 'next/image';
 
@@ -8,7 +9,34 @@ import adultPraying from '@/public/assets/images/art/adultPraying.jpeg';
 import kidPraying from '@/public/assets/images/art/kidPraying.jpeg';
 import teenPraying from '@/public/assets/images/art/teenPraying.jpeg';
 
-import styles from './SelectExamOfConscience.module.scss';
+const ExamCard = styled(Card)({
+  borderRadius: '10px',
+  transition: 'transform 300ms',
+  cursor: 'pointer',
+  '&:hover': {
+    transform: 'scale(1.01)',
+  },
+});
+
+const ExamImage = styled(Image)({
+  width: '100%',
+  height: 'auto',
+});
+
+const ExamTitle = styled(Typography)({
+  whiteSpace: 'nowrap',
+  width: '100%',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+});
+
+const ExamDescription = styled(Typography)({
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  display: '-webkit-box',
+  WebkitLineClamp: 3,
+  WebkitBoxOrient: 'vertical',
+});
 
 interface Props {
   onExamSelected: (exam: string) => void;
@@ -44,44 +72,25 @@ const SelectExamOfConscience = ({ onExamSelected }: Props) => {
       <Typography my={2} color="white" variant="h5">
         Select conscience examination:
       </Typography>
-      <Box
-        display="flex"
-        flexDirection="column"
-        gap={2}
-        className={styles.cardContainer}
-      >
+      <Box display="flex" flexDirection="column" gap={2}>
         {exams.map(({ label, description, image }) => (
-          <Card
+          <ExamCard
             key={label}
             sx={{ textDecoration: 'none' }}
+            // @ts-expect-error MUI polymorphic component prop
             component={Link}
             onClick={() => onExamSelected(label)}
-            className={styles.card}
           >
-            <Image
-              className={styles.image}
-              src={image}
-              alt="Mary holding the Holy Rosary"
-            />
+            <ExamImage src={image} alt="Mary holding the Holy Rosary" />
             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
               <CardContent sx={{ flex: '1 0 auto' }}>
-                <Typography
-                  component="div"
-                  variant="h5"
-                  className={styles.title}
-                >
-                  {label}
-                </Typography>
-                <Typography
-                  variant="subtitle1"
-                  component="p"
-                  className={styles.description}
-                >
+                <ExamTitle variant="h5">{label}</ExamTitle>
+                <ExamDescription variant="subtitle1">
                   {description}
-                </Typography>
+                </ExamDescription>
               </CardContent>
             </Box>
-          </Card>
+          </ExamCard>
         ))}
       </Box>
     </>

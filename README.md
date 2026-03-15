@@ -113,7 +113,6 @@ doit4jesus-app/
    ```
 
    This generates type definitions in:
-
    - `interfaces/database.ts` (for frontend)
    - `supabase/functions/*/types.ts` (for edge functions)
 

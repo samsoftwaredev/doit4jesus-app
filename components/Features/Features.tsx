@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import { Box, Container, Grid, Typography } from '@mui/material';
 import Image from 'next/image';
 
@@ -7,7 +8,30 @@ import josephPraying from '@/public/assets/images/art/josephPraying.jpeg';
 import maryMoon from '@/public/assets/images/art/maryMoon.jpeg';
 import { theme } from '@/styles/mui-overwrite';
 
-import styles from './features.module.scss';
+const Section = styled('section')({
+  minHeight: '100vh',
+  margin: '100px 0',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  flexDirection: 'column',
+});
+
+const ArcBox = styled(Box)({
+  margin: '20px auto',
+  borderTopLeftRadius: '200px',
+  borderTopRightRadius: '200px',
+  height: '300px',
+  maxWidth: '200px',
+  border: '10px solid',
+  textAlign: 'center',
+  '& img': {
+    width: '100%',
+    height: '100%',
+    borderTopLeftRadius: '200px',
+    borderTopRightRadius: '200px',
+  },
+});
 
 const Features = () => {
   const { t } = useLanguageContext();
@@ -33,7 +57,7 @@ const Features = () => {
     },
   ];
   return (
-    <section className={styles.container} aria-labelledby="features-title">
+    <Section aria-labelledby="features-title">
       <Container>
         <Typography
           id="features-title"
@@ -53,15 +77,13 @@ const Features = () => {
               component="article"
               aria-labelledby={`${title.replace(/\s+/g, '-').toLowerCase()}-title`}
             >
-              <Box
-                className={styles.arcs}
+              <ArcBox
                 sx={{
-                  textAlign: 'center',
                   borderColor: theme.palette.secondary.main,
                 }}
               >
                 <Image src={thumbnail} alt={alt} />
-              </Box>
+              </ArcBox>
               <Typography
                 id={`${title.replace(/\s+/g, '-').toLowerCase()}-title`}
                 variant="h5"
@@ -80,7 +102,7 @@ const Features = () => {
           ))}
         </Grid>
       </Container>
-    </section>
+    </Section>
   );
 };
 

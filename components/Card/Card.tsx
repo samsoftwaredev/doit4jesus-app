@@ -1,7 +1,17 @@
-import type { JSX } from 'react';
-import { CSSProperties } from 'styled-components';
+import styled from '@emotion/styled';
+import type { CSSProperties, JSX } from 'react';
 
-import styles from './card.module.scss';
+const Container = styled('div')({
+  height: '100%',
+  color: '#ffffff',
+  backgroundColor: '#163755',
+  borderRadius: '10px',
+});
+
+const Content = styled('div')({
+  padding: '20px',
+  overflow: 'hidden',
+});
 
 interface Props {
   children: JSX.Element | JSX.Element[] | string;
@@ -10,11 +20,9 @@ interface Props {
 
 const Card = ({ children, style }: Props) => {
   return (
-    <div className={styles.container}>
-      <div className={styles.content} style={style}>
-        {children}
-      </div>
-    </div>
+    <Container>
+      <Content style={style}>{children}</Content>
+    </Container>
   );
 };
 

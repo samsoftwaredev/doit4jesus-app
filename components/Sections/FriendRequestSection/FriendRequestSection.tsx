@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import { AccountCircle } from '@mui/icons-material';
 import { Box, Button, Container, Typography } from '@mui/material';
 import Image from 'next/image';
@@ -13,7 +14,23 @@ import { FriendProfile } from '@/interfaces';
 import { normalizeFriendProfile, orderUUIDs } from '@/utils';
 
 import { ErrorPage } from '../..';
-import styles from './FriendRequestSection.module.scss';
+
+const ProfileImage = styled(Image)({
+  width: '80px',
+  height: '80px',
+  borderRadius: '50%',
+  '@media (min-width: 1024px)': {
+    width: '120px',
+    height: '120px',
+  },
+});
+
+const ProfileIcon = styled(AccountCircle)({
+  fontSize: '5em',
+  '@media (min-width: 1024px)': {
+    fontSize: '8em',
+  },
+});
 
 interface UserProfileProps {
   name?: string;
@@ -25,15 +42,14 @@ const UserProfile = ({ name, pictureUrl, uid }: UserProfileProps) => {
   return (
     <Box display="flex" justifyContent="center" flexDirection="column">
       {pictureUrl ? (
-        <Image
+        <ProfileImage
           width="100"
           height="100"
-          className={styles.profile}
           src={pictureUrl}
           alt={name || 'User Name'}
         />
       ) : (
-        <AccountCircle className={styles.profileIcon} />
+        <ProfileIcon />
       )}
       <Typography textAlign="center" component={'h3'}>
         {name}

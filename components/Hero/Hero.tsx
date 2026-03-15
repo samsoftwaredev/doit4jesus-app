@@ -1,3 +1,4 @@
+import styled from '@emotion/styled';
 import { Box, Button, Container, Typography } from '@mui/material';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -5,61 +6,106 @@ import Link from 'next/link';
 import { NAV_MAIN_LINKS } from '@/constants/nav';
 import { useLanguageContext } from '@/context/LanguageContext';
 import smartPhoneHand from '@/public/assets/images/hero/smartPhoneHand.svg';
-import { css } from '@/utils';
 
-import styles from './hero.module.scss';
+const Content = styled('section')({
+  position: 'relative',
+  color: '#ffffff',
+  background: 'linear-gradient(180deg, #163755 0%, #b71c1c 53%, #ffffff 100%)',
+});
+
+const HeroContainer = styled(Container)({
+  minHeight: '1200px',
+  display: 'grid',
+  gridTemplateColumns: '1fr',
+  gridTemplateRows: '400px 780px',
+  textAlign: 'center',
+  '@media (min-width: 768px)': {
+    gridTemplateRows: '400px 1fr',
+  },
+});
+
+const Header = styled(Box)({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  gap: '20px',
+});
+
+const CTAButton = styled(Button)({
+  marginBottom: '20px',
+  padding: '5px 40px',
+  scale: 1,
+  '@media (min-width: 768px)': {
+    scale: 1.1,
+  },
+  '@media (min-width: 1024px)': {
+    scale: 1.3,
+  },
+});
+
+const Title = styled(Typography)({
+  paddingTop: '150px',
+  width: '280px',
+  '@media (min-width: 768px)': {
+    width: '100%',
+  },
+});
+
+const SubTitle = styled(Typography)({
+  letterSpacing: '5px',
+  width: '260px',
+  '@media (min-width: 768px)': {
+    width: '100%',
+  },
+});
+
+const ImageBottomGradient = styled('div')({
+  position: 'absolute',
+  bottom: 0,
+  zIndex: 100,
+  height: '200px',
+  width: '100%',
+  background:
+    'linear-gradient(180deg, transparent 0%, #ffffff 90%, #ffffff 100%)',
+});
+
+const HeroImage = styled(Image)({
+  width: '350px',
+  justifySelf: 'center',
+  '@media (min-width: 768px)': {
+    width: '600px',
+  },
+  '@media (min-width: 1024px)': {
+    width: '700px',
+  },
+});
 
 const Hero = () => {
   const { t } = useLanguageContext();
   return (
-    <section className={styles.content} aria-labelledby="hero-title">
-      <Container
-        maxWidth={false}
-        className={styles.container}
-        component="div"
-        role="banner"
-      >
-        <Box className={styles.header}>
-          <Typography
-            id="hero-title"
-            component="h1"
-            variant="h3" // Use Material-UI's responsive typography
-            className={css(styles.title, 'sectionTitle')}
-          >
+    <Content aria-labelledby="hero-title">
+      <HeroContainer maxWidth={false} role="banner">
+        <Header>
+          <Title id="hero-title" variant="h3" className="sectionTitle">
             {t.heroTitle}
-          </Typography>
-          <Typography
-            mb={2}
-            component="p"
-            variant="body1" // Use responsive body text
-            className={css(styles.subTitle, 'sectionSubTitle')}
-          >
+          </Title>
+          <SubTitle mb={2} variant="body1" className="sectionSubTitle">
             {t.headline}
-          </Typography>
+          </SubTitle>
           <Link
             style={{ padding: '1em 0' }}
             passHref
             href={NAV_MAIN_LINKS.signup.link}
           >
-            <Button
-              className={styles.cta}
-              variant="contained"
-              size="large"
-              aria-label={t.heroCTA}
-            >
+            <CTAButton variant="contained" size="large" aria-label={t.heroCTA}>
               {t.heroCTA}
-            </Button>
+            </CTAButton>
           </Link>
-        </Box>
-        <Image
-          className={styles.image}
-          src={smartPhoneHand}
-          alt={'Hand holding phone'}
-          priority
-        />
-      </Container>
-      <div className={styles.imageBottomGradient} aria-hidden="true" />
-    </section>
+        </Header>
+        <HeroImage src={smartPhoneHand} alt={'Hand holding phone'} priority />
+      </HeroContainer>
+      <ImageBottomGradient aria-hidden="true" />
+    </Content>
   );
 };
 

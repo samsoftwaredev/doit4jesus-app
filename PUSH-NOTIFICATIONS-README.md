@@ -218,13 +218,11 @@ SELECT cron.schedule(
 ### Notifications not showing up
 
 1. **Check browser permissions:**
-
    - Chrome: Settings → Privacy → Notifications
    - Firefox: Settings → Privacy → Permissions → Notifications
    - Safari: Settings → Websites → Notifications
 
 2. **Check Service Worker:**
-
    - Open DevTools → Application → Service Workers
    - Should see `sw.js` registered
 
