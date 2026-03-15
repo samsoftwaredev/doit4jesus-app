@@ -1,5 +1,6 @@
 import {
   Dispatch,
+  type JSX,
   SetStateAction,
   createContext,
   useContext,

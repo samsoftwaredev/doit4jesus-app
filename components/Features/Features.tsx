@@ -47,9 +47,8 @@ const Features = () => {
         <Grid container justifyContent="space-around">
           {features.map(({ thumbnail, title, description, alt }) => (
             <Grid
-              item
               key={title}
-              md={3}
+              size={{ md: 3 }}
               textAlign="center"
               component="article"
               aria-labelledby={`${title.replace(/\s+/g, '-').toLowerCase()}-title`}

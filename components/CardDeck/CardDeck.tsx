@@ -64,7 +64,6 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
             <Grid mx={1} container minHeight="250px" flexDirection="column">
               <Grid
                 width="100%"
-                item
                 display="flex"
                 flexDirection="row"
                 justifyContent="space-between"
@@ -81,7 +80,7 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
               </Grid>
             </Grid>
             <Grid container justifyContent="space-around">
-              <Grid item md={4} sm={4} textAlign="center">
+              <Grid size={{ md: 4, sm: 4 }} textAlign="center">
                 <Tooltip title="Back">
                   <span>
                     <IconButton
@@ -95,7 +94,7 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
                   </span>
                 </Tooltip>
               </Grid>
-              <Grid item md={4} sm={4} textAlign="center">
+              <Grid size={{ md: 4, sm: 4 }} textAlign="center">
                 <Tooltip title="Yes">
                   <IconButton
                     onClick={() => handleSaveSin(index)}
@@ -106,7 +105,7 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
                   </IconButton>
                 </Tooltip>
               </Grid>
-              <Grid item md={4} sm={4} textAlign="center">
+              <Grid size={{ md: 4, sm: 4 }} textAlign="center">
                 <Tooltip title="No">
                   <IconButton
                     color="error"

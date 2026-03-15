@@ -48,7 +48,11 @@ const Resources: NextPage = () => {
         <Typography variant="h4">Resources</Typography>
         <Grid mt={2} display="flex" justifyContent="center" container>
           {resources.map(({ content, slug }) => (
-            <Grid item md={4} key={slug} onClick={() => goToResources(slug)}>
+            <Grid
+              size={{ md: 4 }}
+              key={slug}
+              onClick={() => goToResources(slug)}
+            >
               <Card>
                 <CardMedia sx={{ height: 140 }} image={content.image} />
                 <CardContent>

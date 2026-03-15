@@ -9,7 +9,7 @@ type Props = {
     value: string;
     name: string;
   }[];
-} & Omit<SelectProps<any, any>, 'variant'>;
+} & Omit<SelectProps, 'variant'>;
 
 const Select = ({ menuItems, ...props }: Props) => {
   return (

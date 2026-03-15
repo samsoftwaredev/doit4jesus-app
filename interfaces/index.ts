@@ -1,3 +1,5 @@
+import type { JSX } from 'react';
+
 import { Json } from './database';
 
 export type PostgrestError = {

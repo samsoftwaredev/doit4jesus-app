@@ -37,7 +37,7 @@ const RosaryStreak = () => {
 
   return (
     <Grid container spacing={2} justifyContent="center">
-      <Grid item xs={12} md={9}>
+      <Grid size={{ xs: 12, md: 9 }}>
         <Typography textAlign="center" fontWeight="bold">
           Your Rosary Streak
         </Typography>

@@ -1,6 +1,7 @@
 import { RealtimeChannel, RealtimePresenceState } from '@supabase/supabase-js';
 import {
   Dispatch,
+  type JSX,
   SetStateAction,
   createContext,
   useContext,

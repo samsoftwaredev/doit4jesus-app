@@ -1,3 +1,5 @@
+import type { JSX } from 'react';
+
 import styles from './movingText.module.scss';
 
 interface Props {

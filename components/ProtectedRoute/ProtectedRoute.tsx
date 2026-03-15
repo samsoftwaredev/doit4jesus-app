@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { ReactElement, useEffect } from 'react';
+import { type JSX, ReactElement, useEffect } from 'react';
 
 import { NAV_MAIN_LINKS } from '@/constants/nav';
 import { useUserContext } from '@/context/UserContext';

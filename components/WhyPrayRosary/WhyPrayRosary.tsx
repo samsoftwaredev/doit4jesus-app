@@ -39,9 +39,8 @@ const WhyPrayRosary = () => {
         <Grid gap={1} container justifyContent="space-around">
           {features.map(({ title, description }, index) => (
             <Grid
-              item
               key={title}
-              md={3}
+              size={{ md: 3 }}
               textAlign="center"
               component="article"
               aria-labelledby={`feature-title-${index}`}

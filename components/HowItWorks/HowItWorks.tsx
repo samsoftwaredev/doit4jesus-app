@@ -12,7 +12,7 @@ const HowItWorks = () => {
           ['Choose a Mystery', 'Pick the Rosary mystery you wish to pray.'],
           ['Pray Together', 'Join others in real-time and grow spiritually.'],
         ].map(([title, desc], i) => (
-          <Grid item xs={12} md={4} key={i}>
+          <Grid size={{ xs: 12, md: 4 }} key={i}>
             <Card sx={{ height: '100%' }} elevation={3}>
               <CardContent>
                 <Typography variant="h6" component="h3" gutterBottom>

@@ -5,7 +5,7 @@ import { LanguageContextProvider } from '@/context/LanguageContext';
 import HorizontalDivider from './HorizontalDivider';
 
 // Helper to render with context
-const renderWithContext = (component: React.ReactElement) => {
+const renderWithContext = (component: React.ReactElement<any>) => {
   return render(<LanguageContextProvider>{component}</LanguageContextProvider>);
 };
 

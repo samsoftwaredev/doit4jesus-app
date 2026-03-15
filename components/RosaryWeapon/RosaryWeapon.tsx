@@ -19,10 +19,13 @@ const RosaryWeapon = () => {
           >
             {t.rosaryWeaponTitle}
           </Typography>
-          <Grid item xs={12} md={6} className={styles.descriptionContainer}>
+          <Grid
+            size={{ xs: 12, md: 6 }}
+            className={styles.descriptionContainer}
+          >
             <Typography>{t.rosaryWeaponDescription}</Typography>
           </Grid>
-          <Grid item xs={12} md={6} minHeight={300}>
+          <Grid size={{ xs: 12, md: 6 }} minHeight={300}>
             <iframe
               style={{ width: '100%', height: '100%' }}
               src="https://www.youtube-nocookie.com/embed/x1tH_zQ-Cz0?si=0lnC4o44EfJRf-Cu"

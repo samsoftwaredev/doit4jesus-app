@@ -2,6 +2,7 @@ import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
 import {
   Dispatch,
+  type JSX,
   MouseEventHandler,
   SetStateAction,
   createContext,

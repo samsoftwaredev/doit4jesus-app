@@ -1,3 +1,4 @@
+import type { JSX } from 'react';
 import { CSSProperties } from 'styled-components';
 
 import styles from './card.module.scss';

@@ -1,5 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import moment from 'moment';
+import type { JSX } from 'react';
 
 import { theme } from '@/styles/mui-overwrite';
 import { dollarFormatter } from '@/utils';

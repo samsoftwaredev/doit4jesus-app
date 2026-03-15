@@ -2,7 +2,7 @@ import enJSON from 'locales/en.json';
 import esJSON from 'locales/es.json';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/router';
-import { createContext, useContext, useEffect } from 'react';
+import { type JSX, createContext, useContext, useEffect } from 'react';
 
 import { LANG } from '@/interfaces';
 

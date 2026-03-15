@@ -7,15 +7,14 @@ import { useUserContext } from '@/context/UserContext';
 import blueRosary from '@/public/assets/images/blueRosary.jpeg';
 
 const RosaryWinnerChallenge = () => {
-  const { t } = useLanguageContext();
   const { user } = useUserContext();
-  const [hasJoinedChallenge, setHasJoinedChallenge] = useState(false);
+  const [hasJoinedChallenge] = useState(false);
 
   const onClick = () => {};
 
   return (
     <Grid container spacing={2} justifyContent="center">
-      <Grid item xs={12} sm={9} md={9}>
+      <Grid size={{ xs: 12, sm: 9, md: 9 }}>
         <Typography textAlign="center" fontWeight="bold">
           Your Rosary Awaits — Enter to Win!
         </Typography>
@@ -59,7 +58,11 @@ const RosaryWinnerChallenge = () => {
           Pray one rosary daily for 100 days, and we’ll send you a rosary.
         </Typography>
       </Grid>
-      <Grid item xs={12} sm={3} md={3} textAlign="center" alignSelf="center">
+      <Grid
+        size={{ xs: 12, sm: 3, md: 3 }}
+        textAlign="center"
+        alignSelf="center"
+      >
         <Image
           style={{ borderRadius: '20%' }}
           width={100}

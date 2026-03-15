@@ -24,7 +24,7 @@ const EventSection = ({ videoEvent }: Props) => {
   const [messages, setMessages] = useState<EventMessages[]>();
   const [isLoading, setIsLoading] = useState(true);
   const [currentMessageId, setCurrentMessageId] = useState<string>();
-  const channel = useRef<RealtimeChannel | undefined>();
+  const channel = useRef<RealtimeChannel | undefined>(undefined);
   const { user } = useUserContext();
   const numberOfPrayers = messages?.length ?? 0;
 
