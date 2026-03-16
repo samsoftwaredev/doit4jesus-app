@@ -133,7 +133,7 @@ const TopNavbar = ({ handleMenu }: Props) => {
         onClick={goToDashboard}
         aria-label="Go to dashboard"
       >
-        <Logo type="white" />
+        <Logo />
       </LogoButton>
       <Stack direction="row" alignItems="center" spacing={1}>
         <ThemeToggle />

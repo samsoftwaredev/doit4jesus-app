@@ -1,3 +1,5 @@
+import { useThemeContext } from '@/context/ThemeContext';
+
 const BlackCompanyLogo = () => (
   <svg
     width="112"
@@ -501,10 +503,12 @@ interface Props {
   type?: 'black' | 'white';
 }
 
-const Logo = ({ type = 'black' }: Props) => {
+const Logo = ({ type }: Props) => {
+  const { mode } = useThemeContext();
+  const isDarkMode = type ? type : mode === 'dark';
   return (
     <span data-testid="logo">
-      {type === 'black' ? <BlackCompanyLogo /> : <WhiteCompanyLogo />}
+      {isDarkMode ? <WhiteCompanyLogo /> : <BlackCompanyLogo />}
     </span>
   );
 };
