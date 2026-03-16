@@ -505,7 +505,7 @@ interface Props {
 
 const Logo = ({ type }: Props) => {
   const { mode } = useThemeContext();
-  const isDarkMode = type ? type : mode === 'dark';
+  const isDarkMode = type ? type === 'white' : mode === 'dark';
   return (
     <span data-testid="logo">
       {isDarkMode ? <WhiteCompanyLogo /> : <BlackCompanyLogo />}

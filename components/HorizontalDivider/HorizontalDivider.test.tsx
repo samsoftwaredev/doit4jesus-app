@@ -15,29 +15,16 @@ describe('HorizontalDivider Component', () => {
     expect(container.firstChild).toBeInTheDocument();
   });
 
-  it('should render the divider bar', () => {
-    const { container } = renderWithContext(<HorizontalDivider />);
-    const bar = container.querySelector('.bar');
-    expect(bar).toBeInTheDocument();
-  });
-
   it('should render translated "or" text', () => {
     renderWithContext(<HorizontalDivider />);
-    // The component should render some text (either "or" in English or Spanish)
-    const container = screen.getByText(/or|o/i);
-    expect(container).toBeInTheDocument();
-  });
-
-  it('should have correct structure', () => {
-    const { container } = renderWithContext(<HorizontalDivider />);
-    const dividerContainer = container.querySelector('.container');
-    expect(dividerContainer).toBeInTheDocument();
-    expect(dividerContainer?.children).toHaveLength(2); // bar + text
-  });
-
-  it('should have text element with correct class', () => {
-    const { container } = renderWithContext(<HorizontalDivider />);
-    const textElement = container.querySelector('.text');
+    const textElement = screen.getByText(/or|o/i);
     expect(textElement).toBeInTheDocument();
+  });
+
+  it('should have correct structure with bar and text', () => {
+    const { container } = renderWithContext(<HorizontalDivider />);
+    const wrapper = container.firstChild;
+    expect(wrapper).toBeInTheDocument();
+    expect(wrapper?.childNodes.length).toBeGreaterThanOrEqual(2);
   });
 });

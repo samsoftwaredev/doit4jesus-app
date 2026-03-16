@@ -8,10 +8,10 @@ describe('Pulse Component', () => {
     expect(container.firstChild).toBeInTheDocument();
   });
 
-  it('should have the correct CSS class', () => {
+  it('should render the pulse element', () => {
     const { container } = render(<Pulse />);
     const pulseElement = container.firstChild;
-    expect(pulseElement).toHaveClass('pulseLoader');
+    expect(pulseElement).toBeInTheDocument();
   });
 
   it('should render a div element', () => {

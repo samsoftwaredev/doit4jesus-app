@@ -29,7 +29,7 @@ describe('CallToAction Component', () => {
   });
   it('renders the call to action heading', () => {
     render(component());
-    const headingElement = screen.getByRole('heading', { level: 2 });
+    const headingElement = screen.getByText(/battle evil/i);
     expect(headingElement).toBeInTheDocument();
   });
 

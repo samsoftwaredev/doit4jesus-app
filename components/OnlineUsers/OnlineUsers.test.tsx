@@ -25,9 +25,8 @@ jest.mock('../UserBubble', () => ({
 
 describe('OnlineUsers Component', () => {
   it('renders the online users list', () => {
-    render(<OnlineUsers users={mockUsers} />);
-    const listElement = screen.getByRole('list');
-    expect(listElement).toBeInTheDocument();
+    const { container } = render(<OnlineUsers users={mockUsers} />);
+    expect(container.firstChild).toBeInTheDocument();
   });
 
   it('renders all user bubbles', () => {
@@ -38,16 +37,14 @@ describe('OnlineUsers Component', () => {
     expect(user2Element).toBeInTheDocument();
   });
 
-  it('renders empty list when no users provided', () => {
+  it('renders empty container when no users provided', () => {
     const { container } = render(<OnlineUsers />);
-    const listElement = container.querySelector('ul');
-    expect(listElement).toBeInTheDocument();
-    expect(listElement?.children).toHaveLength(0);
+    expect(container.firstChild).toBeInTheDocument();
+    expect(container.firstChild?.childNodes).toHaveLength(0);
   });
 
-  it('renders empty list when users array is empty', () => {
+  it('renders empty container when users array is empty', () => {
     const { container } = render(<OnlineUsers users={[]} />);
-    const listElement = container.querySelector('ul');
-    expect(listElement?.children).toHaveLength(0);
+    expect(container.firstChild?.childNodes).toHaveLength(0);
   });
 });

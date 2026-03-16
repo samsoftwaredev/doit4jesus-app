@@ -3,6 +3,10 @@ import { render, screen } from '@testing-library/react';
 
 import Footer from './Footer';
 
+jest.mock('@/context/ThemeContext', () => ({
+  useThemeContext: () => ({ mode: 'light', toggleTheme: jest.fn() }),
+}));
+
 describe('Footer', () => {
   it('renders the logo', () => {
     render(<Footer />);
@@ -21,9 +25,9 @@ describe('Footer', () => {
 
   it('renders social media icons', () => {
     render(<Footer />);
-    const facebookIcon = screen.getByTestId(/facebook/i);
-    const youtubeIcon = screen.getByTestId(/youtube/i);
-    const instagramIcon = screen.getByTestId(/instagram/i);
+    const facebookIcon = screen.getByLabelText('Facebook');
+    const youtubeIcon = screen.getByLabelText('YouTube');
+    const instagramIcon = screen.getByLabelText('Instagram');
     expect(facebookIcon).toBeInTheDocument();
     expect(youtubeIcon).toBeInTheDocument();
     expect(instagramIcon).toBeInTheDocument();

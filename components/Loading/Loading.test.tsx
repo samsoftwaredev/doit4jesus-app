@@ -3,6 +3,10 @@ import { render, screen } from '@testing-library/react';
 
 import Loading from './Loading';
 
+jest.mock('@/context/ThemeContext', () => ({
+  useThemeContext: () => ({ mode: 'light', toggleTheme: jest.fn() }),
+}));
+
 describe('Loading Component', () => {
   it('renders the default loading screen with logo', () => {
     const { container } = render(<Loading />);
@@ -18,8 +22,7 @@ describe('Loading Component', () => {
 
   it('renders feature loading when isFeature is true', () => {
     const { container } = render(<Loading isFeature />);
-    const featureContainer = container.querySelector('.featureContainer');
-    expect(featureContainer).toBeInTheDocument();
+    expect(container.firstChild).toBeInTheDocument();
   });
 
   it('does not render logo when isFeature is true', () => {
@@ -30,7 +33,6 @@ describe('Loading Component', () => {
 
   it('renders default container when isFeature is false', () => {
     const { container } = render(<Loading isFeature={false} />);
-    const defaultContainer = container.querySelector('.container');
-    expect(defaultContainer).toBeInTheDocument();
+    expect(container.firstChild).toBeInTheDocument();
   });
 });

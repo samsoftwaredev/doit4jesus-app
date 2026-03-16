@@ -3,6 +3,10 @@ import { render, screen } from '@testing-library/react';
 
 import Logo from './Logo';
 
+jest.mock('@/context/ThemeContext', () => ({
+  useThemeContext: () => ({ mode: 'light', toggleTheme: jest.fn() }),
+}));
+
 describe('Logo Component', () => {
   it('renders the black logo by default', () => {
     render(<Logo />);
