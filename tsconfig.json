@@ -35,7 +35,8 @@
       "@/data/*": ["data/*"],
       "@/data": ["data/index"],
       "@/services/*": ["services/*"],
-      "@/services": ["services/index"]
+      "@/services": ["services/index"],
+      "@/hooks/*": ["hooks/*"]
     }
   },
   "include": [

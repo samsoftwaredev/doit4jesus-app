@@ -24,7 +24,6 @@ const CallToAction = () => {
       <Link passHref href={NAV_MAIN_LINKS.signup.link}>
         <Button
           size="large"
-          color="secondary"
           variant="contained"
           aria-label="Sign up for free to start praying with others"
         >

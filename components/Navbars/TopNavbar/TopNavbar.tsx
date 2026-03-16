@@ -133,7 +133,7 @@ const TopNavbar = ({ handleMenu }: Props) => {
       }}
     >
       <MenuButton onClick={handleMenu} aria-label="Open menu">
-        <MenuIcon color="secondary" />
+        <MenuIcon />
       </MenuButton>
       <LogoButton
         disableRipple

@@ -123,9 +123,7 @@ const LiveEvent: NextPage = () => {
         {typeof dataEvent === 'object' ? (
           <EventSection videoEvent={dataEvent} />
         ) : (
-          <Typography variant="h3" color="secondary">
-            No Data
-          </Typography>
+          <Typography variant="h3">No Data</Typography>
         )}
       </Container>
     </AppLayout>

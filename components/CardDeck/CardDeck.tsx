@@ -84,7 +84,6 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
                 <Tooltip title="Back">
                   <span>
                     <IconButton
-                      color="secondary"
                       disabled={index === 0}
                       onClick={handleBack}
                       style={{ transform: 'scale(1.8)' }}
@@ -122,7 +121,6 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
                 onClick={handleFinishExam}
                 variant="outlined"
                 size="small"
-                color="secondary"
               >
                 Finish Exam
               </Button>

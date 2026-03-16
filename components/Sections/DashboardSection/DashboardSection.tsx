@@ -4,13 +4,17 @@ import { styled } from '@mui/material/styles';
 import {
   Card,
   Leaderboards,
+  MilestoneModal,
   RosaryStreak,
   RosaryWinnerChallenge,
+  ShareStatsButton,
   TodaysRosary,
   TotalRosariesPrayed,
 } from '@/components';
 import InviteFriend from '@/components/InviteFriend';
 import RosaryStats from '@/components/RosaryStats';
+import { useUserContext } from '@/context/UserContext';
+import { useMilestones } from '@/hooks/useMilestones';
 
 import ProgressLevelsSection from '../ProgressLevelsSection';
 
@@ -23,6 +27,7 @@ const DashboardGrid = styled(Box)({
   gridAutoFlow: 'row',
   gridTemplateAreas: `
     'TodayRosary'
+    'ShareStats'
     'RosariesCompleted'
     'Friends'
     'RosaryStreak'
@@ -37,6 +42,7 @@ const DashboardGrid = styled(Box)({
     gridTemplateAreas: `
       'TodayRosary TodayRosary'
       'RosariesCompleted Friends'
+      'ShareStats ShareStats'
       'TotalRosaries RosaryStreak'
       'RosaryWinnerChallenge RosaryWinnerChallenge'
       'Donations Donations'
@@ -49,6 +55,7 @@ const DashboardGrid = styled(Box)({
     gridTemplateAreas: `
       'TodayRosary TodayRosary RosariesCompleted'
       'TodayRosary TodayRosary Friends'
+      'ShareStats ShareStats ShareStats'
       'TotalRosaries RosaryStreak RosaryStreak'
       'Levels Levels Levels'
       'Donations Donations Donations'
@@ -57,6 +64,13 @@ const DashboardGrid = styled(Box)({
 });
 
 const DashboardSection = () => {
+  const { user } = useUserContext();
+  const rosaryCount = user?.stats?.rosaryTotalCount ?? 0;
+  const { currentMilestone, showMilestone, dismissMilestone } = useMilestones(
+    rosaryCount,
+    0,
+  );
+
   return (
     <Container className="container-box" maxWidth="md">
       <DashboardGrid>
@@ -75,6 +89,23 @@ const DashboardSection = () => {
         <div style={{ gridArea: 'Friends' }}>
           <Card>
             <InviteFriend />
+          </Card>
+        </div>
+
+        <div style={{ gridArea: 'ShareStats' }}>
+          <Card>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              <Typography fontWeight="bold">
+                Share your prayer journey
+              </Typography>
+              <ShareStatsButton />
+            </Box>
           </Card>
         </div>
 
@@ -108,6 +139,12 @@ const DashboardSection = () => {
           </Card>
         </div>
       </DashboardGrid>
+
+      <MilestoneModal
+        milestone={currentMilestone}
+        open={showMilestone}
+        onClose={dismissMilestone}
+      />
     </Container>
   );
 };

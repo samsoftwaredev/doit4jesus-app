@@ -103,7 +103,6 @@ const ChatList = ({
           <Box>
             <Button
               disabled={!!message.deletedAt}
-              color="secondary"
               variant="contained"
               startIcon={
                 <Favorite color={numLikes > 0 ? 'error' : 'inherit'} />

@@ -52,7 +52,7 @@ const ChatMessage = ({
       </Box>
       <Box ml={2}>{message}</Box>
       <Box ml={2} display="flex" alignItems="center" gap="1em">
-        {/* <Button color="secondary" variant="text">
+        {/* <Button   variant="text">
           Reply
         </Button> */}
         {typeof donationAmount === 'number' && (

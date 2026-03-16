@@ -94,7 +94,6 @@ const WhatsTheRosary = ({ nextStep, prevStep }: StepProps) => {
       <Grid mt={2} container justifyContent="space-between">
         <Button
           size="large"
-          color="secondary"
           variant="text"
           startIcon={<ChevronLeft />}
           onClick={() => prevStep()}
@@ -103,7 +102,6 @@ const WhatsTheRosary = ({ nextStep, prevStep }: StepProps) => {
         </Button>
         <Button
           size="large"
-          color="secondary"
           variant="contained"
           endIcon={<ChevronRight />}
           onClick={() => nextStep()}
@@ -122,9 +120,7 @@ const WhyPray = ({ prevStep, nextStep }: StepProps) => {
       <StepTitle sx={{ color: 'white' }} variant="h3">
         {t.whyPrayTheRosary}
       </StepTitle>
-      <Body my={3} color="secondary">
-        {t.whyPrayTheRosaryDescription}
-      </Body>
+      <Body my={3}>{t.whyPrayTheRosaryDescription}</Body>
       <iframe
         className="iframeYoutube"
         src="https://www.youtube.com/embed/x1tH_zQ-Cz0?si=f5nh--UPvn9ZIQ7v"
@@ -135,7 +131,6 @@ const WhyPray = ({ prevStep, nextStep }: StepProps) => {
       <Grid mt={2} container justifyContent="space-between">
         <Button
           size="large"
-          color="secondary"
           variant="text"
           startIcon={<ChevronLeft />}
           onClick={() => prevStep()}
@@ -144,7 +139,6 @@ const WhyPray = ({ prevStep, nextStep }: StepProps) => {
         </Button>
         <Button
           size="large"
-          color="secondary"
           variant="contained"
           endIcon={<ChevronRight />}
           onClick={() => nextStep()}
@@ -170,7 +164,6 @@ const WhatAreTheBenefits = ({ prevStep, nextStep }: StepProps) => {
       <Grid mt={2} container justifyContent="space-between">
         <Button
           size="large"
-          color="secondary"
           variant="text"
           startIcon={<ChevronLeft />}
           onClick={() => prevStep()}
@@ -179,7 +172,6 @@ const WhatAreTheBenefits = ({ prevStep, nextStep }: StepProps) => {
         </Button>
         <Button
           size="large"
-          color="secondary"
           variant="contained"
           endIcon={<ChevronRight />}
           onClick={() => nextStep()}
@@ -223,7 +215,6 @@ const Intro = ({ nextStep }: StepProps) => {
         </Button>
         <Button
           size="large"
-          color="secondary"
           variant="contained"
           endIcon={<ChevronRight />}
           onClick={() => nextStep()}

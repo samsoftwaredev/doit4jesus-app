@@ -2,6 +2,30 @@ import { render, screen } from '@testing-library/react';
 
 import DashboardSection from './DashboardSection';
 
+jest.mock('@/context/UserContext', () => ({
+  useUserContext: jest.fn().mockReturnValue({
+    user: { stats: { rosaryTotalCount: 5 } },
+  }),
+}));
+
+jest.mock('@/hooks/useMilestones', () => ({
+  useMilestones: jest.fn().mockReturnValue({
+    currentMilestone: null,
+    showMilestone: false,
+    dismissMilestone: jest.fn(),
+  }),
+}));
+
+jest.mock('../../ShareStatsButton', () => ({
+  __esModule: true,
+  default: () => <div data-testid="share-stats-button" />,
+}));
+
+jest.mock('../../MilestoneModal', () => ({
+  __esModule: true,
+  default: () => null,
+}));
+
 jest.mock('../../Card', () => ({
   __esModule: true,
   default: ({ children, title }: any) => (

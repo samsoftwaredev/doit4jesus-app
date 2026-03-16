@@ -77,10 +77,10 @@ const SideNavbar = ({ menuItems, handleDrawerClose }: Props) => {
     <List>
       <SideNavHeader>
         <LogoButton disableRipple>
-          <Logo type="white" />
+          <Logo />
         </LogoButton>
         <CloseButton onClick={handleDrawerClose}>
-          <Close color="secondary" />
+          <Close />
         </CloseButton>
       </SideNavHeader>
       {menuItems.map(({ label, icon, url }) => {

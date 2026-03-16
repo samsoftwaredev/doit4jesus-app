@@ -10,9 +10,9 @@ const getTheme = (mode: 'light' | 'dark') => {
       contrastText: '#ffffff',
     },
     secondary: {
-      light: '#f0dfd9',
-      main: '#E8D1CB',
-      dark: '#d4bdb7',
+      light: '#d4b2a6',
+      main: '#aa8a82',
+      dark: '#7e625b',
       contrastText: '#000000',
     },
     warning: {

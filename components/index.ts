@@ -47,6 +47,10 @@ export { default as TotalRosariesPrayed } from './TotalRosariesPrayed';
 export { default as RosaryWinnerChallenge } from './RosaryWinnerChallenge';
 export { default as RosaryStreak } from './RosaryStreak';
 export { default as ConfettiCelebration } from './ConfettiCelebration';
+export { default as ShareCardPreview } from './ShareCardPreview';
+export { default as SocialShareButtons } from './SocialShareButtons';
+export { default as ShareStatsButton } from './ShareStatsButton';
+export { default as MilestoneModal } from './MilestoneModal';
 
 export * from './Navbars';
 export * from './Fields';

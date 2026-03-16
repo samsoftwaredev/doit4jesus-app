@@ -61,6 +61,11 @@ export const NAV_APP_LINKS = {
     label: 'Trivia Game',
     value: 'trivia-game',
   },
+  shareStats: {
+    link: '/app/share-stats',
+    label: 'Share Stats',
+    value: 'share-stats',
+  },
 };
 
 export const NEW_USER_REDIRECT = NAV_APP_LINKS.dashboard.link + '?newUser=true';

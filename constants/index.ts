@@ -4,3 +4,4 @@ export * from './pages';
 export * from './mysteries';
 export * from './register';
 export * from './global';
+export * from './milestones';

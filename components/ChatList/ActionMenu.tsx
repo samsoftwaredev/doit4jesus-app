@@ -49,7 +49,7 @@ const ActionMenu = ({
         aria-haspopup="true"
         onClick={handleActionMenuClick}
       >
-        <MoreVertIcon color="secondary" />
+        <MoreVertIcon />
       </IconButton>
       <Menu
         id="event-message"

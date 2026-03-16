@@ -40,7 +40,7 @@ const Loading = ({ isFeature = false }: Props) => {
   if (isFeature) {
     return (
       <FeatureContainer>
-        <CircularProgress color="secondary" />
+        <CircularProgress />
       </FeatureContainer>
     );
   }
@@ -49,7 +49,7 @@ const Loading = ({ isFeature = false }: Props) => {
     <FullScreenContainer>
       <CenteredContent>
         <Logo type="white" />
-        <CircularProgress sx={{ px: '1em' }} color="secondary" />
+        <CircularProgress sx={{ px: '1em' }} />
       </CenteredContent>
     </FullScreenContainer>
   );

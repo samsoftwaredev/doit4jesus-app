@@ -57,7 +57,6 @@ const ChatTextbox = ({
             value={message}
             onChange={onChange}
             sx={{ width: '100%' }}
-            color="secondary"
             placeholder="Add your prayer..."
             rows={2}
             multiline
@@ -75,15 +74,10 @@ const ChatTextbox = ({
             Make Donation
           </Button>
         )}
-        {isEditMode && (
-          <Button color="secondary" onClick={onCloseEditMode}>
-            Cancel
-          </Button>
-        )}
+        {isEditMode && <Button onClick={onCloseEditMode}>Cancel</Button>}
         <Button
           disabled={isSendBtnValid}
           onClick={onSubmit}
-          color="secondary"
           variant="contained"
           startIcon={<Send />}
         >
