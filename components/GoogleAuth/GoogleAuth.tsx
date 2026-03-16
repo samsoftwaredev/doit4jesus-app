@@ -1,7 +1,7 @@
 import GoogleIcon from '@mui/icons-material/Google';
 import { Box, Button } from '@mui/material';
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 
 import { supabase } from '@/classes';

@@ -8,11 +8,13 @@ jest.mock('@/context/LanguageContext', () => ({
   useLanguageContext: jest.fn(),
 }));
 
-jest.mock('next/router', () => ({
+jest.mock('next/navigation', () => ({
   useRouter: jest.fn().mockReturnValue({
     push: jest.fn(),
     pathname: '/app',
   }),
+  usePathname: jest.fn().mockReturnValue('/app'),
+  useSearchParams: jest.fn().mockReturnValue(new URLSearchParams()),
 }));
 
 jest.mock('../../Meta', () => ({

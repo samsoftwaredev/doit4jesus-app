@@ -8,7 +8,7 @@ jest.mock('@/context/LanguageContext', () => ({
   useLanguageContext: jest.fn(),
 }));
 
-jest.mock('next/router', () => ({
+jest.mock('next/navigation', () => ({
   useRouter: jest.fn().mockReturnValue({ push: jest.fn() }),
 }));
 

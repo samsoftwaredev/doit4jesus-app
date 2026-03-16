@@ -12,7 +12,7 @@ jest.mock('@vercel/analytics', () => ({
   Analytics: jest.fn(),
 }));
 
-jest.mock('next/router', () => ({
+jest.mock('next/navigation', () => ({
   useRouter() {
     return {
       push: jest.fn(),
@@ -22,5 +22,11 @@ jest.mock('next/router', () => ({
       query: {},
       asPath: '',
     };
+  },
+  usePathname() {
+    return '/';
+  },
+  useSearchParams() {
+    return new URLSearchParams();
   },
 }));

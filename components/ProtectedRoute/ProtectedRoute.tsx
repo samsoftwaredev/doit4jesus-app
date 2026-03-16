@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { type JSX, ReactElement, useEffect } from 'react';
 
 import { NAV_MAIN_LINKS } from '@/constants/nav';

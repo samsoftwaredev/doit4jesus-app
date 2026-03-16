@@ -2,7 +2,7 @@ import { ChevronLeft, ChevronRight, Close } from '@mui/icons-material';
 import { Box, Button, Container, Grid, Typography } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Markdown from 'react-markdown';
 
@@ -119,7 +119,9 @@ const WhyPray = ({ prevStep, nextStep }: StepProps) => {
   const { t } = useLanguageContext();
   return (
     <StepperContent>
-      <StepTitle variant="h3">{t.whyPrayTheRosary}</StepTitle>
+      <StepTitle sx={{ color: 'white' }} variant="h3">
+        {t.whyPrayTheRosary}
+      </StepTitle>
       <Body my={3} color="secondary">
         {t.whyPrayTheRosaryDescription}
       </Body>
@@ -285,7 +287,7 @@ const AccountSetup = () => {
     },
     {
       component: <WhyPray prevStep={prevStep} nextStep={nextStep} />,
-      color: '#000000',
+      color: '#a3a3a3',
       backgroundImage: jesusCross,
     },
   ];

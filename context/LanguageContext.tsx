@@ -1,7 +1,7 @@
 import enJSON from 'locales/en.json';
 import esJSON from 'locales/es.json';
-import { usePathname } from 'next/navigation';
-import { useRouter } from 'next/router';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { type JSX, createContext, useContext, useEffect } from 'react';
 
 import { LANG } from '@/interfaces';
@@ -23,19 +23,19 @@ const LanguageContext = createContext<LanguageContext | undefined>(undefined);
 const LanguageContextProvider = ({ children }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
-  const { locale } = router;
+  const searchParams = useSearchParams();
+  const locale = searchParams.get('locale');
   const t = locale === LANG.en ? enJSON : esJSON;
   const language = locale === LANG.en ? LANG.en : LANG.es;
 
   const changeLanguage = () => {
-    const newLang = router.locale === LANG.en ? LANG.es : LANG.en;
-    router.push(pathname, pathname, { locale: newLang });
+    const newLang = locale === LANG.en ? LANG.es : LANG.en;
+    router.push(`/${newLang}${pathname}`);
   };
 
   useEffect(() => {
-    const newLang = router.locale === LANG.es ? LANG.es : LANG.en;
-    const fullPath = { pathname, query: router.query };
-    router.push(fullPath, fullPath, { locale: newLang });
+    const newLang = locale === LANG.es ? LANG.es : LANG.en;
+    router.push(`/${newLang}${pathname}`);
   }, [pathname]);
 
   return (

@@ -9,22 +9,22 @@ import {
   TextField,
 } from '@mui/material';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm, useWatch } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
-import { db } from '@/classes/SupabaseDB';
-import FormErrorText from '@/components/FormErrorText';
-import { NEW_USER_REDIRECT, passwordValidationRules } from '@/constants';
-import { useLanguageContext } from '@/context/LanguageContext';
-import { emailRegEx, nameRegEx } from '@/utils';
-
+import { db, supabase } from '@/classes/SupabaseDB';
 import {
+  FormErrorText,
   GoogleAuth,
   HorizontalDivider,
   Loading,
   PasswordValidator,
-} from '../..';
+} from '@/components';
+import { NEW_USER_REDIRECT, passwordValidationRules } from '@/constants';
+import { useLanguageContext } from '@/context/LanguageContext';
+import { useUserContext } from '@/context/UserContext';
+import { emailRegEx, nameRegEx } from '@/utils';
 
 interface IFormInputs {
   password: string;
@@ -37,6 +37,7 @@ interface IFormInputs {
 const SignUp = () => {
   const { t } = useLanguageContext();
   const [isLoading, setIsLoading] = useState(false);
+  const { getProfile } = useUserContext();
   const { handleSubmit, control } = useForm<IFormInputs>({
     mode: 'onChange',
     defaultValues: {
@@ -67,9 +68,6 @@ const SignUp = () => {
         toast.success(
           'We have sent a confirmation link to your email. Redirecting...',
         );
-        setTimeout(() => {
-          router.push(NEW_USER_REDIRECT);
-        }, 1000);
       }
       setIsLoading(false);
     } catch (error) {
@@ -78,6 +76,18 @@ const SignUp = () => {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    const { data } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN') {
+        getProfile(session);
+        router.push(NEW_USER_REDIRECT);
+      }
+    });
+    return () => {
+      data.subscription.unsubscribe();
+    };
+  }, []);
 
   if (isLoading) return <Loading />;
 

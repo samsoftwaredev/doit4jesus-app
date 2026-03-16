@@ -8,12 +8,15 @@ jest.mock('@/context/UserContext', () => ({
   useUserContext: jest.fn(),
 }));
 
-jest.mock('next/router', () => ({
+jest.mock('next/navigation', () => ({
   useRouter: jest.fn().mockReturnValue({
     push: jest.fn(),
     back: jest.fn(),
-    query: { slug: 'friend-user-id' },
   }),
+  usePathname: jest.fn().mockReturnValue('/'),
+  useSearchParams: jest
+    .fn()
+    .mockReturnValue(new URLSearchParams([['slug', 'friend-user-id']])),
 }));
 
 jest.mock('next/image', () => ({

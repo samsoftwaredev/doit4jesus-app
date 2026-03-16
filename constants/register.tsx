@@ -2,6 +2,7 @@ import { Button } from '@mui/material';
 import Link from 'next/link';
 
 import { ForgotPassword, LogIn, SignUp } from '@/components/Sections';
+import { UserContextProvider } from '@/context/UserContext';
 
 import { NAV_MAIN_LINKS } from './nav';
 
@@ -10,7 +11,11 @@ export const pageView = {
     signUp: {
       title: 'Sing Up',
       header: 'Join Our Catholic Community!',
-      component: <SignUp />,
+      component: (
+        <UserContextProvider>
+          <SignUp />
+        </UserContextProvider>
+      ),
       footer: (
         <>
           Have an account already?

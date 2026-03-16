@@ -1,5 +1,5 @@
 import { Session } from '@supabase/supabase-js';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import {
   Dispatch,
   type JSX,

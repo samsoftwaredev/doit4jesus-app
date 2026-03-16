@@ -2,7 +2,7 @@ import { Container, Typography } from '@mui/material';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import moment from 'moment';
 import type { NextPage } from 'next';
-import { useRouter } from 'next/router';
+import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -17,8 +17,8 @@ import { DataEvent, EventTypes, VideoEvent } from '@/interfaces';
 import { normalizeEvent, normalizeVideo } from '@/utils';
 
 const LiveEvent: NextPage = () => {
-  const router = useRouter();
-  const { slug } = router.query;
+  const searchParams = useSearchParams();
+  const slug = searchParams.get('search');
   const { setAudioPlayer, setHideMusicPlayer } = useAudioContext();
   const { setChannel } = usePresenceContext();
   const channel: RealtimeChannel | undefined =

@@ -3,7 +3,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { AppProps } from 'next/app';
-import { useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -28,7 +28,7 @@ const AppContent = ({ Component, pageProps }: AppProps) => {
   const { mode } = useThemeContext();
   const theme = getTheme(mode);
   const [hideMusicPlayer, setHideMusicPlayer] = useState(true);
-  const { pathname } = useRouter();
+  const pathname = usePathname() ?? '';
   const authPaths =
     pathname.includes(NAV_APP_LINKS.app.link) ||
     pathname.includes(NAV_MAIN_LINKS.login.link) ||

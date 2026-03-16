@@ -3,7 +3,8 @@ import SoldierIcon from '@mui/icons-material/MilitaryTech';
 import TableChartIcon from '@mui/icons-material/TableChart';
 import { Box, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import React, { useMemo, useState } from 'react';
 
 import Meta from '@/components/Meta';
@@ -90,6 +91,7 @@ interface Props {
 
 const AppLayout = ({ children }: Props) => {
   const { t } = useLanguageContext();
+  const pathname = usePathname();
 
   const menuItems = [
     { url: '/app/dashboard', label: t.dashboard, icon: <TableChartIcon /> },
@@ -120,8 +122,8 @@ const AppLayout = ({ children }: Props) => {
   };
 
   const pageTitle = useMemo(
-    () => menuItems.find((menu) => menu.url === router.pathname),
-    [router.pathname],
+    () => menuItems.find((menu) => menu.url === pathname),
+    [pathname],
   );
 
   return (

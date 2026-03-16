@@ -1,6 +1,6 @@
 import { Box, Container, Typography } from '@mui/material';
 import type { NextPage } from 'next';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
 
 import { MainLayout, Meta } from '@/components';

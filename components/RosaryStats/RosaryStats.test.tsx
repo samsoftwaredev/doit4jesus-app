@@ -1,14 +1,16 @@
 import '@testing-library/jest-dom';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 import { LanguageContextProvider } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
 
 import RosaryStats from './RosaryStats';
 
-jest.mock('next/router', () => ({
+jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
+  usePathname: jest.fn().mockReturnValue('/'),
+  useSearchParams: jest.fn().mockReturnValue(new URLSearchParams()),
 }));
 
 jest.mock('@/context/UserContext', () => ({

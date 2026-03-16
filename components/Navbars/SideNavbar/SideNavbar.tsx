@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { usePathname, useRouter } from 'next/navigation';
 import * as React from 'react';
 
 import { Logo } from '../..';
@@ -71,7 +71,7 @@ interface Props {
 }
 
 const SideNavbar = ({ menuItems, handleDrawerClose }: Props) => {
-  const router = useRouter();
+  const pathname = usePathname();
 
   return (
     <List>
@@ -84,7 +84,7 @@ const SideNavbar = ({ menuItems, handleDrawerClose }: Props) => {
         </CloseButton>
       </SideNavHeader>
       {menuItems.map(({ label, icon, url }) => {
-        const isActive = router.pathname === url;
+        const isActive = pathname === url;
         const StyledLink = isActive ? ActiveLinkItem : LinkItem;
         return (
           <ListItem sx={{ p: 0 }} key={label}>

@@ -1,13 +1,15 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 import { LanguageContextProvider } from '@/context/LanguageContext';
 
 import CallToAction from './CallToAction';
 
-jest.mock('next/router', () => ({
+jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
+  usePathname: jest.fn().mockReturnValue('/'),
+  useSearchParams: jest.fn().mockReturnValue(new URLSearchParams('locale=en')),
 }));
 
 const component = () => {

@@ -10,7 +10,7 @@ jest.mock('@/context/UserContext', () => ({
 
 const mockPush = jest.fn();
 
-jest.mock('next/router', () => ({
+jest.mock('next/navigation', () => ({
   useRouter: () => ({ push: mockPush }),
 }));
 

@@ -8,9 +8,30 @@ jest.mock('@/context/LanguageContext', () => ({
   useLanguageContext: jest.fn(),
 }));
 
+jest.mock('@/context/UserContext', () => ({
+  useUserContext: jest.fn().mockReturnValue({
+    getProfile: jest.fn(),
+  }),
+}));
+
+jest.mock('next/router', () => ({
+  useRouter: jest.fn().mockReturnValue({
+    push: jest.fn(),
+    pathname: '/',
+    query: {},
+  }),
+}));
+
 jest.mock('@/classes/SupabaseDB', () => ({
   default: jest.fn(),
   db: { signUp: jest.fn().mockResolvedValue(undefined) },
+  supabase: {
+    auth: {
+      onAuthStateChange: jest.fn().mockReturnValue({
+        data: { subscription: { unsubscribe: jest.fn() } },
+      }),
+    },
+  },
 }));
 
 jest.mock('react-toastify', () => ({
@@ -32,9 +53,11 @@ jest.mock('@/constants', () => ({
     minLength: 8,
     maxLength: 100,
   },
+  NEW_USER_REDIRECT: '/app/dashboard?newUser=true',
 }));
 
 jest.mock('../..', () => ({
+  FormErrorText: () => null,
   GoogleAuth: () => <div data-testid="google-auth" />,
   HorizontalDivider: () => <hr />,
   Loading: () => <div data-testid="loading" />,
