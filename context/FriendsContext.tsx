@@ -34,13 +34,19 @@ const FriendsContextProvider = ({ children }: Props) => {
   const [friendIds, setFriendIds] = useState<string[]>([]);
 
   const getFriendsProfiles = async (userIds: string[]) => {
-    const [data, error] = await getUserProfileAPI(userIds);
-    if (error) {
-      console.error(error);
+    try {
+      const [data, error] = await getUserProfileAPI(userIds);
+      if (error) {
+        console.error(error);
+        toast.error('Unable to retrieve friends profile.');
+      }
+      if (data) setFriendProfiles(data);
+      return data;
+    } catch (error) {
+      console.error('Error in FriendsContext (getFriendsProfiles):', error);
       toast.error('Unable to retrieve friends profile.');
+      return null;
     }
-    if (data) setFriendProfiles(data);
-    return data;
   };
 
   return (

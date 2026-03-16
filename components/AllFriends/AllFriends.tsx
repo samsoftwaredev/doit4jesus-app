@@ -35,12 +35,17 @@ const AllFriends = () => {
   };
 
   const getFriendsProfiles = async (userIds: string[]) => {
-    const [data, error] = await getUserProfileAPI(userIds);
-    if (error) {
-      console.error(error);
+    try {
+      const [data, error] = await getUserProfileAPI(userIds);
+      if (error) {
+        console.error(error);
+        toast.error('Unable to retrieve friends profile.');
+      }
+      if (data) setFriendProfiles(data);
+    } catch (error) {
+      console.error('Error in AllFriends (getFriendsProfiles):', error);
       toast.error('Unable to retrieve friends profile.');
     }
-    if (data) setFriendProfiles(data);
   };
 
   const onEndFriendship = async () => {
@@ -50,37 +55,46 @@ const AllFriends = () => {
         u.uuid2 === friendSelected?.userId,
     );
     if (relationship !== undefined) {
-      const { error } = await db
-        .getFriends()
-        .delete()
-        .eq('id', relationship.id);
-      if (error) {
+      try {
+        const { error } = await db
+          .getFriends()
+          .delete()
+          .eq('id', relationship.id);
+        if (error) {
+          console.error('Error in AllFriends (onEndFriendship):', error);
+          toast.error('Unable to decline friend request');
+        } else {
+          onClose();
+          setFriendProfiles((prevState) =>
+            prevState.filter((f) => f.userId !== friendSelected?.userId),
+          );
+        }
+      } catch (error) {
         console.error('Error in AllFriends (onEndFriendship):', error);
         toast.error('Unable to decline friend request');
-      } else {
-        onClose();
-        setFriendProfiles((prevState) =>
-          prevState.filter((f) => f.userId !== friendSelected?.userId),
-        );
       }
     }
   };
 
   const getFriends = async () => {
-    let { data, error } = await db
-      .getFriends()
-      .select('*')
-      .or(`uuid1.eq.${user?.userId!},uuid2.eq.${user?.userId!}`);
-    if (data) {
-      setFriends(data);
-      const friendUserIds = data.map((u) => {
-        const uid = u.uuid1 !== user?.userId ? u.uuid1 : u.uuid2;
-        return uid!;
-      });
-      getFriendsProfiles(friendUserIds);
-    }
-    if (error) {
-      console.error(error);
+    try {
+      let { data, error } = await db
+        .getFriends()
+        .select('*')
+        .or(`uuid1.eq.${user?.userId!},uuid2.eq.${user?.userId!}`);
+      if (data) {
+        setFriends(data);
+        const friendUserIds = data.map((u) => {
+          const uid = u.uuid1 !== user?.userId ? u.uuid1 : u.uuid2;
+          return uid!;
+        });
+        getFriendsProfiles(friendUserIds);
+      }
+      if (error) {
+        console.error(error);
+      }
+    } catch (error) {
+      console.error('Error in AllFriends (getFriends):', error);
     }
   };
 

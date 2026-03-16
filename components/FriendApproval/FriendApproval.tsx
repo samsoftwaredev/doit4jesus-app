@@ -22,56 +22,75 @@ const FriendApproval = () => {
   const { user } = useUserContext();
 
   const getFriendsProfiles = async (userIds: string[]) => {
-    const [data, error] = await getUserProfileAPI(userIds);
-    if (error) {
-      console.error(error);
+    try {
+      const [data, error] = await getUserProfileAPI(userIds);
+      if (error) {
+        console.error(error);
+        toast.error('Unable to retrieve friends profile.');
+      }
+      if (data) setFriends(data);
+    } catch (error) {
+      console.error('Error in FriendApproval (getFriendsProfiles):', error);
       toast.error('Unable to retrieve friends profile.');
     }
-    if (data) setFriends(data);
   };
 
   const onDecline = async (id: string) => {
-    const { error } = await db.getFriendRequests().delete().eq('id', id);
-    if (error) {
+    try {
+      const { error } = await db.getFriendRequests().delete().eq('id', id);
+      if (error) {
+        console.error('Error in FriendApproval (onDecline):', error);
+        toast.error('Unable to decline friend request');
+      } else {
+        setFriendsIds((prevState) => prevState.filter((f) => f.id !== id));
+      }
+    } catch (error) {
       console.error('Error in FriendApproval (onDecline):', error);
       toast.error('Unable to decline friend request');
-    } else {
-      setFriendsIds((prevState) => prevState.filter((f) => f.id !== id));
     }
   };
 
   const onApprove = async (data: FriendRequests) => {
-    const uuidKey = data.uuid1 !== data.friendId ? 'uuid1' : 'uuid2';
-    const { data: friendData, error } = await db
-      .getFriendRequests()
-      .update({ [`${uuidKey}_accepted`]: true })
-      .eq('id', data.id)
-      .select();
-    if (error) {
+    try {
+      const uuidKey = data.uuid1 !== data.friendId ? 'uuid1' : 'uuid2';
+      const { data: friendData, error } = await db
+        .getFriendRequests()
+        .update({ [`${uuidKey}_accepted`]: true })
+        .eq('id', data.id)
+        .select();
+      if (error) {
+        console.error('Error in FriendApproval (onApprove):', error);
+        toast.error('Unable to confirm friend request');
+      }
+      if (friendData) {
+        setFriendsIds((prevState) => prevState.filter((f) => f.id !== data.id));
+      }
+    } catch (error) {
       console.error('Error in FriendApproval (onApprove):', error);
       toast.error('Unable to confirm friend request');
-    }
-    if (friendData) {
-      setFriendsIds((prevState) => prevState.filter((f) => f.id !== data.id));
     }
   };
 
   const getFriendsApproval = async () => {
-    let { data, error } = await db
-      .getFriendRequests()
-      .select('*')
-      .or(`uuid1.eq.${user?.userId!},uuid2.eq.${user?.userId!}`);
-    if (data) {
-      const friends = data.map((u) => {
-        const uid = u.uuid1 !== user?.userId ? u.uuid1 : u.uuid2;
-        return { ...u, friendId: uid! };
-      });
-      const friendUserIds = friends.map(({ friendId }) => friendId);
-      setFriendsIds(friends);
-      getFriendsProfiles(friendUserIds);
-    }
-    if (error) {
-      console.error(error);
+    try {
+      let { data, error } = await db
+        .getFriendRequests()
+        .select('*')
+        .or(`uuid1.eq.${user?.userId!},uuid2.eq.${user?.userId!}`);
+      if (data) {
+        const friends = data.map((u) => {
+          const uid = u.uuid1 !== user?.userId ? u.uuid1 : u.uuid2;
+          return { ...u, friendId: uid! };
+        });
+        const friendUserIds = friends.map(({ friendId }) => friendId);
+        setFriendsIds(friends);
+        getFriendsProfiles(friendUserIds);
+      }
+      if (error) {
+        console.error(error);
+      }
+    } catch (error) {
+      console.error('Error in FriendApproval (getFriendsApproval):', error);
     }
   };
 

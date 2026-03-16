@@ -27,12 +27,17 @@ const Resources: NextPage = () => {
   };
 
   const getAllResources = async () => {
-    let { data, error } = await db.getPosts().select('*');
-    if (error) {
+    try {
+      let { data, error } = await db.getPosts().select('*');
+      if (error) {
+        console.error('Error in resources/index (getAllResources):', error);
+        toast.error('Unable to get resources');
+      }
+      if (data) setResources(normalizePost(data));
+    } catch (error) {
       console.error('Error in resources/index (getAllResources):', error);
       toast.error('Unable to get resources');
     }
-    if (data) setResources(normalizePost(data));
   };
 
   useEffect(() => {

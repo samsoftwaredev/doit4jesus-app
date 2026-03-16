@@ -49,14 +49,20 @@ function ResourcesPost() {
 
   const getArticle = async () => {
     setIsLoading(true);
-    const { slug } = router.query;
-    if (typeof slug === 'string') {
-      let { data, error } = await db.getPosts().select('*').eq('slug', slug);
-      if (error) {
-        console.error('Error in resources/[slug] (getArticle):', error);
-        toast.error('Unable to display article');
+    try {
+      const { slug } = router.query;
+      if (typeof slug === 'string') {
+        let { data, error } = await db.getPosts().select('*').eq('slug', slug);
+        if (error) {
+          console.error('Error in resources/[slug] (getArticle):', error);
+          toast.error('Unable to display article');
+        }
+        if (data) setArticle(normalizePost(data)[0]);
       }
-      if (data) setArticle(normalizePost(data)[0]);
+    } catch (error) {
+      console.error('Error in resources/[slug] (getArticle):', error);
+      toast.error('Unable to display article');
+    } finally {
       setIsLoading(false);
     }
   };

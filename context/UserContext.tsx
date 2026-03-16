@@ -65,7 +65,7 @@ const UserContextProvider = ({ children }: Props) => {
     try {
       if (!userSession) {
         console.error('getProfile: No user session provided');
-        throw Error('No session');
+        throw new Error('No session');
       }
 
       const { data: userProfile, error: profileErr } = await db
@@ -79,11 +79,11 @@ const UserContextProvider = ({ children }: Props) => {
           userId: userSession.user.id,
           error: profileErr,
         });
-        throw Error(profileErr.message);
+        throw new Error(profileErr.message);
       }
 
       if (userSession.user.app_metadata.provider === 'google') {
-        updateProfileGoogle(userSession, userProfile);
+        await updateProfileGoogle(userSession, userProfile);
       }
 
       const { data: rosaryStats, error: statsErr } = await db
@@ -96,7 +96,7 @@ const UserContextProvider = ({ children }: Props) => {
           userId: userSession.user.id,
           error: statsErr,
         });
-        throw Error(statsErr.message);
+        throw new Error(statsErr.message);
       }
 
       const userDataNormalized = normalizeUserProfile(userProfile, rosaryStats);
@@ -120,7 +120,7 @@ const UserContextProvider = ({ children }: Props) => {
     setIsLoading(true);
     try {
       const res = await supabase.auth.getSession();
-      if (res.data.session) getProfile(res.data.session);
+      if (res.data.session) await getProfile(res.data.session);
       else throw new Error('No session');
     } catch (err) {
       console.error(err);

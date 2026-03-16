@@ -14,6 +14,7 @@ import { styled } from '@mui/material/styles';
 import { googleLogout } from '@react-oauth/google';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 import { db, supabase } from '@/classes/SupabaseDB';
 import { Loading } from '@/components';
@@ -89,10 +90,16 @@ const TopNavbar = ({ handleMenu }: Props) => {
 
   const onLogout = async () => {
     setIsLoading(true);
-    sessionStorage.clear();
-    await db.logOut();
-    googleLogout();
-    setIsLoading(false);
+    try {
+      sessionStorage.clear();
+      await db.logOut();
+      googleLogout();
+    } catch (error) {
+      console.error('Error in TopNavbar (onLogout):', error);
+      toast.error('Unable to log out. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const goToDashboard = () => {

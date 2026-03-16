@@ -9,10 +9,14 @@ const TotalRosariesPrayed = () => {
   const [totalNum, setTotalNum] = useState<number | null>(0);
 
   const getTotalRosaries = async () => {
-    let { data, error } = await supabase.rpc('get_all_rosary_count');
-    if (error) console.error(error);
-    else {
-      setTotalNum(data);
+    try {
+      let { data, error } = await supabase.rpc('get_all_rosary_count');
+      if (error) console.error(error);
+      else {
+        setTotalNum(data);
+      }
+    } catch (error) {
+      console.error('Error in TotalRosariesPrayed (getTotalRosaries):', error);
     }
   };
 

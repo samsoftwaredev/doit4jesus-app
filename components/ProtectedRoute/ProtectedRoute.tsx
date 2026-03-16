@@ -16,7 +16,7 @@ const ProtectedRoute = ({ children }: Props) => {
   useEffect(() => {
     // if user is not auth, redirect user to login screen
     if (!isAuth) router.push(NAV_MAIN_LINKS.login.link);
-  }, []);
+  }, [isAuth]);
 
   if (!isAuth) return null;
 

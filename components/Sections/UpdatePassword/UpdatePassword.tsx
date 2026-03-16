@@ -38,16 +38,22 @@ const UpdatePassword = () => {
 
     if (passwordsMatch) {
       setIsLoading(true);
-      const { error } = await db.updatePassword(userInput.password);
-      if (error) {
-        console.error(error);
+      try {
+        const { error } = await db.updatePassword(userInput.password);
+        if (error) {
+          console.error(error);
+          toast.error(t.errorUpdatingPassword);
+        } else {
+          router.push(NAV_MAIN_LINKS.login.link);
+          toast.success(t.passwordUpdated);
+          reset();
+        }
+      } catch (error) {
+        console.error('Error in UpdatePassword (onSubmit):', error);
         toast.error(t.errorUpdatingPassword);
-      } else {
-        router.push(NAV_MAIN_LINKS.login.link);
-        toast.success(t.passwordUpdated);
-        reset();
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     } else {
       toast.warning(t.passwordDontMatchDescription);
     }

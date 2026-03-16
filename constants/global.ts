@@ -16,6 +16,6 @@ export const passwordValidationRules = {
     digitRegEx.test(value) && specialCharsRegEx.test(value),
   maxLength: {
     value: 100,
-    message: 'The email exceed max length',
+    message: 'Password exceeds max length',
   },
 };

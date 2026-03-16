@@ -32,22 +32,24 @@ const LogIn = () => {
 
   const onSubmit: SubmitHandler<IFormInputs> = async (userInput) => {
     setIsLoading(true);
-    const { error } = await db.logIn(userInput.email, userInput.password);
-    if (error) {
-      console.error(error);
-      toast.error(error.message);
-    } else {
-      const { data } = await supabase.auth.onAuthStateChange(
-        async (event, session) => {
-          if (event === 'SIGNED_IN') {
-            await getProfile(session);
-            router.push(NAV_APP_LINKS.dashboard.link);
-          }
-        },
+    try {
+      const { data, error } = await db.logIn(
+        userInput.email,
+        userInput.password,
       );
-      data.subscription.unsubscribe();
+      if (error) {
+        console.error(error);
+        toast.error(error.message);
+      } else {
+        await getProfile(data.session);
+        router.push(NAV_APP_LINKS.dashboard.link);
+      }
+    } catch (error) {
+      console.error('Error in LogIn (onSubmit):', error);
+      toast.error('An unexpected error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -57,7 +59,7 @@ const LogIn = () => {
     return () => {
       data.subscription.unsubscribe();
     };
-  });
+  }, []);
 
   return (
     <FormControl

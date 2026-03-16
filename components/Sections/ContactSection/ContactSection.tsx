@@ -74,20 +74,26 @@ const ContactSection = () => {
 
   const onSubmit = async ({ email, name, message }: IFormInputs) => {
     setLoading(true);
-    const { data, error } = await supabase.functions.invoke('contact-us', {
-      body: {
-        userEmail: email,
-        userName: name,
-        userMessage: message,
-      },
-    });
-    if (data) {
-      toast.success('Message sent! We will contact you shortly.');
-      setSubmittedSuccessfully(true);
-      reset();
+    try {
+      const { data, error } = await supabase.functions.invoke('contact-us', {
+        body: {
+          userEmail: email,
+          userName: name,
+          userMessage: message,
+        },
+      });
+      if (data) {
+        toast.success('Message sent! We will contact you shortly.');
+        setSubmittedSuccessfully(true);
+        reset();
+      }
+      if (error) toast.error('Unable to send message');
+    } catch (error) {
+      console.error('Error in ContactSection (onSubmit):', error);
+      toast.error('Unable to send message');
+    } finally {
+      setLoading(false);
     }
-    if (error) toast.error('Unable to send message');
-    setLoading(false);
   };
 
   return (

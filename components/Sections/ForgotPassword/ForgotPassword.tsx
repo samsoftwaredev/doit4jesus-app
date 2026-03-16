@@ -23,14 +23,22 @@ const ForgotPassword = () => {
 
   const onSubmit: SubmitHandler<IFormInputs> = async (userInput) => {
     setIsLoading(true);
-    const { error } = await db.resetPassword(userInput.email);
-    if (error) {
-      toast.error(error?.message);
-    } else {
-      toast.success('Password reset sent. Check your email for instructions.');
-      reset();
+    try {
+      const { error } = await db.resetPassword(userInput.email);
+      if (error) {
+        toast.error(error?.message);
+      } else {
+        toast.success(
+          'Password reset sent. Check your email for instructions.',
+        );
+        reset();
+      }
+    } catch (error) {
+      console.error('Error in ForgotPassword (onSubmit):', error);
+      toast.error('An unexpected error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   return (

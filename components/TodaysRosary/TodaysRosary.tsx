@@ -68,22 +68,31 @@ const TodayRosary = () => {
   const weekDay = capitalizeFirstLetter(t[weekDayName as keyof typeof t]);
 
   const getYoutubeVideo = async (language: LANG) => {
-    const rosaryId = rosary.getRosaryState(language).mysteryAudio;
-    let { data, error } = await db
-      .getYouTubeVideo()
-      .select('*')
-      .eq('video_id', rosaryId);
-    if (error) console.error('Error in TodaysRosary (getYoutubeVideo):', error);
-    if (data) return data[0];
+    try {
+      const rosaryId = rosary.getRosaryState(language).mysteryAudio;
+      let { data, error } = await db
+        .getYouTubeVideo()
+        .select('*')
+        .eq('video_id', rosaryId);
+      if (error)
+        console.error('Error in TodaysRosary (getYoutubeVideo):', error);
+      if (data) return data[0];
+    } catch (error) {
+      console.error('Error in TodaysRosary (getYoutubeVideo):', error);
+    }
   };
 
   const getEvents = async (id: string) => {
-    let { data, error } = await db
-      .getEvents()
-      .select('*')
-      .eq('event_source', id);
-    if (error) console.error('Error in TodaysRosary (getEvents):', error);
-    if (data) return data[0];
+    try {
+      let { data, error } = await db
+        .getEvents()
+        .select('*')
+        .eq('event_source', id);
+      if (error) console.error('Error in TodaysRosary (getEvents):', error);
+      if (data) return data[0];
+    } catch (error) {
+      console.error('Error in TodaysRosary (getEvents):', error);
+    }
   };
 
   const goToRosary = async () => {
@@ -91,13 +100,17 @@ const TodayRosary = () => {
   };
 
   const init = async (language: LANG) => {
-    const youtube = await getYoutubeVideo(language);
-    if (youtube) {
-      const events = await getEvents(youtube.id);
-      if (events) {
-        setEventURL(`${NAV_APP_LINKS.event.link}/${events.slug}`);
-        setImage(events.picture_url ?? '');
+    try {
+      const youtube = await getYoutubeVideo(language);
+      if (youtube) {
+        const events = await getEvents(youtube.id);
+        if (events) {
+          setEventURL(`${NAV_APP_LINKS.event.link}/${events.slug}`);
+          setImage(events.picture_url ?? '');
+        }
       }
+    } catch (error) {
+      console.error('Error in TodaysRosary (init):', error);
     }
   };
 

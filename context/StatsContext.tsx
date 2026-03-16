@@ -52,46 +52,54 @@ const StatsContextProvider = ({ children }: Props) => {
 
   const registerRosaryCompleted = async () => {
     if (!user?.userId) return null;
-    const onlineUsersIds = onlineUsers?.map(({ userId }) => userId) || [];
-    const todaysRosaryCompleted = user.stats.todaysRosaryCompleted;
-    const { data, error } = await supabase.functions.invoke(
-      'rosary-completed',
-      { body: { onlineUsers: onlineUsersIds } },
-    );
+    try {
+      const onlineUsersIds = onlineUsers?.map(({ userId }) => userId) || [];
+      const todaysRosaryCompleted = user.stats.todaysRosaryCompleted;
+      const { data, error } = await supabase.functions.invoke(
+        'rosary-completed',
+        { body: { onlineUsers: onlineUsersIds } },
+      );
 
-    if (error) {
-      console.error(error);
+      if (error) {
+        console.error(error);
+        toast.error('Unable to update rosary count', {
+          toastId: 'unable to save stats',
+        });
+      }
+
+      if (data && todaysRosaryCompleted === false) {
+        onRosaryCompleted();
+        toast.success(getSuccessMessage(), {
+          toastId: 'rosary completed to save stats',
+          autoClose: 50_000,
+        });
+
+        const joinedRosary = [
+          ...user.stats.joinedRosary,
+          ...(onlineUsersIds?.map((userId) => ({
+            userId,
+            date: setDateTimeZero(new Date().toISOString()),
+          })) ?? []),
+        ];
+
+        const numOfRosaryCompleted =
+          onlineUsersIds.length === 0 ? 1 : onlineUsersIds.length;
+
+        setUser({
+          ...user,
+          stats: {
+            ...user.stats,
+            todaysRosaryCompleted: true,
+            rosaryTotalCount:
+              user.stats.rosaryTotalCount + numOfRosaryCompleted,
+            joinedRosary,
+          },
+        });
+      }
+    } catch (error) {
+      console.error('Error in StatsContext (registerRosaryCompleted):', error);
       toast.error('Unable to update rosary count', {
         toastId: 'unable to save stats',
-      });
-    }
-
-    if (data && todaysRosaryCompleted === false) {
-      onRosaryCompleted();
-      toast.success(getSuccessMessage(), {
-        toastId: 'rosary completed to save stats',
-        autoClose: 50_000,
-      });
-
-      const joinedRosary = [
-        ...user.stats.joinedRosary,
-        ...(onlineUsersIds?.map((userId) => ({
-          userId,
-          date: setDateTimeZero(new Date().toISOString()),
-        })) ?? []),
-      ];
-
-      const numOfRosaryCompleted =
-        onlineUsersIds.length === 0 ? 1 : onlineUsersIds.length;
-
-      setUser({
-        ...user,
-        stats: {
-          ...user.stats,
-          todaysRosaryCompleted: true,
-          rosaryTotalCount: user.stats.rosaryTotalCount + numOfRosaryCompleted,
-          joinedRosary,
-        },
       });
     }
   };

@@ -18,17 +18,23 @@ const App: NextPage = () => {
 
   const getEvents = async (lang: LANG) => {
     setIsLoading(true);
-    const { data, error } = await db
-      .getEvents()
-      .select('*')
-      .or(`language.eq.${lang},language.is.null`)
-      .order('started_at', { ascending: false });
-    if (!error) setEvents(normalizeEvent(data));
-    else {
-      console.error(error);
+    try {
+      const { data, error } = await db
+        .getEvents()
+        .select('*')
+        .or(`language.eq.${lang},language.is.null`)
+        .order('started_at', { ascending: false });
+      if (!error) setEvents(normalizeEvent(data));
+      else {
+        console.error(error);
+        toast.error('Unable to get list of events');
+      }
+    } catch (error) {
+      console.error('Error in app/index (getEvents):', error);
       toast.error('Unable to get list of events');
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   useEffect(() => {

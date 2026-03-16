@@ -35,14 +35,20 @@ const PresenceContextProvider = ({ children }: Props) => {
     normalizeOnlineUsers(Object.values(data).flat(2));
 
   const untrackPresence = async () => {
-    await channel!.untrack();
+    if (!channel) return;
+    try {
+      await channel.untrack();
+    } catch (error) {
+      console.error('Error in PresenceContext (untrackPresence):', error);
+    }
   };
 
   const subscribeToPresence = async () => {
+    if (!channel) return;
     try {
-      await channel!
+      await channel
         .on('presence', { event: 'sync' }, () => {
-          onlineUsers = channel!.presenceState();
+          onlineUsers = channel.presenceState();
           setUsers(flattenArr(onlineUsers));
         })
         .on('presence', { event: 'join' }, ({ key, newPresences }) => {
@@ -55,19 +61,24 @@ const PresenceContextProvider = ({ children }: Props) => {
         })
         .subscribe();
     } catch (error) {
-      console.error(error);
+      console.error('Error in PresenceContext (subscribeToPresence):', error);
       await untrackPresence();
     }
   };
 
   const trackPresence = async () => {
-    subscribeToPresence();
-    await channel!.track({
-      userId: currentUser?.userId,
-      online_at: new Date().toISOString(),
-      picture_url: currentUser?.pictureUrl,
-      full_name: `${currentUser?.firstName} ${currentUser?.lastName}`,
-    });
+    if (!channel) return;
+    try {
+      subscribeToPresence();
+      await channel.track({
+        userId: currentUser?.userId,
+        online_at: new Date().toISOString(),
+        picture_url: currentUser?.pictureUrl,
+        full_name: `${currentUser?.firstName} ${currentUser?.lastName}`,
+      });
+    } catch (error) {
+      console.error('Error in PresenceContext (trackPresence):', error);
+    }
   };
 
   useEffect(() => {

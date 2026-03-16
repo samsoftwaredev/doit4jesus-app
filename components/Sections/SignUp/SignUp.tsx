@@ -7,18 +7,16 @@ import {
   Radio,
   RadioGroup,
   TextField,
-  Typography,
 } from '@mui/material';
-import Image from 'next/image';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { Controller, SubmitHandler, useForm, useWatch } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
 import { db } from '@/classes/SupabaseDB';
 import FormErrorText from '@/components/FormErrorText';
-import { passwordValidationRules } from '@/constants';
+import { NEW_USER_REDIRECT, passwordValidationRules } from '@/constants';
 import { useLanguageContext } from '@/context/LanguageContext';
-import virginMaryLetter from '@/public/assets/images/art/virginMaryLetter.jpeg';
 import { emailRegEx, nameRegEx } from '@/utils';
 
 import {
@@ -39,7 +37,6 @@ interface IFormInputs {
 const SignUp = () => {
   const { t } = useLanguageContext();
   const [isLoading, setIsLoading] = useState(false);
-  const [isSuccessfulSigUp, setIsSuccessfulSigUp] = useState(false);
   const { handleSubmit, control } = useForm<IFormInputs>({
     mode: 'onChange',
     defaultValues: {
@@ -51,60 +48,38 @@ const SignUp = () => {
     },
   });
   const password = useWatch({ control, name: 'password' });
+  const router = useRouter();
 
   const onSubmit: SubmitHandler<IFormInputs> = async (userInput) => {
     const { firstName, lastName } = userInput;
     setIsLoading(true);
-    // validate no Jesus or Christ allowed for first and last name
-    const { error, data } = await db.signUp({
-      ...userInput,
-      firstName: firstName.trim(),
-      lastName: lastName.trim(),
-    });
-    setIsLoading(false);
-    if (error) {
-      toast.error(error.message);
+    try {
+      const { error, data } = await db.signUp({
+        ...userInput,
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+      });
+      if (error) {
+        toast.error(error.message);
+        console.error(error);
+      }
+      if (data) {
+        toast.success(
+          'We have sent a confirmation link to your email. Redirecting...',
+        );
+        setTimeout(() => {
+          router.push(NEW_USER_REDIRECT);
+        }, 1000);
+      }
+      setIsLoading(false);
+    } catch (error) {
+      toast.error('Unable to sign up. Please try again later.');
       console.error(error);
-    }
-    if (data) {
-      toast.success('We have sent a confirmation link to your email');
-      setIsSuccessfulSigUp(true);
+      setIsLoading(false);
     }
   };
 
   if (isLoading) return <Loading />;
-
-  if (isSuccessfulSigUp) {
-    return (
-      <>
-        <div
-          style={{
-            width: '100%',
-            height: '200px',
-            position: 'relative',
-          }}
-        >
-          <Image
-            style={{
-              width: '100%',
-              borderTopLeftRadius: '50%',
-              borderTopRightRadius: '50%',
-            }}
-            alt="Virgin Mary Letter"
-            src={virginMaryLetter}
-            layout="fill"
-            objectFit="contain"
-          />
-        </div>
-        <Typography my={2} textAlign="center" variant="h5">
-          {t.checkYourEmail}
-        </Typography>
-        <Typography mb={3} textAlign="center">
-          {t.checkYourEmailDescription}
-        </Typography>
-      </>
-    );
-  }
 
   return (
     <FormControl

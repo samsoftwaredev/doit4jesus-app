@@ -62,3 +62,5 @@ export const NAV_APP_LINKS = {
     value: 'trivia-game',
   },
 };
+
+export const NEW_USER_REDIRECT = NAV_APP_LINKS.dashboard.link + '?newUser=true';

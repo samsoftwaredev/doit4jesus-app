@@ -72,38 +72,48 @@ const FriendRequestSection = () => {
   const onConfirm = async () => {
     if (!user?.userId || !friend?.userId) return;
     const [uuid1, uuid2] = orderUUIDs(user?.userId, friend?.userId);
-    const { data, error } = await db
-      .getFriendRequests()
-      .insert([
-        {
-          uuid1_accepted: uuid1 === user?.userId,
-          uuid2_accepted: uuid2 === user?.userId,
-          uuid1: uuid1,
-          uuid2: uuid2,
-        },
-      ])
-      .select();
-    if (error) {
+    try {
+      const { data, error } = await db
+        .getFriendRequests()
+        .insert([
+          {
+            uuid1_accepted: uuid1 === user?.userId,
+            uuid2_accepted: uuid2 === user?.userId,
+            uuid1: uuid1,
+            uuid2: uuid2,
+          },
+        ])
+        .select();
+      if (error) {
+        console.error('Error in FriendRequestSection (onConfirm):', error);
+        toast.error('Unable to send friend request');
+      }
+      if (data) {
+        toast.success('Friend request sent');
+        router.push(NAV_APP_LINKS.friends.link);
+      }
+    } catch (error) {
       console.error('Error in FriendRequestSection (onConfirm):', error);
       toast.error('Unable to send friend request');
-    }
-    if (data) {
-      toast.success('Friend request sent');
-      router.push(NAV_APP_LINKS.friends.link);
     }
   };
 
   const getUserProfile = async () => {
     if (typeof paramsUserId === 'string' && user?.userId !== paramsUserId) {
-      let { data, error } = await supabase.rpc('get_profiles_by_user_ids', {
-        user_ids: [paramsUserId],
-      });
-      if (error) {
-        console.error(error);
+      try {
+        let { data, error } = await supabase.rpc('get_profiles_by_user_ids', {
+          user_ids: [paramsUserId],
+        });
+        if (error) {
+          console.error(error);
+          toast.error('Unable to retrieve friends profile.');
+        } else {
+          const friendsData = normalizeFriendProfile(data ?? []);
+          setFriend(friendsData[0]);
+        }
+      } catch (error) {
+        console.error('Error in FriendRequestSection (getUserProfile):', error);
         toast.error('Unable to retrieve friends profile.');
-      } else {
-        const friendsData = normalizeFriendProfile(data ?? []);
-        setFriend(friendsData[0]);
       }
     }
   };

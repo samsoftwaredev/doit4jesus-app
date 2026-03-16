@@ -1,6 +1,6 @@
 import { AuthResponse, createClient } from '@supabase/supabase-js';
 
-import { NAV_APP_LINKS, NAV_MAIN_LINKS } from '@/constants';
+import { NAV_APP_LINKS, NAV_MAIN_LINKS, NEW_USER_REDIRECT } from '@/constants';
 import type { Database } from '@/interfaces/database';
 import { GENDER_TYPES } from '@/interfaces/enum';
 
@@ -68,8 +68,7 @@ class SupabaseDB {
     lastName: string;
     genderMale: boolean;
   }): Promise<AuthResponse> => {
-    const redirectTo =
-      window.location.origin + NAV_APP_LINKS.dashboard.link + '?newUser=true';
+    const redirectTo = window.location.origin + NEW_USER_REDIRECT;
     const userGender = userInput.genderMale
       ? GENDER_TYPES.male
       : GENDER_TYPES.female;
@@ -84,7 +83,7 @@ class SupabaseDB {
           username:
             userInput.firstName +
             userInput.lastName +
-            generateRandomStringId(3),
+            generateRandomStringId(9),
         },
         emailRedirectTo: redirectTo,
       },

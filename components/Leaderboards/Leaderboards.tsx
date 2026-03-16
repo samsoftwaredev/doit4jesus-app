@@ -41,14 +41,20 @@ const Leaderboards = () => {
 
   const getTopRosaryUser = async () => {
     setIsLoading(true);
-    const { data, error } = await supabase.functions.invoke('leaderboards');
-    setIsLoading(false);
-    if (data) {
-      const list = normalizeLeaderboards(data.data.data);
-      setUserList(list);
-    }
-    if (error) {
+    try {
+      const { data, error } = await supabase.functions.invoke('leaderboards');
+      if (data) {
+        const list = normalizeLeaderboards(data.data.data);
+        setUserList(list);
+      }
+      if (error) {
+        toast.error('Unable to display leaderboards');
+      }
+    } catch (error) {
+      console.error('Error in Leaderboards (getTopRosaryUser):', error);
       toast.error('Unable to display leaderboards');
+    } finally {
+      setIsLoading(false);
     }
   };
 

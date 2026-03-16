@@ -42,28 +42,37 @@ const InviteFriend = () => {
   };
 
   const getFriendsProfiles = async (userIds: string[]) => {
-    const [data, error] = await getUserProfileAPI(userIds);
-    if (error) {
-      console.error(error);
+    try {
+      const [data, error] = await getUserProfileAPI(userIds);
+      if (error) {
+        console.error(error);
+        toast.error('Unable to retrieve friends profile.');
+      }
+      if (data) setFriendProfiles(data);
+    } catch (error) {
+      console.error('Error in InviteFriend (getFriendsProfiles):', error);
       toast.error('Unable to retrieve friends profile.');
     }
-    if (data) setFriendProfiles(data);
   };
 
   const getFriends = async () => {
-    let { data, error } = await db
-      .getFriends()
-      .select('*')
-      .or(`uuid1.eq.${user?.userId!},uuid2.eq.${user?.userId!}`);
-    if (data) {
-      const friendUserIds = data.map((u) => {
-        const uid = u.uuid1 !== user?.userId ? u.uuid1 : u.uuid2;
-        return uid!;
-      });
-      getFriendsProfiles(friendUserIds);
-    }
-    if (error) {
-      console.error(error);
+    try {
+      let { data, error } = await db
+        .getFriends()
+        .select('*')
+        .or(`uuid1.eq.${user?.userId!},uuid2.eq.${user?.userId!}`);
+      if (data) {
+        const friendUserIds = data.map((u) => {
+          const uid = u.uuid1 !== user?.userId ? u.uuid1 : u.uuid2;
+          return uid!;
+        });
+        getFriendsProfiles(friendUserIds);
+      }
+      if (error) {
+        console.error(error);
+      }
+    } catch (error) {
+      console.error('Error in InviteFriend (getFriends):', error);
     }
   };
 

@@ -1,5 +1,6 @@
 import { DarkMode, LightMode } from '@mui/icons-material';
 import { Box, Button, Container, Switch, Typography } from '@mui/material';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -12,6 +13,7 @@ import { INTERFACE_AUDIO_STATE } from '@/interfaces';
 
 const AccountSection = () => {
   const { t } = useLanguageContext();
+  const router = useRouter();
   const { setAudioState } = useAudioContext();
   const { mode, toggleTheme } = useThemeContext();
   const [isOpen, setIsOpen] = useState(false);
@@ -25,7 +27,7 @@ const AccountSection = () => {
     setIsOpen(true);
   };
 
-  const onDelete = async () => {
+  const onDeleteAccount = async () => {
     try {
       setLoading(true);
       const { data, error } = await supabase.functions.invoke('delete-user');
@@ -41,6 +43,7 @@ const AccountSection = () => {
     } finally {
       onClose();
       setLoading(false);
+      router.push('/');
     }
   };
 
@@ -88,7 +91,7 @@ const AccountSection = () => {
         <Typography my={5}>{t.deleteAccountConfirmation}</Typography>
         <Box display="flex" justifyContent="space-between">
           <Button onClick={onClose}>{t.cancel}</Button>
-          <Button variant="outlined" color="error" onClick={onDelete}>
+          <Button variant="outlined" color="error" onClick={onDeleteAccount}>
             {t.deleteAccount}
           </Button>
         </Box>

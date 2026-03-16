@@ -88,7 +88,7 @@ const WhatsTheRosary = ({ nextStep, prevStep }: StepProps) => {
   return (
     <StepperContent>
       <StepTitle variant="h3">{t.whatIsTheRosary}</StepTitle>
-      <Body my={5} textAlign="center" color="secondary">
+      <Body my={5} textAlign="center" sx={{ color: 'white' }}>
         {t.whatIsTheRosaryDescription}
       </Body>
       <Grid mt={2} container justifyContent="space-between">
@@ -159,10 +159,10 @@ const WhatAreTheBenefits = ({ prevStep, nextStep }: StepProps) => {
   return (
     <StepperContent>
       <StepTitle variant="h3">{t.whatAreTheBenefits}</StepTitle>
-      <Body my={3} color="secondary">
+      <Body my={3} sx={{ color: 'white' }}>
         {t.whatAreTheBenefitsDescription}
       </Body>
-      <Body my={3} color="secondary">
+      <Body my={3} sx={{ color: 'white' }}>
         <Markdown>{t.whatAreTheBenefitsOfRosary}</Markdown>
       </Body>
       <Grid mt={2} container justifyContent="space-between">
@@ -196,7 +196,7 @@ const Intro = ({ nextStep }: StepProps) => {
   return (
     <StepperContent>
       <StepTitle variant="h3">{t.welcomeTitle}</StepTitle>
-      <Body my={5} textAlign="center" color="secondary">
+      <Body my={5} textAlign="center" sx={{ color: 'white' }}>
         {t.welcomeDescription
           .replace('{{firstName}}', user?.firstName || '')
           .replace('{{lastName}}', user?.lastName || '')}
@@ -206,11 +206,11 @@ const Intro = ({ nextStep }: StepProps) => {
         src={joinedAppBadge}
         alt="You've just completed the divine achievement."
       />
-      <Body my={5} textAlign="center" color="secondary">
+      <Body my={5} textAlign="center" sx={{ color: 'white' }}>
         {t.joinedAppBadge}
       </Body>
 
-      <Grid container justifyContent="space-between">
+      <Grid container justifyContent="space-between" gap={2}>
         <Button
           size="large"
           variant="contained"
@@ -275,7 +275,7 @@ const AccountSetup = () => {
     },
     {
       component: <WhatsTheRosary prevStep={prevStep} nextStep={nextStep} />,
-      color: theme.palette.error.dark,
+      color: theme.palette.error.light,
       backgroundImage: maryRosary,
     },
     {

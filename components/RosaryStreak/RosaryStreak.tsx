@@ -17,17 +17,22 @@ const RosaryStreak = () => {
   const hasFlame = streakNum !== null && streakNum > 4;
 
   const getRosaryStreak = async () => {
-    const { data, error } = await supabase.functions.invoke(
-      'get_rosary_streak',
-      {
-        body: { user_id: user?.userId },
-      },
-    );
-    setIsLoading(false);
-    if (error) {
-      console.error(error);
-    } else {
-      setStreakNum(data.streak);
+    try {
+      const { data, error } = await supabase.functions.invoke(
+        'get_rosary_streak',
+        {
+          body: { user_id: user?.userId },
+        },
+      );
+      if (error) {
+        console.error(error);
+      } else {
+        setStreakNum(data.streak);
+      }
+    } catch (error) {
+      console.error('Error in RosaryStreak (getRosaryStreak):', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 

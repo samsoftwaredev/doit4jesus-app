@@ -24,7 +24,12 @@ jest.mock('next/link', () => ({
 
 jest.mock('@/classes/SupabaseDB', () => ({
   default: jest.fn(),
-  db: { logIn: jest.fn().mockResolvedValue(undefined) },
+  db: {
+    logIn: jest.fn().mockResolvedValue({
+      data: { session: { user: { id: 'user-1' } } },
+      error: null,
+    }),
+  },
   supabase: {
     auth: {
       onAuthStateChange: jest.fn().mockReturnValue({
