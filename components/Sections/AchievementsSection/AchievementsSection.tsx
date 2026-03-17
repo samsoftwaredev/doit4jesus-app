@@ -26,6 +26,7 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
+import { Card } from '@/components';
 import AchievementShareModal from '@/components/AchievementShareModal';
 import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
@@ -36,47 +37,17 @@ import {
   localizeAchievementDashboard,
 } from '@/services/achievements';
 
-const PageShell = styled(Box)(({ theme }) => ({
-  position: 'relative',
-  overflow: 'hidden',
-  paddingBottom: theme.spacing(8),
-  '&::before': {
-    content: '""',
-    position: 'absolute',
-    inset: 0,
-    background:
-      'radial-gradient(circle at top right, rgba(255, 215, 0, 0.18), transparent 30%), radial-gradient(circle at bottom left, rgba(66, 165, 245, 0.18), transparent 25%)',
-    pointerEvents: 'none',
-  },
-}));
-
-const SectionCard = styled(Box)(({ theme }) => ({
-  position: 'relative',
-  padding: theme.spacing(2.5),
-  borderRadius: 24,
-  background:
-    theme.palette.mode === 'dark'
-      ? 'linear-gradient(180deg, rgba(22, 55, 85, 0.98), rgba(8, 28, 43, 0.95))'
-      : 'linear-gradient(180deg, rgba(255,255,255,0.98), rgba(243,246,250,0.95))',
-  border: `1px solid ${alpha(theme.palette.text.primary, 0.08)}`,
-  boxShadow:
-    theme.palette.mode === 'dark'
-      ? '0 20px 60px rgba(0, 0, 0, 0.22)'
-      : '0 20px 60px rgba(9, 28, 44, 0.08)',
-}));
-
-const HeroCard = styled(SectionCard)(({ theme }) => ({
-  padding: theme.spacing(3),
-  background:
-    'linear-gradient(135deg, rgba(8, 28, 43, 0.98), rgba(22, 55, 85, 0.96) 55%, rgba(184, 150, 11, 0.92))',
-  color: '#ffffff',
-}));
+const AchievementsGrid = styled(Box)({
+  display: 'grid',
+  gridTemplateColumns: '1fr',
+  gap: '10px',
+});
 
 const SummaryGrid = styled(Box)(({ theme }) => ({
   display: 'grid',
-  gap: theme.spacing(1.5),
+  gap: theme.spacing(1),
   gridTemplateColumns: '1fr',
-  '@media (min-width: 768px)': {
+  '@media (min-width: 640px)': {
     gridTemplateColumns: 'repeat(3, 1fr)',
   },
 }));
@@ -95,10 +66,16 @@ const BadgeGrid = styled(Box)(({ theme }) => ({
 
 const SummaryStatCard = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2),
-  borderRadius: 20,
-  background: alpha('#ffffff', 0.1),
-  border: '1px solid rgba(255,255,255,0.12)',
-  backdropFilter: 'blur(10px)',
+  borderRadius: 10,
+  backgroundColor: alpha(theme.palette.primary.main, 0.04),
+  border: `1px solid ${alpha(theme.palette.primary.main, 0.14)}`,
+}));
+
+const BadgeItem = styled(Box)(({ theme }) => ({
+  padding: theme.spacing(2),
+  borderRadius: 10,
+  border: `1px solid ${alpha(theme.palette.text.primary, 0.12)}`,
+  backgroundColor: alpha(theme.palette.background.default, 0.5),
 }));
 
 const iconMap = {
@@ -151,7 +128,7 @@ const AchievementBadgeCard = ({
   const { t } = useLanguageContext();
 
   return (
-    <SectionCard
+    <BadgeItem
       role="button"
       onClick={() => onSelect(badge)}
       sx={{
@@ -235,7 +212,7 @@ const AchievementBadgeCard = ({
             : `${Math.round(badge.progressPercent)}% ${t.complete.toLowerCase()}`}
         </Typography>
       </Stack>
-    </SectionCard>
+    </BadgeItem>
   );
 };
 
@@ -374,7 +351,7 @@ const AchievementsSection = () => {
 
   if (isLoading || !localizedDashboard) {
     return (
-      <Container maxWidth="lg">
+      <Container className="container-box" maxWidth="md">
         <Stack spacing={2}>
           <Skeleton variant="rounded" height={220} />
           <Skeleton variant="rounded" height={320} />
@@ -388,96 +365,69 @@ const AchievementsSection = () => {
     localizedDashboard;
 
   return (
-    <PageShell>
-      <Container maxWidth="lg">
-        <Stack spacing={2.5}>
-          <HeroCard>
-            <Stack spacing={2.5}>
-              <Box>
-                <Chip
-                  icon={<EmojiEventsIcon />}
-                  label={t.achievementHeroEyebrow}
-                  sx={{
-                    mb: 1.5,
-                    bgcolor: alpha(theme.palette.common.white, 0.12),
-                    color: theme.palette.common.white,
-                  }}
-                />
-                <Typography variant="h4" fontWeight={800} mb={1}>
-                  {t.achievementHeroTitle}
+    <Container className="container-box" maxWidth="md">
+      <AchievementsGrid>
+        <Card>
+          <Stack spacing={2}>
+            <Box>
+              <Chip
+                icon={<EmojiEventsIcon />}
+                label={t.achievementHeroEyebrow}
+                sx={{ mb: 1.5 }}
+              />
+              <Typography variant="h4" fontWeight={700} mb={1}>
+                {t.achievementHeroTitle}
+              </Typography>
+              <Typography color="text.secondary">
+                {t.achievementHeroDescription}
+              </Typography>
+            </Box>
+
+            <SummaryGrid>
+              <SummaryStatCard>
+                <Typography color="text.secondary" variant="body2">
+                  {t.achievementTotalBadges}
                 </Typography>
-                <Typography
-                  sx={{
-                    color: alpha(theme.palette.common.white, 0.82),
-                    maxWidth: 720,
-                  }}
-                >
-                  {t.achievementHeroDescription}
+                <Typography variant="h4" fontWeight={700}>
+                  {summary.totalBadgesEarned}
                 </Typography>
-              </Box>
+                <Typography color="text.secondary" variant="body2">
+                  {t.achievementTotalBadgesDescription}
+                </Typography>
+              </SummaryStatCard>
 
-              <SummaryGrid>
-                <SummaryStatCard>
-                  <Typography
-                    color={alpha(theme.palette.common.white, 0.72)}
-                    variant="body2"
-                  >
-                    {t.achievementTotalBadges}
-                  </Typography>
-                  <Typography variant="h3" fontWeight={800}>
-                    {summary.totalBadgesEarned}
-                  </Typography>
-                  <Typography
-                    color={alpha(theme.palette.common.white, 0.72)}
-                    variant="body2"
-                  >
-                    {t.achievementTotalBadgesDescription}
-                  </Typography>
-                </SummaryStatCard>
+              <SummaryStatCard>
+                <Typography color="text.secondary" variant="body2">
+                  {t.achievementCurrentStreak}
+                </Typography>
+                <Typography variant="h4" fontWeight={700}>
+                  {summary.currentPrayerStreak} {t.achievementDays}
+                </Typography>
+                <Typography color="text.secondary" variant="body2">
+                  {t.achievementCurrentStreakDescription}
+                </Typography>
+              </SummaryStatCard>
 
-                <SummaryStatCard>
-                  <Typography
-                    color={alpha(theme.palette.common.white, 0.72)}
-                    variant="body2"
-                  >
-                    {t.achievementCurrentStreak}
-                  </Typography>
-                  <Typography variant="h3" fontWeight={800}>
-                    {summary.currentPrayerStreak} {t.achievementDays}
-                  </Typography>
-                  <Typography
-                    color={alpha(theme.palette.common.white, 0.72)}
-                    variant="body2"
-                  >
-                    {t.achievementCurrentStreakDescription}
-                  </Typography>
-                </SummaryStatCard>
+              <SummaryStatCard>
+                <Typography color="text.secondary" variant="body2">
+                  {t.achievementNextMilestone}
+                </Typography>
+                <Typography variant="h6" fontWeight={700}>
+                  {summary.nextMilestoneName}
+                </Typography>
+                <Typography color="text.secondary" variant="body2">
+                  {summary.nextMilestoneCount === 0
+                    ? t.achievementAllBadgesComplete
+                    : `${summary.nextMilestoneCount} ${t.achievementMoreStepsToUnlock}`}
+                </Typography>
+              </SummaryStatCard>
+            </SummaryGrid>
+          </Stack>
+        </Card>
 
-                <SummaryStatCard>
-                  <Typography
-                    color={alpha(theme.palette.common.white, 0.72)}
-                    variant="body2"
-                  >
-                    {t.achievementNextMilestone}
-                  </Typography>
-                  <Typography variant="h5" fontWeight={800}>
-                    {summary.nextMilestoneName}
-                  </Typography>
-                  <Typography
-                    color={alpha(theme.palette.common.white, 0.72)}
-                    variant="body2"
-                  >
-                    {summary.nextMilestoneCount === 0
-                      ? t.achievementAllBadgesComplete
-                      : `${summary.nextMilestoneCount} ${t.achievementMoreStepsToUnlock}`}
-                  </Typography>
-                </SummaryStatCard>
-              </SummaryGrid>
-            </Stack>
-          </HeroCard>
-
-          {featuredBadge && (
-            <SectionCard>
+        {featuredBadge && (
+          <Card>
+            <Box>
               <Stack
                 direction={{ xs: 'column', md: 'row' }}
                 spacing={2.5}
@@ -546,10 +496,12 @@ const AchievementsSection = () => {
                   </Stack>
                 </Box>
               </Stack>
-            </SectionCard>
-          )}
+            </Box>
+          </Card>
+        )}
 
-          <SectionCard>
+        <Card>
+          <Box>
             <Stack
               direction={{ xs: 'column', sm: 'row' }}
               justifyContent="space-between"
@@ -584,9 +536,11 @@ const AchievementsSection = () => {
             ) : (
               <Alert severity="info">{t.achievementFirstBadgeWaiting}</Alert>
             )}
-          </SectionCard>
+          </Box>
+        </Card>
 
-          <SectionCard>
+        <Card>
+          <Box>
             <Stack
               direction={{ xs: 'column', sm: 'row' }}
               justifyContent="space-between"
@@ -617,9 +571,11 @@ const AchievementsSection = () => {
                 />
               ))}
             </BadgeGrid>
-          </SectionCard>
+          </Box>
+        </Card>
 
-          <SectionCard>
+        <Card>
+          <Box>
             <Typography variant="h5" fontWeight={800} mb={0.5}>
               {t.achievementProgressTitle}
             </Typography>
@@ -670,9 +626,9 @@ const AchievementsSection = () => {
                 </Box>
               ))}
             </Stack>
-          </SectionCard>
-        </Stack>
-      </Container>
+          </Box>
+        </Card>
+      </AchievementsGrid>
 
       <AchievementShareModal
         badge={selectedBadge}
@@ -684,7 +640,7 @@ const AchievementsSection = () => {
         onShare={shareBadge}
         onCopy={copyShareLink}
       />
-    </PageShell>
+    </Container>
   );
 };
 

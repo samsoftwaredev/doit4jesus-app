@@ -101,7 +101,7 @@ const AppLayout = ({ children }: Props) => {
       icon: <EmojiEventsIcon />,
     },
     // { url: "/app/soldiers", label: "Militant Church", icon: <SoldierIcon /> },
-    { url: '/app', label: t.rosaryMysteries, icon: <GridViewIcon /> },
+    { url: '/app/rosaries', label: t.rosaryMysteries, icon: <GridViewIcon /> },
     { url: '/app/friends', label: t.friends, icon: <SoldierIcon /> },
     // { url: '/app/live-event', label: 'Live Event', icon: <CellTowerIcon /> },
     // {
@@ -110,11 +110,11 @@ const AppLayout = ({ children }: Props) => {
     //   icon: <StarIcon />,
     // },
     // TODO: enable confession once module is completed
-    // {
-    //   url: "/app/confession",
-    //   label: "Exam of Conscience",
-    //   icon: <ConfessionIcon />,
-    // },
+    {
+      url: '/app/confession',
+      label: 'Exam of Conscience',
+      icon: <EmojiEventsIcon />,
+    },
     // { url: "/app/settings", label: "Settings", icon: <SettingsIcon /> },
     // { url: "/app/support", label: "Support", icon: <SupportAgentIcon /> },
   ];

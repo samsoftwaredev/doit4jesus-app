@@ -2,6 +2,7 @@ import { Alert, Box, Collapse, Container, LinearProgress } from '@mui/material';
 import React, { useState } from 'react';
 
 import { CardDeck, SelectExamOfConscience } from '@/components';
+import SelectVocation from '@/components/SelectExamOfConscience/SelectVocation';
 import adultExamOfConscience from '@/data/adultExamOfConscience.json';
 import childExamOfConscience from '@/data/childExamOfConscience.json';
 import teenExamOfConscience from '@/data/teenExamOfConscience.json';
@@ -9,8 +10,11 @@ import { CardProps, ExamTypes } from '@/interfaces';
 
 enum ActiveScreen {
   selectExam = 0,
-  examOfConscience = 1,
+  selectVocation = 1,
+  examOfConscience = 2,
 }
+
+type Vocation = 'married' | 'single' | 'religious';
 
 const exams: ExamTypes = {
   child: {
@@ -25,6 +29,17 @@ const exams: ExamTypes = {
     label: 'Adult Examination of Conscience',
     value: adultExamOfConscience,
   },
+};
+
+const filterByVocation = (
+  questions: CardProps[],
+  vocation: Vocation,
+): CardProps[] => {
+  return questions.filter((q) => {
+    const categories = (q as any).categories as string[] | undefined;
+    if (!categories || categories.length === 0) return true;
+    return categories.includes(vocation);
+  });
 };
 
 const ConfessionGuide = () => {
@@ -46,20 +61,28 @@ const ConfessionGuide = () => {
   };
 
   const onExamSelected = (type: string) => {
-    setActiveScreen(ActiveScreen.examOfConscience);
     switch (type) {
-      case 'Child Examination of Conscience':
+      case 'For Kids':
         setExam(exams.child.value);
+        setActiveScreen(ActiveScreen.examOfConscience);
         break;
-      case 'Teen Examination of Conscience':
+      case 'For Teens':
         setExam(exams.teen.value);
+        setActiveScreen(ActiveScreen.examOfConscience);
         break;
-      case 'Adult Examination of Conscience':
-        setExam(exams.adult.value);
+      case 'For Adults':
+        setActiveScreen(ActiveScreen.selectVocation);
         break;
       default:
         console.error('Invalid type for exam selected ' + type);
     }
+  };
+
+  const onVocationSelected = (vocation: Vocation) => {
+    const filtered = filterByVocation(exams.adult.value, vocation);
+    setExam(filtered);
+    setActiveStep(0);
+    setActiveScreen(ActiveScreen.examOfConscience);
   };
 
   return (
@@ -98,6 +121,9 @@ const ConfessionGuide = () => {
         </Box>
         {activeScreen === ActiveScreen.selectExam && (
           <SelectExamOfConscience onExamSelected={onExamSelected} />
+        )}
+        {activeScreen === ActiveScreen.selectVocation && (
+          <SelectVocation onVocationSelected={onVocationSelected} />
         )}
         {activeScreen === ActiveScreen.examOfConscience && (
           <Box className="appCard" mt={1}>
