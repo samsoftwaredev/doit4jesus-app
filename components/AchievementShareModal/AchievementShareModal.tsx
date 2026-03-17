@@ -8,6 +8,7 @@ import { alpha, useTheme } from '@mui/material/styles';
 
 import BadgeShareCardPreview from '@/components/BadgeShareCardPreview';
 import Dialog from '@/components/Dialog';
+import { useLanguageContext } from '@/context/LanguageContext';
 import { AchievementBadge } from '@/interfaces';
 import { BadgeShareCardData } from '@/utils/badgeShareCardGenerator';
 
@@ -33,6 +34,7 @@ const AchievementShareModal = ({
   onCopy,
 }: Props) => {
   const theme = useTheme();
+  const { t } = useLanguageContext();
 
   if (!badge) return null;
 
@@ -43,17 +45,43 @@ const AchievementShareModal = ({
     verseReference: badge.verseReference,
     verseText: badge.verseText,
     earnedAtLabel: badge.earnedAt
-      ? `Earned ${new Date(badge.earnedAt).toLocaleDateString()}`
+      ? `${t.achievementEarnedOn} ${new Date(badge.earnedAt).toLocaleDateString()}`
       : badge.requirementLabel,
+    earnedByLabel: t.achievementEarnedBy,
     userName,
+    shareEncouragementLabel: t.achievementShareEncouragement,
     shareMessage: badge.shareMessage,
+    colors: {
+      backgroundStart: theme.palette.background.default,
+      backgroundMid: theme.palette.primary.dark,
+      backgroundEnd: theme.palette.gold.dark,
+      halo: alpha(theme.palette.gold.light, 0.82),
+      shapeOverlay: alpha(
+        theme.palette.common.white,
+        theme.palette.mode === 'dark' ? 0.08 : 0.16,
+      ),
+      border: alpha(
+        theme.palette.common.white,
+        theme.palette.mode === 'dark' ? 0.22 : 0.32,
+      ),
+      accent: theme.palette.gold.light,
+      title: theme.palette.common.white,
+      body: alpha(theme.palette.common.white, 0.94),
+      muted: alpha(theme.palette.common.white, 0.78),
+      panel: alpha(theme.palette.background.default, 0.36),
+      panelStrong: alpha(theme.palette.background.default, 0.78),
+    },
   };
 
   return (
     <Dialog
       open={open}
       handleClose={onClose}
-      modalTitle={badge.isEarned ? 'Share Achievement' : 'Badge Preview'}
+      modalTitle={
+        badge.isEarned
+          ? t.achievementShareModalTitle
+          : t.achievementPreviewModalTitle
+      }
       fullWidth
     >
       <Stack spacing={3}>
@@ -69,7 +97,7 @@ const AchievementShareModal = ({
             mb={1.5}
           >
             <Chip
-              label={badge.isEarned ? 'Earned' : 'Locked'}
+              label={badge.isEarned ? t.achievementEarned : t.achievementLocked}
               sx={{
                 bgcolor: badge.isEarned
                   ? alpha(theme.palette.success.main, 0.18)
@@ -115,14 +143,14 @@ const AchievementShareModal = ({
                 startIcon={<IosShareIcon />}
                 onClick={() => onShare(badge)}
               >
-                Share with Friends
+                {t.achievementShareWithFriends}
               </Button>
               <Button
                 variant="outlined"
                 startIcon={<ContentCopyIcon />}
                 onClick={() => onCopy(badge)}
               >
-                Copy Link
+                {t.achievementCopyLink}
               </Button>
             </Stack>
 
@@ -135,7 +163,7 @@ const AchievementShareModal = ({
                 variant="text"
                 startIcon={<WhatsAppIcon />}
               >
-                WhatsApp
+                {t.achievementWhatsApp}
               </Button>
               <Button
                 component="a"
@@ -149,18 +177,17 @@ const AchievementShareModal = ({
               </Button>
               <Button
                 component="a"
-                href={`mailto:?subject=${encodeURIComponent(`I unlocked ${badge.name}`)}&body=${encodeURIComponent(`${shareText}\n\n${shareUrl}`)}`}
+                href={`mailto:?subject=${encodeURIComponent(`${t.achievementEmailSubjectPrefix} ${badge.name}`)}&body=${encodeURIComponent(`${shareText}\n\n${shareUrl}`)}`}
                 variant="text"
                 startIcon={<SendIcon />}
               >
-                Email
+                {t.achievementEmail}
               </Button>
             </Stack>
           </>
         ) : (
           <Typography color="text.secondary">
-            Keep going. This preview shows what you are working toward, and the
-            share options unlock once the badge is earned.
+            {t.achievementLockedPreviewDescription}
           </Typography>
         )}
       </Stack>

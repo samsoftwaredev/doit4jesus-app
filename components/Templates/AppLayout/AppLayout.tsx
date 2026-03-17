@@ -97,7 +97,7 @@ const AppLayout = ({ children }: Props) => {
     { url: '/app/dashboard', label: t.dashboard, icon: <TableChartIcon /> },
     {
       url: '/app/achievements',
-      label: 'Achievements',
+      label: t.achievements,
       icon: <EmojiEventsIcon />,
     },
     // { url: "/app/soldiers", label: "Militant Church", icon: <SoldierIcon /> },

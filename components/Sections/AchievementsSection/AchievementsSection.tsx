@@ -27,11 +27,13 @@ import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import AchievementShareModal from '@/components/AchievementShareModal';
+import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
 import { AchievementBadge, AchievementDashboard } from '@/interfaces';
 import {
   getAchievementBadgeShareUrl,
   getAchievementDashboard,
+  localizeAchievementDashboard,
 } from '@/services/achievements';
 
 const PageShell = styled(Box)(({ theme }) => ({
@@ -146,6 +148,7 @@ const AchievementBadgeCard = ({
   onSelect: (badge: AchievementBadge) => void;
 }) => {
   const theme = useTheme();
+  const { t } = useLanguageContext();
 
   return (
     <SectionCard
@@ -174,7 +177,7 @@ const AchievementBadgeCard = ({
 
       <Stack direction="row" spacing={1} alignItems="center" mb={2}>
         <Chip
-          label={badge.isEarned ? 'Earned' : 'Locked'}
+          label={badge.isEarned ? t.achievementEarned : t.achievementLocked}
           size="small"
           sx={{
             bgcolor: badge.isEarned
@@ -188,7 +191,7 @@ const AchievementBadgeCard = ({
         {!badge.isEarned && (
           <Chip
             icon={<LockIcon fontSize="small" />}
-            label={`${badge.remainingCount} to go`}
+            label={`${badge.remainingCount} ${t.achievementToGo}`}
             size="small"
             variant="outlined"
           />
@@ -226,8 +229,10 @@ const AchievementBadgeCard = ({
         </Typography>
         <Typography variant="caption" color="text.secondary">
           {badge.isEarned && badge.earnedAt
-            ? `Earned ${new Date(badge.earnedAt).toLocaleDateString()}`
-            : `${Math.round(badge.progressPercent)}% complete`}
+            ? `${t.achievementEarnedOn} ${new Date(
+                badge.earnedAt,
+              ).toLocaleDateString()}`
+            : `${Math.round(badge.progressPercent)}% ${t.complete.toLowerCase()}`}
         </Typography>
       </Stack>
     </SectionCard>
@@ -236,6 +241,7 @@ const AchievementBadgeCard = ({
 
 const AchievementsSection = () => {
   const { user } = useUserContext();
+  const { t } = useLanguageContext();
   const theme = useTheme();
   const searchParams = useSearchParams();
   const [dashboard, setDashboard] = useState<AchievementDashboard | null>(null);
@@ -243,6 +249,10 @@ const AchievementsSection = () => {
     null,
   );
   const [isLoading, setIsLoading] = useState(true);
+  const localizedDashboard = useMemo(
+    () => (dashboard ? localizeAchievementDashboard(dashboard, t) : null),
+    [dashboard, t],
+  );
 
   useEffect(() => {
     let isMounted = true;
@@ -264,61 +274,89 @@ const AchievementsSection = () => {
   }, [user]);
 
   useEffect(() => {
-    if (!dashboard) return;
+    if (!localizedDashboard) return;
     const badgeKey = searchParams.get('badge');
     if (!badgeKey) return;
 
     const matchedBadge =
-      dashboard.earnedBadges.find((badge) => badge.badgeKey === badgeKey) ??
-      dashboard.lockedBadges.find((badge) => badge.badgeKey === badgeKey);
+      localizedDashboard.earnedBadges.find(
+        (badge) => badge.badgeKey === badgeKey,
+      ) ??
+      localizedDashboard.lockedBadges.find(
+        (badge) => badge.badgeKey === badgeKey,
+      );
 
     if (matchedBadge) {
       setSelectedBadge(matchedBadge);
     }
-  }, [dashboard, searchParams]);
+  }, [localizedDashboard, searchParams]);
+
+  useEffect(() => {
+    if (!localizedDashboard || !selectedBadge) return;
+
+    const localizedSelectedBadge =
+      localizedDashboard.earnedBadges.find(
+        (badge) => badge.badgeKey === selectedBadge.badgeKey,
+      ) ??
+      localizedDashboard.lockedBadges.find(
+        (badge) => badge.badgeKey === selectedBadge.badgeKey,
+      );
+
+    if (localizedSelectedBadge) {
+      setSelectedBadge(localizedSelectedBadge);
+    }
+  }, [localizedDashboard, selectedBadge]);
 
   const userName =
-    user?.fullName?.trim() || user?.firstName?.trim() || 'Prayer Friend';
+    user?.fullName?.trim() ||
+    user?.firstName?.trim() ||
+    t.achievementPrayerFriend;
 
   const sharePayload = useMemo(() => {
-    if (!dashboard || !selectedBadge) {
+    if (!localizedDashboard || !selectedBadge) {
       return { shareUrl: '', shareText: '' };
     }
 
     const shareUrl = getAchievementBadgeShareUrl(
-      dashboard.shareBaseUrl,
+      localizedDashboard.shareBaseUrl,
       selectedBadge,
     );
     const shareText = `${selectedBadge.shareMessage} “${selectedBadge.verseText}”`;
 
     return { shareUrl, shareText };
-  }, [dashboard, selectedBadge]);
+  }, [localizedDashboard, selectedBadge]);
 
   const copyShareLink = async (badge: AchievementBadge) => {
-    if (!dashboard) return;
+    if (!localizedDashboard) return;
 
-    const shareUrl = getAchievementBadgeShareUrl(dashboard.shareBaseUrl, badge);
+    const shareUrl = getAchievementBadgeShareUrl(
+      localizedDashboard.shareBaseUrl,
+      badge,
+    );
     const shareText = `${badge.shareMessage} ${shareUrl}`;
 
     try {
       await navigator.clipboard.writeText(shareText);
-      toast.success('Achievement link copied to clipboard.');
+      toast.success(t.achievementLinkCopied);
     } catch (error) {
       console.error('Clipboard copy failed:', error);
-      toast.error('Unable to copy the achievement link.');
+      toast.error(t.achievementCopyError);
     }
   };
 
   const shareBadge = async (badge: AchievementBadge) => {
-    if (!dashboard) return;
+    if (!localizedDashboard) return;
 
-    const shareUrl = getAchievementBadgeShareUrl(dashboard.shareBaseUrl, badge);
+    const shareUrl = getAchievementBadgeShareUrl(
+      localizedDashboard.shareBaseUrl,
+      badge,
+    );
     const shareText = `${badge.shareMessage} ${shareUrl}`;
 
     if (typeof navigator !== 'undefined' && navigator.share) {
       try {
         await navigator.share({
-          title: `${badge.name} on DoIt4Jesus`,
+          title: `${badge.name} ${t.achievementShareTitleSuffix}`,
           text: badge.shareMessage,
           url: shareUrl,
         });
@@ -331,10 +369,10 @@ const AchievementsSection = () => {
     }
 
     await copyShareLink(badge);
-    toast.info('Native share is unavailable, so a shareable link was copied.');
+    toast.info(t.achievementNativeShareFallback);
   };
 
-  if (isLoading || !dashboard) {
+  if (isLoading || !localizedDashboard) {
     return (
       <Container maxWidth="lg">
         <Stack spacing={2}>
@@ -347,7 +385,7 @@ const AchievementsSection = () => {
   }
 
   const { summary, featuredBadge, earnedBadges, lockedBadges, progress } =
-    dashboard;
+    localizedDashboard;
 
   return (
     <PageShell>
@@ -358,60 +396,80 @@ const AchievementsSection = () => {
               <Box>
                 <Chip
                   icon={<EmojiEventsIcon />}
-                  label="Prayer Journey Achievements"
+                  label={t.achievementHeroEyebrow}
                   sx={{
                     mb: 1.5,
-                    bgcolor: alpha('#ffffff', 0.12),
-                    color: '#ffffff',
+                    bgcolor: alpha(theme.palette.common.white, 0.12),
+                    color: theme.palette.common.white,
                   }}
                 />
                 <Typography variant="h4" fontWeight={800} mb={1}>
-                  Every prayer builds a faithful life.
+                  {t.achievementHeroTitle}
                 </Typography>
                 <Typography
-                  sx={{ color: alpha('#ffffff', 0.82), maxWidth: 720 }}
+                  sx={{
+                    color: alpha(theme.palette.common.white, 0.82),
+                    maxWidth: 720,
+                  }}
                 >
-                  Track the badges you have earned, see what is next, and share
-                  moments that might encourage someone else to pray.
+                  {t.achievementHeroDescription}
                 </Typography>
               </Box>
 
               <SummaryGrid>
                 <SummaryStatCard>
-                  <Typography color={alpha('#ffffff', 0.72)} variant="body2">
-                    Total badges
+                  <Typography
+                    color={alpha(theme.palette.common.white, 0.72)}
+                    variant="body2"
+                  >
+                    {t.achievementTotalBadges}
                   </Typography>
                   <Typography variant="h3" fontWeight={800}>
                     {summary.totalBadgesEarned}
                   </Typography>
-                  <Typography color={alpha('#ffffff', 0.72)} variant="body2">
-                    Earned through prayer, rosary, and community life
+                  <Typography
+                    color={alpha(theme.palette.common.white, 0.72)}
+                    variant="body2"
+                  >
+                    {t.achievementTotalBadgesDescription}
                   </Typography>
                 </SummaryStatCard>
 
                 <SummaryStatCard>
-                  <Typography color={alpha('#ffffff', 0.72)} variant="body2">
-                    Current streak
+                  <Typography
+                    color={alpha(theme.palette.common.white, 0.72)}
+                    variant="body2"
+                  >
+                    {t.achievementCurrentStreak}
                   </Typography>
                   <Typography variant="h3" fontWeight={800}>
-                    {summary.currentPrayerStreak} days
+                    {summary.currentPrayerStreak} {t.achievementDays}
                   </Typography>
-                  <Typography color={alpha('#ffffff', 0.72)} variant="body2">
-                    Consistency creates spiritual momentum
+                  <Typography
+                    color={alpha(theme.palette.common.white, 0.72)}
+                    variant="body2"
+                  >
+                    {t.achievementCurrentStreakDescription}
                   </Typography>
                 </SummaryStatCard>
 
                 <SummaryStatCard>
-                  <Typography color={alpha('#ffffff', 0.72)} variant="body2">
-                    Next milestone
+                  <Typography
+                    color={alpha(theme.palette.common.white, 0.72)}
+                    variant="body2"
+                  >
+                    {t.achievementNextMilestone}
                   </Typography>
                   <Typography variant="h5" fontWeight={800}>
                     {summary.nextMilestoneName}
                   </Typography>
-                  <Typography color={alpha('#ffffff', 0.72)} variant="body2">
+                  <Typography
+                    color={alpha(theme.palette.common.white, 0.72)}
+                    variant="body2"
+                  >
                     {summary.nextMilestoneCount === 0
-                      ? 'You have completed every current badge.'
-                      : `${summary.nextMilestoneCount} more steps to unlock it`}
+                      ? t.achievementAllBadgesComplete
+                      : `${summary.nextMilestoneCount} ${t.achievementMoreStepsToUnlock}`}
                   </Typography>
                 </SummaryStatCard>
               </SummaryGrid>
@@ -441,7 +499,7 @@ const AchievementsSection = () => {
                     {getBadgeIcon(featuredBadge)}
                     <Box>
                       <Typography color="text.secondary" variant="body2">
-                        Latest achievement
+                        {t.achievementLatestAchievement}
                       </Typography>
                       <Typography variant="h4" fontWeight={800}>
                         {featuredBadge.name}
@@ -455,7 +513,7 @@ const AchievementsSection = () => {
 
                 <Box flex={1}>
                   <Typography variant="h6" fontWeight={700} mb={1}>
-                    Featured badge
+                    {t.achievementFeaturedBadge}
                   </Typography>
                   <Typography color="text.secondary" mb={2}>
                     {featuredBadge.verseText}
@@ -473,7 +531,7 @@ const AchievementsSection = () => {
                       startIcon={<ShareIcon />}
                       onClick={() => setSelectedBadge(featuredBadge)}
                     >
-                      Share this badge
+                      {t.achievementShareThisBadge}
                     </Button>
                     <Button
                       variant="outlined"
@@ -483,7 +541,7 @@ const AchievementsSection = () => {
                         if (nextBadge) setSelectedBadge(nextBadge);
                       }}
                     >
-                      View next badge
+                      {t.achievementViewNextBadge}
                     </Button>
                   </Stack>
                 </Box>
@@ -501,15 +559,15 @@ const AchievementsSection = () => {
             >
               <Box>
                 <Typography variant="h5" fontWeight={800}>
-                  Earned badges
+                  {t.achievementEarnedBadges}
                 </Typography>
                 <Typography color="text.secondary">
-                  Tap any badge to open its share card and details.
+                  {t.achievementEarnedBadgesDescription}
                 </Typography>
               </Box>
               <Chip
                 icon={<EmojiEventsIcon />}
-                label={`${earnedBadges.length} earned`}
+                label={`${earnedBadges.length} ${t.achievementEarned.toLowerCase()}`}
               />
             </Stack>
 
@@ -524,10 +582,7 @@ const AchievementsSection = () => {
                 ))}
               </BadgeGrid>
             ) : (
-              <Alert severity="info">
-                Your first badge is waiting. Complete a prayer session to begin
-                your journey.
-              </Alert>
+              <Alert severity="info">{t.achievementFirstBadgeWaiting}</Alert>
             )}
           </SectionCard>
 
@@ -541,15 +596,15 @@ const AchievementsSection = () => {
             >
               <Box>
                 <Typography variant="h5" fontWeight={800}>
-                  Locked badges
+                  {t.achievementLockedBadges}
                 </Typography>
                 <Typography color="text.secondary">
-                  Preview upcoming achievements and what they require.
+                  {t.achievementLockedBadgesDescription}
                 </Typography>
               </Box>
               <Chip
                 icon={<LockIcon />}
-                label={`${lockedBadges.length} locked`}
+                label={`${lockedBadges.length} ${t.achievementLocked.toLowerCase()}`}
               />
             </Stack>
 
@@ -566,10 +621,10 @@ const AchievementsSection = () => {
 
           <SectionCard>
             <Typography variant="h5" fontWeight={800} mb={0.5}>
-              Progress toward your next badges
+              {t.achievementProgressTitle}
             </Typography>
             <Typography color="text.secondary" mb={2.5}>
-              Clear progress markers keep the journey motivating without noise.
+              {t.achievementProgressDescription}
             </Typography>
 
             <Stack spacing={1.5}>
@@ -608,7 +663,9 @@ const AchievementsSection = () => {
                     }}
                   />
                   <Typography color="text.secondary" variant="body2">
-                    {item.encouragement}
+                    {item.target - item.current <= 1
+                      ? t.achievementOneStepAway
+                      : `${item.target - item.current} ${t.achievementMoreStepsMilestone}`}
                   </Typography>
                 </Box>
               ))}

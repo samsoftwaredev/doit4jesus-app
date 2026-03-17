@@ -9,6 +9,8 @@ import type {
   User,
 } from '@/interfaces';
 
+type TranslationDictionary = Record<string, string>;
+
 const BADGE_DEFINITIONS: BadgeDefinition[] = [
   {
     id: 'badge-first-prayer',
@@ -375,3 +377,84 @@ export const getAchievementBadgeShareUrl = (
   baseUrl: string,
   badge: AchievementBadge,
 ) => `${baseUrl}?badge=${badge.badgeKey}`;
+
+const getLabel = (t: TranslationDictionary, key: string, fallback: string) =>
+  t[key] ?? fallback;
+
+export const localizeAchievementBadge = (
+  badge: AchievementBadge,
+  t: TranslationDictionary,
+): AchievementBadge => ({
+  ...badge,
+  name: getLabel(t, `achievementBadge_${badge.badgeKey}_name`, badge.name),
+  description: getLabel(
+    t,
+    `achievementBadge_${badge.badgeKey}_description`,
+    badge.description,
+  ),
+  requirementLabel: getLabel(
+    t,
+    `achievementBadge_${badge.badgeKey}_requirement`,
+    badge.requirementLabel,
+  ),
+  verseReference: getLabel(
+    t,
+    `achievementBadge_${badge.badgeKey}_verseReference`,
+    badge.verseReference,
+  ),
+  verseText: getLabel(
+    t,
+    `achievementBadge_${badge.badgeKey}_verseText`,
+    badge.verseText,
+  ),
+  shareMessage: getLabel(
+    t,
+    `achievementBadge_${badge.badgeKey}_shareMessage`,
+    badge.shareMessage,
+  ),
+});
+
+export const localizeAchievementDashboard = (
+  dashboard: AchievementDashboard,
+  t: TranslationDictionary,
+): AchievementDashboard => {
+  const localizedEarnedBadges = dashboard.earnedBadges.map((badge) =>
+    localizeAchievementBadge(badge, t),
+  );
+  const localizedLockedBadges = dashboard.lockedBadges.map((badge) =>
+    localizeAchievementBadge(badge, t),
+  );
+  const allBadges = [...localizedEarnedBadges, ...localizedLockedBadges];
+  const nextMilestoneBadge = dashboard.lockedBadges.find(
+    (badge) => badge.name === dashboard.summary.nextMilestoneName,
+  );
+
+  return {
+    ...dashboard,
+    summary: {
+      ...dashboard.summary,
+      nextMilestoneName: nextMilestoneBadge
+        ? getLabel(
+            t,
+            `achievementBadge_${nextMilestoneBadge.badgeKey}_name`,
+            nextMilestoneBadge.name,
+          )
+        : dashboard.summary.nextMilestoneName,
+    },
+    featuredBadge: dashboard.featuredBadge
+      ? localizeAchievementBadge(dashboard.featuredBadge, t)
+      : null,
+    earnedBadges: localizedEarnedBadges,
+    lockedBadges: localizedLockedBadges,
+    progress: dashboard.progress.map((item) => {
+      const localizedBadge = allBadges.find(
+        (badge) => badge.badgeKey === item.badgeKey,
+      );
+
+      return {
+        ...item,
+        title: localizedBadge?.name ?? item.title,
+      };
+    }),
+  };
+};
