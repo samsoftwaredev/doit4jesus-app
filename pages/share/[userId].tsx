@@ -52,7 +52,10 @@ const ShareLanding: NextPage<Props> = ({ userId }) => {
       <Box
         sx={{
           minHeight: '100vh',
-          background: `linear-gradient(135deg, ${theme.palette.background.default}, ${theme.palette.primary.dark}, ${alpha(theme.palette.primary.dark, 0.6)})`,
+          background:
+            theme.palette.mode === 'dark'
+              ? 'linear-gradient(180deg, #0b1c2b 0%, #163755 30%, #feb9b9 100%)'
+              : 'linear-gradient(180deg, #163755 0%, #feb9b9 53%, #ffffff 100%)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',

@@ -12,7 +12,7 @@ const Content = styled('section')(({ theme }) => ({
   color: '#ffffff',
   background:
     theme.palette.mode === 'dark'
-      ? 'linear-gradient(180deg, #0b1c2b 0%, #163755 30%, #feb9b9 70%, #0b1c2b 100%)'
+      ? 'linear-gradient(180deg, #0b1c2b 0%, #163755 30%, #feb9b9 100%)'
       : 'linear-gradient(180deg, #163755 0%, #feb9b9 53%, #ffffff 100%)',
 }));
 

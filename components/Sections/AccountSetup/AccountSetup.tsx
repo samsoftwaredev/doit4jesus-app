@@ -93,6 +93,7 @@ const WhatsTheRosary = ({ nextStep, prevStep }: StepProps) => {
       </Body>
       <Grid mt={2} container justifyContent="space-between">
         <Button
+          sx={{ color: '#fff' }}
           size="large"
           variant="text"
           startIcon={<ChevronLeft />}
@@ -101,6 +102,7 @@ const WhatsTheRosary = ({ nextStep, prevStep }: StepProps) => {
           {t.back}
         </Button>
         <Button
+          color="secondary"
           size="large"
           variant="contained"
           endIcon={<ChevronRight />}
@@ -120,7 +122,9 @@ const WhyPray = ({ prevStep, nextStep }: StepProps) => {
       <StepTitle sx={{ color: 'white' }} variant="h3">
         {t.whyPrayTheRosary}
       </StepTitle>
-      <Body my={3}>{t.whyPrayTheRosaryDescription}</Body>
+      <Body sx={{ color: 'white' }} my={3}>
+        {t.whyPrayTheRosaryDescription}
+      </Body>
       <iframe
         className="iframeYoutube"
         src="https://www.youtube.com/embed/x1tH_zQ-Cz0?si=f5nh--UPvn9ZIQ7v"
@@ -130,6 +134,7 @@ const WhyPray = ({ prevStep, nextStep }: StepProps) => {
       />
       <Grid mt={2} container justifyContent="space-between">
         <Button
+          color="secondary"
           size="large"
           variant="text"
           startIcon={<ChevronLeft />}
@@ -138,6 +143,7 @@ const WhyPray = ({ prevStep, nextStep }: StepProps) => {
           {t.back}
         </Button>
         <Button
+          color="secondary"
           size="large"
           variant="contained"
           endIcon={<ChevronRight />}
@@ -163,6 +169,7 @@ const WhatAreTheBenefits = ({ prevStep, nextStep }: StepProps) => {
       </Body>
       <Grid mt={2} container justifyContent="space-between">
         <Button
+          color="secondary"
           size="large"
           variant="text"
           startIcon={<ChevronLeft />}
@@ -171,6 +178,7 @@ const WhatAreTheBenefits = ({ prevStep, nextStep }: StepProps) => {
           {t.back}
         </Button>
         <Button
+          color="secondary"
           size="large"
           variant="contained"
           endIcon={<ChevronRight />}
@@ -200,20 +208,18 @@ const Intro = ({ nextStep }: StepProps) => {
         src={joinedAppBadge}
         alt="You've just completed the divine achievement."
       />
-      <Body my={5} textAlign="center" sx={{ color: 'white' }}>
-        {t.joinedAppBadge}
-      </Body>
 
       <Grid container justifyContent="space-between" gap={2}>
         <Button
           size="large"
-          variant="contained"
+          variant="text"
           startIcon={<Close />}
           onClick={() => nextStep(true)}
         >
           {t.skip}
         </Button>
         <Button
+          color="secondary"
           size="large"
           variant="contained"
           endIcon={<ChevronRight />}
@@ -263,7 +269,7 @@ const AccountSetup = () => {
   steps = [
     {
       component: <Intro prevStep={prevStep} nextStep={nextStep} />,
-      color: theme.palette.success.main,
+      color: theme.palette.success.light,
       backgroundImage: jesusFish,
     },
     {
@@ -278,7 +284,7 @@ const AccountSetup = () => {
     },
     {
       component: <WhyPray prevStep={prevStep} nextStep={nextStep} />,
-      color: '#a3a3a3',
+      color: '#000',
       backgroundImage: jesusCross,
     },
   ];
