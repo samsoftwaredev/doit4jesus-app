@@ -33,6 +33,7 @@ describe('HomeNavbar Component', () => {
     (useLanguageContext as jest.Mock).mockReturnValue({
       lang: 'en',
       changeLang: jest.fn(),
+      setLang: jest.fn(),
       t: mockTranslations,
     });
   });

@@ -40,6 +40,10 @@ const PasswordValidator = ({
     regex: password !== '' && password === confirmPassword,
     text: t.hasPasswordMatch,
   };
+  const hasUppercase = {
+    regex: /[A-Z]/.test(password),
+    text: t.hasUppercase,
+  };
 
   if (comparePasswords) {
     return (
@@ -59,6 +63,10 @@ const PasswordValidator = ({
         <Typography>
           <ValidationCheck isValid={passwordMatch.regex} />
           {passwordMatch.text}
+        </Typography>
+        <Typography>
+          <ValidationCheck isValid={hasUppercase.regex} />
+          {hasUppercase.text}
         </Typography>
       </Box>
     );

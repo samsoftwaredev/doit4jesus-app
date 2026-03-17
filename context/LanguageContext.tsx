@@ -1,16 +1,23 @@
 import enJSON from 'locales/en.json';
 import esJSON from 'locales/es.json';
-import { usePathname, useSearchParams } from 'next/navigation';
-import { useRouter } from 'next/navigation';
-import { type JSX, createContext, useContext, useEffect } from 'react';
+import {
+  type JSX,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 
 import { LANG } from '@/interfaces';
+
+const STORAGE_KEY = 'language';
 
 interface LanguageContext {
   /** Unique id of the item */
   t: typeof enJSON | typeof esJSON;
   lang: LANG;
   changeLang: Function;
+  setLang: (lang: LANG) => void;
 }
 
 interface Props {
@@ -21,29 +28,41 @@ interface Props {
 const LanguageContext = createContext<LanguageContext | undefined>(undefined);
 
 const LanguageContextProvider = ({ children }: Props) => {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const locale = searchParams.get('locale');
-  const t = locale === LANG.en ? enJSON : esJSON;
-  const language = locale === LANG.en ? LANG.en : LANG.es;
-
-  const changeLanguage = () => {
-    const newLang = locale === LANG.en ? LANG.es : LANG.en;
-    router.push(`/${newLang}${pathname}`);
-  };
+  const [lang, setLangState] = useState<LANG>(LANG.es);
+  const t = lang === LANG.en ? enJSON : esJSON;
 
   useEffect(() => {
-    const newLang = locale === LANG.es ? LANG.es : LANG.en;
-    router.push(`/${newLang}${pathname}`);
-  }, [pathname]);
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY) as LANG | null;
+      if (stored === LANG.en || stored === LANG.es) {
+        setLangState(stored);
+      }
+    } catch {
+      // localStorage unavailable (SSR / privacy mode)
+    }
+  }, []);
+
+  const setLang = (newLang: LANG) => {
+    setLangState(newLang);
+    try {
+      localStorage.setItem(STORAGE_KEY, newLang);
+    } catch {
+      // localStorage unavailable
+    }
+  };
+
+  const changeLang = () => {
+    const newLang = lang === LANG.en ? LANG.es : LANG.en;
+    setLang(newLang);
+  };
 
   return (
     <LanguageContext.Provider
       value={{
         t,
-        lang: language,
-        changeLang: changeLanguage,
+        lang,
+        changeLang,
+        setLang,
       }}
     >
       {children}

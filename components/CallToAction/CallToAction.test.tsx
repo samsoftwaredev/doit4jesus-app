@@ -1,16 +1,9 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
-import { useRouter } from 'next/navigation';
 
 import { LanguageContextProvider } from '@/context/LanguageContext';
 
 import CallToAction from './CallToAction';
-
-jest.mock('next/navigation', () => ({
-  useRouter: jest.fn(),
-  usePathname: jest.fn().mockReturnValue('/'),
-  useSearchParams: jest.fn().mockReturnValue(new URLSearchParams('locale=en')),
-}));
 
 const component = () => {
   return (
@@ -22,12 +15,7 @@ const component = () => {
 
 describe('CallToAction Component', () => {
   beforeEach(() => {
-    (useRouter as jest.Mock).mockReturnValue({
-      locale: 'en',
-      pathname: '/',
-      push: jest.fn(),
-      query: {},
-    });
+    localStorage.setItem('language', 'en');
   });
   it('renders the call to action heading', () => {
     render(component());

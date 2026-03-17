@@ -12,6 +12,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { useRef, useState } from 'react';
 
 import { useLanguageContext } from '@/context/LanguageContext';
@@ -29,6 +30,7 @@ interface Props {
 
 const SocialShareButtons = ({ shareUrl, shareText, cardData }: Props) => {
   const { t } = useLanguageContext();
+  const theme = useTheme();
   const [copied, setCopied] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -186,9 +188,9 @@ const SocialShareButtons = ({ shareUrl, shareText, cardData }: Props) => {
           <IconButton
             onClick={handleCopyLink}
             sx={{
-              color: '#fff',
-              bgcolor: '#555',
-              '&:hover': { bgcolor: '#777' },
+              color: theme.palette.text.primary,
+              bgcolor: theme.palette.grey[700],
+              '&:hover': { bgcolor: theme.palette.grey[600] },
             }}
           >
             <ContentCopyIcon />
@@ -203,9 +205,12 @@ const SocialShareButtons = ({ shareUrl, shareText, cardData }: Props) => {
           onClick={handleDownloadImage}
           disabled={downloading}
           sx={{
-            borderColor: '#ffd700',
-            color: '#ffd700',
-            '&:hover': { borderColor: '#ffed4a', color: '#ffed4a' },
+            borderColor: theme.palette.gold.main,
+            color: theme.palette.gold.main,
+            '&:hover': {
+              borderColor: theme.palette.gold.light,
+              color: theme.palette.gold.light,
+            },
           }}
         >
           {downloading ? 'Saving...' : 'Save Image'}
@@ -216,10 +221,10 @@ const SocialShareButtons = ({ shareUrl, shareText, cardData }: Props) => {
             variant="contained"
             onClick={handleNativeShare}
             sx={{
-              bgcolor: '#ffd700',
-              color: '#0a0e27',
+              bgcolor: theme.palette.gold.main,
+              color: theme.palette.gold.contrastText,
               fontWeight: 'bold',
-              '&:hover': { bgcolor: '#ffed4a' },
+              '&:hover': { bgcolor: theme.palette.gold.light },
             }}
           >
             Share

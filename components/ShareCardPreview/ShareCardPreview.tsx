@@ -1,4 +1,5 @@
 import { Box, CircularProgress } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { useEffect, useRef, useState } from 'react';
 
 import {
@@ -13,6 +14,7 @@ interface Props {
 const ShareCardPreview = ({ data }: Props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isReady, setIsReady] = useState(false);
+  const theme = useTheme();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -42,7 +44,7 @@ const ShareCardPreview = ({ data }: Props) => {
             transform: 'translate(-50%, -50%)',
           }}
         >
-          <CircularProgress sx={{ color: '#ffd700' }} />
+          <CircularProgress sx={{ color: theme.palette.gold.main }} />
         </Box>
       )}
       <canvas

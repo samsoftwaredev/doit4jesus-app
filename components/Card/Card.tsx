@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles';
-import type { CSSProperties, JSX } from 'react';
+import type { CSSProperties, JSX, ReactElement } from 'react';
 
 const Container = styled('div')(({ theme }) => ({
   height: '100%',

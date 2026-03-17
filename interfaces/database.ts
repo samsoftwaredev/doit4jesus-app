@@ -567,6 +567,7 @@ export type Database = {
           gender: string | null;
           id: string;
           invited_by: string | null;
+          language: string | null;
           last_name: string | null;
           picture_url: string | null;
           rosary_count: number | null;
@@ -581,6 +582,7 @@ export type Database = {
           gender?: string | null;
           id: string;
           invited_by?: string | null;
+          language?: string | null;
           last_name?: string | null;
           picture_url?: string | null;
           rosary_count?: number | null;
@@ -595,6 +597,7 @@ export type Database = {
           gender?: string | null;
           id?: string;
           invited_by?: string | null;
+          language?: string | null;
           last_name?: string | null;
           picture_url?: string | null;
           rosary_count?: number | null;

@@ -49,6 +49,12 @@ class SupabaseDB {
   updatePassword = async (newPassword: string) => {
     return await supabase.auth.updateUser({ password: newPassword });
   };
+  updateLanguage = async (userId: string, language: string) => {
+    return await supabase
+      .from('profiles')
+      .update({ language })
+      .eq('id', userId);
+  };
   resetPassword = async (email: string) => {
     return await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: window.location.origin + NAV_MAIN_LINKS.updatePassword.link,

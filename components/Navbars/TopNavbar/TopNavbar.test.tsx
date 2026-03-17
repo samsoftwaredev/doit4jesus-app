@@ -1,12 +1,17 @@
 import { render, screen } from '@testing-library/react';
 
 import { useLanguageContext } from '@/context/LanguageContext';
+import { useThemeContext } from '@/context/ThemeContext';
 import { useUserContext } from '@/context/UserContext';
 
 import TopNavbar from './TopNavbar';
 
 jest.mock('@/context/LanguageContext', () => ({
   useLanguageContext: jest.fn(),
+}));
+
+jest.mock('@/context/ThemeContext', () => ({
+  useThemeContext: jest.fn(),
 }));
 
 jest.mock('@/context/UserContext', () => ({
@@ -44,11 +49,6 @@ jest.mock('../../UserBubble', () => ({
   default: () => <div data-testid="user-bubble" />,
 }));
 
-jest.mock('../../ThemeToggle', () => ({
-  __esModule: true,
-  default: () => <div data-testid="theme-toggle" />,
-}));
-
 jest.mock('../../Loading', () => ({
   __esModule: true,
   default: () => <div data-testid="loading" />,
@@ -64,7 +64,12 @@ describe('TopNavbar Component', () => {
     (useLanguageContext as jest.Mock).mockReturnValue({
       lang: 'en',
       changeLang: jest.fn(),
+      setLang: jest.fn(),
       t: mockTranslations,
+    });
+    (useThemeContext as jest.Mock).mockReturnValue({
+      mode: 'dark',
+      toggleTheme: jest.fn(),
     });
     (useUserContext as jest.Mock).mockReturnValue({
       user: {
@@ -82,8 +87,8 @@ describe('TopNavbar Component', () => {
     expect(screen.getByTestId('logo')).toBeInTheDocument();
   });
 
-  it('renders the theme toggle', () => {
+  it('renders the user name', () => {
     render(<TopNavbar handleMenu={jest.fn()} />);
-    expect(screen.getByTestId('theme-toggle')).toBeInTheDocument();
+    expect(screen.getByText(/John/)).toBeInTheDocument();
   });
 });

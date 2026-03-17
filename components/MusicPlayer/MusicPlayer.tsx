@@ -60,7 +60,7 @@ const Controls = styled(Box)(({ theme }) => ({
   },
 }));
 
-const PlayerTitle = styled(Typography)(({ theme }) => ({
+const PlayerTitle = styled(Box)(({ theme }) => ({
   color: theme.palette.text.primary,
   width: '250px',
   textWrap: 'nowrap',
@@ -74,7 +74,7 @@ const PlayerTitle = styled(Typography)(({ theme }) => ({
   },
 }));
 
-const Mystery = styled(Typography)(({ theme }) => ({
+const Mystery = styled(Box)(({ theme }) => ({
   color: theme.palette.text.primary,
   position: 'relative',
   top: '-20px',
@@ -100,25 +100,23 @@ const MusicPlayer = () => {
   if (hideMusicPlayer) return null;
 
   return (
-    <>
-      <PlayerContainer>
-        <Controls>
-          <PlayerTitle>
-            <MovingText>{audioPlayer?.audioTitle}</MovingText>
-          </PlayerTitle>
-          <ButtonControl>
-            <MusicSettings />
-            <AudioPrevious />
-            <AudioPlay />
-            <AudioNext />
-            <MusicVideo />
-          </ButtonControl>
-          <Mystery>
-            <OnlineUsers users={users} />
-          </Mystery>
-        </Controls>
-      </PlayerContainer>
-    </>
+    <PlayerContainer>
+      <Controls>
+        <PlayerTitle>
+          <MovingText>{audioPlayer?.audioTitle}</MovingText>
+        </PlayerTitle>
+        <ButtonControl>
+          <MusicSettings />
+          <AudioPrevious />
+          <AudioPlay />
+          <AudioNext />
+          <MusicVideo />
+        </ButtonControl>
+        <Mystery>
+          <OnlineUsers users={users} />
+        </Mystery>
+      </Controls>
+    </PlayerContainer>
   );
 };
 

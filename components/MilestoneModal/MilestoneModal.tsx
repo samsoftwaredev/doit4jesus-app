@@ -10,6 +10,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import { alpha, useTheme } from '@mui/material/styles';
 import { useRouter } from 'next/navigation';
 
 import { type Milestone } from '@/constants/milestones';
@@ -23,6 +24,7 @@ interface Props {
 
 const MilestoneModal = ({ milestone, open, onClose }: Props) => {
   const router = useRouter();
+  const theme = useTheme();
 
   if (!milestone) return null;
 
@@ -39,10 +41,10 @@ const MilestoneModal = ({ milestone, open, onClose }: Props) => {
       fullWidth
       PaperProps={{
         sx: {
-          background: 'linear-gradient(135deg, #0a0e27, #1a237e)',
-          color: '#fff',
+          background: `linear-gradient(135deg, ${theme.palette.background.default}, ${theme.palette.primary.dark})`,
+          color: theme.palette.text.primary,
           borderRadius: 3,
-          border: '1px solid rgba(255, 215, 0, 0.3)',
+          border: `1px solid ${alpha(theme.palette.gold.main, 0.3)}`,
           overflow: 'visible',
         },
       }}
@@ -53,7 +55,7 @@ const MilestoneModal = ({ milestone, open, onClose }: Props) => {
           position: 'absolute',
           top: 8,
           right: 8,
-          color: 'rgba(255,255,255,0.6)',
+          color: alpha(theme.palette.text.primary, 0.6),
         }}
       >
         <CloseIcon />
@@ -66,33 +68,38 @@ const MilestoneModal = ({ milestone, open, onClose }: Props) => {
             width: 80,
             height: 80,
             borderRadius: '50%',
-            bgcolor: 'rgba(255, 215, 0, 0.15)',
+            bgcolor: alpha(theme.palette.gold.main, 0.15),
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             mx: 'auto',
             mb: 3,
-            boxShadow: '0 0 40px rgba(255, 215, 0, 0.3)',
+            boxShadow: `0 0 40px ${alpha(theme.palette.gold.main, 0.3)}`,
           }}
         >
-          <EmojiEventsIcon sx={{ fontSize: 48, color: '#ffd700' }} />
+          <EmojiEventsIcon
+            sx={{ fontSize: 48, color: theme.palette.gold.main }}
+          />
         </Box>
 
         <Typography
           variant="h5"
           fontWeight="bold"
-          sx={{ color: '#ffd700', mb: 1 }}
+          sx={{ color: theme.palette.gold.main, mb: 1 }}
         >
           {milestone.label}
         </Typography>
 
-        <Typography variant="h6" sx={{ color: 'rgba(255,255,255,0.9)', mb: 3 }}>
+        <Typography
+          variant="h6"
+          sx={{ color: alpha(theme.palette.text.primary, 0.9), mb: 3 }}
+        >
           {milestone.message}
         </Typography>
 
         <Typography
           variant="body2"
-          sx={{ color: 'rgba(255,255,255,0.6)', mb: 4 }}
+          sx={{ color: alpha(theme.palette.text.primary, 0.6), mb: 4 }}
         >
           Share your achievement and inspire others to join the battle!
         </Typography>
@@ -102,10 +109,10 @@ const MilestoneModal = ({ milestone, open, onClose }: Props) => {
             variant="outlined"
             onClick={onClose}
             sx={{
-              borderColor: 'rgba(255,255,255,0.3)',
-              color: '#fff',
+              borderColor: alpha(theme.palette.text.primary, 0.3),
+              color: theme.palette.text.primary,
               '&:hover': {
-                borderColor: 'rgba(255,255,255,0.5)',
+                borderColor: theme.palette.text.disabled,
               },
             }}
           >
@@ -116,10 +123,10 @@ const MilestoneModal = ({ milestone, open, onClose }: Props) => {
             startIcon={<ShareIcon />}
             onClick={handleShare}
             sx={{
-              bgcolor: '#ffd700',
-              color: '#0a0e27',
+              bgcolor: theme.palette.gold.main,
+              color: theme.palette.gold.contrastText,
               fontWeight: 'bold',
-              '&:hover': { bgcolor: '#ffed4a' },
+              '&:hover': { bgcolor: theme.palette.gold.light },
             }}
           >
             Share Now

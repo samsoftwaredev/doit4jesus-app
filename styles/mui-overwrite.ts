@@ -1,5 +1,14 @@
 import { createTheme } from '@mui/material/styles';
 
+declare module '@mui/material/styles' {
+  interface Palette {
+    gold: Palette['primary'];
+  }
+  interface PaletteOptions {
+    gold?: PaletteOptions['primary'];
+  }
+}
+
 const getTheme = (mode: 'light' | 'dark') => {
   const lightPalette = {
     mode: 'light' as const,
@@ -38,6 +47,12 @@ const getTheme = (mode: 'light' | 'dark') => {
       main: '#4caf50',
       dark: '#388e3c',
       contrastText: '#ffffff',
+    },
+    gold: {
+      light: '#ffed4a',
+      main: '#ffd700',
+      dark: '#b8960b',
+      contrastText: '#163755',
     },
     background: {
       default: '#fafafa',
@@ -87,6 +102,12 @@ const getTheme = (mode: 'light' | 'dark') => {
       main: '#4caf50',
       dark: '#388e3c',
       contrastText: '#ffffff',
+    },
+    gold: {
+      light: '#ffed4a',
+      main: '#ffd700',
+      dark: '#b8960b',
+      contrastText: '#0b1c2b',
     },
     background: {
       default: '#0b1c2b',

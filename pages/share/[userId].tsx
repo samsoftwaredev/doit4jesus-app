@@ -1,4 +1,5 @@
 import { Box, Button, Container, Typography } from '@mui/material';
+import { alpha, useTheme } from '@mui/material/styles';
 import type { GetServerSideProps, NextPage } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -11,6 +12,7 @@ interface Props {
 }
 
 const ShareLanding: NextPage<Props> = ({ userId }) => {
+  const theme = useTheme();
   const siteUrl =
     typeof window !== 'undefined'
       ? window.location.origin
@@ -50,7 +52,7 @@ const ShareLanding: NextPage<Props> = ({ userId }) => {
       <Box
         sx={{
           minHeight: '100vh',
-          background: 'linear-gradient(135deg, #0a0e27, #1a237e, #0d1442)',
+          background: `linear-gradient(135deg, ${theme.palette.background.default}, ${theme.palette.primary.dark}, ${alpha(theme.palette.primary.dark, 0.6)})`,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -73,9 +75,9 @@ const ShareLanding: NextPage<Props> = ({ userId }) => {
                 transform: 'translate(-50%, -50%)',
                 width: 4,
                 height: 40,
-                bgcolor: '#ffd700',
+                bgcolor: theme.palette.gold.main,
                 borderRadius: 1,
-                boxShadow: '0 0 20px rgba(255, 215, 0, 0.5)',
+                boxShadow: `0 0 20px ${alpha(theme.palette.gold.main, 0.5)}`,
               },
               '&::after': {
                 content: '""',
@@ -85,9 +87,9 @@ const ShareLanding: NextPage<Props> = ({ userId }) => {
                 transform: 'translate(-50%, -50%)',
                 width: 28,
                 height: 4,
-                bgcolor: '#ffd700',
+                bgcolor: theme.palette.gold.main,
                 borderRadius: 1,
-                boxShadow: '0 0 20px rgba(255, 215, 0, 0.5)',
+                boxShadow: `0 0 20px ${alpha(theme.palette.gold.main, 0.5)}`,
               },
             }}
           />
@@ -95,21 +97,21 @@ const ShareLanding: NextPage<Props> = ({ userId }) => {
           <Typography
             variant="h3"
             fontWeight="bold"
-            sx={{ color: '#fff', mb: 2 }}
+            sx={{ color: theme.palette.text.primary, mb: 2 }}
           >
             Join the Battle
           </Typography>
 
           <Typography
             variant="h6"
-            sx={{ color: 'rgba(255,255,255,0.8)', mb: 1 }}
+            sx={{ color: alpha(theme.palette.text.primary, 0.8), mb: 1 }}
           >
             Thousands are praying the Rosary worldwide.
           </Typography>
 
           <Typography
             variant="body1"
-            sx={{ color: 'rgba(255,215,0,0.9)', mb: 5 }}
+            sx={{ color: alpha(theme.palette.gold.main, 0.9), mb: 5 }}
           >
             Level up your faith. Battle evil, one bead at a time.
           </Typography>
@@ -120,14 +122,14 @@ const ShareLanding: NextPage<Props> = ({ userId }) => {
               variant="contained"
               size="large"
               sx={{
-                bgcolor: '#ffd700',
-                color: '#0a0e27',
+                bgcolor: theme.palette.gold.main,
+                color: theme.palette.gold.contrastText,
                 fontWeight: 'bold',
                 fontSize: '1.1rem',
                 px: 5,
                 py: 1.5,
                 borderRadius: 2,
-                '&:hover': { bgcolor: '#ffed4a' },
+                '&:hover': { bgcolor: theme.palette.gold.light },
                 mb: 3,
               }}
             >
@@ -137,9 +139,9 @@ const ShareLanding: NextPage<Props> = ({ userId }) => {
 
           <Typography
             variant="body2"
-            sx={{ color: 'rgba(255,255,255,0.4)', mt: 4 }}
+            sx={{ color: alpha(theme.palette.text.primary, 0.4), mt: 4 }}
           >
-            {COMPANY.name} — The Rosary Gamified
+            {COMPANY.nameAbbr} — The Rosary Gamified
           </Typography>
         </Container>
       </Box>

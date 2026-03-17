@@ -1,4 +1,10 @@
-import { LanguageRounded, Logout, Menu as MenuIcon } from '@mui/icons-material';
+import {
+  DarkMode,
+  LanguageRounded,
+  LightMode,
+  Logout,
+  Menu as MenuIcon,
+} from '@mui/icons-material';
 import {
   Button,
   IconButton,
@@ -18,9 +24,9 @@ import { toast } from 'react-toastify';
 
 import { db, supabase } from '@/classes/SupabaseDB';
 import { Loading } from '@/components';
-import ThemeToggle from '@/components/ThemeToggle';
 import { NAV_APP_LINKS } from '@/constants';
 import { useLanguageContext } from '@/context/LanguageContext';
+import { useThemeContext } from '@/context/ThemeContext';
 import { useUserContext } from '@/context/UserContext';
 import { LANG } from '@/interfaces';
 
@@ -70,6 +76,7 @@ interface Props {
 }
 
 const TopNavbar = ({ handleMenu }: Props) => {
+  const { mode, toggleTheme } = useThemeContext();
   const { lang, changeLang, t } = useLanguageContext();
   const { getProfile } = useUserContext();
   const { user } = useUserContext();
@@ -143,7 +150,6 @@ const TopNavbar = ({ handleMenu }: Props) => {
         <Logo />
       </LogoButton>
       <Stack direction="row" alignItems="center" spacing={1}>
-        <ThemeToggle />
         <ProfileButton
           aria-controls={open ? 'basic-menu' : undefined}
           aria-haspopup="true"
@@ -175,6 +181,24 @@ const TopNavbar = ({ handleMenu }: Props) => {
           </ListItemIcon>
           <ListItemText sx={{ marginLeft: '-5px' }}>
             {t[NAV_APP_LINKS.account.value as keyof typeof t]}
+          </ListItemText>
+        </MenuItem>
+
+        <MenuItem aria-label="Change language">
+          <ListItemIcon>
+            <LanguageRounded fontSize="small" />
+          </ListItemIcon>
+          <ListItemText sx={{ marginLeft: '-5px' }}>
+            <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+              <DarkMode sx={{ color: mode === 'dark' ? 'white' : 'black' }} />
+              <Switch
+                onChange={toggleTheme}
+                defaultChecked={mode === 'dark'}
+                value={mode}
+                aria-label="Toggle theme"
+              />
+              <LightMode sx={{ color: mode === 'dark' ? 'white' : 'black' }} />
+            </Stack>
           </ListItemText>
         </MenuItem>
         <MenuItem aria-label="Change language">
