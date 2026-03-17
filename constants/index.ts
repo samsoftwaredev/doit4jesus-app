@@ -5,3 +5,4 @@ export * from './mysteries';
 export * from './register';
 export * from './global';
 export * from './milestones';
+export * from './globalPrayerCities';

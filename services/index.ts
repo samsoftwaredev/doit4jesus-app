@@ -65,3 +65,5 @@ export const getUserProfileAPI = async (
     return [[], null];
   }
 };
+
+export * from './globalPrayerMap';

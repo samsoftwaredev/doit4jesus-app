@@ -42,6 +42,11 @@ export const NAV_APP_LINKS = {
     label: 'Achievements',
     value: 'achievements',
   },
+  globalPrayerMap: {
+    link: '/app/global-prayer-map',
+    label: 'Global Prayer Map',
+    value: 'global-prayer-map',
+  },
   friends: { link: '/app/friends', label: 'Friends', value: 'friends' },
   friendRequest: {
     link: '/app/friend-request/',

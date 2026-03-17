@@ -10,6 +10,8 @@ export type YouTubeDB = Database['public']['Tables']['youtube']['Row'];
 export type FriendsDB = Database['public']['Tables']['friends']['Row'];
 export type FriendRequestsDB =
   Database['public']['Tables']['friend_requests']['Row'];
+export type GlobalPrayerSessionsDB =
+  Database['public']['Tables']['global_prayer_sessions']['Row'];
 export type EventMessagesDB =
   Database['public']['Tables']['event_messages']['Row'];
 export type EventMessagesActionsDB =

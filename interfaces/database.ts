@@ -453,6 +453,62 @@ export type Database = {
           },
         ];
       };
+      global_prayer_sessions: {
+        Row: {
+          city: string;
+          country_code: string;
+          country_name: string | null;
+          created_at: string;
+          created_by: string | null;
+          id: number;
+          is_active: boolean;
+          latitude: number;
+          longitude: number;
+          participants_count: number;
+          prayer_type: string;
+          started_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          city: string;
+          country_code: string;
+          country_name?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          id?: number;
+          is_active?: boolean;
+          latitude: number;
+          longitude: number;
+          participants_count?: number;
+          prayer_type: string;
+          started_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          city?: string;
+          country_code?: string;
+          country_name?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          id?: number;
+          is_active?: boolean;
+          latitude?: number;
+          longitude?: number;
+          participants_count?: number;
+          prayer_type?: string;
+          started_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'global_prayer_sessions_created_by_fkey';
+            columns: ['created_by'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       groups: {
         Row: {
           audience_age: Database['public']['Enums']['event_target_age'] | null;
@@ -848,6 +904,10 @@ export type Database = {
         Returns: Json;
       };
       get_all_rosary_count: { Args: never; Returns: number };
+      join_global_prayer_session: {
+        Args: { p_session_id: number };
+        Returns: number;
+      };
       get_profiles_by_user_ids: {
         Args: { user_ids: string[] };
         Returns: {
@@ -890,6 +950,18 @@ export type Database = {
           id: string;
           last_name: string;
         }[];
+      };
+      upsert_global_prayer_session: {
+        Args: {
+          p_city: string;
+          p_country_code: string;
+          p_country_name: string;
+          p_created_by?: string;
+          p_latitude: number;
+          p_longitude: number;
+          p_prayer_type: string;
+        };
+        Returns: number;
       };
     };
     Enums: {

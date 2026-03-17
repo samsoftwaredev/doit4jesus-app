@@ -1,6 +1,7 @@
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import GridViewIcon from '@mui/icons-material/GridView';
 import SoldierIcon from '@mui/icons-material/MilitaryTech';
+import PublicIcon from '@mui/icons-material/Public';
 import TableChartIcon from '@mui/icons-material/TableChart';
 import { Box, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
@@ -99,6 +100,11 @@ const AppLayout = ({ children }: Props) => {
       url: '/app/achievements',
       label: t.achievements,
       icon: <EmojiEventsIcon />,
+    },
+    {
+      url: '/app/global-prayer-map',
+      label: t.globalPrayerMap,
+      icon: <PublicIcon />,
     },
     // { url: "/app/soldiers", label: "Militant Church", icon: <SoldierIcon /> },
     { url: '/app/rosaries', label: t.rosaryMysteries, icon: <GridViewIcon /> },

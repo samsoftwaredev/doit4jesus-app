@@ -25,6 +25,9 @@ class SupabaseDB {
   getFriends = () => {
     return supabase.from('friends');
   };
+  getGlobalPrayerSessions = () => {
+    return supabase.from('global_prayer_sessions');
+  };
   getRosaryStats = () => {
     return supabase.from('rosary_stats');
   };
