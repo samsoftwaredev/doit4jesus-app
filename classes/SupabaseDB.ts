@@ -52,6 +52,9 @@ class SupabaseDB {
   getUserBadges = () => {
     return supabase.from('user_badges');
   };
+  getUserMilestones = () => {
+    return supabase.from('user_milestones');
+  };
   updatePassword = async (newPassword: string) => {
     return await supabase.auth.updateUser({ password: newPassword });
   };

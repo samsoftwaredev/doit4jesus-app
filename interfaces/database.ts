@@ -737,6 +737,35 @@ export type Database = {
           },
         ];
       };
+      user_milestones: {
+        Row: {
+          acknowledged_at: string;
+          created_at: string;
+          milestone_id: string;
+          user_id: string;
+        };
+        Insert: {
+          acknowledged_at?: string;
+          created_at?: string;
+          milestone_id: string;
+          user_id: string;
+        };
+        Update: {
+          acknowledged_at?: string;
+          created_at?: string;
+          milestone_id?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'user_milestones_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       youtube: {
         Row: {
           created_at: string;

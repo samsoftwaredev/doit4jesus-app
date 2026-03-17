@@ -69,6 +69,7 @@ const DashboardSection = () => {
   const { currentMilestone, showMilestone, dismissMilestone } = useMilestones(
     rosaryCount,
     0,
+    user?.userId,
   );
 
   return (
