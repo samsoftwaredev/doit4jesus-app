@@ -53,6 +53,7 @@ export { default as ShareStatsButton } from './ShareStatsButton';
 export { default as MilestoneModal } from './MilestoneModal';
 export { default as BadgeShareCardPreview } from './BadgeShareCardPreview';
 export { default as AchievementShareModal } from './AchievementShareModal';
+export { default as SelectVocation } from './SelectExamOfConscience/SelectVocation';
 
 export * from './Navbars';
 export * from './Fields';

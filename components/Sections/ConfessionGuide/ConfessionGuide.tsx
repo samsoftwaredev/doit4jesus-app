@@ -1,8 +1,7 @@
 import { Alert, Box, Collapse, Container, LinearProgress } from '@mui/material';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
-import { CardDeck, SelectExamOfConscience } from '@/components';
-import SelectVocation from '@/components/SelectExamOfConscience/SelectVocation';
+import { CardDeck, SelectExamOfConscience, SelectVocation } from '@/components';
 import adultExamOfConscience from '@/data/adultExamOfConscience.json';
 import childExamOfConscience from '@/data/childExamOfConscience.json';
 import teenExamOfConscience from '@/data/teenExamOfConscience.json';
