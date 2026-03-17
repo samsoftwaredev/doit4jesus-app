@@ -11,3 +11,4 @@ export { default as AccountSection } from './AccountSection';
 export { default as DashboardSection } from './DashboardSection';
 export { default as FriendsSection } from './FriendsSection';
 export { default as FriendRequestSection } from './FriendRequestSection';
+export { default as AchievementsSection } from './AchievementsSection';

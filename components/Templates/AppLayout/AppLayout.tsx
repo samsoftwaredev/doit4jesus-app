@@ -1,9 +1,9 @@
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import GridViewIcon from '@mui/icons-material/GridView';
 import SoldierIcon from '@mui/icons-material/MilitaryTech';
 import TableChartIcon from '@mui/icons-material/TableChart';
 import { Box, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
 import React, { useMemo, useState } from 'react';
 
@@ -95,6 +95,11 @@ const AppLayout = ({ children }: Props) => {
 
   const menuItems = [
     { url: '/app/dashboard', label: t.dashboard, icon: <TableChartIcon /> },
+    {
+      url: '/app/achievements',
+      label: 'Achievements',
+      icon: <EmojiEventsIcon />,
+    },
     // { url: "/app/soldiers", label: "Militant Church", icon: <SoldierIcon /> },
     { url: '/app', label: t.rosaryMysteries, icon: <GridViewIcon /> },
     { url: '/app/friends', label: t.friends, icon: <SoldierIcon /> },
@@ -114,7 +119,6 @@ const AppLayout = ({ children }: Props) => {
     // { url: "/app/support", label: "Support", icon: <SupportAgentIcon /> },
   ];
 
-  const router = useRouter();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const handleDrawerOpen = () => {

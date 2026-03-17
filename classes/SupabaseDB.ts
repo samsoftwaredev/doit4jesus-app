@@ -46,6 +46,12 @@ class SupabaseDB {
   getFriendRequests = () => {
     return supabase.from('friend_requests');
   };
+  getBadgeDefinitions = () => {
+    return supabase.from('badge_definitions');
+  };
+  getUserBadges = () => {
+    return supabase.from('user_badges');
+  };
   updatePassword = async (newPassword: string) => {
     return await supabase.auth.updateUser({ password: newPassword });
   };

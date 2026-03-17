@@ -51,6 +51,8 @@ export { default as ShareCardPreview } from './ShareCardPreview';
 export { default as SocialShareButtons } from './SocialShareButtons';
 export { default as ShareStatsButton } from './ShareStatsButton';
 export { default as MilestoneModal } from './MilestoneModal';
+export { default as BadgeShareCardPreview } from './BadgeShareCardPreview';
+export { default as AchievementShareModal } from './AchievementShareModal';
 
 export * from './Navbars';
 export * from './Fields';

@@ -1,4 +1,4 @@
-import type { NextPage } from 'next';
+import type { GetServerSideProps, NextPage } from 'next';
 
 import AppWrapper from '@/components/AppWrapper';
 import Meta from '@/components/Meta';
@@ -20,6 +20,10 @@ const FriendRequestWrapper = () => {
       <FriendRequest />
     </AppWrapper>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  return { props: {} };
 };
 
 export default FriendRequestWrapper;

@@ -59,6 +59,57 @@ export type Database = {
         };
         Relationships: [];
       };
+      badge_definitions: {
+        Row: {
+          category: string;
+          created_at: string;
+          description: string;
+          display_order: number;
+          icon_name: string;
+          id: string;
+          badge_key: string;
+          name: string;
+          requirement_label: string;
+          requirement_type: string;
+          requirement_value: number;
+          share_message: string;
+          verse_reference: string;
+          verse_text: string;
+        };
+        Insert: {
+          category: string;
+          created_at?: string;
+          description: string;
+          display_order?: number;
+          icon_name: string;
+          id?: string;
+          badge_key: string;
+          name: string;
+          requirement_label: string;
+          requirement_type: string;
+          requirement_value: number;
+          share_message: string;
+          verse_reference: string;
+          verse_text: string;
+        };
+        Update: {
+          category?: string;
+          created_at?: string;
+          description?: string;
+          display_order?: number;
+          icon_name?: string;
+          id?: string;
+          badge_key?: string;
+          name?: string;
+          requirement_label?: string;
+          requirement_type?: string;
+          requirement_value?: number;
+          share_message?: string;
+          verse_reference?: string;
+          verse_text?: string;
+        };
+        Relationships: [];
+      };
       churches: {
         Row: {
           background_image_url: string | null;
@@ -719,8 +770,54 @@ export type Database = {
         };
         Relationships: [];
       };
+      user_badges: {
+        Row: {
+          badge_key: string;
+          created_at: string;
+          earned_at: string;
+          id: string;
+          shared_at: string | null;
+          user_id: string;
+        };
+        Insert: {
+          badge_key: string;
+          created_at?: string;
+          earned_at?: string;
+          id?: string;
+          shared_at?: string | null;
+          user_id: string;
+        };
+        Update: {
+          badge_key?: string;
+          created_at?: string;
+          earned_at?: string;
+          id?: string;
+          shared_at?: string | null;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'user_badges_badge_key_fkey';
+            columns: ['badge_key'];
+            isOneToOne: false;
+            referencedRelation: 'badge_definitions';
+            referencedColumns: ['badge_key'];
+          },
+          {
+            foreignKeyName: 'user_badges_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
     };
     Functions: {
+      get_user_achievement_dashboard: {
+        Args: { target_user_id?: string };
+        Returns: Json;
+      };
       get_all_rosary_count: { Args: never; Returns: number };
       get_profiles_by_user_ids: {
         Args: { user_ids: string[] };

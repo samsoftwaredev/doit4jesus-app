@@ -1,7 +1,7 @@
 import { Container, Typography } from '@mui/material';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import moment from 'moment';
-import type { NextPage } from 'next';
+import type { GetServerSideProps, NextPage } from 'next';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -140,6 +140,10 @@ const LiveEventWrapper = () => {
       <LiveEvent />
     </AppWrapper>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  return { props: {} };
 };
 
 export default LiveEventWrapper;

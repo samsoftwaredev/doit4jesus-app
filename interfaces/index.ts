@@ -214,3 +214,5 @@ export interface FriendsGroupItem {
   createdAt: string | null;
   uuid2: string;
 }
+
+export * from './achievements';
