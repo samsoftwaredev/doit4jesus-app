@@ -17,6 +17,7 @@ import { StatsContextProvider } from '@/context/StatsContext';
 import { ThemeContextProvider, useThemeContext } from '@/context/ThemeContext';
 import { UserContextProvider } from '@/context/UserContext';
 import { getTheme } from '@/styles/mui-overwrite';
+import '@/styles/normalize.css';
 
 import { NAV_APP_LINKS, NAV_MAIN_LINKS } from '../constants';
 
