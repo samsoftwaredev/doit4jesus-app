@@ -62,7 +62,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       <text x="800" y="260" fill="rgba(255,255,255,0.7)" font-family="Arial,sans-serif" font-size="18">Level</text>
 
       <!-- Motivating message -->
-      <text x="320" y="370" fill="#ffffff" font-family="Georgia,serif" font-size="32" font-style="italic" font-weight="bold">"Join the battle."</text>
+      <text x="320" y="370" fill="#ffffff" font-family="Arial,sans-serif" font-size="32" font-style="italic" font-weight="bold">"Join the battle."</text>
 
       <!-- CTA -->
       <text x="320" y="440" fill="rgba(255,215,0,0.9)" font-family="Arial,sans-serif" font-size="20" font-weight="600">Join thousands praying worldwide.</text>

@@ -1,9 +1,8 @@
-import { Box, Container, Typography } from '@mui/material';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
 
-import { MainLayout, Meta } from '@/components';
+import { AuthLayout } from '@/components/Templates';
 import { NAV_APP_LINKS, pageView } from '@/constants';
 import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
@@ -28,21 +27,14 @@ const Register: NextPage = () => {
   if (isAuth) return null;
 
   return (
-    <MainLayout>
-      <Meta pageTitle="Register" />
-      <Container maxWidth="xs">
-        <Typography mt={3} variant="h4" component="h1">
-          {pageLanguage.signUp.title}
-        </Typography>
-        <Typography variant="body1" component="p">
-          {pageLanguage.signUp.header}
-        </Typography>
-        <Box my={2}>{pageLanguage.signUp?.component}</Box>
-        <Typography textAlign="center" variant="body1" component="p">
-          {pageLanguage.signUp.footer}
-        </Typography>
-      </Container>
-    </MainLayout>
+    <AuthLayout
+      pageTitle="Register"
+      title={pageLanguage.signUp.title}
+      header={pageLanguage.signUp.header}
+      footer={pageLanguage.signUp.footer}
+    >
+      {pageLanguage.signUp?.component}
+    </AuthLayout>
   );
 };
 

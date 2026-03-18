@@ -1,12 +1,11 @@
 import { Box, Container, Grid, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import Image from 'next/image';
 
 import { useLanguageContext } from '@/context/LanguageContext';
 import jesusPrayingHands from '@/public/assets/images/art/jesusPrayingHands.jpeg';
 import josephPraying from '@/public/assets/images/art/josephPraying.jpeg';
 import maryMoon from '@/public/assets/images/art/maryMoon.jpeg';
-import { theme } from '@/styles/mui-overwrite';
 
 const Section = styled('section')({
   minHeight: '100vh',
@@ -35,6 +34,7 @@ const ArcBox = styled(Box)({
 
 const Features = () => {
   const { t } = useLanguageContext();
+  const theme = useTheme();
 
   const features = [
     {

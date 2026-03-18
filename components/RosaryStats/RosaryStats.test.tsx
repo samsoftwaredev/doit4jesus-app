@@ -58,6 +58,6 @@ describe('RosaryStats', () => {
     render(component());
     const buttonElement = screen.getByTestId('startPraying');
     fireEvent.click(buttonElement);
-    expect(mockPush).toHaveBeenCalledWith('/app');
+    expect(mockPush).toHaveBeenCalledWith('/app/rosary');
   });
 });

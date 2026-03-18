@@ -1,3 +1,4 @@
+import { CssBaseline } from '@mui/material';
 import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { Analytics } from '@vercel/analytics/react';
@@ -17,7 +18,6 @@ import { StatsContextProvider } from '@/context/StatsContext';
 import { ThemeContextProvider, useThemeContext } from '@/context/ThemeContext';
 import { UserContextProvider } from '@/context/UserContext';
 import { getTheme } from '@/styles/mui-overwrite';
-import '@/styles/normalize.css';
 
 import { NAV_APP_LINKS, NAV_MAIN_LINKS } from '../constants';
 
@@ -26,23 +26,34 @@ const googleKey = process.env.NEXT_PUBLIC_GOOGLE_AUTH_KEY!;
 const AppContent = ({ Component, pageProps }: AppProps) => {
   const { mode } = useThemeContext();
   const theme = getTheme(mode);
+  const darkTheme = getTheme('dark');
   const [hideMusicPlayer, setHideMusicPlayer] = useState(true);
   const pathname = usePathname() ?? '';
-  const authPaths =
+  const isAuthPage =
+    pathname.includes(NAV_MAIN_LINKS.login.link) ||
+    pathname.includes(NAV_MAIN_LINKS.signup.link) ||
+    pathname.includes(NAV_MAIN_LINKS.register.link) ||
+    pathname.includes(NAV_MAIN_LINKS.forgotPassword.link) ||
+    pathname.includes(NAV_MAIN_LINKS.updatePassword.link);
+  const activeTheme = isAuthPage ? darkTheme : theme;
+
+  const appContextPaths =
     pathname.includes(NAV_APP_LINKS.app.link) ||
     pathname.includes(NAV_MAIN_LINKS.login.link) ||
     pathname.includes(NAV_MAIN_LINKS.signup.link) ||
     pathname.includes(NAV_MAIN_LINKS.register.link) ||
-    pathname.includes(NAV_MAIN_LINKS.forgotPassword.link);
+    pathname.includes(NAV_MAIN_LINKS.forgotPassword.link) ||
+    pathname.includes(NAV_MAIN_LINKS.updatePassword.link);
 
-  if (authPaths) {
+  if (appContextPaths) {
     return (
       <>
         <SpeedInsights />
+        <CssBaseline />
         <UserContextProvider>
           <GoogleOAuthProvider clientId={googleKey}>
             <StyledEngineProvider injectFirst>
-              <ThemeProvider theme={theme}>
+              <ThemeProvider theme={activeTheme}>
                 <LanguageContextProvider>
                   <AudioContextProvider
                     hideMusicPlayer={hideMusicPlayer}
@@ -71,9 +82,10 @@ const AppContent = ({ Component, pageProps }: AppProps) => {
   return (
     <>
       <SpeedInsights />
+      <CssBaseline />
       <GoogleOAuthProvider clientId={googleKey}>
         <StyledEngineProvider injectFirst>
-          <ThemeProvider theme={theme}>
+          <ThemeProvider theme={activeTheme}>
             <LanguageContextProvider>
               <Component {...pageProps} />
               <Analytics />

@@ -2,6 +2,7 @@ import { Box, Container, Grid, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 import { useLanguageContext } from '@/context/LanguageContext';
+import { getWhyPrayGradient } from '@/styles/theme-tokens';
 
 const Section = styled('section')(({ theme }) => ({
   minHeight: '100vh',
@@ -9,14 +10,14 @@ const Section = styled('section')(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'center',
   flexDirection: 'column',
-  background:
-    theme.palette.mode === 'dark'
-      ? 'linear-gradient(180deg, #844d42 0%, #0b1c2b 80%, #0b1c2b 100%)'
-      : 'linear-gradient(180deg, #844d42 0%, #ffffff 80%, #ffffff 100%)',
+  background: getWhyPrayGradient(theme),
 }));
 
 const Title = styled(Typography)(({ theme }) => ({
-  color: theme.palette.mode === 'dark' ? theme.palette.text.primary : '#ffffff',
+  color:
+    theme.palette.mode === 'dark'
+      ? theme.palette.text.primary
+      : theme.palette.primary.contrastText,
   marginBottom: '0.5em',
   textAlign: 'center',
 }));

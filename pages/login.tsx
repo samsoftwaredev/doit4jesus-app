@@ -1,9 +1,8 @@
-import { Box, Container, Typography } from '@mui/material';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
 
-import { MainLayout, Meta } from '@/components';
+import { AuthLayout } from '@/components/Templates';
 import { NAV_APP_LINKS, pageView } from '@/constants';
 import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
@@ -24,19 +23,14 @@ const Login: NextPage = () => {
   if (isAuth) return null;
 
   return (
-    <MainLayout>
-      <Meta pageTitle="Log In" />
-      <Container maxWidth="xs">
-        <Typography mt={3} variant="h4" component="h1">
-          {pageLanguage.logIn.title}
-        </Typography>
-        <Typography component="p">{pageLanguage.logIn.header}</Typography>
-        <Box my={2}>{pageLanguage.logIn?.component}</Box>
-        <Typography textAlign="center" component="p">
-          {pageLanguage.logIn.footer}
-        </Typography>
-      </Container>
-    </MainLayout>
+    <AuthLayout
+      pageTitle="Log In"
+      title={pageLanguage.logIn.title}
+      header={pageLanguage.logIn.header}
+      footer={pageLanguage.logIn.footer}
+    >
+      {pageLanguage.logIn?.component}
+    </AuthLayout>
   );
 };
 

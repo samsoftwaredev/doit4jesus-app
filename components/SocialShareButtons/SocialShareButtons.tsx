@@ -12,7 +12,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+import { alpha, useTheme } from '@mui/material/styles';
 import { useRef, useState } from 'react';
 
 import { useLanguageContext } from '@/context/LanguageContext';
@@ -128,9 +128,17 @@ const SocialShareButtons = ({ shareUrl, shareText, cardData }: Props) => {
             target="_blank"
             rel="noopener noreferrer"
             sx={{
-              color: '#fff',
-              bgcolor: '#000',
-              '&:hover': { bgcolor: '#333' },
+              color: 'common.white',
+              bgcolor:
+                theme.palette.mode === 'dark'
+                  ? theme.palette.grey[900]
+                  : theme.palette.grey[800],
+              '&:hover': {
+                bgcolor:
+                  theme.palette.mode === 'dark'
+                    ? theme.palette.grey[700]
+                    : theme.palette.grey[700],
+              },
             }}
           >
             <XIcon />
@@ -144,9 +152,9 @@ const SocialShareButtons = ({ shareUrl, shareText, cardData }: Props) => {
             target="_blank"
             rel="noopener noreferrer"
             sx={{
-              color: '#fff',
-              bgcolor: '#1877f2',
-              '&:hover': { bgcolor: '#0d65d9' },
+              color: 'common.white',
+              bgcolor: 'info.main',
+              '&:hover': { bgcolor: 'info.dark' },
             }}
           >
             <FacebookIcon />
@@ -160,9 +168,9 @@ const SocialShareButtons = ({ shareUrl, shareText, cardData }: Props) => {
             target="_blank"
             rel="noopener noreferrer"
             sx={{
-              color: '#fff',
-              bgcolor: '#25d366',
-              '&:hover': { bgcolor: '#1fb855' },
+              color: 'common.white',
+              bgcolor: 'success.main',
+              '&:hover': { bgcolor: 'success.dark' },
             }}
           >
             <WhatsAppIcon />
@@ -174,10 +182,12 @@ const SocialShareButtons = ({ shareUrl, shareText, cardData }: Props) => {
             onClick={handleDownloadImage}
             disabled={downloading}
             sx={{
-              color: '#fff',
+              color: 'common.white',
               background:
-                'linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)',
-              '&:hover': { opacity: 0.85 },
+                theme.palette.mode === 'dark'
+                  ? `linear-gradient(45deg, ${theme.palette.warning.dark}, ${theme.palette.error.dark}, ${theme.palette.secondary.dark}, ${alpha(theme.palette.secondary.main, 0.95)})`
+                  : `linear-gradient(45deg, ${theme.palette.warning.main}, ${theme.palette.error.main}, ${theme.palette.secondary.main}, ${theme.palette.primary.main})`,
+              '&:hover': { opacity: 0.9 },
             }}
           >
             <InstagramIcon />

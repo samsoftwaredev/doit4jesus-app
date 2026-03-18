@@ -60,7 +60,7 @@ const MapContainer = styled(Box)(({ theme }) => ({
   borderRadius: 14,
   overflow: 'hidden',
   border: `1px solid ${alpha(theme.palette.primary.light, 0.26)}`,
-  background: '#020912',
+  background: theme.palette.background.default,
   '@media (max-width: 768px)': {
     height: 320,
   },
@@ -372,42 +372,45 @@ const GlobalPrayerMapSection = () => {
                     minZoom: 1,
                     maxZoom: 7,
                     gestureHandling: 'greedy',
-                    styles: [
-                      {
-                        elementType: 'geometry',
-                        stylers: [{ color: '#0b1326' }],
-                      },
-                      {
-                        elementType: 'labels.text.fill',
-                        stylers: [{ color: '#8ea3c2' }],
-                      },
-                      {
-                        elementType: 'labels.text.stroke',
-                        stylers: [{ color: '#08101f' }],
-                      },
-                      {
-                        featureType: 'administrative',
-                        elementType: 'geometry.stroke',
-                        stylers: [{ color: '#1d2b47' }],
-                      },
-                      {
-                        featureType: 'poi',
-                        stylers: [{ visibility: 'off' }],
-                      },
-                      {
-                        featureType: 'road',
-                        stylers: [{ visibility: 'off' }],
-                      },
-                      {
-                        featureType: 'transit',
-                        stylers: [{ visibility: 'off' }],
-                      },
-                      {
-                        featureType: 'water',
-                        elementType: 'geometry',
-                        stylers: [{ color: '#030b18' }],
-                      },
-                    ],
+                    styles:
+                      theme.palette.mode === 'dark'
+                        ? [
+                            {
+                              elementType: 'geometry',
+                              stylers: [{ color: '#0b1326' }],
+                            },
+                            {
+                              elementType: 'labels.text.fill',
+                              stylers: [{ color: '#8ea3c2' }],
+                            },
+                            {
+                              elementType: 'labels.text.stroke',
+                              stylers: [{ color: '#08101f' }],
+                            },
+                            {
+                              featureType: 'administrative',
+                              elementType: 'geometry.stroke',
+                              stylers: [{ color: '#1d2b47' }],
+                            },
+                            {
+                              featureType: 'poi',
+                              stylers: [{ visibility: 'off' }],
+                            },
+                            {
+                              featureType: 'road',
+                              stylers: [{ visibility: 'off' }],
+                            },
+                            {
+                              featureType: 'transit',
+                              stylers: [{ visibility: 'off' }],
+                            },
+                            {
+                              featureType: 'water',
+                              elementType: 'geometry',
+                              stylers: [{ color: '#030b18' }],
+                            },
+                          ]
+                        : [],
                   }}
                 >
                   {clusters.map((cluster) => {

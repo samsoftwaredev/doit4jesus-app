@@ -6,14 +6,15 @@ import Link from 'next/link';
 import { NAV_MAIN_LINKS } from '@/constants/nav';
 import { useLanguageContext } from '@/context/LanguageContext';
 import smartPhoneHand from '@/public/assets/images/hero/smartPhoneHand.svg';
+import {
+  getHeroBottomFadeGradient,
+  getHeroGradient,
+} from '@/styles/theme-tokens';
 
 const Content = styled('section')(({ theme }) => ({
   position: 'relative',
-  color: '#ffffff',
-  background:
-    theme.palette.mode === 'dark'
-      ? 'linear-gradient(180deg, #0b1c2b 0%, #163755 30%, #feb9b9 100%)'
-      : 'linear-gradient(180deg, #163755 0%, #feb9b9 53%, #ffffff 100%)',
+  color: theme.palette.primary.contrastText,
+  background: getHeroGradient(theme),
 }));
 
 const HeroContainer = styled(Container)({
@@ -68,10 +69,7 @@ const ImageBottomGradient = styled('div')(({ theme }) => ({
   zIndex: 100,
   height: '200px',
   width: '100%',
-  background:
-    theme.palette.mode === 'dark'
-      ? `linear-gradient(180deg, transparent 0%, ${theme.palette.background.default} 90%, ${theme.palette.background.default} 100%)`
-      : 'linear-gradient(180deg, transparent 0%, #ffffff 90%, #ffffff 100%)',
+  background: getHeroBottomFadeGradient(theme),
 }));
 
 const HeroImage = styled(Image)({

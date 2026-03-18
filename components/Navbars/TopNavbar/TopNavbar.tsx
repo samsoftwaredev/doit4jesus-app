@@ -190,14 +190,22 @@ const TopNavbar = ({ handleMenu }: Props) => {
           </ListItemIcon>
           <ListItemText sx={{ marginLeft: '-5px' }}>
             <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-              <DarkMode sx={{ color: mode === 'dark' ? 'white' : 'black' }} />
+              <DarkMode
+                sx={{
+                  color: mode === 'dark' ? 'text.primary' : 'text.secondary',
+                }}
+              />
               <Switch
                 onChange={toggleTheme}
                 defaultChecked={mode === 'dark'}
                 value={mode}
                 aria-label="Toggle theme"
               />
-              <LightMode sx={{ color: mode === 'dark' ? 'white' : 'black' }} />
+              <LightMode
+                sx={{
+                  color: mode === 'dark' ? 'text.secondary' : 'text.primary',
+                }}
+              />
             </Stack>
           </ListItemText>
         </MenuItem>

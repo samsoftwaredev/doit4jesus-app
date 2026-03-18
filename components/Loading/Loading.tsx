@@ -1,5 +1,6 @@
 import { Box, CircularProgress } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 
 import Logo from '../Logo';
 
@@ -37,6 +38,7 @@ interface Props {
 }
 
 const Loading = ({ isFeature = false }: Props) => {
+  const theme = useTheme();
   if (isFeature) {
     return (
       <FeatureContainer>
@@ -48,7 +50,7 @@ const Loading = ({ isFeature = false }: Props) => {
   return (
     <FullScreenContainer>
       <CenteredContent>
-        <Logo type="white" />
+        <Logo type={theme.palette.mode === 'dark' ? 'white' : 'black'} />
         <CircularProgress sx={{ px: '1em' }} />
       </CenteredContent>
     </FullScreenContainer>

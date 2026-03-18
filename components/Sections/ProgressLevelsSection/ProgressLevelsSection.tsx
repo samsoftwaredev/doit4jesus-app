@@ -111,7 +111,7 @@ const ProgressLevelsSection = () => {
                 component="h2"
                 fontWeight="bold"
                 sx={{
-                  color: 'black',
+                  color: 'text.primary',
                   width: '100%',
                   textAlign: 'center',
                   fontSize: {
@@ -125,7 +125,7 @@ const ProgressLevelsSection = () => {
               <Typography
                 fontWeight="light"
                 sx={{
-                  color: 'black',
+                  color: 'text.secondary',
                   width: '100%',
                   textAlign: 'center',
                   fontSize: { sm: '0.8em', md: '1em' },

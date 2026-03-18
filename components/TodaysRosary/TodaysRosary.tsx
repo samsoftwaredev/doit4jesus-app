@@ -1,5 +1,5 @@
 import { Box, Button, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { alpha, styled } from '@mui/material/styles';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -34,8 +34,8 @@ const ContentBox = styled(Box)(({ theme }) => ({
   gap: '1em',
   backgroundColor:
     theme.palette.mode === 'dark'
-      ? 'rgba(0, 0, 0, 0.5)'
-      : 'rgba(0, 0, 0, 0.35)',
+      ? alpha(theme.palette.common.black, 0.5)
+      : alpha(theme.palette.common.black, 0.35),
   zIndex: 2,
   padding: '20px',
   textAlign: 'center',
@@ -134,10 +134,19 @@ const TodayRosary = () => {
       <BgBox style={{ backgroundImage: `url("${image}")` }} />
       <ContentBox onClick={goToRosary}>
         <Box>
-          <Typography fontSize="small" fontWeight="light">
+          <Typography
+            fontSize="small"
+            fontWeight="light"
+            sx={{ color: 'white' }}
+          >
             {t.todaysRosary} - {weekDay}
           </Typography>
-          <Typography my={2} component="h1" variant="h4">
+          <Typography
+            sx={{ color: 'white' }}
+            my={2}
+            component="h1"
+            variant="h4"
+          >
             {t[todayMystery as keyof typeof t]}
           </Typography>
           <Button color="success" variant="contained">

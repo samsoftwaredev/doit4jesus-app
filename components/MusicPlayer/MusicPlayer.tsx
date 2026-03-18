@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { alpha, styled } from '@mui/material/styles';
 
 import { useAudioContext } from '@/context/AudioContext';
 import { usePresenceContext } from '@/context/PresenceContext';
@@ -45,13 +45,13 @@ const Controls = styled(Box)(({ theme }) => ({
   padding: '0 14px',
   boxShadow:
     theme.palette.mode === 'dark'
-      ? '-2px 0px 13px -4px rgba(176, 176, 176, 0.3)'
-      : '-2px 0px 13px -4px rgba(0, 0, 0, 0.15)',
+      ? `-2px 0px 13px -4px ${alpha(theme.palette.common.white, 0.3)}`
+      : `-2px 0px 13px -4px ${alpha(theme.palette.common.black, 0.15)}`,
   backdropFilter: 'blur(50px)',
   backgroundColor:
     theme.palette.mode === 'dark'
-      ? 'rgba(11, 28, 43, 0.85)'
-      : 'rgba(255, 255, 255, 0.85)',
+      ? alpha(theme.palette.background.default, 0.85)
+      : alpha(theme.palette.background.paper, 0.85),
   '@media (min-width: 768px)': {
     gridTemplateColumns: '1fr 350px 1fr',
     gridTemplateRows: '1fr',

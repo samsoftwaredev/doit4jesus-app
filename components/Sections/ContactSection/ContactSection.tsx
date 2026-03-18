@@ -4,6 +4,7 @@ import {
   FormControl,
   TextField,
   Typography,
+  useTheme,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Image from 'next/image';
@@ -61,6 +62,8 @@ interface IFormInputs {
 }
 
 const ContactSection = () => {
+  const theme = useTheme();
+  const textColor = theme.palette.text.primary;
   const [loading, setLoading] = useState(false);
   const [submittedSuccessfully, setSubmittedSuccessfully] = useState(false);
   const { handleSubmit, reset, control } = useForm<IFormInputs>({
@@ -99,7 +102,11 @@ const ContactSection = () => {
   return (
     <ContactGrid maxWidth="md">
       <ContactImage src={womanComputer} alt="Mary holding the Holy Rosary" />
-      <Typography sx={{ gridArea: 'title' }} component="h1" variant="h2">
+      <Typography
+        sx={{ gridArea: 'title', color: textColor }}
+        component="h1"
+        variant="h2"
+      >
         Contact Us
       </Typography>
       <FormControl
@@ -108,7 +115,7 @@ const ContactSection = () => {
         component="form"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <Typography component="p">
+        <Typography component="p" sx={{ color: textColor }}>
           Send us a message and we will be in touch within one business day.
         </Typography>
         <Controller
@@ -126,7 +133,12 @@ const ContactSection = () => {
             },
           }}
           render={({ field }) => (
-            <TextField fullWidth placeholder="Email" {...field} />
+            <TextField
+              fullWidth
+              placeholder="Email"
+              sx={{ input: { color: textColor } }}
+              {...field}
+            />
           )}
         />
         <FormErrorText control={control} name="email" />
@@ -145,7 +157,12 @@ const ContactSection = () => {
             },
           }}
           render={({ field }) => (
-            <TextField fullWidth placeholder="Name" {...field} />
+            <TextField
+              fullWidth
+              placeholder="Name"
+              sx={{ input: { color: textColor } }}
+              {...field}
+            />
           )}
         />
         <FormErrorText control={control} name="name" />
@@ -165,6 +182,7 @@ const ContactSection = () => {
               placeholder="Message"
               multiline
               rows={3}
+              sx={{ textarea: { color: textColor } }}
               {...field}
             />
           )}

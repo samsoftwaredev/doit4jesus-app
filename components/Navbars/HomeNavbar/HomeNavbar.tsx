@@ -16,16 +16,16 @@ import {
   Toolbar,
   Typography,
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import Link from 'next/link';
 import * as React from 'react';
 
+import { Logo } from '@/components';
+import ThemeToggle from '@/components/ThemeToggle';
 import { COMPANY } from '@/constants/company';
 import { NAV_FOOTER_LINKS, NAV_MAIN_LINKS } from '@/constants/nav';
 import { useLanguageContext } from '@/context/LanguageContext';
 import { LANG } from '@/interfaces/index';
-
-import { Logo } from '../..';
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   backgroundColor:
@@ -53,6 +53,7 @@ const drawerWidth = 240;
 function HomeNavbar(props: Props) {
   const { window } = props;
   const { lang, changeLang, t } = useLanguageContext();
+  const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
   const handleDrawerToggle = () => {
@@ -86,7 +87,7 @@ function HomeNavbar(props: Props) {
     <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
       <Button disableRipple href={NAV_MAIN_LINKS.home.link}>
         <Typography sx={{ display: 'none' }}>{COMPANY.name}</Typography>
-        <Logo type="black" />
+        <Logo type={theme.palette.mode === 'dark' ? 'white' : 'black'} />
       </Button>
       <Divider />
       <List>
@@ -97,6 +98,20 @@ function HomeNavbar(props: Props) {
             </ListItemButton>
           </ListItem>
         ))}
+        <ListItem>
+          <Box
+            sx={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: 1,
+            }}
+          >
+            <Typography variant="body2">{t.theme || 'Theme'}</Typography>
+            <ThemeToggle />
+          </Box>
+        </ListItem>
         <ListItem>
           <Select
             sx={{ height: '36px', width: '100%' }}
@@ -135,7 +150,7 @@ function HomeNavbar(props: Props) {
             passHref
             href={NAV_MAIN_LINKS.home.link}
           >
-            <Logo type="white" />
+            <Logo type={theme.palette.mode === 'dark' ? 'white' : 'black'} />
           </Link>
           <Box sx={{ flexGrow: 1, display: { sm: 'none', md: 'block' } }} />
           <Box sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}>
@@ -146,13 +161,14 @@ function HomeNavbar(props: Props) {
                 </Button>
               </Link>
             ))}
+            <ThemeToggle />
             <Select
               sx={{
-                color: 'white',
+                color: theme.palette.primary.contrastText,
                 height: '36px',
-                border: '1px solid white',
+                border: `1px solid ${theme.palette.primary.contrastText}`,
                 '.MuiSelect-icon': {
-                  color: 'white', // Makes the caret (dropdown arrow) white
+                  color: theme.palette.primary.contrastText,
                 },
               }}
               variant="outlined"

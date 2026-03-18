@@ -4,9 +4,9 @@ import Image from 'next/image';
 
 import { levels } from '@/utils/levels';
 
-const LevelImage = styled(Image)({
-  border: '5px solid black',
-  backgroundColor: 'black',
+const LevelImage = styled(Image)(({ theme }) => ({
+  border: `5px solid ${theme.palette.divider}`,
+  backgroundColor: theme.palette.background.paper,
   borderRadius: '50%',
   width: '50px',
   height: '50px',
@@ -18,7 +18,7 @@ const LevelImage = styled(Image)({
     width: '100px',
     height: '100px',
   },
-});
+}));
 
 interface Props {
   levelNum: number;

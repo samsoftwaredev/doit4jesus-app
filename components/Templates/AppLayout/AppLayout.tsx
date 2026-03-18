@@ -80,6 +80,7 @@ const SideNavbarArea = styled(Box, {
 }));
 
 const ContentArea = styled(Box)({
+  paddingTop: '20px',
   borderRadius: '10px',
   gridColumnStart: 2,
   gridColumnEnd: 3,

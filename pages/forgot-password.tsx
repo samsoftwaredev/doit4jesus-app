@@ -1,9 +1,8 @@
-import { Box, Container, Typography } from '@mui/material';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
 
-import { MainLayout, Meta } from '@/components';
+import { AuthLayout } from '@/components/Templates';
 import { NAV_APP_LINKS, pageView } from '@/constants';
 import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
@@ -24,21 +23,14 @@ const ForgotPassword: NextPage = () => {
   if (isAuth) return null;
 
   return (
-    <MainLayout>
-      <Meta pageTitle="ForgotPassword" />
-      <Container maxWidth="xs">
-        <Typography mt={3} variant="h4" component="h1">
-          {pageLanguage.forgotPassword.title}
-        </Typography>
-        <Typography variant="body1" component="p">
-          {pageLanguage.forgotPassword.header}
-        </Typography>
-        <Box my={2}>{pageLanguage.forgotPassword?.component}</Box>
-        <Typography textAlign="center" variant="body1" component="p">
-          {pageLanguage.forgotPassword.footer}
-        </Typography>
-      </Container>
-    </MainLayout>
+    <AuthLayout
+      pageTitle="ForgotPassword"
+      title={pageLanguage.forgotPassword.title}
+      header={pageLanguage.forgotPassword.header}
+      footer={pageLanguage.forgotPassword.footer}
+    >
+      {pageLanguage.forgotPassword?.component}
+    </AuthLayout>
   );
 };
 

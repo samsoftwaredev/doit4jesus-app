@@ -10,11 +10,11 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import * as React from 'react';
 
 import { StarButton } from '@/components';
 import { CardProps } from '@/interfaces';
-import { theme } from '@/styles/mui-overwrite';
 
 interface Props {
   steps: CardProps[];
@@ -23,6 +23,7 @@ interface Props {
 }
 
 function CardDeck({ steps, setActiveStep, activeStep }: Props) {
+  const theme = useTheme();
   const [sinsCommitted, setSinsCommitted] = React.useState<CardProps[]>([]);
 
   const handleNext = () => {
@@ -74,7 +75,7 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
                 <StarButton onClick={handelSave} />
               </Grid>
               <Grid mx={2}>
-                <Typography color={theme.palette.secondary.main} component="p">
+                <Typography color="secondary.main" component="p">
                   {step.question}
                 </Typography>
               </Grid>
@@ -134,11 +135,16 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
             Examination of Conscience Completed!
           </Typography>
           {sinsCommitted.length > 0 ? (
-            <Typography color={theme.palette.secondary.main} component="h5">
+            <Typography color="secondary.main" component="h5">
               List of sins to confess:
             </Typography>
           ) : (
-            <Typography textAlign="center" mb={3} color="grey" component="h5">
+            <Typography
+              textAlign="center"
+              mb={3}
+              color="text.secondary"
+              component="h5"
+            >
               Great! No need to go to confession.
             </Typography>
           )}
@@ -147,10 +153,17 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
               <Typography variant="h5">
                 {index + 1}) {step.title}
               </Typography>
-              <Typography color={theme.palette.secondary.main} ml={2} mb={2}>
+              <Typography color="secondary.main" ml={2} mb={2}>
                 {step.question}
               </Typography>
-              <Divider sx={{ backgroundColor: 'white' }} />
+              <Divider
+                sx={{
+                  backgroundColor:
+                    theme.palette.mode === 'dark'
+                      ? 'rgba(255, 255, 255, 0.24)'
+                      : 'rgba(0, 0, 0, 0.24)',
+                }}
+              />
             </Grid>
           ))}
           <Box alignSelf="center">

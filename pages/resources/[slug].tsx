@@ -88,13 +88,14 @@ function ResourcesPost() {
             sx={{
               height: 240,
               textAlign: 'right',
-              color: 'white',
-              textShadow: `1px 1px 2px black`,
+              color: 'common.white',
+              textShadow: (theme) =>
+                `1px 1px 2px ${theme.palette.common.black}`,
             }}
             image={article.content.image}
             title={article.content.title}
           >
-            <Typography p={2} fontWeight="strong" variant="h5">
+            <Typography p={2} fontWeight="bold" variant="h5">
               {article.content.title}
             </Typography>
           </CardMedia>

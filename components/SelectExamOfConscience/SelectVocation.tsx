@@ -61,7 +61,7 @@ interface Props {
 const SelectVocation = ({ onVocationSelected }: Props) => {
   return (
     <>
-      <Typography my={2} color="white" variant="h5">
+      <Typography my={2} color="text.primary" variant="h5">
         Select your state in life:
       </Typography>
       <Box display="flex" flexDirection="column" gap={2}>

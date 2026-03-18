@@ -1,25 +1,25 @@
 import CircleIcon from '@mui/icons-material/Circle';
 import { Box } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { alpha, styled } from '@mui/material/styles';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 
-const Pill = styled(Box)({
-  color: '#ffffff',
+const Pill = styled(Box)(({ theme }) => ({
+  color: theme.palette.common.white,
   padding: '0px 5px',
   borderRadius: '10px',
   display: 'flex',
   flexDirection: 'row',
   alignItems: 'center',
-});
+}));
 
-const WarningPill = styled(Pill)({
-  backgroundColor: 'rgba(255, 152, 0, 0.7)',
-});
+const WarningPill = styled(Pill)(({ theme }) => ({
+  backgroundColor: alpha(theme.palette.warning.main, 0.7),
+}));
 
-const ErrorPill = styled(Pill)({
-  backgroundColor: 'rgba(255, 0, 0, 0.7)',
-});
+const ErrorPill = styled(Pill)(({ theme }) => ({
+  backgroundColor: alpha(theme.palette.error.main, 0.7),
+}));
 
 interface Props {
   targetTime: Date;

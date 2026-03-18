@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 
 import Card from '../Card';
 import Logo from '../Logo';
@@ -38,6 +38,7 @@ interface Props {
 }
 
 const ErrorPage = ({ text, isPage = false }: Props) => {
+  const theme = useTheme();
   if (isPage === false) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center">
@@ -54,7 +55,7 @@ const ErrorPage = ({ text, isPage = false }: Props) => {
   return (
     <FullScreenContainer>
       <CenteredContent>
-        <Logo type="white" />
+        <Logo type={theme.palette.mode === 'dark' ? 'white' : 'black'} />
         <Typography my={2}>{text}</Typography>
       </CenteredContent>
     </FullScreenContainer>

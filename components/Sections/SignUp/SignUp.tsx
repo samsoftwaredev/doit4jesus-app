@@ -7,6 +7,7 @@ import {
   Radio,
   RadioGroup,
   TextField,
+  useTheme,
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -36,6 +37,7 @@ interface IFormInputs {
 
 const SignUp = () => {
   const { t } = useLanguageContext();
+  const theme = useTheme();
   const [isLoading, setIsLoading] = useState(false);
   const { getProfile } = useUserContext();
   const { handleSubmit, control } = useForm<IFormInputs>({
@@ -123,6 +125,7 @@ const SignUp = () => {
             label={t.firstName}
             fullWidth
             placeholder={t.firstName}
+            sx={{ input: { color: theme.palette.text.primary } }}
             {...field}
           />
         )}
@@ -155,6 +158,7 @@ const SignUp = () => {
             label={t.lastName}
             fullWidth
             placeholder={t.lastName}
+            sx={{ input: { color: theme.palette.text.primary } }}
             {...field}
           />
         )}
@@ -179,6 +183,7 @@ const SignUp = () => {
             label={t.email}
             fullWidth
             placeholder={t.email}
+            sx={{ input: { color: theme.palette.text.primary } }}
             {...field}
           />
         )}
@@ -194,6 +199,7 @@ const SignUp = () => {
             fullWidth
             type="password"
             placeholder={t.password}
+            sx={{ input: { color: theme.palette.text.primary } }}
             {...field}
           />
         )}
@@ -201,7 +207,9 @@ const SignUp = () => {
       <FormErrorText name="password" control={control} />
       <PasswordValidator password={password} />
       <Box my={1}>
-        <FormLabel id="gender">{t.selectGender}:</FormLabel>
+        <FormLabel id="gender" sx={{ color: theme.palette.text.primary }}>
+          {t.selectGender}:
+        </FormLabel>
         <Controller
           name="genderMale"
           control={control}
@@ -221,11 +229,13 @@ const SignUp = () => {
                 value={true}
                 control={<Radio />}
                 label={t.male}
+                sx={{ color: theme.palette.text.primary }}
               />
               <FormControlLabel
                 value={false}
                 control={<Radio />}
                 label={t.female}
+                sx={{ color: theme.palette.text.primary }}
               />
             </RadioGroup>
           )}

@@ -88,12 +88,12 @@ const WhatsTheRosary = ({ nextStep, prevStep }: StepProps) => {
   return (
     <StepperContent>
       <StepTitle variant="h3">{t.whatIsTheRosary}</StepTitle>
-      <Body my={5} textAlign="center" sx={{ color: 'white' }}>
+      <Body my={5} textAlign="center" sx={{ color: 'common.white' }}>
         {t.whatIsTheRosaryDescription}
       </Body>
       <Grid mt={2} container justifyContent="space-between">
         <Button
-          sx={{ color: '#fff' }}
+          sx={{ color: 'common.white' }}
           size="large"
           variant="text"
           startIcon={<ChevronLeft />}
@@ -119,10 +119,10 @@ const WhyPray = ({ prevStep, nextStep }: StepProps) => {
   const { t } = useLanguageContext();
   return (
     <StepperContent>
-      <StepTitle sx={{ color: 'white' }} variant="h3">
+      <StepTitle sx={{ color: 'common.white' }} variant="h3">
         {t.whyPrayTheRosary}
       </StepTitle>
-      <Body sx={{ color: 'white' }} my={3}>
+      <Body sx={{ color: 'common.white' }} my={3}>
         {t.whyPrayTheRosaryDescription}
       </Body>
       <iframe
@@ -161,10 +161,10 @@ const WhatAreTheBenefits = ({ prevStep, nextStep }: StepProps) => {
   return (
     <StepperContent>
       <StepTitle variant="h3">{t.whatAreTheBenefits}</StepTitle>
-      <Body my={3} sx={{ color: 'white' }}>
+      <Body my={3} sx={{ color: 'common.white' }}>
         {t.whatAreTheBenefitsDescription}
       </Body>
-      <Body my={3} sx={{ color: 'white' }}>
+      <Body my={3} sx={{ color: 'common.white' }}>
         <Markdown>{t.whatAreTheBenefitsOfRosary}</Markdown>
       </Body>
       <Grid mt={2} container justifyContent="space-between">
@@ -198,7 +198,7 @@ const Intro = ({ nextStep }: StepProps) => {
   return (
     <StepperContent>
       <StepTitle variant="h3">{t.welcomeTitle}</StepTitle>
-      <Body my={5} textAlign="center" sx={{ color: 'white' }}>
+      <Body my={5} textAlign="center" sx={{ color: 'common.white' }}>
         {t.welcomeDescription
           .replace('{{firstName}}', user?.firstName || '')
           .replace('{{lastName}}', user?.lastName || '')}
@@ -284,7 +284,7 @@ const AccountSetup = () => {
     },
     {
       component: <WhyPray prevStep={prevStep} nextStep={nextStep} />,
-      color: '#000',
+      color: theme.palette.common.black,
       backgroundImage: jesusCross,
     },
   ];

@@ -4,18 +4,19 @@ import Image from 'next/image';
 
 import { useLanguageContext } from '@/context/LanguageContext';
 import rosary from '@/public/assets/images/rosary.svg';
+import {
+  getCommunityGradient,
+  getContentTextShadow,
+} from '@/styles/theme-tokens';
 
 const Section = styled('section')(({ theme }) => ({
   minHeight: '900px',
   position: 'relative',
   display: 'flex',
   flexDirection: 'column',
-  textShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
-  color: '#ffffff',
-  background:
-    theme.palette.mode === 'dark'
-      ? 'linear-gradient(180deg, #0b1c2b 0%, #163755 20%, #844d42 100%)'
-      : 'linear-gradient(180deg, #163755 0%, #163755 20%, #844d42 100%)',
+  textShadow: getContentTextShadow(theme),
+  color: theme.palette.primary.contrastText,
+  background: getCommunityGradient(theme),
   '& img': {
     position: 'absolute',
     top: 0,
@@ -24,11 +25,11 @@ const Section = styled('section')(({ theme }) => ({
   },
 }));
 
-const Title = styled(Typography)({
+const Title = styled(Typography)(({ theme }) => ({
   position: 'relative',
-  textShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
+  textShadow: getContentTextShadow(theme),
   zIndex: 100,
-});
+}));
 
 const Content = styled(Box)({
   marginBottom: '150px',

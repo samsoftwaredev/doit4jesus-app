@@ -9,6 +9,12 @@ declare module '@mui/material/styles' {
   }
 }
 
+const APP_FONT_FAMILY = [
+  '-apple-system',
+  'BlinkMacSystemFont',
+  '"Segoe UI"',
+].join(',');
+
 const getTheme = (mode: 'light' | 'dark') => {
   const lightPalette = {
     mode: 'light' as const,
@@ -126,15 +132,7 @@ const getTheme = (mode: 'light' | 'dark') => {
   return createTheme({
     palette,
     typography: {
-      fontFamily: [
-        '-apple-system',
-        'BlinkMacSystemFont',
-        '"Segoe UI"',
-        'Roboto',
-        '"Helvetica Neue"',
-        'Arial',
-        'sans-serif',
-      ].join(','),
+      fontFamily: APP_FONT_FAMILY,
       button: {
         textTransform: 'none',
         fontWeight: 600,
@@ -199,16 +197,19 @@ const getTheme = (mode: 'light' | 'dark') => {
           },
         },
       },
+
       MuiTextField: {
         defaultProps: {
           variant: 'outlined',
         },
+      },
+      MuiOutlinedInput: {
         styleOverrides: {
-          root: {
+          root: ({ theme }) => ({
             '& .MuiOutlinedInput-root': {
               borderRadius: 8,
             },
-          },
+          }),
         },
       },
       MuiChip: {
