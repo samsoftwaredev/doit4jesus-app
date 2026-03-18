@@ -2,7 +2,7 @@ import { AccountCircle } from '@mui/icons-material';
 import { Box, Button, Container, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Image from 'next/image';
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -61,7 +61,7 @@ const UserProfile = ({ name, pictureUrl, uid }: UserProfileProps) => {
 const FriendRequestSection = () => {
   const router = useRouter();
   const params = useParams();
-  const slug = params.slug;
+  const paramsUserId = params.slug;
   const [errorPage, setErrorPage] = useState<string>();
   const [friend, setFriend] = useState<FriendProfile>();
   const { user } = useUserContext();
