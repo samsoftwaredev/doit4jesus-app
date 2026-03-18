@@ -12,11 +12,6 @@ jest.mock('@/context/UserContext', () => ({
   useUserContext: jest.fn(),
 }));
 
-jest.mock('next/image', () => ({
-  __esModule: true,
-  default: (props: any) => <img {...props} />,
-}));
-
 describe('RosaryWinnerChallenge Component', () => {
   beforeEach(() => {
     (useUserContext as jest.Mock).mockReturnValue({

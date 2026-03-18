@@ -42,11 +42,6 @@ jest.mock('next/navigation', () => ({
   useRouter: jest.fn().mockReturnValue({ push: jest.fn() }),
 }));
 
-jest.mock('next/image', () => ({
-  __esModule: true,
-  default: (props: any) => <img alt={props.alt} data-testid="next-image" />,
-}));
-
 jest.mock('dayjs', () => {
   const actual = jest.requireActual('dayjs');
   return Object.assign((...args: any[]) => actual(...args), actual, {

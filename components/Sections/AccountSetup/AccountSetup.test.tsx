@@ -17,11 +17,6 @@ jest.mock('next/navigation', () => ({
   useRouter: jest.fn().mockReturnValue({ push: jest.fn() }),
 }));
 
-jest.mock('next/image', () => ({
-  __esModule: true,
-  default: (props: any) => <img alt={props.alt} data-testid="next-image" />,
-}));
-
 jest.mock('react-markdown', () => ({
   __esModule: true,
   default: ({ children }: any) => <div>{children}</div>,

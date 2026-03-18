@@ -2,11 +2,6 @@ import { render, screen } from '@testing-library/react';
 
 import PageNotFound from './PageNotFound';
 
-jest.mock('next/image', () => ({
-  __esModule: true,
-  default: (props: any) => <img {...props} />,
-}));
-
 jest.mock('@/components/Templates', () => ({
   MainLayout: ({ children }: any) => (
     <div data-testid="main-layout">{children}</div>

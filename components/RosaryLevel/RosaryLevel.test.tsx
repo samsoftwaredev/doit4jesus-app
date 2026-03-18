@@ -2,11 +2,6 @@ import { render } from '@testing-library/react';
 
 import RosaryLevel from './RosaryLevel';
 
-jest.mock('next/image', () => ({
-  __esModule: true,
-  default: (props: any) => <img {...props} />,
-}));
-
 jest.mock('@/utils/levels', () => ({
   levels: [
     { label: 'Beginner', color: '#cd7f32', icon: '/icon0.png' },

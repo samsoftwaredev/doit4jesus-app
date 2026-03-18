@@ -4,11 +4,6 @@ import { LanguageContextProvider } from '@/context/LanguageContext';
 
 import Features from './Features';
 
-jest.mock('next/image', () => ({
-  __esModule: true,
-  default: (props: any) => <img {...props} />,
-}));
-
 const component = () => (
   <LanguageContextProvider>
     <Features />

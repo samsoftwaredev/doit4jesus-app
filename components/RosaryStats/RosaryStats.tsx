@@ -11,7 +11,7 @@ const RosaryStats = () => {
   const router = useRouter();
 
   const onClick = () => {
-    router.push(NAV_APP_LINKS.app.link);
+    router.push(NAV_APP_LINKS.rosary.link);
   };
 
   return (

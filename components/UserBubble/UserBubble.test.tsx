@@ -2,11 +2,6 @@ import { render, screen } from '@testing-library/react';
 
 import UserBubble from './UserBubble';
 
-jest.mock('../SafeImage', () => ({
-  __esModule: true,
-  default: (props: any) => <img {...props} />,
-}));
-
 describe('UserBubble Component', () => {
   it('renders default icon when no picture provided', () => {
     const { container } = render(<UserBubble userName="John" />);

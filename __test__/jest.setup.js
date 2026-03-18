@@ -12,6 +12,12 @@ jest.mock('@vercel/analytics', () => ({
   Analytics: jest.fn(),
 }));
 
+jest.mock('next/image', () => ({
+  __esModule: true,
+  // eslint-disable-next-line
+  default: (props) => <img {...props} />,
+}));
+
 jest.mock('next/navigation', () => ({
   useRouter() {
     return {

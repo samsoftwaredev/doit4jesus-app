@@ -17,11 +17,7 @@ jest.mock('next/navigation', () => ({
   useSearchParams: jest
     .fn()
     .mockReturnValue(new URLSearchParams([['slug', 'friend-user-id']])),
-}));
-
-jest.mock('next/image', () => ({
-  __esModule: true,
-  default: (props: any) => <img alt={props.alt} data-testid="next-image" />,
+  useParams: jest.fn().mockReturnValue({ slug: 'friend-user-id' }),
 }));
 
 jest.mock('@/classes', () => ({

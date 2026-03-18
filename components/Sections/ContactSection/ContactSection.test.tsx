@@ -2,11 +2,6 @@ import { render, screen } from '@testing-library/react';
 
 import ContactSection from './ContactSection';
 
-jest.mock('next/image', () => ({
-  __esModule: true,
-  default: (props: any) => <img alt={props.alt} data-testid="next-image" />,
-}));
-
 jest.mock('@/classes', () => ({
   supabase: {
     functions: { invoke: jest.fn().mockResolvedValue({ error: null }) },

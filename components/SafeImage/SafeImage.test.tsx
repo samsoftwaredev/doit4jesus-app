@@ -2,15 +2,6 @@ import { fireEvent, render, screen } from '@testing-library/react';
 
 import SafeImage from './SafeImage';
 
-// Mock Next.js Image component
-jest.mock('next/image', () => ({
-  __esModule: true,
-  default: (props: any) => {
-    // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
-    return <img {...props} />;
-  },
-}));
-
 describe('SafeImage Component', () => {
   const mockSrc = 'https://example.com/image.jpg';
   const mockAlt = 'Test image';

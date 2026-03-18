@@ -35,11 +35,6 @@ jest.mock('qrcode', () => ({
   toDataURL: jest.fn().mockResolvedValue('data:image/png;base64,test'),
 }));
 
-jest.mock('next/image', () => ({
-  __esModule: true,
-  default: (props: any) => <img {...props} />,
-}));
-
 jest.mock('../Dialog', () => ({
   __esModule: true,
   default: ({ children, open }: any) =>

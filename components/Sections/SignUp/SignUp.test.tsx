@@ -38,11 +38,6 @@ jest.mock('react-toastify', () => ({
   toast: { error: jest.fn(), success: jest.fn() },
 }));
 
-jest.mock('next/image', () => ({
-  __esModule: true,
-  default: (props: any) => <img alt={props.alt} data-testid="next-image" />,
-}));
-
 jest.mock('@/components/FormErrorText', () => ({
   __esModule: true,
   default: () => null,
