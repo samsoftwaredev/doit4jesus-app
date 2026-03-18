@@ -25,6 +25,7 @@ import { normalizePost } from '@/utils';
 function ResourcesPost() {
   const { t } = useLanguageContext();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [article, setArticle] = useState<ResourcePost>();
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState(0);
@@ -49,7 +50,6 @@ function ResourcesPost() {
 
   const getArticle = async () => {
     setIsLoading(true);
-    const searchParams = useSearchParams();
     const slug = searchParams.get('slug');
     try {
       if (typeof slug === 'string') {

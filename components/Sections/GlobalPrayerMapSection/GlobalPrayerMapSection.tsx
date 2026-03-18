@@ -17,6 +17,7 @@ import {
 } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
 import { RealtimeChannel } from '@supabase/supabase-js';
+import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -29,6 +30,10 @@ import {
   joinGlobalPrayerSession,
   startOrJoinGlobalPrayerSession,
 } from '@/services';
+
+const GoogleMapReact = dynamic(() => import('google-map-react'), {
+  ssr: false,
+});
 
 const PrayerMapGrid = styled(Box)({
   display: 'grid',
@@ -49,47 +54,19 @@ const HeroPanel = styled(Box)(({ theme }) => ({
   )})`,
 }));
 
-const WorldMap = styled(Box)(({ theme }) => ({
+const MapContainer = styled(Box)(({ theme }) => ({
   position: 'relative',
   height: 420,
   borderRadius: 14,
   overflow: 'hidden',
-  background: `radial-gradient(circle at 30% 20%, ${alpha(
-    theme.palette.info.light,
-    0.16,
-  )}, transparent 35%), radial-gradient(circle at 80% 70%, ${alpha(
-    theme.palette.primary.light,
-    0.2,
-  )}, transparent 35%), linear-gradient(180deg, #031424 0%, #020912 100%)`,
   border: `1px solid ${alpha(theme.palette.primary.light, 0.26)}`,
-  '&::before': {
-    content: '""',
-    position: 'absolute',
-    inset: 0,
-    backgroundImage: `repeating-linear-gradient(90deg, ${alpha(
-      theme.palette.common.white,
-      0.08,
-    )} 0, ${alpha(theme.palette.common.white, 0.08)} 1px, transparent 1px, transparent 10%), repeating-linear-gradient(0deg, ${alpha(
-      theme.palette.common.white,
-      0.08,
-    )} 0, ${alpha(theme.palette.common.white, 0.08)} 1px, transparent 1px, transparent 10%)`,
-    opacity: 0.2,
-    pointerEvents: 'none',
-  },
+  background: '#020912',
   '@media (max-width: 768px)': {
     height: 320,
   },
 }));
 
-const ContinentGlow = styled(Box)(({ theme }) => ({
-  position: 'absolute',
-  borderRadius: '50%',
-  background: alpha(theme.palette.info.light, 0.22),
-  filter: 'blur(18px)',
-  pointerEvents: 'none',
-}));
-
-const MarkerButton = styled(Button, {
+const MapMarkerButton = styled(Button, {
   shouldForwardProp: (prop) => prop !== 'markerSize',
 })<{ markerSize: number }>(({ theme, markerSize }) => ({
   minWidth: markerSize,
@@ -97,7 +74,6 @@ const MarkerButton = styled(Button, {
   height: markerSize,
   borderRadius: '50%',
   padding: 0,
-  position: 'absolute',
   transform: 'translate(-50%, -50%)',
   color: theme.palette.common.white,
   background: `radial-gradient(circle, ${alpha(
@@ -128,6 +104,34 @@ const MarkerButton = styled(Button, {
   },
 }));
 
+const MapMarker = ({
+  markerSize,
+  isOnline,
+  clusterSize,
+  onClick,
+}: {
+  lat: number;
+  lng: number;
+  markerSize: number;
+  isOnline: boolean;
+  clusterSize: number;
+  onClick: () => void;
+}) => (
+  <MapMarkerButton
+    markerSize={isOnline ? markerSize : 14}
+    onClick={onClick}
+    sx={{
+      '&::after': {
+        animationPlayState: isOnline ? 'running' : 'paused',
+      },
+    }}
+  >
+    <Typography fontSize={11} fontWeight={700}>
+      {clusterSize > 1 ? clusterSize : ''}
+    </Typography>
+  </MapMarkerButton>
+);
+
 const prayerTypes = [
   'Rosary',
   'Chaplet',
@@ -153,11 +157,6 @@ const getCountryFlag = (countryCode?: string | null): string => {
     .map((char) => String.fromCodePoint(127397 + char.charCodeAt(0)))
     .join('');
 };
-
-const coordinateToPosition = (latitude: number, longitude: number) => ({
-  top: `${((90 - latitude) / 180) * 100}%`,
-  left: `${((longitude + 180) / 360) * 100}%`,
-});
 
 const clusterPrayerSessions = (
   sessions: GlobalPrayerSessionsDB[],
@@ -264,6 +263,9 @@ const GlobalPrayerMapSection = () => {
   );
 
   const totalSessions = sessions.length;
+  const mapApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  const mapDefaultCenter = { lat: 18, lng: 10 };
+  const mapDefaultZoom = 1;
 
   const handleJoinSession = async (sessionId: number) => {
     const updatedCount = await joinGlobalPrayerSession(sessionId);
@@ -356,56 +358,84 @@ const GlobalPrayerMapSection = () => {
             {isLoading ? (
               <LinearProgress />
             ) : (
-              <WorldMap>
-                <ContinentGlow
-                  sx={{ width: 220, height: 110, top: '15%', left: '8%' }}
-                />
-                <ContinentGlow
-                  sx={{ width: 180, height: 90, top: '48%', left: '24%' }}
-                />
-                <ContinentGlow
-                  sx={{ width: 210, height: 110, top: '26%', left: '46%' }}
-                />
-                <ContinentGlow
-                  sx={{ width: 160, height: 85, top: '40%', left: '68%' }}
-                />
-                <ContinentGlow
-                  sx={{ width: 120, height: 70, top: '66%', left: '78%' }}
-                />
+              <MapContainer>
+                <GoogleMapReact
+                  bootstrapURLKeys={mapApiKey ? { key: mapApiKey } : undefined}
+                  defaultCenter={mapDefaultCenter}
+                  defaultZoom={mapDefaultZoom}
+                  options={{
+                    fullscreenControl: false,
+                    mapTypeControl: false,
+                    streetViewControl: false,
+                    rotateControl: false,
+                    zoomControl: true,
+                    minZoom: 1,
+                    maxZoom: 7,
+                    gestureHandling: 'greedy',
+                    styles: [
+                      {
+                        elementType: 'geometry',
+                        stylers: [{ color: '#0b1326' }],
+                      },
+                      {
+                        elementType: 'labels.text.fill',
+                        stylers: [{ color: '#8ea3c2' }],
+                      },
+                      {
+                        elementType: 'labels.text.stroke',
+                        stylers: [{ color: '#08101f' }],
+                      },
+                      {
+                        featureType: 'administrative',
+                        elementType: 'geometry.stroke',
+                        stylers: [{ color: '#1d2b47' }],
+                      },
+                      {
+                        featureType: 'poi',
+                        stylers: [{ visibility: 'off' }],
+                      },
+                      {
+                        featureType: 'road',
+                        stylers: [{ visibility: 'off' }],
+                      },
+                      {
+                        featureType: 'transit',
+                        stylers: [{ visibility: 'off' }],
+                      },
+                      {
+                        featureType: 'water',
+                        elementType: 'geometry',
+                        stylers: [{ color: '#030b18' }],
+                      },
+                    ],
+                  }}
+                >
+                  {clusters.map((cluster) => {
+                    const markerSize = Math.min(
+                      42,
+                      Math.max(16, 14 + cluster.participantsCount / 4),
+                    );
 
-                {clusters.map((cluster) => {
-                  const pos = coordinateToPosition(
-                    cluster.latitude,
-                    cluster.longitude,
-                  );
-                  const markerSize = Math.min(
-                    42,
-                    Math.max(16, 14 + cluster.participantsCount / 4),
-                  );
-
-                  return (
-                    <MarkerButton
-                      key={cluster.id}
-                      markerSize={isOnline ? markerSize : 14}
-                      onClick={() => setSelectedClusterId(cluster.id)}
-                      sx={{
-                        top: pos.top,
-                        left: pos.left,
-                        zIndex: cluster.participantsCount,
-                        '&::after': {
-                          animationPlayState: isOnline ? 'running' : 'paused',
-                        },
-                      }}
-                    >
-                      <Typography fontSize={11} fontWeight={700}>
-                        {cluster.sessions.length > 1
-                          ? cluster.sessions.length
-                          : ''}
-                      </Typography>
-                    </MarkerButton>
-                  );
-                })}
-              </WorldMap>
+                    return (
+                      <MapMarker
+                        key={cluster.id}
+                        lat={cluster.latitude}
+                        lng={cluster.longitude}
+                        markerSize={markerSize}
+                        isOnline={isOnline}
+                        clusterSize={cluster.sessions.length}
+                        onClick={() => setSelectedClusterId(cluster.id)}
+                      />
+                    );
+                  })}
+                </GoogleMapReact>
+              </MapContainer>
+            )}
+            {!mapApiKey && (
+              <Typography color="warning.main" mt={1} variant="caption">
+                Add `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` to enable full map
+                loading.
+              </Typography>
             )}
           </Box>
         </Card>
