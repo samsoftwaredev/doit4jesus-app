@@ -10,7 +10,7 @@ import {
   LinearProgress,
   Typography,
 } from '@mui/material';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -25,7 +25,7 @@ import { normalizePost } from '@/utils';
 function ResourcesPost() {
   const { t } = useLanguageContext();
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const params = useParams();
   const [article, setArticle] = useState<ResourcePost>();
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState(0);
@@ -50,7 +50,7 @@ function ResourcesPost() {
 
   const getArticle = async () => {
     setIsLoading(true);
-    const slug = searchParams.get('slug');
+    const slug = params.slug;
     try {
       if (typeof slug === 'string') {
         let { data, error } = await db.getPosts().select('*').eq('slug', slug);
