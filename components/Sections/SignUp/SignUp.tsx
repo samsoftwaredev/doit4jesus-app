@@ -67,13 +67,11 @@ const SignUp = () => {
         console.error(error);
       }
       if (data) {
-        toast.success(
-          'We have sent a confirmation link to your email. Redirecting...',
-        );
+        toast.success(t.confirmationEmailSent);
       }
       setIsLoading(false);
     } catch (error) {
-      toast.error('Unable to sign up. Please try again later.');
+      toast.error(t.unableToSignUp);
       console.error(error);
       setIsLoading(false);
     }
@@ -131,7 +129,7 @@ const SignUp = () => {
         )}
       />
       <FormErrorText
-        fieldName="First Name"
+        fieldName={t.firstName}
         name="firstName"
         control={control}
       />
@@ -163,7 +161,7 @@ const SignUp = () => {
           />
         )}
       />
-      <FormErrorText fieldName="Last name" name="lastName" control={control} />
+      <FormErrorText fieldName={t.lastName} name="lastName" control={control} />
       <Controller
         name="email"
         control={control}

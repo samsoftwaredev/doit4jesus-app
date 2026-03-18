@@ -5,6 +5,7 @@ import AccountSetup from '@/components/Sections/AccountSetup';
 import { COMPANY } from '@/constants/company';
 import { useAudioContext } from '@/context/AudioContext';
 import { useUserContext } from '@/context/UserContext';
+import useSpiritualXPTracker from '@/hooks/useSpiritualXPTracker';
 
 import Meta from '../Meta';
 import ProtectedRoute from '../ProtectedRoute';
@@ -18,6 +19,7 @@ const AppWrapper = ({ children }: Props) => {
   const { setHideMusicPlayer } = useAudioContext();
   const params = useSearchParams();
   const isNewUser = params.get('newUser');
+  useSpiritualXPTracker();
 
   const isAuth = !!user;
 

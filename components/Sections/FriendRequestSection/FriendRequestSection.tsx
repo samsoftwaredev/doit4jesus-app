@@ -9,8 +9,10 @@ import { toast } from 'react-toastify';
 import { db, supabase } from '@/classes';
 import { Card } from '@/components';
 import { NAV_APP_LINKS } from '@/constants';
+import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
 import { FriendProfile } from '@/interfaces';
+import { awardXP } from '@/services/spiritualXp';
 import { normalizeFriendProfile, orderUUIDs } from '@/utils';
 
 import { ErrorPage } from '../..';
@@ -59,6 +61,7 @@ const UserProfile = ({ name, pictureUrl, uid }: UserProfileProps) => {
 };
 
 const FriendRequestSection = () => {
+  const { t } = useLanguageContext();
   const router = useRouter();
   const params = useParams();
   const paramsUserId = params.slug;
@@ -87,15 +90,25 @@ const FriendRequestSection = () => {
         .select();
       if (error) {
         console.error('Error in FriendRequestSection (onConfirm):', error);
-        toast.error('Unable to send friend request');
+        toast.error(t.unableToSendFriendRequest);
       }
       if (data) {
-        toast.success('Friend request sent');
+        await awardXP(
+          user.userId,
+          'friend_invite',
+          {
+            invited_user_id: friend.userId,
+          },
+          {
+            idempotencyKey: `friend_invite:${uuid1}:${uuid2}`,
+          },
+        );
+        toast.success(t.friendRequestSent);
         router.push(NAV_APP_LINKS.friends.link);
       }
     } catch (error) {
       console.error('Error in FriendRequestSection (onConfirm):', error);
-      toast.error('Unable to send friend request');
+      toast.error(t.unableToSendFriendRequest);
     }
   };
 
@@ -107,14 +120,14 @@ const FriendRequestSection = () => {
         });
         if (error) {
           console.error(error);
-          toast.error('Unable to retrieve friends profile.');
+          toast.error(t.unableToRetrieveFriendProfile);
         } else {
           const friendsData = normalizeFriendProfile(data ?? []);
           setFriend(friendsData[0]);
         }
       } catch (error) {
         console.error('Error in FriendRequestSection (getUserProfile):', error);
-        toast.error('Unable to retrieve friends profile.');
+        toast.error(t.unableToRetrieveFriendProfile);
       }
     }
   };
@@ -122,7 +135,7 @@ const FriendRequestSection = () => {
   useEffect(() => {
     if (user?.userId === paramsUserId) {
       // cover edge case when user enters his own uuid. Show exception page.
-      setErrorPage("Oops! You can't add yourself as a friend");
+      setErrorPage(t.cantAddYourselfAsFriend);
     } else {
       getUserProfile();
       setErrorPage(undefined);
@@ -140,7 +153,7 @@ const FriendRequestSection = () => {
           Friend Request
         </Typography>
         <Typography textAlign="center">
-          Add {friend?.fullName} as a friend
+          {t.addFriendText.replace('{{name}}', friend?.fullName || '')}
         </Typography>
         <Box
           display="flex"
@@ -154,17 +167,13 @@ const FriendRequestSection = () => {
             pictureUrl={friend?.pictureUrl}
           />
         </Box>
-        <Typography>
-          You will be sharing information, including profile details and
-          relevant statistics such as the number of completed rosaries, along
-          with other pertinent data.
-        </Typography>
+        <Typography>{t.friendRequestSharingInfo}</Typography>
         <Box mt={2} display="flex" justifyContent="space-between">
           <Button color="success" onClick={onCancel}>
-            Cancel
+            {t.cancel}
           </Button>
           <Button color="success" variant="contained" onClick={onConfirm}>
-            Send Friend Request
+            {t.sendFriendRequest}
           </Button>
         </Box>
       </Card>

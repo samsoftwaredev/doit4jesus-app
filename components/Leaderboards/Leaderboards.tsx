@@ -48,11 +48,11 @@ const Leaderboards = () => {
         setUserList(list);
       }
       if (error) {
-        toast.error('Unable to display leaderboards');
+        toast.error(t.unableToDisplayLeaderboards);
       }
     } catch (error) {
       console.error('Error in Leaderboards (getTopRosaryUser):', error);
-      toast.error('Unable to display leaderboards');
+      toast.error(t.unableToDisplayLeaderboards);
     } finally {
       setIsLoading(false);
     }

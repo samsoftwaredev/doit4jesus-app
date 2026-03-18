@@ -7,6 +7,7 @@ import Link from 'next/link';
 
 import { Logo, YouTubeSubscribe } from '@/components';
 import { NAV_FOOTER_LINKS, NAV_MAIN_LINKS } from '@/constants';
+import { useLanguageContext } from '@/context/LanguageContext';
 
 const FooterContainer = styled('footer')({
   gridTemplateColumns: 'repeat(3, 1fr)',
@@ -32,6 +33,7 @@ const CopyRightsArea = styled(Box)({ gridArea: 'copyRights' });
 const SocialMediaArea = styled(Box)({ gridArea: 'socialMedia' });
 
 const Footer = () => {
+  const { t } = useLanguageContext();
   const currentYear = new Date().getFullYear();
   const theme = useTheme();
   const textColor = theme.palette.text.primary;
@@ -42,10 +44,12 @@ const Footer = () => {
     <FooterContainer sx={{ backgroundColor: bgColor, color: textColor }}>
       <Container maxWidth="lg">
         <LogoArea aria-label="Website Logo">
-          <Logo />
+          <Logo type={theme.palette.mode === 'dark' ? 'white' : 'black'} />
         </LogoArea>
         <CopyRightsArea gap={1} display="flex" flexDirection="column">
-          <small>&copy; {currentYear} DoIt4Jesus. All rights reserved.</small>
+          <small>
+            {t.allRightsReserved.replace('{{year}}', String(currentYear))}
+          </small>
           <Box
             display="flex"
             justifyContent="center"

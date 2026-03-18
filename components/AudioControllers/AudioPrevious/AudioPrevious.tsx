@@ -3,9 +3,11 @@ import { IconButton, Tooltip } from '@mui/material';
 import { track } from '@vercel/analytics';
 import { useAudioContext } from 'context/AudioContext';
 
+import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
 
 const AudioPrevious = () => {
+  const { t } = useLanguageContext();
   const { user } = useUserContext();
   const { backwardAudio, audioPlayer } = useAudioContext();
 
@@ -15,7 +17,7 @@ const AudioPrevious = () => {
   };
 
   return (
-    <Tooltip title="Backward">
+    <Tooltip title={t.backward}>
       <span>
         <IconButton
           data-testid="backward-button"

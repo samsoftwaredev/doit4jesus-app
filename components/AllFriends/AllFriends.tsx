@@ -39,12 +39,12 @@ const AllFriends = () => {
       const [data, error] = await getUserProfileAPI(userIds);
       if (error) {
         console.error(error);
-        toast.error('Unable to retrieve friends profile.');
+        toast.error(t.unableToRetrieveFriendProfile);
       }
       if (data) setFriendProfiles(data);
     } catch (error) {
       console.error('Error in AllFriends (getFriendsProfiles):', error);
-      toast.error('Unable to retrieve friends profile.');
+      toast.error(t.unableToRetrieveFriendProfile);
     }
   };
 
@@ -62,7 +62,7 @@ const AllFriends = () => {
           .eq('id', relationship.id);
         if (error) {
           console.error('Error in AllFriends (onEndFriendship):', error);
-          toast.error('Unable to decline friend request');
+          toast.error(t.unableToDeclineFriendRequest);
         } else {
           onClose();
           setFriendProfiles((prevState) =>
@@ -71,7 +71,7 @@ const AllFriends = () => {
         }
       } catch (error) {
         console.error('Error in AllFriends (onEndFriendship):', error);
-        toast.error('Unable to decline friend request');
+        toast.error(t.unableToDeclineFriendRequest);
       }
     }
   };

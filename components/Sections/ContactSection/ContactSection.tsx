@@ -14,6 +14,7 @@ import { toast } from 'react-toastify';
 
 import { supabase } from '@/classes';
 import FormErrorText from '@/components/FormErrorText';
+import { useLanguageContext } from '@/context/LanguageContext';
 import womanComputer from '@/public/assets/images/womanComputer.jpeg';
 import { emailRegEx, nameRegEx } from '@/utils';
 
@@ -62,6 +63,7 @@ interface IFormInputs {
 }
 
 const ContactSection = () => {
+  const { t } = useLanguageContext();
   const theme = useTheme();
   const textColor = theme.palette.text.primary;
   const [loading, setLoading] = useState(false);
@@ -86,14 +88,14 @@ const ContactSection = () => {
         },
       });
       if (data) {
-        toast.success('Message sent! We will contact you shortly.');
+        toast.success(t.messageSent);
         setSubmittedSuccessfully(true);
         reset();
       }
-      if (error) toast.error('Unable to send message');
+      if (error) toast.error(t.unableToSendMessage);
     } catch (error) {
       console.error('Error in ContactSection (onSubmit):', error);
-      toast.error('Unable to send message');
+      toast.error(t.unableToSendMessage);
     } finally {
       setLoading(false);
     }
@@ -107,7 +109,7 @@ const ContactSection = () => {
         component="h1"
         variant="h2"
       >
-        Contact Us
+        {t.contactUs}
       </Typography>
       <FormControl
         sx={{ gridArea: 'content' }}
@@ -116,7 +118,7 @@ const ContactSection = () => {
         onSubmit={handleSubmit(onSubmit)}
       >
         <Typography component="p" sx={{ color: textColor }}>
-          Send us a message and we will be in touch within one business day.
+          {t.contactDescription}
         </Typography>
         <Controller
           name="email"
@@ -125,17 +127,17 @@ const ContactSection = () => {
             required: true,
             pattern: {
               value: emailRegEx,
-              message: 'Invalid email address',
+              message: t.invalidEmailAddress,
             },
             maxLength: {
               value: 100,
-              message: 'The email exceed max length',
+              message: t.emailExceedMaxLength,
             },
           }}
           render={({ field }) => (
             <TextField
               fullWidth
-              placeholder="Email"
+              placeholder={t.email}
               sx={{ input: { color: textColor } }}
               {...field}
             />
@@ -149,17 +151,17 @@ const ContactSection = () => {
             required: true,
             pattern: {
               value: nameRegEx,
-              message: 'Invalid name',
+              message: t.invalidName,
             },
             maxLength: {
               value: 100,
-              message: 'The name exceed max length',
+              message: t.nameExceedMaxLength,
             },
           }}
           render={({ field }) => (
             <TextField
               fullWidth
-              placeholder="Name"
+              placeholder={t.name}
               sx={{ input: { color: textColor } }}
               {...field}
             />
@@ -173,13 +175,13 @@ const ContactSection = () => {
             required: true,
             minLength: {
               value: 10,
-              message: 'The message is too short',
+              message: t.messageTooShort,
             },
           }}
           render={({ field }) => (
             <TextField
               fullWidth
-              placeholder="Message"
+              placeholder={t.message}
               multiline
               rows={3}
               sx={{ textarea: { color: textColor } }}
@@ -195,7 +197,7 @@ const ContactSection = () => {
           disabled={loading || submittedSuccessfully}
           variant="contained"
         >
-          Send Message
+          {t.sendMessage}
         </Button>
       </FormControl>
     </ContactGrid>

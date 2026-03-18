@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 
 import { supabase } from '@/classes';
 import { NAV_APP_LINKS } from '@/constants/nav';
+import { useLanguageContext } from '@/context/LanguageContext';
 
 import { handleLoginSuccess } from './GoogleAuth.tools';
 
@@ -14,6 +15,7 @@ interface Props {
 }
 
 const GoogleAuth = ({ isSignUp }: Props) => {
+  const { t } = useLanguageContext();
   const router = useRouter();
 
   const onLogin = (response: CredentialResponse) => {
@@ -35,12 +37,12 @@ const GoogleAuth = ({ isSignUp }: Props) => {
       });
 
       if (error) {
-        toast.error('Failed to sign up');
+        toast.error(t.failedToSignUp);
       } else {
-        toast.success('Sign-up successful');
+        toast.success(t.signUpSuccessful);
       }
     } catch (err) {
-      toast.error('Failed to sign up');
+      toast.error(t.failedToSignUp);
     }
   };
 
@@ -52,7 +54,7 @@ const GoogleAuth = ({ isSignUp }: Props) => {
         color="primary"
         onClick={handleSignUp}
       >
-        Sign Up with Google
+        {t.signUpWithGoogle}
       </Button>
     );
   }
@@ -69,7 +71,7 @@ const GoogleAuth = ({ isSignUp }: Props) => {
         useOneTap
         auto_select={true}
         onSuccess={onLogin}
-        onError={() => toast.error('Google authentication failed')}
+        onError={() => toast.error(t.googleAuthFailed)}
       />
     </Box>
   );

@@ -15,10 +15,12 @@ import { db } from '@/classes';
 import { Meta } from '@/components';
 import { MainLayout } from '@/components/Templates';
 import { NAV_MAIN_LINKS } from '@/constants/nav';
+import { useLanguageContext } from '@/context/LanguageContext';
 import { ResourcePost } from '@/interfaces';
 import { normalizePost } from '@/utils';
 
 const Resources: NextPage = () => {
+  const { t } = useLanguageContext();
   const [resources, setResources] = useState<ResourcePost[]>();
   const router = useRouter();
 
@@ -31,12 +33,12 @@ const Resources: NextPage = () => {
       let { data, error } = await db.getPosts().select('*');
       if (error) {
         console.error('Error in resources/index (getAllResources):', error);
-        toast.error('Unable to get resources');
+        toast.error(t.unableToGetResources);
       }
       if (data) setResources(normalizePost(data));
     } catch (error) {
       console.error('Error in resources/index (getAllResources):', error);
-      toast.error('Unable to get resources');
+      toast.error(t.unableToGetResources);
     }
   };
 
@@ -48,9 +50,9 @@ const Resources: NextPage = () => {
 
   return (
     <MainLayout>
-      <Meta pageTitle="Resources" />
+      <Meta pageTitle={t.resources} />
       <Container maxWidth="lg">
-        <Typography variant="h4">Resources</Typography>
+        <Typography variant="h4">{t.resources}</Typography>
         <Grid mt={2} display="flex" justifyContent="center" container>
           {resources.map(({ content, slug }) => (
             <Grid

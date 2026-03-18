@@ -10,11 +10,13 @@ import Loading from '@/components/Loading';
 import EventSection from '@/components/Sections/EventSection';
 import { AppLayout } from '@/components/Templates';
 import { useAudioContext } from '@/context/AudioContext';
+import { useLanguageContext } from '@/context/LanguageContext';
 import { usePresenceContext } from '@/context/PresenceContext';
 import { DataEvent, EventTypes, VideoEvent } from '@/interfaces';
 import { normalizeEvent, normalizeVideo } from '@/utils';
 
 const LiveEvent: NextPage = () => {
+  const { t } = useLanguageContext();
   const { setChannel } = usePresenceContext();
   const { setAudioPlayer, setHideMusicPlayer } = useAudioContext();
   const liveEvent = supabase.channel('live-event');
@@ -36,14 +38,14 @@ const LiveEvent: NextPage = () => {
 
       if (error) {
         console.error('Error fetching YouTube video:', { videoId: id, error });
-        toast.error('Unable to display video');
+        toast.error(t.unableToDisplayVideo);
         return;
       }
 
       if (data) return normalizeVideo(data)[0];
     } catch (error) {
       console.error('Exception in getYouTube:', error);
-      toast.error('Unable to display video');
+      toast.error(t.unableToDisplayVideo);
     }
   };
 
@@ -57,14 +59,14 @@ const LiveEvent: NextPage = () => {
 
       if (error) {
         console.error('Error fetching event:', error);
-        toast.error('Unable to get event');
+        toast.error(t.unableToGetEvent);
         return;
       }
 
       if (data) return normalizeEvent(data)[0];
     } catch (error) {
       console.error('Exception in getEvent:', error);
-      toast.error('Unable to get event');
+      toast.error(t.unableToGetEvent);
     }
   };
 
@@ -87,7 +89,7 @@ const LiveEvent: NextPage = () => {
       }
     } catch (error) {
       console.error('Error in getData:', error);
-      toast.error('Unable to load event data');
+      toast.error(t.unableToLoadEventData);
     } finally {
       setIsLoading(false);
     }
@@ -111,7 +113,7 @@ const LiveEvent: NextPage = () => {
     return (
       <AppLayout>
         <Container className="container-box" maxWidth="lg">
-          <Typography>This event has not started</Typography>
+          <Typography>{t.eventNotStarted}</Typography>
         </Container>
       </AppLayout>
     );
@@ -123,7 +125,7 @@ const LiveEvent: NextPage = () => {
         {typeof dataEvent === 'object' ? (
           <EventSection videoEvent={dataEvent} />
         ) : (
-          <Typography variant="h3">No Data</Typography>
+          <Typography variant="h3">{t.noData}</Typography>
         )}
       </Container>
     </AppLayout>

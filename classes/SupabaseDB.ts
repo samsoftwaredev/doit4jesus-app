@@ -58,6 +58,18 @@ class SupabaseDB {
   getUserMilestones = () => {
     return supabase.from('user_milestones');
   };
+  getUserXP = () => {
+    return supabase.from('user_xp');
+  };
+  getXPEvents = () => {
+    return supabase.from('xp_events');
+  };
+  getXPRules = () => {
+    return supabase.from('xp_rules');
+  };
+  getXPLevelsConfig = () => {
+    return supabase.from('xp_levels_config');
+  };
   updatePassword = async (newPassword: string) => {
     return await supabase.auth.updateUser({ password: newPassword });
   };

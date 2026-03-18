@@ -2,6 +2,7 @@ import { Box, Typography } from '@mui/material';
 import moment from 'moment';
 import type { JSX } from 'react';
 
+import { useLanguageContext } from '@/context/LanguageContext';
 import { theme } from '@/styles/mui-overwrite';
 import { dollarFormatter } from '@/utils';
 
@@ -28,15 +29,16 @@ const ChatMessage = ({
   deletedAt,
   donationAmount = 0,
 }: Props) => {
+  const { t } = useLanguageContext();
   const timePassed = updatedAt ? (
     <>
-      <i>updated</i> {moment(updatedAt).fromNow()}
+      <i>{t.updated}</i> {moment(updatedAt).fromNow()}
     </>
   ) : (
     moment(date).fromNow()
   );
 
-  const message = deletedAt ? <i>The message was deleted.</i> : children;
+  const message = deletedAt ? <i>{t.messageWasDeleted}</i> : children;
 
   return (
     <Box my="1em" display="flex" flexDirection="column" gap="1em">
@@ -62,7 +64,7 @@ const ChatMessage = ({
             alignItems="center"
             display="flex"
           >
-            Donated &nbsp;{dollarFormatter(donationAmount)}
+            {t.donated} &nbsp;{dollarFormatter(donationAmount)}
           </Typography>
         )}
       </Box>

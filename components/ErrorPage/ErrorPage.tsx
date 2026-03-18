@@ -1,6 +1,8 @@
 import { Box, Typography } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
 
+import { useLanguageContext } from '@/context/LanguageContext';
+
 import Card from '../Card';
 import Logo from '../Logo';
 
@@ -39,12 +41,13 @@ interface Props {
 
 const ErrorPage = ({ text, isPage = false }: Props) => {
   const theme = useTheme();
+  const { t } = useLanguageContext();
   if (isPage === false) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center">
         <Card>
           <Typography variant="h2" my={2}>
-            Error
+            {t.error}
           </Typography>
           <Typography my={2}>{text}</Typography>
         </Card>

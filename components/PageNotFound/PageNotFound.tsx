@@ -3,6 +3,7 @@ import { styled } from '@mui/material/styles';
 import Image from 'next/image';
 
 import { MainLayout } from '@/components/Templates';
+import { useLanguageContext } from '@/context/LanguageContext';
 import ship from '@/public/assets/images/dream/ship.svg';
 
 const StyledContainer = styled(Container)({
@@ -26,16 +27,17 @@ interface Props {
 
 const PageNotFound = ({
   title = '404',
-  description = 'Page Not Found',
+  description,
   imagePath = ship,
   imageAlt = 'Not Found',
 }: Props) => {
+  const { t } = useLanguageContext();
   return (
     <MainLayout>
       <StyledContainer maxWidth={false}>
         <Image src={imagePath} alt={imageAlt} />
         <Typography variant="h1">{title}</Typography>
-        <Typography variant="h6">{description}</Typography>
+        <Typography variant="h6">{description ?? t.pageNotFound}</Typography>
       </StyledContainer>
     </MainLayout>
   );

@@ -4,6 +4,7 @@ import Link from 'next/link';
 
 import { CountdownDate, YouTubeSubscribe } from '@/components';
 import { NAV_APP_LINKS } from '@/constants';
+import { useLanguageContext } from '@/context/LanguageContext';
 import { DataEvent } from '@/interfaces';
 
 const EventGrid = styled(Box)({
@@ -121,7 +122,8 @@ interface Props {
 }
 
 const AllEventSection = ({ events }: Props) => {
-  if (events === null) return <p>No events</p>;
+  const { t } = useLanguageContext();
+  if (events === null) return <p>{t.noEvents}</p>;
 
   return (
     <Container className="container-box" maxWidth="lg">

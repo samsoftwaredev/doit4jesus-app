@@ -2,11 +2,14 @@ import { Box, Button, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
+import { useLanguageContext } from '@/context/LanguageContext';
+
 interface Props {
   link: string;
 }
 
 function CopyLinkButton({ link }: Props) {
+  const { t } = useLanguageContext();
   const [isCopied, setIsCopied] = useState(false);
 
   const handleCopy = () => {
@@ -19,7 +22,7 @@ function CopyLinkButton({ link }: Props) {
       <Typography noWrap>{link}</Typography>
       <CopyToClipboard text={link} onCopy={handleCopy}>
         <Button variant="outlined" size="small">
-          {isCopied ? 'Copied!' : 'Copy'}
+          {isCopied ? t.copied : t.copy}
         </Button>
       </CopyToClipboard>
     </Box>

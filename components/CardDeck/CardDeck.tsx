@@ -14,6 +14,7 @@ import { useTheme } from '@mui/material/styles';
 import * as React from 'react';
 
 import { StarButton } from '@/components';
+import { useLanguageContext } from '@/context/LanguageContext';
 import { CardProps } from '@/interfaces';
 
 interface Props {
@@ -23,6 +24,7 @@ interface Props {
 }
 
 function CardDeck({ steps, setActiveStep, activeStep }: Props) {
+  const { t } = useLanguageContext();
   const theme = useTheme();
   const [sinsCommitted, setSinsCommitted] = React.useState<CardProps[]>([]);
 
@@ -82,7 +84,7 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
             </Grid>
             <Grid container justifyContent="space-around">
               <Grid size={{ md: 4, sm: 4 }} textAlign="center">
-                <Tooltip title="Back">
+                <Tooltip title={t.back}>
                   <span>
                     <IconButton
                       disabled={index === 0}
@@ -95,7 +97,7 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
                 </Tooltip>
               </Grid>
               <Grid size={{ md: 4, sm: 4 }} textAlign="center">
-                <Tooltip title="Yes">
+                <Tooltip title={t.yes}>
                   <IconButton
                     onClick={() => handleSaveSin(index)}
                     style={{ transform: 'scale(1.8)' }}
@@ -106,7 +108,7 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
                 </Tooltip>
               </Grid>
               <Grid size={{ md: 4, sm: 4 }} textAlign="center">
-                <Tooltip title="No">
+                <Tooltip title={t.no}>
                   <IconButton
                     color="error"
                     onClick={handleSkip}
@@ -123,7 +125,7 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
                 variant="outlined"
                 size="small"
               >
-                Finish Exam
+                {t.finishExam}
               </Button>
             </Grid>
           </Box>
@@ -132,11 +134,11 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
       {activeStep === steps.length && (
         <Box minHeight="250px" display="flex" flexDirection="column">
           <Typography variant="h5" my={2} textAlign={'center'}>
-            Examination of Conscience Completed!
+            {t.examCompleted}
           </Typography>
           {sinsCommitted.length > 0 ? (
             <Typography color="secondary.main" component="h5">
-              List of sins to confess:
+              {t.sinsToConfess}
             </Typography>
           ) : (
             <Typography
@@ -145,7 +147,7 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
               color="text.secondary"
               component="h5"
             >
-              Great! No need to go to confession.
+              {t.noSinsToConfess}
             </Typography>
           )}
           {sinsCommitted.map((step, index) => (
@@ -173,7 +175,7 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
               onClick={handleReset}
               sx={{ mt: 1, mr: 1, width: '300px' }}
             >
-              Start Over
+              {t.startOver}
             </Button>
           </Box>
         </Box>

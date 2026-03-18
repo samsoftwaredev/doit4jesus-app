@@ -90,7 +90,7 @@ const AccountSection = () => {
       try {
         await db.updateLanguage(user.userId, newLang);
       } catch {
-        // DB sync failed — localStorage is primary
+        toast.error(t.unableToUpdateLanguage);
       }
     }
   };
@@ -154,12 +154,12 @@ const AccountSection = () => {
       if (error) throw new Error(error);
       if (data) {
         setAudioState(INTERFACE_AUDIO_STATE.PAUSED);
-        toast.success('Your account was successfully deleted.');
+        toast.success(t.accountDeletedSuccess);
         await db.logOut();
       }
     } catch (error) {
       console.error(error);
-      toast.error('Unable to delete your account.');
+      toast.error(t.unableToDeleteAccount);
     } finally {
       onClose();
       setLoading(false);

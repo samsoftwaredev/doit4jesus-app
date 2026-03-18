@@ -216,3 +216,4 @@ export interface FriendsGroupItem {
 }
 
 export * from './achievements';
+export * from './spiritualXp';

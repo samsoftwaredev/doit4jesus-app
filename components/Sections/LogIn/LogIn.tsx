@@ -46,7 +46,7 @@ const LogIn = () => {
       }
     } catch (error) {
       console.error('Error in LogIn (onSubmit):', error);
-      toast.error('An unexpected error occurred. Please try again.');
+      toast.error(t.unexpectedError);
     } finally {
       setIsLoading(false);
     }

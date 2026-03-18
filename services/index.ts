@@ -67,3 +67,4 @@ export const getUserProfileAPI = async (
 };
 
 export * from './globalPrayerMap';
+export * from './spiritualXp';

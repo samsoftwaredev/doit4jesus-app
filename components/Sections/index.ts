@@ -13,3 +13,4 @@ export { default as FriendsSection } from './FriendsSection';
 export { default as FriendRequestSection } from './FriendRequestSection';
 export { default as AchievementsSection } from './AchievementsSection';
 export { default as GlobalPrayerMapSection } from './GlobalPrayerMapSection';
+export { default as SpiritualProgressSection } from './SpiritualProgressSection';

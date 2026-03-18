@@ -3,9 +3,11 @@ import { IconButton, Tooltip } from '@mui/material';
 import { track } from '@vercel/analytics';
 
 import { useAudioContext } from '@/context/AudioContext';
+import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
 
 const AudioControllers = () => {
+  const { t } = useLanguageContext();
   const { user } = useUserContext();
   const { forwardAudio, audioPlayer } = useAudioContext();
 
@@ -15,7 +17,7 @@ const AudioControllers = () => {
   };
 
   return (
-    <Tooltip title="Forward">
+    <Tooltip title={t.forward}>
       <span>
         <IconButton
           data-testid="forward-button"

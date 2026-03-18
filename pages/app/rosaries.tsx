@@ -12,7 +12,7 @@ import { DataEvent, LANG } from '@/interfaces';
 import { normalizeEvent } from '@/utils';
 
 const App: NextPage = () => {
-  const { lang } = useLanguageContext();
+  const { lang, t } = useLanguageContext();
   const [events, setEvents] = useState<DataEvent[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -27,11 +27,11 @@ const App: NextPage = () => {
       if (!error) setEvents(normalizeEvent(data));
       else {
         console.error(error);
-        toast.error('Unable to get list of events');
+        toast.error(t.unableToGetListOfEvents);
       }
     } catch (error) {
       console.error('Error in app/index (getEvents):', error);
-      toast.error('Unable to get list of events');
+      toast.error(t.unableToGetListOfEvents);
     } finally {
       setIsLoading(false);
     }

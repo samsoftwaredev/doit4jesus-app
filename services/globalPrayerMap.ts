@@ -1,5 +1,6 @@
 import { db } from '@/classes/SupabaseDB';
 import { GlobalPrayerSessionsDB } from '@/interfaces/databaseTable';
+import { awardXP } from '@/services/spiritualXp';
 
 export const getActiveGlobalPrayerSessions = async (): Promise<
   GlobalPrayerSessionsDB[]
@@ -21,6 +22,7 @@ export const getActiveGlobalPrayerSessions = async (): Promise<
 
 export const joinGlobalPrayerSession = async (
   sessionId: number,
+  userId?: string,
 ): Promise<number | null> => {
   const { data, error } = await db
     .get()
@@ -29,6 +31,20 @@ export const joinGlobalPrayerSession = async (
   if (error) {
     console.error('Failed to join global prayer session:', error);
     return null;
+  }
+
+  if (userId && data !== null) {
+    await awardXP(
+      userId,
+      'helping_user',
+      {
+        session_id: sessionId,
+        source: 'global_prayer_join',
+      },
+      {
+        idempotencyKey: `global_prayer_join:${sessionId}:${userId}`,
+      },
+    );
   }
 
   return data ?? null;
@@ -56,6 +72,21 @@ export const startOrJoinGlobalPrayerSession = async (payload: {
   if (error) {
     console.error('Failed to upsert global prayer session:', error);
     return null;
+  }
+
+  if (payload.createdBy && data !== null) {
+    await awardXP(
+      payload.createdBy,
+      'helping_user',
+      {
+        session_id: data,
+        source: 'global_prayer_start',
+        city: payload.city,
+      },
+      {
+        idempotencyKey: `global_prayer_start:${data}:${payload.createdBy}`,
+      },
+    );
   }
 
   return data ?? null;

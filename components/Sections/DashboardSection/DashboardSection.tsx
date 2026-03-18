@@ -13,6 +13,7 @@ import {
 } from '@/components';
 import InviteFriend from '@/components/InviteFriend';
 import RosaryStats from '@/components/RosaryStats';
+import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
 import { useMilestones } from '@/hooks/useMilestones';
 
@@ -64,6 +65,7 @@ const DashboardGrid = styled(Box)({
 });
 
 const DashboardSection = () => {
+  const { t } = useLanguageContext();
   const { user } = useUserContext();
   const rosaryCount = user?.stats?.rosaryTotalCount ?? 0;
   const { currentMilestone, showMilestone, dismissMilestone } = useMilestones(
@@ -102,9 +104,7 @@ const DashboardSection = () => {
                 justifyContent: 'space-between',
               }}
             >
-              <Typography fontWeight="bold">
-                Share your prayer journey
-              </Typography>
+              <Typography fontWeight="bold">{t.sharePrayerJourney}</Typography>
               <ShareStatsButton />
             </Box>
           </Card>

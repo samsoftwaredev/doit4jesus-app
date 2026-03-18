@@ -23,6 +23,7 @@ import { toast } from 'react-toastify';
 
 import { supabase } from '@/classes/SupabaseDB';
 import { GLOBAL_PRAYER_CITY_OPTIONS } from '@/constants';
+import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
 import { GlobalPrayerSessionsDB } from '@/interfaces/databaseTable';
 import {
@@ -210,6 +211,7 @@ const clusterPrayerSessions = (
 
 const GlobalPrayerMapSection = () => {
   const theme = useTheme();
+  const { t } = useLanguageContext();
   const { user } = useUserContext();
   const [sessions, setSessions] = useState<GlobalPrayerSessionsDB[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -268,13 +270,13 @@ const GlobalPrayerMapSection = () => {
   const mapDefaultZoom = 1;
 
   const handleJoinSession = async (sessionId: number) => {
-    const updatedCount = await joinGlobalPrayerSession(sessionId);
+    const updatedCount = await joinGlobalPrayerSession(sessionId, user?.userId);
     if (updatedCount === null) {
-      toast.error('Unable to join this prayer session right now.');
+      toast.error(t.unableToJoinSession);
       return;
     }
 
-    toast.success('You joined this global prayer session.');
+    toast.success(t.joinedPrayerSession);
     void refreshSessions();
   };
 
@@ -297,11 +299,11 @@ const GlobalPrayerMapSection = () => {
     setIsSubmitting(false);
 
     if (!sessionId) {
-      toast.error('Unable to start a global prayer session.');
+      toast.error(t.unableToStartSession);
       return;
     }
 
-    toast.success('Prayer session is now live on the global map.');
+    toast.success(t.sessionLive);
     void refreshSessions();
   };
 
@@ -312,7 +314,7 @@ const GlobalPrayerMapSection = () => {
           <HeroPanel>
             <Chip
               icon={<PublicIcon />}
-              label="Global Prayer Map"
+              label={t.globalPrayerMapTitle}
               sx={{
                 mb: 1.5,
                 bgcolor: alpha(theme.palette.common.white, 0.16),
@@ -320,15 +322,18 @@ const GlobalPrayerMapSection = () => {
               }}
             />
             <Typography variant="h4" fontWeight={700} mb={1}>
-              Prayer is happening everywhere.
+              {t.prayerHappeningEverywhere}
             </Typography>
             <Typography sx={{ color: alpha(theme.palette.common.white, 0.88) }}>
-              Thousands of people are praying with you right now.
+              {t.thousandsPrayingWithYou}
             </Typography>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.2} mt={2}>
               <Chip
                 icon={<RadioButtonCheckedIcon />}
-                label={`${totalParticipants} people praying`}
+                label={t.peoplePraying.replace(
+                  '{{count}}',
+                  String(totalParticipants),
+                )}
                 sx={{
                   bgcolor: alpha(theme.palette.warning.light, 0.3),
                   color: theme.palette.common.white,
@@ -336,7 +341,10 @@ const GlobalPrayerMapSection = () => {
               />
               <Chip
                 icon={<PublicIcon />}
-                label={`${totalSessions} active city sessions`}
+                label={t.activeCitySessions.replace(
+                  '{{count}}',
+                  String(totalSessions),
+                )}
                 sx={{
                   bgcolor: alpha(theme.palette.info.light, 0.28),
                   color: theme.palette.common.white,
@@ -349,10 +357,10 @@ const GlobalPrayerMapSection = () => {
         <Card>
           <Box sx={{ p: 2 }}>
             <Typography fontWeight={700} mb={1}>
-              Live Global Map
+              {t.liveGlobalMap}
             </Typography>
             <Typography color="text.secondary" mb={2}>
-              Tap a glowing city marker to view and join live prayer sessions.
+              {t.tapCityMarker}
             </Typography>
 
             {isLoading ? (
@@ -446,14 +454,14 @@ const GlobalPrayerMapSection = () => {
         <Card>
           <Box sx={{ p: 2 }}>
             <Typography fontWeight={700} mb={1.5}>
-              Start a Live Prayer Session
+              {t.startLivePrayerSession}
             </Typography>
             <Stack direction={{ xs: 'column', md: 'row' }} spacing={1.5}>
               <FormControl fullWidth>
-                <InputLabel id="global-prayer-city-label">City</InputLabel>
+                <InputLabel id="global-prayer-city-label">{t.city}</InputLabel>
                 <Select
                   labelId="global-prayer-city-label"
-                  label="City"
+                  label={t.city}
                   value={selectedCityKey}
                   onChange={(event) => setSelectedCityKey(event.target.value)}
                 >
@@ -471,11 +479,11 @@ const GlobalPrayerMapSection = () => {
 
               <FormControl fullWidth>
                 <InputLabel id="global-prayer-type-label">
-                  Prayer Type
+                  {t.prayerType}
                 </InputLabel>
                 <Select
                   labelId="global-prayer-type-label"
-                  label="Prayer Type"
+                  label={t.prayerType}
                   value={selectedPrayerType}
                   onChange={(event) =>
                     setSelectedPrayerType(event.target.value)
@@ -494,7 +502,7 @@ const GlobalPrayerMapSection = () => {
                 onClick={handleStartSession}
                 disabled={isSubmitting}
               >
-                {isSubmitting ? 'Starting...' : 'Start Prayer'}
+                {isSubmitting ? t.starting : t.startPrayer}
               </Button>
             </Stack>
           </Box>
@@ -503,7 +511,7 @@ const GlobalPrayerMapSection = () => {
         <Card>
           <Box sx={{ p: 2 }}>
             <Typography fontWeight={700} mb={1}>
-              Session Details
+              {t.sessionDetails}
             </Typography>
             {selectedCluster ? (
               <Stack spacing={1.2}>
@@ -525,28 +533,27 @@ const GlobalPrayerMapSection = () => {
                       {getCountryFlag(session.country_code)} {session.city}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      Prayer Type: {session.prayer_type}
+                      {t.prayerTypeLabel} {session.prayer_type}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      Live users connected: {session.participants_count}
+                      {t.liveUsersConnected} {session.participants_count}
                     </Typography>
                     <Typography variant="body2" color="text.secondary" mb={1}>
-                      Number of participants: {session.participants_count}
+                      {t.numberOfParticipants} {session.participants_count}
                     </Typography>
                     <Button
                       onClick={() => handleJoinSession(session.id)}
                       size="small"
                       variant="outlined"
                     >
-                      Join Session
+                      {t.joinSession}
                     </Button>
                   </Box>
                 ))}
               </Stack>
             ) : (
               <Typography color="text.secondary">
-                No active prayer sessions yet. Start one above and light up the
-                world map.
+                {t.noActiveSessionsYet}
               </Typography>
             )}
           </Box>

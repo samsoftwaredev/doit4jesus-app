@@ -4,13 +4,15 @@ import { usePathname } from 'next/navigation';
 
 import { NAV_APP_LINKS } from '@/constants/nav';
 import { useAudioContext } from '@/context/AudioContext';
+import { useLanguageContext } from '@/context/LanguageContext';
 
 const MusicVideo = () => {
+  const { t } = useLanguageContext();
   const pathname = usePathname();
   const { goToEvent, audioPlayer } = useAudioContext();
 
   return (
-    <Tooltip title="View Video">
+    <Tooltip title={t.viewVideo}>
       <span>
         <IconButton
           color="info"

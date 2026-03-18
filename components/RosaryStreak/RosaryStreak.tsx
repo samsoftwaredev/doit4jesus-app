@@ -44,10 +44,10 @@ const RosaryStreak = () => {
     <Grid container spacing={2} justifyContent="center">
       <Grid size={{ xs: 12, md: 9 }}>
         <Typography textAlign="center" fontWeight="bold">
-          Your Rosary Streak
+          {t.yourRosaryStreak}
         </Typography>
         <Typography fontSize="small" textAlign="center">
-          Can you pray one rosary daily?
+          {t.canYouPrayDaily}
         </Typography>
         <Box
           textAlign="center"
@@ -77,12 +77,12 @@ const RosaryStreak = () => {
         </Box>
         {hasLongStreak && (
           <Typography fontSize="small" textAlign="center">
-            🔥{streakNum} days in a row!
+            🔥{streakNum} {t.daysInARow}
           </Typography>
         )}
         {hasStreak && (
           <Typography fontSize="small" textAlign="center">
-            Keep the streak going!
+            {t.keepStreakGoing}
           </Typography>
         )}
       </Grid>

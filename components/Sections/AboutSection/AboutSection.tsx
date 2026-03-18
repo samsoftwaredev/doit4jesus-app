@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { NAV_MAIN_LINKS } from '@/constants/nav';
+import { useLanguageContext } from '@/context/LanguageContext';
 import virginPrayingHeaven from '@/public/assets/images/art/virginPrayingHeaven.jpeg';
 
 const AboutGrid = styled(Container)({
@@ -42,6 +43,7 @@ const AboutImage = styled(Image)({
 });
 
 const AboutSection = () => {
+  const { t } = useLanguageContext();
   return (
     <AboutGrid maxWidth="md">
       <AboutImage
@@ -49,83 +51,60 @@ const AboutSection = () => {
         alt="Mary holding the Holy Rosary"
       />
       <Typography sx={{ gridArea: 'title' }} component="h1" variant="h2">
-        About
+        {t.about}
       </Typography>
-      <Typography sx={{ gridArea: 'content' }}>
-        DoIt4Jesus is a faith-based platform created to bring together people of
-        faith to pray the Holy Rosary as a community. We believe in the
-        transformative power of prayer to fight evil, foster spiritual growth,
-        and offer comfort to souls in purgatory. Together, we grow stronger in
-        faith.
-      </Typography>
+      <Typography sx={{ gridArea: 'content' }}>{t.aboutDescription}</Typography>
 
       <Box display="flex" flexDirection="column" gap={6} width="100%">
         <Box>
           <Typography variant="h4" component="h2" gutterBottom>
-            Our Story
+            {t.ourStory}
           </Typography>
-          <Typography>
-            Born from a desire to build a digital space where faith and
-            community intersect, DoIt4Jesus was founded to make praying the
-            Rosary together easier and more impactful. We’re inspired by
-            centuries of tradition and the urgency of spiritual unity in today’s
-            world.
-          </Typography>
+          <Typography>{t.ourStoryDescription}</Typography>
         </Box>
 
         <Box>
           <Typography variant="h4" component="h2" gutterBottom>
-            Core Values
+            {t.coreValues}
           </Typography>
           <Box component="ul" sx={{ pl: 3, m: 0 }}>
             <li>
-              <Typography>Faith & Prayer</Typography>
+              <Typography>{t.faithAndPrayer}</Typography>
             </li>
             <li>
-              <Typography>Community</Typography>
+              <Typography>{t.community}</Typography>
             </li>
             <li>
-              <Typography>Compassion</Typography>
+              <Typography>{t.compassion}</Typography>
             </li>
             <li>
-              <Typography>Unity in Christ</Typography>
+              <Typography>{t.unityInChrist}</Typography>
             </li>
             <li>
-              <Typography>Devotion to Mary</Typography>
+              <Typography>{t.devotionToMary}</Typography>
             </li>
           </Box>
         </Box>
 
         <Box>
           <Typography variant="h4" component="h2" gutterBottom>
-            How It Works
+            {t.howItWorksTitle}
           </Typography>
-          <Typography>
-            Sign in, choose your mystery, and pray the Holy Rosary alongside
-            others in real-time. The more people praying the same mystery
-            together, the faster everyone progresses. Our app is built for both
-            solo prayer and powerful group devotion.
-          </Typography>
+          <Typography>{t.howItWorksDescription}</Typography>
         </Box>
 
         <Box>
           <Typography variant="h4" component="h2" gutterBottom>
-            Who It&apos;s For
+            {t.whoItsFor}
           </Typography>
-          <Typography>
-            DoIt4Jesus is for anyone seeking a deeper connection with God
-            through the Rosary — Catholics, prayer groups, or individuals
-            longing for peace and community.
-          </Typography>
+          <Typography>{t.whoItsForDescription}</Typography>
         </Box>
 
         <Box>
           <Typography variant="h4" component="h2" gutterBottom>
-            Join Us
+            {t.joinUs}
           </Typography>
-          <Typography mb={2}>
-            Ready to strengthen your faith and join a global prayer movement?
-          </Typography>
+          <Typography mb={2}>{t.joinUsDescription}</Typography>
           <Link href={NAV_MAIN_LINKS.signup.link} passHref legacyBehavior>
             <Button
               variant="contained"
@@ -137,7 +116,7 @@ const AboutSection = () => {
                 fontSize: { xs: '1rem', sm: '1.1rem' },
               }}
             >
-              Sign Up Now
+              {t.signUpNow}
             </Button>
           </Link>
         </Box>

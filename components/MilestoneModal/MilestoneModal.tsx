@@ -15,6 +15,7 @@ import { useRouter } from 'next/navigation';
 
 import { type Milestone } from '@/constants/milestones';
 import { NAV_APP_LINKS } from '@/constants/nav';
+import { useLanguageContext } from '@/context/LanguageContext';
 
 interface Props {
   milestone: Milestone | null;
@@ -23,6 +24,7 @@ interface Props {
 }
 
 const MilestoneModal = ({ milestone, open, onClose }: Props) => {
+  const { t } = useLanguageContext();
   const router = useRouter();
   const theme = useTheme();
 
@@ -101,7 +103,7 @@ const MilestoneModal = ({ milestone, open, onClose }: Props) => {
           variant="body2"
           sx={{ color: alpha(theme.palette.text.primary, 0.6), mb: 4 }}
         >
-          Share your achievement and inspire others to join the battle!
+          {t.shareAchievement}
         </Typography>
 
         <Stack direction="row" spacing={2} justifyContent="center">
@@ -116,7 +118,7 @@ const MilestoneModal = ({ milestone, open, onClose }: Props) => {
               },
             }}
           >
-            Later
+            {t.later}
           </Button>
           <Button
             variant="contained"
@@ -129,7 +131,7 @@ const MilestoneModal = ({ milestone, open, onClose }: Props) => {
               '&:hover': { bgcolor: theme.palette.gold.light },
             }}
           >
-            Share Now
+            {t.shareNow}
           </Button>
         </Stack>
       </DialogContent>

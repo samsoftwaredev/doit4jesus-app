@@ -12,6 +12,8 @@ import {
 import { styled } from '@mui/material/styles';
 import { ComponentType } from 'react';
 
+import { useLanguageContext } from '@/context/LanguageContext';
+
 type Vocation = 'married' | 'single' | 'religious';
 
 const VocationCard = styled(Card)({
@@ -30,26 +32,17 @@ interface VocationOption {
   Icon: ComponentType<SvgIconProps>;
 }
 
-const vocations: VocationOption[] = [
+const vocations: Omit<VocationOption, 'label' | 'description'>[] = [
   {
-    label: 'Married',
     value: 'married',
-    description:
-      'Examine your conscience in light of your duties as a spouse and parent, including fidelity, family life, and the sacrament of Matrimony.',
     Icon: FavoriteIcon,
   },
   {
-    label: 'Single',
     value: 'single',
-    description:
-      'Examine your conscience regarding chastity, personal virtue, vocation discernment, and your responsibilities as a single person.',
     Icon: PersonIcon,
   },
   {
-    label: 'Religious Order',
     value: 'religious',
-    description:
-      'Examine your conscience regarding the evangelical counsels of poverty, chastity, and obedience, and your duties in religious life and ministry.',
     Icon: ChurchIcon,
   },
 ];
@@ -59,13 +52,24 @@ interface Props {
 }
 
 const SelectVocation = ({ onVocationSelected }: Props) => {
+  const { t } = useLanguageContext();
+
+  const vocationLabels: Record<
+    Vocation,
+    { label: string; description: string }
+  > = {
+    married: { label: t.married, description: t.marriedDescription },
+    single: { label: t.single, description: t.singleDescription },
+    religious: { label: t.religiousOrder, description: t.religiousDescription },
+  };
+
   return (
     <>
       <Typography my={2} color="text.primary" variant="h5">
-        Select your state in life:
+        {t.selectStateInLife}
       </Typography>
       <Box display="flex" flexDirection="column" gap={2}>
-        {vocations.map(({ label, value, description, Icon }) => (
+        {vocations.map(({ value, Icon }) => (
           <VocationCard
             key={value}
             sx={{ textDecoration: 'none' }}
@@ -78,7 +82,9 @@ const SelectVocation = ({ onVocationSelected }: Props) => {
               <CardContent
                 sx={{ flex: '1 0 auto', p: 0, '&:last-child': { pb: 0 } }}
               >
-                <Typography variant="h5">{label}</Typography>
+                <Typography variant="h5">
+                  {vocationLabels[value].label}
+                </Typography>
                 <Typography
                   variant="subtitle1"
                   sx={{
@@ -89,7 +95,7 @@ const SelectVocation = ({ onVocationSelected }: Props) => {
                     WebkitBoxOrient: 'vertical',
                   }}
                 >
-                  {description}
+                  {vocationLabels[value].description}
                 </Typography>
               </CardContent>
             </Box>

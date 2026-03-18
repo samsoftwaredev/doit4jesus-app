@@ -27,7 +27,7 @@ const TotalRosariesPrayed = () => {
   return (
     <>
       <Typography textAlign="center" fontWeight="bold">
-        Total Rosaries Completed
+        {t.totalRosariesCompleted}
       </Typography>
       <Typography
         textAlign="center"
@@ -38,7 +38,7 @@ const TotalRosariesPrayed = () => {
         {totalNum}
       </Typography>
       <Typography fontSize="small" textAlign="center">
-        Total rosaries completed by all warriors.
+        {t.totalRosariesByWarriors}
       </Typography>
     </>
   );

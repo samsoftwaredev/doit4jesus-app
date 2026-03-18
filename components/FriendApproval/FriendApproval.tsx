@@ -26,12 +26,12 @@ const FriendApproval = () => {
       const [data, error] = await getUserProfileAPI(userIds);
       if (error) {
         console.error(error);
-        toast.error('Unable to retrieve friends profile.');
+        toast.error(t.unableToRetrieveFriendProfile);
       }
       if (data) setFriends(data);
     } catch (error) {
       console.error('Error in FriendApproval (getFriendsProfiles):', error);
-      toast.error('Unable to retrieve friends profile.');
+      toast.error(t.unableToRetrieveFriendProfile);
     }
   };
 
@@ -40,13 +40,13 @@ const FriendApproval = () => {
       const { error } = await db.getFriendRequests().delete().eq('id', id);
       if (error) {
         console.error('Error in FriendApproval (onDecline):', error);
-        toast.error('Unable to decline friend request');
+        toast.error(t.unableToDeclineFriendRequest);
       } else {
         setFriendsIds((prevState) => prevState.filter((f) => f.id !== id));
       }
     } catch (error) {
       console.error('Error in FriendApproval (onDecline):', error);
-      toast.error('Unable to decline friend request');
+      toast.error(t.unableToDeclineFriendRequest);
     }
   };
 
@@ -60,14 +60,14 @@ const FriendApproval = () => {
         .select();
       if (error) {
         console.error('Error in FriendApproval (onApprove):', error);
-        toast.error('Unable to confirm friend request');
+        toast.error(t.unableToConfirmFriendRequest);
       }
       if (friendData) {
         setFriendsIds((prevState) => prevState.filter((f) => f.id !== data.id));
       }
     } catch (error) {
       console.error('Error in FriendApproval (onApprove):', error);
-      toast.error('Unable to confirm friend request');
+      toast.error(t.unableToConfirmFriendRequest);
     }
   };
 

@@ -50,7 +50,7 @@ const ShareStatsSection = () => {
     typeof window !== 'undefined' ? window.location.origin : 'doit4jesus.com';
 
   const cardData: ShareCardData = {
-    userName: user?.fullName ?? user?.firstName ?? 'Prayer Warrior',
+    userName: user?.fullName ?? user?.firstName ?? t.prayerWarrior,
     rosariesPrayed: rosaryCount,
     prayerStreak: streak,
     levelName: level.label,
@@ -69,14 +69,14 @@ const ShareStatsSection = () => {
         textAlign="center"
         sx={{ mb: 1 }}
       >
-        Your Prayer Stats
+        {t.yourPrayerStats}
       </Typography>
       <Typography
         variant="body2"
         textAlign="center"
         sx={{ mb: 4, color: 'text.secondary' }}
       >
-        Share your achievements and inspire others to join
+        {t.shareYourAchievements}
       </Typography>
 
       <Box sx={{ mb: 4 }}>

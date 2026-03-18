@@ -12,6 +12,7 @@ import { useUserContext } from '@/context/UserContext';
 import { DataEvent, EventMessages, VideoEvent } from '@/interfaces';
 import { Json } from '@/interfaces/database';
 import { EventMessagesDB } from '@/interfaces/databaseTable';
+import { awardXP } from '@/services/spiritualXp';
 import { normalizeEventMessages } from '@/utils';
 
 import DeleteMessageDialog from './DeleteMessageDialog';
@@ -80,7 +81,7 @@ const EventSection = ({ videoEvent }: Props) => {
 
   const onSendMessage = async (message: string) => {
     try {
-      const { error } = await db
+      const { data, error } = await db
         .getEventMessages()
         .insert([
           {
@@ -93,6 +94,19 @@ const EventSection = ({ videoEvent }: Props) => {
         .select();
       if (error) {
         throw new Error(error.message);
+      }
+      if (data?.[0] && user?.userId) {
+        await awardXP(
+          user.userId,
+          'prayer_request_submitted',
+          {
+            event_id: videoEvent.eventId,
+            message_id: data[0].id,
+          },
+          {
+            idempotencyKey: `prayer_request_submitted:${data[0].id}:${user.userId}`,
+          },
+        );
       }
     } catch (error) {
       console.error(error);
@@ -206,6 +220,19 @@ const EventSection = ({ videoEvent }: Props) => {
         .select();
       if (error) {
         throw new Error(error.message);
+      }
+      if (user?.userId) {
+        await awardXP(
+          user.userId,
+          'prayer_request_engagement',
+          {
+            event_id: videoEvent.eventId,
+            message_id: messageId,
+          },
+          {
+            idempotencyKey: `prayer_request_engagement:${messageId}:${user.userId}`,
+          },
+        );
       }
     } catch (error) {
       console.error(error);

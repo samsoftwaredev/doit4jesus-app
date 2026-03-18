@@ -2,6 +2,7 @@ import { Alert, Box, Collapse, Container, LinearProgress } from '@mui/material';
 import { useState } from 'react';
 
 import { CardDeck, SelectExamOfConscience, SelectVocation } from '@/components';
+import { useLanguageContext } from '@/context/LanguageContext';
 import adultExamOfConscience from '@/data/adultExamOfConscience.json';
 import childExamOfConscience from '@/data/childExamOfConscience.json';
 import teenExamOfConscience from '@/data/teenExamOfConscience.json';
@@ -42,6 +43,7 @@ const filterByVocation = (
 };
 
 const ConfessionGuide = () => {
+  const { t } = useLanguageContext();
   const [exam, setExam] = useState<CardProps[]>(exams.adult.value);
   const [activeStep, setActiveStep] = useState(0);
   const [activeScreen, setActiveScreen] = useState<ActiveScreen>(
@@ -61,15 +63,15 @@ const ConfessionGuide = () => {
 
   const onExamSelected = (type: string) => {
     switch (type) {
-      case 'For Kids':
+      case 'kids':
         setExam(exams.child.value);
         setActiveScreen(ActiveScreen.examOfConscience);
         break;
-      case 'For Teens':
+      case 'teens':
         setExam(exams.teen.value);
         setActiveScreen(ActiveScreen.examOfConscience);
         break;
-      case 'For Adults':
+      case 'adults':
         setActiveScreen(ActiveScreen.selectVocation);
         break;
       default:
@@ -99,22 +101,12 @@ const ConfessionGuide = () => {
         <Box display="flex" gap={1} flexDirection="column">
           <Collapse in={openWarning}>
             <Alert severity="warning" onClose={handelCloseWarning}>
-              A warning should be given to souls who are inclined to
-              scrupulosity. Such souls are disturbed by reading lists of sins,
-              because they wrongly think themselves to guilty where they are
-              not. They should have permissions of their confessor before they
-              start the examination.
+              {t.scrupulosityWarning}
             </Alert>
           </Collapse>
           <Collapse in={openNote}>
             <Alert severity="info" onClose={handelCloseNote}>
-              Note that <b>mortal sin</b> is not committed unless three
-              conditions are preset:&nbsp;
-              <b>
-                sufficient reflection, full consent of will, and a violation of
-                God&apos;s law in a serious matter
-              </b>
-              .
+              {t.mortalSinConditions}
             </Alert>
           </Collapse>
         </Box>

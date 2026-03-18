@@ -56,13 +56,13 @@ function ResourcesPost() {
         let { data, error } = await db.getPosts().select('*').eq('slug', slug);
         if (error) {
           console.error('Error in resources/[slug] (getArticle):', error);
-          toast.error('Unable to display article');
+          toast.error(t.unableToDisplayArticle);
         }
         if (data) setArticle(normalizePost(data)[0]);
       }
     } catch (error) {
       console.error('Error in resources/[slug] (getArticle):', error);
-      toast.error('Unable to display article');
+      toast.error(t.unableToDisplayArticle);
     } finally {
       setIsLoading(false);
     }

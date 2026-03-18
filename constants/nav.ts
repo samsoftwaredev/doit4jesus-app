@@ -76,6 +76,12 @@ export const NAV_APP_LINKS = {
     label: 'Share Stats',
     value: 'share-stats',
   },
+  // TODO: need to improve this feature before re-adding
+  // spiritualProgress: {
+  //   link: '/app/spiritual-progress',
+  //   label: 'Spiritual Progress',
+  //   value: 'spiritual-progress',
+  // },
 };
 
 export const NEW_USER_REDIRECT = NAV_APP_LINKS.dashboard.link + '?newUser=true';

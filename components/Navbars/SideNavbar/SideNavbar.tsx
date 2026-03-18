@@ -8,7 +8,7 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import * as React from 'react';
@@ -72,12 +72,13 @@ interface Props {
 
 const SideNavbar = ({ menuItems, handleDrawerClose }: Props) => {
   const pathname = usePathname();
+  const theme = useTheme();
 
   return (
     <List>
       <SideNavHeader>
         <LogoButton disableRipple>
-          <Logo />
+          <Logo type={theme.palette.mode === 'dark' ? 'white' : 'black'} />
         </LogoButton>
         <CloseButton onClick={handleDrawerClose}>
           <Close />

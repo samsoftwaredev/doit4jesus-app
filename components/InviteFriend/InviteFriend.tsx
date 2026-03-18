@@ -46,12 +46,12 @@ const InviteFriend = () => {
       const [data, error] = await getUserProfileAPI(userIds);
       if (error) {
         console.error(error);
-        toast.error('Unable to retrieve friends profile.');
+        toast.error(t.unableToRetrieveFriendProfile);
       }
       if (data) setFriendProfiles(data);
     } catch (error) {
       console.error('Error in InviteFriend (getFriendsProfiles):', error);
-      toast.error('Unable to retrieve friends profile.');
+      toast.error(t.unableToRetrieveFriendProfile);
     }
   };
 

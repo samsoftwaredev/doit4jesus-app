@@ -2,6 +2,7 @@ import { AttachMoney, Send } from '@mui/icons-material';
 import { Box, Button, Paper, TextField } from '@mui/material';
 import { ChangeEvent, useState } from 'react';
 
+import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
 import { theme } from '@/styles/mui-overwrite';
 
@@ -20,6 +21,7 @@ const ChatTextbox = ({
   text = '',
   isEditMode = false,
 }: Props) => {
+  const { t } = useLanguageContext();
   const { user } = useUserContext();
   const [message, setMessage] = useState(text ?? '');
   const isSendBtnValid = message.trim() === '';
@@ -57,7 +59,7 @@ const ChatTextbox = ({
             value={message}
             onChange={onChange}
             sx={{ width: '100%' }}
-            placeholder="Add your prayer..."
+            placeholder={t.addYourPrayer}
             rows={2}
             multiline
           />
@@ -71,17 +73,17 @@ const ChatTextbox = ({
             variant="contained"
             startIcon={<AttachMoney />}
           >
-            Make Donation
+            {t.makeDonation}
           </Button>
         )}
-        {isEditMode && <Button onClick={onCloseEditMode}>Cancel</Button>}
+        {isEditMode && <Button onClick={onCloseEditMode}>{t.cancel}</Button>}
         <Button
           disabled={isSendBtnValid}
           onClick={onSubmit}
           variant="contained"
           startIcon={<Send />}
         >
-          {!isEditMode ? 'Send' : 'Update'}
+          {!isEditMode ? t.send : t.update}
         </Button>
       </Box>
     </Box>

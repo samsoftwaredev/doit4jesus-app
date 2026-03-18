@@ -28,14 +28,12 @@ const ForgotPassword = () => {
       if (error) {
         toast.error(error?.message);
       } else {
-        toast.success(
-          'Password reset sent. Check your email for instructions.',
-        );
+        toast.success(t.passwordResetSent);
         reset();
       }
     } catch (error) {
       console.error('Error in ForgotPassword (onSubmit):', error);
-      toast.error('An unexpected error occurred. Please try again.');
+      toast.error(t.unexpectedError);
     } finally {
       setIsLoading(false);
     }

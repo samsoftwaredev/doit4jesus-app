@@ -100,11 +100,10 @@ const FriendsSection = () => {
               }}
             />
             <Typography variant="h4" fontWeight={700} mb={1}>
-              Pray Together, Grow Together
+              {t.prayTogetherGrowTogether}
             </Typography>
             <Typography sx={{ color: alpha(theme.palette.common.white, 0.86) }}>
-              Build your prayer circle, encourage one another, and keep your
-              spiritual momentum strong as a community.
+              {t.buildPrayerCircle}
             </Typography>
           </Box>
         </div>
@@ -115,7 +114,7 @@ const FriendsSection = () => {
               <Typography fontWeight="bold">{t.todaysChallenge}</Typography>
               <Chip
                 icon={<ShieldMoonIcon />}
-                label="Daily"
+                label={t.daily}
                 size="small"
                 sx={{
                   bgcolor: alpha(theme.palette.info.main, 0.12),
@@ -158,10 +157,10 @@ const FriendsSection = () => {
               justifyContent="space-between"
               mb={2}
             >
-              <Typography fontWeight={700}>Action Bar</Typography>
+              <Typography fontWeight={700}>{t.actionBar}</Typography>
               <Chip
                 icon={<FavoriteIcon />}
-                label="Invite"
+                label={t.invite}
                 size="small"
                 sx={{
                   bgcolor: alpha(theme.palette.success.main, 0.12),
@@ -217,10 +216,10 @@ const FriendsSection = () => {
         <div style={{ gridArea: 'Friends' }}>
           <Card>
             <Box display="flex" justifyContent="space-between" mb={1.5}>
-              <Typography fontWeight={700}>My Circle</Typography>
+              <Typography fontWeight={700}>{t.myCircle}</Typography>
               <Chip
                 icon={<GroupIcon />}
-                label="Community"
+                label={t.community}
                 size="small"
                 sx={{
                   bgcolor: alpha(theme.palette.primary.main, 0.12),
@@ -234,10 +233,10 @@ const FriendsSection = () => {
         <div style={{ gridArea: 'FriendRequests' }}>
           <Card>
             <Box display="flex" justifyContent="space-between" mb={1.5}>
-              <Typography fontWeight={700}>Requests</Typography>
+              <Typography fontWeight={700}>{t.requests}</Typography>
               <Chip
                 icon={<GroupIcon />}
-                label="Incoming / Outgoing"
+                label={t.incomingOutgoing}
                 size="small"
                 sx={{
                   bgcolor: alpha(theme.palette.warning.main, 0.14),

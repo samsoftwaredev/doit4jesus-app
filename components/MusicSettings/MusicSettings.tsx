@@ -3,9 +3,11 @@ import { Box, SwipeableDrawer, Tooltip, Typography } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import React from 'react';
 
+import { useLanguageContext } from '@/context/LanguageContext';
 import { theme } from '@/styles/mui-overwrite';
 
 const MusicSettings = () => {
+  const { t } = useLanguageContext();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -27,7 +29,7 @@ const MusicSettings = () => {
 
   return (
     <>
-      <Tooltip title="Settings">
+      <Tooltip title={t.settings}>
         <span>
           <IconButton
             disabled
@@ -55,7 +57,7 @@ const MusicSettings = () => {
           onKeyDown={toggleDrawer(false)}
         >
           <Typography variant="h6" sx={{ padding: 2 }}>
-            Music Settings
+            {t.musicSettings}
           </Typography>
         </Box>
       </SwipeableDrawer>

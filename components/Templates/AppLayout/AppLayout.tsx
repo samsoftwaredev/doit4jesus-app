@@ -3,6 +3,7 @@ import GridViewIcon from '@mui/icons-material/GridView';
 import SoldierIcon from '@mui/icons-material/MilitaryTech';
 import PublicIcon from '@mui/icons-material/Public';
 import TableChartIcon from '@mui/icons-material/TableChart';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import { Box, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { usePathname } from 'next/navigation';
@@ -106,6 +107,11 @@ const AppLayout = ({ children }: Props) => {
       url: '/app/global-prayer-map',
       label: t.globalPrayerMap,
       icon: <PublicIcon />,
+    },
+    {
+      url: '/app/spiritual-progress',
+      label: 'Spiritual Progress',
+      icon: <TrendingUpIcon />,
     },
     // { url: "/app/soldiers", label: "Militant Church", icon: <SoldierIcon /> },
     { url: '/app/rosaries', label: t.rosaryMysteries, icon: <GridViewIcon /> },

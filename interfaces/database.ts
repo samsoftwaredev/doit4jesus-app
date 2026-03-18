@@ -14,6 +14,57 @@ export type Database = {
   };
   public: {
     Tables: {
+      badge_definitions: {
+        Row: {
+          badge_key: string;
+          category: string;
+          created_at: string;
+          description: string;
+          display_order: number;
+          icon_name: string;
+          id: string;
+          name: string;
+          requirement_label: string;
+          requirement_type: string;
+          requirement_value: number;
+          share_message: string;
+          verse_reference: string;
+          verse_text: string;
+        };
+        Insert: {
+          badge_key: string;
+          category: string;
+          created_at?: string;
+          description: string;
+          display_order?: number;
+          icon_name: string;
+          id?: string;
+          name: string;
+          requirement_label: string;
+          requirement_type: string;
+          requirement_value: number;
+          share_message: string;
+          verse_reference: string;
+          verse_text: string;
+        };
+        Update: {
+          badge_key?: string;
+          category?: string;
+          created_at?: string;
+          description?: string;
+          display_order?: number;
+          icon_name?: string;
+          id?: string;
+          name?: string;
+          requirement_label?: string;
+          requirement_type?: string;
+          requirement_value?: number;
+          share_message?: string;
+          verse_reference?: string;
+          verse_text?: string;
+        };
+        Relationships: [];
+      };
       challenges: {
         Row: {
           completed_by: Json | null;
@@ -56,57 +107,6 @@ export type Database = {
           reward?: string | null;
           title?: string | null;
           updated_at?: string | null;
-        };
-        Relationships: [];
-      };
-      badge_definitions: {
-        Row: {
-          category: string;
-          created_at: string;
-          description: string;
-          display_order: number;
-          icon_name: string;
-          id: string;
-          badge_key: string;
-          name: string;
-          requirement_label: string;
-          requirement_type: string;
-          requirement_value: number;
-          share_message: string;
-          verse_reference: string;
-          verse_text: string;
-        };
-        Insert: {
-          category: string;
-          created_at?: string;
-          description: string;
-          display_order?: number;
-          icon_name: string;
-          id?: string;
-          badge_key: string;
-          name: string;
-          requirement_label: string;
-          requirement_type: string;
-          requirement_value: number;
-          share_message: string;
-          verse_reference: string;
-          verse_text: string;
-        };
-        Update: {
-          category?: string;
-          created_at?: string;
-          description?: string;
-          display_order?: number;
-          icon_name?: string;
-          id?: string;
-          badge_key?: string;
-          name?: string;
-          requirement_label?: string;
-          requirement_type?: string;
-          requirement_value?: number;
-          share_message?: string;
-          verse_reference?: string;
-          verse_text?: string;
         };
         Relationships: [];
       };
@@ -475,7 +475,7 @@ export type Database = {
           country_name?: string | null;
           created_at?: string;
           created_by?: string | null;
-          id?: number;
+          id?: never;
           is_active?: boolean;
           latitude: number;
           longitude: number;
@@ -490,7 +490,7 @@ export type Database = {
           country_name?: string | null;
           created_at?: string;
           created_by?: string | null;
-          id?: number;
+          id?: never;
           is_active?: boolean;
           latitude?: number;
           longitude?: number;
@@ -793,68 +793,6 @@ export type Database = {
           },
         ];
       };
-      user_milestones: {
-        Row: {
-          acknowledged_at: string;
-          created_at: string;
-          milestone_id: string;
-          user_id: string;
-        };
-        Insert: {
-          acknowledged_at?: string;
-          created_at?: string;
-          milestone_id: string;
-          user_id: string;
-        };
-        Update: {
-          acknowledged_at?: string;
-          created_at?: string;
-          milestone_id?: string;
-          user_id?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: 'user_milestones_user_id_fkey';
-            columns: ['user_id'];
-            isOneToOne: false;
-            referencedRelation: 'profiles';
-            referencedColumns: ['id'];
-          },
-        ];
-      };
-      youtube: {
-        Row: {
-          created_at: string;
-          description: string | null;
-          id: string;
-          title: string | null;
-          video_id: string | null;
-        };
-        Insert: {
-          created_at?: string;
-          description?: string | null;
-          id?: string;
-          title?: string | null;
-          video_id?: string | null;
-        };
-        Update: {
-          created_at?: string;
-          description?: string | null;
-          id?: string;
-          title?: string | null;
-          video_id?: string | null;
-        };
-        Relationships: [];
-      };
-    };
-    Views: {
-      latest_event: {
-        Row: {
-          id: number | null;
-          started_at: string | null;
-        };
-        Relationships: [];
-      };
       user_badges: {
         Row: {
           badge_key: string;
@@ -897,17 +835,219 @@ export type Database = {
           },
         ];
       };
+      user_milestones: {
+        Row: {
+          acknowledged_at: string;
+          created_at: string;
+          milestone_id: string;
+          user_id: string;
+        };
+        Insert: {
+          acknowledged_at?: string;
+          created_at?: string;
+          milestone_id: string;
+          user_id: string;
+        };
+        Update: {
+          acknowledged_at?: string;
+          created_at?: string;
+          milestone_id?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'user_milestones_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      user_xp: {
+        Row: {
+          created_at: string;
+          current_level: number;
+          current_title: string;
+          id: string;
+          total_xp: number;
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          current_level?: number;
+          current_title?: string;
+          id?: string;
+          total_xp?: number;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          current_level?: number;
+          current_title?: string;
+          id?: string;
+          total_xp?: number;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'user_xp_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: true;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      xp_events: {
+        Row: {
+          created_at: string;
+          id: number;
+          idempotency_key: string | null;
+          metadata: Json;
+          type: string;
+          user_id: string;
+          xp_amount: number;
+        };
+        Insert: {
+          created_at?: string;
+          id?: number;
+          idempotency_key?: string | null;
+          metadata?: Json;
+          type: string;
+          user_id: string;
+          xp_amount: number;
+        };
+        Update: {
+          created_at?: string;
+          id?: number;
+          idempotency_key?: string | null;
+          metadata?: Json;
+          type?: string;
+          user_id?: string;
+          xp_amount?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'xp_events_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      xp_levels_config: {
+        Row: {
+          badge_key: string | null;
+          created_at: string;
+          level: number;
+          min_xp: number;
+          title: string;
+        };
+        Insert: {
+          badge_key?: string | null;
+          created_at?: string;
+          level: number;
+          min_xp: number;
+          title: string;
+        };
+        Update: {
+          badge_key?: string | null;
+          created_at?: string;
+          level?: number;
+          min_xp?: number;
+          title?: string;
+        };
+        Relationships: [];
+      };
+      xp_rules: {
+        Row: {
+          action_type: string;
+          created_at: string;
+          is_active: boolean;
+          optional_conditions: Json;
+          updated_at: string;
+          xp_value: number;
+        };
+        Insert: {
+          action_type: string;
+          created_at?: string;
+          is_active?: boolean;
+          optional_conditions?: Json;
+          updated_at?: string;
+          xp_value: number;
+        };
+        Update: {
+          action_type?: string;
+          created_at?: string;
+          is_active?: boolean;
+          optional_conditions?: Json;
+          updated_at?: string;
+          xp_value?: number;
+        };
+        Relationships: [];
+      };
+      youtube: {
+        Row: {
+          created_at: string;
+          description: string | null;
+          id: string;
+          title: string | null;
+          video_id: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          description?: string | null;
+          id?: string;
+          title?: string | null;
+          video_id?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          description?: string | null;
+          id?: string;
+          title?: string | null;
+          video_id?: string | null;
+        };
+        Relationships: [];
+      };
+    };
+    Views: {
+      latest_event: {
+        Row: {
+          id: number | null;
+          started_at: string | null;
+        };
+        Relationships: [];
+      };
     };
     Functions: {
-      get_user_achievement_dashboard: {
-        Args: { target_user_id?: string };
+      award_xp: {
+        Args: {
+          p_action_type: string;
+          p_idempotency_key?: string;
+          p_metadata?: Json;
+          p_user_id: string;
+        };
         Returns: Json;
       };
-      get_all_rosary_count: { Args: never; Returns: number };
-      join_global_prayer_session: {
-        Args: { p_session_id: number };
-        Returns: number;
+      calculate_xp_level: {
+        Args: { p_total_xp: number };
+        Returns: {
+          level: number;
+          min_xp: number;
+          next_level: number;
+          next_min_xp: number;
+          next_title: string;
+          title: string;
+        }[];
       };
+      ensure_user_xp_row: { Args: { p_user_id: string }; Returns: undefined };
+      get_all_rosary_count: { Args: never; Returns: number };
       get_profiles_by_user_ids: {
         Args: { user_ids: string[] };
         Returns: {
@@ -935,6 +1075,10 @@ export type Database = {
           user_id: string;
         }[];
       };
+      get_user_achievement_dashboard: {
+        Args: { target_user_id?: string };
+        Returns: Json;
+      };
       insert_into_rosary_stats: {
         Args: {
           p_completed_at: string;
@@ -942,6 +1086,10 @@ export type Database = {
           p_user_id: string;
         };
         Returns: undefined;
+      };
+      join_global_prayer_session: {
+        Args: { p_session_id: number };
+        Returns: number;
       };
       search_profiles: {
         Args: { search_text: string };

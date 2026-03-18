@@ -16,7 +16,7 @@ import {
   Switch,
   Typography,
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import { googleLogout } from '@react-oauth/google';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -78,6 +78,7 @@ interface Props {
 const TopNavbar = ({ handleMenu }: Props) => {
   const { mode, toggleTheme } = useThemeContext();
   const { lang, changeLang, t } = useLanguageContext();
+  const theme = useTheme();
   const { getProfile } = useUserContext();
   const { user } = useUserContext();
   const router = useRouter();
@@ -103,7 +104,7 @@ const TopNavbar = ({ handleMenu }: Props) => {
       googleLogout();
     } catch (error) {
       console.error('Error in TopNavbar (onLogout):', error);
-      toast.error('Unable to log out. Please try again.');
+      toast.error(t.unableToLogOut);
     } finally {
       setIsLoading(false);
     }
@@ -147,7 +148,7 @@ const TopNavbar = ({ handleMenu }: Props) => {
         onClick={goToDashboard}
         aria-label="Go to dashboard"
       >
-        <Logo />
+        <Logo type={theme.palette.mode === 'dark' ? 'white' : 'black'} />
       </LogoButton>
       <Stack direction="row" alignItems="center" spacing={1}>
         <ProfileButton

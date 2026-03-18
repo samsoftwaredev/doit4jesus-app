@@ -121,7 +121,7 @@ const SocialShareButtons = ({ shareUrl, shareText, cardData }: Props) => {
     <Box sx={{ width: '100%' }}>
       {/* Social platform icons */}
       <Stack direction="row" spacing={1} justifyContent="center" sx={{ mb: 2 }}>
-        <Tooltip title="Twitter / X">
+        <Tooltip title={t.twitterX}>
           <IconButton
             component="a"
             href={twitterUrl}
@@ -145,7 +145,7 @@ const SocialShareButtons = ({ shareUrl, shareText, cardData }: Props) => {
           </IconButton>
         </Tooltip>
 
-        <Tooltip title="Facebook">
+        <Tooltip title={t.facebook}>
           <IconButton
             component="a"
             href={facebookUrl}
@@ -161,7 +161,7 @@ const SocialShareButtons = ({ shareUrl, shareText, cardData }: Props) => {
           </IconButton>
         </Tooltip>
 
-        <Tooltip title="WhatsApp">
+        <Tooltip title={t.whatsApp}>
           <IconButton
             component="a"
             href={whatsappUrl}
@@ -177,7 +177,7 @@ const SocialShareButtons = ({ shareUrl, shareText, cardData }: Props) => {
           </IconButton>
         </Tooltip>
 
-        <Tooltip title="Instagram (download & share)">
+        <Tooltip title={t.instagramDownloadShare}>
           <IconButton
             onClick={handleDownloadImage}
             disabled={downloading}
@@ -194,7 +194,7 @@ const SocialShareButtons = ({ shareUrl, shareText, cardData }: Props) => {
           </IconButton>
         </Tooltip>
 
-        <Tooltip title={t.shareLink ?? 'Copy Link'}>
+        <Tooltip title={t.copyLink}>
           <IconButton
             onClick={handleCopyLink}
             sx={{
@@ -223,7 +223,7 @@ const SocialShareButtons = ({ shareUrl, shareText, cardData }: Props) => {
             },
           }}
         >
-          {downloading ? 'Saving...' : 'Save Image'}
+          {downloading ? t.saving : t.saveImage}
         </Button>
 
         {'share' in navigator && (
@@ -237,7 +237,7 @@ const SocialShareButtons = ({ shareUrl, shareText, cardData }: Props) => {
               '&:hover': { bgcolor: theme.palette.gold.light },
             }}
           >
-            Share
+            {t.share}
           </Button>
         )}
       </Stack>
@@ -246,7 +246,7 @@ const SocialShareButtons = ({ shareUrl, shareText, cardData }: Props) => {
         open={copied}
         autoHideDuration={2000}
         onClose={() => setCopied(false)}
-        message="Link copied!"
+        message={t.copied}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       />
     </Box>
