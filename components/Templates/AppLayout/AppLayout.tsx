@@ -110,7 +110,7 @@ const AppLayout = ({ children }: Props) => {
     },
     {
       url: '/app/spiritual-progress',
-      label: 'Spiritual Progress',
+      label: t.spiritualProgress,
       icon: <TrendingUpIcon />,
     },
     // { url: "/app/soldiers", label: "Militant Church", icon: <SoldierIcon /> },

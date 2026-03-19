@@ -1,5 +1,6 @@
 import {
   DarkMode,
+  DisplaySettings,
   LanguageRounded,
   LightMode,
   Logout,
@@ -187,7 +188,7 @@ const TopNavbar = ({ handleMenu }: Props) => {
 
         <MenuItem aria-label="Change language">
           <ListItemIcon>
-            <LanguageRounded fontSize="small" />
+            <DisplaySettings fontSize="small" />
           </ListItemIcon>
           <ListItemText sx={{ marginLeft: '-5px' }}>
             <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>

@@ -66,6 +66,11 @@ jest.mock('../../Leaderboards', () => ({
   default: () => <div data-testid="leaderboards" />,
 }));
 
+jest.mock('../../WeeklyLeaderboard', () => ({
+  __esModule: true,
+  default: () => <div data-testid="weekly-leaderboard" />,
+}));
+
 jest.mock('../../InviteFriend', () => ({
   __esModule: true,
   default: () => <div data-testid="invite-friend" />,

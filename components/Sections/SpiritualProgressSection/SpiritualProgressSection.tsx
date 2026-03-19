@@ -116,8 +116,12 @@ const SpiritualProgressSection = () => {
     <Container className="container-box" maxWidth="md">
       {showCelebration ? <ConfettiCelebration /> : null}
 
-      <Stack spacing={1.2} mb={2}>
-        <Typography variant="overline" sx={{ letterSpacing: 2 }}>
+      <Card sx={{ mb: 4, textAlign: 'center' }}>
+        <Typography
+          variant="overline"
+          color="textSecondary"
+          sx={{ letterSpacing: 2 }}
+        >
           {t.spiritualXpSystem}
         </Typography>
         <HeroTitle variant="h3" fontWeight={800}>
@@ -126,7 +130,7 @@ const SpiritualProgressSection = () => {
         <Typography color="text.secondary">
           {t.faithfulActionsDescription}
         </Typography>
-      </Stack>
+      </Card>
 
       <Grid>
         <Card>

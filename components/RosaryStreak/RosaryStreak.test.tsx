@@ -29,7 +29,12 @@ jest.mock('../Loading', () => ({
 describe('RosaryStreak Component', () => {
   beforeEach(() => {
     (useLanguageContext as jest.Mock).mockReturnValue({
-      t: { rosaryStreak: 'Rosary Streak' },
+      t: {
+        yourRosaryStreak: 'Your Rosary Streak',
+        canYouPrayDaily: 'Can you pray one rosary daily?',
+        daysInARow: 'days in a row',
+        keepStreakGoing: 'Keep your streak going!',
+      },
     });
     (useUserContext as jest.Mock).mockReturnValue({
       user: { userId: 'user-1' },
