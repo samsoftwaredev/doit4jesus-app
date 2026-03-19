@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 
 import { supabase } from '@/classes';
 import { useLanguageContext } from '@/context/LanguageContext';
+import { useUserContext } from '@/context/UserContext';
 import { getCurrentLevel } from '@/utils/levels';
 
 import Loading from '../Loading';
@@ -18,6 +19,7 @@ type UserLeaderboards = {
 
 const Leaderboards = () => {
   const { t } = useLanguageContext();
+  const { user } = useUserContext();
   const [isLoading, setIsLoading] = useState(true);
   const [userList, setUserList] = useState<UserLeaderboards[]>();
 
@@ -76,7 +78,20 @@ const Leaderboards = () => {
             {userList?.map((u, index) => {
               const { levelNum } = getCurrentLevel(u.count);
               return (
-                <Box my={5} key={u.userId} display="flex" alignItems="center">
+                <Box
+                  my={5}
+                  key={u.userId}
+                  display="flex"
+                  alignItems="center"
+                  p={2}
+                  borderRadius={2}
+                  sx={{
+                    backgroundColor:
+                      u.userId === user?.userId
+                        ? 'rgba(0, 0, 0, 0.1)'
+                        : 'transparent',
+                  }}
+                >
                   <Box>
                     <Typography fontSize="4em">{index + 1}</Typography>
                   </Box>
@@ -86,10 +101,28 @@ const Leaderboards = () => {
                     display="flex"
                     flexDirection="column"
                   >
-                    <Typography fontSize="1.2em" fontWeight="bold" px={1}>
+                    <Typography
+                      sx={{
+                        color:
+                          u.userId === user?.userId
+                            ? 'primary.main'
+                            : 'text.primary',
+                      }}
+                      fontSize="1.2em"
+                      fontWeight="bold"
+                      px={1}
+                    >
                       {u.firstName} {u.lastName}
                     </Typography>
-                    <Typography px={1}>
+                    <Typography
+                      sx={{
+                        color:
+                          u.userId === user?.userId
+                            ? 'warning.light'
+                            : 'text.primary',
+                      }}
+                      px={1}
+                    >
                       {u.count} {u.count !== 1 ? t.rosaries : t.rosary}
                     </Typography>
                   </Box>

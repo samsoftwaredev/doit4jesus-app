@@ -529,5 +529,16 @@
   "weeklyLeaderboardNoActivity": "Sin actividad esta semana",
   "weeklyLeaderboardStartPraying": "Empieza a rezar para subir en la tabla",
   "weeklyLeaderboardEmptyDescription": "Completa rosarios y gana XP para aparecer en la tabla",
-  "weeklyLeaderboardError": "No se pudo cargar la tabla semanal"
+  "weeklyLeaderboardError": "No se pudo cargar la tabla semanal",
+  "dailyScripture": "Lectura Diaria",
+  "dailyScriptureError": "No se pudieron cargar las lecturas de hoy.",
+  "firstReading": "Primera Lectura",
+  "responsorialPsalm": "Salmo Responsorial",
+  "secondReading": "Segunda Lectura",
+  "gospelAcclamation": "Aclamación del Evangelio",
+  "gospel": "Evangelio",
+  "markAsRead": "Marcar como Leído · +5 XP",
+  "scriptureCompleted": "Completado",
+  "retry": "Reintentar",
+  "loading": "Cargando..."
 }

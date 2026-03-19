@@ -3,6 +3,7 @@ import { styled } from '@mui/material/styles';
 
 import {
   Card,
+  DailyScripture,
   Leaderboards,
   MilestoneModal,
   RosaryStreak,
@@ -29,6 +30,7 @@ const DashboardGrid = styled(Box)({
   gridAutoFlow: 'row',
   gridTemplateAreas: `
     'TodayRosary'
+    'DailyScripture'
     'ShareStats'
     'RosariesCompleted'
     'Friends'
@@ -44,6 +46,7 @@ const DashboardGrid = styled(Box)({
     gridTemplateRows: 'auto auto',
     gridTemplateAreas: `
       'TodayRosary TodayRosary'
+      'DailyScripture DailyScripture'
       'RosariesCompleted Friends'
       'ShareStats ShareStats'
       'TotalRosaries RosaryStreak'
@@ -59,6 +62,7 @@ const DashboardGrid = styled(Box)({
     gridTemplateAreas: `
       'TodayRosary TodayRosary RosariesCompleted'
       'TodayRosary TodayRosary Friends'
+      'DailyScripture DailyScripture DailyScripture'
       'ShareStats ShareStats ShareStats'
       'TotalRosaries RosaryStreak RosaryStreak'
       'Levels Levels Levels'
@@ -84,6 +88,12 @@ const DashboardSection = () => {
         <div style={{ gridArea: 'TodayRosary' }}>
           <Card sx={{ padding: 0 }}>
             <TodaysRosary />
+          </Card>
+        </div>
+
+        <div style={{ gridArea: 'DailyScripture' }}>
+          <Card>
+            <DailyScripture />
           </Card>
         </div>
 

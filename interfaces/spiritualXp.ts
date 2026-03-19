@@ -8,7 +8,8 @@ export type XPActionType =
   | 'prayer_request_submitted'
   | 'prayer_request_engagement'
   | 'friend_invite'
-  | 'level_up';
+  | 'level_up'
+  | 'scripture_reading';
 
 export interface XPRule {
   actionType: string;

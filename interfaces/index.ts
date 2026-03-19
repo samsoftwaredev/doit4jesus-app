@@ -219,3 +219,4 @@ export * from './achievements';
 export * from './spiritualXp';
 export * from './weeklyLeaderboard';
 export * from './globalPrayerMap';
+export * from './dailyScripture';

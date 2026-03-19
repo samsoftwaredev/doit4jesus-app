@@ -529,5 +529,16 @@
   "weeklyLeaderboardNoActivity": "No activity yet this week",
   "weeklyLeaderboardStartPraying": "Start praying to climb the leaderboard",
   "weeklyLeaderboardEmptyDescription": "Complete rosaries and earn XP to appear on the leaderboard",
-  "weeklyLeaderboardError": "Unable to load weekly leaderboard"
+  "weeklyLeaderboardError": "Unable to load weekly leaderboard",
+  "dailyScripture": "Daily Scripture",
+  "dailyScriptureError": "Unable to load today's readings.",
+  "firstReading": "First Reading",
+  "responsorialPsalm": "Responsorial Psalm",
+  "secondReading": "Second Reading",
+  "gospelAcclamation": "Gospel Acclamation",
+  "gospel": "Gospel",
+  "markAsRead": "Mark as Read · +5 XP",
+  "scriptureCompleted": "Completed",
+  "retry": "Retry",
+  "loading": "Loading..."
 }

@@ -56,6 +56,7 @@ export { default as AchievementShareModal } from './AchievementShareModal';
 export { default as SelectVocation } from './SelectExamOfConscience/SelectVocation';
 export { default as WeeklyLeaderboard } from './WeeklyLeaderboard';
 export { default as GlobalPrayerMap } from './GlobalPrayerMap';
+export { default as DailyScripture } from './DailyScripture';
 
 export * from './Navbars';
 export * from './Fields';
