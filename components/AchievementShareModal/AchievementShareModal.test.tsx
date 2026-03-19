@@ -2,6 +2,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import { fireEvent, render, screen } from '@testing-library/react';
 
 import { useLanguageContext } from '@/context/LanguageContext';
+import { BadgeRequirementType } from '@/interfaces/achievements';
 import { getTheme } from '@/styles/mui-overwrite';
 
 import AchievementShareModal from './AchievementShareModal';
@@ -61,12 +62,14 @@ const mockTranslations = {
 };
 
 const earnedBadge = {
+  id: 'achievement-share-modal',
+  displayOrder: 1,
   badgeKey: 'first_rosary',
   name: 'First Rosary',
   description: 'Prayed your first rosary',
   iconName: 'favorite',
-  category: 'prayer',
-  requirementType: 'count' as const,
+  category: 'prayer' as const,
+  requirementType: 'count' as BadgeRequirementType,
   requirementValue: 1,
   requirementLabel: '1 rosary',
   progressCurrent: 1,
@@ -84,7 +87,7 @@ const lockedBadge = {
   badgeKey: 'rosary_warrior',
   name: 'Rosary Warrior',
   isEarned: false,
-  earnedAt: null,
+  earnedAt: undefined,
   progressCurrent: 5,
   progressPercent: 50,
   remainingCount: 5,

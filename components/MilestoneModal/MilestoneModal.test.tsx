@@ -21,6 +21,8 @@ const renderWithTheme = (ui: React.ReactElement) =>
 
 describe('MilestoneModal Component', () => {
   const mockMilestone = {
+    id: 'milestone-1',
+    threshold: 10,
     count: 10,
     label: '10 Rosaries!',
     message: 'You prayed 10 rosaries. Keep going!',
