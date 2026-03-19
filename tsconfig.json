@@ -48,5 +48,5 @@
     "constants/*",
     "public/*"
   ],
-  "exclude": ["node_modules", ".vscode"]
+  "exclude": ["node_modules", ".vscode", "supabase/functions"]
 }

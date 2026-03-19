@@ -501,5 +501,22 @@
 
   "resources": "Resources",
   "unableToGetResources": "Unable to get resources",
-  "unableToDisplayArticle": "Unable to display article"
+  "unableToDisplayArticle": "Unable to display article",
+
+  "weeklyLeaderboard": "Weekly Leaderboard",
+  "weeklyLeaderboardSubtitle": "See who is leading this week",
+  "weeklyLeaderboardTopPerformers": "Top Performers",
+  "weeklyLeaderboardRankings": "Rankings",
+  "weeklyLeaderboardYou": "You",
+  "weeklyLeaderboardYourPosition": "Your Position",
+  "weeklyLeaderboardRank": "Rank",
+  "weeklyLeaderboardXpThisWeek": "XP this week",
+  "weeklyLeaderboardXpToNextRank": "+{{xp}} XP to reach #{{rank}}",
+  "weeklyLeaderboardResetsIn": "Resets in",
+  "weeklyLeaderboardThisWeek": "This Week",
+  "weeklyLeaderboardLastWeek": "Last Week",
+  "weeklyLeaderboardNoActivity": "No activity yet this week",
+  "weeklyLeaderboardStartPraying": "Start praying to climb the leaderboard",
+  "weeklyLeaderboardEmptyDescription": "Complete rosaries and earn XP to appear on the leaderboard",
+  "weeklyLeaderboardError": "Unable to load weekly leaderboard"
 }

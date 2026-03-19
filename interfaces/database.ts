@@ -592,6 +592,90 @@ export type Database = {
           },
         ];
       };
+      leaderboard_config: {
+        Row: {
+          key: string;
+          value: Json;
+        };
+        Insert: {
+          key: string;
+          value: Json;
+        };
+        Update: {
+          key?: string;
+          value?: Json;
+        };
+        Relationships: [];
+      };
+      leaderboard_history: {
+        Row: {
+          created_at: string;
+          id: number;
+          rank: number;
+          snapshot_data: Json | null;
+          total_xp: number;
+          user_id: string;
+          week_start: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: never;
+          rank: number;
+          snapshot_data?: Json | null;
+          total_xp?: number;
+          user_id: string;
+          week_start: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: never;
+          rank?: number;
+          snapshot_data?: Json | null;
+          total_xp?: number;
+          user_id?: string;
+          week_start?: string;
+        };
+        Relationships: [];
+      };
+      leaderboards_weekly: {
+        Row: {
+          created_at: string;
+          id: number;
+          invites_count: number;
+          rank: number;
+          rosaries_count: number;
+          streak_days: number;
+          total_xp: number;
+          user_id: string;
+          week_end: string;
+          week_start: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: never;
+          invites_count?: number;
+          rank?: number;
+          rosaries_count?: number;
+          streak_days?: number;
+          total_xp?: number;
+          user_id: string;
+          week_end: string;
+          week_start: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: never;
+          invites_count?: number;
+          rank?: number;
+          rosaries_count?: number;
+          streak_days?: number;
+          total_xp?: number;
+          user_id?: string;
+          week_end?: string;
+          week_start?: string;
+        };
+        Relationships: [];
+      };
       notification_settings: {
         Row: {
           created_at: string | null;
@@ -1079,6 +1163,40 @@ export type Database = {
         Args: { target_user_id?: string };
         Returns: Json;
       };
+      get_weekly_leaderboard: {
+        Args: { p_limit?: number; p_week_end: string; p_week_start: string };
+        Returns: {
+          first_name: string;
+          invites_count: number;
+          last_name: string;
+          picture_url: string;
+          rank: number;
+          rosaries_count: number;
+          streak_days: number;
+          total_xp: number;
+          user_id: string;
+        }[];
+      };
+      get_weekly_leaderboard_me: {
+        Args: {
+          p_neighbors?: number;
+          p_user_id: string;
+          p_week_end: string;
+          p_week_start: string;
+        };
+        Returns: {
+          first_name: string;
+          invites_count: number;
+          is_current_user: boolean;
+          last_name: string;
+          picture_url: string;
+          rank: number;
+          rosaries_count: number;
+          streak_days: number;
+          total_xp: number;
+          user_id: string;
+        }[];
+      };
       insert_into_rosary_stats: {
         Args: {
           p_completed_at: string;
@@ -1098,6 +1216,10 @@ export type Database = {
           id: string;
           last_name: string;
         }[];
+      };
+      snapshot_weekly_leaderboard: {
+        Args: { p_week_end: string; p_week_start: string };
+        Returns: undefined;
       };
       upsert_global_prayer_session: {
         Args: {

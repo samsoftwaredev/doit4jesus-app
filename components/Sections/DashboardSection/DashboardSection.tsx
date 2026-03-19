@@ -10,6 +10,7 @@ import {
   ShareStatsButton,
   TodaysRosary,
   TotalRosariesPrayed,
+  WeeklyLeaderboard,
 } from '@/components';
 import InviteFriend from '@/components/InviteFriend';
 import RosaryStats from '@/components/RosaryStats';
@@ -36,6 +37,7 @@ const DashboardGrid = styled(Box)({
     'RosaryWinnerChallenge'
     'Donations'
     'Levels'
+    'WeeklyLeaderboard'
     'Leaderboards'`,
   '@media (min-width: 768px)': {
     gridTemplateColumns: '1fr 1fr',
@@ -48,6 +50,7 @@ const DashboardGrid = styled(Box)({
       'RosaryWinnerChallenge RosaryWinnerChallenge'
       'Donations Donations'
       'Levels Levels'
+      'WeeklyLeaderboard WeeklyLeaderboard'
       'Leaderboards Leaderboards'`,
   },
   '@media (min-width: 1024px)': {
@@ -60,6 +63,7 @@ const DashboardGrid = styled(Box)({
       'TotalRosaries RosaryStreak RosaryStreak'
       'Levels Levels Levels'
       'Donations Donations Donations'
+      'WeeklyLeaderboard WeeklyLeaderboard WeeklyLeaderboard'
       'Leaderboards Leaderboards Leaderboards'`,
   },
 });
@@ -131,6 +135,12 @@ const DashboardSection = () => {
         <div style={{ gridArea: 'RosaryStreak' }}>
           <Card>
             <RosaryStreak />
+          </Card>
+        </div>
+
+        <div style={{ gridArea: 'WeeklyLeaderboard' }}>
+          <Card>
+            <WeeklyLeaderboard />
           </Card>
         </div>
 

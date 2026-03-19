@@ -501,5 +501,22 @@
 
   "resources": "Recursos",
   "unableToGetResources": "No se pudo obtener los recursos",
-  "unableToDisplayArticle": "No se pudo mostrar el artículo"
+  "unableToDisplayArticle": "No se pudo mostrar el artículo",
+
+  "weeklyLeaderboard": "Tabla Semanal",
+  "weeklyLeaderboardSubtitle": "Mira quién lidera esta semana",
+  "weeklyLeaderboardTopPerformers": "Mejores Jugadores",
+  "weeklyLeaderboardRankings": "Clasificación",
+  "weeklyLeaderboardYou": "Tú",
+  "weeklyLeaderboardYourPosition": "Tu Posición",
+  "weeklyLeaderboardRank": "Posición",
+  "weeklyLeaderboardXpThisWeek": "XP esta semana",
+  "weeklyLeaderboardXpToNextRank": "+{{xp}} XP para alcanzar #{{rank}}",
+  "weeklyLeaderboardResetsIn": "Se reinicia en",
+  "weeklyLeaderboardThisWeek": "Esta Semana",
+  "weeklyLeaderboardLastWeek": "Semana Pasada",
+  "weeklyLeaderboardNoActivity": "Sin actividad esta semana",
+  "weeklyLeaderboardStartPraying": "Empieza a rezar para subir en la tabla",
+  "weeklyLeaderboardEmptyDescription": "Completa rosarios y gana XP para aparecer en la tabla",
+  "weeklyLeaderboardError": "No se pudo cargar la tabla semanal"
 }
