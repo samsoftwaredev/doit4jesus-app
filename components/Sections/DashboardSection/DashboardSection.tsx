@@ -82,7 +82,7 @@ const DashboardSection = () => {
     <Container className="container-box" maxWidth="md">
       <DashboardGrid>
         <div style={{ gridArea: 'TodayRosary' }}>
-          <Card style={{ padding: 0 }}>
+          <Card sx={{ padding: 0 }}>
             <TodaysRosary />
           </Card>
         </div>

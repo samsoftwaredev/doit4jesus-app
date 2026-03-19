@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom';
+
 import enJSON from '../locales/en.json';
 
 afterEach(() => {
