@@ -268,7 +268,7 @@ const EventSection = ({ videoEvent }: Props) => {
           frameBorder={0} // don't remove this attribute
         />
       </Box>
-      <EventDetailsCard className="appCard">
+      <EventDetailsCard className="appCard" sx={{ p: 2 }}>
         <EventHeader>
           <Typography component="h1" variant="h2">
             {videoEvent.title}
@@ -281,7 +281,11 @@ const EventSection = ({ videoEvent }: Props) => {
           <Markdown>{videoEvent.description}</Markdown>
         </Typography>
       </EventDetailsCard>
-      <EventDetailsCard aria-labelledby="prayers-heading" className="appCard">
+      <EventDetailsCard
+        sx={{ p: 2 }}
+        aria-labelledby="prayers-heading"
+        className="appCard"
+      >
         <Typography
           id="prayers-heading"
           fontWeight="bold"

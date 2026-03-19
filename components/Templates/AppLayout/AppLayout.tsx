@@ -93,7 +93,7 @@ interface Props {
 }
 
 const AppLayout = ({ children }: Props) => {
-  const { t } = useLanguageContext();
+  const { t, lang } = useLanguageContext();
   const pathname = usePathname();
 
   const menuItems = [
@@ -140,7 +140,7 @@ const AppLayout = ({ children }: Props) => {
 
   const pageTitle = useMemo(
     () => menuItems.find((menu) => menu.url === pathname),
-    [pathname],
+    [pathname, lang],
   );
 
   return (
