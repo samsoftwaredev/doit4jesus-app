@@ -40,6 +40,7 @@ const AppContent = ({ Component, pageProps }: AppProps) => {
 
   const appContextPaths =
     pathname.includes(NAV_APP_LINKS.app.link) ||
+    pathname.includes('/admin') ||
     pathname.includes(NAV_MAIN_LINKS.login.link) ||
     pathname.includes(NAV_MAIN_LINKS.signup.link) ||
     pathname.includes(NAV_MAIN_LINKS.register.link) ||
