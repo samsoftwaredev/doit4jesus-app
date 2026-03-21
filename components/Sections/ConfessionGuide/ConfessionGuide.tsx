@@ -88,16 +88,7 @@ const ConfessionGuide = () => {
 
   return (
     <>
-      {/* <LinearProgress variant="determinate" value={progress} /> */}
       <Container className="container-box" maxWidth="sm">
-        {/* <Box my={2}>
-          <TitleNav
-            onBack={handelBack}
-            subTitle="Confession (Reconciliation)"
-            title="Exam of Conscience"
-            description="A Step by Step Guide"
-          />
-        </Box> */}
         <Box display="flex" gap={1} flexDirection="column">
           <Collapse in={openWarning}>
             <Alert severity="warning" onClose={handelCloseWarning}>

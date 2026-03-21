@@ -1,9 +1,7 @@
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-import GridViewIcon from '@mui/icons-material/GridView';
 import SoldierIcon from '@mui/icons-material/MilitaryTech';
 import PublicIcon from '@mui/icons-material/Public';
 import TableChartIcon from '@mui/icons-material/TableChart';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import { Box, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { usePathname } from 'next/navigation';
@@ -108,22 +106,11 @@ const AppLayout = ({ children }: Props) => {
       label: t.community,
       icon: <PublicIcon />,
     },
-    // { url: "/app/soldiers", label: "Militant Church", icon: <SoldierIcon /> },
-    { url: '/app/rosaries', label: t.rosaryMysteries, icon: <GridViewIcon /> },
-    // { url: '/app/live-event', label: 'Live Event', icon: <CellTowerIcon /> },
-    // {
-    //   url: "/app/attending-events",
-    //   label: "Attending Events",
-    //   icon: <StarIcon />,
-    // },
-    // TODO: enable confession once module is completed
     {
       url: '/app/confession',
       label: 'Exam of Conscience',
-      icon: <EmojiEventsIcon />,
+      icon: <SoldierIcon />,
     },
-    // { url: "/app/settings", label: "Settings", icon: <SettingsIcon /> },
-    // { url: "/app/support", label: "Support", icon: <SupportAgentIcon /> },
   ];
 
   const [drawerOpen, setDrawerOpen] = useState(false);
