@@ -1,9 +1,14 @@
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Box,
   Button,
+  Chip,
   Divider,
   Grid,
   IconButton,
@@ -81,6 +86,66 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
                   {step.question}
                 </Typography>
               </Grid>
+              {(step.commandment ||
+                step.type ||
+                step.description ||
+                (step.categories && step.categories.length > 0)) && (
+                <Accordion
+                  disableGutters
+                  elevation={0}
+                  sx={{
+                    mt: 1,
+                    '&:before': { display: 'none' },
+                    bgcolor: 'transparent',
+                  }}
+                >
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Typography variant="body2" color="text.secondary">
+                      {t.moreDetails}
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails sx={{ pt: 0 }}>
+                    <Box display="flex" flexDirection="column" gap={1}>
+                      {step.type && (
+                        <Box display="flex" gap={1} alignItems="center">
+                          <Typography variant="body2" fontWeight="bold">
+                            {t.sinType}:
+                          </Typography>
+                          <Chip
+                            label={
+                              step.type === 'mortal' ? t.mortalSin : t.venialSin
+                            }
+                            size="small"
+                            color={step.type === 'mortal' ? 'error' : 'warning'}
+                          />
+                        </Box>
+                      )}
+                      {step.commandment && (
+                        <Typography variant="body2">
+                          <strong>{t.commandment}:</strong> {step.commandment}
+                        </Typography>
+                      )}
+                      {step.categories && step.categories.length > 0 && (
+                        <Box display="flex" gap={0.5} flexWrap="wrap">
+                          {step.categories.map((cat) => (
+                            <Chip
+                              key={cat}
+                              label={cat}
+                              size="small"
+                              variant="outlined"
+                            />
+                          ))}
+                        </Box>
+                      )}
+                      {step.description && (
+                        <Typography variant="body2" color="text.secondary">
+                          {step.description}
+                        </Typography>
+                      )}
+                    </Box>
+                  </AccordionDetails>
+                </Accordion>
+              )}
             </Grid>
             <Grid container justifyContent="space-around">
               <Grid size={{ md: 4, sm: 4 }} textAlign="center">

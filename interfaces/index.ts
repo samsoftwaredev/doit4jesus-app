@@ -16,6 +16,9 @@ export type MenuItem = {
 
 export interface CardProps {
   title: string;
+  categories?: string[];
+  commandment: string;
+  type: string;
   question: string;
   description?: string | JSX.Element | JSX.Element[];
   img?: string;

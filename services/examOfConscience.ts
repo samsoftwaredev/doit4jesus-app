@@ -9,23 +9,24 @@ import type {
 } from '@/interfaces/examOfConscience';
 
 const examMap: Record<ExamSlug, ExamDefinition> = {
-  child: {
-    slug: 'child',
-    label: 'Child Examination of Conscience',
-    descriptionKey: 'forKidsDescription',
-    questions: childExamOfConscience as ExamQuestion[],
+  adult: {
+    slug: 'adult',
+    label: 'Adult Examination of Conscience',
+    descriptionKey: 'forAdultsDescription',
+    questions: adultExamOfConscience as ExamQuestion[],
   },
+
   teen: {
     slug: 'teen',
     label: 'Teen Examination of Conscience',
     descriptionKey: 'forTeensDescription',
     questions: teenExamOfConscience as ExamQuestion[],
   },
-  adult: {
-    slug: 'adult',
-    label: 'Adult Examination of Conscience',
-    descriptionKey: 'forAdultsDescription',
-    questions: adultExamOfConscience as ExamQuestion[],
+  child: {
+    slug: 'child',
+    label: 'Child Examination of Conscience',
+    descriptionKey: 'forKidsDescription',
+    questions: childExamOfConscience as ExamQuestion[],
   },
 };
 

@@ -48,13 +48,14 @@ const SelectExamOfConscience = ({ onExamSelected }: Props) => {
   const { t } = useLanguageContext();
   const exams = [
     {
-      type: 'kids',
-      slug: 'child',
-      label: t.forKids,
-      value: childExamOfConscience,
-      image: kidPraying,
-      description: t.forKidsDescription,
+      type: 'adults',
+      slug: 'adult',
+      label: t.forAdults,
+      value: adultExamOfConscience,
+      image: adultPraying,
+      description: t.forAdultsDescription,
     },
+
     {
       type: 'teens',
       slug: 'teen',
@@ -64,12 +65,12 @@ const SelectExamOfConscience = ({ onExamSelected }: Props) => {
       description: t.forTeensDescription,
     },
     {
-      type: 'adults',
-      slug: 'adult',
-      label: t.forAdults,
-      value: adultExamOfConscience,
-      image: adultPraying,
-      description: t.forAdultsDescription,
+      type: 'kids',
+      slug: 'child',
+      label: t.forKids,
+      value: childExamOfConscience,
+      image: kidPraying,
+      description: t.forKidsDescription,
     },
   ];
 
