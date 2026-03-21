@@ -21,7 +21,7 @@ const Unauthorized = () => (
           403
         </Typography>
         <Typography variant="h6" color="text.secondary">
-          You don't have permission to access this page.
+          You don&apos;t have permission to access this page.
         </Typography>
         <Button component={Link} href="/" variant="contained" sx={{ mt: 2 }}>
           Go Home

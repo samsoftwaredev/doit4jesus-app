@@ -25,7 +25,7 @@ import {
 import { createPathGenerator, createProjection } from './helpers/projection';
 
 // ── Load world topology at the module level ──────────────────────────────────
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+
 const world110m: Topology = require('world-atlas/countries-110m.json');
 
 const countries = topojson.feature(world110m, world110m.objects.countries);
