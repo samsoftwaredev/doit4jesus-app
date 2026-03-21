@@ -459,7 +459,12 @@ const AdminDashboard = () => {
               mb: 3,
             }}
           >
-            <Typography variant="subtitle1" fontWeight={700} mb={1}>
+            <Typography
+              color="primary.main"
+              variant="subtitle1"
+              fontWeight={700}
+              mb={1}
+            >
               Engagement Metrics
             </Typography>
             <Typography variant="body2" color="text.secondary">

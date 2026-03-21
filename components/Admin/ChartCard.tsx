@@ -42,7 +42,7 @@ const ChartCard = ({
       mb={2}
     >
       <Box>
-        <Typography variant="subtitle1" fontWeight={700}>
+        <Typography color="primary.main" variant="subtitle1" fontWeight={700}>
           {title}
         </Typography>
         {subtitle && (

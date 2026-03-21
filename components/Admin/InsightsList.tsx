@@ -53,7 +53,9 @@ const InsightsList = ({ insights, loading }: InsightsListProps) => {
           ) : (
             <TrendingDownIcon color="error" fontSize="small" />
           )}
-          <Typography variant="body2">{insight.text}</Typography>
+          <Typography color="primary.main" variant="body2">
+            {insight.text}
+          </Typography>
         </Item>
       ))}
     </Box>
