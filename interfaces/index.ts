@@ -137,6 +137,7 @@ export interface User {
   pictureUrl?: string;
   isConfirmed?: boolean;
   updateAt?: string;
+  role?: string;
   stats: {
     rosaryTotalCount: number;
     todaysRosaryCompleted: boolean;

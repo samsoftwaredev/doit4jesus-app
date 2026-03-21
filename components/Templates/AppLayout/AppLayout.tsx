@@ -1,3 +1,4 @@
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import SoldierIcon from '@mui/icons-material/MilitaryTech';
 import PublicIcon from '@mui/icons-material/Public';
@@ -10,6 +11,7 @@ import React, { useMemo, useState } from 'react';
 import Meta from '@/components/Meta';
 import { SideNavbar, TopNavbar } from '@/components/Navbars';
 import { useLanguageContext } from '@/context/LanguageContext';
+import { useUserContext } from '@/context/UserContext';
 
 const LayoutContainer = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -92,7 +94,10 @@ interface Props {
 
 const AppLayout = ({ children }: Props) => {
   const { t, lang } = useLanguageContext();
+  const { user } = useUserContext();
   const pathname = usePathname();
+
+  const isAdmin = user?.role === 'admin';
 
   const menuItems = [
     { url: '/app/dashboard', label: t.dashboard, icon: <TableChartIcon /> },
@@ -111,6 +116,15 @@ const AppLayout = ({ children }: Props) => {
       label: 'Exam of Conscience',
       icon: <SoldierIcon />,
     },
+    ...(isAdmin
+      ? [
+          {
+            url: '/app/admin',
+            label: 'Admin',
+            icon: <AdminPanelSettingsIcon />,
+          },
+        ]
+      : []),
   ];
 
   const [drawerOpen, setDrawerOpen] = useState(false);

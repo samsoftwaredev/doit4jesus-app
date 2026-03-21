@@ -123,6 +123,7 @@ export const normalizeUserProfile = (
     genderMale: userProfile.gender === 'male',
     dateOfBirth: nullToDate(userProfile.birth_date),
     pictureUrl: nullToString(userProfile.picture_url),
+    role: userProfile.role ?? undefined,
     stats: generateRosaryCount(rosaryStats),
   };
 };

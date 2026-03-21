@@ -39,12 +39,18 @@ const SvgWrapper = styled(Box)(({ theme }) => {
   return {
     position: 'relative',
     width: '100%',
-    minWidth: 600,
+    maxWidth: MAP_WIDTH,
     overflow: 'hidden',
-    borderRadius: 14,
+    borderRadius: 8,
     background: colors.water,
     border: `1px solid ${colors.divider}`,
     '& svg': { display: 'block', width: '100%', height: 'auto' },
+    [theme.breakpoints.up('sm')]: {
+      borderRadius: 10,
+    },
+    [theme.breakpoints.up('md')]: {
+      borderRadius: 14,
+    },
   };
 });
 

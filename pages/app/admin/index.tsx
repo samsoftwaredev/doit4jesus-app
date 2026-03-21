@@ -26,6 +26,7 @@ import {
 } from 'recharts';
 
 import { supabase } from '@/classes/SupabaseDB';
+import { Loading } from '@/components';
 import {
   AlertsList,
   ChartCard,
@@ -36,6 +37,7 @@ import {
 } from '@/components/Admin';
 import AppWrapper from '@/components/AppWrapper/AppWrapper';
 import { AppLayout } from '@/components/Templates';
+import { useUserContext } from '@/context/UserContext';
 import type {
   AdminFilters,
   EngagementMetrics,
@@ -78,6 +80,7 @@ async function apiFetch<T>(path: string, token: string): Promise<T> {
 const AdminDashboard = () => {
   const router = useRouter();
   const theme = useTheme();
+  const { user } = useUserContext();
 
   const isDark = theme.palette.mode === 'dark';
   const textColor = theme.palette.text.primary;
@@ -158,6 +161,13 @@ const AdminDashboard = () => {
     fetchAll();
   }, [fetchAll]);
 
+  // Client-side admin guard — redirect non-admins without flashing content
+  useEffect(() => {
+    if (user !== undefined && user?.role !== 'admin') {
+      router.push('/app');
+    }
+  }, [user, router]);
+
   /* ── loading / error states ─────────────────────────────────────────────── */
   if (error) {
     return (
@@ -185,6 +195,14 @@ const AdminDashboard = () => {
 
   const funnelData = engagement?.completionFunnel ?? [];
   const adoptionData = engagement?.featureAdoption ?? [];
+
+  if (user === undefined || user?.role !== 'admin') {
+    return (
+      <AppLayout>
+        <Loading />
+      </AppLayout>
+    );
+  }
 
   /* ── render ─────────────────────────────────────────────────────────────── */
   return (

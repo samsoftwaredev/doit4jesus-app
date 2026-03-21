@@ -71,8 +71,8 @@ const HeroPanel = styled(Box)(({ theme }) => {
 
 const MapSection = styled(Box)({
   position: 'relative',
-  overflowX: 'auto',
-  WebkitOverflowScrolling: 'touch',
+  width: '100%',
+  overflow: 'hidden',
 });
 
 // ── Component ────────────────────────────────────────────────────────────────
