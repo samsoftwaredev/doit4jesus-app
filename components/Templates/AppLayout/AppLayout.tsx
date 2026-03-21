@@ -104,18 +104,12 @@ const AppLayout = ({ children }: Props) => {
       icon: <EmojiEventsIcon />,
     },
     {
-      url: '/app/global-prayer-map',
-      label: t.globalPrayerMap,
+      url: '/app/community',
+      label: t.community,
       icon: <PublicIcon />,
-    },
-    {
-      url: '/app/spiritual-progress',
-      label: t.spiritualProgress,
-      icon: <TrendingUpIcon />,
     },
     // { url: "/app/soldiers", label: "Militant Church", icon: <SoldierIcon /> },
     { url: '/app/rosaries', label: t.rosaryMysteries, icon: <GridViewIcon /> },
-    { url: '/app/friends', label: t.friends, icon: <SoldierIcon /> },
     // { url: '/app/live-event', label: 'Live Event', icon: <CellTowerIcon /> },
     // {
     //   url: "/app/attending-events",

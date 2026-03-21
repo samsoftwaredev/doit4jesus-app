@@ -1,12 +1,10 @@
 /**
  * Daily Scripture service.
  *
- * Fetches scripture text from the Catholic Bible API (Douay-Rheims via
- * RapidAPI) and combines it with the liturgical calendar to produce a
- * complete DailyScripture payload.
+ * Reads cached scripture from our own API/database layer.
  *
- * The actual API call is proxied through our own /api/daily-scripture
- * route so the RapidAPI key is never exposed to the browser.
+ * Frontend never calls RapidAPI directly; scheduled backend jobs cache the
+ * daily readings into Supabase, and this service reads from that cache.
  */
 import { supabase } from '@/classes';
 import type {
@@ -18,8 +16,7 @@ import type {
 // ─── Public API ─────────────────────────────────────────────────────────────
 
 /**
- * Fetch today's fully-composed scripture with readings text.
- * Calls our own API route which proxies to RapidAPI + liturgical calendar.
+ * Fetch today's cached scripture from our own backend.
  */
 export const getDailyScripture = async (
   lang: 'en' | 'es' = 'en',

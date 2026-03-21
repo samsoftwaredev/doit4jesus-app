@@ -92,7 +92,7 @@ const FriendsSection = () => {
           >
             <Chip
               icon={<GroupIcon />}
-              label={t.friends}
+              label={t.community}
               sx={{
                 mb: 1.5,
                 bgcolor: alpha(theme.palette.common.white, 0.16),

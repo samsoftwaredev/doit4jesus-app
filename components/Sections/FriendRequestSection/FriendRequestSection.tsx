@@ -104,7 +104,7 @@ const FriendRequestSection = () => {
           },
         );
         toast.success(t.friendRequestSent);
-        router.push(NAV_APP_LINKS.friends.link);
+        router.push(NAV_APP_LINKS.community.link);
       }
     } catch (error) {
       console.error('Error in FriendRequestSection (onConfirm):', error);

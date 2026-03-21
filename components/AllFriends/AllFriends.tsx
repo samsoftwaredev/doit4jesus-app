@@ -105,7 +105,7 @@ const AllFriends = () => {
   return (
     <>
       <Typography fontWeight="bold" fontSize="large">
-        {t.friends}
+        {t.community}
       </Typography>
       <Box ml={4}>
         {friendsProfiles.length === 0 && <>{t.none}</>}

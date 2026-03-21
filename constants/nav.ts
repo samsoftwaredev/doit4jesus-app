@@ -42,12 +42,7 @@ export const NAV_APP_LINKS = {
     label: 'Achievements',
     value: 'achievements',
   },
-  globalPrayerMap: {
-    link: '/app/global-prayer-map',
-    label: 'Global Prayer Map',
-    value: 'global-prayer-map',
-  },
-  friends: { link: '/app/friends', label: 'Friends', value: 'friends' },
+  community: { link: '/app/community', label: 'Community', value: 'community' },
   friendRequest: {
     link: '/app/friend-request/',
     label: 'Friend Request',
@@ -76,12 +71,6 @@ export const NAV_APP_LINKS = {
     label: 'Share Stats',
     value: 'share-stats',
   },
-  // TODO: need to improve this feature before re-adding
-  // spiritualProgress: {
-  //   link: '/app/spiritual-progress',
-  //   label: 'Spiritual Progress',
-  //   value: 'spiritual-progress',
-  // },
 };
 
 export const NEW_USER_REDIRECT = NAV_APP_LINKS.dashboard.link + '?newUser=true';

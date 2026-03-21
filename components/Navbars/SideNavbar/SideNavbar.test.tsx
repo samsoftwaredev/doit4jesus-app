@@ -15,13 +15,13 @@ jest.mock('../../Logo', () => ({
 describe('SideNavbar Component', () => {
   const menuItems = [
     { url: '/dashboard', label: 'Dashboard', icon: <span>D</span> },
-    { url: '/friends', label: 'Friends', icon: <span>F</span> },
+    { url: '/community', label: 'Community', icon: <span>C</span> },
   ];
 
   it('renders menu items', () => {
     render(<SideNavbar handleDrawerClose={jest.fn()} menuItems={menuItems} />);
     expect(screen.getByText('Dashboard')).toBeInTheDocument();
-    expect(screen.getByText('Friends')).toBeInTheDocument();
+    expect(screen.getByText('Community')).toBeInTheDocument();
   });
 
   it('renders the logo', () => {

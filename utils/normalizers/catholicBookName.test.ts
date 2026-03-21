@@ -1,0 +1,38 @@
+import { normalizeCatholicBookName } from './catholicBookName';
+
+describe('normalizeCatholicBookName', () => {
+  it('normalizes modern names to canonical Catholic names', () => {
+    const result = normalizeCatholicBookName('Isaiah');
+    expect(result?.bookId).toBe(27);
+    expect(result?.canonicalBookName).toBe('Prophecy of Isaias (Isaiah)');
+  });
+
+  it('normalizes books with numbering aliases', () => {
+    const first = normalizeCatholicBookName('1 Samuel');
+    expect(first?.bookId).toBe(9);
+    expect(first?.canonicalBookName).toBe('1st Book of Kings (1 Samuel)');
+
+    const second = normalizeCatholicBookName('II Corinthians');
+    expect(second?.bookId).toBe(54);
+    expect(second?.canonicalBookName).toBe(
+      '2nd Epistle of St Paul to the Corinthians',
+    );
+  });
+
+  it('normalizes canonical names and parenthetical aliases', () => {
+    const canonical = normalizeCatholicBookName(
+      'The Apocalypse of St John (Revelation)',
+    );
+    expect(canonical?.bookId).toBe(73);
+
+    const parenthetical = normalizeCatholicBookName('Revelation');
+    expect(parenthetical?.bookId).toBe(73);
+    expect(parenthetical?.canonicalBookName).toBe(
+      'The Apocalypse of St John (Revelation)',
+    );
+  });
+
+  it('returns null for unknown books', () => {
+    expect(normalizeCatholicBookName('Unknown Book')).toBeNull();
+  });
+});
