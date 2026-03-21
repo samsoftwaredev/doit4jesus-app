@@ -15,6 +15,8 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+const THEME_KEY = 'theme-mode';
+
 export const useThemeContext = () => {
   const context = useContext(ThemeContext);
   if (!context) {
@@ -32,7 +34,7 @@ export const ThemeContextProvider = ({ children }: Props) => {
 
   useEffect(() => {
     // Load theme from localStorage on mount
-    const savedTheme = localStorage.getItem('theme-mode') as ThemeMode;
+    const savedTheme = localStorage.getItem(THEME_KEY) as ThemeMode;
     if (savedTheme) {
       setMode(savedTheme);
     } else {
@@ -51,7 +53,7 @@ export const ThemeContextProvider = ({ children }: Props) => {
   const toggleTheme = () => {
     const newMode = mode === 'light' ? 'dark' : 'light';
     setMode(newMode);
-    localStorage.setItem('theme-mode', newMode);
+    localStorage.setItem(THEME_KEY, newMode);
   };
 
   return (

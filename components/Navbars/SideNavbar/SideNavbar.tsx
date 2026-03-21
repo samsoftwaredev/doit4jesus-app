@@ -23,6 +23,7 @@ const LinkItem = styled(Link)(({ theme }) => ({
   width: '100%',
   borderRadius: '10px',
   color: theme.palette.text.secondary,
+  textDecoration: 'none',
   padding: '5px',
   margin: '5px',
   '& svg': {

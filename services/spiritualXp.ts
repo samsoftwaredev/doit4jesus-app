@@ -7,7 +7,6 @@ import type {
   XPEvent,
   XPLevelConfig,
 } from '@/interfaces';
-import type { Json } from '@/interfaces/database';
 
 import { supabase } from '../classes';
 
@@ -98,18 +97,34 @@ export const awardXP = async (
   options?: { idempotencyKey?: string },
 ): Promise<AwardXPResult | null> => {
   try {
-    const { data, error } = await supabase.rpc('award_xp', {
-      p_user_id: userId,
-      p_action_type: actionType,
-      p_metadata: metadata as Record<string, Json | undefined>,
-      p_idempotency_key: options?.idempotencyKey,
+    const response = await fetch('/api/xp/award', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId,
+        actionType,
+        metadata,
+        idempotencyKey: options?.idempotencyKey,
+      }),
     });
 
-    if (error) {
-      console.error('awardXP failed:', error);
+    if (!response.ok) {
+      const errorBody = await response.json().catch(() => ({}));
+      if (
+        response.status === 422 &&
+        errorBody?.code === 'XP_RULE_MISSING' &&
+        typeof actionType === 'string'
+      ) {
+        console.warn(
+          `awardXP skipped: missing active XP rule for ${actionType}`,
+        );
+        return null;
+      }
+      console.error('awardXP failed:', errorBody);
       return null;
     }
 
+    const data = await response.json();
     return toAwardXPResult(data);
   } catch (error) {
     console.error('awardXP unexpected error:', error);
@@ -200,5 +215,58 @@ export const getSpiritualProgress = async (
   } catch (error) {
     console.error('getSpiritualProgress unexpected error:', error);
     return null;
+  }
+};
+
+/**
+ * When a user levels up and the new level has a badgeKey,
+ * insert the corresponding badge into user_badges.
+ */
+export const grantLevelUpBadge = async (
+  userId: string,
+  result: AwardXPResult,
+): Promise<void> => {
+  if (!result.leveledUp) return;
+
+  try {
+    const { data } = await supabase
+      .from('xp_levels_config')
+      .select('badge_key')
+      .eq('level', result.currentLevel)
+      .single();
+
+    if (data?.badge_key) {
+      await supabase.from('user_badges').upsert(
+        {
+          user_id: userId,
+          badge_key: data.badge_key,
+          earned_at: new Date().toISOString(),
+        },
+        { onConflict: 'user_id,badge_key' },
+      );
+    }
+  } catch (error) {
+    console.error('grantLevelUpBadge failed:', error);
+  }
+};
+
+/**
+ * Award XP for each earned badge. Idempotency keys ensure
+ * each badge only awards XP once.
+ */
+export const awardBadgeXP = async (
+  userId: string,
+  earnedBadges: { badgeKey: string }[],
+): Promise<void> => {
+  for (const badge of earnedBadges) {
+    const result = await awardXP(
+      userId,
+      'badge_earned',
+      { badge_key: badge.badgeKey },
+      { idempotencyKey: `badge_earned:${badge.badgeKey}` },
+    );
+    if (result) {
+      await grantLevelUpBadge(userId, result);
+    }
   }
 };

@@ -150,7 +150,7 @@ function HomeNavbar(props: Props) {
             passHref
             href={NAV_MAIN_LINKS.home.link}
           >
-            <Logo type={theme.palette.mode === 'dark' ? 'white' : 'black'} />
+            <Logo type={'white'} />
           </Link>
           <Box sx={{ flexGrow: 1, display: { sm: 'none', md: 'block' } }} />
           <Box sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}>

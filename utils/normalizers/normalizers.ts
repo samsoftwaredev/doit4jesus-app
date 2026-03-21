@@ -83,6 +83,7 @@ export const normalizeUserProfile = (
         rosaryTotalCount: 0,
         joinedRosary: [],
         todaysRosaryCompleted: false,
+        currentStreak: 0,
       };
     }
 
@@ -110,6 +111,7 @@ export const normalizeUserProfile = (
       todaysRosaryCompleted: !!todaysRosaryCompleted,
       rosaryTotalCount: stats.length,
       joinedRosary: joinedRosary ?? [],
+      currentStreak: 0,
     };
   };
 

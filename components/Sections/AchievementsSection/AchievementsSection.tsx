@@ -36,6 +36,7 @@ import {
   getAchievementDashboard,
   localizeAchievementDashboard,
 } from '@/services/achievements';
+import { awardBadgeXP } from '@/services/spiritualXp';
 
 const AchievementsGrid = styled(Box)({
   display: 'grid',
@@ -240,6 +241,10 @@ const AchievementsSection = () => {
       if (isMounted) {
         setDashboard(result);
         setIsLoading(false);
+      }
+      // Award XP for any earned badges (idempotent — safe to call repeatedly)
+      if (result && user?.userId && result.earnedBadges.length > 0) {
+        void awardBadgeXP(user.userId, result.earnedBadges);
       }
     };
 

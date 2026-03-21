@@ -1,5 +1,7 @@
 import enJSON from 'locales/en.json';
 import esJSON from 'locales/es.json';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/router';
 import {
   type JSX,
   createContext,
@@ -9,8 +11,6 @@ import {
 } from 'react';
 
 import { LANG } from '@/interfaces';
-
-const STORAGE_KEY = 'language';
 
 interface LanguageContext {
   /** Unique id of the item */
@@ -29,25 +29,35 @@ const LanguageContext = createContext<LanguageContext | undefined>(undefined);
 
 const LanguageContextProvider = ({ children }: Props) => {
   const [lang, setLangState] = useState<LANG>(LANG.es);
+  const router = useRouter();
+  const pathname = usePathname();
+  const params = useSearchParams();
   const t = lang === LANG.en ? enJSON : esJSON;
+  const newLang = params.get('locale')
+    ? (params.get('locale') as LANG)
+    : LANG.en;
+
+  const alreadyInPath = () => {
+    const currentPathname = window.location.pathname;
+    return pathname === currentPathname;
+  };
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY) as LANG | null;
-      if (stored === LANG.en || stored === LANG.es) {
-        setLangState(stored);
+    if (newLang === LANG.en || newLang === LANG.es) {
+      setLangState(newLang);
+      if (!alreadyInPath()) {
+        router.replace(`/${newLang}${pathname}`);
       }
-    } catch {
-      // localStorage unavailable (SSR / privacy mode)
+    } else {
+      setLangState(LANG.en);
+      router.replace(`/${LANG.en}${pathname}`);
     }
   }, []);
 
   const setLang = (newLang: LANG) => {
     setLangState(newLang);
-    try {
-      localStorage.setItem(STORAGE_KEY, newLang);
-    } catch {
-      // localStorage unavailable
+    if (!alreadyInPath()) {
+      router.replace(`/${newLang}${pathname}`);
     }
   };
 

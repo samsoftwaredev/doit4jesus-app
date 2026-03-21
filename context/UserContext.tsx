@@ -99,11 +99,32 @@ const UserContextProvider = ({ children }: Props) => {
         throw new Error(statsErr.message);
       }
 
+      // Fetch streak from the canonical server-side edge function
+      let currentStreak = 0;
+      try {
+        const { data: streakData, error: streakErr } =
+          await supabase.functions.invoke('get_rosary_streak', {
+            body: { user_id: userSession.user.id },
+          });
+        if (!streakErr && streakData?.streak != null) {
+          currentStreak = Number(streakData.streak);
+        }
+      } catch {
+        console.error('Error fetching rosary streak:', {
+          userId: userSession.user.id,
+        });
+        // Non-critical — streak defaults to 0
+      }
+
       const userDataNormalized = normalizeUserProfile(userProfile, rosaryStats);
       const userData = {
         ...userDataNormalized,
         fullName: `${userDataNormalized.firstName} ${userDataNormalized.lastName}`,
         userId: userSession.user.id,
+        stats: {
+          ...userDataNormalized.stats,
+          currentStreak,
+        },
       };
       setUser(userData);
       return userData;

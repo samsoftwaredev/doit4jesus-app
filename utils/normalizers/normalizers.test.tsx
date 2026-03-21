@@ -109,6 +109,7 @@ describe('normalizeUserProfile', () => {
           },
         ],
         todaysRosaryCompleted: true,
+        currentStreak: 0,
       },
     };
     expect(normalizeUserProfile(inputProfile, inputRosaryStats)).toEqual(

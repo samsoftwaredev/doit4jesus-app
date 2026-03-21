@@ -7,11 +7,11 @@ import {
   getReachedStreakMilestones,
 } from '@/constants/milestones';
 
-const STORAGE_KEY = 'acknowledged_milestones';
+const MILESTONE = 'acknowledged_milestones';
 
 function getAcknowledgedIds(): string[] {
   try {
-    const stored = localStorage.getItem(STORAGE_KEY);
+    const stored = localStorage.getItem(MILESTONE);
     return stored ? JSON.parse(stored) : [];
   } catch {
     return [];
@@ -22,7 +22,7 @@ function addAcknowledgedId(id: string): void {
   const ids = getAcknowledgedIds();
   if (!ids.includes(id)) {
     ids.push(id);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
+    localStorage.setItem(MILESTONE, JSON.stringify(ids));
   }
 }
 
@@ -76,7 +76,7 @@ export function useMilestones(
       );
 
       setAcknowledgedIds(mergedAcknowledged);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(mergedAcknowledged));
+      localStorage.setItem(MILESTONE, JSON.stringify(mergedAcknowledged));
       setIsReady(true);
 
       const localOnly = localAcknowledged.filter(

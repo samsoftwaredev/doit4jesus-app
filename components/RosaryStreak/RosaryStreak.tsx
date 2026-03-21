@@ -1,44 +1,15 @@
 import { Box, Grid, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
 
-import { supabase } from '@/classes/index';
 import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
-
-import Loading from '../Loading';
 
 const RosaryStreak = () => {
   const { t } = useLanguageContext();
   const { user } = useUserContext();
-  const [isLoading, setIsLoading] = useState(true);
-  const [streakNum, setStreakNum] = useState<number | null>(0);
-  const hasStreak = streakNum !== null && streakNum === 1;
-  const hasLongStreak = streakNum !== null && streakNum > 2;
-  const hasFlame = streakNum !== null && streakNum > 4;
-
-  const getRosaryStreak = async () => {
-    try {
-      const { data, error } = await supabase.functions.invoke(
-        'get_rosary_streak',
-        {
-          body: { user_id: user?.userId },
-        },
-      );
-      if (error) {
-        console.error(error);
-      } else {
-        setStreakNum(data.streak);
-      }
-    } catch (error) {
-      console.error('Error in RosaryStreak (getRosaryStreak):', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getRosaryStreak();
-  }, []);
+  const streakNum = user?.stats?.currentStreak ?? 0;
+  const hasStreak = streakNum === 1;
+  const hasLongStreak = streakNum > 2;
+  const hasFlame = streakNum > 4;
 
   return (
     <Grid container spacing={2} justifyContent="center">
@@ -60,20 +31,16 @@ const RosaryStreak = () => {
               <Typography fontSize="4em">🔥</Typography>
             </Box>
           )}
-          {isLoading ? (
-            <Loading isFeature />
-          ) : (
-            <Typography
-              sx={{
-                zIndex: 300,
-                fontWeight: '900',
-                fontSize: '3em',
-                textShadow: '0 0 10px rgb(98, 61, 4)',
-              }}
-            >
-              {streakNum}
-            </Typography>
-          )}
+          <Typography
+            sx={{
+              zIndex: 300,
+              fontWeight: '900',
+              fontSize: '3em',
+              textShadow: '0 0 10px rgb(98, 61, 4)',
+            }}
+          >
+            {streakNum}
+          </Typography>
         </Box>
         {hasLongStreak && (
           <Typography fontSize="small" textAlign="center">

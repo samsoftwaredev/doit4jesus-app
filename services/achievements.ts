@@ -1,4 +1,4 @@
-import { supabase } from '@/classes';
+import { db, supabase } from '@/classes';
 import type {
   AchievementBadge,
   AchievementDashboard,
@@ -130,7 +130,12 @@ type BadgeStats = Record<string, number>;
 
 const clampPercent = (value: number) => Math.max(0, Math.min(100, value));
 
-const buildStatMap = (user: User | null | undefined): BadgeStats => {
+/**
+ * Fallback stat map used only when DB queries fail or userId is missing.
+ * Only prayer_count, rosary_count, and prayer_streak come from real data;
+ * the rest are rough estimates so the UI doesn't break.
+ */
+const buildFallbackStatMap = (user: User | null | undefined): BadgeStats => {
   const rosaryCount = user?.stats?.rosaryTotalCount ?? 0;
   const streak = user?.stats?.joinedRosary?.length
     ? user.stats.joinedRosary.length
@@ -142,11 +147,62 @@ const buildStatMap = (user: User | null | undefined): BadgeStats => {
       ? Math.max(user?.stats?.rosaryTotalCount ?? 0, streak)
       : streak,
     rosary_count: rosaryCount,
-    community_posts: Math.min(Math.floor(rosaryCount / 2), 8),
-    scripture_sessions: Math.min(Math.floor(rosaryCount / 3), 10),
-    friends_invited: user?.firstName ? 1 : 0,
-    global_prayer_sessions: Math.min(Math.floor(rosaryCount / 2), 12),
+    community_posts: 0,
+    scripture_sessions: 0,
+    friends_invited: 0,
+    global_prayer_sessions: 0,
   };
+};
+
+/**
+ * Fetch real stats from the DB for the four previously-fabricated metrics.
+ * Falls back to buildFallbackStatMap if anything fails.
+ */
+const fetchRealStats = async (
+  user: User | null | undefined,
+): Promise<BadgeStats> => {
+  const fallback = buildFallbackStatMap(user);
+  const userId = user?.userId;
+  if (!userId) return fallback;
+
+  try {
+    const [scriptureRes, globalPrayerRes, friendsRes, communityRes] =
+      await Promise.all([
+        // scripture_completions may not be in generated DB types yet
+        (supabase as any)
+          .from('scripture_completions')
+          .select('id', { count: 'exact', head: true })
+          .eq('user_id', userId),
+
+        db
+          .getGlobalPrayerSessions()
+          .select('id', { count: 'exact', head: true })
+          .eq('created_by', userId),
+
+        db
+          .getFriends()
+          .select('id', { count: 'exact', head: true })
+          .or(`uuid1.eq.${userId},uuid2.eq.${userId}`),
+
+        db
+          .getEventMessages()
+          .select('id', { count: 'exact', head: true })
+          .eq('user_id', userId)
+          .is('deleted_at', null),
+      ]);
+
+    return {
+      ...fallback,
+      scripture_sessions: scriptureRes.count ?? fallback.scripture_sessions,
+      global_prayer_sessions:
+        globalPrayerRes.count ?? fallback.global_prayer_sessions,
+      friends_invited: friendsRes.count ?? fallback.friends_invited,
+      community_posts: communityRes.count ?? fallback.community_posts,
+    };
+  } catch (error) {
+    console.error('fetchRealStats failed, using fallback:', error);
+    return fallback;
+  }
 };
 
 const statKeyByRequirement: Record<BadgeDefinition['requirementType'], string> =
@@ -224,10 +280,10 @@ const buildProgressItems = (
           : `${badge.remainingCount} more steps to reach this milestone.`,
     }));
 
-const buildMockAchievementDashboard = (
+const buildMockAchievementDashboard = async (
   user: User | null | undefined,
-): AchievementDashboard => {
-  const stats = buildStatMap(user);
+): Promise<AchievementDashboard> => {
+  const stats = await fetchRealStats(user);
   const earnedBadgeDates: Record<string, string> = {
     first_prayer: '2026-02-10T08:00:00.000Z',
     seven_day_streak:

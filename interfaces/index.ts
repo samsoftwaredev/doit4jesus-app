@@ -137,6 +137,7 @@ export interface User {
   stats: {
     rosaryTotalCount: number;
     todaysRosaryCompleted: boolean;
+    currentStreak: number;
     joinedRosary: {
       userId: string | null;
       date: string;

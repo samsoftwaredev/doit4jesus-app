@@ -14,9 +14,6 @@ const component = () => {
 };
 
 describe('CallToAction Component', () => {
-  beforeEach(() => {
-    localStorage.setItem('language', 'en');
-  });
   it('renders the call to action heading', () => {
     render(component());
     const headingElement = screen.getByText(/battle evil/i);
