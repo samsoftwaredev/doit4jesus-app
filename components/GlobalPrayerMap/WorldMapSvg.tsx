@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import { geoGraticule } from 'd3-geo';
 import { interpolateRgb } from 'd3-interpolate';
 import { scaleLinear, scaleSqrt } from 'd3-scale';
@@ -17,10 +17,10 @@ import type {
 
 import {
   ANIM,
-  MAP_COLORS,
   MAP_HEIGHT,
   MAP_WIDTH,
   MARKER_RADIUS,
+  getMapColors,
 } from './helpers/constants';
 import { createPathGenerator, createProjection } from './helpers/projection';
 
@@ -34,14 +34,18 @@ const graticule = geoGraticule().step([20, 20])();
 
 // ── Styled wrapper ───────────────────────────────────────────────────────────
 
-const SvgWrapper = styled(Box)({
-  position: 'relative',
-  width: '100%',
-  overflow: 'hidden',
-  borderRadius: 14,
-  background: MAP_COLORS.water,
-  border: `1px solid ${MAP_COLORS.divider}`,
-  '& svg': { display: 'block', width: '100%', height: 'auto' },
+const SvgWrapper = styled(Box)(({ theme }) => {
+  const colors = getMapColors(theme);
+  return {
+    position: 'relative',
+    width: '100%',
+    minWidth: 600,
+    overflow: 'hidden',
+    borderRadius: 14,
+    background: colors.water,
+    border: `1px solid ${colors.divider}`,
+    '& svg': { display: 'block', width: '100%', height: 'auto' },
+  };
 });
 
 // ── Keyframes injected once ──────────────────────────────────────────────────
@@ -70,6 +74,8 @@ const WorldMapSvg = ({
   onTooltip,
   onSelect,
 }: Props) => {
+  const theme = useTheme();
+  const colors = getMapColors(theme);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [, setTick] = useState(0);
 
@@ -105,10 +111,10 @@ const WorldMapSvg = ({
     () =>
       scaleLinear<string>()
         .domain([0, maxCountryPrayers])
-        .range([MAP_COLORS.choroplethLow, MAP_COLORS.choroplethHigh])
+        .range([colors.choroplethLow, colors.choroplethHigh])
         .interpolate(interpolateRgb as any)
         .clamp(true),
-    [maxCountryPrayers],
+    [maxCountryPrayers, colors.choroplethLow, colors.choroplethHigh],
   );
 
   // Build a lookup: ISO‑3166 numeric → PrayerCountry
@@ -251,25 +257,25 @@ const WorldMapSvg = ({
           <radialGradient id="markerGrad">
             <stop
               offset="0%"
-              stopColor={MAP_COLORS.successLight}
+              stopColor={colors.successLight}
               stopOpacity="0.9"
             />
             <stop
               offset="100%"
-              stopColor={MAP_COLORS.successMain}
+              stopColor={colors.successMain}
               stopOpacity="0.4"
             />
           </radialGradient>
         </defs>
 
         {/* ── Water bg ─────────────────────────────────────────────────── */}
-        <rect width={MAP_WIDTH} height={MAP_HEIGHT} fill={MAP_COLORS.water} />
+        <rect width={MAP_WIDTH} height={MAP_HEIGHT} fill={colors.water} />
 
         {/* ── Graticule ────────────────────────────────────────────────── */}
         <path
           d={pathGen(graticule) ?? ''}
           fill="none"
-          stroke={MAP_COLORS.divider}
+          stroke={colors.divider}
           strokeWidth={0.3}
         />
 
@@ -283,14 +289,14 @@ const WorldMapSvg = ({
             const fillColor =
               view === 'country' && cd
                 ? choroplethScale(cd.prayerCount)
-                : MAP_COLORS.land;
+                : colors.land;
 
             return (
               <path
                 key={numId}
                 d={pathGen(feat) ?? ''}
                 fill={fillColor}
-                stroke={MAP_COLORS.landStroke}
+                stroke={colors.landStroke}
                 strokeWidth={0.4}
                 style={{
                   cursor: view === 'country' && cd ? 'pointer' : 'default',
@@ -335,7 +341,7 @@ const WorldMapSvg = ({
                     cy={cy}
                     r={r}
                     fill="none"
-                    stroke={MAP_COLORS.successLight}
+                    stroke={colors.successLight}
                     strokeWidth={1}
                     opacity={0.5}
                     style={{
@@ -360,7 +366,7 @@ const WorldMapSvg = ({
                       textAnchor="middle"
                       fontSize={7}
                       fontWeight={600}
-                      fill={MAP_COLORS.textSecondary}
+                      fill={colors.textSecondary}
                       style={{ pointerEvents: 'none' }}
                     >
                       {city.city}
@@ -392,7 +398,7 @@ const WorldMapSvg = ({
                   textAnchor="middle"
                   fontSize={7}
                   fontWeight={700}
-                  fill={MAP_COLORS.textPrimary}
+                  fill={colors.textPrimary}
                   style={{
                     pointerEvents: 'none',
                     textShadow: '0 1px 4px rgba(0,0,0,0.7)',

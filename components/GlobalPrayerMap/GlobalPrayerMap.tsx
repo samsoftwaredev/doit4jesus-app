@@ -2,13 +2,14 @@ import PublicIcon from '@mui/icons-material/Public';
 import {
   Box,
   Chip,
+  Grid,
   LinearProgress,
   Skeleton,
   Stack,
   Typography,
   alpha,
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -26,21 +27,21 @@ import MapControls from './MapControls';
 import MapSummaryCards from './MapSummaryCards';
 import MapTooltip from './MapTooltip';
 import { aggregateByCountry, computeSummary } from './helpers/aggregation';
-import { MAP_COLORS } from './helpers/constants';
+import { getMapColors } from './helpers/constants';
 
 // Heavy SVG + D3 bundle – code-split with next/dynamic
 const WorldMapSvg = dynamic(() => import('./WorldMapSvg'), {
   ssr: false,
   loading: () => (
     <Box
-      sx={{
+      sx={(theme) => ({
         height: { xs: 260, md: 380 },
         borderRadius: 3.5,
-        bgcolor: MAP_COLORS.water,
+        bgcolor: getMapColors(theme).water,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-      }}
+      })}
     >
       <LinearProgress sx={{ width: '50%' }} />
     </Box>
@@ -55,15 +56,23 @@ const Root = styled(Box)({
   gap: 12,
 });
 
-const HeroPanel = styled(Box)({
-  borderRadius: 14,
-  padding: '20px 24px',
-  color: MAP_COLORS.textPrimary,
-  background: `linear-gradient(135deg, ${MAP_COLORS.bgDefault} 0%, ${MAP_COLORS.bgPaper} 55%, ${alpha(MAP_COLORS.successDark, 0.45)} 100%)`,
+const HeroPanel = styled(Box)(({ theme }) => {
+  const colors = getMapColors(theme);
+  return {
+    borderRadius: 14,
+    padding: '16px 16px',
+    color: colors.textPrimary,
+    background: `linear-gradient(135deg, ${colors.bgDefault} 0%, ${colors.bgPaper} 55%, ${alpha(colors.successDark, 0.45)} 100%)`,
+    [theme.breakpoints.up('sm')]: {
+      padding: '20px 24px',
+    },
+  };
 });
 
 const MapSection = styled(Box)({
   position: 'relative',
+  overflowX: 'auto',
+  WebkitOverflowScrolling: 'touch',
 });
 
 // ── Component ────────────────────────────────────────────────────────────────
@@ -75,6 +84,8 @@ interface Props {
 
 const GlobalPrayerMap = ({ cities: externalCities }: Props) => {
   const { t } = useLanguageContext();
+  const theme = useTheme();
+  const colors = getMapColors(theme);
   const [view, setView] = useState<PrayerMapView>('city');
   const [tooltip, setTooltip] = useState<MapTooltipData | null>(null);
   const [selected, setSelected] = useState<SelectedLocationDetail | null>(null);
@@ -128,15 +139,26 @@ const GlobalPrayerMap = ({ cities: externalCities }: Props) => {
           label={t.prayerMapTitle ?? 'Global Prayer Map'}
           sx={{
             mb: 1,
-            bgcolor: alpha(MAP_COLORS.successMain, 0.16),
-            color: MAP_COLORS.successLight,
+            bgcolor: alpha(colors.successMain, 0.16),
+            color: colors.successLight,
             fontWeight: 700,
           }}
         />
-        <Typography variant="h5" fontWeight={800} mb={0.5}>
+        <Typography
+          variant="h5"
+          fontWeight={800}
+          mb={0.5}
+          sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }}
+        >
           {t.prayerMapHeading ?? 'Prayer is happening everywhere'}
         </Typography>
-        <Typography sx={{ color: MAP_COLORS.textSecondary }}>
+        <Typography
+          variant="body2"
+          sx={{
+            color: colors.textSecondary,
+            fontSize: { xs: '0.8rem', sm: '0.875rem' },
+          }}
+        >
           {t.prayerMapSubheading ??
             'See prayer happening around the world in real time'}
         </Typography>
@@ -144,16 +166,17 @@ const GlobalPrayerMap = ({ cities: externalCities }: Props) => {
 
       {/* ── Summary cards ────────────────────────────────────────────────── */}
       {isLoading ? (
-        <Stack direction="row" spacing={1}>
+        <Grid container spacing={1}>
           {[...Array(4)].map((_, i) => (
-            <Skeleton
-              key={i}
-              variant="rounded"
-              height={64}
-              sx={{ flex: 1, borderRadius: 3 }}
-            />
+            <Grid key={i} size={{ xs: 12, sm: 6, md: 3 }}>
+              <Skeleton
+                variant="rounded"
+                height={64}
+                sx={{ borderRadius: 3 }}
+              />
+            </Grid>
           ))}
-        </Stack>
+        </Grid>
       ) : (
         <MapSummaryCards summary={summary} translations={t} />
       )}
@@ -163,7 +186,7 @@ const GlobalPrayerMap = ({ cities: externalCities }: Props) => {
         <Typography
           variant="subtitle2"
           fontWeight={700}
-          sx={{ color: MAP_COLORS.textPrimary }}
+          sx={{ color: colors.textPrimary }}
         >
           {view === 'city'
             ? (t.prayerMapCityView ?? 'City View')
@@ -200,11 +223,9 @@ const GlobalPrayerMap = ({ cities: externalCities }: Props) => {
         </MapSection>
       </Stack>
 
-      <Stack>
-        <Box sx={{ width: { xs: '100%', md: 260 }, flexShrink: 0 }}>
-          <LocationDetailPanel location={selected} translations={t} />
-        </Box>
-      </Stack>
+      <Box sx={{ width: '100%' }}>
+        <LocationDetailPanel location={selected} translations={t} />
+      </Box>
     </Root>
   );
 };

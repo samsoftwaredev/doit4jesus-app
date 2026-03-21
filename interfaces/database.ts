@@ -197,6 +197,81 @@ export type Database = {
         };
         Relationships: [];
       };
+      daily_scripture_cache: {
+        Row: {
+          created_at: string;
+          failed_readings: Json;
+          featured_verse_reference: string;
+          featured_verse_text: string;
+          fetch_status: string;
+          id: number;
+          liturgical_title: string;
+          locale: string;
+          readings: Json;
+          scripture_date: string;
+          season: string;
+          updated_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          failed_readings?: Json;
+          featured_verse_reference?: string;
+          featured_verse_text?: string;
+          fetch_status?: string;
+          id?: number;
+          liturgical_title: string;
+          locale: string;
+          readings?: Json;
+          scripture_date: string;
+          season: string;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          failed_readings?: Json;
+          featured_verse_reference?: string;
+          featured_verse_text?: string;
+          fetch_status?: string;
+          id?: number;
+          liturgical_title?: string;
+          locale?: string;
+          readings?: Json;
+          scripture_date?: string;
+          season?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      daily_scripture_cron_runs: {
+        Row: {
+          created_at: string;
+          error_message: string | null;
+          failed_readings: Json;
+          id: number;
+          locale: string;
+          scripture_date: string;
+          status: string;
+        };
+        Insert: {
+          created_at?: string;
+          error_message?: string | null;
+          failed_readings?: Json;
+          id?: number;
+          locale: string;
+          scripture_date: string;
+          status: string;
+        };
+        Update: {
+          created_at?: string;
+          error_message?: string | null;
+          failed_readings?: Json;
+          id?: number;
+          locale?: string;
+          scripture_date?: string;
+          status?: string;
+        };
+        Relationships: [];
+      };
       event_messages: {
         Row: {
           created_at: string;
@@ -750,6 +825,45 @@ export type Database = {
         };
         Relationships: [];
       };
+      prayer_locations: {
+        Row: {
+          active_users: number;
+          city: string;
+          country_code: string;
+          country_name: string;
+          id: number;
+          last_updated: string;
+          latitude: number;
+          live_sessions: number;
+          longitude: number;
+          prayer_count: number;
+        };
+        Insert: {
+          active_users?: number;
+          city: string;
+          country_code: string;
+          country_name: string;
+          id?: number;
+          last_updated?: string;
+          latitude: number;
+          live_sessions?: number;
+          longitude: number;
+          prayer_count?: number;
+        };
+        Update: {
+          active_users?: number;
+          city?: string;
+          country_code?: string;
+          country_name?: string;
+          id?: number;
+          last_updated?: string;
+          latitude?: number;
+          live_sessions?: number;
+          longitude?: number;
+          prayer_count?: number;
+        };
+        Relationships: [];
+      };
       profiles: {
         Row: {
           birth_date: string | null;
@@ -761,6 +875,7 @@ export type Database = {
           language: string | null;
           last_name: string | null;
           picture_url: string | null;
+          role: string;
           rosary_count: number | null;
           rosary_streak: number;
           updated_at: string | null;
@@ -776,6 +891,7 @@ export type Database = {
           language?: string | null;
           last_name?: string | null;
           picture_url?: string | null;
+          role?: string;
           rosary_count?: number | null;
           rosary_streak?: number;
           updated_at?: string | null;
@@ -791,6 +907,7 @@ export type Database = {
           language?: string | null;
           last_name?: string | null;
           picture_url?: string | null;
+          role?: string;
           rosary_count?: number | null;
           rosary_streak?: number;
           updated_at?: string | null;
@@ -876,6 +993,27 @@ export type Database = {
             referencedColumns: ['id'];
           },
         ];
+      };
+      scripture_completions: {
+        Row: {
+          completed_at: string;
+          id: number;
+          liturgical_date: string;
+          user_id: string;
+        };
+        Insert: {
+          completed_at?: string;
+          id?: number;
+          liturgical_date: string;
+          user_id: string;
+        };
+        Update: {
+          completed_at?: string;
+          id?: number;
+          liturgical_date?: string;
+          user_id?: string;
+        };
+        Relationships: [];
       };
       user_badges: {
         Row: {
@@ -1052,6 +1190,7 @@ export type Database = {
         Row: {
           action_type: string;
           created_at: string;
+          description: string | null;
           is_active: boolean;
           optional_conditions: Json;
           updated_at: string;
@@ -1060,6 +1199,7 @@ export type Database = {
         Insert: {
           action_type: string;
           created_at?: string;
+          description?: string | null;
           is_active?: boolean;
           optional_conditions?: Json;
           updated_at?: string;
@@ -1068,6 +1208,7 @@ export type Database = {
         Update: {
           action_type?: string;
           created_at?: string;
+          description?: string | null;
           is_active?: boolean;
           optional_conditions?: Json;
           updated_at?: string;
@@ -1108,8 +1249,22 @@ export type Database = {
         };
         Relationships: [];
       };
+      prayer_locations_by_country: {
+        Row: {
+          active_users: number | null;
+          country_code: string | null;
+          country_name: string | null;
+          last_updated: string | null;
+          live_sessions: number | null;
+          prayer_count: number | null;
+        };
+        Relationships: [];
+      };
     };
     Functions: {
+      admin_retention_d1: { Args: never; Returns: number };
+      admin_retention_d30: { Args: never; Returns: number };
+      admin_retention_d7: { Args: never; Returns: number };
       award_xp: {
         Args: {
           p_action_type: string;
@@ -1132,6 +1287,27 @@ export type Database = {
       };
       ensure_user_xp_row: { Args: { p_user_id: string }; Returns: undefined };
       get_all_rosary_count: { Args: never; Returns: number };
+      get_prayer_map_cities: {
+        Args: never;
+        Returns: {
+          active_users: number;
+          city: string;
+          country_code: string;
+          country_name: string;
+          id: number;
+          last_updated: string;
+          latitude: number;
+          live_sessions: number;
+          longitude: number;
+          prayer_count: number;
+        }[];
+        SetofOptions: {
+          from: '*';
+          to: 'prayer_locations';
+          isOneToOne: false;
+          isSetofReturn: true;
+        };
+      };
       get_profiles_by_user_ids: {
         Args: { user_ids: string[] };
         Returns: {
@@ -1196,6 +1372,17 @@ export type Database = {
           total_xp: number;
           user_id: string;
         }[];
+      };
+      increment_prayer_count: {
+        Args: {
+          p_city: string;
+          p_country_code: string;
+          p_country_name: string;
+          p_increment?: number;
+          p_latitude: number;
+          p_longitude: number;
+        };
+        Returns: undefined;
       };
       insert_into_rosary_stats: {
         Args: {

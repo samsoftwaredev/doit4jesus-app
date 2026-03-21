@@ -1,21 +1,24 @@
 import { Box, Stack, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 
 import type { MapTooltipData } from '@/interfaces/globalPrayerMap';
 
-import { MAP_COLORS } from './helpers/constants';
+import { getMapColors } from './helpers/constants';
 
-const TooltipBox = styled(Box)({
-  position: 'absolute',
-  pointerEvents: 'none',
-  zIndex: 20,
-  padding: '10px 14px',
-  borderRadius: 10,
-  background: MAP_COLORS.tooltipBg,
-  border: `1px solid ${MAP_COLORS.tooltipBorder}`,
-  backdropFilter: 'blur(8px)',
-  maxWidth: 220,
-  transition: 'opacity 0.15s ease, transform 0.15s ease',
+const TooltipBox = styled(Box)(({ theme }) => {
+  const colors = getMapColors(theme);
+  return {
+    position: 'absolute',
+    pointerEvents: 'none',
+    zIndex: 20,
+    padding: '8px 12px',
+    borderRadius: 10,
+    background: colors.tooltipBg,
+    border: `1px solid ${colors.tooltipBorder}`,
+    backdropFilter: 'blur(8px)',
+    maxWidth: 200,
+    transition: 'opacity 0.15s ease, transform 0.15s ease',
+  };
 });
 
 interface Props {
@@ -24,35 +27,51 @@ interface Props {
 }
 
 const MapTooltip = ({ data, containerRect }: Props) => {
+  const theme = useTheme();
+  const colors = getMapColors(theme);
+
   if (!data || !containerRect) return null;
 
-  const left = data.x + 14;
+  // Keep tooltip within bounds on small screens
+  const left = Math.min(data.x + 14, (containerRect.width ?? 300) - 210);
   const top = data.y - 10;
 
   return (
-    <TooltipBox sx={{ left, top, opacity: 1 }}>
+    <TooltipBox sx={{ left: Math.max(0, left), top, opacity: 1 }}>
       <Typography
         variant="subtitle2"
         fontWeight={700}
-        sx={{ color: MAP_COLORS.textPrimary, lineHeight: 1.3 }}
+        sx={{ color: colors.textPrimary, lineHeight: 1.3 }}
       >
         {data.name}
       </Typography>
       {data.countryName && (
         <Typography
           variant="caption"
-          sx={{ color: MAP_COLORS.textSecondary, display: 'block', mb: 0.5 }}
+          sx={{ color: colors.textSecondary, display: 'block', mb: 0.5 }}
         >
           {data.countryName}
         </Typography>
       )}
       <Stack spacing={0.3} mt={0.5}>
-        <StatRow label="Prayers" value={data.prayerCount.toLocaleString()} />
-        <StatRow label="Active" value={String(data.activeUsers)} />
+        <StatRow
+          label="Prayers"
+          value={data.prayerCount.toLocaleString()}
+          textSecondary={colors.textSecondary}
+          textPrimary={colors.textPrimary}
+        />
+        <StatRow
+          label="Active"
+          value={String(data.activeUsers)}
+          textSecondary={colors.textSecondary}
+          textPrimary={colors.textPrimary}
+        />
         {data.liveSessions > 0 && (
           <StatRow
             label="Live sessions"
             value={String(data.liveSessions)}
+            textSecondary={colors.textSecondary}
+            textPrimary={colors.successLight}
             accent
           />
         )}
@@ -65,15 +84,19 @@ const StatRow = ({
   label,
   value,
   accent,
+  textSecondary,
+  textPrimary,
 }: {
   label: string;
   value: string;
   accent?: boolean;
+  textSecondary: string;
+  textPrimary: string;
 }) => (
   <Stack direction="row" justifyContent="space-between" spacing={2}>
     <Typography
       variant="caption"
-      sx={{ color: MAP_COLORS.textSecondary, fontSize: '0.7rem' }}
+      sx={{ color: textSecondary, fontSize: '0.7rem' }}
     >
       {label}
     </Typography>
@@ -81,7 +104,7 @@ const StatRow = ({
       variant="caption"
       fontWeight={700}
       sx={{
-        color: accent ? MAP_COLORS.successLight : MAP_COLORS.textPrimary,
+        color: textPrimary,
         fontSize: '0.7rem',
       }}
     >

@@ -1,10 +1,11 @@
 import PlaceIcon from '@mui/icons-material/Place';
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 import { Box, Button, Chip, Stack, Typography, alpha } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 import type { SelectedLocationDetail } from '@/interfaces/globalPrayerMap';
 
-import { MAP_COLORS } from './helpers/constants';
+import { type MapColors, getMapColors } from './helpers/constants';
 
 interface Props {
   location: SelectedLocationDetail | null;
@@ -17,26 +18,29 @@ const LocationDetailPanel = ({
   translations: t,
   onJoinSession,
 }: Props) => {
+  const theme = useTheme();
+  const colors = getMapColors(theme);
+
   if (!location) {
     return (
       <Box
         sx={{
           p: 2,
           borderRadius: 3,
-          bgcolor: MAP_COLORS.bgPaper,
-          border: `1px solid ${MAP_COLORS.divider}`,
+          bgcolor: colors.bgPaper,
+          border: `1px solid ${colors.divider}`,
           textAlign: 'center',
         }}
       >
         <PlaceIcon
           sx={{
             fontSize: 36,
-            color: MAP_COLORS.successMain,
+            color: colors.successMain,
             opacity: 0.4,
             mb: 0.5,
           }}
         />
-        <Typography variant="body2" sx={{ color: MAP_COLORS.textSecondary }}>
+        <Typography variant="body2" sx={{ color: colors.textSecondary }}>
           {t.prayerMapSelectLocation ?? 'Click a marker to view details'}
         </Typography>
       </Box>
@@ -48,21 +52,21 @@ const LocationDetailPanel = ({
       sx={{
         p: 2,
         borderRadius: 3,
-        bgcolor: MAP_COLORS.bgPaper,
-        border: `1px solid ${alpha(MAP_COLORS.successMain, 0.25)}`,
+        bgcolor: colors.bgPaper,
+        border: `1px solid ${alpha(colors.successMain, 0.25)}`,
       }}
     >
       <Typography
         variant="subtitle1"
         fontWeight={700}
-        sx={{ color: MAP_COLORS.textPrimary, mb: 0.5 }}
+        sx={{ color: colors.textPrimary, mb: 0.5 }}
       >
         {location.name}
       </Typography>
       {location.countryName && (
         <Typography
           variant="caption"
-          sx={{ color: MAP_COLORS.textSecondary, display: 'block', mb: 1 }}
+          sx={{ color: colors.textSecondary, display: 'block', mb: 1 }}
         >
           {location.countryName}
         </Typography>
@@ -70,10 +74,12 @@ const LocationDetailPanel = ({
 
       <Stack spacing={0.8}>
         <DetailRow
+          colors={colors}
           label={t.prayerMapTotalPrayers ?? 'Total Prayers'}
           value={location.prayerCount.toLocaleString()}
         />
         <DetailRow
+          colors={colors}
           label={t.prayerMapActiveUsers ?? 'Active Users'}
           value={String(location.activeUsers)}
         />
@@ -84,8 +90,8 @@ const LocationDetailPanel = ({
             size="small"
             sx={{
               width: 'fit-content',
-              bgcolor: alpha(MAP_COLORS.successMain, 0.15),
-              color: MAP_COLORS.successLight,
+              bgcolor: alpha(colors.successMain, 0.15),
+              color: colors.successLight,
               fontWeight: 600,
               fontSize: '0.7rem',
             }}
@@ -102,8 +108,8 @@ const LocationDetailPanel = ({
             mt: 1.5,
             textTransform: 'none',
             fontWeight: 600,
-            bgcolor: MAP_COLORS.successMain,
-            '&:hover': { bgcolor: MAP_COLORS.successDark },
+            bgcolor: colors.successMain,
+            '&:hover': { bgcolor: colors.successDark },
           }}
         >
           {t.joinSession ?? 'Join Session'}
@@ -113,18 +119,26 @@ const LocationDetailPanel = ({
   );
 };
 
-const DetailRow = ({ label, value }: { label: string; value: string }) => (
+const DetailRow = ({
+  colors,
+  label,
+  value,
+}: {
+  colors: MapColors;
+  label: string;
+  value: string;
+}) => (
   <Stack direction="row" justifyContent="space-between">
     <Typography
       variant="caption"
-      sx={{ color: MAP_COLORS.textSecondary, fontSize: '0.75rem' }}
+      sx={{ color: colors.textSecondary, fontSize: '0.75rem' }}
     >
       {label}
     </Typography>
     <Typography
       variant="caption"
       fontWeight={700}
-      sx={{ color: MAP_COLORS.textPrimary, fontSize: '0.75rem' }}
+      sx={{ color: colors.textPrimary, fontSize: '0.75rem' }}
     >
       {value}
     </Typography>
