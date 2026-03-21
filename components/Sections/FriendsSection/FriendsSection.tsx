@@ -48,10 +48,10 @@ const FriendsGrid = styled(Box)({
     gridTemplateColumns: '1fr 1fr 1fr',
     gridTemplateRows: 'auto',
     gridTemplateAreas: `
-      'CommunityHero CommunityHero CommunityHero'
-      'FriendRequests FriendRequests FriendRequests'
-      'InviteFriend TodaysChallenge UserLevel'
-      'Friends Friends Friends'`,
+    'CommunityHero CommunityHero CommunityHero'
+    'InviteFriend TodaysChallenge UserLevel'
+    'Friends Friends FriendRequests'
+     `,
   },
 });
 
@@ -91,7 +91,7 @@ const FriendsSection = () => {
             }}
           >
             <Chip
-              icon={<GroupIcon />}
+              icon={<GroupIcon sx={{ color: theme.palette.common.white }} />}
               label={t.community}
               sx={{
                 mb: 1.5,
@@ -122,6 +122,9 @@ const FriendsSection = () => {
                 }}
               />
             </Box>
+            <Typography fontWeight="100" textAlign="center">
+              {t.todaysChallengeDescription2}
+            </Typography>
             <Box
               display="flex"
               flexDirection="column"
@@ -143,9 +146,6 @@ const FriendsSection = () => {
                 </span>
                 <span>/1</span>
               </Stats>
-              <Typography fontWeight="100" textAlign="center">
-                {t.todaysChallengeDescription2}
-              </Typography>
             </Box>
           </Card>
         </div>

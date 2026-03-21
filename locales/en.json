@@ -436,6 +436,10 @@
   "sinType": "Type of Sin",
   "mortalSin": "Mortal Sin",
   "venialSin": "Venial Sin",
+  "prevention": "Prevention",
+  "counsels": "Spiritual Counsel",
+  "patronSaints": "Patron Saints",
+  "saintsIntercession": "These saints also struggled with this sin and overcame it through God's grace. Ask for their intercession.",
 
   "unableToDeclineFriendRequest": "Unable to decline friend request",
   "unableToConfirmFriendRequest": "Unable to confirm friend request",

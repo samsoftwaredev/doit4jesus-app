@@ -22,6 +22,9 @@ export interface CardProps {
   question: string;
   description?: string | JSX.Element | JSX.Element[];
   img?: string;
+  counsels?: string[];
+  prevention?: string[];
+  saints?: string[];
 }
 
 export interface ExamTypes {

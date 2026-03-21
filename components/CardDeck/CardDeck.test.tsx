@@ -11,8 +11,30 @@ jest.mock('../StarButton', () => ({
 
 describe('CardDeck Component', () => {
   const mockSteps = [
-    { title: 'Step 1', question: 'Q1', description: 'D1', img: '/img1.jpg' },
-    { title: 'Step 2', question: 'Q2', description: 'D2', img: '/img2.jpg' },
+    {
+      title: 'Step 1',
+      question: 'Q1',
+      description: 'D1',
+      img: '/img1.jpg',
+      category: 'single',
+      commandment: '1',
+      type: 'mortal',
+      counsels: ['Seek guidance from a priest.'],
+      prevention: ['Daily Scripture reading.'],
+      saints: ['St. Augustine'],
+    },
+    {
+      title: 'Step 2',
+      question: 'Q2',
+      description: 'D2',
+      img: '/img2.jpg',
+      category: 'single',
+      commandment: '2',
+      type: 'venial',
+      counsels: [],
+      prevention: [],
+      saints: [],
+    },
   ];
   const mockSetActiveStep = jest.fn();
 
@@ -38,5 +60,22 @@ describe('CardDeck Component', () => {
     // Back, Yes, No icon buttons
     const buttons = container.querySelectorAll('button');
     expect(buttons.length).toBeGreaterThanOrEqual(3);
+  });
+
+  it('shows saints, counsels, and prevention in expanded details', () => {
+    render(
+      <CardDeck
+        steps={mockSteps}
+        activeStep={0}
+        setActiveStep={mockSetActiveStep}
+      />,
+    );
+    // Expand "More Details" accordion
+    fireEvent.click(screen.getByText('More Details'));
+    expect(screen.getByText('St. Augustine')).toBeInTheDocument();
+    expect(
+      screen.getByText('Seek guidance from a priest.'),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Daily Scripture reading.')).toBeInTheDocument();
   });
 });

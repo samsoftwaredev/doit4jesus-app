@@ -46,6 +46,12 @@ const ExamPage = ({ slug }: ExamPageProps) => {
     if (localStorage.getItem(STORAGE_KEY_NOTE) === 'true') setOpenNote(false);
   }, []);
 
+  useEffect(() => {
+    // Reset state when slug changes
+    setActiveStep(0);
+    setQuestions(exam?.questions?.[lang] ?? []);
+  }, [lang]);
+
   if (!exam) return null;
 
   const progress =
@@ -75,6 +81,9 @@ const ExamPage = ({ slug }: ExamPageProps) => {
     category: q.category,
     commandment: q.commandment,
     type: q.type,
+    counsels: q.counsels,
+    prevention: q.prevention,
+    saints: q.saints,
   }));
 
   return (

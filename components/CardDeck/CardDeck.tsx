@@ -2,6 +2,8 @@ import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
 import {
   Accordion,
   AccordionDetails,
@@ -12,6 +14,10 @@ import {
   Divider,
   Grid,
   IconButton,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
   Tooltip,
   Typography,
 } from '@mui/material';
@@ -60,10 +66,6 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
     setActiveStep(steps.length);
   };
 
-  const handelSave = () => {
-    // TODO: API call to save
-  };
-
   return (
     <Box>
       {steps
@@ -76,10 +78,9 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
                 flexDirection="row"
                 justifyContent="space-between"
               >
-                <Typography variant="h5" component="h3">
+                <Typography color="secondary.main" variant="h5" component="h3">
                   {index + 1}) {step.title}
                 </Typography>
-                <StarButton onClick={handelSave} />
               </Grid>
               <Grid mx={2}>
                 <Typography color="secondary.main" component="p">
@@ -89,7 +90,10 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
               {(step.commandment ||
                 step.type ||
                 step.description ||
-                (step.category && step.category.length > 0)) && (
+                (step.category && step.category.length > 0) ||
+                (step.saints && step.saints.length > 0) ||
+                (step.counsels && step.counsels.length > 0) ||
+                (step.prevention && step.prevention.length > 0)) && (
                 <Accordion
                   disableGutters
                   elevation={0}
@@ -125,19 +129,100 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
                           <strong>{t.commandment}:</strong> {step.commandment}
                         </Typography>
                       )}
-                      {step.category && step.category.length > 0 && (
-                        <Box display="flex" gap={0.5} flexWrap="wrap">
-                          <Chip
-                            key={step.category}
-                            label={step.category}
-                            size="small"
-                          />
-                        </Box>
-                      )}
                       {step.description && (
                         <Typography variant="body2" color="text.secondary">
                           {step.description}
                         </Typography>
+                      )}
+                      {step.saints && step.saints.length > 0 && (
+                        <Box mt={1}>
+                          <Typography
+                            variant="body2"
+                            fontWeight="bold"
+                            gutterBottom
+                          >
+                            🙏 {t.patronSaints}
+                          </Typography>
+                          <Typography
+                            variant="caption"
+                            color="text.secondary"
+                            display="block"
+                            mb={0.5}
+                          >
+                            {t.saintsIntercession}
+                          </Typography>
+                          <Box display="flex" gap={0.5} flexWrap="wrap">
+                            {step.saints.map((saint) => (
+                              <Chip
+                                key={saint}
+                                label={saint}
+                                size="small"
+                                variant="outlined"
+                                color="primary"
+                              />
+                            ))}
+                          </Box>
+                        </Box>
+                      )}
+                      {step.counsels && step.counsels.length > 0 && (
+                        <Box mt={1}>
+                          <Typography
+                            variant="body2"
+                            fontWeight="bold"
+                            gutterBottom
+                          >
+                            📖 {t.counsels}
+                          </Typography>
+                          <List dense disablePadding>
+                            {step.counsels.map((counsel) => (
+                              <ListItem key={counsel} disableGutters>
+                                <ListItemIcon sx={{ minWidth: 28 }}>
+                                  <MenuBookIcon
+                                    sx={{ fontSize: 16 }}
+                                    color="info"
+                                  />
+                                </ListItemIcon>
+                                <ListItemText
+                                  primary={counsel}
+                                  primaryTypographyProps={{
+                                    variant: 'body2',
+                                    color: 'text.secondary',
+                                  }}
+                                />
+                              </ListItem>
+                            ))}
+                          </List>
+                        </Box>
+                      )}
+                      {step.prevention && step.prevention.length > 0 && (
+                        <Box mt={1}>
+                          <Typography
+                            variant="body2"
+                            fontWeight="bold"
+                            gutterBottom
+                          >
+                            🛡️ {t.prevention}
+                          </Typography>
+                          <List dense disablePadding>
+                            {step.prevention.map((tip) => (
+                              <ListItem key={tip} disableGutters>
+                                <ListItemIcon sx={{ minWidth: 28 }}>
+                                  <HealthAndSafetyIcon
+                                    sx={{ fontSize: 16 }}
+                                    color="success"
+                                  />
+                                </ListItemIcon>
+                                <ListItemText
+                                  primary={tip}
+                                  primaryTypographyProps={{
+                                    variant: 'body2',
+                                    color: 'text.secondary',
+                                  }}
+                                />
+                              </ListItem>
+                            ))}
+                          </List>
+                        </Box>
                       )}
                     </Box>
                   </AccordionDetails>
@@ -160,24 +245,24 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
               </Grid>
               <Grid size={{ md: 4, sm: 4 }} textAlign="center">
                 <Tooltip title={t.yes}>
-                  <IconButton
+                  <Button
+                    variant="contained"
                     onClick={() => handleSaveSin(index)}
-                    style={{ transform: 'scale(1.8)' }}
-                    color="error"
+                    startIcon={<CheckCircleIcon />}
                   >
-                    <CheckCircleIcon />
-                  </IconButton>
+                    {t.yes}
+                  </Button>
                 </Tooltip>
               </Grid>
               <Grid size={{ md: 4, sm: 4 }} textAlign="center">
                 <Tooltip title={t.no}>
-                  <IconButton
-                    color="error"
+                  <Button
                     onClick={handleSkip}
-                    style={{ transform: 'scale(1.8)' }}
+                    variant="contained"
+                    startIcon={<CancelIcon />}
                   >
-                    <CancelIcon />
-                  </IconButton>
+                    No
+                  </Button>
                 </Tooltip>
               </Grid>
             </Grid>
@@ -217,9 +302,27 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
               <Typography variant="h5">
                 {index + 1}) {step.title}
               </Typography>
-              <Typography color="secondary.main" ml={2} mb={2}>
+              <Typography color="secondary.main" ml={2} mb={1}>
                 {step.question}
               </Typography>
+              {step.saints && step.saints.length > 0 && (
+                <Box ml={2} mb={1}>
+                  <Typography variant="caption" color="text.secondary">
+                    🙏 {t.saintsIntercession}
+                  </Typography>
+                  <Box display="flex" gap={0.5} flexWrap="wrap" mt={0.5}>
+                    {step.saints.map((saint) => (
+                      <Chip
+                        key={saint}
+                        label={saint}
+                        size="small"
+                        variant="outlined"
+                        color="primary"
+                      />
+                    ))}
+                  </Box>
+                </Box>
+              )}
               <Divider
                 sx={{
                   backgroundColor:
