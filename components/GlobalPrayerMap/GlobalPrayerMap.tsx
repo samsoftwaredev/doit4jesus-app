@@ -198,7 +198,9 @@ const GlobalPrayerMap = ({ cities: externalCities }: Props) => {
             </>
           )}
         </MapSection>
+      </Stack>
 
+      <Stack>
         <Box sx={{ width: { xs: '100%', md: 260 }, flexShrink: 0 }}>
           <LocationDetailPanel location={selected} translations={t} />
         </Box>

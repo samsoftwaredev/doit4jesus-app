@@ -3,20 +3,13 @@ import { render, screen } from '@testing-library/react';
 import ConfessionGuide from './ConfessionGuide';
 
 jest.mock('@/components', () => ({
-  CardDeck: () => <div data-testid="card-deck" />,
-  SelectExamOfConscience: ({ onExamSelected }: any) => (
-    <div data-testid="select-exam" onClick={() => onExamSelected('adult')}>
-      Select Exam
-    </div>
+  SelectExamOfConscience: () => (
+    <div data-testid="select-exam">Select Exam</div>
   ),
 }));
 
-jest.mock('@/data/adultExamOfConscience.json', () => [], { virtual: true });
-jest.mock('@/data/childExamOfConscience.json', () => [], { virtual: true });
-jest.mock('@/data/teenExamOfConscience.json', () => [], { virtual: true });
-
 describe('ConfessionGuide Component', () => {
-  it('renders the select exam screen initially', () => {
+  it('renders the select exam screen', () => {
     render(<ConfessionGuide />);
     expect(screen.getByTestId('select-exam')).toBeInTheDocument();
   });

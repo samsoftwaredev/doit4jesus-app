@@ -1,6 +1,7 @@
-import { Box, Card, CardContent, Link, Typography } from '@mui/material';
+import { Box, Card, CardContent, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Image from 'next/image';
+import Link from 'next/link';
 
 import { useLanguageContext } from '@/context/LanguageContext';
 import adultExamOfConscience from '@/data/adultExamOfConscience.json';
@@ -40,7 +41,7 @@ const ExamDescription = styled(Typography)({
 });
 
 interface Props {
-  onExamSelected: (exam: string) => void;
+  onExamSelected?: (exam: string) => void;
 }
 
 const SelectExamOfConscience = ({ onExamSelected }: Props) => {
@@ -48,6 +49,7 @@ const SelectExamOfConscience = ({ onExamSelected }: Props) => {
   const exams = [
     {
       type: 'kids',
+      slug: 'child',
       label: t.forKids,
       value: childExamOfConscience,
       image: kidPraying,
@@ -55,6 +57,7 @@ const SelectExamOfConscience = ({ onExamSelected }: Props) => {
     },
     {
       type: 'teens',
+      slug: 'teen',
       label: t.forTeens,
       value: teenExamOfConscience,
       image: teenPraying,
@@ -62,6 +65,7 @@ const SelectExamOfConscience = ({ onExamSelected }: Props) => {
     },
     {
       type: 'adults',
+      slug: 'adult',
       label: t.forAdults,
       value: adultExamOfConscience,
       image: adultPraying,
@@ -75,13 +79,14 @@ const SelectExamOfConscience = ({ onExamSelected }: Props) => {
         {t.selectExamination}
       </Typography>
       <Box display="flex" flexDirection="column" gap={2}>
-        {exams.map(({ type, label, description, image }) => (
+        {exams.map(({ type, slug, label, description, image }) => (
           <ExamCard
             key={type}
             sx={{ textDecoration: 'none' }}
             // @ts-expect-error MUI polymorphic component prop
             component={Link}
-            onClick={() => onExamSelected(type)}
+            href={`/app/confession/exam/${slug}`}
+            onClick={onExamSelected ? () => onExamSelected(type) : undefined}
           >
             <ExamImage src={image} alt={label} />
             <Box sx={{ display: 'flex', flexDirection: 'column' }}>

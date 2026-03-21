@@ -68,6 +68,7 @@ export const getUserProfileAPI = async (
 
 export * from './globalPrayerMap';
 export * from './dailyScripture';
+export * from './examOfConscience';
 export * from './spiritualXp';
 export * from './weeklyLeaderboard';
 export * from './prayerMap';

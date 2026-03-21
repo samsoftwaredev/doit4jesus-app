@@ -221,4 +221,5 @@ export * from './spiritualXp';
 export * from './weeklyLeaderboard';
 export * from './globalPrayerMap';
 export * from './dailyScripture';
+export * from './examOfConscience';
 export * from './kpi';
