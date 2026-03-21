@@ -68,6 +68,8 @@ const SignUp = () => {
       }
       if (data) {
         toast.success(t.confirmationEmailSent);
+        await getProfile(data.session);
+        router.push(NEW_USER_REDIRECT);
       }
       setIsLoading(false);
     } catch (error) {
@@ -78,9 +80,8 @@ const SignUp = () => {
   };
 
   useEffect(() => {
-    const { data } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN') {
-        getProfile(session);
+    const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session) {
         router.push(NEW_USER_REDIRECT);
       }
     });

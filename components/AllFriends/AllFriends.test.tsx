@@ -46,7 +46,7 @@ jest.mock('../UserBubble', () => ({
 }));
 
 const mockTranslations = {
-  friends: 'Friends',
+  community: 'Community',
   none: 'None',
   removeFriend: 'Remove Friend',
   removeFriendDescription: 'Remove {{name}}?',
@@ -66,7 +66,7 @@ describe('AllFriends Component', () => {
 
   it('renders the friends title', () => {
     render(<AllFriends />);
-    expect(screen.getByText('Friends')).toBeInTheDocument();
+    expect(screen.getByText('Community')).toBeInTheDocument();
   });
 
   it('shows "None" when no friends', () => {

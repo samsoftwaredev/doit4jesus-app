@@ -89,7 +89,7 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
               {(step.commandment ||
                 step.type ||
                 step.description ||
-                (step.categories && step.categories.length > 0)) && (
+                (step.category && step.category.length > 0)) && (
                 <Accordion
                   disableGutters
                   elevation={0}
@@ -125,16 +125,13 @@ function CardDeck({ steps, setActiveStep, activeStep }: Props) {
                           <strong>{t.commandment}:</strong> {step.commandment}
                         </Typography>
                       )}
-                      {step.categories && step.categories.length > 0 && (
+                      {step.category && step.category.length > 0 && (
                         <Box display="flex" gap={0.5} flexWrap="wrap">
-                          {step.categories.map((cat) => (
-                            <Chip
-                              key={cat}
-                              label={cat}
-                              size="small"
-                              variant="outlined"
-                            />
-                          ))}
+                          <Chip
+                            key={step.category}
+                            label={step.category}
+                            size="small"
+                          />
                         </Box>
                       )}
                       {step.description && (

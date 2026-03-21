@@ -6,59 +6,74 @@ jest.mock('next/navigation', () => ({
   useRouter: jest.fn().mockReturnValue({ push: jest.fn() }),
 }));
 
-jest.mock(
-  '@/data/childExamOfConscience.json',
-  () => [
-    {
-      categories: [],
-      title: 'Obedience',
-      commandment: '4',
-      type: 'venial',
-      question: 'Did I disobey?',
-      description: '',
-      counsels: [],
-      prevention: [],
-      saints: [],
-    },
-  ],
-  { virtual: true },
-);
+const mockChild = [
+  {
+    category: '',
+    title: 'Obedience',
+    commandment: '4',
+    type: 'venial' as const,
+    question: 'Did I disobey?',
+    description: '',
+    counsels: [],
+    prevention: [],
+    saints: [],
+  },
+];
 
-jest.mock(
-  '@/data/teenExamOfConscience.json',
-  () => [
-    {
-      categories: [],
-      title: 'Faith',
-      commandment: '',
-      type: 'mortal',
-      question: 'Did I doubt?',
-      description: '',
-      counsels: [],
-      prevention: [],
-      saints: [],
-    },
-  ],
-  { virtual: true },
-);
+const mockTeen = [
+  {
+    category: '',
+    title: 'Faith',
+    commandment: '',
+    type: 'mortal' as const,
+    question: 'Did I doubt?',
+    description: '',
+    counsels: [],
+    prevention: [],
+    saints: [],
+  },
+];
 
-jest.mock(
-  '@/data/adultExamOfConscience.json',
-  () => [
-    {
-      categories: ['married'],
-      title: 'Love',
-      commandment: '',
-      type: 'mortal',
-      question: 'Did I fail to love?',
-      description: '',
-      counsels: [],
-      prevention: [],
-      saints: [],
-    },
-  ],
-  { virtual: true },
-);
+const mockAdult = [
+  {
+    category: 'married',
+    title: 'Love',
+    commandment: '',
+    type: 'mortal' as const,
+    question: 'Did I fail to love?',
+    description: '',
+    counsels: [],
+    prevention: [],
+    saints: [],
+  },
+];
+
+jest.mock('@/services/examOfConscience', () => ({
+  getExamBySlug: (slug: string) => {
+    const exams: Record<string, unknown> = {
+      child: {
+        slug: 'child',
+        label: 'Child Examination of Conscience',
+        descriptionKey: 'forKidsDescription',
+        questions: { en: mockChild, es: mockChild },
+      },
+      teen: {
+        slug: 'teen',
+        label: 'Teen Examination of Conscience',
+        descriptionKey: 'forTeensDescription',
+        questions: { en: mockTeen, es: mockTeen },
+      },
+      adult: {
+        slug: 'adult',
+        label: 'Adult Examination of Conscience',
+        descriptionKey: 'forAdultsDescription',
+        questions: { en: mockAdult, es: mockAdult },
+      },
+    };
+    return exams[slug];
+  },
+  filterByVocation: jest.fn((questions: unknown[]) => questions),
+}));
 
 describe('ExamPage', () => {
   it('renders child exam page', () => {

@@ -16,7 +16,7 @@ export type MenuItem = {
 
 export interface CardProps {
   title: string;
-  categories?: string[];
+  category: string;
   commandment: string;
   type: string;
   question: string;

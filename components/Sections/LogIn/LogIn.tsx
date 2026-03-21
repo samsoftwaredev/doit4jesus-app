@@ -40,7 +40,8 @@ const LogIn = () => {
       if (error) {
         console.error(error);
         toast.error(error.message);
-      } else {
+      }
+      if (data) {
         await getProfile(data.session);
         router.push(NAV_APP_LINKS.dashboard.link);
       }
@@ -53,8 +54,11 @@ const LogIn = () => {
   };
 
   useEffect(() => {
-    const { data } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN') getProfile(session);
+    const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session) {
+        await getProfile(session);
+        router.push(NAV_APP_LINKS.dashboard.link);
+      }
     });
     return () => {
       data.subscription.unsubscribe();

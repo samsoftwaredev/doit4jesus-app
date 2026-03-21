@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { supabase } from '@/classes';
 import { NAV_APP_LINKS } from '@/constants/nav';
 import { useLanguageContext } from '@/context/LanguageContext';
+import { useUserContext } from '@/context/UserContext';
 
 import { handleLoginSuccess } from './GoogleAuth.tools';
 
@@ -17,16 +18,20 @@ interface Props {
 const GoogleAuth = ({ isSignUp }: Props) => {
   const { t } = useLanguageContext();
   const router = useRouter();
+  const { getProfile } = useUserContext();
 
   const onLogin = (response: CredentialResponse) => {
-    handleLoginSuccess(response, () => {
-      router.push(NAV_APP_LINKS.dashboard.link);
+    handleLoginSuccess(response, async (data) => {
+      if (data) {
+        await getProfile(data.session);
+        router.push(NAV_APP_LINKS.dashboard.link);
+      }
     });
   };
 
   const handleSignUp = async () => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
+      const { error, data } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo:
@@ -38,7 +43,9 @@ const GoogleAuth = ({ isSignUp }: Props) => {
 
       if (error) {
         toast.error(t.failedToSignUp);
-      } else {
+      }
+
+      if (data) {
         toast.success(t.signUpSuccessful);
       }
     } catch (err) {

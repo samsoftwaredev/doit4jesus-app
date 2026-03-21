@@ -1,6 +1,5 @@
 import enJSON from 'locales/en.json';
 import esJSON from 'locales/es.json';
-import { usePathname, useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/router';
 import {
   type JSX,
@@ -30,36 +29,21 @@ const LanguageContext = createContext<LanguageContext | undefined>(undefined);
 const LanguageContextProvider = ({ children }: Props) => {
   const [lang, setLangState] = useState<LANG>(LANG.es);
   const router = useRouter();
-  const pathname = usePathname();
-  const params = useSearchParams();
+  const { pathname, asPath, query, locale } = router;
   const t = lang === LANG.en ? enJSON : esJSON;
-  const newLang = params.get('locale')
-    ? (params.get('locale') as LANG)
-    : LANG.en;
-
-  const alreadyInPath = () => {
-    const currentPathname = window.location.pathname;
-    return pathname === currentPathname;
-  };
-
-  useEffect(() => {
-    if (newLang === LANG.en || newLang === LANG.es) {
-      setLangState(newLang);
-      if (!alreadyInPath()) {
-        router.replace(`/${newLang}${pathname}`);
-      }
-    } else {
-      setLangState(LANG.en);
-      router.replace(`/${LANG.en}${pathname}`);
-    }
-  }, []);
 
   const setLang = (newLang: LANG) => {
     setLangState(newLang);
-    if (!alreadyInPath()) {
-      router.replace(`/${newLang}${pathname}`);
-    }
+    // Update the URL with the new locale
+    // Next.js handles the routing automatically based on the i18n config
+    router.push({ pathname, query }, asPath, { locale: newLang });
   };
+
+  useEffect(() => {
+    if (locale === LANG.en || locale === LANG.es) {
+      setLang(locale);
+    }
+  }, []);
 
   const changeLang = () => {
     const newLang = lang === LANG.en ? LANG.es : LANG.en;

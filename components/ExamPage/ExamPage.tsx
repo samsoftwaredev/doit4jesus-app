@@ -28,13 +28,13 @@ interface ExamPageProps {
 }
 
 const ExamPage = ({ slug }: ExamPageProps) => {
-  const { t } = useLanguageContext();
+  const { t, lang } = useLanguageContext();
   const router = useRouter();
   const exam = getExamBySlug(slug);
 
   const [activeStep, setActiveStep] = useState(0);
   const [questions, setQuestions] = useState<ExamQuestion[]>(
-    exam?.questions ?? [],
+    exam?.questions?.[lang] ?? [],
   );
   const [showVocation, setShowVocation] = useState(slug === 'adult');
   const [openWarning, setOpenWarning] = useState(true);
@@ -62,7 +62,7 @@ const ExamPage = ({ slug }: ExamPageProps) => {
   };
 
   const onVocationSelected = (vocation: Vocation) => {
-    const filtered = filterByVocation(exam.questions, vocation);
+    const filtered = filterByVocation(exam.questions[lang], vocation);
     setQuestions(filtered);
     setActiveStep(0);
     setShowVocation(false);
@@ -72,7 +72,7 @@ const ExamPage = ({ slug }: ExamPageProps) => {
     title: q.title,
     question: q.question,
     description: q.description || undefined,
-    categories: q.categories,
+    category: q.category,
     commandment: q.commandment,
     type: q.type,
   }));

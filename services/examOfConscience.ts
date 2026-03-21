@@ -1,6 +1,9 @@
-import adultExamOfConscience from '@/data/adultExamOfConscience.json';
-import childExamOfConscience from '@/data/childExamOfConscience.json';
-import teenExamOfConscience from '@/data/teenExamOfConscience.json';
+import enAdultExamOfConscience from '@/data/en.adultExamOfConscience.json';
+import enChildExamOfConscience from '@/data/en.childExamOfConscience.json';
+import enTeenExamOfConscience from '@/data/en.teenExamOfConscience.json';
+import esAdultExamOfConscience from '@/data/es.adultExamOfConscience.json';
+import esChildExamOfConscience from '@/data/es.childExamOfConscience.json';
+import esTeenExamOfConscience from '@/data/es.teenExamOfConscience.json';
 import type {
   ExamDefinition,
   ExamQuestion,
@@ -13,20 +16,28 @@ const examMap: Record<ExamSlug, ExamDefinition> = {
     slug: 'adult',
     label: 'Adult Examination of Conscience',
     descriptionKey: 'forAdultsDescription',
-    questions: adultExamOfConscience as ExamQuestion[],
+    questions: {
+      en: enAdultExamOfConscience as ExamQuestion[],
+      es: esAdultExamOfConscience as ExamQuestion[],
+    },
   },
-
   teen: {
     slug: 'teen',
     label: 'Teen Examination of Conscience',
     descriptionKey: 'forTeensDescription',
-    questions: teenExamOfConscience as ExamQuestion[],
+    questions: {
+      en: enTeenExamOfConscience as ExamQuestion[],
+      es: esTeenExamOfConscience as ExamQuestion[],
+    },
   },
   child: {
     slug: 'child',
     label: 'Child Examination of Conscience',
     descriptionKey: 'forKidsDescription',
-    questions: childExamOfConscience as ExamQuestion[],
+    questions: {
+      en: enChildExamOfConscience as ExamQuestion[],
+      es: esChildExamOfConscience as ExamQuestion[],
+    },
   },
 };
 
@@ -43,6 +54,6 @@ export const filterByVocation = (
   vocation: Vocation,
 ): ExamQuestion[] =>
   questions.filter((q) => {
-    if (!q.categories || q.categories.length === 0) return true;
-    return q.categories.includes(vocation);
+    if (!q.category || q.category.length === 0) return true;
+    return q.category.includes(vocation);
   });

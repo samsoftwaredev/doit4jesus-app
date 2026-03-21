@@ -1,0 +1,428 @@
+[
+  {
+    "category": "single",
+    "title": "Faith",
+    "commandment": "1",
+    "type": "mortal",
+    "question": "Have I denied or abandoned the Catholic faith (apostasy)?",
+    "description": "Apostasy is the total repudiation of the Christian faith (CCC 2089). It is grave matter because it rejects God’s revelation and severs communion with the Church.",
+    "counsels": [
+      "Return through Confession and a profession of faith.",
+      "Study the core teachings you rejected.",
+      "Seek guidance from a priest or mentor."
+    ],
+    "prevention": [
+      "Daily Scripture (10–15 minutes)",
+      "Weekly Catechism reading",
+      "Stay connected to a parish community"
+    ],
+    "saints": ["St. Augustine", "St. John Henry Newman"]
+  },
+  {
+    "category": "single",
+    "title": "Faith",
+    "commandment": "1",
+    "type": "mortal",
+    "question": "Have I seriously doubted or rejected a doctrine of the Church (heresy)?",
+    "description": "Heresy is obstinate post-baptismal denial of a truth to be believed with divine faith (CCC 2089).",
+    "counsels": [
+      "Clarify what you rejected and why.",
+      "Seek truth with humility, not pride.",
+      "Bring intellectual doubts to someone faithful."
+    ],
+    "prevention": [
+      "Structured catechesis",
+      "Avoid anti-faith media",
+      "Ask questions early"
+    ],
+    "saints": ["St. Thomas Aquinas"]
+  },
+  {
+    "category": "single",
+    "title": "Faith",
+    "commandment": "1",
+    "type": "mortal",
+    "question": "Have I engaged in superstition, horoscopes, or occult practices?",
+    "description": "All forms of divination and occult practices reject trust in God (CCC 2116–2117).",
+    "counsels": [
+      "Renounce explicitly in prayer.",
+      "Remove all related objects/apps.",
+      "Confess and replace with trust in God."
+    ],
+    "prevention": [
+      "Pray 'Jesus I trust in You'",
+      "Avoid occult media",
+      "Use Scripture for guidance"
+    ],
+    "saints": ["St. Benedict", "St. Cyprian"]
+  },
+  {
+    "category": "single",
+    "title": "Hope",
+    "commandment": "1",
+    "type": "mortal",
+    "question": "Have I fallen into despair, believing God cannot forgive me?",
+    "description": "Despair rejects God's mercy and salvation (CCC 2091).",
+    "counsels": ["God’s mercy is infinite.", "Confess and trust Him again."],
+    "prevention": ["Divine Mercy devotion", "Avoid isolation"],
+    "saints": ["St. Faustina"]
+  },
+  {
+    "category": "single",
+    "title": "Hope",
+    "commandment": "1",
+    "type": "mortal",
+    "question": "Have I presumed God's mercy without repentance?",
+    "description": "Presumption expects forgiveness without conversion (CCC 2092).",
+    "counsels": ["Repent sincerely.", "Avoid excusing sin."],
+    "prevention": ["Regular Confession", "Daily examen"],
+    "saints": ["St. Thérèse"]
+  },
+  {
+    "category": "single",
+    "title": "Love of God",
+    "commandment": "3",
+    "type": "mortal",
+    "question": "Have I missed Sunday Mass without serious reason?",
+    "description": "Missing Mass deliberately is grave (CCC 2181).",
+    "counsels": ["Make Mass a priority.", "Confess if missed deliberately."],
+    "prevention": ["Plan ahead", "Set reminders"],
+    "saints": ["St. John Paul II"]
+  },
+  {
+    "category": "single",
+    "title": "Prayer Life",
+    "commandment": "1",
+    "type": "grave",
+    "question": "Have I neglected daily prayer?",
+    "description": "Prayer is necessary for spiritual life (CCC 2744).",
+    "counsels": ["Start with 5–10 minutes daily."],
+    "prevention": ["Morning + night routine"],
+    "saints": ["St. Teresa of Avila"]
+  },
+  {
+    "category": "single",
+    "title": "Chastity",
+    "commandment": "6",
+    "type": "mortal",
+    "question": "Have I engaged in fornication?",
+    "description": "Sex outside marriage is gravely sinful (CCC 2353).",
+    "counsels": ["End sinful relationships.", "Seek accountability."],
+    "prevention": ["Avoid private situations", "Set boundaries"],
+    "saints": ["St. Maria Goretti"]
+  },
+  {
+    "category": "single",
+    "title": "Chastity",
+    "commandment": "6",
+    "type": "mortal",
+    "question": "Have I viewed pornography?",
+    "description": "Pornography violates dignity and purity (CCC 2354).",
+    "counsels": ["Confess immediately.", "Install blockers."],
+    "prevention": ["Avoid triggers", "Stay in public environments"],
+    "saints": ["St. Augustine"]
+  },
+  {
+    "category": "single",
+    "title": "Chastity",
+    "commandment": "6",
+    "type": "mortal",
+    "question": "Have I committed masturbation?",
+    "description": "Masturbation is disordered use of sexuality (CCC 2352).",
+    "counsels": ["Confess and seek discipline."],
+    "prevention": ["Cold showers", "Exercise", "Avoid idleness"],
+    "saints": ["St. John Bosco"]
+  },
+  {
+    "category": "married",
+    "title": "Chastity",
+    "commandment": "6",
+    "type": "mortal",
+    "question": "Have I committed adultery?",
+    "description": "Adultery violates the marriage covenant (CCC 2380).",
+    "counsels": ["End the relationship immediately.", "Seek reconciliation."],
+    "prevention": ["Avoid emotional attachments outside marriage"],
+    "saints": ["St. Joseph"]
+  },
+  {
+    "category": "married",
+    "title": "Love of Neighbor",
+    "commandment": "5",
+    "type": "mortal",
+    "question": "Have I been abusive toward my spouse or children?",
+    "description": "Abuse violates dignity and charity (CCC 2302).",
+    "counsels": ["Seek help immediately.", "Repent sincerely."],
+    "prevention": ["Anger management", "Counseling"],
+    "saints": ["St. Francis de Sales"]
+  },
+  {
+    "category": "married",
+    "title": "Justice",
+    "commandment": "7",
+    "type": "mortal",
+    "question": "Have I failed to provide for my family?",
+    "description": "Neglecting family responsibilities is unjust (CCC 2211).",
+    "counsels": ["Take responsibility seriously."],
+    "prevention": ["Budgeting", "Work discipline"],
+    "saints": ["St. Joseph"]
+  },
+  {
+    "category": "religious",
+    "title": "Obedience",
+    "commandment": "4",
+    "type": "mortal",
+    "question": "Have I disobeyed legitimate authority?",
+    "description": "Religious obedience imitates Christ (CCC 915).",
+    "counsels": ["Practice humility."],
+    "prevention": ["Trust superiors"],
+    "saints": ["St. Ignatius"]
+  },
+  {
+    "category": "religious",
+    "title": "Chastity",
+    "commandment": "6",
+    "type": "mortal",
+    "question": "Have I violated my vow of chastity?",
+    "description": "Consecrated chastity is total dedication to God (CCC 2349).",
+    "counsels": ["Return to grace immediately."],
+    "prevention": ["Custody of the eyes", "Prayer discipline"],
+    "saints": ["St. Clare"]
+  },
+  {
+    "category": "religious",
+    "title": "Poverty",
+    "commandment": "1",
+    "type": "grave",
+    "question": "Have I been attached to material goods?",
+    "description": "Poverty calls for detachment (CCC 2544).",
+    "counsels": ["Live simply."],
+    "prevention": ["Minimalism", "Generosity"],
+    "saints": ["St. Francis"]
+  },
+  {
+    "category": "single",
+    "title": "Reverence for God",
+    "commandment": "2",
+    "type": "mortal",
+    "question": "Have I taken the Lord’s name in vain seriously or blasphemed?",
+    "description": "Blasphemy is speaking against God with hatred, reproach, or defiance and is gravely sinful (CCC 2148). It violates reverence owed to God’s name.",
+    "counsels": [
+      "Acknowledge the seriousness of your words.",
+      "Repair by acts of reverence (prayer, adoration)."
+    ],
+    "prevention": [
+      "Replace profanity with short prayers",
+      "Avoid environments where blasphemy is normalized"
+    ],
+    "saints": ["St. Benedict"]
+  },
+  {
+    "category": "single",
+    "title": "Truth",
+    "commandment": "8",
+    "type": "mortal",
+    "question": "Have I committed serious lying or deception that harmed others?",
+    "description": "Lying is speaking falsehood with intent to deceive (CCC 2482). Grave lies cause serious harm and are mortal.",
+    "counsels": ["Repair the harm done.", "Confess clearly."],
+    "prevention": ["Practice radical honesty", "Pause before speaking"],
+    "saints": ["St. Thomas More"]
+  },
+  {
+    "category": "single",
+    "title": "Justice",
+    "commandment": "7",
+    "type": "mortal",
+    "question": "Have I stolen something of significant value?",
+    "description": "Theft violates justice and requires restitution (CCC 2408–2412).",
+    "counsels": ["Return what you took.", "Make restitution."],
+    "prevention": ["Respect others’ property", "Avoid rationalizing theft"],
+    "saints": ["St. Zacchaeus"]
+  },
+  {
+    "category": "single",
+    "title": "Charity",
+    "commandment": "5",
+    "type": "mortal",
+    "question": "Have I hated someone or wished serious harm upon them?",
+    "description": "Hatred of neighbor is contrary to charity and can be gravely sinful (CCC 2303).",
+    "counsels": ["Pray for the person.", "Choose forgiveness."],
+    "prevention": ["Practice empathy", "Pray daily for enemies"],
+    "saints": ["St. Stephen"]
+  },
+  {
+    "category": "single",
+    "title": "Charity",
+    "commandment": "5",
+    "type": "mortal",
+    "question": "Have I refused to forgive someone who seriously hurt me?",
+    "description": "Refusal to forgive blocks God’s mercy (CCC 2840).",
+    "counsels": ["Forgiveness is a choice.", "Release resentment."],
+    "prevention": ["Daily prayer for healing", "Practice mercy"],
+    "saints": ["St. Maria Goretti"]
+  },
+  {
+    "category": "single",
+    "title": "Temperance",
+    "commandment": "5",
+    "type": "mortal",
+    "question": "Have I abused alcohol to the point of drunkenness?",
+    "description": "Drunkenness impairs reason and dignity (CCC 2290).",
+    "counsels": ["Seek accountability.", "Reduce or eliminate use."],
+    "prevention": ["Avoid excessive environments", "Know your limits"],
+    "saints": ["St. Monica"]
+  },
+  {
+    "category": "single",
+    "title": "Temperance",
+    "commandment": "5",
+    "type": "mortal",
+    "question": "Have I used drugs or substances that harm my body or mind?",
+    "description": "Drug use is a grave offense against health and life (CCC 2291).",
+    "counsels": ["Seek help immediately.", "Confess sincerely."],
+    "prevention": ["Avoid harmful environments", "Stay accountable"],
+    "saints": ["St. Maximilian Kolbe"]
+  },
+  {
+    "category": "single",
+    "title": "Chastity",
+    "commandment": "6",
+    "type": "mortal",
+    "question": "Have I deliberately entertained lustful thoughts?",
+    "description": "Lust is disordered desire for sexual pleasure (CCC 2351).",
+    "counsels": ["Reject thoughts immediately.", "Redirect attention."],
+    "prevention": ["Custody of eyes", "Mental discipline"],
+    "saints": ["St. Joseph"]
+  },
+  {
+    "category": "single",
+    "title": "Chastity",
+    "commandment": "6",
+    "type": "grave",
+    "question": "Have I placed myself in near occasions of sexual sin?",
+    "description": "Knowingly entering temptation risks grave sin (CCC 2119).",
+    "counsels": ["Identify triggers.", "Remove them."],
+    "prevention": ["Avoid isolation", "Set boundaries"],
+    "saints": ["St. Anthony of the Desert"]
+  },
+  {
+    "category": "single",
+    "title": "Love of Neighbor",
+    "commandment": "8",
+    "type": "mortal",
+    "question": "Have I seriously damaged someone’s reputation (calumny or detraction)?",
+    "description": "Revealing faults unjustly harms others (CCC 2477).",
+    "counsels": ["Repair the damage.", "Speak truth with charity."],
+    "prevention": ["Avoid gossip", "Think before speaking"],
+    "saints": ["St. Francis de Sales"]
+  },
+  {
+    "category": "single",
+    "title": "Justice",
+    "commandment": "7",
+    "type": "mortal",
+    "question": "Have I cheated in school, work, or business?",
+    "description": "Fraud and cheating violate justice (CCC 2409).",
+    "counsels": ["Make restitution.", "Be honest going forward."],
+    "prevention": ["Integrity mindset", "Avoid shortcuts"],
+    "saints": ["St. Joseph"]
+  },
+  {
+    "category": "single",
+    "title": "Faith",
+    "commandment": "1",
+    "type": "mortal",
+    "question": "Have I publicly denied my faith out of fear or shame?",
+    "description": "Failing to witness to Christ can be grave (CCC 1816).",
+    "counsels": ["Repent and stand firm.", "Strengthen courage."],
+    "prevention": ["Practice small acts of witness", "Stay rooted in truth"],
+    "saints": ["St. Peter"]
+  },
+  {
+    "category": "single",
+    "title": "Humility",
+    "commandment": "1",
+    "type": "grave",
+    "question": "Have I acted out of pride, placing myself above God or others?",
+    "description": "Pride is the root of sin (CCC 1866).",
+    "counsels": ["Practice humility.", "Serve others."],
+    "prevention": ["Daily humility reflection", "Acts of service"],
+    "saints": ["St. Augustine"]
+  },
+  {
+    "category": "single",
+    "title": "Sloth",
+    "commandment": "1",
+    "type": "grave",
+    "question": "Have I neglected my responsibilities out of laziness?",
+    "description": "Sloth is spiritual and physical laziness (CCC 2733).",
+    "counsels": ["Build discipline.", "Start small."],
+    "prevention": ["Structured schedule", "Accountability"],
+    "saints": ["St. Benedict"]
+  },
+  {
+    "category": "single",
+    "title": "Charity",
+    "commandment": "5",
+    "type": "grave",
+    "question": "Have I ignored the needs of the poor or suffering?",
+    "description": "Neglecting charity is sinful (CCC 2447).",
+    "counsels": ["Be generous.", "Serve actively."],
+    "prevention": ["Give regularly", "Volunteer"],
+    "saints": ["St. Mother Teresa"]
+  },
+  {
+    "category": "single",
+    "title": "Justice",
+    "commandment": "7",
+    "type": "grave",
+    "question": "Have I wasted money irresponsibly or been overly materialistic?",
+    "description": "Attachment to wealth leads away from God (CCC 2424).",
+    "counsels": ["Simplify life.", "Prioritize God."],
+    "prevention": ["Budget wisely", "Practice detachment"],
+    "saints": ["St. Francis"]
+  },
+  {
+    "category": "single",
+    "title": "Temperance",
+    "commandment": "5",
+    "type": "grave",
+    "question": "Have I been gluttonous or lacked self-control?",
+    "description": "Gluttony is disordered consumption (CCC 1866).",
+    "counsels": ["Practice moderation."],
+    "prevention": ["Fasting", "Discipline"],
+    "saints": ["St. Thomas Aquinas"]
+  },
+  {
+    "category": "single",
+    "title": "Love of Neighbor",
+    "commandment": "8",
+    "type": "grave",
+    "question": "Have I judged others rashly without sufficient evidence?",
+    "description": "Rash judgment violates charity (CCC 2478).",
+    "counsels": ["Assume good intentions."],
+    "prevention": ["Pause before judging"],
+    "saints": ["St. Ignatius"]
+  },
+  {
+    "category": "single",
+    "title": "Faith",
+    "commandment": "1",
+    "type": "grave",
+    "question": "Have I placed relationships, career, or success above God?",
+    "description": "Idolatry places created things above God (CCC 2113).",
+    "counsels": ["Reorder priorities."],
+    "prevention": ["Daily prayer", "Spiritual discipline"],
+    "saints": ["St. Francis"]
+  },
+  {
+    "category": "single",
+    "title": "Prayer Life",
+    "commandment": "1",
+    "type": "grave",
+    "question": "Have I ignored God’s call in my life or failed to discern my vocation?",
+    "description": "Each person has a calling from God (CCC 2232).",
+    "counsels": ["Pray for clarity.", "Seek guidance."],
+    "prevention": ["Spiritual direction", "Silence and prayer"],
+    "saints": ["St. John Paul II"]
+  }
+]

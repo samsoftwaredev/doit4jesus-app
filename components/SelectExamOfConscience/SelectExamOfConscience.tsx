@@ -4,9 +4,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { useLanguageContext } from '@/context/LanguageContext';
-import adultExamOfConscience from '@/data/adultExamOfConscience.json';
-import childExamOfConscience from '@/data/childExamOfConscience.json';
-import teenExamOfConscience from '@/data/teenExamOfConscience.json';
 import adultPraying from '@/public/assets/images/art/adultPraying.jpeg';
 import kidPraying from '@/public/assets/images/art/kidPraying.jpeg';
 import teenPraying from '@/public/assets/images/art/teenPraying.jpeg';
@@ -51,7 +48,6 @@ const SelectExamOfConscience = ({ onExamSelected }: Props) => {
       type: 'adults',
       slug: 'adult',
       label: t.forAdults,
-      value: adultExamOfConscience,
       image: adultPraying,
       description: t.forAdultsDescription,
     },
@@ -60,7 +56,6 @@ const SelectExamOfConscience = ({ onExamSelected }: Props) => {
       type: 'teens',
       slug: 'teen',
       label: t.forTeens,
-      value: teenExamOfConscience,
       image: teenPraying,
       description: t.forTeensDescription,
     },
@@ -68,7 +63,6 @@ const SelectExamOfConscience = ({ onExamSelected }: Props) => {
       type: 'kids',
       slug: 'child',
       label: t.forKids,
-      value: childExamOfConscience,
       image: kidPraying,
       description: t.forKidsDescription,
     },

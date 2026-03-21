@@ -11,21 +11,21 @@ describe('examOfConscience service', () => {
       expect(exam).toBeDefined();
       expect(exam!.slug).toBe('child');
       expect(exam!.label).toBe('Child Examination of Conscience');
-      expect(exam!.questions.length).toBeGreaterThan(0);
+      expect(exam!.questions.en.length).toBeGreaterThan(0);
     });
 
     it('returns the teen exam for slug "teen"', () => {
       const exam = getExamBySlug('teen');
       expect(exam).toBeDefined();
       expect(exam!.slug).toBe('teen');
-      expect(exam!.questions.length).toBeGreaterThan(0);
+      expect(exam!.questions.en.length).toBeGreaterThan(0);
     });
 
     it('returns the adult exam for slug "adult"', () => {
       const exam = getExamBySlug('adult');
       expect(exam).toBeDefined();
       expect(exam!.slug).toBe('adult');
-      expect(exam!.questions.length).toBeGreaterThan(0);
+      expect(exam!.questions.en.length).toBeGreaterThan(0);
     });
 
     it('returns undefined for an invalid slug', () => {
@@ -49,7 +49,7 @@ describe('examOfConscience service', () => {
     it('includes questions with empty categories for any vocation', () => {
       const questions = [
         {
-          categories: [],
+          category: '',
           title: 'General',
           commandment: '',
           type: 'mortal' as const,
@@ -67,7 +67,7 @@ describe('examOfConscience service', () => {
     it('filters questions by vocation category', () => {
       const questions = [
         {
-          categories: ['married'],
+          category: 'married',
           title: 'Marriage',
           commandment: '',
           type: 'mortal' as const,
@@ -78,7 +78,7 @@ describe('examOfConscience service', () => {
           saints: [],
         },
         {
-          categories: ['single'],
+          category: 'single',
           title: 'Single',
           commandment: '',
           type: 'mortal' as const,

@@ -1,11 +1,16 @@
 import { render, screen } from '@testing-library/react';
 
 import { useLanguageContext } from '@/context/LanguageContext';
+import { useUserContext } from '@/context/UserContext';
 
 import Leaderboards from './Leaderboards';
 
 jest.mock('@/context/LanguageContext', () => ({
   useLanguageContext: jest.fn(),
+}));
+
+jest.mock('@/context/UserContext', () => ({
+  useUserContext: jest.fn(),
 }));
 
 jest.mock('@/classes', () => ({
@@ -47,6 +52,9 @@ const mockTranslations = {
 describe('Leaderboards Component', () => {
   beforeEach(() => {
     (useLanguageContext as jest.Mock).mockReturnValue({ t: mockTranslations });
+    (useUserContext as jest.Mock).mockReturnValue({
+      user: { userId: 'user-1' },
+    });
   });
 
   it('renders the leaderboards title', async () => {

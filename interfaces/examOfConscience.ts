@@ -6,7 +6,7 @@ export type SinType = 'mortal' | 'venial';
 
 /** A single question in an examination of conscience. */
 export interface ExamQuestion {
-  categories: string[];
+  category: string;
   title: string;
   commandment: string;
   type: SinType;
@@ -22,7 +22,7 @@ export interface ExamDefinition {
   slug: ExamSlug;
   label: string;
   descriptionKey: string;
-  questions: ExamQuestion[];
+  questions: { [lang: string]: ExamQuestion[] };
 }
 
 /** Vocation filter for the adult exam. */

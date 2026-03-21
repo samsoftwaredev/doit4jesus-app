@@ -1,15 +1,16 @@
 import { CredentialResponse } from '@react-oauth/google';
+import { Session, User } from '@supabase/auth-helpers-nextjs';
 import { toast } from 'react-toastify';
 
 import { supabase } from '@/classes';
 
 export const handleLoginSuccess = async (
   response: CredentialResponse,
-  callback: () => void,
+  callback: (data: { user: User; session: Session }) => void,
 ) => {
   if (response.credential) {
     try {
-      const { error } = await supabase.auth.signInWithIdToken({
+      const { error, data } = await supabase.auth.signInWithIdToken({
         provider: 'google',
         token: response.credential,
       });
@@ -17,7 +18,7 @@ export const handleLoginSuccess = async (
         toast.error('Failed to authenticate');
       } else {
         toast.success('Login successful');
-        callback();
+        callback(data);
       }
     } catch (err) {
       toast.error('An unexpected error occurred');

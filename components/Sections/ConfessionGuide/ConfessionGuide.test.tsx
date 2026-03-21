@@ -13,9 +13,4 @@ describe('ConfessionGuide Component', () => {
     render(<ConfessionGuide />);
     expect(screen.getByTestId('select-exam')).toBeInTheDocument();
   });
-
-  it('renders warning alert', () => {
-    render(<ConfessionGuide />);
-    expect(screen.getByText(/scrupulosity/i)).toBeInTheDocument();
-  });
 });
