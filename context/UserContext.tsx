@@ -13,10 +13,10 @@ import {
 import { toast } from 'react-toastify';
 
 import { db, supabase } from '@/classes/SupabaseDB';
-import { Loading } from '@/components';
-import { NAV_MAIN_LINKS } from '@/constants';
+import { Loading } from '@/components/Loading';
+import { NAV_MAIN_LINKS } from '@/constants/nav';
 import { User } from '@/interfaces';
-import { normalizeUserProfile } from '@/utils';
+import { normalizeUserProfile } from '@/utils/normalizers';
 
 interface UserContext {
   user: User | null | undefined;

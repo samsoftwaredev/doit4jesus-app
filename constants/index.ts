@@ -7,4 +7,3 @@ export * from './global';
 export * from './milestones';
 export * from './globalPrayerCities';
 export * from './leaderboardConfig';
-export * from './catholicBibleBooks';

@@ -33,6 +33,23 @@ jest.mock('@/classes', () => ({
   },
 }));
 
+jest.mock('@/context/UserContext', () => ({
+  useUserContext: () => ({
+    getProfile: jest.fn().mockResolvedValue(undefined),
+  }),
+}));
+
+jest.mock('@/context/LanguageContext', () => ({
+  useLanguageContext: () => ({
+    t: {
+      signUpWithGoogle: 'Sign Up with Google',
+      failedToSignUp: 'Failed to sign up',
+      signUpSuccessful: 'Sign up successful',
+      googleAuthFailed: 'Google auth failed',
+    },
+  }),
+}));
+
 describe('GoogleAuth Component', () => {
   it('renders Google Login when isSignUp is false', () => {
     render(<GoogleAuth isSignUp={false} />);

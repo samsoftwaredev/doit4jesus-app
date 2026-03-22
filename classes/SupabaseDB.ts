@@ -1,15 +1,27 @@
 import { AuthResponse, createClient } from '@supabase/supabase-js';
 
-import { NAV_APP_LINKS, NAV_MAIN_LINKS, NEW_USER_REDIRECT } from '@/constants';
+import { NAV_APP_LINKS, NAV_MAIN_LINKS } from '@/constants/nav';
+import { NEW_USER_REDIRECT } from '@/constants/pages';
 import type { Database } from '@/interfaces/database';
 import { GENDER_TYPES } from '@/interfaces/enum';
-
-import { generateRandomStringId } from '../utils';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_PROJECT_URL!;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PROJECT_KEY!;
 
 const supabase = createClient<Database>(supabaseUrl, supabaseKey);
+
+const generateRandomStringId = (length: number) => {
+  let result = '';
+  const characters =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const charactersLength = characters.length;
+  let counter = 0;
+  while (counter < length) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    counter += 1;
+  }
+  return result;
+};
 
 class SupabaseDB {
   constructor() {}

@@ -1457,7 +1457,7 @@ export type Database = {
         | 'health_wellness'
         | 'miscellaneous'
         | 'online';
-      gender: 'male' | 'famale';
+      gender: 'male' | 'female';
       language: 'en' | 'es';
       sin_type: 'mortal' | 'venial' | 'both';
     };
@@ -1629,7 +1629,7 @@ export const Constants = {
         'miscellaneous',
         'online',
       ],
-      gender: ['male', 'famale'],
+      gender: ['male', 'female'],
       language: ['en', 'es'],
       sin_type: ['mortal', 'venial', 'both'],
     },
