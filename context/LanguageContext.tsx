@@ -27,7 +27,7 @@ interface Props {
 const LanguageContext = createContext<LanguageContext | undefined>(undefined);
 
 const LanguageContextProvider = ({ children }: Props) => {
-  const [lang, setLangState] = useState<LANG>(LANG.es);
+  const [lang, setLangState] = useState<LANG>(LANG.en);
   const router = useRouter();
   const { pathname, asPath, query, locale } = router;
   const t = lang === LANG.en ? enJSON : esJSON;

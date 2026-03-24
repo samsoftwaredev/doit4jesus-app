@@ -67,6 +67,7 @@ const ShareStatsSection = () => {
         variant="h5"
         fontWeight="bold"
         textAlign="center"
+        color="secondary.main"
         sx={{ mb: 1 }}
       >
         {t.yourPrayerStats}

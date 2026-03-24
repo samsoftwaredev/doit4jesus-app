@@ -15,7 +15,7 @@ const FooterContainer = styled('footer')({
   gridColumnGap: '0px',
   gridRowGap: '0px',
   paddingBottom: '90px',
-  marginTop: '50px',
+  paddingTop: '50px',
   textAlign: 'center',
   gridTemplateAreas:
     "'logo logo logo' 'copyRights copyRights copyRights' 'socialMedia socialMedia socialMedia' 'about resources contact'",
