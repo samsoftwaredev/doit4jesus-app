@@ -10,7 +10,6 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { toast } from 'react-toastify';
 
 import { supabase } from '@/classes/SupabaseDB';
 import { Loading } from '@/components';
@@ -82,7 +81,10 @@ const UserContextProvider = ({ children }: Props) => {
 
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_OUT') getProfile(null);
+      if (event === 'SIGNED_OUT') {
+        getProfile(null);
+        router.push(NAV_MAIN_LINKS.login.link);
+      }
       if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session) {
         router.push(NAV_APP_LINKS.dashboard.link);
       }
