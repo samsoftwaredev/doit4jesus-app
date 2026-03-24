@@ -2,9 +2,9 @@ import { Box, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { supabase } from '@/classes';
 import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
+import { fetchLeaderboards } from '@/services/leaderboardsApi';
 import { getCurrentLevel } from '@/utils/levels';
 
 import Loading from '../Loading';
@@ -44,13 +44,10 @@ const Leaderboards = () => {
   const getTopRosaryUser = async () => {
     setIsLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('leaderboards');
+      const data = await fetchLeaderboards();
       if (data) {
         const list = normalizeLeaderboards(data.data.data);
         setUserList(list);
-      }
-      if (error) {
-        toast.error(t.unableToDisplayLeaderboards);
       }
     } catch (error) {
       console.error('Error in Leaderboards (getTopRosaryUser):', error);

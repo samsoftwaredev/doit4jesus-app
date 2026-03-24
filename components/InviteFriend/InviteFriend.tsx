@@ -4,12 +4,11 @@ import QRCode from 'qrcode';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { db } from '@/classes';
 import { NAV_APP_LINKS } from '@/constants/nav';
 import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
 import { FriendProfile } from '@/interfaces';
-import { getUserProfileAPI } from '@/services';
+import { fetchFriends, fetchProfilesByIds } from '@/services/friendsApi';
 
 import CopyLinkButton from '../CopyLinkButton/CopyLinkButton';
 import Dialog from '../Dialog';
@@ -43,12 +42,8 @@ const InviteFriend = () => {
 
   const getFriendsProfiles = async (userIds: string[]) => {
     try {
-      const [data, error] = await getUserProfileAPI(userIds);
-      if (error) {
-        console.error(error);
-        toast.error(t.unableToRetrieveFriendProfile);
-      }
-      if (data) setFriendProfiles(data);
+      const data = await fetchProfilesByIds(userIds);
+      setFriendProfiles(data);
     } catch (error) {
       console.error('Error in InviteFriend (getFriendsProfiles):', error);
       toast.error(t.unableToRetrieveFriendProfile);
@@ -57,19 +52,13 @@ const InviteFriend = () => {
 
   const getFriends = async () => {
     try {
-      let { data, error } = await db
-        .getFriends()
-        .select('*')
-        .or(`uuid1.eq.${user?.userId!},uuid2.eq.${user?.userId!}`);
+      const data = await fetchFriends();
       if (data) {
         const friendUserIds = data.map((u) => {
           const uid = u.uuid1 !== user?.userId ? u.uuid1 : u.uuid2;
           return uid!;
         });
         getFriendsProfiles(friendUserIds);
-      }
-      if (error) {
-        console.error(error);
       }
     } catch (error) {
       console.error('Error in InviteFriend (getFriends):', error);

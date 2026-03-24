@@ -6,7 +6,7 @@ import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { db, supabase } from '@/classes/SupabaseDB';
+import { supabase } from '@/classes/SupabaseDB';
 import AppWrapper from '@/components/AppWrapper/AppWrapper';
 import Loading from '@/components/Loading';
 import EventSection from '@/components/Sections/EventSection';
@@ -14,6 +14,7 @@ import { AppLayout } from '@/components/Templates';
 import { useAudioContext } from '@/context/AudioContext';
 import { usePresenceContext } from '@/context/PresenceContext';
 import { DataEvent, EventTypes, VideoEvent } from '@/interfaces';
+import { fetchEventBySlug, fetchVideo } from '@/services/eventsApi';
 import { normalizeEvent, normalizeVideo } from '@/utils';
 
 const LiveEvent: NextPage = () => {
@@ -34,17 +35,7 @@ const LiveEvent: NextPage = () => {
     }
 
     try {
-      const { data, error } = await db
-        .getYouTubeVideo()
-        .select('*')
-        .eq('id', id);
-
-      if (error) {
-        console.error('Error fetching YouTube video:', { videoId: id, error });
-        toast.error('Unable to display video');
-        return;
-      }
-
+      const data = await fetchVideo(id);
       if (data) return normalizeVideo(data)[0];
     } catch (error) {
       console.error('Exception in getYouTube:', error);
@@ -54,17 +45,7 @@ const LiveEvent: NextPage = () => {
 
   const getEvent = async (slugId: string) => {
     try {
-      const { data, error } = await db
-        .getEvents()
-        .select('*')
-        .eq('slug', slugId);
-
-      if (error) {
-        console.error('Error fetching event:', { slug: slugId, error });
-        toast.error('Unable to get event');
-        return;
-      }
-
+      const data = await fetchEventBySlug(slugId);
       if (data) return normalizeEvent(data)[0];
     } catch (error) {
       console.error('Exception in getEvent:', error);

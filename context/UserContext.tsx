@@ -12,10 +12,11 @@ import {
 } from 'react';
 import { toast } from 'react-toastify';
 
-import { db, supabase } from '@/classes/SupabaseDB';
+import { supabase } from '@/classes/SupabaseDB';
 import { Loading } from '@/components';
-import { NAV_MAIN_LINKS } from '@/constants/nav';
+import { NAV_APP_LINKS, NAV_MAIN_LINKS } from '@/constants/nav';
 import { User } from '@/interfaces';
+import { fetchProfile } from '@/services/profileApi';
 import { normalizeUserProfile } from '@/utils/normalizers';
 
 interface UserContext {
@@ -30,33 +31,10 @@ interface Props {
 
 const UserContext = createContext<UserContext | undefined>(undefined);
 
-const updateProfileGoogle = async (userSession: Session, userProfile: any) => {
-  if (userProfile?.first_name === null) {
-    try {
-      const { error } = await db
-        .getProfiles()
-        .update({
-          first_name: userSession.user.user_metadata.name,
-          picture_url: userSession.user.user_metadata.picture,
-        })
-        .eq('id', userSession.user.id)
-        .select();
-
-      if (error) {
-        console.error('Error updating Google profile:', error);
-        toast.error('Unable to update profile');
-      }
-    } catch (error) {
-      console.error('Exception updating Google profile:', error);
-      toast.error('Unable to update profile');
-    }
-  }
-};
-
 const UserContextProvider = ({ children }: Props) => {
-  const router = useRouter();
   const [user, setUser] = useState<User | null | undefined>();
   const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
   const getProfile = async (
     userSession: Session | null,
@@ -68,55 +46,9 @@ const UserContextProvider = ({ children }: Props) => {
         throw new Error('No session');
       }
 
-      const { data: userProfile, error: profileErr } = await db
-        .getProfiles()
-        .select('*')
-        .eq('id', userSession.user.id)
-        .single();
+      const { profile, rosaryStats, currentStreak } = await fetchProfile();
 
-      if (profileErr) {
-        console.error('Error fetching user profile:', {
-          userId: userSession.user.id,
-          error: profileErr,
-        });
-        throw new Error(profileErr.message);
-      }
-
-      if (userSession.user.app_metadata.provider === 'google') {
-        await updateProfileGoogle(userSession, userProfile);
-      }
-
-      const { data: rosaryStats, error: statsErr } = await db
-        .getRosaryStats()
-        .select('*')
-        .eq('user_id', userSession.user.id);
-
-      if (statsErr) {
-        console.error('Error fetching rosary stats:', {
-          userId: userSession.user.id,
-          error: statsErr,
-        });
-        throw new Error(statsErr.message);
-      }
-
-      // Fetch streak from the canonical server-side edge function
-      let currentStreak = 0;
-      try {
-        const { data: streakData, error: streakErr } =
-          await supabase.functions.invoke('get_rosary_streak', {
-            body: { user_id: userSession.user.id },
-          });
-        if (!streakErr && streakData?.streak != null) {
-          currentStreak = Number(streakData.streak);
-        }
-      } catch {
-        console.error('Error fetching rosary streak:', {
-          userId: userSession.user.id,
-        });
-        // Non-critical — streak defaults to 0
-      }
-
-      const userDataNormalized = normalizeUserProfile(userProfile, rosaryStats);
+      const userDataNormalized = normalizeUserProfile(profile, rosaryStats);
       const userData = {
         ...userDataNormalized,
         fullName: `${userDataNormalized.firstName} ${userDataNormalized.lastName}`,
@@ -131,7 +63,6 @@ const UserContextProvider = ({ children }: Props) => {
     } catch (error) {
       console.error('getProfile failed:', error);
       setUser(null);
-      router.push(NAV_MAIN_LINKS.login.link);
     } finally {
       setIsLoading(false);
     }
@@ -148,6 +79,18 @@ const UserContextProvider = ({ children }: Props) => {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    const { data } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT') getProfile(null);
+      if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session) {
+        router.push(NAV_APP_LINKS.dashboard.link);
+      }
+    });
+    return () => {
+      data.subscription.unsubscribe();
+    };
+  }, []);
 
   useEffect(() => {
     getSession();

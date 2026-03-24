@@ -1,11 +1,6 @@
-import { supabase } from '@/classes';
-
-import { FriendProfile, PostgrestError } from '../interfaces';
-import {
-  getUserProfileLocally,
-  normalizeFriendProfile,
-  storeUserProfileLocally,
-} from '../utils';
+import { FriendProfile } from '../interfaces';
+import { getUserProfileLocally, storeUserProfileLocally } from '../utils';
+import { fetchProfilesByIds } from './friendsApi';
 
 /**
  * Will only make API call to retrieve user profile if users is not in sessionStorage.
@@ -14,7 +9,7 @@ import {
  */
 export const getUserProfileAPI = async (
   userIds: string[],
-): Promise<[FriendProfile[] | null, PostgrestError | null]> => {
+): Promise<[FriendProfile[] | null, Error | null]> => {
   try {
     if (!Array.isArray(userIds) || userIds.length === 0) {
       console.error('getUserProfileAPI: Invalid userIds provided', userIds);
@@ -30,34 +25,22 @@ export const getUserProfileAPI = async (
       }
       return profile;
     });
-    const localProfiles: any[] = profiles.filter(
-      (profile) => profile !== undefined,
+    const localProfiles: FriendProfile[] = profiles.filter(
+      (profile): profile is FriendProfile => profile !== undefined,
     );
 
     if (emptyProfilesIds.length > 0) {
-      let { data, error } = await supabase.rpc('get_profiles_by_user_ids', {
-        user_ids: emptyProfilesIds,
-      });
-
-      if (error) {
-        console.error('Error fetching user profiles from RPC:', {
+      try {
+        const friendData = await fetchProfilesByIds(emptyProfilesIds);
+        storeUserProfileLocally(friendData);
+        return [[...friendData, ...localProfiles], null];
+      } catch (error) {
+        console.error('Error fetching user profiles from API:', {
           userIds: emptyProfilesIds,
           error,
         });
-        return [[], error];
+        return [localProfiles, error as Error];
       }
-
-      if (data) {
-        try {
-          const friendData = normalizeFriendProfile(data ?? []);
-          storeUserProfileLocally(friendData);
-          return [[...friendData, ...localProfiles], null];
-        } catch (normalizeError) {
-          console.error('Error normalizing friend profiles:', normalizeError);
-          return [localProfiles, null];
-        }
-      }
-      return [[], error];
     }
     return [localProfiles, null];
   } catch (error) {

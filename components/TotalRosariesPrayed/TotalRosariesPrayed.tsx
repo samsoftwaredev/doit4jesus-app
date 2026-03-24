@@ -1,8 +1,8 @@
 import { Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 
-import { supabase } from '@/classes/index';
 import { useLanguageContext } from '@/context/LanguageContext';
+import { fetchTotalRosaryCount } from '@/services/rosaryApi';
 
 const TotalRosariesPrayed = () => {
   const { t } = useLanguageContext();
@@ -10,11 +10,8 @@ const TotalRosariesPrayed = () => {
 
   const getTotalRosaries = async () => {
     try {
-      let { data, error } = await supabase.rpc('get_all_rosary_count');
-      if (error) console.error(error);
-      else {
-        setTotalNum(data);
-      }
+      const data = await fetchTotalRosaryCount();
+      if (data?.count != null) setTotalNum(data.count);
     } catch (error) {
       console.error('Error in TotalRosariesPrayed (getTotalRosaries):', error);
     }

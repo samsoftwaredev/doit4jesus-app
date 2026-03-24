@@ -79,17 +79,6 @@ const SignUp = () => {
     }
   };
 
-  useEffect(() => {
-    const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session) {
-        router.push(NEW_USER_REDIRECT);
-      }
-    });
-    return () => {
-      data.subscription.unsubscribe();
-    };
-  }, []);
-
   if (isLoading) return <Loading />;
 
   return (

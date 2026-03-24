@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 
 import { useUserContext } from '@/context/UserContext';
 
@@ -9,31 +9,60 @@ jest.mock('@/context/UserContext', () => ({
 }));
 
 const mockPush = jest.fn();
+const mockGetSession = jest.fn();
 
 jest.mock('next/navigation', () => ({
   useRouter: () => ({ push: mockPush }),
 }));
 
+jest.mock('@/classes/SupabaseDB', () => ({
+  supabase: {
+    auth: {
+      getSession: (...args: any[]) => mockGetSession(...args),
+    },
+  },
+}));
+
 describe('ProtectedRoute Component', () => {
-  it('renders children when user is authenticated', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('renders children when user is authenticated and session is valid', async () => {
     (useUserContext as jest.Mock).mockReturnValue({
       user: { userId: 'user-1' },
     });
+    mockGetSession.mockResolvedValue({
+      data: { session: { user: { id: 'user-1' } } },
+      error: null,
+    });
+
     render(
       <ProtectedRoute>
         <div>Protected Content</div>
       </ProtectedRoute>,
     );
-    expect(screen.getByText('Protected Content')).toBeInTheDocument();
+
+    expect(await screen.findByText('Protected Content')).toBeInTheDocument();
+    expect(mockPush).not.toHaveBeenCalled();
   });
 
-  it('returns null and redirects when user is not authenticated', () => {
+  it('returns null and redirects when session is missing', async () => {
     (useUserContext as jest.Mock).mockReturnValue({ user: null });
+    mockGetSession.mockResolvedValue({
+      data: { session: null },
+      error: null,
+    });
+
     const { container } = render(
       <ProtectedRoute>
         <div>Protected Content</div>
       </ProtectedRoute>,
     );
+
+    await waitFor(() => {
+      expect(mockPush).toHaveBeenCalled();
+    });
     expect(container.firstChild).toBeNull();
   });
 });

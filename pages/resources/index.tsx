@@ -11,12 +11,12 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { db } from '@/classes';
 import { Meta } from '@/components';
 import { MainLayout } from '@/components/Templates';
 import { NAV_MAIN_LINKS } from '@/constants/nav';
 import { useLanguageContext } from '@/context/LanguageContext';
 import { ResourcePost } from '@/interfaces';
+import { fetchPosts } from '@/services/eventsApi';
 import { normalizePost } from '@/utils';
 
 const Resources: NextPage = () => {
@@ -30,11 +30,7 @@ const Resources: NextPage = () => {
 
   const getAllResources = async () => {
     try {
-      let { data, error } = await db.getPosts().select('*');
-      if (error) {
-        console.error('Error in resources/index (getAllResources):', error);
-        toast.error(t.unableToGetResources);
-      }
+      const data = await fetchPosts();
       if (data) setResources(normalizePost(data));
     } catch (error) {
       console.error('Error in resources/index (getAllResources):', error);

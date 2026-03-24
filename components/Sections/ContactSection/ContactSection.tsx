@@ -12,10 +12,10 @@ import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
-import { supabase } from '@/classes';
 import FormErrorText from '@/components/FormErrorText';
 import { useLanguageContext } from '@/context/LanguageContext';
 import womanComputer from '@/public/assets/images/womanComputer.jpeg';
+import { sendContactForm } from '@/services/contactApi';
 import { emailRegEx, nameRegEx } from '@/utils';
 
 const ContactGrid = styled(Container)({
@@ -80,19 +80,14 @@ const ContactSection = () => {
   const onSubmit = async ({ email, name, message }: IFormInputs) => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('contact-us', {
-        body: {
-          userEmail: email,
-          userName: name,
-          userMessage: message,
-        },
+      await sendContactForm({
+        userEmail: email,
+        userName: name,
+        userMessage: message,
       });
-      if (data) {
-        toast.success(t.messageSent);
-        setSubmittedSuccessfully(true);
-        reset();
-      }
-      if (error) toast.error(t.unableToSendMessage);
+      toast.success(t.messageSent);
+      setSubmittedSuccessfully(true);
+      reset();
     } catch (error) {
       console.error('Error in ContactSection (onSubmit):', error);
       toast.error(t.unableToSendMessage);

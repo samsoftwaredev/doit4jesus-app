@@ -31,6 +31,7 @@ import { useLanguageContext } from '@/context/LanguageContext';
 import { useThemeContext } from '@/context/ThemeContext';
 import { useUserContext } from '@/context/UserContext';
 import { INTERFACE_AUDIO_STATE, LANG } from '@/interfaces';
+import { deleteAccount, updateLanguage } from '@/services/profileApi';
 import { digitRegEx, specialCharsRegEx } from '@/utils';
 
 const AccountSection = () => {
@@ -88,7 +89,7 @@ const AccountSection = () => {
     toast.success(t.languageUpdated);
     if (user?.userId) {
       try {
-        await db.updateLanguage(user.userId, newLang);
+        await updateLanguage(newLang);
       } catch {
         toast.error(t.unableToUpdateLanguage);
       }
@@ -150,13 +151,10 @@ const AccountSection = () => {
   const onDeleteAccount = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase.functions.invoke('delete-user');
-      if (error) throw new Error(error);
-      if (data) {
-        setAudioState(INTERFACE_AUDIO_STATE.PAUSED);
-        toast.success(t.accountDeletedSuccess);
-        await db.logOut();
-      }
+      await deleteAccount();
+      setAudioState(INTERFACE_AUDIO_STATE.PAUSED);
+      toast.success(t.accountDeletedSuccess);
+      await db.logOut();
     } catch (error) {
       console.error(error);
       toast.error(t.unableToDeleteAccount);

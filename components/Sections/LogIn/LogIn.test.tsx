@@ -30,13 +30,6 @@ jest.mock('@/classes/SupabaseDB', () => ({
       error: null,
     }),
   },
-  supabase: {
-    auth: {
-      onAuthStateChange: jest.fn().mockReturnValue({
-        data: { subscription: { unsubscribe: jest.fn() } },
-      }),
-    },
-  },
 }));
 
 jest.mock('react-toastify', () => ({

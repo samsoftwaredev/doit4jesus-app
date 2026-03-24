@@ -4,7 +4,7 @@ import type { NextPage } from 'next';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { db, supabase } from '@/classes/SupabaseDB';
+import { supabase } from '@/classes/SupabaseDB';
 import AppWrapper from '@/components/AppWrapper/AppWrapper';
 import Loading from '@/components/Loading';
 import EventSection from '@/components/Sections/EventSection';
@@ -13,6 +13,7 @@ import { useAudioContext } from '@/context/AudioContext';
 import { useLanguageContext } from '@/context/LanguageContext';
 import { usePresenceContext } from '@/context/PresenceContext';
 import { DataEvent, EventTypes, VideoEvent } from '@/interfaces';
+import { fetchNextEvent, fetchVideo } from '@/services/eventsApi';
 import { normalizeEvent, normalizeVideo } from '@/utils';
 
 const LiveEvent: NextPage = () => {
@@ -31,17 +32,7 @@ const LiveEvent: NextPage = () => {
     }
 
     try {
-      const { data, error } = await db
-        .getYouTubeVideo()
-        .select('*')
-        .eq('id', id);
-
-      if (error) {
-        console.error('Error fetching YouTube video:', { videoId: id, error });
-        toast.error(t.unableToDisplayVideo);
-        return;
-      }
-
+      const data = await fetchVideo(id);
       if (data) return normalizeVideo(data)[0];
     } catch (error) {
       console.error('Exception in getYouTube:', error);
@@ -51,18 +42,7 @@ const LiveEvent: NextPage = () => {
 
   const getEvent = async () => {
     try {
-      const { data, error } = await db
-        .getEvents()
-        .select('*')
-        .order('started_at', { ascending: true })
-        .limit(1);
-
-      if (error) {
-        console.error('Error fetching event:', error);
-        toast.error(t.unableToGetEvent);
-        return;
-      }
-
+      const data = await fetchNextEvent();
       if (data) return normalizeEvent(data)[0];
     } catch (error) {
       console.error('Exception in getEvent:', error);

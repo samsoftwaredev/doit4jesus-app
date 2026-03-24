@@ -32,9 +32,6 @@ jest.mock('@/classes/SupabaseDB', () => ({
   supabase: {
     auth: {
       signOut: jest.fn(),
-      onAuthStateChange: jest.fn().mockReturnValue({
-        data: { subscription: { unsubscribe: jest.fn() } },
-      }),
     },
   },
 }));

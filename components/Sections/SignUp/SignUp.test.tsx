@@ -25,13 +25,6 @@ jest.mock('next/router', () => ({
 jest.mock('@/classes/SupabaseDB', () => ({
   default: jest.fn(),
   db: { signUp: jest.fn().mockResolvedValue(undefined) },
-  supabase: {
-    auth: {
-      onAuthStateChange: jest.fn().mockReturnValue({
-        data: { subscription: { unsubscribe: jest.fn() } },
-      }),
-    },
-  },
 }));
 
 jest.mock('react-toastify', () => ({

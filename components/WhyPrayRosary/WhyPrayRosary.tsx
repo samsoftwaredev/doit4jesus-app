@@ -80,16 +80,21 @@ const WhyPrayRosary = () => {
               aria-labelledby={`feature-title-${index}`}
             >
               <Arcs>
-                <Step>{index + 1}</Step>
+                <Step color="primary.light">{index + 1}</Step>
                 <Typography
                   id={`feature-title-${index}`}
                   variant="h5"
                   gutterBottom
+                  color="secondary.main"
                 >
                   {title}
                 </Typography>
                 <Box>
-                  <Typography variant="body1" gutterBottom>
+                  <Typography
+                    color="secondary.dark"
+                    variant="body1"
+                    gutterBottom
+                  >
                     {description}
                   </Typography>
                 </Box>

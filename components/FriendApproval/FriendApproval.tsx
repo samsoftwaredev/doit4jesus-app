@@ -2,12 +2,16 @@ import { Box, Button, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { db } from '@/classes';
 import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
 import { FriendProfile } from '@/interfaces';
 import { FriendRequestsDB } from '@/interfaces/databaseTable';
-import { getUserProfileAPI } from '@/services';
+import {
+  approveFriendRequest,
+  declineFriendRequest,
+  fetchFriendRequests,
+  fetchProfilesByIds,
+} from '@/services/friendsApi';
 
 import UserBubble from '../UserBubble';
 
@@ -23,12 +27,8 @@ const FriendApproval = () => {
 
   const getFriendsProfiles = async (userIds: string[]) => {
     try {
-      const [data, error] = await getUserProfileAPI(userIds);
-      if (error) {
-        console.error(error);
-        toast.error(t.unableToRetrieveFriendProfile);
-      }
-      if (data) setFriends(data);
+      const data = await fetchProfilesByIds(userIds);
+      setFriends(data);
     } catch (error) {
       console.error('Error in FriendApproval (getFriendsProfiles):', error);
       toast.error(t.unableToRetrieveFriendProfile);
@@ -37,13 +37,8 @@ const FriendApproval = () => {
 
   const onDecline = async (id: string) => {
     try {
-      const { error } = await db.getFriendRequests().delete().eq('id', id);
-      if (error) {
-        console.error('Error in FriendApproval (onDecline):', error);
-        toast.error(t.unableToDeclineFriendRequest);
-      } else {
-        setFriendsIds((prevState) => prevState.filter((f) => f.id !== id));
-      }
+      await declineFriendRequest(id);
+      setFriendsIds((prevState) => prevState.filter((f) => f.id !== id));
     } catch (error) {
       console.error('Error in FriendApproval (onDecline):', error);
       toast.error(t.unableToDeclineFriendRequest);
@@ -52,19 +47,8 @@ const FriendApproval = () => {
 
   const onApprove = async (data: FriendRequests) => {
     try {
-      const uuidKey = data.uuid1 !== data.friendId ? 'uuid1' : 'uuid2';
-      const { data: friendData, error } = await db
-        .getFriendRequests()
-        .update({ [`${uuidKey}_accepted`]: true })
-        .eq('id', data.id)
-        .select();
-      if (error) {
-        console.error('Error in FriendApproval (onApprove):', error);
-        toast.error(t.unableToConfirmFriendRequest);
-      }
-      if (friendData) {
-        setFriendsIds((prevState) => prevState.filter((f) => f.id !== data.id));
-      }
+      await approveFriendRequest(data.id);
+      setFriendsIds((prevState) => prevState.filter((f) => f.id !== data.id));
     } catch (error) {
       console.error('Error in FriendApproval (onApprove):', error);
       toast.error(t.unableToConfirmFriendRequest);
@@ -73,10 +57,7 @@ const FriendApproval = () => {
 
   const getFriendsApproval = async () => {
     try {
-      let { data, error } = await db
-        .getFriendRequests()
-        .select('*')
-        .or(`uuid1.eq.${user?.userId!},uuid2.eq.${user?.userId!}`);
+      const data = await fetchFriendRequests();
       if (data) {
         const friends = data.map((u) => {
           const uid = u.uuid1 !== user?.userId ? u.uuid1 : u.uuid2;
@@ -85,9 +66,6 @@ const FriendApproval = () => {
         const friendUserIds = friends.map(({ friendId }) => friendId);
         setFriendsIds(friends);
         getFriendsProfiles(friendUserIds);
-      }
-      if (error) {
-        console.error(error);
       }
     } catch (error) {
       console.error('Error in FriendApproval (getFriendsApproval):', error);

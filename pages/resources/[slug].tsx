@@ -15,12 +15,12 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { db } from '@/classes';
 import { Loading, Meta, PageNotFound } from '@/components';
 import { MainLayout } from '@/components/Templates';
 import { NAV_MAIN_LINKS } from '@/constants/nav';
 import { useLanguageContext } from '@/context/LanguageContext';
 import { ResourcePost } from '@/interfaces';
+import { fetchPostBySlug } from '@/services/eventsApi';
 import { normalizePost } from '@/utils';
 
 const ResourcesPost: NextPage = () => {
@@ -54,11 +54,7 @@ const ResourcesPost: NextPage = () => {
     setIsLoading(true);
     try {
       if (typeof slug === 'string') {
-        let { data, error } = await db.getPosts().select('*').eq('slug', slug);
-        if (error) {
-          console.error('Error in resources/[slug] (getArticle):', error);
-          toast.error(t.unableToDisplayArticle);
-        }
+        const data = await fetchPostBySlug(slug);
         if (data) setArticle(normalizePost(data)[0]);
       }
     } catch (error) {

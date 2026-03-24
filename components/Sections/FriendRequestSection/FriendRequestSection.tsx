@@ -6,14 +6,14 @@ import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { db, supabase } from '@/classes';
 import { Card } from '@/components';
 import { NAV_APP_LINKS } from '@/constants';
 import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
 import { FriendProfile } from '@/interfaces';
+import { fetchProfilesByIds, sendFriendRequest } from '@/services/friendsApi';
 import { awardXP } from '@/services/spiritualXp';
-import { normalizeFriendProfile, orderUUIDs } from '@/utils';
+import { orderUUIDs } from '@/utils';
 
 import { ErrorPage } from '../..';
 
@@ -77,35 +77,24 @@ const FriendRequestSection = () => {
     if (!user?.userId || !friend?.userId) return;
     const [uuid1, uuid2] = orderUUIDs(user?.userId, friend?.userId);
     try {
-      const { data, error } = await db
-        .getFriendRequests()
-        .insert([
-          {
-            uuid1_accepted: uuid1 === user?.userId,
-            uuid2_accepted: uuid2 === user?.userId,
-            uuid1: uuid1,
-            uuid2: uuid2,
-          },
-        ])
-        .select();
-      if (error) {
-        console.error('Error in FriendRequestSection (onConfirm):', error);
-        toast.error(t.unableToSendFriendRequest);
-      }
-      if (data) {
-        await awardXP(
-          user.userId,
-          'friend_invite',
-          {
-            invited_user_id: friend.userId,
-          },
-          {
-            idempotencyKey: `friend_invite:${uuid1}:${uuid2}`,
-          },
-        );
-        toast.success(t.friendRequestSent);
-        router.push(NAV_APP_LINKS.community.link);
-      }
+      await sendFriendRequest({
+        uuid1_accepted: uuid1 === user?.userId,
+        uuid2_accepted: uuid2 === user?.userId,
+        uuid1: uuid1,
+        uuid2: uuid2,
+      });
+      await awardXP(
+        user.userId,
+        'friend_invite',
+        {
+          invited_user_id: friend.userId,
+        },
+        {
+          idempotencyKey: `friend_invite:${uuid1}:${uuid2}`,
+        },
+      );
+      toast.success(t.friendRequestSent);
+      router.push(NAV_APP_LINKS.community.link);
     } catch (error) {
       console.error('Error in FriendRequestSection (onConfirm):', error);
       toast.error(t.unableToSendFriendRequest);
@@ -115,16 +104,8 @@ const FriendRequestSection = () => {
   const getUserProfile = async () => {
     if (typeof paramsUserId === 'string' && user?.userId !== paramsUserId) {
       try {
-        let { data, error } = await supabase.rpc('get_profiles_by_user_ids', {
-          user_ids: [paramsUserId],
-        });
-        if (error) {
-          console.error(error);
-          toast.error(t.unableToRetrieveFriendProfile);
-        } else {
-          const friendsData = normalizeFriendProfile(data ?? []);
-          setFriend(friendsData[0]);
-        }
+        const friendsData = await fetchProfilesByIds([paramsUserId]);
+        setFriend(friendsData[0]);
       } catch (error) {
         console.error('Error in FriendRequestSection (getUserProfile):', error);
         toast.error(t.unableToRetrieveFriendProfile);

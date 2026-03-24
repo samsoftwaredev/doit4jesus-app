@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 
 import { supabase } from '@/classes';
 import { ConfettiCelebration } from '@/components';
+import { completeRosary } from '@/services/rosaryApi';
 import { setDateTimeZero } from '@/utils';
 
 import { useAudioContext } from './AudioContext';
@@ -55,17 +56,7 @@ const StatsContextProvider = ({ children }: Props) => {
     try {
       const onlineUsersIds = onlineUsers?.map(({ userId }) => userId) || [];
       const todaysRosaryCompleted = user.stats.todaysRosaryCompleted;
-      const { data, error } = await supabase.functions.invoke(
-        'rosary-completed',
-        { body: { onlineUsers: onlineUsersIds } },
-      );
-
-      if (error) {
-        console.error(error);
-        toast.error('Unable to update rosary count', {
-          toastId: 'unable to save stats',
-        });
-      }
+      const data = await completeRosary(onlineUsersIds);
 
       if (data && todaysRosaryCompleted === false) {
         onRosaryCompleted();

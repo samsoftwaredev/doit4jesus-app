@@ -6,12 +6,19 @@ import { useEffect, useRef, useState } from 'react';
 import Markdown from 'react-markdown';
 import { toast } from 'react-toastify';
 
-import { db, supabase } from '@/classes';
+import { supabase } from '@/classes';
 import { ChatList, ChatTextbox } from '@/components';
 import { useUserContext } from '@/context/UserContext';
 import { DataEvent, EventMessages, VideoEvent } from '@/interfaces';
 import { Json } from '@/interfaces/database';
 import { EventMessagesDB } from '@/interfaces/databaseTable';
+import {
+  deleteEventMessage,
+  editEventMessage,
+  fetchEventMessages,
+  likeEventMessage,
+  sendEventMessage,
+} from '@/services/eventsApi';
 import { awardXP } from '@/services/spiritualXp';
 import { normalizeEventMessages } from '@/utils';
 
@@ -58,21 +65,9 @@ const EventSection = ({ videoEvent }: Props) => {
   const numberOfPrayers = messages?.length ?? 0;
 
   const getEventMessages = async (id: number) => {
-    const joinTables = `
-    created_at, deleted_at, donation_amount, event_id, first_name, id, last_name, message, reply_id, updated_at, user_id,
-    event_messages_actions(id, likes, flagged, created_at)
-    `;
     try {
-      const { data, error } = await db
-        .getEventMessages()
-        .select(joinTables)
-        .order('created_at', { ascending: false })
-        .eq('event_id', id);
-      if (!error) {
-        return normalizeEventMessages(data);
-      } else {
-        throw new Error(error.message);
-      }
+      const data = await fetchEventMessages(id);
+      return normalizeEventMessages(data);
     } catch (error) {
       console.error(error);
       toast.error('Unable to retrieve messages');
@@ -81,20 +76,12 @@ const EventSection = ({ videoEvent }: Props) => {
 
   const onSendMessage = async (message: string) => {
     try {
-      const { data, error } = await db
-        .getEventMessages()
-        .insert([
-          {
-            message,
-            first_name: user?.firstName,
-            last_name: user?.lastName,
-            event_id: videoEvent.eventId,
-          },
-        ])
-        .select();
-      if (error) {
-        throw new Error(error.message);
-      }
+      const data = await sendEventMessage({
+        message,
+        firstName: user?.firstName,
+        lastName: user?.lastName,
+        eventId: videoEvent.eventId,
+      });
       if (data?.[0] && user?.userId) {
         await awardXP(
           user.userId,
@@ -171,15 +158,8 @@ const EventSection = ({ videoEvent }: Props) => {
   const handleDelete = async (messageId?: string) => {
     if (messageId === undefined) return;
     try {
-      const { data, error } = await db
-        .getEventMessages()
-        .update({
-          deleted_at: new Date().toISOString(),
-        })
-        .eq('id', messageId)
-        .select();
-      if (error) throw new Error(error.message);
-      if (data) handleCloseDeleteDialog();
+      await deleteEventMessage(messageId);
+      handleCloseDeleteDialog();
     } catch (error) {
       console.error(error);
       toast.error('Unable to delete message');
@@ -188,17 +168,7 @@ const EventSection = ({ videoEvent }: Props) => {
 
   const handleEdit = async (messageId: string, newMessage: string) => {
     try {
-      const { error } = await db
-        .getEventMessages()
-        .update({
-          message: newMessage,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', messageId)
-        .select();
-      if (error) {
-        throw new Error(error.message);
-      }
+      await editEventMessage(messageId, newMessage);
     } catch (error) {
       console.error(error);
       toast.error('Unable to update message');
@@ -214,13 +184,7 @@ const EventSection = ({ videoEvent }: Props) => {
 
   const handleLike = async (messageId: string, likes: Json) => {
     try {
-      const { error } = await db
-        .getEventMessagesActions()
-        .upsert({ likes, id: messageId })
-        .select();
-      if (error) {
-        throw new Error(error.message);
-      }
+      await likeEventMessage(messageId, likes);
       if (user?.userId) {
         await awardXP(
           user.userId,

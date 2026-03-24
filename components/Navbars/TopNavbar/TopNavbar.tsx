@@ -20,10 +20,10 @@ import {
 import { styled, useTheme } from '@mui/material/styles';
 import { googleLogout } from '@react-oauth/google';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { db, supabase } from '@/classes/SupabaseDB';
+import { db } from '@/classes/SupabaseDB';
 import { Loading } from '@/components';
 import { NAV_APP_LINKS } from '@/constants';
 import { useLanguageContext } from '@/context/LanguageContext';
@@ -114,15 +114,6 @@ const TopNavbar = ({ handleMenu }: Props) => {
   const goToDashboard = () => {
     router.push(NAV_APP_LINKS.dashboard.link);
   };
-
-  useEffect(() => {
-    const { data } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_OUT') getProfile(null);
-    });
-    return () => {
-      data.subscription.unsubscribe();
-    };
-  });
 
   if (isLoading) {
     return (

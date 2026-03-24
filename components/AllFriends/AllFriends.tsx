@@ -3,12 +3,15 @@ import { Box, Button, IconButton, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { db } from '@/classes';
 import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
 import { FriendProfile } from '@/interfaces';
 import { FriendsDB } from '@/interfaces/databaseTable';
-import { getUserProfileAPI } from '@/services';
+import {
+  endFriendship,
+  fetchFriends,
+  fetchProfilesByIds,
+} from '@/services/friendsApi';
 
 import Dialog from '../Dialog';
 import UserBubble from '../UserBubble';
@@ -36,12 +39,8 @@ const AllFriends = () => {
 
   const getFriendsProfiles = async (userIds: string[]) => {
     try {
-      const [data, error] = await getUserProfileAPI(userIds);
-      if (error) {
-        console.error(error);
-        toast.error(t.unableToRetrieveFriendProfile);
-      }
-      if (data) setFriendProfiles(data);
+      const data = await fetchProfilesByIds(userIds);
+      setFriendProfiles(data);
     } catch (error) {
       console.error('Error in AllFriends (getFriendsProfiles):', error);
       toast.error(t.unableToRetrieveFriendProfile);
@@ -56,19 +55,11 @@ const AllFriends = () => {
     );
     if (relationship !== undefined) {
       try {
-        const { error } = await db
-          .getFriends()
-          .delete()
-          .eq('id', relationship.id);
-        if (error) {
-          console.error('Error in AllFriends (onEndFriendship):', error);
-          toast.error(t.unableToDeclineFriendRequest);
-        } else {
-          onClose();
-          setFriendProfiles((prevState) =>
-            prevState.filter((f) => f.userId !== friendSelected?.userId),
-          );
-        }
+        await endFriendship(relationship.id);
+        onClose();
+        setFriendProfiles((prevState) =>
+          prevState.filter((f) => f.userId !== friendSelected?.userId),
+        );
       } catch (error) {
         console.error('Error in AllFriends (onEndFriendship):', error);
         toast.error(t.unableToDeclineFriendRequest);
@@ -78,10 +69,7 @@ const AllFriends = () => {
 
   const getFriends = async () => {
     try {
-      let { data, error } = await db
-        .getFriends()
-        .select('*')
-        .or(`uuid1.eq.${user?.userId!},uuid2.eq.${user?.userId!}`);
+      const data = await fetchFriends();
       if (data) {
         setFriends(data);
         const friendUserIds = data.map((u) => {
@@ -89,9 +77,6 @@ const AllFriends = () => {
           return uid!;
         });
         getFriendsProfiles(friendUserIds);
-      }
-      if (error) {
-        console.error(error);
       }
     } catch (error) {
       console.error('Error in AllFriends (getFriends):', error);

@@ -1,7 +1,6 @@
 import { Box, Container, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 
-import { supabase } from '@/classes';
 import Loading from '@/components/Loading';
 import ShareCardPreview from '@/components/ShareCardPreview';
 import SocialShareButtons from '@/components/SocialShareButtons';
@@ -9,6 +8,7 @@ import { COMPANY } from '@/constants/company';
 import { getRandomMotivatingMessage } from '@/constants/milestones';
 import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
+import { fetchStreak } from '@/services/rosaryApi';
 import { getCurrentLevel } from '@/utils/levels';
 import { type ShareCardData } from '@/utils/shareCardGenerator';
 
@@ -19,13 +19,10 @@ const ShareStatsSection = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchStreak = async () => {
+    const loadStreak = async () => {
       try {
-        const { data, error } = await supabase.functions.invoke(
-          'get_rosary_streak',
-          { body: { user_id: user?.userId } },
-        );
-        if (!error && data?.streak) {
+        const data = await fetchStreak();
+        if (data?.streak) {
           setStreak(data.streak);
         }
       } catch (error) {
@@ -36,7 +33,7 @@ const ShareStatsSection = () => {
     };
 
     if (user?.userId) {
-      fetchStreak();
+      loadStreak();
     } else {
       setIsLoading(false);
     }
