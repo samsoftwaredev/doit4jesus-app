@@ -5,12 +5,9 @@ import type {
   UserLeaderboardPosition,
   WeeklyLeaderboardData,
 } from '@/interfaces/weeklyLeaderboard';
+import { apiFetch } from '@/lib/api/client';
 
 import { supabase } from '../classes';
-import {
-  getCurrentWeekRange,
-  getLastWeekRange,
-} from '../constants/leaderboardConfig';
 
 // ── Row mappers ──────────────────────────────────────────────────────────────
 
@@ -49,32 +46,26 @@ export const getWeeklyLeaderboard = async (
   limit = 50,
 ): Promise<WeeklyLeaderboardData | null> => {
   try {
-    const range =
-      tab === 'last_week' ? getLastWeekRange() : getCurrentWeekRange();
-
-    const { data, error } = await (supabase.rpc as any)(
-      'get_weekly_leaderboard',
-      {
-        p_week_start: range.weekStart,
-        p_week_end: range.weekEnd,
-        p_limit: limit,
-      },
+    const data = await apiFetch<{
+      entries: any[];
+      weekStart: string;
+      weekEnd: string;
+      totalParticipants: number;
+    }>(
+      `/api/weekly-leaderboard/current?tab=${encodeURIComponent(
+        tab,
+      )}&limit=${encodeURIComponent(limit)}`,
     );
 
-    if (error) {
-      console.error('getWeeklyLeaderboard RPC failed:', error);
-      return null;
-    }
-
-    const entries: LeaderboardEntry[] = ((data as any[]) ?? []).map(
+    const entries: LeaderboardEntry[] = ((data.entries as any[]) ?? []).map(
       toLeaderboardEntry,
     );
 
     return {
       entries,
-      weekStart: range.weekStart,
-      weekEnd: range.weekEnd,
-      totalParticipants: entries.length,
+      weekStart: data.weekStart,
+      weekEnd: data.weekEnd,
+      totalParticipants: data.totalParticipants ?? entries.length,
     };
   } catch (err) {
     console.error('getWeeklyLeaderboard unexpected error:', err);
@@ -86,30 +77,18 @@ export const getWeeklyLeaderboard = async (
  * Fetches the current user's rank + surrounding neighbors.
  */
 export const getMyLeaderboardPosition = async (
-  userId: string,
+  _userId: string,
   tab: LeaderboardTab = 'this_week',
   neighbors = 3,
 ): Promise<UserLeaderboardPosition | null> => {
   try {
-    const range =
-      tab === 'last_week' ? getLastWeekRange() : getCurrentWeekRange();
-
-    const { data, error } = await (supabase.rpc as any)(
-      'get_weekly_leaderboard_me',
-      {
-        p_user_id: userId,
-        p_week_start: range.weekStart,
-        p_week_end: range.weekEnd,
-        p_neighbors: neighbors,
-      },
+    const data = await apiFetch<{ entries: any[] }>(
+      `/api/weekly-leaderboard/me?tab=${encodeURIComponent(
+        tab,
+      )}&neighbors=${encodeURIComponent(neighbors)}`,
     );
 
-    if (error) {
-      console.error('getMyLeaderboardPosition RPC failed:', error);
-      return null;
-    }
-
-    const entries: LeaderboardEntry[] = ((data as any[]) ?? []).map(
+    const entries: LeaderboardEntry[] = ((data.entries as any[]) ?? []).map(
       toLeaderboardEntry,
     );
     const me = entries.find((e) => e.isCurrentUser);
