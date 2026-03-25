@@ -11,12 +11,11 @@ import {
   Typography,
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { CardDeck } from '@/components';
 import { SelectVocation } from '@/components/SelectExamOfConscience';
 import { useLanguageContext } from '@/context/LanguageContext';
-import type { CardProps } from '@/interfaces';
 import type { ExamQuestion, Vocation } from '@/interfaces/examOfConscience';
 import { filterByVocation, getExamBySlug } from '@/services/examOfConscience';
 
@@ -30,29 +29,29 @@ interface ExamPageProps {
 const ExamPage = ({ slug }: ExamPageProps) => {
   const { t, lang } = useLanguageContext();
   const router = useRouter();
-  const exam = getExamBySlug(slug);
-
-  const [activeStep, setActiveStep] = useState(0);
-  const [questions, setQuestions] = useState<ExamQuestion[]>(
-    exam?.questions?.[lang] ?? [],
+  const exam = useMemo(() => getExamBySlug(slug), [lang]);
+  const questions: ExamQuestion[] = useMemo(
+    () => exam?.questions?.[lang] ?? [],
+    [exam, lang],
   );
+  const [activeStep, setActiveStep] = useState(0);
   const [showVocation, setShowVocation] = useState(slug === 'adult');
   const [openWarning, setOpenWarning] = useState(true);
   const [openNote, setOpenNote] = useState(true);
 
   useEffect(() => {
-    if (localStorage.getItem(STORAGE_KEY_WARNING) === 'true')
+    if (localStorage.getItem(STORAGE_KEY_WARNING) === 'true') {
       setOpenWarning(false);
-    if (localStorage.getItem(STORAGE_KEY_NOTE) === 'true') setOpenNote(false);
+    }
+    if (localStorage.getItem(STORAGE_KEY_NOTE) === 'true') {
+      setOpenNote(false);
+    }
   }, []);
 
   useEffect(() => {
     // Reset state when slug changes
     setActiveStep(0);
-    setQuestions(exam?.questions?.[lang] ?? []);
   }, [lang]);
-
-  if (!exam) return null;
 
   const progress =
     questions.length > 0 ? (activeStep / questions.length) * 100 : 0;
@@ -67,24 +66,23 @@ const ExamPage = ({ slug }: ExamPageProps) => {
     localStorage.setItem(STORAGE_KEY_NOTE, 'true');
   };
 
-  const onVocationSelected = (vocation: Vocation) => {
-    const filtered = filterByVocation(exam.questions[lang], vocation);
-    setQuestions(filtered);
-    setActiveStep(0);
-    setShowVocation(false);
-  };
+  const onVocationSelected = useCallback(
+    (vocation: Vocation) => {
+      const filtered = filterByVocation(questions, vocation);
+      setActiveStep(0);
+      setShowVocation(false);
+      return filtered;
+    },
+    [questions, lang],
+  );
 
-  const cardSteps: CardProps[] = questions.map((q) => ({
-    title: q.title,
-    question: q.question,
-    description: q.description || undefined,
-    category: q.category,
-    commandment: q.commandment,
-    type: q.type,
-    counsels: q.counsels,
-    prevention: q.prevention,
-    saints: q.saints,
-  }));
+  console.log('ExamPage render', {
+    slug,
+    exam,
+    questions,
+    activeStep,
+    progress,
+  });
 
   return (
     <Container className="container-box" maxWidth="sm">
@@ -96,11 +94,11 @@ const ExamPage = ({ slug }: ExamPageProps) => {
           <ArrowBackIcon />
         </IconButton>
         <Typography variant="h5" component="h1" color="text.primary">
-          {exam.label}
+          {exam?.label}
         </Typography>
       </Box>
       <Typography variant="body2" color="text.secondary" mb={2} px={1}>
-        {t[exam.descriptionKey as keyof typeof t]}
+        {t[exam?.descriptionKey as keyof typeof t]}
       </Typography>
       <Box display="flex" gap={1} flexDirection="column">
         <Collapse in={openWarning}>
@@ -124,7 +122,7 @@ const ExamPage = ({ slug }: ExamPageProps) => {
             value={progress}
           />
           <CardDeck
-            steps={cardSteps}
+            steps={questions}
             activeStep={activeStep}
             setActiveStep={setActiveStep}
           />

@@ -10,11 +10,11 @@ import {
   useTheme,
 } from '@mui/material';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Controller, SubmitHandler, useForm, useWatch } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
-import { db, supabase } from '@/classes/SupabaseDB';
+import { db } from '@/classes/SupabaseDB';
 import {
   FormErrorText,
   GoogleAuth,

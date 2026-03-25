@@ -2,6 +2,7 @@ import { Box, Card, CardContent, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useMemo } from 'react';
 
 import { useLanguageContext } from '@/context/LanguageContext';
 import adultPraying from '@/public/assets/images/art/adultPraying.jpeg';
@@ -42,31 +43,34 @@ interface Props {
 }
 
 const SelectExamOfConscience = ({ onExamSelected }: Props) => {
-  const { t } = useLanguageContext();
-  const exams = [
-    {
-      type: 'adults',
-      slug: 'adult',
-      label: t.forAdults,
-      image: adultPraying,
-      description: t.forAdultsDescription,
-    },
+  const { t, lang } = useLanguageContext();
+  const exams = useMemo(
+    () => [
+      {
+        type: 'adults',
+        slug: 'adult',
+        label: t.forAdults,
+        image: adultPraying,
+        description: t.forAdultsDescription,
+      },
 
-    {
-      type: 'teens',
-      slug: 'teen',
-      label: t.forTeens,
-      image: teenPraying,
-      description: t.forTeensDescription,
-    },
-    {
-      type: 'kids',
-      slug: 'child',
-      label: t.forKids,
-      image: kidPraying,
-      description: t.forKidsDescription,
-    },
-  ];
+      {
+        type: 'teens',
+        slug: 'teen',
+        label: t.forTeens,
+        image: teenPraying,
+        description: t.forTeensDescription,
+      },
+      {
+        type: 'kids',
+        slug: 'child',
+        label: t.forKids,
+        image: kidPraying,
+        description: t.forKidsDescription,
+      },
+    ],
+    [lang],
+  );
 
   return (
     <>

@@ -16,8 +16,8 @@ import { AllFriends, Card, RosaryLevel, RosaryLevelInfo } from '@/components';
 import FriendApproval from '@/components/FriendApproval';
 import InviteFriend from '@/components/InviteFriend';
 import { useLanguageContext } from '@/context/LanguageContext';
+import { useLevelsContext } from '@/context/LevelsContext';
 import { useUserContext } from '@/context/UserContext';
-import { getCurrentLevel } from '@/utils/levels';
 
 const FriendsGrid = styled(Box)({
   display: 'grid',
@@ -65,6 +65,7 @@ const FriendsSection = () => {
   const theme = useTheme();
   const { t } = useLanguageContext();
   const { user } = useUserContext();
+  const { getCurrentLevel } = useLevelsContext();
   const numRosariesCompleted = user?.stats.rosaryTotalCount ?? 0;
   const currentLevel = getCurrentLevel(numRosariesCompleted);
   const levelProgress = Math.min(

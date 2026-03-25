@@ -1,22 +1,21 @@
 import { Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import Image from 'next/image';
+import Image, { StaticImageData } from 'next/image';
 
-import { levels } from '@/utils/levels';
+import { useLevelsContext } from '@/context/LevelsContext';
 
-const LevelImage = styled(Image)(({ theme }) => ({
-  border: `5px solid ${theme.palette.divider}`,
-  backgroundColor: theme.palette.background.paper,
+const LevelImage = styled(Image)(() => ({
+  backgroundColor: 'transparent',
   borderRadius: '50%',
-  width: '50px',
-  height: '50px',
+  width: '120px',
+  height: '120px',
   '@media (min-width: 768px)': {
     width: '80px',
     height: '80px',
   },
   '@media (min-width: 1024px)': {
-    width: '100px',
-    height: '100px',
+    width: '120px',
+    height: '120px',
   },
 }));
 
@@ -27,11 +26,11 @@ interface Props {
 
 interface LevelIconProps {
   color: string;
-  icon: string;
+  image: StaticImageData;
   label: string;
 }
 
-const LevelIcon = ({ color, icon, label }: LevelIconProps) => {
+const LevelIcon = ({ color, image, label }: LevelIconProps) => {
   return (
     <Box sx={{ borderRadius: '50%' }}>
       <LevelImage
@@ -39,7 +38,7 @@ const LevelIcon = ({ color, icon, label }: LevelIconProps) => {
           borderColor: color,
           backgroundColor: color,
         }}
-        src={icon}
+        src={image}
         alt={label}
       />
     </Box>
@@ -47,13 +46,14 @@ const LevelIcon = ({ color, icon, label }: LevelIconProps) => {
 };
 
 const RosaryLevel = ({ levelNum }: Props) => {
+  const { levels } = useLevelsContext();
   const level = levels[levelNum];
 
   if (level === undefined) return null;
 
-  const { label, color, icon } = level;
+  const { label, color, image } = level;
 
-  return <LevelIcon color={color} icon={icon} label={label} />;
+  return <LevelIcon color={color} image={image} label={label} />;
 };
 
 export default RosaryLevel;

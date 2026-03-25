@@ -30,8 +30,13 @@ jest.mock('@/components/InviteFriend', () => ({
   default: () => <div data-testid="invite-friend" />,
 }));
 
-jest.mock('@/utils/levels', () => ({
-  getCurrentLevel: jest.fn().mockReturnValue({ levelNum: 1 }),
+jest.mock('@/context/LevelsContext', () => ({
+  useLevelsContext: () => ({
+    getCurrentLevel: jest
+      .fn()
+      .mockReturnValue({ levelNum: 1, requirement: 10, value: 'orange' }),
+    levels: [],
+  }),
 }));
 
 const mockTranslations = {

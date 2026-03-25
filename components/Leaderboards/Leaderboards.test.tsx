@@ -28,8 +28,11 @@ jest.mock('react-toastify', () => ({
   toast: { error: jest.fn() },
 }));
 
-jest.mock('@/utils/levels', () => ({
-  getCurrentLevel: jest.fn().mockReturnValue(0),
+jest.mock('@/context/LevelsContext', () => ({
+  useLevelsContext: () => ({
+    getCurrentLevel: jest.fn().mockReturnValue({ levelNum: 0 }),
+    levels: [],
+  }),
 }));
 
 jest.mock('../Loading', () => ({

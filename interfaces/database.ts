@@ -749,7 +749,15 @@ export type Database = {
           week_end?: string;
           week_start?: string;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: 'leaderboards_weekly_user_id_fkey1';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
       };
       notification_settings: {
         Row: {

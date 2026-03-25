@@ -13,19 +13,19 @@ jest.mock('@/context/UserContext', () => ({
   useUserContext: jest.fn(),
 }));
 
-jest.mock('@/utils/levels', () => ({
-  getCurrentLevel: jest.fn().mockReturnValue({
-    levelNum: 1,
-    levelName: 'Beginner',
-    nextLevelName: 'Intermediate',
-    requirement: 10,
-    nextRequirement: 50,
+jest.mock('@/context/LevelsContext', () => ({
+  useLevelsContext: () => ({
+    getCurrentLevel: jest.fn().mockReturnValue({
+      levelNum: 1,
+      requirement: 10,
+      value: 'intermediate',
+    }),
+    levels: [
+      { label: 'Beginner', requirement: 0, value: 'beginner' },
+      { label: 'Intermediate', requirement: 50, value: 'intermediate' },
+      { label: 'Advanced', requirement: 100, value: 'advanced' },
+    ],
   }),
-  levels: [
-    { name: 'Beginner', requirement: 0, value: 'beginner' },
-    { name: 'Intermediate', requirement: 50, value: 'intermediate' },
-    { name: 'Advanced', requirement: 100, value: 'advanced' },
-  ],
 }));
 
 jest.mock('../../Dialog', () => ({

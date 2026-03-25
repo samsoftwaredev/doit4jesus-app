@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { useLanguageContext } from '@/context/LanguageContext';
+import { useLevelsContext } from '@/context/LevelsContext';
 import { useUserContext } from '@/context/UserContext';
 import { fetchLeaderboards } from '@/services/leaderboardsApi';
-import { getCurrentLevel } from '@/utils/levels';
 
 import Loading from '../Loading';
 import RosaryLevel from '../RosaryLevel';
@@ -20,6 +20,7 @@ type UserLeaderboards = {
 const Leaderboards = () => {
   const { t } = useLanguageContext();
   const { user } = useUserContext();
+  const { getCurrentLevel } = useLevelsContext();
   const [isLoading, setIsLoading] = useState(true);
   const [userList, setUserList] = useState<UserLeaderboards[]>();
 

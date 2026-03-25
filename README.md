@@ -221,16 +221,6 @@ Please ensure:
 - Code follows ESLint and Prettier rules
 - Commit messages are clear and descriptive
 
-## 📄 License
-
-This project is licensed under the ISC License.
-
-## 👨‍💻 Author
-
-**Samuel Ruiz**
-
-- GitHub: [@samsoftwaredev](https://github.com/samsoftwaredev)
-
 ## 🙏 Acknowledgments
 
 - Built with faith and dedication

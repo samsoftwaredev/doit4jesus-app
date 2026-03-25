@@ -1,9 +1,9 @@
 import { Alert, Box, Button, LinearProgress, Typography } from '@mui/material';
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { useLanguageContext } from '@/context/LanguageContext';
+import { useLevelsContext } from '@/context/LevelsContext';
 import { useUserContext } from '@/context/UserContext';
-import { getCurrentLevel, levels } from '@/utils/levels';
 
 import { Dialog, RosaryLevel, RosaryLevelInfo } from '../..';
 
@@ -11,21 +11,25 @@ const ProgressLevelsSection = () => {
   const { t } = useLanguageContext();
   const [isOpenLevels, setIsOpenLevels] = useState(false);
   const { user } = useUserContext();
+  const { levels, getCurrentLevel } = useLevelsContext();
   const numRosariesCompleted = user?.stats.rosaryTotalCount ?? 0;
   const currentLevel = getCurrentLevel(numRosariesCompleted);
-  const nextLevel = levels[currentLevel.levelNum + 1];
+  const nextLevel = levels[currentLevel.levelNum + 1] ?? currentLevel;
 
   const progressNextLevel = useMemo((): number => {
     if (currentLevel.levelNum === -1) {
       return 0;
     } else if (currentLevel.levelNum + 1 === levels.length) {
       return 100;
-    } else {
+    }
+    if (levels[currentLevel.levelNum + 1]) {
       const prevLevel = numRosariesCompleted;
       const nextLevel = levels[currentLevel.levelNum + 1].requirement;
       return (prevLevel / nextLevel) * 100;
+    } else {
+      return 0;
     }
-  }, [numRosariesCompleted]);
+  }, [numRosariesCompleted, currentLevel.levelNum, levels]);
 
   const onCloseLevels = () => {
     setIsOpenLevels(false);

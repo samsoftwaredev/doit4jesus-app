@@ -45,8 +45,11 @@ jest.mock('@/components/SocialShareButtons', () => {
   };
 });
 
-jest.mock('@/utils/levels', () => ({
-  getCurrentLevel: jest.fn(() => ({ label: 'Prayer Warrior' })),
+jest.mock('@/context/LevelsContext', () => ({
+  useLevelsContext: () => ({
+    getCurrentLevel: jest.fn(() => ({ label: 'Prayer Warrior' })),
+    levels: [],
+  }),
 }));
 
 jest.mock('@/constants/milestones', () => ({

@@ -2,11 +2,14 @@ import { render } from '@testing-library/react';
 
 import RosaryLevel from './RosaryLevel';
 
-jest.mock('@/utils/levels', () => ({
-  levels: [
-    { label: 'Beginner', color: '#cd7f32', icon: '/icon0.png' },
-    { label: 'Warrior', color: '#c0c0c0', icon: '/icon1.png' },
-  ],
+jest.mock('@/context/LevelsContext', () => ({
+  useLevelsContext: () => ({
+    levels: [
+      { label: 'Beginner', color: '#cd7f32', icon: '/icon0.png' },
+      { label: 'Warrior', color: '#c0c0c0', icon: '/icon1.png' },
+    ],
+    getCurrentLevel: jest.fn(),
+  }),
 }));
 
 describe('RosaryLevel Component', () => {

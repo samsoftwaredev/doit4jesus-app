@@ -7,14 +7,15 @@ import SocialShareButtons from '@/components/SocialShareButtons';
 import { COMPANY } from '@/constants/company';
 import { getRandomMotivatingMessage } from '@/constants/milestones';
 import { useLanguageContext } from '@/context/LanguageContext';
+import { useLevelsContext } from '@/context/LevelsContext';
 import { useUserContext } from '@/context/UserContext';
 import { fetchStreak } from '@/services/rosaryApi';
-import { getCurrentLevel } from '@/utils/levels';
 import { type ShareCardData } from '@/utils/shareCardGenerator';
 
 const ShareStatsSection = () => {
   const { t } = useLanguageContext();
   const { user } = useUserContext();
+  const { getCurrentLevel } = useLevelsContext();
   const [streak, setStreak] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 

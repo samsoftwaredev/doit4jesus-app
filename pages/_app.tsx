@@ -13,6 +13,7 @@ import { MusicPlayer } from '@/components';
 import { AudioContextProvider } from '@/context/AudioContext';
 import { FriendsContextProvider } from '@/context/FriendsContext';
 import { LanguageContextProvider } from '@/context/LanguageContext';
+import { LevelsProvider } from '@/context/LevelsContext';
 import { PresenceContextProvider } from '@/context/PresenceContext';
 import { StatsContextProvider } from '@/context/StatsContext';
 import { ThemeContextProvider, useThemeContext } from '@/context/ThemeContext';
@@ -57,21 +58,23 @@ const AppContent = ({ Component, pageProps }: AppProps) => {
             <StyledEngineProvider injectFirst>
               <ThemeProvider theme={activeTheme}>
                 <LanguageContextProvider>
-                  <AudioContextProvider
-                    hideMusicPlayer={hideMusicPlayer}
-                    setHideMusicPlayer={setHideMusicPlayer}
-                  >
-                    <PresenceContextProvider>
-                      <StatsContextProvider>
-                        <FriendsContextProvider>
-                          <ToastContainer autoClose={5000} />
-                          <Component {...pageProps} />
-                          <Analytics />
-                          <MusicPlayer />
-                        </FriendsContextProvider>
-                      </StatsContextProvider>
-                    </PresenceContextProvider>
-                  </AudioContextProvider>
+                  <LevelsProvider>
+                    <AudioContextProvider
+                      hideMusicPlayer={hideMusicPlayer}
+                      setHideMusicPlayer={setHideMusicPlayer}
+                    >
+                      <PresenceContextProvider>
+                        <StatsContextProvider>
+                          <FriendsContextProvider>
+                            <ToastContainer autoClose={5000} />
+                            <Component {...pageProps} />
+                            <Analytics />
+                            <MusicPlayer />
+                          </FriendsContextProvider>
+                        </StatsContextProvider>
+                      </PresenceContextProvider>
+                    </AudioContextProvider>
+                  </LevelsProvider>
                 </LanguageContextProvider>
               </ThemeProvider>
             </StyledEngineProvider>
@@ -89,8 +92,10 @@ const AppContent = ({ Component, pageProps }: AppProps) => {
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={activeTheme}>
             <LanguageContextProvider>
-              <Component {...pageProps} />
-              <Analytics />
+              <LevelsProvider>
+                <Component {...pageProps} />
+                <Analytics />
+              </LevelsProvider>
             </LanguageContextProvider>
           </ThemeProvider>
         </StyledEngineProvider>
