@@ -135,7 +135,7 @@ const ProgressLevelsSection = () => {
                   fontSize: { sm: '0.8em', md: '1em' },
                 }}
               >
-                {t.complete} {requirement} {t.rosaries}
+                XP {requirement}
               </Typography>
             </Box>
           </Box>
