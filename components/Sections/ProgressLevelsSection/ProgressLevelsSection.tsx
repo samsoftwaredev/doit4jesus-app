@@ -1,9 +1,11 @@
 import { Alert, Box, Button, LinearProgress, Typography } from '@mui/material';
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useLanguageContext } from '@/context/LanguageContext';
 import { useLevelsContext } from '@/context/LevelsContext';
 import { useUserContext } from '@/context/UserContext';
+import { SpiritualProgressSnapshot } from '@/interfaces/spiritualXp';
+import { getSpiritualProgress } from '@/services/spiritualXp';
 
 import { Dialog, RosaryLevel, RosaryLevelInfo } from '../..';
 
@@ -12,24 +14,23 @@ const ProgressLevelsSection = () => {
   const [isOpenLevels, setIsOpenLevels] = useState(false);
   const { user } = useUserContext();
   const { levels, getCurrentLevel } = useLevelsContext();
-  const numRosariesCompleted = user?.stats.rosaryTotalCount ?? 0;
-  const currentLevel = getCurrentLevel(numRosariesCompleted);
-  const nextLevel = levels[currentLevel.levelNum + 1] ?? currentLevel;
+  const [snapshot, setSnapshot] = useState<SpiritualProgressSnapshot | null>(
+    null,
+  );
 
-  const progressNextLevel = useMemo((): number => {
-    if (currentLevel.levelNum === -1) {
-      return 0;
-    } else if (currentLevel.levelNum + 1 === levels.length) {
-      return 100;
-    }
-    if (levels[currentLevel.levelNum + 1]) {
-      const prevLevel = numRosariesCompleted;
-      const nextLevel = levels[currentLevel.levelNum + 1].requirement;
-      return (prevLevel / nextLevel) * 100;
-    } else {
-      return 0;
-    }
-  }, [numRosariesCompleted, currentLevel.levelNum, levels]);
+  useEffect(() => {
+    const loadProgress = async () => {
+      if (!user?.userId) return;
+      const data = await getSpiritualProgress(user.userId);
+      setSnapshot(data);
+    };
+    loadProgress();
+  }, [user?.userId]);
+
+  const totalXp = snapshot?.profile.totalXp ?? 0;
+  const currentLevel = getCurrentLevel(totalXp);
+  const nextLevel = levels[currentLevel.levelNum + 1] ?? currentLevel;
+  const progressNextLevel = snapshot?.progressPercentToNext ?? 0;
 
   const onCloseLevels = () => {
     setIsOpenLevels(false);
@@ -58,7 +59,7 @@ const ProgressLevelsSection = () => {
         </Box>
 
         <Box
-          sx={{ sm: { p: 0, m: 0 }, md: { padding: '2em', margin: '4em 0' } }}
+          sx={{ sm: { p: 0, m: 0 } }}
           display="flex"
           justifyContent="space-between"
         >
@@ -66,6 +67,7 @@ const ProgressLevelsSection = () => {
             <Typography>{t.currentLevel}</Typography>
             <RosaryLevel levelNum={currentLevel.levelNum} />
             <RosaryLevelInfo
+              label={currentLevel.label}
               value={currentLevel.value}
               requirement={currentLevel.requirement}
             />
@@ -74,6 +76,7 @@ const ProgressLevelsSection = () => {
             <Typography>{t.nextLevel}</Typography>
             <RosaryLevel levelNum={currentLevel.levelNum + 1} />
             <RosaryLevelInfo
+              label={nextLevel.label}
               requirement={nextLevel.requirement}
               value={nextLevel.value}
             />
@@ -124,7 +127,7 @@ const ProgressLevelsSection = () => {
                   },
                 }}
               >
-                {t[value as keyof typeof t]}
+                {label}
               </Typography>
               <Typography
                 fontWeight="light"
