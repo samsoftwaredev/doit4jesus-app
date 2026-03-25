@@ -84,6 +84,8 @@ const ExamPage = ({ slug }: ExamPageProps) => {
     progress,
   });
 
+  if (!exam) return null;
+
   return (
     <Container className="container-box" maxWidth="sm">
       <Box display="flex" alignItems="center" gap={1} mt={1} mb={1}>

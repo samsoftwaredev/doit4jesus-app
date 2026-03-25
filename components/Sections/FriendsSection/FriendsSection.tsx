@@ -11,6 +11,7 @@ import {
   alpha,
 } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
+import { useEffect, useState } from 'react';
 
 import { AllFriends, Card, RosaryLevel, RosaryLevelInfo } from '@/components';
 import FriendApproval from '@/components/FriendApproval';
@@ -18,6 +19,8 @@ import InviteFriend from '@/components/InviteFriend';
 import { useLanguageContext } from '@/context/LanguageContext';
 import { useLevelsContext } from '@/context/LevelsContext';
 import { useUserContext } from '@/context/UserContext';
+import { SpiritualProgressSnapshot } from '@/interfaces/spiritualXp';
+import { getSpiritualProgress } from '@/services/spiritualXp';
 
 const FriendsGrid = styled(Box)({
   display: 'grid',
@@ -66,12 +69,22 @@ const FriendsSection = () => {
   const { t } = useLanguageContext();
   const { user } = useUserContext();
   const { getCurrentLevel } = useLevelsContext();
-  const numRosariesCompleted = user?.stats.rosaryTotalCount ?? 0;
-  const currentLevel = getCurrentLevel(numRosariesCompleted);
-  const levelProgress = Math.min(
-    100,
-    (numRosariesCompleted / currentLevel.requirement) * 100,
+  const [snapshot, setSnapshot] = useState<SpiritualProgressSnapshot | null>(
+    null,
   );
+
+  useEffect(() => {
+    const loadProgress = async () => {
+      if (!user?.userId) return;
+      const data = await getSpiritualProgress(user.userId);
+      setSnapshot(data);
+    };
+    loadProgress();
+  }, [user?.userId]);
+
+  const totalXp = snapshot?.profile.totalXp ?? 0;
+  const currentLevel = getCurrentLevel(totalXp);
+  const levelProgress = snapshot?.progressPercentToNext ?? 0;
 
   return (
     <Container className="container-box" maxWidth="md">
@@ -194,7 +207,8 @@ const FriendsSection = () => {
             <Box display="flex" flexDirection="column" textAlign="center">
               <RosaryLevel levelNum={currentLevel.levelNum} />
               <RosaryLevelInfo
-                requirement={currentLevel.requirement}
+                label={currentLevel.label}
+                requirement={totalXp}
                 value={currentLevel.value}
               />
             </Box>
