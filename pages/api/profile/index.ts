@@ -70,17 +70,51 @@ export default async function handler(
 
   if (req.method === 'PATCH') {
     try {
-      const { language } = req.body ?? {};
+      const { language, city, state } = req.body ?? {};
 
-      if (language && typeof language === 'string') {
+      // Validate city/state if provided
+      let cityValid = true;
+      let stateValid = true;
+      let cityWarning = null;
+      let stateWarning = null;
+
+      if (city) {
+        // Fetch canonical city list from DB for validation
+        const sbCity = getServiceSupabase();
+        const { data: cityList, error: cityListError } = await sbCity
+          .from('prayer_locations')
+          .select('city, country_code')
+          .limit(500);
+        if (!cityListError && cityList) {
+          cityValid = cityList.some(
+            (opt) => opt.city.toLowerCase() === city.toLowerCase(),
+          );
+          if (!cityValid) {
+            cityWarning = 'City not recognized in global prayer cities list.';
+          }
+        }
+      }
+      if (state && typeof state !== 'string') {
+        stateValid = false;
+        stateWarning = 'State must be a string.';
+      }
+
+      // Only update fields that are provided
+      const updateObj: Record<string, any> = {};
+      if (language && typeof language === 'string')
+        updateObj.language = language;
+      if (city && typeof city === 'string') updateObj.city = city;
+      if (state && typeof state === 'string') updateObj.state = state;
+
+      if (Object.keys(updateObj).length > 0) {
         const { error } = await sb
           .from('profiles')
-          .update({ language })
+          .update(updateObj)
           .eq('id', userId);
         if (error) return res.status(500).json({ error: error.message });
       }
 
-      return res.status(200).json({ ok: true });
+      return res.status(200).json({ ok: true, cityWarning, stateWarning });
     } catch (err) {
       console.error('PATCH /api/profile error:', err);
       return res.status(500).json({ error: 'Internal server error' });

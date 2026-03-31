@@ -14,7 +14,6 @@ import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useLanguageContext } from '@/context/LanguageContext';
-import { MOCK_PRAYER_CITIES } from '@/data/mockPrayerCities';
 import type {
   MapTooltipData,
   PrayerCity,
@@ -92,19 +91,15 @@ const GlobalPrayerMap = ({ cities: externalCities }: Props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [cities, setCities] = useState<PrayerCity[]>([]);
 
-  // Load data (external or mock)
+  // Load data (external only)
   useEffect(() => {
     if (externalCities) {
       setCities(externalCities);
       setIsLoading(false);
-      return;
-    }
-    // Simulate a short load for the mock data
-    const timer = setTimeout(() => {
-      setCities(MOCK_PRAYER_CITIES);
+    } else {
+      setCities([]);
       setIsLoading(false);
-    }, 400);
-    return () => clearTimeout(timer);
+    }
   }, [externalCities]);
 
   const countriesData = useMemo(() => aggregateByCountry(cities), [cities]);
@@ -177,6 +172,10 @@ const GlobalPrayerMap = ({ cities: externalCities }: Props) => {
             </Grid>
           ))}
         </Grid>
+      ) : cities.length === 0 ? (
+        <Typography color="text.secondary" sx={{ my: 2 }}>
+          {t.noPrayerCities ?? 'No prayer cities to display.'}
+        </Typography>
       ) : (
         <MapSummaryCards summary={summary} translations={t} />
       )}

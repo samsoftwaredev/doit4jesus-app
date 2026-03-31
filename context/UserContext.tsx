@@ -86,7 +86,12 @@ const UserContextProvider = ({ children }: Props) => {
         router.push(NAV_MAIN_LINKS.login.link);
       }
       if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session) {
-        router.push(NAV_APP_LINKS.dashboard.link);
+        if (
+          window.location.pathname === NAV_MAIN_LINKS.login.link ||
+          window.location.pathname === NAV_MAIN_LINKS.signup.link
+        ) {
+          router.push(NAV_APP_LINKS.dashboard.link);
+        }
       }
     });
     return () => {

@@ -14,6 +14,7 @@ import type {
   PrayerMapView,
   SelectedLocationDetail,
 } from '@/interfaces/globalPrayerMap';
+import { ISO3166_NUMERIC_TO_ALPHA2 } from '@/lib/iso3166NumericToAlpha2';
 
 import {
   ANIM,
@@ -124,44 +125,14 @@ const WorldMapSvg = ({
   );
 
   // Build a lookup: ISO‑3166 numeric → PrayerCountry
+  // numericToAlpha2 is the complete ISO-3166-1 mapping from lib/iso3166NumericToAlpha2.ts.
+  // No component edits are needed when the backend adds new countries.
   const countryLookup = useMemo(() => {
-    const numericToAlpha2: Record<string, string> = {
-      '840': 'US',
-      '076': 'BR',
-      '484': 'MX',
-      '124': 'CA',
-      '170': 'CO',
-      '604': 'PE',
-      '032': 'AR',
-      '380': 'IT',
-      '724': 'ES',
-      '826': 'GB',
-      '250': 'FR',
-      '620': 'PT',
-      '616': 'PL',
-      '372': 'IE',
-      '276': 'DE',
-      '566': 'NG',
-      '404': 'KE',
-      '180': 'CD',
-      '288': 'GH',
-      '231': 'ET',
-      '710': 'ZA',
-      '608': 'PH',
-      '410': 'KR',
-      '356': 'IN',
-      '360': 'ID',
-      '704': 'VN',
-      '422': 'LB',
-      '392': 'JP',
-      '036': 'AU',
-      '554': 'NZ',
-    };
     const map = new Map<string, PrayerCountry>();
     for (const cd of countriesData) {
       map.set(cd.countryCode, cd);
     }
-    return { numericToAlpha2, byCode: map };
+    return { numericToAlpha2: ISO3166_NUMERIC_TO_ALPHA2, byCode: map };
   }, [countriesData]);
 
   // ── Event helpers ────────────────────────────────────────────────────────

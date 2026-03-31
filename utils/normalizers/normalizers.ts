@@ -124,6 +124,8 @@ export const normalizeUserProfile = (
     dateOfBirth: nullToDate(userProfile.birth_date),
     pictureUrl: nullToString(userProfile.picture_url),
     role: userProfile.role ?? undefined,
+    city: userProfile.city ?? undefined,
+    state: userProfile.state ?? undefined,
     stats: generateRosaryCount(rosaryStats),
   };
 };

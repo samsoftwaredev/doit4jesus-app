@@ -875,6 +875,7 @@ export type Database = {
       profiles: {
         Row: {
           birth_date: string | null;
+          city: string | null;
           created_at: string | null;
           first_name: string | null;
           gender: string | null;
@@ -886,11 +887,13 @@ export type Database = {
           role: string;
           rosary_count: number | null;
           rosary_streak: number;
+          state: string | null;
           updated_at: string | null;
           username: string | null;
         };
         Insert: {
           birth_date?: string | null;
+          city?: string | null;
           created_at?: string | null;
           first_name?: string | null;
           gender?: string | null;
@@ -902,11 +905,13 @@ export type Database = {
           role?: string;
           rosary_count?: number | null;
           rosary_streak?: number;
+          state?: string | null;
           updated_at?: string | null;
           username?: string | null;
         };
         Update: {
           birth_date?: string | null;
+          city?: string | null;
           created_at?: string | null;
           first_name?: string | null;
           gender?: string | null;
@@ -918,6 +923,7 @@ export type Database = {
           role?: string;
           rosary_count?: number | null;
           rosary_streak?: number;
+          state?: string | null;
           updated_at?: string | null;
           username?: string | null;
         };

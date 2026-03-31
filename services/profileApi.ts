@@ -18,3 +18,11 @@ export const updateLanguage = (language: string) =>
 /** Permanently delete the user's account. */
 export const deleteAccount = () =>
   apiFetch('/api/profile/delete', { method: 'POST' });
+
+/** Update the user's city and state (location). */
+export const updateProfileLocation = (city: string, state: string) =>
+  apiFetch<{
+    ok: boolean;
+    cityWarning: string | null;
+    stateWarning: string | null;
+  }>('/api/profile', { method: 'PATCH', body: { city, state } });

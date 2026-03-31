@@ -20,7 +20,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { db, supabase } from '@/classes';
@@ -31,7 +31,11 @@ import { useLanguageContext } from '@/context/LanguageContext';
 import { useThemeContext } from '@/context/ThemeContext';
 import { useUserContext } from '@/context/UserContext';
 import { INTERFACE_AUDIO_STATE, LANG } from '@/interfaces';
-import { deleteAccount, updateLanguage } from '@/services/profileApi';
+import {
+  deleteAccount,
+  updateLanguage,
+  updateProfileLocation,
+} from '@/services/profileApi';
 import { digitRegEx, specialCharsRegEx } from '@/utils';
 
 const AccountSection = () => {
@@ -41,11 +45,25 @@ const AccountSection = () => {
   const { setAudioState } = useAudioContext();
   const { mode, toggleTheme } = useThemeContext();
 
-  // Delete account state
+  // ── Location form state ────────────────────────────────────────────────────
+  const [city, setCity] = useState(user?.city || '');
+  const [state, setState] = useState(user?.state || '');
+  const [locationLoading, setLocationLoading] = useState(false);
+  const [locationSuccess, setLocationSuccess] = useState('');
+  const [locationError, setLocationError] = useState('');
+  const [cityWarning, setCityWarning] = useState<string | null>(null);
+
+  // Sync location state when user context loads or changes
+  useEffect(() => {
+    setCity(user?.city || '');
+    setState(user?.state || '');
+  }, [user]);
+
+  // ── Delete account state ───────────────────────────────────────────────────
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Password form state
+  // ── Password form state ────────────────────────────────────────────────────
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -82,7 +100,24 @@ const AccountSection = () => {
   const strengthLabel =
     strengthScore <= 1 ? t.weak : strengthScore <= 2 ? t.fair : t.strong;
 
-  // --- Handlers ---
+  // ── Handlers ──────────────────────────────────────────────────────────────
+
+  const handleLocationUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLocationLoading(true);
+    setLocationSuccess('');
+    setLocationError('');
+    setCityWarning(null);
+    try {
+      const res = await updateProfileLocation(city.trim(), state.trim());
+      if (res.cityWarning) setCityWarning(res.cityWarning);
+      setLocationSuccess(t.locationUpdated);
+    } catch {
+      setLocationError(t.unableToUpdateLocation);
+    } finally {
+      setLocationLoading(false);
+    }
+  };
 
   const handleLanguageChange = async (newLang: LANG) => {
     setLang(newLang);
@@ -114,7 +149,6 @@ const AccountSection = () => {
         return;
       }
 
-      // Re-authenticate with current password
       const { error: authError } = await supabase.auth.signInWithPassword({
         email: session.user.email,
         password: currentPassword,
@@ -125,7 +159,6 @@ const AccountSection = () => {
         return;
       }
 
-      // Update password
       const { error: updateError } = await db.updatePassword(newPassword);
       if (updateError) {
         setPasswordError(t.errorUpdatingPassword);
@@ -219,6 +252,68 @@ const AccountSection = () => {
             </Box>
           </Box>
         </Card>
+
+        {/* ─── Location ─── */}
+        <Box mt={3}>
+          <Card>
+            <Typography fontSize="2em">{t.location}</Typography>
+
+            <Box
+              component="form"
+              onSubmit={handleLocationUpdate}
+              display="flex"
+              flexDirection="column"
+              gap={2}
+              mt={1}
+            >
+              <TextField
+                label={t.city}
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                fullWidth
+                required
+                helperText={cityWarning ?? t.cityHelper}
+                sx={{ mb: 1 }}
+              />
+              <TextField
+                label={t.state}
+                value={state}
+                onChange={(e) => setState(e.target.value)}
+                fullWidth
+                sx={{ mb: 1 }}
+              />
+              <Button
+                type="submit"
+                variant="contained"
+                disabled={locationLoading || !city}
+              >
+                {locationLoading ? t.loading : t.updateLocation}
+              </Button>
+
+              {locationSuccess && (
+                <Alert severity="success" sx={{ my: 1 }}>
+                  {locationSuccess}
+                </Alert>
+              )}
+              {locationError && (
+                <Alert severity="error" sx={{ my: 1 }}>
+                  {locationError}
+                </Alert>
+              )}
+            </Box>
+
+            {/* Show current saved location */}
+            {user?.city && (
+              <Typography variant="body2" mt={2}>
+                {t.currentLocation}:{' '}
+                <b>
+                  {user.city}
+                  {user.state ? `, ${user.state}` : ''}
+                </b>
+              </Typography>
+            )}
+          </Card>
+        </Box>
 
         {/* ─── Change Password ─── */}
         <Box mt={3}>

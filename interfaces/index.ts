@@ -141,6 +141,10 @@ export interface User {
   isConfirmed?: boolean;
   updateAt?: string;
   role?: string;
+  /** User's saved city for prayer location attribution. */
+  city?: string;
+  /** User's saved state or region (optional, supports international users). */
+  state?: string;
   stats: {
     rosaryTotalCount: number;
     todaysRosaryCompleted: boolean;

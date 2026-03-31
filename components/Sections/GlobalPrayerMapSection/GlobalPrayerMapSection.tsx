@@ -18,17 +18,16 @@ import { toast } from 'react-toastify';
 
 import { supabase } from '@/classes/SupabaseDB';
 import GlobalPrayerMap from '@/components/GlobalPrayerMap';
-import { GLOBAL_PRAYER_CITY_OPTIONS } from '@/constants';
 import { useLanguageContext } from '@/context/LanguageContext';
-import { useUserContext } from '@/context/UserContext';
 import { GlobalPrayerSessionsDB } from '@/interfaces/databaseTable';
 import type { PrayerCity } from '@/interfaces/globalPrayerMap';
+import { getPrayerCityOptions } from '@/services/prayerCityApi';
 import {
-  getActiveGlobalPrayerSessions,
-  joinGlobalPrayerSession,
-  startOrJoinGlobalPrayerSession,
-} from '@/services';
-import { getPrayerMapCities } from '@/services/prayerMap';
+  getPrayerMapCities,
+  joinPrayerSession,
+  startPrayerSession,
+} from '@/services/prayerMapApi';
+import { getActiveGlobalPrayerSessions } from '@/services/prayerSessionsApi';
 
 const SectionGrid = styled(Box)({
   display: 'grid',
@@ -55,23 +54,35 @@ const getCountryFlag = (countryCode?: string | null): string => {
 const GlobalPrayerMapSection = () => {
   const theme = useTheme();
   const { t } = useLanguageContext();
-  const { user } = useUserContext();
 
   // ── Prayer map data ──────────────────────────────────────────────────────
   const [prayerCities, setPrayerCities] = useState<PrayerCity[]>([]);
+  const [mapLoading, setMapLoading] = useState(true);
+
+  const refreshPrayerCities = useCallback(async () => {
+    const cities = await getPrayerMapCities();
+    setPrayerCities(cities);
+    setMapLoading(false);
+  }, []);
 
   useEffect(() => {
-    getPrayerMapCities().then((cities) => {
-      if (cities.length > 0) setPrayerCities(cities);
-      // If no DB data yet, GlobalPrayerMap falls back to mock data internally
-    });
-  }, []);
+    void refreshPrayerCities();
+  }, [refreshPrayerCities]);
 
   // ── Live prayer sessions ─────────────────────────────────────────────────
   const [sessions, setSessions] = useState<GlobalPrayerSessionsDB[]>([]);
-  const [selectedCityKey, setSelectedCityKey] = useState(
-    `${GLOBAL_PRAYER_CITY_OPTIONS[0].city}-${GLOBAL_PRAYER_CITY_OPTIONS[0].countryCode}`,
-  );
+  // Canonical city options from backend
+  const [cityOptions, setCityOptions] = useState<any[]>([]);
+  const [selectedCityKey, setSelectedCityKey] = useState<string>('');
+  // Fetch canonical city options for dropdown
+  useEffect(() => {
+    getPrayerCityOptions().then((opts) => {
+      setCityOptions(opts);
+      if (opts.length > 0) {
+        setSelectedCityKey(`${opts[0].city}-${opts[0].countryCode}`);
+      }
+    });
+  }, []);
   const [selectedPrayerType, setSelectedPrayerType] = useState(prayerTypes[0]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -107,30 +118,31 @@ const GlobalPrayerMapSection = () => {
   // ── Handlers ─────────────────────────────────────────────────────────────
 
   const handleJoinSession = async (sessionId: number) => {
-    const updatedCount = await joinGlobalPrayerSession(sessionId, user?.userId);
+    const updatedCount = await joinPrayerSession(sessionId);
     if (updatedCount === null) {
       toast.error(t.unableToJoinSession);
       return;
     }
+
     toast.success(t.joinedPrayerSession);
     void refreshSessions();
+    void refreshPrayerCities();
   };
 
   const handleStartSession = async () => {
-    const selectedCity = GLOBAL_PRAYER_CITY_OPTIONS.find(
+    const selectedCity = cityOptions.find(
       (city) => `${city.city}-${city.countryCode}` === selectedCityKey,
     );
     if (!selectedCity) return;
 
     setIsSubmitting(true);
-    const sessionId = await startOrJoinGlobalPrayerSession({
+    const sessionId = await startPrayerSession({
       city: selectedCity.city,
       countryCode: selectedCity.countryCode,
       countryName: selectedCity.countryName,
       latitude: selectedCity.latitude,
       longitude: selectedCity.longitude,
       prayerType: selectedPrayerType,
-      createdBy: user?.userId,
     });
     setIsSubmitting(false);
 
@@ -138,17 +150,17 @@ const GlobalPrayerMapSection = () => {
       toast.error(t.unableToStartSession);
       return;
     }
+
     toast.success(t.sessionLive);
     void refreshSessions();
+    void refreshPrayerCities();
   };
 
   return (
     <Container className="container-box" maxWidth="md">
       <SectionGrid>
         {/* ── D3 Global Prayer Map ──────────────────────────────────────── */}
-        <GlobalPrayerMap
-          cities={prayerCities.length > 0 ? prayerCities : undefined}
-        />
+        <GlobalPrayerMap cities={mapLoading ? undefined : prayerCities} />
 
         {/* ── Start a session ───────────────────────────────────────────── */}
         <Card>
@@ -165,7 +177,7 @@ const GlobalPrayerMapSection = () => {
                   value={selectedCityKey}
                   onChange={(event) => setSelectedCityKey(event.target.value)}
                 >
-                  {GLOBAL_PRAYER_CITY_OPTIONS.map((city) => (
+                  {cityOptions.map((city) => (
                     <MenuItem
                       key={`${city.city}-${city.countryCode}`}
                       value={`${city.city}-${city.countryCode}`}
