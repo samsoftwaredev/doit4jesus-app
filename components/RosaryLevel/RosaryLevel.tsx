@@ -7,15 +7,15 @@ import { useLevelsContext } from '@/context/LevelsContext';
 const LevelImage = styled(Image)(() => ({
   backgroundColor: 'transparent',
   borderRadius: '50%',
-  width: '120px',
-  height: '120px',
+  width: '100px',
+  height: '100px',
   '@media (min-width: 768px)': {
     width: '80px',
     height: '80px',
   },
   '@media (min-width: 1024px)': {
-    width: '120px',
-    height: '120px',
+    width: '100px',
+    height: '100px',
   },
 }));
 
