@@ -6,6 +6,7 @@ import {
 } from '@mui/icons-material';
 import {
   Alert,
+  Autocomplete,
   Box,
   Button,
   Container,
@@ -26,11 +27,13 @@ import { toast } from 'react-toastify';
 import { db, supabase } from '@/classes';
 import { Card, Dialog, Loading, PasswordValidator } from '@/components';
 import { minPasswordLength } from '@/constants/global';
+import type { GlobalPrayerCityOption } from '@/constants/globalPrayerCities';
 import { useAudioContext } from '@/context/AudioContext';
 import { useLanguageContext } from '@/context/LanguageContext';
 import { useThemeContext } from '@/context/ThemeContext';
 import { useUserContext } from '@/context/UserContext';
 import { INTERFACE_AUDIO_STATE, LANG } from '@/interfaces';
+import { getPrayerCityOptions } from '@/services/prayerCityApi';
 import {
   deleteAccount,
   updateLanguage,
@@ -52,12 +55,30 @@ const AccountSection = () => {
   const [locationSuccess, setLocationSuccess] = useState('');
   const [locationError, setLocationError] = useState('');
   const [cityWarning, setCityWarning] = useState<string | null>(null);
+  const [cityOptions, setCityOptions] = useState<GlobalPrayerCityOption[]>([]);
+  const [selectedCity, setSelectedCity] =
+    useState<GlobalPrayerCityOption | null>(null);
+
+  // Fetch prayer city options on mount
+  useEffect(() => {
+    getPrayerCityOptions().then(setCityOptions);
+  }, []);
 
   // Sync location state when user context loads or changes
   useEffect(() => {
     setCity(user?.city || '');
     setState(user?.state || '');
   }, [user]);
+
+  // Pre-select the user's saved city once options and user are available
+  useEffect(() => {
+    if (cityOptions.length > 0 && user?.city) {
+      const match = cityOptions.find(
+        (opt) => opt.city.toLowerCase() === user!.city!.toLowerCase(),
+      );
+      setSelectedCity(match ?? null);
+    }
+  }, [cityOptions, user?.city]);
 
   // ── Delete account state ───────────────────────────────────────────────────
   const [isOpen, setIsOpen] = useState(false);
@@ -266,14 +287,29 @@ const AccountSection = () => {
               gap={2}
               mt={1}
             >
-              <TextField
-                label={t.city}
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
+              <Autocomplete
+                options={cityOptions}
+                getOptionLabel={(opt) => `${opt.city}, ${opt.countryName}`}
+                value={selectedCity}
+                onChange={(_e, newValue) => {
+                  setSelectedCity(newValue);
+                  setCity(newValue?.city || '');
+                  setState(newValue?.countryName || '');
+                }}
+                isOptionEqualToValue={(opt, val) =>
+                  opt.city.toLowerCase() === val.city.toLowerCase() &&
+                  opt.countryCode === val.countryCode
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label={t.city}
+                    required
+                    helperText={cityWarning ?? t.cityHelper}
+                    sx={{ mb: 1 }}
+                  />
+                )}
                 fullWidth
-                required
-                helperText={cityWarning ?? t.cityHelper}
-                sx={{ mb: 1 }}
               />
               <TextField
                 label={t.state}

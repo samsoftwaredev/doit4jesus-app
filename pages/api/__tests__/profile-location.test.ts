@@ -242,11 +242,9 @@ describe('GET /api/profile', () => {
     mockSb.from = mfFn;
 
     // auth.getUser
-    mockSb.auth.getUser = jest
-      .fn()
-      .mockResolvedValue({
-        data: { user: { app_metadata: { provider: 'email' } } },
-      });
+    mockSb.auth.getUser = jest.fn().mockResolvedValue({
+      data: { user: { app_metadata: { provider: 'email' } } },
+    });
 
     const req = createMockReq({
       method: 'GET',

@@ -350,7 +350,7 @@
   "locationUpdated": "Ubicación actualizada correctamente.",
   "unableToUpdateLocation": "No se pudo actualizar la ubicación. Inténtalo de nuevo.",
   "currentLocation": "Ubicación actual",
-  "cityHelper": "Ingresa tu ciudad para atribuir tus oraciones a una ubicación.",
+  "cityHelper": "Selecciona tu ciudad para atribuir tus oraciones a una ubicación.",
   "cityNotRecognized": "Ciudad no encontrada en la lista — se guardará de todas formas.",
   "state": "Estado / Región",
   "prayerTypeRosary": "Rosario",

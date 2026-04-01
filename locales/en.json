@@ -350,7 +350,7 @@
   "locationUpdated": "Location updated successfully.",
   "unableToUpdateLocation": "Unable to update location. Please try again.",
   "currentLocation": "Current location",
-  "cityHelper": "Enter your city to attribute your prayers to a location.",
+  "cityHelper": "Select your city to attribute your prayers to a location.",
   "cityNotRecognized": "City not found in the prayer cities list — it will still be saved.",
   "state": "State / Region",
   "prayerTypeRosary": "Rosary",
