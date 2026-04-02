@@ -163,7 +163,7 @@ const GlobalPrayerMapSection = () => {
         <GlobalPrayerMap cities={mapLoading ? undefined : prayerCities} />
 
         {/* ── Start a session ───────────────────────────────────────────── */}
-        <Card>
+        {/* <Card>
           <Box sx={{ p: 2 }}>
             <Typography fontWeight={700} mb={1.5}>
               {t.startLivePrayerSession}
@@ -218,10 +218,10 @@ const GlobalPrayerMapSection = () => {
               </Button>
             </Stack>
           </Box>
-        </Card>
+        </Card> */}
 
         {/* ── Active sessions ───────────────────────────────────────────── */}
-        <Card>
+        {/* <Card>
           <Box sx={{ p: 2 }}>
             <Typography fontWeight={700} mb={1}>
               {t.sessionDetails}
@@ -263,7 +263,7 @@ const GlobalPrayerMapSection = () => {
               </Typography>
             )}
           </Box>
-        </Card>
+        </Card> */}
       </SectionGrid>
     </Container>
   );

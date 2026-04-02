@@ -8,8 +8,8 @@ import { AppLayout } from '@/components/Templates';
 const Friends: NextPage = () => {
   return (
     <AppLayout>
-      <FriendsSection />
       <GlobalPrayerMapSection />
+      <FriendsSection />
     </AppLayout>
   );
 };
