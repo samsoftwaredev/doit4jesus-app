@@ -1,5 +1,8 @@
 import { digitRegEx, specialCharsRegEx } from '../utils';
 
+export const DEFAULT_CITY = 'Dallas';
+export const DEFAULT_COUNTRY_NAME = 'United States';
+
 export const minPasswordLength = 8;
 export const maxAge = 120;
 export const minAge = 13;

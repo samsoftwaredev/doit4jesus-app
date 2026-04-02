@@ -13,6 +13,7 @@ import EventSection from '@/components/Sections/EventSection';
 import { AppLayout } from '@/components/Templates';
 import { useAudioContext } from '@/context/AudioContext';
 import { usePresenceContext } from '@/context/PresenceContext';
+import { useUserContext } from '@/context/UserContext';
 import { DataEvent, EventTypes, VideoEvent } from '@/interfaces';
 import { fetchEventBySlug, fetchVideo } from '@/services/eventsApi';
 import { normalizeEvent, normalizeVideo } from '@/utils';
@@ -20,10 +21,11 @@ import { normalizeEvent, normalizeVideo } from '@/utils';
 const LiveEvent: NextPage = () => {
   const params = useParams();
   const slug = params.slug;
+  const { user } = useUserContext();
   const { setAudioPlayer, setHideMusicPlayer } = useAudioContext();
   const { setChannel } = usePresenceContext();
   const channel: RealtimeChannel | undefined =
-    typeof slug === 'string' ? supabase.channel(slug) : undefined;
+    typeof slug === 'string' ? supabase.channel(user?.city ?? slug) : undefined;
   const [isLoading, setIsLoading] = useState(true);
   const [dataEvent, setDataEvent] = useState<VideoEvent & DataEvent>();
   const timeRemaining = moment(dataEvent?.startedAt) > moment();

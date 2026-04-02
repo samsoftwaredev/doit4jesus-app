@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
+import { DEFAULT_CITY, DEFAULT_COUNTRY_NAME } from '@/constants/global';
 import { requireAuth } from '@/lib/api/requireAuth';
 import { getServiceSupabase } from '@/lib/supabase/server';
 import { getUserSupabase } from '@/lib/supabase/userClient';
@@ -38,6 +39,15 @@ export default async function handler(
         }
       } catch {
         // Non-critical — streak defaults to 0
+      }
+
+      // Backfill default city/state for users with missing location
+      if (!profileRes.data.city || !profileRes.data.state) {
+        const updates: Record<string, string> = {};
+        if (!profileRes.data.city) updates.city = DEFAULT_CITY;
+        if (!profileRes.data.state) updates.state = DEFAULT_COUNTRY_NAME;
+        await sb.from('profiles').update(updates).eq('id', userId);
+        Object.assign(profileRes.data, updates);
       }
 
       // If Google user with no first_name, sync from auth metadata

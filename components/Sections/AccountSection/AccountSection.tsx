@@ -26,7 +26,11 @@ import { toast } from 'react-toastify';
 
 import { db, supabase } from '@/classes';
 import { Card, Dialog, Loading, PasswordValidator } from '@/components';
-import { minPasswordLength } from '@/constants/global';
+import {
+  DEFAULT_CITY,
+  DEFAULT_COUNTRY_NAME,
+  minPasswordLength,
+} from '@/constants/global';
 import type { GlobalPrayerCityOption } from '@/constants/globalPrayerCities';
 import { useAudioContext } from '@/context/AudioContext';
 import { useLanguageContext } from '@/context/LanguageContext';
@@ -66,19 +70,42 @@ const AccountSection = () => {
 
   // Sync location state when user context loads or changes
   useEffect(() => {
-    setCity(user?.city || '');
-    setState(user?.state || '');
+    setCity(user?.city || DEFAULT_CITY);
+    setState(user?.state || DEFAULT_COUNTRY_NAME);
   }, [user]);
 
-  // Pre-select the user's saved city once options and user are available
+  // Pre-select the user's saved city once options are available.
+  // Falls back to Dallas, United States when the user has no saved city
+  // or their saved city isn't found in prayer_locations.
   useEffect(() => {
-    if (cityOptions.length > 0 && user?.city) {
-      const match = cityOptions.find(
-        (opt) => opt.city.toLowerCase() === user!.city!.toLowerCase(),
+    if (cityOptions.length === 0) return;
+
+    const userCity = user?.city || DEFAULT_CITY;
+    const userCountry = user?.state || DEFAULT_COUNTRY_NAME;
+
+    const match =
+      cityOptions.find(
+        (opt) =>
+          opt.city.toLowerCase() === userCity.toLowerCase() &&
+          opt.countryName.toLowerCase() === userCountry.toLowerCase(),
+      ) ??
+      cityOptions.find(
+        (opt) => opt.city.toLowerCase() === userCity.toLowerCase(),
       );
-      setSelectedCity(match ?? null);
+
+    const fallback = cityOptions.find(
+      (opt) =>
+        opt.city.toLowerCase() === DEFAULT_CITY.toLowerCase() &&
+        opt.countryName.toLowerCase() === DEFAULT_COUNTRY_NAME.toLowerCase(),
+    );
+
+    const selected = match ?? fallback ?? null;
+    setSelectedCity(selected);
+    if (selected) {
+      setCity(selected.city);
+      setState(selected.countryName);
     }
-  }, [cityOptions, user?.city]);
+  }, [cityOptions, user?.city, user?.state]);
 
   // ── Delete account state ───────────────────────────────────────────────────
   const [isOpen, setIsOpen] = useState(false);
@@ -310,13 +337,6 @@ const AccountSection = () => {
                   />
                 )}
                 fullWidth
-              />
-              <TextField
-                label={t.state}
-                value={state}
-                onChange={(e) => setState(e.target.value)}
-                fullWidth
-                sx={{ mb: 1 }}
               />
               <Button
                 type="submit"

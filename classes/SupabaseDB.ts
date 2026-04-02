@@ -1,6 +1,7 @@
 import { AuthResponse, createClient } from '@supabase/supabase-js';
 
 import { NAV_MAIN_LINKS, NEW_USER_REDIRECT } from '@/constants';
+import { DEFAULT_CITY, DEFAULT_COUNTRY_NAME } from '@/constants/global';
 import type { Database } from '@/interfaces/database';
 import { GENDER_TYPES } from '@/interfaces/enum';
 
@@ -121,6 +122,8 @@ class SupabaseDB {
           first_name: userInput.firstName,
           last_name: userInput.lastName,
           gender: userGender,
+          city: DEFAULT_CITY,
+          state: DEFAULT_COUNTRY_NAME,
           username:
             userInput.firstName +
             userInput.lastName +

@@ -5,8 +5,13 @@ import UserBubble from '../UserBubble';
 
 const Container = styled(Box)({
   listStyleType: 'none',
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'center',
+  alignItems: 'center',
   margin: 0,
   padding: 0,
+  maxWidth: '100%',
 });
 
 interface Props {
@@ -26,6 +31,7 @@ const OnlineUsers = ({ users }: Props) => {
           userName={fullName}
           userId={userId}
           userPicture={pictureUrl}
+          isOnline
         />
       ))}
     </Container>

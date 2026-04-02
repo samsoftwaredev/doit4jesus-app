@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import { alpha, styled } from '@mui/material/styles';
 
 import { useAudioContext } from '@/context/AudioContext';
@@ -40,7 +40,7 @@ const Controls = styled(Box)(({ theme }) => ({
   gridTemplateRows: '1fr 20px',
   gap: '1em 1em',
   gridAutoFlow: 'row',
-  gridTemplateAreas: `'buttonControl buttonControl' 'title mystery'`,
+  gridTemplateAreas: `'buttonControl buttonControl' 'title userPresenceBar'`,
   height: '80px',
   padding: '0 14px',
   boxShadow:
@@ -55,7 +55,7 @@ const Controls = styled(Box)(({ theme }) => ({
   '@media (min-width: 768px)': {
     gridTemplateColumns: '1fr 350px 1fr',
     gridTemplateRows: '1fr',
-    gridTemplateAreas: `'title buttonControl mystery'`,
+    gridTemplateAreas: `'title buttonControl userPresenceBar'`,
     alignItems: 'center',
   },
 }));
@@ -74,12 +74,15 @@ const PlayerTitle = styled(Box)(({ theme }) => ({
   },
 }));
 
-const Mystery = styled(Box)(({ theme }) => ({
+const UserPresenceBar = styled(Box)(({ theme }) => ({
   color: theme.palette.text.primary,
   position: 'relative',
   top: '-20px',
   width: '100%',
-  gridArea: 'mystery',
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'end',
+  gridArea: 'userPresenceBar',
   textAlign: 'center',
   '@media (min-width: 768px)': {
     top: '0px',
@@ -112,9 +115,9 @@ const MusicPlayer = () => {
           <AudioNext />
           <MusicVideo />
         </ButtonControl>
-        <Mystery>
+        <UserPresenceBar>
           <OnlineUsers users={users} />
-        </Mystery>
+        </UserPresenceBar>
       </Controls>
     </PlayerContainer>
   );

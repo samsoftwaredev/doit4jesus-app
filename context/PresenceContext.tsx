@@ -75,6 +75,8 @@ const PresenceContextProvider = ({ children }: Props) => {
         online_at: new Date().toISOString(),
         picture_url: currentUser?.pictureUrl,
         full_name: `${currentUser?.firstName} ${currentUser?.lastName}`,
+        city: currentUser?.city,
+        state: currentUser?.state,
       });
     } catch (error) {
       console.error('Error in PresenceContext (trackPresence):', error);

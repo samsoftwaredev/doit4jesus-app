@@ -4,7 +4,11 @@ import { styled } from '@mui/material/styles';
 
 import SafeImage from '../SafeImage';
 
-const Avatar = styled(Box)(({ theme }) => ({}));
+const Avatar = styled(Box)<{ isOnline: boolean }>(({ isOnline }) => ({
+  display: 'inline-flex',
+  borderRadius: '50%',
+  border: isOnline ? '3px solid #4caf50' : '2px solid transparent',
+}));
 
 interface Props {
   userName?: string;
@@ -16,9 +20,9 @@ interface Props {
 const UserBubble = ({ userName, userPicture, isOnline = false }: Props) => {
   const tooltipMessage = isOnline ? `${userName} is online.` : userName;
   return (
-    <Avatar>
+    <Avatar isOnline={isOnline}>
       <Tooltip title={tooltipMessage}>
-        <span>
+        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
           {userPicture ? (
             <SafeImage
               width={20}
