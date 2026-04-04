@@ -71,41 +71,35 @@ const UserContextProvider = ({ children }: Props) => {
     }
   };
 
-  const getSession = async () => {
-    setIsLoading(true);
-    try {
-      const res = await supabase.auth.getSession();
-      if (res.data.session) await getProfile(res.data.session);
-      else throw new Error('No session');
-    } catch (err) {
-      console.error(err);
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_OUT') {
-        await getProfile(null);
+        setUser(null);
+        setIsLoading(false);
         router.push(NAV_MAIN_LINKS.login.link);
+        return;
       }
-      if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN') {
-        if (window.location.pathname === NAV_MAIN_LINKS.login.link) {
+
+      if ((event === 'INITIAL_SESSION' || event === 'SIGNED_IN') && session) {
+        await getProfile(session);
+
+        const path = window.location.pathname;
+        if (path === NAV_MAIN_LINKS.login.link) {
           router.push(NAV_APP_LINKS.dashboard.link);
-        } else if (window.location.pathname === NAV_MAIN_LINKS.signup.link) {
+        } else if (path === NAV_MAIN_LINKS.signup.link) {
           router.push(NEW_USER_REDIRECT);
-        } else if (!window.location.pathname.includes(NAV_APP_LINKS.app.link)) {
+        } else if (!path.startsWith(NAV_APP_LINKS.app.link)) {
           router.push(NAV_APP_LINKS.dashboard.link);
         }
+      }
+
+      if (event === 'INITIAL_SESSION' && !session) {
+        setIsLoading(false);
       }
     });
     return () => {
       data.subscription.unsubscribe();
     };
-  }, []);
-
-  useEffect(() => {
-    getSession();
   }, []);
 
   const value = useMemo(
