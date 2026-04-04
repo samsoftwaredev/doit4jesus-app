@@ -13,7 +13,11 @@ import {
 
 import { supabase } from '@/classes/SupabaseDB';
 import { Loading } from '@/components';
-import { NAV_APP_LINKS, NAV_MAIN_LINKS } from '@/constants/nav';
+import {
+  NAV_APP_LINKS,
+  NAV_MAIN_LINKS,
+  NEW_USER_REDIRECT,
+} from '@/constants/nav';
 import { User } from '@/interfaces';
 import { fetchProfile } from '@/services/profileApi';
 import { normalizeUserProfile } from '@/utils/normalizers';
@@ -80,16 +84,17 @@ const UserContextProvider = ({ children }: Props) => {
   };
 
   useEffect(() => {
-    const { data } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_OUT') {
-        getProfile(null);
+        await getProfile(null);
         router.push(NAV_MAIN_LINKS.login.link);
       }
-      if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session) {
-        if (
-          window.location.pathname === NAV_MAIN_LINKS.login.link ||
-          window.location.pathname === NAV_MAIN_LINKS.signup.link
-        ) {
+      if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN') {
+        if (window.location.pathname === NAV_MAIN_LINKS.login.link) {
+          router.push(NAV_APP_LINKS.dashboard.link);
+        } else if (window.location.pathname === NAV_MAIN_LINKS.signup.link) {
+          router.push(NEW_USER_REDIRECT);
+        } else if (!window.location.pathname.includes(NAV_APP_LINKS.app.link)) {
           router.push(NAV_APP_LINKS.dashboard.link);
         }
       }
