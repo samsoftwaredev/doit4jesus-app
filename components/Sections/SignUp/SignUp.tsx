@@ -67,9 +67,16 @@ const SignUp = () => {
         console.error(error);
       }
       if (data) {
-        toast.success(t.confirmationEmailSent);
-        await getProfile(data.session);
-        router.push(NEW_USER_REDIRECT);
+        // If there's an error, it's likely the user already exists.
+        // However, since Supabase's signUp doesn't return a specific error code for this case.
+        if (error && error.message.includes('User already registered')) {
+          setIsLoading(false);
+        } else {
+          // Instead, show success message and redirect to login page.
+          await getProfile(data.session);
+          toast.success(t.confirmationEmailSent);
+          router.push(NEW_USER_REDIRECT);
+        }
       }
       setIsLoading(false);
     } catch (error) {
