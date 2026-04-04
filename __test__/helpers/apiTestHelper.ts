@@ -97,7 +97,7 @@ export function createChain<T>(terminalResult: MockResult<T>) {
   chain['single'] = jest.fn().mockResolvedValue(terminalResult);
 
   // Make the chain itself await-able (used when no .single() is called)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   (chain as any).then = (
     resolve: (v: MockResult<T>) => void,
     reject: (r: unknown) => void,

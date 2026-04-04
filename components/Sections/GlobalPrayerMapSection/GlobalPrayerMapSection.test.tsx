@@ -27,10 +27,18 @@ jest.mock('@/classes/SupabaseDB', () => ({
   },
 }));
 
-jest.mock('@/services', () => ({
+jest.mock('@/services/prayerMapApi', () => ({
+  getPrayerMapCities: jest.fn().mockResolvedValue([]),
+  joinPrayerSession: jest.fn().mockResolvedValue(null),
+  startPrayerSession: jest.fn().mockResolvedValue(null),
+}));
+
+jest.mock('@/services/prayerCityApi', () => ({
+  getPrayerCityOptions: jest.fn().mockResolvedValue([]),
+}));
+
+jest.mock('@/services/prayerSessionsApi', () => ({
   getActiveGlobalPrayerSessions: jest.fn().mockResolvedValue([]),
-  joinGlobalPrayerSession: jest.fn().mockResolvedValue({}),
-  startOrJoinGlobalPrayerSession: jest.fn().mockResolvedValue({}),
 }));
 
 jest.mock('next/dynamic', () => () => {
@@ -65,10 +73,16 @@ describe('GlobalPrayerMapSection Component', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders start prayer button', async () => {
+  it('renders map controls and does not render start prayer button', async () => {
     renderWithTheme(<GlobalPrayerMapSection />);
     expect(
-      await screen.findByRole('button', { name: /start.*prayer/i }),
+      await screen.findByRole('button', { name: /^city$/i }),
     ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /^country$/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /start.*prayer/i }),
+    ).not.toBeInTheDocument();
   });
 });
