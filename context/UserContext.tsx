@@ -22,10 +22,14 @@ import { User } from '@/interfaces';
 import { fetchProfile } from '@/services/profileApi';
 import { normalizeUserProfile } from '@/utils/normalizers';
 
+/** Shape of the value exposed by UserContext. */
 interface UserContext {
+  /** Current user profile. `null` = signed out, `undefined` = not yet determined. */
   user: User | null | undefined;
+  /** Manually override the user state (e.g. after a profile update). */
   setUser: Dispatch<SetStateAction<User | null | undefined>>;
-  getProfile: (session: Session | null) => Promise<User | undefined>;
+  /** Fetch and store the user profile for the given Supabase session. */
+  setSession: (session: Session | null) => void;
 }
 
 interface Props {
@@ -34,12 +38,28 @@ interface Props {
 
 const UserContext = createContext<UserContext | undefined>(undefined);
 
+/**
+ * Provides authentication state and user profile data to the component tree.
+ *
+ * - Listens to Supabase auth state changes (sign-in, sign-out, session init).
+ * - Fetches the user profile on initial session or sign-in.
+ * - Redirects to the appropriate page based on auth state and current path.
+ * - Shows a full-screen loading indicator while the session is being resolved.
+ */
 const UserContextProvider = ({ children }: Props) => {
   const [user, setUser] = useState<User | null | undefined>();
+  const [session, setSession] = useState<Session | null>(null);
   const [whyLoading, setWhyLoading] = useState('Loading...');
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
+  /**
+   * Fetch the user's profile, rosary stats, and streak from the API,
+   * then normalize and store them in state.
+   *
+   * @param userSession - The active Supabase session. Throws if null.
+   * @returns The normalized user data, or `undefined` on failure.
+   */
   const getProfile = async (
     userSession: Session | null,
   ): Promise<User | undefined> => {
@@ -74,40 +94,51 @@ const UserContextProvider = ({ children }: Props) => {
   };
 
   useEffect(() => {
-    const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_OUT') {
-        setWhyLoading('Redirecting to login...');
-        setUser(null);
-        setIsLoading(false);
-        router.push(NAV_MAIN_LINKS.login.link);
-        return;
-      }
-
-      if ((event === 'INITIAL_SESSION' || event === 'SIGNED_IN') && session) {
-        // Skip re-fetching if we already have the user profile loaded
-        if (event === 'SIGNED_IN' && user) {
+    if (session) {
+      getProfile(session);
+    }
+  }, [session]);
+  // Subscribe to Supabase auth state changes and handle sign-in / sign-out flows.
+  useEffect(() => {
+    const { data } = supabase.auth.onAuthStateChange(
+      async (event, newSession) => {
+        if (event === 'SIGNED_OUT') {
+          setWhyLoading('Redirecting to login...');
+          setUser(null);
           setIsLoading(false);
+          router.push(NAV_MAIN_LINKS.login.link);
           return;
         }
-        setWhyLoading('Fetching your blessings...');
-        await getProfile(session);
 
-        const path = window.location.pathname;
-        if (path === NAV_MAIN_LINKS.login.link) {
-          router.push(NAV_APP_LINKS.dashboard.link);
-        } else if (path === NAV_MAIN_LINKS.signup.link) {
-          router.push(NEW_USER_REDIRECT);
-        } else if (!path.startsWith(NAV_APP_LINKS.app.link)) {
-          router.push(NAV_APP_LINKS.dashboard.link);
+        if (
+          (event === 'INITIAL_SESSION' || event === 'SIGNED_IN') &&
+          newSession
+        ) {
+          // Skip re-fetching if we already have the user profile loaded
+          if (event === 'SIGNED_IN' && user) {
+            setIsLoading(false);
+            return;
+          }
+          setWhyLoading('Fetching your blessings...');
+          await setSession(newSession);
+
+          const path = window.location.pathname;
+          if (path === NAV_MAIN_LINKS.login.link) {
+            router.push(NAV_APP_LINKS.dashboard.link);
+          } else if (path === NAV_MAIN_LINKS.signup.link) {
+            router.push(NEW_USER_REDIRECT);
+          } else if (!path.startsWith(NAV_APP_LINKS.app.link)) {
+            router.push(NAV_APP_LINKS.dashboard.link);
+          }
+          setIsLoading(false);
         }
-        setIsLoading(false);
-      }
 
-      if (event === 'INITIAL_SESSION' && !session) {
-        setWhyLoading('Initializing...');
-        setIsLoading(false);
-      }
-    });
+        if (event === 'INITIAL_SESSION' && !newSession) {
+          setWhyLoading('Initializing...');
+          setIsLoading(false);
+        }
+      },
+    );
     return () => {
       data.subscription.unsubscribe();
     };
@@ -117,9 +148,9 @@ const UserContextProvider = ({ children }: Props) => {
     () => ({
       user,
       setUser,
-      getProfile,
+      setSession,
     }),
-    [user, setUser],
+    [user, setUser, setSession],
   );
 
   if (isLoading) return <Loading description={whyLoading} />;
@@ -127,6 +158,12 @@ const UserContextProvider = ({ children }: Props) => {
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };
 
+/**
+ * Hook to access the current user and auth helpers.
+ * Must be used within a `<UserContextProvider>`.
+ *
+ * @throws {Error} If called outside of a UserContextProvider.
+ */
 const useUserContext = () => {
   const context = useContext(UserContext);
   if (context === undefined) {

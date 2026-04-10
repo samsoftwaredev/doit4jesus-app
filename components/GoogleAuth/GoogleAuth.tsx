@@ -18,12 +18,12 @@ interface Props {
 const GoogleAuth = ({ isSignUp }: Props) => {
   const { t } = useLanguageContext();
   const router = useRouter();
-  const { getProfile } = useUserContext();
+  const { setSession } = useUserContext();
 
   const onLogin = (response: CredentialResponse) => {
     handleLoginSuccess(response, async (data) => {
       if (data) {
-        await getProfile(data.session);
+        await setSession(data.session);
         router.push(NAV_APP_LINKS.dashboard.link);
       }
     });

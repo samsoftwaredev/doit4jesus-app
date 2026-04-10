@@ -21,7 +21,7 @@ const LogIn = () => {
   const router = useRouter();
   const { t } = useLanguageContext();
   const [isLoading, setIsLoading] = useState(false);
-  const { getProfile } = useUserContext();
+  const { setSession } = useUserContext();
   const { handleSubmit, control } = useForm<IFormInputs>({
     mode: 'onChange',
     defaultValues: {
@@ -42,8 +42,7 @@ const LogIn = () => {
         toast.error(error.message);
       }
       if (data) {
-        await getProfile(data.session);
-        router.push(NAV_APP_LINKS.dashboard.link);
+        setSession(data.session);
       }
     } catch (error) {
       console.error('Error in LogIn (onSubmit):', error);

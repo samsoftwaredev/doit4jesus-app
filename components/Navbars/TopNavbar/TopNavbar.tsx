@@ -80,7 +80,6 @@ const TopNavbar = ({ handleMenu }: Props) => {
   const { mode, toggleTheme } = useThemeContext();
   const { lang, changeLang, t } = useLanguageContext();
   const theme = useTheme();
-  const { getProfile } = useUserContext();
   const { user } = useUserContext();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);

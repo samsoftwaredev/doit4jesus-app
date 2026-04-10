@@ -39,7 +39,7 @@ const SignUp = () => {
   const { t } = useLanguageContext();
   const theme = useTheme();
   const [isLoading, setIsLoading] = useState(false);
-  const { getProfile } = useUserContext();
+  const { setSession } = useUserContext();
   const { handleSubmit, control } = useForm<IFormInputs>({
     mode: 'onChange',
     defaultValues: {
@@ -73,9 +73,8 @@ const SignUp = () => {
           setIsLoading(false);
         } else {
           // Instead, show success message and redirect to login page.
-          await getProfile(data.session);
+          setSession(data.session);
           toast.success(t.confirmationEmailSent);
-          router.push(NEW_USER_REDIRECT);
         }
       }
       setIsLoading(false);
