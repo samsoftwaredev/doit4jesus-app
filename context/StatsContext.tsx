@@ -62,7 +62,7 @@ const StatsContextProvider = ({ children }: Props) => {
         onRosaryCompleted();
         toast.success(getSuccessMessage(), {
           toastId: 'rosary completed to save stats',
-          autoClose: 50_000,
+          autoClose: 10_000,
         });
 
         const joinedRosary = [

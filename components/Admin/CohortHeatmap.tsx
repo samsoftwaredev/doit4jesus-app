@@ -1,4 +1,10 @@
-import { Box, Tooltip, Typography } from '@mui/material';
+import {
+  Box,
+  Tooltip,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 interface CohortDisplayRow {
@@ -7,23 +13,31 @@ interface CohortDisplayRow {
   retentionByWeek: number[];
 }
 
-const Grid = styled(Box)({
+const Grid = styled(Box)(({ theme }) => ({
   overflowX: 'auto',
-});
+  WebkitOverflowScrolling: 'touch',
+  scrollbarWidth: 'thin',
+  paddingBottom: theme.spacing(1),
+}));
 
-const Cell = styled(Box)<{ intensity: number }>(({ theme, intensity }) => {
+const Cell = styled(Box)<{ intensity: number; compact?: boolean }>(({
+  theme,
+  intensity,
+  compact,
+}) => {
   const successRgb =
     theme.palette.mode === 'dark' ? '129,199,132' : '76,175,80';
   const alpha = Math.max(0.05, intensity);
   return {
-    width: 56,
-    height: 36,
+    width: compact ? 40 : 56,
+    minWidth: compact ? 40 : 56,
+    height: compact ? 28 : 36,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: `rgba(${successRgb},${alpha})`,
     borderRadius: 4,
-    fontSize: 12,
+    fontSize: compact ? 10 : 12,
     fontWeight: 600,
     color:
       intensity > 0.5
@@ -32,22 +46,28 @@ const Cell = styled(Box)<{ intensity: number }>(({ theme, intensity }) => {
   };
 });
 
-const HeaderCell = styled(Box)(({ theme }) => ({
-  width: 56,
+const HeaderCell = styled(Box)<{ compact?: boolean }>(({ theme, compact }) => ({
+  width: compact ? 40 : 56,
+  minWidth: compact ? 40 : 56,
   textAlign: 'center',
-  fontSize: 11,
+  fontSize: compact ? 9 : 11,
   fontWeight: 600,
   color: theme.palette.text.secondary,
   flexShrink: 0,
 }));
 
-const RowLabel = styled(Box)(({ theme }) => ({
-  minWidth: 80,
-  fontSize: 12,
+const RowLabel = styled(Box)<{ compact?: boolean }>(({ theme, compact }) => ({
+  minWidth: compact ? 60 : 80,
+  fontSize: compact ? 10 : 12,
   fontWeight: 600,
   color: theme.palette.text.primary,
   display: 'flex',
   alignItems: 'center',
+  flexShrink: 0,
+  position: 'sticky',
+  left: 0,
+  zIndex: 1,
+  backgroundColor: theme.palette.background.paper,
 }));
 
 interface CohortHeatmapProps {
@@ -59,6 +79,11 @@ const CohortHeatmap = ({
   cohorts,
   title = 'Cohort Retention',
 }: CohortHeatmapProps) => {
+  const theme = useTheme();
+  const isPhone = useMediaQuery(theme.breakpoints.down('sm'));
+  const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md'));
+  const compact = isPhone || isTablet;
+
   if (!cohorts.length) {
     return (
       <Box p={2}>
@@ -79,26 +104,47 @@ const CohortHeatmap = ({
           {title}
         </Typography>
       )}
+      {compact && (
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          mb={0.5}
+          display="block"
+        >
+          Scroll horizontally to see all weeks →
+        </Typography>
+      )}
       <Grid>
         {/* header row */}
-        <Box display="flex" gap={0.5} mb={0.5}>
-          <RowLabel>Cohort</RowLabel>
-          <HeaderCell sx={{ minWidth: 56 }}>Size</HeaderCell>
+        <Box display="flex" gap={0.5} mb={0.5} sx={{ width: 'max-content' }}>
+          <RowLabel compact={compact}>Cohort</RowLabel>
+          <HeaderCell compact={compact} sx={{ minWidth: compact ? 40 : 56 }}>
+            Size
+          </HeaderCell>
           {weekHeaders.map((w) => (
-            <HeaderCell key={w}>{w}</HeaderCell>
+            <HeaderCell compact={compact} key={w}>
+              {w}
+            </HeaderCell>
           ))}
         </Box>
 
         {cohorts.map((row) => (
-          <Box key={row.cohortWeek} display="flex" gap={0.5} mb={0.5}>
-            <RowLabel>{row.cohortWeek}</RowLabel>
+          <Box
+            key={row.cohortWeek}
+            display="flex"
+            gap={0.5}
+            mb={0.5}
+            sx={{ width: 'max-content' }}
+          >
+            <RowLabel compact={compact}>{row.cohortWeek}</RowLabel>
             <Box
               sx={{
-                width: 56,
+                width: compact ? 40 : 56,
+                minWidth: compact ? 40 : 56,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: 12,
+                fontSize: compact ? 10 : 12,
                 color: 'text.primary',
               }}
             >
@@ -110,13 +156,21 @@ const CohortHeatmap = ({
                 title={`${(pct * 100).toFixed(1)}% retained`}
                 arrow
               >
-                <Cell intensity={pct}>{(pct * 100).toFixed(0)}%</Cell>
+                <Cell compact={compact} intensity={pct}>
+                  {(pct * 100).toFixed(0)}%
+                </Cell>
               </Tooltip>
             ))}
             {/* fill empty cells for shorter rows */}
             {Array.from({ length: maxWeeks - row.retentionByWeek.length }).map(
               (_, i) => (
-                <Box key={`empty-${i}`} sx={{ width: 56, height: 36 }} />
+                <Box
+                  key={`empty-${i}`}
+                  sx={{
+                    width: compact ? 40 : 56,
+                    height: compact ? 28 : 36,
+                  }}
+                />
               ),
             )}
           </Box>

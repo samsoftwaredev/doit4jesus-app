@@ -1,18 +1,11 @@
-import { Button, Typography } from '@mui/material';
-import { useRouter } from 'next/navigation';
+import { Typography } from '@mui/material';
 
-import { NAV_APP_LINKS } from '@/constants/nav';
 import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
 
 const RosaryStats = () => {
   const { t } = useLanguageContext();
   const { user } = useUserContext();
-  const router = useRouter();
-
-  const onClick = () => {
-    router.push(NAV_APP_LINKS.rosary.link);
-  };
 
   return (
     <>
@@ -27,15 +20,9 @@ const RosaryStats = () => {
       >
         {user?.stats.rosaryTotalCount}
       </Typography>
-      <Button
-        data-testid="startPraying"
-        onClick={onClick}
-        fullWidth
-        color="success"
-        variant="outlined"
-      >
-        {t.startPraying}
-      </Button>
+      <Typography fontSize="small" textAlign="center">
+        {t.totalRosariesByYou}
+      </Typography>
     </>
   );
 };

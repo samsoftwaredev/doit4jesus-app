@@ -1,5 +1,6 @@
 import {
   ROSARY_AUDIOS,
+  ROSARY_AUDIOS_SHORT,
   ROSARY_DAYS,
   ROSARY_LENGTH,
 } from '@/constants/mysteries';
@@ -30,9 +31,21 @@ class Rosary {
     this.rosaryAudioCover = imageSrc;
   };
 
+  private getRosaryLength = (): string => {
+    try {
+      return localStorage.getItem('rosaryLength') ?? ROSARY_LENGTH.medium;
+    } catch {
+      return ROSARY_LENGTH.medium;
+    }
+  };
+
   public getAudio = (language: LANG = LANG.en): string => {
     const mystery = this.mysteryName as INTERFACE_ROSARY_MYSTERIES;
-    return ROSARY_AUDIOS[mystery][language];
+    const audios =
+      this.getRosaryLength() === ROSARY_LENGTH.short
+        ? ROSARY_AUDIOS_SHORT
+        : ROSARY_AUDIOS;
+    return audios[mystery][language];
   };
 
   public getRosaryState = (
@@ -47,7 +60,7 @@ class Rosary {
   };
 
   public setRosaryType = (length: keyof typeof ROSARY_LENGTH) => {
-    // this.rosaryLength = ROSARY_LENGTH[length];
+    localStorage.setItem('rosaryLength', ROSARY_LENGTH[length]);
   };
 
   public mutePrayer = () => {};

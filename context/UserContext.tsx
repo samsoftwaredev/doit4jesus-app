@@ -36,6 +36,7 @@ const UserContext = createContext<UserContext | undefined>(undefined);
 
 const UserContextProvider = ({ children }: Props) => {
   const [user, setUser] = useState<User | null | undefined>();
+  const [whyLoading, setWhyLoading] = useState('Loading...');
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
@@ -43,6 +44,7 @@ const UserContextProvider = ({ children }: Props) => {
     userSession: Session | null,
   ): Promise<User | undefined> => {
     setIsLoading(true);
+    setWhyLoading('Fetching your profile...');
     try {
       if (!userSession) {
         console.error('getProfile: No user session provided');
@@ -74,6 +76,7 @@ const UserContextProvider = ({ children }: Props) => {
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_OUT') {
+        setWhyLoading('Redirecting to login...');
         setUser(null);
         setIsLoading(false);
         router.push(NAV_MAIN_LINKS.login.link);
@@ -81,6 +84,12 @@ const UserContextProvider = ({ children }: Props) => {
       }
 
       if ((event === 'INITIAL_SESSION' || event === 'SIGNED_IN') && session) {
+        // Skip re-fetching if we already have the user profile loaded
+        if (event === 'SIGNED_IN' && user) {
+          setIsLoading(false);
+          return;
+        }
+        setWhyLoading('Fetching your blessings...');
         await getProfile(session);
 
         const path = window.location.pathname;
@@ -91,9 +100,11 @@ const UserContextProvider = ({ children }: Props) => {
         } else if (!path.startsWith(NAV_APP_LINKS.app.link)) {
           router.push(NAV_APP_LINKS.dashboard.link);
         }
+        setIsLoading(false);
       }
 
       if (event === 'INITIAL_SESSION' && !session) {
+        setWhyLoading('Initializing...');
         setIsLoading(false);
       }
     });
@@ -111,7 +122,7 @@ const UserContextProvider = ({ children }: Props) => {
     [user, setUser],
   );
 
-  if (isLoading) return <Loading />;
+  if (isLoading) return <Loading description={whyLoading} />;
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };

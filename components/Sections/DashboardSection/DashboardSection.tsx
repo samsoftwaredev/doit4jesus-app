@@ -1,4 +1,4 @@
-import { Box, Button, Container, Typography } from '@mui/material';
+import { Box, Container, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 import {
@@ -7,7 +7,6 @@ import {
   Leaderboards,
   MilestoneModal,
   RosaryStreak,
-  RosaryWinnerChallenge,
   ShareStatsButton,
   TodaysRosary,
   TotalRosariesPrayed,
@@ -33,8 +32,8 @@ const DashboardGrid = styled(Box)({
     'DailyScripture'
     'ShareStats'
     'RosariesCompleted'
-    'Friends'
     'RosaryStreak'
+    'Friends'
     'TotalRosaries'
     'RosaryWinnerChallenge'
     'Donations'
@@ -64,7 +63,7 @@ const DashboardGrid = styled(Box)({
       'TodayRosary TodayRosary Friends'
       'DailyScripture DailyScripture DailyScripture'
       'ShareStats ShareStats ShareStats'
-      'TotalRosaries RosaryStreak RosaryStreak'
+      'TotalRosaries TotalRosaries RosaryStreak'
       'Levels Levels Levels'
       'Donations Donations Donations'
       'WeeklyLeaderboard WeeklyLeaderboard WeeklyLeaderboard'

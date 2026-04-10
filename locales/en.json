@@ -25,6 +25,7 @@
   "rosariesCompleted": "Rosaries Completed",
   "rosariesPrayed": "Rosaries Prayed",
   "numberOfFriends": "Number of Friends",
+  "friendlyCompetition": "Compete for sanctity.",
   "startPraying": "Start Praying",
   "inviteFriends": "Invite Friends",
   "inviteFriendsDescription": "Invite your friends to pray with you and multiply your blessings.",
@@ -478,10 +479,11 @@
   "copy": "Copy",
 
   "totalRosariesCompleted": "Total Rosaries Completed",
+  "totalRosariesByYou": "Total rosaries completed by you.",
   "totalRosariesByWarriors": "Total rosaries completed by all warriors.",
 
   "yourRosaryStreak": "Your Rosary Streak",
-  "canYouPrayDaily": "Can you pray one rosary daily?",
+  "canYouPrayDaily": "Pray one rosary a day",
 
   "pageNotFound": "Page Not Found",
   "error": "Error",
@@ -506,6 +508,9 @@
   "forward": "Forward",
   "settings": "Settings",
   "musicSettings": "Music Settings",
+  "rosaryType": "Rosary Type",
+  "defaultRosary": "Default Rosary",
+  "shortRosary": "Short Rosary",
   "viewVideo": "View Video",
   "yes": "Yes",
   "no": "No",
@@ -557,5 +562,18 @@
   "markAsRead": "Mark as Read · +5 XP",
   "scriptureCompleted": "Completed",
   "retry": "Retry",
-  "loading": "Loading..."
+  "loading": "Loading...",
+  "levelDescSerpentCrusher": "You have begun the fight — crushing evil one bead at a time.",
+  "levelDescFootUponTheSerpent": "Your prayers press down on the serpent. Keep going!",
+  "levelDescCrushedTheSerpentHead": "The serpent trembles. Your devotion is powerful.",
+  "levelDescRosaryWarrior": "A true warrior of prayer, battle-tested and faithful.",
+  "levelDescSwordOfTheRosary": "Your rosary has become a mighty sword of grace.",
+  "levelDescRosaryOfDominion": "You wield dominion over darkness through prayer.",
+  "levelDescShieldOfMary": "Mary's shield surrounds you — nothing can break through.",
+  "levelDescBeadsOfPower": "Each bead pulses with the power of your devotion.",
+  "levelDescCrownOfVictory": "A crown awaits those who persevere in prayer.",
+  "levelDescDemonSlayer": "Demons flee at the sound of your rosary.",
+  "levelDescVictoryThroughPrayer": "Victory is yours — won on your knees.",
+  "levelDescTheFinalAmen": "The ultimate prayer warrior. Heaven rejoices!",
+  "levelDescDefault": "Keep praying the rosary to unlock new levels!"
 }

@@ -1,10 +1,13 @@
-import { Typography } from '@mui/material';
+import { Button, Typography } from '@mui/material';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
+import { NAV_APP_LINKS } from '@/constants/index';
 import { useLanguageContext } from '@/context/LanguageContext';
 import { fetchTotalRosaryCount } from '@/services/rosaryApi';
 
 const TotalRosariesPrayed = () => {
+  const router = useRouter();
   const { t } = useLanguageContext();
   const [totalNum, setTotalNum] = useState<number | null>(0);
 
@@ -15,6 +18,10 @@ const TotalRosariesPrayed = () => {
     } catch (error) {
       console.error('Error in TotalRosariesPrayed (getTotalRosaries):', error);
     }
+  };
+
+  const onClick = () => {
+    router.push(NAV_APP_LINKS.community.link);
   };
 
   useEffect(() => {
@@ -37,6 +44,15 @@ const TotalRosariesPrayed = () => {
       <Typography fontSize="small" textAlign="center">
         {t.totalRosariesByWarriors}
       </Typography>
+      <Button
+        data-testid="globalPrayerMap"
+        onClick={onClick}
+        fullWidth
+        color="success"
+        variant="outlined"
+      >
+        {t.globalPrayerMap}
+      </Button>
     </>
   );
 };

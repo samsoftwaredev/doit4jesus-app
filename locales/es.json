@@ -26,6 +26,7 @@
   "rosariesPrayed": "Rosarios Rezados",
   "numberOfFriends": "Número de Amigos",
   "startPraying": "Comienza a rezar",
+  "friendlyCompetition": "Compite por la santidad.",
   "inviteFriends": "Invita a tus amigos",
   "inviteFriendsDescription": "Invita a tus amigos a rezar contigo y multiplica tus bendiciones.",
   "scanQRCode": "Pide a tu amigo que escanee el código de abajo:",
@@ -478,6 +479,7 @@
   "copy": "Copiar",
 
   "totalRosariesCompleted": "Rosarios Totales Completados",
+  "totalRosariesByYou": "Total de rosarios completados por ti.",
   "totalRosariesByWarriors": "Total de rosarios completados por todos los guerreros.",
 
   "yourRosaryStreak": "Tu Racha de Rosarios",
@@ -506,6 +508,9 @@
   "forward": "Avanzar",
   "settings": "Configuración",
   "musicSettings": "Configuración de Música",
+  "rosaryType": "Tipo de Rosario",
+  "defaultRosary": "Rosario Completo",
+  "shortRosary": "Rosario Corto",
   "viewVideo": "Ver Video",
   "yes": "Sí",
   "no": "No",
@@ -557,5 +562,18 @@
   "markAsRead": "Marcar como Leído · +5 XP",
   "scriptureCompleted": "Completado",
   "retry": "Reintentar",
-  "loading": "Cargando..."
+  "loading": "Cargando...",
+  "levelDescSerpentCrusher": "Has comenzado la lucha — aplastando el mal cuenta por cuenta.",
+  "levelDescFootUponTheSerpent": "Tus oraciones pisan a la serpiente. ¡Sigue adelante!",
+  "levelDescCrushedTheSerpentHead": "La serpiente tiembla. Tu devoción es poderosa.",
+  "levelDescRosaryWarrior": "Un verdadero guerrero de oración, probado en batalla y fiel.",
+  "levelDescSwordOfTheRosary": "Tu rosario se ha convertido en una poderosa espada de gracia.",
+  "levelDescRosaryOfDominion": "Ejerces dominio sobre la oscuridad a través de la oración.",
+  "levelDescShieldOfMary": "El escudo de María te rodea — nada puede atravesarlo.",
+  "levelDescBeadsOfPower": "Cada cuenta pulsa con el poder de tu devoción.",
+  "levelDescCrownOfVictory": "Una corona espera a quienes perseveran en la oración.",
+  "levelDescDemonSlayer": "Los demonios huyen al sonido de tu rosario.",
+  "levelDescVictoryThroughPrayer": "La victoria es tuya — ganada de rodillas.",
+  "levelDescTheFinalAmen": "El guerrero de oración supremo. ¡El cielo se regocija!",
+  "levelDescDefault": "¡Sigue rezando el rosario para desbloquear nuevos niveles!"
 }

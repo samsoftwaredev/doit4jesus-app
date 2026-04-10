@@ -258,8 +258,8 @@ const WorldMapSvg = ({
 
         {/* ── Country paths ────────────────────────────────────────────── */}
         <g>
-          {featureArray.map((feat) => {
-            const numId = String(feat.id);
+          {featureArray.map((feat, index) => {
+            const numId = String(feat.id ?? index);
             const alpha2 = countryLookup.numericToAlpha2[numId];
             const cd = alpha2 ? countryLookup.byCode.get(alpha2) : undefined;
 

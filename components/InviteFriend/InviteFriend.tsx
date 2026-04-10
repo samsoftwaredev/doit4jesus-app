@@ -75,6 +75,9 @@ const InviteFriend = () => {
       <Typography fontWeight="bold" textAlign="center">
         {t.numberOfFriends}
       </Typography>
+      <Typography fontSize="small" textAlign="center">
+        {t.friendlyCompetition}
+      </Typography>
       <Typography
         textAlign="center"
         fontWeight="bold"
@@ -83,6 +86,7 @@ const InviteFriend = () => {
       >
         {friendsProfiles.length}
       </Typography>
+
       <Button onClick={onOpen} fullWidth color="success" variant="outlined">
         {t.inviteFriends}
       </Button>

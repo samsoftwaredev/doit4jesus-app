@@ -7,6 +7,7 @@ import {
   Grid,
   Alert as MuiAlert,
   Typography,
+  useMediaQuery,
   useTheme,
 } from '@mui/material';
 import Head from 'next/head';
@@ -81,6 +82,9 @@ const AdminDashboard = () => {
   const router = useRouter();
   const theme = useTheme();
   const { user } = useUserContext();
+
+  const isPhone = useMediaQuery(theme.breakpoints.down('sm')); // < 600px
+  const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md')); // 600–900px
 
   const isDark = theme.palette.mode === 'dark';
   const textColor = theme.palette.text.primary;
@@ -212,21 +216,6 @@ const AdminDashboard = () => {
       </Head>
 
       <Container maxWidth="xl" sx={{ py: 4 }}>
-        {/* header */}
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          flexWrap="wrap"
-          gap={2}
-          mb={3}
-        >
-          <Typography variant="h4" fontWeight={800}>
-            Admin Dashboard
-          </Typography>
-          <FilterBar filters={filters} onChange={(f) => setFilters(f)} />
-        </Box>
-
         {/* ─── KPI cards ────────────────────────── */}
         <Grid container spacing={2} mb={4}>
           {[
@@ -321,20 +310,42 @@ const AdminDashboard = () => {
               CSV
             </Button>
           </Box>
-          <ResponsiveContainer width="100%" height={320}>
-            <AreaChart data={trendChartData}>
+          <ResponsiveContainer
+            width="100%"
+            height={isPhone ? 220 : isTablet ? 280 : 360}
+          >
+            <AreaChart
+              data={trendChartData}
+              margin={{
+                top: 5,
+                right: isPhone ? 5 : 20,
+                left: isPhone ? -15 : 0,
+                bottom: isPhone ? 30 : 10,
+              }}
+            >
               <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
               <XAxis
                 dataKey="date"
-                tick={{ fontSize: 11, fill: textSecondary }}
+                tick={{ fontSize: isPhone ? 9 : 11, fill: textSecondary }}
                 stroke={gridColor}
+                interval={
+                  isPhone
+                    ? 'preserveStartEnd'
+                    : isTablet
+                      ? 'preserveStartEnd'
+                      : 0
+                }
+                angle={isPhone ? -45 : -35}
+                textAnchor="end"
+                height={isPhone ? 55 : 50}
               />
               <YAxis
-                tick={{ fontSize: 11, fill: textSecondary }}
+                tick={{ fontSize: isPhone ? 9 : 11, fill: textSecondary }}
                 stroke={gridColor}
+                width={isPhone ? 30 : 45}
               />
               <Tooltip contentStyle={tooltipStyle} />
-              <Legend wrapperStyle={{ color: textColor }} />
+              {!isPhone && <Legend wrapperStyle={{ color: textColor }} />}
               {['Users', 'Active', 'Signups', 'Rosaries', 'XP'].map(
                 (key, i) => (
                   <Area
@@ -355,17 +366,33 @@ const AdminDashboard = () => {
         <Grid container spacing={3} my={2}>
           <Grid size={{ xs: 12, md: 6 }}>
             <ChartCard title="Completion Funnel" loading={loading}>
-              <ResponsiveContainer width="100%" height={260}>
-                <BarChart data={funnelData}>
+              <ResponsiveContainer
+                width="100%"
+                height={isPhone ? 200 : isTablet ? 240 : 280}
+              >
+                <BarChart
+                  data={funnelData}
+                  margin={{
+                    top: 5,
+                    right: isPhone ? 5 : 15,
+                    left: isPhone ? -15 : 0,
+                    bottom: isPhone ? 35 : 10,
+                  }}
+                >
                   <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
                   <XAxis
                     dataKey="step"
-                    tick={{ fontSize: 11, fill: textSecondary }}
+                    tick={{ fontSize: isPhone ? 9 : 11, fill: textSecondary }}
                     stroke={gridColor}
+                    interval={0}
+                    angle={isPhone ? -45 : -25}
+                    textAnchor="end"
+                    height={isPhone ? 60 : 50}
                   />
                   <YAxis
-                    tick={{ fontSize: 11, fill: textSecondary }}
+                    tick={{ fontSize: isPhone ? 9 : 11, fill: textSecondary }}
                     stroke={gridColor}
+                    width={isPhone ? 30 : 40}
                   />
                   <Tooltip contentStyle={tooltipStyle} />
                   <Bar
@@ -380,21 +407,33 @@ const AdminDashboard = () => {
 
           <Grid size={{ xs: 12, md: 6 }}>
             <ChartCard title="Feature Adoption" loading={loading}>
-              <ResponsiveContainer width="100%" height={260}>
-                <BarChart data={adoptionData} layout="vertical">
+              <ResponsiveContainer
+                width="100%"
+                height={isPhone ? 200 : isTablet ? 240 : 280}
+              >
+                <BarChart
+                  data={adoptionData}
+                  layout="vertical"
+                  margin={{
+                    top: 5,
+                    right: isPhone ? 5 : 15,
+                    left: isPhone ? -10 : 0,
+                    bottom: 5,
+                  }}
+                >
                   <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
                   <XAxis
                     type="number"
                     domain={[0, 100]}
-                    tick={{ fontSize: 11, fill: textSecondary }}
+                    tick={{ fontSize: isPhone ? 9 : 11, fill: textSecondary }}
                     stroke={gridColor}
                   />
                   <YAxis
                     dataKey="feature"
                     type="category"
-                    tick={{ fontSize: 11, fill: textSecondary }}
+                    tick={{ fontSize: isPhone ? 8 : 10, fill: textSecondary }}
                     stroke={gridColor}
-                    width={80}
+                    width={isPhone ? 50 : 70}
                   />
                   <Tooltip
                     formatter={(v) => `${v}%`}
@@ -413,16 +452,18 @@ const AdminDashboard = () => {
 
         {/* ─── Cohort Retention ──────────────────── */}
         <ChartCard title="Cohort Retention" loading={loading} sx={{ my: 3 }}>
-          {cohorts && (
-            <CohortHeatmap
-              cohorts={cohorts.rows.map((r) => ({
-                cohortWeek: r.cohort,
-                usersInCohort: r.size,
-                retentionByWeek: r.retention.map((v) => v / 100),
-              }))}
-              title=""
-            />
-          )}
+          <Box sx={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+            {cohorts && (
+              <CohortHeatmap
+                cohorts={cohorts.rows.map((r) => ({
+                  cohortWeek: r.cohort,
+                  usersInCohort: r.size,
+                  retentionByWeek: r.retention.map((v) => v / 100),
+                }))}
+                title=""
+              />
+            )}
+          </Box>
         </ChartCard>
 
         {/* ─── Alerts & Insights ─────────────────── */}

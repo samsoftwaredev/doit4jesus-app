@@ -1,5 +1,3 @@
-import { INTERFACE_BACKGROUND_ITEM } from '@/interfaces';
-
 export const ROSARY_DAYS = {
   // the days of the week start with sunday
   sunday: 'glorious',
@@ -35,26 +33,25 @@ export const ROSARY_AUDIOS = {
 export const ROSARY_AUDIOS_SHORT = {
   glorious: {
     es: 'nuWJgIvcoxY',
-    en: 'Wn0GSZPMc7w',
+    en: 'ymsWL2FuZrk',
   },
   sorrowful: {
     es: 'LCJ-FB4S4EU',
-    en: 'nE77xS3aRjc',
+    en: 'A_o12UpD-jg',
   },
   joyful: {
     es: '7INHyxWpKVs',
-    en: '4fYI7CMRpkw',
+    en: 'IWm2seeOzCw',
   },
   luminous: {
     es: 'X-hFsQkuTnI',
-    en: 'SYSEUI4y1rw',
+    en: 'VC3Yxh7ciwc',
   },
 };
 
 export const ROSARY_LENGTH = {
   short: 'short',
   medium: 'medium',
-  long: 'long',
 };
 
 export const VIEW_SIZE = {

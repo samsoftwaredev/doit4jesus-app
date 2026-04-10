@@ -42,6 +42,7 @@ const AllFriends = () => {
       const data = await fetchProfilesByIds(userIds);
       setFriendProfiles(data);
     } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') return;
       console.error('Error in AllFriends (getFriendsProfiles):', error);
       toast.error(t.unableToRetrieveFriendProfile);
     }
@@ -79,6 +80,7 @@ const AllFriends = () => {
         getFriendsProfiles(friendUserIds);
       }
     } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') return;
       console.error('Error in AllFriends (getFriends):', error);
     }
   };
