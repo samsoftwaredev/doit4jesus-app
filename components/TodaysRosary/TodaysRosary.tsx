@@ -2,12 +2,12 @@ import { Box, Button, Typography } from '@mui/material';
 import { alpha, styled } from '@mui/material/styles';
 import dayjs from 'dayjs';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
 import { Rosary } from '@/classes/Rosary';
 import { db } from '@/classes/SupabaseDB';
-import { ROSARY_DAYS } from '@/constants/mysteries';
+import { ROSARY_DAYS, ROSARY_LENGTH } from '@/constants/mysteries';
 import { NAV_APP_LINKS } from '@/constants/nav';
 import { useLanguageContext } from '@/context/LanguageContext';
 import { LANG } from '@/interfaces/index';
@@ -59,7 +59,9 @@ const RosaryImage = styled(Image)({
 const TodayRosary = () => {
   const { lang, t } = useLanguageContext();
   const [eventURL, setEventURL] = useState('');
-  const navigate = useRouter();
+  const router = useRouter();
+  const rosaryLength =
+    (router.query.rosaryLength as string) ?? ROSARY_LENGTH.medium;
   const rosary = new Rosary();
   const todayMystery = rosary.getRosaryState(lang).mystery;
   const [image, setImage] = useState<string>();
@@ -96,7 +98,7 @@ const TodayRosary = () => {
   };
 
   const goToRosary = async () => {
-    navigate.push(eventURL);
+    router.push(eventURL);
   };
 
   const init = async (language: LANG) => {
@@ -125,7 +127,7 @@ const TodayRosary = () => {
     ); // 2 minutes in milliseconds
 
     return () => clearInterval(interval); // Cleanup on unmount
-  }, [lang]);
+  }, [lang, rosaryLength]);
 
   if (image === undefined) return <Loading isFeature />;
 

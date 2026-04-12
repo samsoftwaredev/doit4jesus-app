@@ -12,6 +12,7 @@ import {
   Typography,
 } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
+import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 
 import { ROSARY_LENGTH } from '@/constants/mysteries';
@@ -23,6 +24,7 @@ const STORAGE_KEY = 'rosaryLength';
 
 const MusicSettings = () => {
   const { t, lang, setLang } = useLanguageContext();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [rosaryLength, setRosaryLength] = useState<string>(
     ROSARY_LENGTH.medium,
@@ -38,6 +40,14 @@ const MusicSettings = () => {
   const handleRosaryLengthChange = (value: string) => {
     setRosaryLength(value);
     localStorage.setItem(STORAGE_KEY, value);
+    router.replace(
+      {
+        pathname: router.pathname,
+        query: { ...router.query, rosaryLength: value },
+      },
+      undefined,
+      { shallow: true },
+    );
   };
 
   const handleLanguageChange = (value: string) => {
