@@ -15,7 +15,6 @@ const toPrayerCity = (row: PrayerLocationRow): PrayerCity => ({
   latitude: Number(row.latitude),
   longitude: Number(row.longitude),
   prayerCount: row.prayer_count,
-  liveSessions: row.live_sessions,
   activeUsers: row.active_users,
   lastUpdated: row.last_updated,
 });
@@ -57,7 +56,7 @@ export const incrementPrayerCount = async (payload: {
   increment?: number;
 }): Promise<boolean> => {
   try {
-    const { error } = await (supabase.rpc as any)('increment_prayer_count', {
+    const { error } = await supabase.rpc('increment_prayer_count', {
       p_city: payload.city,
       p_country_code: payload.countryCode,
       p_country_name: payload.countryName,

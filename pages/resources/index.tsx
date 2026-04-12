@@ -1,5 +1,6 @@
 import {
   Card,
+  CardActionArea,
   CardContent,
   CardMedia,
   Container,
@@ -7,26 +8,22 @@ import {
   Typography,
 } from '@mui/material';
 import type { NextPage } from 'next';
-import { useRouter } from 'next/navigation';
+import NextLink from 'next/link';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { Meta } from '@/components';
+import { Loading, Meta } from '@/components';
 import { MainLayout } from '@/components/Templates';
 import { NAV_MAIN_LINKS } from '@/constants/nav';
 import { useLanguageContext } from '@/context/LanguageContext';
 import { ResourcePost } from '@/interfaces';
-import { fetchPosts } from '@/services/eventsApi';
+import { fetchPosts } from '@/services/postsApi';
 import { normalizePost } from '@/utils';
 
 const Resources: NextPage = () => {
   const { t } = useLanguageContext();
   const [resources, setResources] = useState<ResourcePost[]>();
-  const router = useRouter();
-
-  const goToResources = (id: string) => {
-    router.push(NAV_MAIN_LINKS.resources.link + '/' + id);
-  };
+  const [isLoading, setIsLoading] = useState(true);
 
   const getAllResources = async () => {
     try {
@@ -35,6 +32,8 @@ const Resources: NextPage = () => {
     } catch (error) {
       console.error('Error in resources/index (getAllResources):', error);
       toast.error(t.unableToGetResources);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -42,7 +41,7 @@ const Resources: NextPage = () => {
     getAllResources();
   }, []);
 
-  if (!resources) return null;
+  if (isLoading) return <Loading />;
 
   return (
     <MainLayout>
@@ -50,22 +49,23 @@ const Resources: NextPage = () => {
       <Container maxWidth="lg">
         <Typography variant="h4">{t.resources}</Typography>
         <Grid mt={2} display="flex" justifyContent="center" container>
-          {resources.map(({ content, slug }) => (
-            <Grid
-              size={{ md: 4 }}
-              key={slug}
-              onClick={() => goToResources(slug)}
-            >
+          {resources?.map(({ content, slug }) => (
+            <Grid size={{ md: 4 }} key={slug}>
               <Card>
-                <CardMedia sx={{ height: 140 }} image={content.image} />
-                <CardContent>
-                  <Typography gutterBottom component="h5">
-                    {content.title}
-                  </Typography>
-                  <Typography component="p" color="text.secondary">
-                    {content.description}
-                  </Typography>
-                </CardContent>
+                <CardActionArea
+                  component={NextLink}
+                  href={`${NAV_MAIN_LINKS.resources.link}/${slug}`}
+                >
+                  <CardMedia sx={{ height: 140 }} image={content.image} />
+                  <CardContent>
+                    <Typography gutterBottom component="h5">
+                      {content.title}
+                    </Typography>
+                    <Typography component="p" color="text.secondary">
+                      {content.description}
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
               </Card>
             </Grid>
           ))}

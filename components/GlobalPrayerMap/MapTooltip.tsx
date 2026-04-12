@@ -66,10 +66,10 @@ const MapTooltip = ({ data, containerRect }: Props) => {
           textSecondary={colors.textSecondary}
           textPrimary={colors.textPrimary}
         />
-        {data.liveSessions > 0 && (
+        {data.activeUsers > 0 && (
           <StatRow
             label="Live sessions"
-            value={String(data.liveSessions)}
+            value={String(data.activeUsers)}
             textSecondary={colors.textSecondary}
             textPrimary={colors.successLight}
             accent

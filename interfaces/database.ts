@@ -883,6 +883,7 @@ export type Database = {
           invited_by: string | null;
           language: string | null;
           last_name: string | null;
+          last_seen: string | null;
           picture_url: string | null;
           role: string;
           rosary_count: number | null;
@@ -901,6 +902,7 @@ export type Database = {
           invited_by?: string | null;
           language?: string | null;
           last_name?: string | null;
+          last_seen?: string | null;
           picture_url?: string | null;
           role?: string;
           rosary_count?: number | null;
@@ -919,6 +921,7 @@ export type Database = {
           invited_by?: string | null;
           language?: string | null;
           last_name?: string | null;
+          last_seen?: string | null;
           picture_url?: string | null;
           role?: string;
           rosary_count?: number | null;

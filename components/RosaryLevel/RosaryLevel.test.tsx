@@ -5,17 +5,36 @@ import RosaryLevel from './RosaryLevel';
 jest.mock('@/context/LevelsContext', () => ({
   useLevelsContext: () => ({
     levels: [
-      { label: 'Beginner', color: '#cd7f32', icon: '/icon0.png' },
-      { label: 'Warrior', color: '#c0c0c0', icon: '/icon1.png' },
+      {
+        label: 'Beginner',
+        color: '#cd7f32',
+        image: '/icon0.png',
+        value: 'serpent_crusher',
+      },
+      {
+        label: 'Warrior',
+        color: '#c0c0c0',
+        image: '/icon1.png',
+        value: 'rosary_warrior',
+      },
     ],
     getCurrentLevel: jest.fn(),
   }),
 }));
 
+jest.mock('@/context/LanguageContext', () => ({
+  useLanguageContext: () => ({
+    t: {
+      levelDescSerpentCrusher: 'Serpent Crusher description',
+      levelDescDefault: 'Default description',
+    },
+  }),
+}));
+
 describe('RosaryLevel Component', () => {
   it('renders level icon for valid level', () => {
-    const { getByAltText } = render(<RosaryLevel levelNum={0} />);
-    expect(getByAltText('Beginner')).toBeInTheDocument();
+    const { getAllByAltText } = render(<RosaryLevel levelNum={0} />);
+    expect(getAllByAltText('Beginner')[0]).toBeInTheDocument();
   });
 
   it('returns null for undefined level', () => {

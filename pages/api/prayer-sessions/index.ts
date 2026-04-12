@@ -20,19 +20,37 @@ export default async function handler(
   try {
     const sb = getServiceSupabase();
 
-    const { data, error } = await sb
-      .from('global_prayer_sessions')
-      .select('*')
-      .eq('is_active', true)
-      .order('participants_count', { ascending: false })
-      .order('updated_at', { ascending: false });
+    const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60_000).toISOString();
 
-    if (error) {
-      console.error('GET /api/prayer-sessions error:', error);
+    const [sessionsRes, activeUsersRes] = await Promise.all([
+      sb
+        .from('global_prayer_sessions')
+        .select('*')
+        .eq('is_active', true)
+        .order('participants_count', { ascending: false })
+        .order('updated_at', { ascending: false }),
+      sb
+        .from('profiles')
+        .select('id', { count: 'exact', head: true })
+        .gt('last_seen', twoHoursAgo),
+    ]);
+
+    if (sessionsRes.error) {
+      console.error('GET /api/prayer-sessions error:', sessionsRes.error);
       return res.status(500).json({ error: 'Failed to fetch sessions' });
     }
 
-    return res.status(200).json({ data: data ?? [] });
+    if (activeUsersRes.error) {
+      console.error(
+        'GET /api/prayer-sessions active users error:',
+        activeUsersRes.error,
+      );
+    }
+
+    return res.status(200).json({
+      data: sessionsRes.data ?? [],
+      activeOnlineUsers: activeUsersRes.count ?? 0,
+    });
   } catch (err) {
     console.error('GET /api/prayer-sessions unexpected error:', err);
     return res.status(500).json({ error: 'Internal server error' });

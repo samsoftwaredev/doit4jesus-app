@@ -5,9 +5,11 @@ import {
   type JSX,
   SetStateAction,
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 
@@ -143,6 +145,34 @@ const UserContextProvider = ({ children }: Props) => {
       data.subscription.unsubscribe();
     };
   }, []);
+
+  // Heartbeat: update last_seen every 60s so other users can detect who's online.
+  const heartbeatRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const updateLastSeen = useCallback(async () => {
+    if (!user?.userId) return;
+    try {
+      await supabase
+        .from('profiles')
+        .update({ last_seen: new Date().toISOString() })
+        .eq('id', user.userId);
+    } catch (err) {
+      // Best-effort — don't break the app if this fails
+      console.error('Heartbeat update failed:', err);
+    }
+  }, [user?.userId]);
+
+  useEffect(() => {
+    if (!user?.userId) return;
+
+    // Fire immediately then repeat every 60s
+    updateLastSeen();
+    heartbeatRef.current = setInterval(updateLastSeen, 60_000);
+
+    return () => {
+      if (heartbeatRef.current) clearInterval(heartbeatRef.current);
+    };
+  }, [user?.userId, updateLastSeen]);
 
   const value = useMemo(
     () => ({

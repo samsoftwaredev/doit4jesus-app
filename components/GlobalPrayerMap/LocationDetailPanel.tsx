@@ -75,18 +75,18 @@ const LocationDetailPanel = ({
       <Stack spacing={0.8}>
         <DetailRow
           colors={colors}
-          label={t.prayerMapTotalPrayers ?? 'Total Prayers'}
+          label={t.prayerMapTotalPrayers}
           value={location.prayerCount.toLocaleString()}
         />
         <DetailRow
           colors={colors}
-          label={t.prayerMapActiveUsers ?? 'Active Users'}
+          label={t.prayerMapActiveUsers}
           value={String(location.activeUsers)}
         />
-        {location.liveSessions > 0 && (
+        {location.activeUsers > 0 && (
           <Chip
             icon={<RadioButtonCheckedIcon sx={{ fontSize: 14 }} />}
-            label={`${location.liveSessions} ${t.prayerMapLiveSessions ?? 'live sessions'}`}
+            label={`${location.activeUsers} ${t.prayerMapActiveUsers}`}
             size="small"
             sx={{
               width: 'fit-content',
@@ -99,7 +99,7 @@ const LocationDetailPanel = ({
         )}
       </Stack>
 
-      {onJoinSession && location.liveSessions > 0 && (
+      {onJoinSession && location.activeUsers > 0 && (
         <Button
           variant="contained"
           size="small"

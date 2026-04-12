@@ -13,7 +13,6 @@ const DATA: MapTooltipData = {
   countryName: 'Italy',
   prayerCount: 5600,
   activeUsers: 42,
-  liveSessions: 3,
 };
 
 describe('MapTooltip', () => {
@@ -38,8 +37,8 @@ describe('MapTooltip', () => {
     expect(screen.getByText('5,600')).toBeInTheDocument();
   });
 
-  it('shows live sessions when present', () => {
+  it('shows live sessions when activeUsers > 0', () => {
     render(<MapTooltip data={DATA} containerRect={RECT} />);
-    expect(screen.getByText('3')).toBeInTheDocument();
+    expect(screen.getByText('Live sessions')).toBeInTheDocument();
   });
 });

@@ -73,10 +73,6 @@ Returns all prayer locations ordered by `prayer_count DESC`.
 
 Upserts a city's prayer count. If the city doesn't exist, creates it. If it does, adds `p_increment` to the existing count and updates `last_updated`.
 
-### `upsert_global_prayer_session(p_city, p_country_code, p_country_name, p_latitude, p_longitude, p_prayer_type, p_created_by)`
-
-Finds an existing active session for the same city+prayer_type and joins it, or creates a new one. Returns the session ID.
-
 ### `join_global_prayer_session(p_session_id)`
 
 Increments participant count. Returns the new count. Raises exception if session not found or inactive.

@@ -152,7 +152,6 @@ const WorldMapSvg = ({
         countryName: city.countryName,
         prayerCount: city.prayerCount,
         activeUsers: city.activeUsers,
-        liveSessions: city.liveSessions,
       });
     },
     [getContainerRect, onTooltip],
@@ -171,7 +170,6 @@ const WorldMapSvg = ({
         name: cd.countryName,
         prayerCount: cd.prayerCount,
         activeUsers: cd.activeUsers,
-        liveSessions: cd.liveSessions,
       });
     },
     [getContainerRect, countryLookup, onTooltip],
@@ -185,7 +183,6 @@ const WorldMapSvg = ({
         countryName: city.countryName,
         prayerCount: city.prayerCount,
         activeUsers: city.activeUsers,
-        liveSessions: city.liveSessions,
         latitude: city.latitude,
         longitude: city.longitude,
       });
@@ -203,7 +200,6 @@ const WorldMapSvg = ({
         name: cd.countryName,
         prayerCount: cd.prayerCount,
         activeUsers: cd.activeUsers,
-        liveSessions: cd.liveSessions,
       });
     },
     [countryLookup, onSelect],

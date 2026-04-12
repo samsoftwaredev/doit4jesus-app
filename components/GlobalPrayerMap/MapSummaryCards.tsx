@@ -35,7 +35,7 @@ const MapSummaryCards = ({ summary, translations: t }: Props) => {
         <StatCard>
           <Chip
             icon={<PublicIcon sx={{ fontSize: 15 }} />}
-            label={t.prayerMapTotalPrayers ?? 'Total Prayers'}
+            label={t.prayerMapTotalPrayers}
             size="small"
             sx={{
               mb: 0.5,

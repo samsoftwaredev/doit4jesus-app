@@ -72,9 +72,32 @@ describe('GET /api/prayer-sessions', () => {
     mockGetServiceSupabase.mockReturnValue(mockSb);
   });
 
+  /** Build a thenable profiles chain that resolves with { count, error }. */
+  function createProfilesChain(count: number) {
+    const result = { data: null, error: null, count };
+    const chain: Record<string, unknown> = {};
+    const self = () => chain;
+    for (const m of ['select', 'eq', 'gt', 'order', 'limit']) {
+      chain[m] = jest.fn(self);
+    }
+    (chain as any).then = (
+      resolve: (v: typeof result) => void,
+      reject: (r: unknown) => void,
+    ) => Promise.resolve(result).then(resolve, reject);
+    return chain;
+  }
+
+  function setupMockFrom(sessionsResult: { data: any; error: any }) {
+    const sessionsChain = createChain(sessionsResult);
+    const profilesChain = createProfilesChain(5);
+    mockFrom.mockImplementation((table: string) => {
+      if (table === 'profiles') return profilesChain;
+      return sessionsChain;
+    });
+  }
+
   it('returns 200 with active sessions array', async () => {
-    const chain = createChain({ data: SESSION_ROWS, error: null });
-    mockFrom.mockReturnValue(chain);
+    setupMockFrom({ data: SESSION_ROWS, error: null });
 
     const req = createMockReq({ method: 'GET' });
     const res = createMockRes();
@@ -83,11 +106,11 @@ describe('GET /api/prayer-sessions', () => {
 
     expect(res.statusCode).toBe(200);
     expect((res._json as any).data).toHaveLength(1);
+    expect((res._json as any).activeOnlineUsers).toBe(5);
   });
 
   it('response session contains required contract fields', async () => {
-    const chain = createChain({ data: SESSION_ROWS, error: null });
-    mockFrom.mockReturnValue(chain);
+    setupMockFrom({ data: SESSION_ROWS, error: null });
 
     const req = createMockReq({ method: 'GET' });
     const res = createMockRes();
@@ -104,8 +127,7 @@ describe('GET /api/prayer-sessions', () => {
   });
 
   it('returns empty array when no active sessions', async () => {
-    const chain = createChain({ data: [], error: null });
-    mockFrom.mockReturnValue(chain);
+    setupMockFrom({ data: [], error: null });
 
     const req = createMockReq({ method: 'GET' });
     const res = createMockRes();
@@ -117,8 +139,7 @@ describe('GET /api/prayer-sessions', () => {
   });
 
   it('returns 500 on DB error', async () => {
-    const chain = createChain({ data: null, error: { message: 'DB error' } });
-    mockFrom.mockReturnValue(chain);
+    setupMockFrom({ data: null, error: { message: 'DB error' } });
 
     const req = createMockReq({ method: 'GET' });
     const res = createMockRes();

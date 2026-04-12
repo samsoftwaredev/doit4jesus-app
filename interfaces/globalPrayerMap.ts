@@ -8,7 +8,6 @@ export interface PrayerCity {
   latitude: number;
   longitude: number;
   prayerCount: number;
-  liveSessions: number;
   activeUsers: number;
   lastUpdated: string;
 }
@@ -20,7 +19,6 @@ export interface PrayerCountry {
   countryName: string;
   prayerCount: number;
   activeUsers: number;
-  liveSessions: number;
 }
 
 // ── Map view mode ────────────────────────────────────────────────────────────
@@ -35,7 +33,6 @@ export interface MapTooltipData {
   name: string;
   prayerCount: number;
   activeUsers: number;
-  liveSessions: number;
   /** City only */
   countryName?: string;
 }
@@ -48,7 +45,6 @@ export interface SelectedLocationDetail {
   countryName?: string;
   prayerCount: number;
   activeUsers: number;
-  liveSessions: number;
   latitude?: number;
   longitude?: number;
 }

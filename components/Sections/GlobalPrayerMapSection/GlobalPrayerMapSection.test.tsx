@@ -38,7 +38,9 @@ jest.mock('@/services/prayerCityApi', () => ({
 }));
 
 jest.mock('@/services/prayerSessionsApi', () => ({
-  getActiveGlobalPrayerSessions: jest.fn().mockResolvedValue([]),
+  getActiveGlobalPrayerSessions: jest
+    .fn()
+    .mockResolvedValue({ sessions: [], activeOnlineUsers: 0 }),
 }));
 
 jest.mock('next/dynamic', () => () => {

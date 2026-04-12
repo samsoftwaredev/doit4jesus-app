@@ -3,7 +3,6 @@ import type {
   EventMessagesActionsDB,
   EventMessagesDB,
   EventsDB,
-  PostsDB,
   YouTubeDB,
 } from '@/interfaces/databaseTable';
 import { apiFetch } from '@/lib/api/client';
@@ -61,10 +60,3 @@ export const likeEventMessage = (id: string, likes: Json) =>
 /** Fetch a YouTube video by ID. */
 export const fetchVideo = (id: string) =>
   apiFetch<YouTubeDB[]>(`/api/videos/${encodeURIComponent(id)}`);
-
-/** Fetch all posts. */
-export const fetchPosts = () => apiFetch<PostsDB[]>('/api/posts');
-
-/** Fetch a single post by slug. */
-export const fetchPostBySlug = (slug: string) =>
-  apiFetch<PostsDB[]>(`/api/posts/${encodeURIComponent(slug)}`);

@@ -18,7 +18,6 @@ const LOCATION: SelectedLocationDetail = {
   countryName: 'Italy',
   prayerCount: 5600,
   activeUsers: 42,
-  liveSessions: 3,
 };
 
 describe('LocationDetailPanel', () => {
@@ -41,12 +40,12 @@ describe('LocationDetailPanel', () => {
     expect(screen.getByText('42')).toBeInTheDocument();
   });
 
-  it('shows live sessions badge', () => {
+  it('shows active users badge', () => {
     render(<LocationDetailPanel location={LOCATION} translations={T} />);
-    expect(screen.getByText('3 live sessions')).toBeInTheDocument();
+    expect(screen.getByText('42 Active Users')).toBeInTheDocument();
   });
 
-  it('renders Join Session button when onJoinSession provided and liveSessions > 0', () => {
+  it('renders Join Session button when onJoinSession provided and activeUsers > 0', () => {
     const onJoin = jest.fn();
     render(
       <LocationDetailPanel
@@ -60,10 +59,10 @@ describe('LocationDetailPanel', () => {
     expect(onJoin).toHaveBeenCalledTimes(1);
   });
 
-  it('hides Join Session button when liveSessions is 0', () => {
+  it('hides Join Session button when activeUsers is 0', () => {
     render(
       <LocationDetailPanel
-        location={{ ...LOCATION, liveSessions: 0 }}
+        location={{ ...LOCATION, activeUsers: 0 }}
         translations={T}
         onJoinSession={jest.fn()}
       />,

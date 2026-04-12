@@ -4,10 +4,12 @@ import { LanguageContextProvider } from '@/context/LanguageContext';
 
 import TotalRosariesPrayed from './TotalRosariesPrayed';
 
-jest.mock('@/classes', () => ({
-  supabase: {
-    rpc: jest.fn().mockResolvedValue({ data: 1000, error: null }),
-  },
+jest.mock('next/router', () => ({
+  useRouter: jest.fn().mockReturnValue({ push: jest.fn() }),
+}));
+
+jest.mock('@/services/rosaryApi', () => ({
+  fetchTotalRosaryCount: jest.fn().mockResolvedValue({ count: 1000 }),
 }));
 
 const component = () => (

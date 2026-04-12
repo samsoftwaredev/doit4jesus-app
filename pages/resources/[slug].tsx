@@ -8,6 +8,7 @@ import {
   Grid,
   IconButton,
   LinearProgress,
+  Link,
   Typography,
 } from '@mui/material';
 import { NextPage } from 'next';
@@ -20,7 +21,7 @@ import { MainLayout } from '@/components/Templates';
 import { NAV_MAIN_LINKS } from '@/constants/nav';
 import { useLanguageContext } from '@/context/LanguageContext';
 import { ResourcePost } from '@/interfaces';
-import { fetchPostBySlug } from '@/services/eventsApi';
+import { fetchPostBySlug } from '@/services/postsApi';
 import { normalizePost } from '@/utils';
 
 const ResourcesPost: NextPage = () => {
@@ -32,48 +33,51 @@ const ResourcesPost: NextPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState(0);
 
-  const currentPage = article?.content?.sections[page];
+  const sections = article?.content?.sections ?? [];
+  const totalPages = sections.length;
+  const currentPage = sections[page];
   const isFirstPage = page <= 0;
-  const isLastPage = article?.content?.sections?.length
-    ? page >= article.content.sections.length - 1
-    : false;
+  const isLastPage = totalPages > 0 ? page >= totalPages - 1 : false;
 
   const onPrev = () => {
-    setPage((pag) => pag - 1);
+    setPage((p) => p - 1);
   };
 
   const onNext = () => {
-    setPage((pag) => pag + 1);
+    setPage((p) => p + 1);
   };
 
   const onFinish = () => {
     router.push(NAV_MAIN_LINKS.resources.link);
   };
 
-  const getArticle = async () => {
-    setIsLoading(true);
-    try {
-      if (typeof slug === 'string') {
-        const data = await fetchPostBySlug(slug);
-        if (data) setArticle(normalizePost(data)[0]);
-      }
-    } catch (error) {
-      console.error('Error in resources/[slug] (getArticle):', error);
-      toast.error(t.unableToDisplayArticle);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
+    if (typeof slug !== 'string') return;
+
+    const getArticle = async () => {
+      setIsLoading(true);
+      try {
+        const data = await fetchPostBySlug(slug);
+        const normalized = data ? normalizePost(data) : [];
+        if (normalized.length > 0) {
+          setArticle(normalized[0]);
+        }
+      } catch (error) {
+        console.error('Error in resources/[slug] (getArticle):', error);
+        toast.error(t.unableToDisplayArticle);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     getArticle();
-  }, []);
+  }, [slug]);
 
   if (isLoading) return <Loading />;
 
   if (!article?.content) return <PageNotFound />;
 
-  const progress = (page / (article?.content.sections?.length - 1)) * 100;
+  const progress = totalPages > 1 ? (page / (totalPages - 1)) * 100 : 100;
 
   return (
     <MainLayout>
@@ -97,20 +101,76 @@ const ResourcesPost: NextPage = () => {
             </Typography>
           </CardMedia>
         </Box>
-        <Typography py={2} variant="h4">
-          {currentPage?.title}
-        </Typography>
+
+        {currentPage?.image && (
+          <Box mt={2}>
+            <CardMedia
+              sx={{ height: 180, borderRadius: 1 }}
+              image={currentPage.image}
+              title={currentPage.imgAlt || currentPage.title}
+            />
+          </Box>
+        )}
+
+        {currentPage?.title && (
+          <Typography py={2} variant="h4">
+            {currentPage.title}
+          </Typography>
+        )}
+
         <Typography>{currentPage?.body}</Typography>
-        <Grid>
-          <IconButton disabled={isFirstPage} onClick={onPrev}>
-            <ArrowCircleLeftIcon />
+
+        {currentPage?.references && currentPage.references.length > 0 && (
+          <Box mt={2}>
+            {currentPage.references.map(({ url, resource }) => (
+              <Link
+                key={url}
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                display="block"
+                variant="body2"
+              >
+                {resource}
+              </Link>
+            ))}
+          </Box>
+        )}
+
+        <Grid
+          display="flex"
+          alignItems="center"
+          mt={2}
+          justifyContent="space-between"
+        >
+          <IconButton
+            disabled={isFirstPage}
+            onClick={onPrev}
+            aria-label="Previous section"
+            sx={{ scale: 2.2 }}
+          >
+            <ArrowCircleLeftIcon color="primary" />
           </IconButton>
+
+          <Typography variant="body2" sx={{ mx: 1 }}>
+            {page + 1} / {totalPages}
+          </Typography>
+
           {!isLastPage ? (
-            <IconButton onClick={onNext}>
-              <ArrowCircleRightIcon />
+            <IconButton
+              onClick={onNext}
+              aria-label="Next section"
+              sx={{ scale: 2.2 }}
+            >
+              <ArrowCircleRightIcon color="primary" />
             </IconButton>
           ) : (
-            <Button variant="contained" onClick={onFinish}>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={onFinish}
+              size="small"
+            >
               {t.completed}
             </Button>
           )}

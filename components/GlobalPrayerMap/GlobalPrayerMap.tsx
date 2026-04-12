@@ -79,9 +79,10 @@ const MapSection = styled(Box)({
 interface Props {
   /** Optional external city data (falls back to mock). */
   cities?: PrayerCity[];
+  activeUsers?: number;
 }
 
-const GlobalPrayerMap = ({ cities: externalCities }: Props) => {
+const GlobalPrayerMap = ({ cities: externalCities, activeUsers }: Props) => {
   const { t } = useLanguageContext();
   const theme = useTheme();
   const colors = getMapColors(theme);
@@ -106,7 +107,7 @@ const GlobalPrayerMap = ({ cities: externalCities }: Props) => {
   const summary = useMemo(
     () =>
       cities.length > 0
-        ? computeSummary(cities)
+        ? computeSummary(cities, activeUsers ?? 0)
         : {
             totalPrayers: 0,
             mostActiveCity: '—',

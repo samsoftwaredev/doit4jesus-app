@@ -11,7 +11,6 @@ const CITIES: PrayerCity[] = [
     latitude: 41.9,
     longitude: 12.49,
     prayerCount: 5000,
-    liveSessions: 3,
     activeUsers: 40,
     lastUpdated: new Date().toISOString(),
   },
@@ -23,7 +22,6 @@ const CITIES: PrayerCity[] = [
     latitude: 45.46,
     longitude: 9.19,
     prayerCount: 2000,
-    liveSessions: 1,
     activeUsers: 10,
     lastUpdated: new Date().toISOString(),
   },
@@ -35,7 +33,6 @@ const CITIES: PrayerCity[] = [
     latitude: 14.6,
     longitude: 120.98,
     prayerCount: 4500,
-    liveSessions: 5,
     activeUsers: 55,
     lastUpdated: new Date().toISOString(),
   },
@@ -50,7 +47,6 @@ describe('aggregateByCountry', () => {
     expect(italy).toBeDefined();
     expect(italy!.prayerCount).toBe(7000);
     expect(italy!.activeUsers).toBe(50);
-    expect(italy!.liveSessions).toBe(4);
   });
 
   it('sorts countries by prayerCount descending', () => {
@@ -66,30 +62,30 @@ describe('aggregateByCountry', () => {
 
 describe('computeSummary', () => {
   it('computes total prayers', () => {
-    const summary = computeSummary(CITIES);
+    const summary = computeSummary(CITIES, 95);
     expect(summary.totalPrayers).toBe(11500);
   });
 
   it('identifies most active city', () => {
-    const summary = computeSummary(CITIES);
+    const summary = computeSummary(CITIES, 95);
     expect(summary.mostActiveCity).toBe('Rome');
   });
 
   it('identifies most active country', () => {
-    const summary = computeSummary(CITIES);
+    const summary = computeSummary(CITIES, 95);
     expect(summary.mostActiveCountry).toBe('Italy');
   });
 
-  it('sums live sessions', () => {
-    const summary = computeSummary(CITIES);
-    expect(summary.totalLiveSessions).toBe(9);
+  it('uses activeUsers param for totalLiveSessions', () => {
+    const summary = computeSummary(CITIES, 95);
+    expect(summary.totalLiveSessions).toBe(95);
   });
 
   it('handles empty array gracefully', () => {
-    const summary = computeSummary([]);
+    const summary = computeSummary([], 95);
     expect(summary.totalPrayers).toBe(0);
     expect(summary.mostActiveCity).toBe('');
     expect(summary.mostActiveCountry).toBe('');
-    expect(summary.totalLiveSessions).toBe(0);
+    expect(summary.totalLiveSessions).toBe(95);
   });
 });

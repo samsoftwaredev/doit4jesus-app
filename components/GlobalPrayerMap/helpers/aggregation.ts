@@ -15,14 +15,12 @@ export const aggregateByCountry = (cities: PrayerCity[]): PrayerCountry[] => {
     if (existing) {
       existing.prayerCount += c.prayerCount;
       existing.activeUsers += c.activeUsers;
-      existing.liveSessions += c.liveSessions;
     } else {
       map.set(c.countryCode, {
         countryCode: c.countryCode,
         countryName: c.countryName,
         prayerCount: c.prayerCount,
         activeUsers: c.activeUsers,
-        liveSessions: c.liveSessions,
       });
     }
   }
@@ -33,7 +31,10 @@ export const aggregateByCountry = (cities: PrayerCity[]): PrayerCountry[] => {
 /**
  * Compute high-level summary stats from the city data.
  */
-export const computeSummary = (cities: PrayerCity[]): PrayerMapSummary => {
+export const computeSummary = (
+  cities: PrayerCity[],
+  activeUsers: number,
+): PrayerMapSummary => {
   const countries = aggregateByCountry(cities);
 
   const topCity = cities.reduce(
@@ -47,6 +48,6 @@ export const computeSummary = (cities: PrayerCity[]): PrayerMapSummary => {
     totalPrayers: cities.reduce((sum, c) => sum + c.prayerCount, 0),
     mostActiveCity: topCity?.city ?? '',
     mostActiveCountry: topCountry?.countryName ?? '',
-    totalLiveSessions: cities.reduce((sum, c) => sum + c.liveSessions, 0),
+    totalLiveSessions: activeUsers,
   };
 };

@@ -14,7 +14,6 @@ const toPrayerCity = (row: PrayerLocationRow): PrayerCity => ({
   latitude: Number(row.latitude),
   longitude: Number(row.longitude),
   prayerCount: row.prayer_count,
-  liveSessions: row.live_sessions,
   activeUsers: row.active_users,
   lastUpdated: row.last_updated,
 });

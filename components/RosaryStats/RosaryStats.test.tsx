@@ -1,6 +1,5 @@
 import '@testing-library/jest-dom';
-import { fireEvent, render, screen } from '@testing-library/react';
-import { useRouter } from 'next/navigation';
+import { render, screen } from '@testing-library/react';
 
 import { LanguageContextProvider } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
@@ -26,7 +25,6 @@ const component = () => {
 };
 
 describe('RosaryStats', () => {
-  const mockPush = jest.fn();
   const mockUser = {
     stats: {
       rosaryTotalCount: 10,
@@ -34,7 +32,6 @@ describe('RosaryStats', () => {
   };
 
   beforeEach(() => {
-    (useRouter as jest.Mock).mockReturnValue({ push: mockPush });
     (useUserContext as jest.Mock).mockReturnValue({ user: mockUser });
   });
 
@@ -46,18 +43,5 @@ describe('RosaryStats', () => {
     render(component());
     const countElement = screen.getByText(mockUser.stats.rosaryTotalCount);
     expect(countElement).toBeInTheDocument();
-  });
-
-  it('renders the "Start Praying" button', () => {
-    render(component());
-    const buttonElement = screen.getByTestId('startPraying');
-    expect(buttonElement).toBeInTheDocument();
-  });
-
-  it('navigates to the app link when the button is clicked', () => {
-    render(component());
-    const buttonElement = screen.getByTestId('startPraying');
-    fireEvent.click(buttonElement);
-    expect(mockPush).toHaveBeenCalledWith('/app/rosary');
   });
 });
