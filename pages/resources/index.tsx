@@ -48,24 +48,26 @@ const Resources: NextPage = () => {
       <Meta pageTitle={t.resources} />
       <Container maxWidth="lg">
         <Typography variant="h4">{t.resources}</Typography>
-        <Grid my={2} gap={1} display="flex" justifyContent="center" container>
+        <Grid my={2} container spacing={2}>
           {resources?.map(({ content, slug }) => (
-            <Card sx={{ md: 4, width: 1 / 4 }} key={slug}>
-              <CardActionArea
-                component={NextLink}
-                href={`${NAV_MAIN_LINKS.resources.link}/${slug}`}
-              >
-                <CardMedia sx={{ height: 140 }} image={content.image} />
-                <CardContent>
-                  <Typography gutterBottom component="h5">
-                    {content.title}
-                  </Typography>
-                  <Typography component="p" color="text.secondary">
-                    {content.description}
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-            </Card>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={slug}>
+              <Card>
+                <CardActionArea
+                  component={NextLink}
+                  href={`${NAV_MAIN_LINKS.resources.link}/${slug}`}
+                >
+                  <CardMedia sx={{ height: 140 }} image={content.image} />
+                  <CardContent>
+                    <Typography gutterBottom component="h5">
+                      {content.title}
+                    </Typography>
+                    <Typography component="p" color="text.secondary">
+                      {content.description}
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Grid>
           ))}
         </Grid>
       </Container>
