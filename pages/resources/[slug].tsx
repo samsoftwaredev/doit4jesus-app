@@ -51,6 +51,10 @@ const ResourcesPost: NextPage = () => {
     router.push(NAV_MAIN_LINKS.resources.link);
   };
 
+  const onMenu = () => {
+    router.push(NAV_MAIN_LINKS.resources.link);
+  };
+
   useEffect(() => {
     if (typeof slug !== 'string') return;
 
@@ -102,16 +106,6 @@ const ResourcesPost: NextPage = () => {
           </CardMedia>
         </Box>
 
-        {currentPage?.image && (
-          <Box mt={2}>
-            <CardMedia
-              sx={{ height: 180, borderRadius: 1 }}
-              image={currentPage.image}
-              title={currentPage.imgAlt || currentPage.title}
-            />
-          </Box>
-        )}
-
         {currentPage?.title && (
           <Typography py={2} variant="h4">
             {currentPage.title}
@@ -143,14 +137,25 @@ const ResourcesPost: NextPage = () => {
           mt={2}
           justifyContent="space-between"
         >
-          <IconButton
-            disabled={isFirstPage}
-            onClick={onPrev}
-            aria-label="Previous section"
-            sx={{ scale: 2.2 }}
-          >
-            <ArrowCircleLeftIcon color="primary" />
-          </IconButton>
+          {!isFirstPage ? (
+            <IconButton
+              disabled={isFirstPage}
+              onClick={onPrev}
+              aria-label="Previous section"
+              sx={{ scale: 2.2 }}
+            >
+              <ArrowCircleLeftIcon color="primary" />
+            </IconButton>
+          ) : (
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={onMenu}
+              size="small"
+            >
+              {t.resources}
+            </Button>
+          )}
 
           <Typography variant="body2" sx={{ mx: 1 }}>
             {page + 1} / {totalPages}
