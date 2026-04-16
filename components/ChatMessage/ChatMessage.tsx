@@ -44,6 +44,7 @@ const ChatMessage = ({
     <Box my="1em" display="flex" flexDirection="column" gap="1em">
       <Box display="flex" gap="0.5em" alignItems="center">
         <UserBubble
+          clickable={false}
           userName={`${user.firstName} ${user.lastName}`}
           userPicture={user.pictureUrl}
         />

@@ -1,4 +1,6 @@
-import { Container, Typography } from '@mui/material';
+import EventBusyIcon from '@mui/icons-material/EventBusy';
+import SearchOffIcon from '@mui/icons-material/SearchOff';
+import { Button, Container, Stack, Typography, alpha } from '@mui/material';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import moment from 'moment';
 import type { GetServerSideProps, NextPage } from 'next';
@@ -9,9 +11,11 @@ import { toast } from 'react-toastify';
 import { supabase } from '@/classes/SupabaseDB';
 import AppWrapper from '@/components/AppWrapper/AppWrapper';
 import Loading from '@/components/Loading';
+import { NoDataAvailable } from '@/components/NoDataAvailable';
 import EventSection from '@/components/Sections/EventSection';
 import { AppLayout } from '@/components/Templates';
 import { useAudioContext } from '@/context/AudioContext';
+import { useLanguageContext } from '@/context/LanguageContext';
 import { usePresenceContext } from '@/context/PresenceContext';
 import { useUserContext } from '@/context/UserContext';
 import { DataEvent, EventTypes, VideoEvent } from '@/interfaces';
@@ -22,6 +26,7 @@ const LiveEvent: NextPage = () => {
   const params = useParams();
   const slug = params.slug;
   const { user } = useUserContext();
+  const { t } = useLanguageContext();
   const { setAudioPlayer, setHideMusicPlayer } = useAudioContext();
   const { setChannel } = usePresenceContext();
   const channel: RealtimeChannel | undefined =
@@ -98,7 +103,29 @@ const LiveEvent: NextPage = () => {
     return (
       <AppLayout>
         <Container className="container-box" maxWidth="lg">
-          <Typography>This event has not started yet!</Typography>
+          <Stack
+            alignItems="center"
+            spacing={2}
+            py={6}
+            sx={{
+              borderRadius: 4,
+              bgcolor: (theme) => alpha(theme.palette.action.hover, 0.04),
+            }}
+          >
+            <EventBusyIcon
+              sx={{ fontSize: 56, color: 'warning.main', opacity: 0.4 }}
+            />
+            <Typography variant="h6" fontWeight={700}>
+              {t.eventNotStarted}
+            </Typography>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              textAlign="center"
+            >
+              {t.eventNotStartedDescription}
+            </Typography>
+          </Stack>
         </Container>
       </AppLayout>
     );
@@ -110,7 +137,7 @@ const LiveEvent: NextPage = () => {
         {typeof dataEvent === 'object' ? (
           <EventSection videoEvent={dataEvent} />
         ) : (
-          <Typography variant="h3">No Data</Typography>
+          <NoDataAvailable />
         )}
       </Container>
     </AppLayout>

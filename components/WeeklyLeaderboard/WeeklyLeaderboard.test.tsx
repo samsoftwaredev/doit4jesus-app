@@ -260,8 +260,8 @@ describe('LeaderboardList', () => {
         currentUserId="user-1"
       />,
     );
-    expect(screen.getByText(/Test User/)).toBeInTheDocument();
-    expect(screen.getByText(/Paul Adams/)).toBeInTheDocument();
+    expect(screen.getAllByText(/Test User/).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/Paul Adams/).length).toBeGreaterThanOrEqual(1);
   });
 
   it('shows "(You)" label for current user', () => {

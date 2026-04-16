@@ -2,6 +2,7 @@ import { AttachMoney, Send } from '@mui/icons-material';
 import { Box, Button, Paper, TextField } from '@mui/material';
 import { ChangeEvent, useState } from 'react';
 
+import DonationDialog from '@/components/DonationDialog/DonationDialog';
 import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
 import { theme } from '@/styles/mui-overwrite';
@@ -24,6 +25,7 @@ const ChatTextbox = ({
   const { t } = useLanguageContext();
   const { user } = useUserContext();
   const [message, setMessage] = useState(text ?? '');
+  const [donationOpen, setDonationOpen] = useState(false);
   const isSendBtnValid = message.trim() === '';
 
   const onChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -72,6 +74,7 @@ const ChatTextbox = ({
             color="success"
             variant="contained"
             startIcon={<AttachMoney />}
+            onClick={() => setDonationOpen(true)}
           >
             {t.makeDonation}
           </Button>
@@ -86,6 +89,10 @@ const ChatTextbox = ({
           {!isEditMode ? t.send : t.update}
         </Button>
       </Box>
+      <DonationDialog
+        open={donationOpen}
+        onClose={() => setDonationOpen(false)}
+      />
     </Box>
   );
 };

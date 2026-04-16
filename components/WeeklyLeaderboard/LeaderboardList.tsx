@@ -1,6 +1,7 @@
-import { Avatar, Box, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import { alpha, styled, useTheme } from '@mui/material/styles';
 
+import UserBubble from '@/components/UserBubble/UserBubble';
 import { useLanguageContext } from '@/context/LanguageContext';
 import type { LeaderboardEntry } from '@/interfaces/weeklyLeaderboard';
 
@@ -67,18 +68,13 @@ const LeaderboardList = ({ entries, currentUserId }: Props) => {
             <ListRow key={entry.userId} isHighlighted={isMe}>
               <RankNumber rank={entry.rank}>#{entry.rank}</RankNumber>
 
-              <Avatar
-                src={entry.pictureUrl ?? undefined}
-                alt={`${entry.firstName} ${entry.lastName}`}
-                sx={{
-                  width: 36,
-                  height: 36,
-                  mx: 1.5,
-                  fontSize: '0.8rem',
-                }}
-              >
-                {initials}
-              </Avatar>
+              <Box sx={{ mx: 1.5 }}>
+                <UserBubble
+                  userName={`${entry.firstName} ${entry.lastName}`}
+                  userPicture={entry.pictureUrl ?? undefined}
+                  size={36}
+                />
+              </Box>
 
               <Box flex={1} minWidth={0}>
                 <Typography

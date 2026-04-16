@@ -1,7 +1,8 @@
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-import { Avatar, Box, Chip, Stack, Typography } from '@mui/material';
+import { Box, Chip, Stack, Typography } from '@mui/material';
 import { alpha, styled, useTheme } from '@mui/material/styles';
 
+import UserBubble from '@/components/UserBubble/UserBubble';
 import { useLanguageContext } from '@/context/LanguageContext';
 import type { LeaderboardEntry } from '@/interfaces/weeklyLeaderboard';
 
@@ -86,18 +87,16 @@ const LeaderboardPodium = ({ entries }: Props) => {
             <PodiumCard key={entry.userId} podiumRank={entry.rank}>
               <RankBadge podiumRank={entry.rank}>{entry.rank}</RankBadge>
 
-              <Avatar
-                src={entry.pictureUrl ?? undefined}
-                alt={`${entry.firstName} ${entry.lastName}`}
-                sx={{
-                  width: entry.rank === 1 ? 64 : 52,
-                  height: entry.rank === 1 ? 64 : 52,
-                  mb: 1,
-                  border: `3px solid ${PODIUM_COLORS[entry.rank as keyof typeof PODIUM_COLORS]?.bg ?? '#888'}`,
-                }}
-              >
-                {initials}
-              </Avatar>
+              <Box sx={{ mb: 1 }}>
+                <UserBubble
+                  userName={`${entry.firstName} ${entry.lastName}`}
+                  userPicture={entry.pictureUrl ?? undefined}
+                  avatarSx={{
+                    border: `3px solid ${PODIUM_COLORS[entry.rank as keyof typeof PODIUM_COLORS]?.bg ?? '#888'}`,
+                  }}
+                  size={entry.rank === 1 ? 64 : 52}
+                />
+              </Box>
 
               <Typography
                 variant="body2"

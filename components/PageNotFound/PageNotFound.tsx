@@ -1,8 +1,9 @@
-import { Container, Typography } from '@mui/material';
+import { Button, Container, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Image from 'next/image';
 
 import { MainLayout } from '@/components/Templates';
+import { NAV_APP_LINKS } from '@/constants/index';
 import { useLanguageContext } from '@/context/LanguageContext';
 import ship from '@/public/assets/images/dream/ship.svg';
 
@@ -38,6 +39,14 @@ const PageNotFound = ({
         <Image src={imagePath} alt={imageAlt} />
         <Typography variant="h1">{title}</Typography>
         <Typography variant="h6">{description ?? t.pageNotFound}</Typography>
+        <Button
+          variant="contained"
+          color="success"
+          sx={{ my: 2 }}
+          href={NAV_APP_LINKS.dashboard.link}
+        >
+          {t.home}
+        </Button>
       </StyledContainer>
     </MainLayout>
   );

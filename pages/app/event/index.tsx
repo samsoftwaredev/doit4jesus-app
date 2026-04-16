@@ -3,6 +3,7 @@ import type { NextPage } from 'next';
 
 import { Meta } from '@/components';
 import AppWrapper from '@/components/AppWrapper';
+import { NoDataAvailable } from '@/components/NoDataAvailable';
 import { AppLayout } from '@/components/Templates';
 
 const LiveEvent: NextPage = () => {
@@ -10,7 +11,7 @@ const LiveEvent: NextPage = () => {
     <AppLayout>
       <Meta pageTitle="Resources" />
       <Container maxWidth="lg">
-        <p>No event</p>
+        <NoDataAvailable />
       </Container>
     </AppLayout>
   );

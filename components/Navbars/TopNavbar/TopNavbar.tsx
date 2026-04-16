@@ -154,6 +154,7 @@ const TopNavbar = ({ handleMenu }: Props) => {
             {user?.firstName} {user?.lastName}
           </UserName>
           <UserBubble
+            clickable={false}
             userPicture={user?.pictureUrl}
             userName={`${user?.firstName} ${user?.lastName}`}
           />
@@ -165,8 +166,9 @@ const TopNavbar = ({ handleMenu }: Props) => {
           onClick={onViewProfile}
           aria-label="View profile"
         >
-          <ListItemIcon sx={{ paddingLeft: '5px' }}>
+          <ListItemIcon>
             <UserBubble
+              clickable={false}
               userPicture={user?.pictureUrl}
               userName={`${user?.firstName} ${user?.lastName}`}
             />

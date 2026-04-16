@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { supabase } from '@/classes/SupabaseDB';
 import AppWrapper from '@/components/AppWrapper/AppWrapper';
 import Loading from '@/components/Loading';
+import { NoDataAvailable } from '@/components/NoDataAvailable';
 import EventSection from '@/components/Sections/EventSection';
 import { AppLayout } from '@/components/Templates';
 import { useAudioContext } from '@/context/AudioContext';
@@ -107,7 +108,7 @@ const LiveEvent: NextPage = () => {
         {typeof dataEvent === 'object' ? (
           <EventSection videoEvent={dataEvent} />
         ) : (
-          <Typography variant="h3">{t.noData}</Typography>
+          <NoDataAvailable />
         )}
       </Container>
     </AppLayout>

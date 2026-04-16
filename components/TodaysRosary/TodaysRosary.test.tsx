@@ -38,8 +38,10 @@ jest.mock('@/classes/SupabaseDB', () => ({
   },
 }));
 
-jest.mock('next/navigation', () => ({
-  useRouter: jest.fn().mockReturnValue({ push: jest.fn() }),
+jest.mock('next/router', () => ({
+  useRouter: jest
+    .fn()
+    .mockReturnValue({ push: jest.fn(), query: {}, pathname: '/' }),
 }));
 
 jest.mock('dayjs', () => {

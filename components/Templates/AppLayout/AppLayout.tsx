@@ -158,6 +158,7 @@ const AppLayout = ({ children }: Props) => {
         </SideNavbarArea>
         <ContentArea>{children}</ContentArea>
       </LayoutContainer>
+      <div id="user-profile-portal" />
     </>
   );
 };
