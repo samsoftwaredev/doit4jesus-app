@@ -111,6 +111,16 @@ const ProgressLevelsSection = () => {
             justifyContent="space-between"
             key={label}
             my={2}
+            sx={{
+              ...(index === currentLevel.levelNum && {
+                border: '2px solid',
+                borderColor: 'success.main',
+                borderRadius: 2,
+                px: 2,
+                py: 1,
+                backgroundColor: 'action.selected',
+              }),
+            }}
           >
             <RosaryLevel key={label} levelNum={index} />
             <Box display="flex" flexDirection="column">
@@ -134,7 +144,7 @@ const ProgressLevelsSection = () => {
                 sx={{
                   color: 'text.secondary',
                   width: '100%',
-                  textAlign: 'center',
+                  textAlign: 'right',
                   fontSize: { sm: '0.8em', md: '1em' },
                 }}
               >

@@ -95,6 +95,17 @@ const UserContextProvider = ({ children }: Props) => {
     }
   };
 
+  const navigateToLinks = () => {
+    const path = window.location.pathname;
+    if (path === NAV_MAIN_LINKS.login.link) {
+      router.push(NAV_APP_LINKS.dashboard.link);
+    } else if (path === NAV_MAIN_LINKS.signup.link) {
+      router.push(NEW_USER_REDIRECT);
+    } else if (!path.startsWith(NAV_APP_LINKS.app.link)) {
+      router.push(NAV_APP_LINKS.dashboard.link);
+    }
+  };
+
   useEffect(() => {
     if (session) {
       getProfile(session);
@@ -119,19 +130,13 @@ const UserContextProvider = ({ children }: Props) => {
           // Skip re-fetching if we already have the user profile loaded
           if (event === 'SIGNED_IN' && user) {
             setIsLoading(false);
+            navigateToLinks();
             return;
           }
           setWhyLoading('Fetching your blessings...');
           await setSession(newSession);
 
-          const path = window.location.pathname;
-          if (path === NAV_MAIN_LINKS.login.link) {
-            router.push(NAV_APP_LINKS.dashboard.link);
-          } else if (path === NAV_MAIN_LINKS.signup.link) {
-            router.push(NEW_USER_REDIRECT);
-          } else if (!path.startsWith(NAV_APP_LINKS.app.link)) {
-            router.push(NAV_APP_LINKS.dashboard.link);
-          }
+          navigateToLinks();
           setIsLoading(false);
         }
 

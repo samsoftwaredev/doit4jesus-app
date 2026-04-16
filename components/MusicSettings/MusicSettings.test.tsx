@@ -3,14 +3,12 @@ import { render } from '@testing-library/react';
 import MusicSettings from './MusicSettings';
 
 jest.mock('next/router', () => ({
-  useRouter: jest
-    .fn()
-    .mockReturnValue({
-      push: jest.fn(),
-      replace: jest.fn(),
-      query: {},
-      pathname: '/',
-    }),
+  useRouter: jest.fn().mockReturnValue({
+    push: jest.fn(),
+    replace: jest.fn(),
+    query: {},
+    pathname: '/',
+  }),
 }));
 
 describe('MusicSettings Component', () => {
