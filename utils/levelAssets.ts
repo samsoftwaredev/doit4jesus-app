@@ -22,47 +22,47 @@ type LevelAsset = {
 };
 
 export const levelAssetsByBadgeKey: Record<string, LevelAsset> = {
-  serpent_crusher: {
+  beads_of_power: {
     image: level1,
     color: theme.palette.grey[100],
   },
-  foot_upon_the_serpent: {
+  shield_of_mary: {
     image: level2,
     color: theme.palette.grey[100],
   },
-  crushed_the_serpent_head: {
+  rosary_of_dominion: {
     image: level3,
     color: theme.palette.grey[100],
   },
-  rosary_warrior: {
+  foot_upon_the_serpent: {
     image: level4,
     color: theme.palette.grey[100],
   },
-  sword_of_the_rosary: {
+  serpent_crusher: {
     image: level5,
     color: 'purple',
   },
-  rosary_of_dominion: {
+  crushed_the_serpent_head: {
     image: level6,
     color: 'blue',
   },
-  shield_of_mary: {
+  rosary_warrior: {
     image: level7,
     color: 'silver',
   },
-  beads_of_power: {
+  victory_through_prayer: {
     image: level8,
     color: 'grey',
   },
-  crown_of_victory: {
+  demon_slayer: {
     image: level9,
     color: 'pink',
   },
-  demon_slayer: {
+  sword_of_the_rosary: {
     image: level10,
     color: 'gold',
   },
-  victory_through_prayer: {
+  crown_of_victory: {
     image: level11,
     color: 'white',
   },
