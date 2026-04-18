@@ -392,6 +392,7 @@
   "helpingUserAction": "Helping Another User",
   "prayerRequestSubmittedAction": "Prayer Request Submitted",
   "prayerRequestEngagementAction": "Prayer Request Engagement",
+  "scriptureReflectionAction": "Scripture Reflection Completed",
   "invitedFriendAction": "Invited a Friend",
   "levelUpAction": "Level Up",
   "dayStreakLabel": "{{count}}-day streak",

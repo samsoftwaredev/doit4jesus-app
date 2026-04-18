@@ -392,6 +392,7 @@
   "helpingUserAction": "Ayudar a Otro Usuario",
   "prayerRequestSubmittedAction": "Petición de Oración Enviada",
   "prayerRequestEngagementAction": "Participación en Petición de Oración",
+  "scriptureReflectionAction": "Reflexión Bíblica Completada",
   "invitedFriendAction": "Amigo Invitado",
   "levelUpAction": "Subir de Nivel",
   "dayStreakLabel": "Racha de {{count}} días",

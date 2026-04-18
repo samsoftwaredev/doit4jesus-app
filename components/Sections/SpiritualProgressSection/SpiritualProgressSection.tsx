@@ -50,6 +50,7 @@ const actionLabelMap: Record<string, string> = {
   helping_user: 'helpingUserAction',
   prayer_request_submitted: 'prayerRequestSubmittedAction',
   prayer_request_engagement: 'prayerRequestEngagementAction',
+  scripture_reading: 'scriptureReflectionAction',
   friend_invite: 'invitedFriendAction',
   level_up: 'levelUpAction',
 };
