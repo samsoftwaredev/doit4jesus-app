@@ -120,7 +120,7 @@ const UserBubble = ({
           </MuiAvatar>
         </Tooltip>
       </AvatarWrapper>
-      {portalTarget ? createPortal(backdrop, portalTarget) : backdrop}
+      {open && (portalTarget ? createPortal(backdrop, portalTarget) : backdrop)}
     </>
   );
 };

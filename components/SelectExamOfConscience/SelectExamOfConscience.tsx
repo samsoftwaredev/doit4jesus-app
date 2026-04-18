@@ -53,7 +53,6 @@ const SelectExamOfConscience = ({ onExamSelected }: Props) => {
         image: adultPraying,
         description: t.forAdultsDescription,
       },
-
       {
         type: 'teens',
         slug: 'teen',

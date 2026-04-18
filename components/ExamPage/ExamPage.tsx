@@ -76,14 +76,6 @@ const ExamPage = ({ slug }: ExamPageProps) => {
     [questions, lang],
   );
 
-  console.log('ExamPage render', {
-    slug,
-    exam,
-    questions,
-    activeStep,
-    progress,
-  });
-
   if (!exam) return null;
 
   return (

@@ -62,38 +62,49 @@ const UserContextProvider = ({ children }: Props) => {
    * @param userSession - The active Supabase session. Throws if null.
    * @returns The normalized user data, or `undefined` on failure.
    */
-  const getProfile = async (
-    userSession: Session | null,
-  ): Promise<User | undefined> => {
-    setIsLoading(true);
-    setWhyLoading('Fetching your profile...');
-    try {
-      if (!userSession) {
-        console.error('getProfile: No user session provided');
-        throw new Error('No session');
+  const getProfile = useCallback(
+    async (userSession: Session | null): Promise<User | undefined> => {
+      // Return cached user if session is still valid to avoid unnecessary API calls
+      if (
+        user &&
+        session?.expires_at &&
+        session.expires_at > Date.now() / 1000
+      ) {
+        return user; // Return cached user if available
       }
 
-      const { profile, rosaryStats, currentStreak } = await fetchProfile();
+      // No valid cached user, fetch from API
+      setIsLoading(true);
+      setWhyLoading('Fetching your profile...');
+      try {
+        if (!userSession) {
+          console.error('getProfile: No user session provided');
+          throw new Error('No session');
+        }
 
-      const userDataNormalized = normalizeUserProfile(profile, rosaryStats);
-      const userData = {
-        ...userDataNormalized,
-        fullName: `${userDataNormalized.firstName} ${userDataNormalized.lastName}`,
-        userId: userSession.user.id,
-        stats: {
-          ...userDataNormalized.stats,
-          currentStreak,
-        },
-      };
-      setUser(userData);
-      return userData;
-    } catch (error) {
-      console.error('getProfile failed:', error);
-      setUser(null);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+        const { profile, rosaryStats, currentStreak } = await fetchProfile();
+
+        const userDataNormalized = normalizeUserProfile(profile, rosaryStats);
+        const userData = {
+          ...userDataNormalized,
+          fullName: `${userDataNormalized.firstName} ${userDataNormalized.lastName}`,
+          userId: userSession.user.id,
+          stats: {
+            ...userDataNormalized.stats,
+            currentStreak,
+          },
+        };
+        setUser(userData);
+        return userData;
+      } catch (error) {
+        console.error('getProfile failed:', error);
+        setUser(null);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [user, session],
+  );
 
   const navigateToLinks = () => {
     const path = window.location.pathname;
@@ -127,21 +138,11 @@ const UserContextProvider = ({ children }: Props) => {
           (event === 'INITIAL_SESSION' || event === 'SIGNED_IN') &&
           newSession
         ) {
-          // Skip re-fetching if we already have the user profile loaded
-          if (event === 'SIGNED_IN' && user) {
-            setIsLoading(false);
-            navigateToLinks();
-            return;
-          }
+          // For sign-in or initial session, fetch the profile and redirect appropriately
           setWhyLoading('Fetching your blessings...');
           await setSession(newSession);
 
           navigateToLinks();
-          setIsLoading(false);
-        }
-
-        if (event === 'INITIAL_SESSION' && !newSession) {
-          setWhyLoading('Initializing...');
           setIsLoading(false);
         }
       },
