@@ -1,4 +1,4 @@
-import { Box, Card, Typography } from '@mui/material';
+import { Box, Card, Grid, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import moment from 'moment';
@@ -261,16 +261,18 @@ const EventSection = ({ videoEvent }: Props) => {
         <Box mb={3}>
           <ChatTextbox onSendMessage={onSendMessage} />
         </Box>
-        {messages?.map((data) => (
-          <ChatList
-            key={data.id}
-            handleDelete={handleOpenDeleteDialog}
-            handleEdit={handleEdit}
-            handleReport={handleReport}
-            handleLike={handleLike}
-            message={data}
-          />
-        ))}
+        <Grid container spacing={2}>
+          {messages?.map((data) => (
+            <ChatList
+              key={data.id}
+              handleDelete={handleOpenDeleteDialog}
+              handleEdit={handleEdit}
+              handleReport={handleReport}
+              handleLike={handleLike}
+              messageData={data}
+            />
+          ))}
+        </Grid>
         <DeleteMessageDialog
           currentMessageId={currentMessageId}
           handleCloseDelete={handleCloseDeleteDialog}

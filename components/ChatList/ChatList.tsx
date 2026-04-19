@@ -1,17 +1,16 @@
-import { Favorite } from '@mui/icons-material';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import { useState } from 'react';
 
 import { useUserContext } from '@/context/UserContext';
 import { EventMessages } from '@/interfaces';
 import { Json } from '@/interfaces/database';
 
-import ChatMessage from '../ChatMessage';
+import CandleCards from '../CandleCards';
 import ChatTextbox from '../ChatTextbox';
 import ActionMenu from './ActionMenu';
 
 interface Props {
-  message: EventMessages;
+  messageData: EventMessages;
   handleDelete: (messageId: string) => void;
   handleEdit: (messageId: string, newMessage: string) => void;
   handleReport: (messageId: string) => void;
@@ -19,13 +18,13 @@ interface Props {
 }
 
 const ChatList = ({
-  message,
+  messageData,
   handleDelete,
   handleEdit,
   handleReport,
   handleLike,
 }: Props) => {
-  const messagesLikes = message.likes;
+  const messagesLikes = messageData.likes;
   const [isEditMode, setIsEditMode] = useState(false);
   const { user } = useUserContext();
   const [numLikes, setNumLikes] = useState(
@@ -36,8 +35,8 @@ const ChatList = ({
     typeof messagesLikes === 'object' ? { ...messagesLikes } : {};
 
   const handleSaveMessage = (newMessage: string) => {
-    if (message.message !== newMessage) {
-      handleEdit(message.id, newMessage);
+    if (messageData.message !== newMessage) {
+      handleEdit(messageData.id, newMessage);
     }
     setIsEditMode(false);
   };
@@ -46,14 +45,14 @@ const ChatList = ({
     if (user && prevLikes) {
       if (prevLikes[user.userId]) {
         delete prevLikes[user.userId];
-        handleLike(message.id, prevLikes);
+        handleLike(messageData.id, prevLikes);
         setNumLikes(Object.values(prevLikes).length);
       } else {
         const newLikes = {
           ...prevLikes,
           [user.userId]: 'liked',
         };
-        handleLike(message.id, newLikes);
+        handleLike(messageData.id, newLikes);
         setNumLikes(Object.values(newLikes).length);
       }
     }
@@ -64,7 +63,7 @@ const ChatList = ({
   };
 
   const onClickDelete = () => {
-    handleDelete(message.id);
+    handleDelete(messageData.id);
   };
 
   const onClickEdit = () => {
@@ -72,57 +71,43 @@ const ChatList = ({
   };
 
   const onClickReport = () => {
-    handleReport(message.id);
+    handleReport(messageData.id);
   };
 
   return (
-    <Box display="flex" flexDirection="row" justifyContent="space-between">
+    <Grid size={{ xs: 6, md: 4 }}>
       {isEditMode ? (
         <Box display="flex" flexDirection="column" flex="1">
           <ChatTextbox
             onCloseEditMode={handleCloseEditMode}
             onSendMessage={handleSaveMessage}
-            text={message.message}
+            text={messageData.message}
             isEditMode
           />
         </Box>
       ) : (
         <Box display="flex" flexDirection="column" flex="1">
-          <ChatMessage
-            date={new Date(message.createdAt)}
-            donationAmount={message.donationAmount}
-            updatedAt={message.updatedAt}
-            deletedAt={message.deletedAt}
-            user={{
-              firstName: message.firstName || '',
-              lastName: message.lastName || '',
+          <CandleCards
+            intentions={{
+              id: messageData.id,
+              intention: messageData.message || '',
+              prayerCount: numLikes,
+              hasPrayed: !!(user && prevLikes[user.userId]),
+              userName: messageData.firstName + ' ' + messageData.lastName,
             }}
-          >
-            <Typography fontWeight="light">{message.message}</Typography>
-          </ChatMessage>
-          <Box>
-            <Button
-              disabled={!!message.deletedAt}
-              variant="contained"
-              startIcon={
-                <Favorite color={numLikes > 0 ? 'error' : 'inherit'} />
-              }
-              onClick={handleMessageLike}
-            >
-              {numLikes}
-            </Button>
-          </Box>
+            onPray={handleMessageLike}
+          />
         </Box>
       )}
       {!isEditMode && (
         <ActionMenu
-          message={message}
+          message={messageData}
           onClickDelete={onClickDelete}
           onClickEdit={onClickEdit}
           handleReport={onClickReport}
         />
       )}
-    </Box>
+    </Grid>
   );
 };
 

@@ -538,7 +538,6 @@
   "unableToDisplayVideo": "Unable to display video",
   "unableToGetEvent": "Unable to get event",
   "unableToLoadEventData": "Unable to load event data",
-  "eventNotStarted": "This event has not started",
   "eventNotStartedYet": "This event has not started yet!",
   "noData": "No Data",
 
@@ -574,7 +573,6 @@
   "markAsRead": "Mark as Read · +5 XP",
   "scriptureCompleted": "Completed",
   "retry": "Retry",
-  "loading": "Loading...",
   "levelDescSerpentCrusher": "You have begun the fight — crushing evil one bead at a time.",
   "levelDescFootUponTheSerpent": "Your prayers press down on the serpent. Keep going!",
   "levelDescCrushedTheSerpentHead": "The serpent trembles. Your devotion is powerful.",

@@ -57,6 +57,7 @@ export { default as SelectVocation } from './SelectExamOfConscience/SelectVocati
 export { default as WeeklyLeaderboard } from './WeeklyLeaderboard';
 export { default as GlobalPrayerMap } from './GlobalPrayerMap';
 export { default as DailyScripture } from './DailyScripture';
+export { default as CandleCards } from './CandleCards';
 
 export * from './Navbars';
 export * from './Fields';

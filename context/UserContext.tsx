@@ -52,7 +52,7 @@ const UserContextProvider = ({ children }: Props) => {
   const [user, setUser] = useState<User | null | undefined>();
   const [session, setSession] = useState<Session | null>(null);
   const [whyLoading, setWhyLoading] = useState('Loading...');
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   /**
@@ -138,12 +138,14 @@ const UserContextProvider = ({ children }: Props) => {
           (event === 'INITIAL_SESSION' || event === 'SIGNED_IN') &&
           newSession
         ) {
-          // For sign-in or initial session, fetch the profile and redirect appropriately
+          // Skip re-fetching if we already have the user profile loaded
+          if (event === 'SIGNED_IN' && user) {
+            navigateToLinks();
+            return;
+          }
           setWhyLoading('Fetching your blessings...');
-          await setSession(newSession);
-
+          setSession(newSession);
           navigateToLinks();
-          setIsLoading(false);
         }
       },
     );

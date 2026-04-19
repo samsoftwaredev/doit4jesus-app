@@ -538,7 +538,6 @@
   "unableToDisplayVideo": "No se pudo mostrar el video",
   "unableToGetEvent": "No se pudo obtener el evento",
   "unableToLoadEventData": "No se pudo cargar los datos del evento",
-  "eventNotStarted": "Este evento no ha comenzado",
   "eventNotStartedYet": "¡Este evento no ha comenzado aún!",
   "noData": "Sin Datos",
 
@@ -574,7 +573,6 @@
   "markAsRead": "Marcar como Leído · +5 XP",
   "scriptureCompleted": "Completado",
   "retry": "Reintentar",
-  "loading": "Cargando...",
   "levelDescSerpentCrusher": "Has comenzado la lucha — aplastando el mal cuenta por cuenta.",
   "levelDescFootUponTheSerpent": "Tus oraciones pisan a la serpiente. ¡Sigue adelante!",
   "levelDescCrushedTheSerpentHead": "La serpiente tiembla. Tu devoción es poderosa.",

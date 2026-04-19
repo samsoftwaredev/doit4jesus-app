@@ -109,7 +109,7 @@ const ExamPage = ({ slug }: ExamPageProps) => {
       {showVocation ? (
         <SelectVocation onVocationSelected={onVocationSelected} />
       ) : (
-        <Box className="appCard" mt={1}>
+        <Box mt={1}>
           <LinearProgress
             color="error"
             variant="determinate"
