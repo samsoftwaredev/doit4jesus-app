@@ -135,6 +135,7 @@ const DashboardSection = () => {
           </Card>
         </div>
 
+        {/* TODO: Implement win a physical rosary */}
         {/* <div style={{ gridArea: 'RosaryWinnerChallenge' }}>
           <Card>
             <RosaryWinnerChallenge />

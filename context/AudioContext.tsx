@@ -122,10 +122,7 @@ const AudioContextProvider = ({
     <AudioContext.Provider value={value}>
       {!hideMusicPlayer && audioPlayer?.audio && (
         <YouTubeVideo
-          showVideo={
-            pathname.includes(NAV_APP_LINKS.liveEvent.link) ||
-            pathname.includes(NAV_APP_LINKS.event.link)
-          }
+          showVideo={pathname.includes(NAV_APP_LINKS.event.link)}
           id={audioPlayer?.audio}
           onChange={setAudioState}
           setAudioTimer={setAudioTimer}

@@ -9,7 +9,7 @@ import { AppLayout } from '@/components/Templates';
 const LiveEvent: NextPage = () => {
   return (
     <AppLayout>
-      <Meta pageTitle="Resources" />
+      <Meta pageTitle="No Resource Found" />
       <Container maxWidth="lg">
         <NoDataAvailable />
       </Container>

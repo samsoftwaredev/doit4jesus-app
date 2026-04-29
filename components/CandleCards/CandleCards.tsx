@@ -1,18 +1,7 @@
-import {
-  Box,
-  Grid,
-  IconButton,
-  Stack,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import { alpha, keyframes, styled } from '@mui/material/styles';
 
-import Card from '@/components/Card';
-
-/* ------------------------------------------------------------------ */
-/*  Types                                                              */
-/* ------------------------------------------------------------------ */
+import UserBubble from '@/components/UserBubble';
 
 export interface CandleIntention {
   id: string;
@@ -21,6 +10,7 @@ export interface CandleIntention {
   /** Has the current user already prayed for this intention? */
   hasPrayed?: boolean;
   userName: string;
+  userPicture?: string;
 }
 
 interface Props {
@@ -76,56 +66,44 @@ const CandleCards = ({ intentions, onPray }: Props) => {
   const item = intentions;
 
   return (
-    <Card
-      key={item.id}
-      sx={{
-        display: 'flex',
-      }}
-    >
+    <>
       <FlameWrapper>
         <Flame />
       </FlameWrapper>
-
-      <Grid sx={{ minWidth: 0, overflow: 'hidden', flex: 1 }}>
-        <Typography variant="caption" color="text.secondary">
-          This Virtual Candle is for the Intention of:
-        </Typography>
-        <Typography
-          variant="body2"
-          fontWeight={700}
-          sx={{
-            overflow: 'hidden',
-            display: '-webkit-box',
-            WebkitLineClamp: 3,
-            WebkitBoxOrient: 'vertical',
-          }}
-        >
+      <Box>
+        <Typography variant="body2" fontWeight={700}>
           {item.intention}
         </Typography>
-        <Typography variant="caption" color="text.secondary">
-          Requested by: {item.userName}
-        </Typography>
+        <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 0.5 }}>
+          <UserBubble
+            userName={item.userName}
+            userPicture={item.userPicture}
+            size={22}
+            clickable={false}
+          />
+          <Typography variant="caption" color="text.secondary" noWrap>
+            {item.userName}
+          </Typography>
+        </Stack>
+      </Box>
 
-        <Box sx={{ height: 8 }} />
-
-        <Tooltip title="Pray for this intention">
-          <Stack direction="row" alignItems="center" spacing={0.25}>
-            <IconButton
-              size="small"
-              color={item.hasPrayed ? 'primary' : 'default'}
-              onClick={() => onPray?.(item.id)}
-            >
-              🙏
-            </IconButton>
-            {item.prayerCount > 0 && (
-              <Typography variant="caption" color="text.secondary">
-                {item.prayerCount}
-              </Typography>
-            )}
-          </Stack>
-        </Tooltip>
-      </Grid>
-    </Card>
+      <Tooltip title="Pray for this intention">
+        <Stack direction="row" alignItems="center" spacing={0.25}>
+          <IconButton
+            size="small"
+            color={item.hasPrayed ? 'primary' : 'default'}
+            onClick={() => onPray?.(item.id)}
+          >
+            🙏
+          </IconButton>
+          {item.prayerCount > 0 && (
+            <Typography variant="caption" color="text.secondary">
+              {item.prayerCount}
+            </Typography>
+          )}
+        </Stack>
+      </Tooltip>
+    </>
   );
 };
 

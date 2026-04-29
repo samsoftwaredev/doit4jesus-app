@@ -2,7 +2,6 @@ import { Box, Button, Grid, Typography } from '@mui/material';
 import Image from 'next/image';
 import { useState } from 'react';
 
-import { useLanguageContext } from '@/context/LanguageContext';
 import { useUserContext } from '@/context/UserContext';
 import blueRosary from '@/public/assets/images/blueRosary.jpeg';
 
@@ -10,7 +9,9 @@ const RosaryWinnerChallenge = () => {
   const { user } = useUserContext();
   const [hasJoinedChallenge] = useState(false);
 
-  const onClick = () => {};
+  const onClick = () => {
+    // TOODO: Implement join challenge functionality
+  };
 
   return (
     <Grid container spacing={2} justifyContent="center">

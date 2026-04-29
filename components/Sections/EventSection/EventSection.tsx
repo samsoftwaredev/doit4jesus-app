@@ -222,13 +222,14 @@ const EventSection = ({ videoEvent }: Props) => {
     return () => {
       untrackMessages();
     };
-  }, [messages]);
+  }, []);
 
   if (isLoading) return null;
 
   return (
     <EventContainer>
       <Box className="video" sx={{ aspectRatio: '16/9', width: '100%' }}>
+        {/* Iframe place holder */}
         <iframe
           frameBorder={0} // don't remove this attribute
         />
@@ -258,17 +259,22 @@ const EventSection = ({ videoEvent }: Props) => {
         <Box mb={3}>
           <ChatTextbox onSendMessage={onSendMessage} />
         </Box>
-        <Grid container spacing={2}>
-          {messages?.map((data) => (
-            <ChatList
-              key={data.id}
-              handleDelete={handleOpenDeleteDialog}
-              handleEdit={handleEdit}
-              handleReport={handleReport}
-              handleLike={handleLike}
-              messageData={data}
-            />
-          ))}
+        <Typography variant="caption" color="text.secondary">
+          This Virtual Candle is for the Intention of:
+        </Typography>
+        <Grid container>
+          <Grid size={{ xs: 12, sm: 6, md: 6 }}>
+            {messages?.map((data) => (
+              <ChatList
+                key={data.id}
+                handleDelete={handleOpenDeleteDialog}
+                handleEdit={handleEdit}
+                handleReport={handleReport}
+                handleLike={handleLike}
+                messageData={data}
+              />
+            ))}
+          </Grid>
         </Grid>
         <DeleteMessageDialog
           currentMessageId={currentMessageId}

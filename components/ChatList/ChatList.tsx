@@ -1,4 +1,4 @@
-import { Box, Grid } from '@mui/material';
+import { Box } from '@mui/material';
 import { useState } from 'react';
 
 import { useUserContext } from '@/context/UserContext';
@@ -75,39 +75,46 @@ const ChatList = ({
   };
 
   return (
-    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+    <Box
+      display="flex"
+      flexDirection="row"
+      alignItems="flex-start"
+      flex={1}
+      padding={2}
+    >
       {isEditMode ? (
-        <Box display="flex" flexDirection="column" flex="1">
-          <ChatTextbox
-            onCloseEditMode={handleCloseEditMode}
-            onSendMessage={handleSaveMessage}
-            text={messageData.message}
-            isEditMode
-          />
-        </Box>
+        <ChatTextbox
+          onCloseEditMode={handleCloseEditMode}
+          onSendMessage={handleSaveMessage}
+          text={messageData.message}
+          isEditMode
+        />
       ) : (
-        <Box display="flex" flexDirection="column" flex="1">
-          <CandleCards
-            intentions={{
-              id: messageData.id,
-              intention: messageData.message || '',
-              prayerCount: numLikes,
-              hasPrayed: !!(user && prevLikes[user.userId]),
-              userName: messageData.firstName + ' ' + messageData.lastName,
-            }}
-            onPray={handleMessageLike}
-          />
-        </Box>
+        <CandleCards
+          intentions={{
+            id: messageData.id,
+            intention: messageData.message || '',
+            prayerCount: numLikes,
+            hasPrayed: !!(user && prevLikes[user.userId]),
+            userName: messageData.firstName + ' ' + messageData.lastName,
+            userPicture:
+              user?.userId === messageData.userId
+                ? (user.pictureUrl ?? undefined)
+                : undefined,
+          }}
+          onPray={handleMessageLike}
+        />
       )}
-      {!isEditMode && (
+      {/* TODO Implement */}
+      {/* {!isEditMode && (
         <ActionMenu
           message={messageData}
           onClickDelete={onClickDelete}
           onClickEdit={onClickEdit}
           handleReport={onClickReport}
         />
-      )}
-    </Grid>
+      )} */}
+    </Box>
   );
 };
 

@@ -17,7 +17,6 @@ const MusicVideo = () => {
         <IconButton
           color="info"
           disabled={
-            pathname.includes(NAV_APP_LINKS.liveEvent.link) ||
             pathname.includes(NAV_APP_LINKS.event.link) ||
             audioPlayer?.audio === undefined
           }
