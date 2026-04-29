@@ -20,17 +20,18 @@ import {
   sendEventMessage,
 } from '@/services/eventsApi';
 import { awardXP } from '@/services/spiritualXp';
+import { theme } from '@/styles/mui-overwrite';
 import { normalizeEventMessages } from '@/utils';
 
 import DeleteMessageDialog from './DeleteMessageDialog';
 
 const EventContainer = styled(Box)({
-  zIndex: -1,
+  maxWidth: theme.breakpoints.values.lg,
+  margin: '0 auto',
   display: 'flex',
   flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
   gap: '1em',
+  width: ' 100% ',
 });
 
 const EventDetailsCard = styled(Card)({
@@ -40,7 +41,7 @@ const EventDetailsCard = styled(Card)({
   gap: '1em',
   width: '95%',
   '& h1': {
-    fontSize: '2em',
+    fontSize: '1.3em',
   },
 });
 
@@ -232,7 +233,7 @@ const EventSection = ({ videoEvent }: Props) => {
           frameBorder={0} // don't remove this attribute
         />
       </Box>
-      <EventDetailsCard className="appCard" sx={{ p: 2 }}>
+      <EventDetailsCard sx={{ p: 2 }}>
         <EventHeader>
           <Typography component="h1" variant="h2">
             {videoEvent.title}
@@ -245,11 +246,7 @@ const EventSection = ({ videoEvent }: Props) => {
           <Markdown>{videoEvent.description}</Markdown>
         </Typography>
       </EventDetailsCard>
-      <EventDetailsCard
-        sx={{ p: 2 }}
-        aria-labelledby="prayers-heading"
-        className="appCard"
-      >
+      <EventDetailsCard sx={{ p: 2 }} aria-labelledby="prayers-heading">
         <Typography
           id="prayers-heading"
           fontWeight="bold"

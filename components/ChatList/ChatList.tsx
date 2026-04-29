@@ -75,7 +75,7 @@ const ChatList = ({
   };
 
   return (
-    <Grid size={{ xs: 6, md: 4 }}>
+    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
       {isEditMode ? (
         <Box display="flex" flexDirection="column" flex="1">
           <ChatTextbox

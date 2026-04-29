@@ -1,6 +1,5 @@
 import EventBusyIcon from '@mui/icons-material/EventBusy';
-import SearchOffIcon from '@mui/icons-material/SearchOff';
-import { Button, Container, Stack, Typography, alpha } from '@mui/material';
+import { Container, Stack, Typography, alpha } from '@mui/material';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import moment from 'moment';
 import type { GetServerSideProps, NextPage } from 'next';
@@ -133,13 +132,11 @@ const LiveEvent: NextPage = () => {
 
   return (
     <AppLayout>
-      <Container maxWidth="lg">
-        {typeof dataEvent === 'object' ? (
-          <EventSection videoEvent={dataEvent} />
-        ) : (
-          <NoDataAvailable />
-        )}
-      </Container>
+      {typeof dataEvent === 'object' ? (
+        <EventSection videoEvent={dataEvent} />
+      ) : (
+        <NoDataAvailable />
+      )}
     </AppLayout>
   );
 };

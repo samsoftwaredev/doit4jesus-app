@@ -1,9 +1,7 @@
-import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
 import {
   Box,
   Grid,
   IconButton,
-  Link,
   Stack,
   Tooltip,
   Typography,
@@ -88,7 +86,7 @@ const CandleCards = ({ intentions, onPray }: Props) => {
         <Flame />
       </FlameWrapper>
 
-      <Grid>
+      <Grid sx={{ minWidth: 0, overflow: 'hidden', flex: 1 }}>
         <Typography variant="caption" color="text.secondary">
           This Virtual Candle is for the Intention of:
         </Typography>
@@ -97,8 +95,9 @@ const CandleCards = ({ intentions, onPray }: Props) => {
           fontWeight={700}
           sx={{
             overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
+            display: '-webkit-box',
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: 'vertical',
           }}
         >
           {item.intention}

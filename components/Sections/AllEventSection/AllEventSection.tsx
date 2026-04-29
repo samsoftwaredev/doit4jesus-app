@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Container, Typography } from '@mui/material';
+import { Box, Card, CardContent, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Link from 'next/link';
 
@@ -123,45 +123,44 @@ interface Props {
 
 const AllEventSection = ({ events }: Props) => {
   const { t } = useLanguageContext();
+
   if (events === null) return <p>{t.noEvents}</p>;
 
   return (
-    <Container className="container-box" maxWidth="lg">
-      <EventGrid>
-        {events.map(
-          ({ title, description, startedAt, slug, pictureUrl }, index) => {
-            const CardComponent = index === 0 ? MainCard : EventCard;
-            const DetailsComponent =
-              index === 0 ? MainEventDetails : EventDetails;
-            const DescComponent = index === 0 ? MainDescription : Description;
-            return (
-              <CardComponent
-                key={title}
-                // @ts-expect-error MUI polymorphic component prop
-                component={Link}
-                href={`${NAV_APP_LINKS.event.link}/${slug}`}
-              >
-                <CardImage style={{ backgroundImage: `url(${pictureUrl})` }} />
-                {startedAt && (
-                  <DateLabel variant="h6">
-                    <CountdownDate targetTime={new Date(startedAt)} />
-                  </DateLabel>
-                )}
-                <DetailsComponent>
-                  <CardContent>
-                    <EventTitle variant="h4">{title}</EventTitle>
-                    <DescComponent fontWeight="light">
-                      {description}
-                    </DescComponent>
-                    <Box>{index === 0 && <YouTubeSubscribe />}</Box>
-                  </CardContent>
-                </DetailsComponent>
-              </CardComponent>
-            );
-          },
-        )}
-      </EventGrid>
-    </Container>
+    <EventGrid>
+      {events.map(
+        ({ title, description, startedAt, slug, pictureUrl }, index) => {
+          const CardComponent = index === 0 ? MainCard : EventCard;
+          const DetailsComponent =
+            index === 0 ? MainEventDetails : EventDetails;
+          const DescComponent = index === 0 ? MainDescription : Description;
+          return (
+            <CardComponent
+              key={title}
+              // @ts-expect-error MUI polymorphic component prop
+              component={Link}
+              href={`${NAV_APP_LINKS.event.link}/${slug}`}
+            >
+              <CardImage style={{ backgroundImage: `url(${pictureUrl})` }} />
+              {startedAt && (
+                <DateLabel variant="h6">
+                  <CountdownDate targetTime={new Date(startedAt)} />
+                </DateLabel>
+              )}
+              <DetailsComponent>
+                <CardContent>
+                  <EventTitle variant="h4">{title}</EventTitle>
+                  <DescComponent fontWeight="light">
+                    {description}
+                  </DescComponent>
+                  <Box>{index === 0 && <YouTubeSubscribe />}</Box>
+                </CardContent>
+              </DetailsComponent>
+            </CardComponent>
+          );
+        },
+      )}
+    </EventGrid>
   );
 };
 
