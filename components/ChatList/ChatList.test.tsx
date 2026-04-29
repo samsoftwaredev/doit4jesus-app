@@ -8,11 +8,9 @@ jest.mock('@/context/UserContext', () => ({
   useUserContext: jest.fn(),
 }));
 
-jest.mock('../ChatMessage', () => ({
+jest.mock('../CandleCards', () => ({
   __esModule: true,
-  default: ({ children }: any) => (
-    <div data-testid="chat-message">{children}</div>
-  ),
+  default: () => <div data-testid="candle-card" />,
 }));
 
 jest.mock('../ChatTextbox', () => ({
@@ -48,13 +46,13 @@ describe('ChatList Component', () => {
   it('renders the chat message', () => {
     const { getByTestId } = render(
       <ChatList
-        message={mockMessage}
+        messageData={mockMessage}
         handleDelete={jest.fn()}
         handleEdit={jest.fn()}
         handleReport={jest.fn()}
         handleLike={jest.fn()}
       />,
     );
-    expect(getByTestId('chat-message')).toBeInTheDocument();
+    expect(getByTestId('candle-card')).toBeInTheDocument();
   });
 });

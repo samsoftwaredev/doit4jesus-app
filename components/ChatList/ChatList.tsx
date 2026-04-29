@@ -81,39 +81,43 @@ const ChatList = ({
       alignItems="flex-start"
       flex={1}
       padding={2}
+      gap={1}
     >
-      {isEditMode ? (
-        <ChatTextbox
-          onCloseEditMode={handleCloseEditMode}
-          onSendMessage={handleSaveMessage}
-          text={messageData.message}
-          isEditMode
-        />
-      ) : (
-        <CandleCards
-          intentions={{
-            id: messageData.id,
-            intention: messageData.message || '',
-            prayerCount: numLikes,
-            hasPrayed: !!(user && prevLikes[user.userId]),
-            userName: messageData.firstName + ' ' + messageData.lastName,
-            userPicture:
-              user?.userId === messageData.userId
-                ? (user.pictureUrl ?? undefined)
-                : undefined,
-          }}
-          onPray={handleMessageLike}
-        />
+      <Box flex={1} minWidth={0} display="flex" alignItems="flex-start" gap={1}>
+        {isEditMode ? (
+          <ChatTextbox
+            onCloseEditMode={handleCloseEditMode}
+            onSendMessage={handleSaveMessage}
+            text={messageData.message}
+            isEditMode
+          />
+        ) : (
+          <CandleCards
+            intentions={{
+              id: messageData.id,
+              intention: messageData.message || '',
+              prayerCount: numLikes,
+              hasPrayed: !!(user && prevLikes[user.userId]),
+              userName: messageData.firstName + ' ' + messageData.lastName,
+              userPicture:
+                user?.userId === messageData.userId
+                  ? (user.pictureUrl ?? undefined)
+                  : undefined,
+            }}
+            onPray={handleMessageLike}
+          />
+        )}
+      </Box>
+      {!isEditMode && (
+        <Box ml="auto" flexShrink={0}>
+          <ActionMenu
+            message={messageData}
+            onClickDelete={onClickDelete}
+            onClickEdit={onClickEdit}
+            handleReport={onClickReport}
+          />
+        </Box>
       )}
-      {/* TODO Implement */}
-      {/* {!isEditMode && (
-        <ActionMenu
-          message={messageData}
-          onClickDelete={onClickDelete}
-          onClickEdit={onClickEdit}
-          handleReport={onClickReport}
-        />
-      )} */}
     </Box>
   );
 };
