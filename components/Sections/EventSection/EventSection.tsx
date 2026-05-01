@@ -1,4 +1,8 @@
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
 import { Box, Card, Grid, Typography } from '@mui/material';
+import Tab from '@mui/material/Tab';
 import { styled } from '@mui/material/styles';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import moment from 'moment';
@@ -7,8 +11,9 @@ import Markdown from 'react-markdown';
 import { toast } from 'react-toastify';
 
 import { supabase } from '@/classes';
-import { ChatList, ChatTextbox } from '@/components';
+import { ChatList, ChatTextbox, GlobalPrayerMap } from '@/components';
 import { useUserContext } from '@/context/UserContext';
+import { useGlobalPrayerMap } from '@/hooks/useGlobalPrayerMap';
 import { DataEvent, EventMessages, VideoEvent } from '@/interfaces';
 import { Json } from '@/interfaces/database';
 import { EventMessagesDB } from '@/interfaces/databaseTable';
@@ -63,7 +68,14 @@ const EventSection = ({ videoEvent }: Props) => {
   const [currentMessageId, setCurrentMessageId] = useState<string>();
   const channel = useRef<RealtimeChannel | undefined>(undefined);
   const { user } = useUserContext();
+  const [tabIndex, setTabIndex] = useState('1');
   const numberOfPrayers = messages?.length ?? 0;
+
+  const { prayerCities, mapLoading, activeOnlineUsers } = useGlobalPrayerMap();
+
+  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+    setTabIndex(newValue);
+  };
 
   const getEventMessages = async (id: number) => {
     try {
@@ -234,54 +246,85 @@ const EventSection = ({ videoEvent }: Props) => {
           frameBorder={0} // don't remove this attribute
         />
       </Box>
-      <EventDetailsCard sx={{ p: 2 }}>
-        <EventHeader>
-          <Typography component="h1" variant="h2">
-            {videoEvent.title}
-          </Typography>
-        </EventHeader>
-        <Typography textAlign="right" fontSize="small">
-          {moment(videoEvent.startedAt).fromNow()}
-        </Typography>
-        <Typography fontWeight="light" component="div">
-          <Markdown>{videoEvent.description}</Markdown>
-        </Typography>
-      </EventDetailsCard>
-      <EventDetailsCard sx={{ p: 2 }} aria-labelledby="prayers-heading">
-        <Typography
-          id="prayers-heading"
-          fontWeight="bold"
-          component="h2"
-          variant="h4"
+      <TabContext value={tabIndex}>
+        <Box
+          sx={{
+            borderBottom: 1,
+            borderColor: 'divider',
+            justifyContent: 'center',
+            display: 'flex',
+          }}
         >
-          <span>{numberOfPrayers > 1 ? numberOfPrayers : null} Prayers</span>
-        </Typography>
-        <Box mb={3}>
-          <ChatTextbox onSendMessage={onSendMessage} />
+          <TabList
+            onChange={(e, newValue) => setTabIndex(newValue)}
+            aria-label="Event sections"
+          >
+            <Tab label="About" value="1" />
+            <Tab label="Prayers" value="2" />
+            <Tab label="Community" value="3" />
+          </TabList>
         </Box>
-        <Typography variant="caption" color="text.secondary">
-          This Virtual Candle is for the Intention of:
-        </Typography>
-        <Grid container>
-          <Grid size={{ xs: 12, sm: 6, md: 6 }}>
-            {messages?.map((data) => (
-              <ChatList
-                key={data.id}
-                handleDelete={handleOpenDeleteDialog}
-                handleEdit={handleEdit}
-                handleReport={handleReport}
-                handleLike={handleLike}
-                messageData={data}
-              />
-            ))}
-          </Grid>
-        </Grid>
-        <DeleteMessageDialog
-          currentMessageId={currentMessageId}
-          handleCloseDelete={handleCloseDeleteDialog}
-          handleDelete={handleDelete}
-        />
-      </EventDetailsCard>
+        <TabPanel value="1">
+          <EventDetailsCard sx={{ p: 2 }}>
+            <EventHeader>
+              <Typography component="h1" variant="h2">
+                {videoEvent.title}
+              </Typography>
+            </EventHeader>
+            <Typography textAlign="right" fontSize="small">
+              {moment(videoEvent.startedAt).fromNow()}
+            </Typography>
+            <Typography fontWeight="light" component="div">
+              <Markdown>{videoEvent.description}</Markdown>
+            </Typography>
+          </EventDetailsCard>
+        </TabPanel>
+        <TabPanel value="2">
+          <EventDetailsCard sx={{ p: 2 }} aria-labelledby="prayers-heading">
+            <Typography
+              id="prayers-heading"
+              fontWeight="bold"
+              component="h2"
+              variant="h4"
+            >
+              <span>
+                {numberOfPrayers > 1 ? numberOfPrayers : null} Prayers
+              </span>
+            </Typography>
+            <Box mb={3}>
+              <ChatTextbox onSendMessage={onSendMessage} />
+            </Box>
+            <Typography variant="caption" color="text.secondary">
+              This Virtual Candle is for the Intention of:
+            </Typography>
+            <Grid container>
+              <Grid size={{ xs: 12, sm: 6, md: 6 }}>
+                {messages?.map((data) => (
+                  <ChatList
+                    key={data.id}
+                    handleDelete={handleOpenDeleteDialog}
+                    handleEdit={handleEdit}
+                    handleReport={handleReport}
+                    handleLike={handleLike}
+                    messageData={data}
+                  />
+                ))}
+              </Grid>
+            </Grid>
+            <DeleteMessageDialog
+              currentMessageId={currentMessageId}
+              handleCloseDelete={handleCloseDeleteDialog}
+              handleDelete={handleDelete}
+            />
+          </EventDetailsCard>
+        </TabPanel>
+        <TabPanel value="3">
+          <GlobalPrayerMap
+            activeUsers={activeOnlineUsers}
+            cities={mapLoading ? undefined : prayerCities}
+          />
+        </TabPanel>
+      </TabContext>
     </EventContainer>
   );
 };
