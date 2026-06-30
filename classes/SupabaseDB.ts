@@ -8,7 +8,16 @@ import { GENDER_TYPES } from '@/interfaces/enum';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_PROJECT_URL!;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PROJECT_KEY!;
 
-const supabase = createClient<Database>(supabaseUrl, supabaseKey);
+const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
+  auth: {
+    // Persist the user session in localStorage so it survives page reloads and browser restarts
+    persistSession: true,
+    // Automatically refresh the access token before it expires using the stored refresh token
+    autoRefreshToken: true,
+    // Detect and restore sessions from URL fragments (e.g. magic links, OAuth redirects)
+    detectSessionInUrl: true,
+  },
+});
 
 const generateRandomStringId = (length: number) => {
   let result = '';
