@@ -4,9 +4,21 @@ import { StyleSheet, Text, View } from "react-native";
 import { ScreenShell } from "@/components/screen-shell";
 
 const prompts = [
-  { icon: "heart", title: "Give thanks", detail: "Name three gifts from today." },
-  { icon: "compass", title: "Ask for guidance", detail: "Bring the next step before God." },
-  { icon: "users", title: "Pray for someone", detail: "Lift up a person on your heart." },
+  {
+    icon: "heart",
+    title: "Give thanks",
+    detail: "Name three gifts from today.",
+  },
+  {
+    icon: "compass",
+    title: "Ask for guidance",
+    detail: "Bring the next step before God.",
+  },
+  {
+    icon: "users",
+    title: "Pray for someone",
+    detail: "Lift up a person on your heart.",
+  },
 ] as const;
 
 export default function PrayerScreen() {
