@@ -10,6 +10,7 @@ type ScreenShellProps = PropsWithChildren<{
   title: string;
   subtitle: string;
   headerAccessory?: ReactNode;
+  background?: ReactNode;
   contentContainerStyle?: StyleProp<ViewStyle>;
 }>;
 
@@ -18,22 +19,30 @@ export function ScreenShell({
   title,
   subtitle,
   headerAccessory,
+  background,
   children,
   contentContainerStyle,
 }: ScreenShellProps) {
   return (
     <SafeAreaView edges={["top"]} style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        <View style={[styles.content, contentContainerStyle]}>
-          <View style={styles.header}>
-            <View style={styles.heading}>
-              {eyebrow ? <Text style={styles.eyebrow}>{eyebrow}</Text> : null}
-              <Text style={styles.title}>{title}</Text>
-              <Text style={styles.subtitle}>{subtitle}</Text>
+        <View style={styles.page}>
+          {background ? (
+            <View pointerEvents="none" style={styles.backgroundLayer}>
+              {background}
             </View>
-            {headerAccessory}
+          ) : null}
+          <View style={[styles.content, contentContainerStyle]}>
+            <View style={styles.header}>
+              <View style={styles.heading}>
+                {eyebrow ? <Text style={styles.eyebrow}>{eyebrow}</Text> : null}
+                <Text style={styles.title}>{title}</Text>
+                <Text style={styles.subtitle}>{subtitle}</Text>
+              </View>
+              {headerAccessory}
+            </View>
+            {children}
           </View>
-          {children}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -48,12 +57,21 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
   },
+  page: {
+    flexGrow: 1,
+    position: "relative",
+  },
+  backgroundLayer: {
+    ...StyleSheet.absoluteFill,
+  },
   content: {
     alignSelf: "center",
     maxWidth: theme.sizes.contentMaxWidth,
     paddingBottom: theme.spacing[8],
     paddingHorizontal: theme.spacing[4],
+    position: "relative",
     width: "100%",
+    zIndex: theme.zIndex.card,
   },
   header: {
     alignItems: "flex-start",
