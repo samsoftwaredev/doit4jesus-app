@@ -1,12 +1,20 @@
 import Feather from "@expo/vector-icons/Feather";
+import { useRouter } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 
 import { ScreenShell } from "@/components/screen-shell";
-import { Button, Card, ResponsiveImage } from "@/components/ui";
+import {
+  Button,
+  Card,
+  HeaderActionGroup,
+  ResponsiveImage,
+} from "@/components/ui";
 import { VirtuesPanel } from "@/features/virtues";
 import { theme } from "@/theme/tokens";
 
 export default function HomeScreen() {
+  const router = useRouter();
+
   return (
     <ScreenShell
       eyebrow="TODAY"
@@ -14,39 +22,14 @@ export default function HomeScreen() {
       subtitle="Build a faithful rhythm, one moment at a time."
       background={<HomeBackground />}
       headerAccessory={
-        <View style={styles.streak}>
-          <Feather
-            color={theme.colors.icon.active}
-            name="sun"
-            size={theme.sizes.iconSmall}
-          />
-          <Text style={styles.streakText}>7 day streak</Text>
-        </View>
+        <HeaderActionGroup
+          onMessagesPress={() => router.push("/messages")}
+          onNotificationsPress={() => router.push("/notifications")}
+          onSettingsPress={() => router.push("/settings")}
+        />
       }
     >
-      <Card
-        footer={
-          <Button fullWidth onPress={() => undefined} variant="outline">
-            Read passage
-          </Button>
-        }
-        headerRight={
-          <Feather
-            color={theme.colors.icon.active}
-            name="bookmark"
-            size={theme.sizes.iconSmall}
-          />
-        }
-        subtitle="Psalm 23:1"
-        title="Today's verse"
-        variant="info"
-      >
-        <Text style={styles.verse}>
-          “The Lord is my shepherd; I shall not want.”
-        </Text>
-      </Card>
       <VirtuesPanel />
-      <Text style={styles.sectionTitle}>Your rhythm</Text>
       <View style={styles.grid}>
         <Card
           footer={

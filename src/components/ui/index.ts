@@ -8,6 +8,17 @@ export type {
   DayCalendarTileProps,
   DayCalendarTileState,
 } from "./DayCalendarTile";
+export {
+  HeaderActionGroup,
+  MessageAction,
+  NotificationAction,
+  SettingsAction,
+} from "./HeaderActionGroup";
+export type {
+  HeaderActionGroupProps,
+  HeaderActionProps,
+  UnreadHeaderActionProps,
+} from "./HeaderActionGroup";
 export { ResponsiveImage } from "./ResponsiveImage";
 export type {
   ResponsiveImageProps,
