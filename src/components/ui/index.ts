@@ -8,3 +8,8 @@ export type {
   DayCalendarTileProps,
   DayCalendarTileState,
 } from "./DayCalendarTile";
+export { ResponsiveImage } from "./ResponsiveImage";
+export type {
+  ResponsiveImageProps,
+  ResponsiveImageSource,
+} from "./ResponsiveImage";

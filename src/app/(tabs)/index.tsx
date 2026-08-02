@@ -1,12 +1,10 @@
 import Feather from "@expo/vector-icons/Feather";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 import { ScreenShell } from "@/components/screen-shell";
-import { Button, Card } from "@/components/ui";
+import { Button, Card, ResponsiveImage } from "@/components/ui";
 import { VirtuesPanel } from "@/features/virtues";
 import { theme } from "@/theme/tokens";
-
-const homeBackgroundImageAspectRatio = 1536 / 1024;
 
 export default function HomeScreen() {
   return (
@@ -108,18 +106,25 @@ export default function HomeScreen() {
 function HomeBackground() {
   return (
     <View style={styles.background}>
-      <Image
-        resizeMode="contain"
-        source={require("../../assets/backgrounds/cathedral.png")}
-        style={styles.cathedralBackground}
+      <ResponsiveImage
+        accessible={false}
+        contentFit="contain"
+        desktopSource={require("../../assets/backgrounds/cathedralDesktop.png")}
+        mobileSource={require("../../assets/backgrounds/cathedraMobile.png")}
+        preserveAspectRatio
+        style={styles.backgroundImage}
+        tabletSource={require("../../assets/backgrounds/cathedralTablet.png")}
       />
       <View style={styles.backgroundGap} />
-      <Image
-        resizeMode="contain"
-        source={require("../../assets/backgrounds/hell.png")}
-        style={styles.hellBackground}
+      <ResponsiveImage
+        accessible={false}
+        contentFit="contain"
+        desktopSource={require("../../assets/backgrounds/hellDesktop.png")}
+        mobileSource={require("../../assets/backgrounds/hellMobile.png")}
+        preserveAspectRatio
+        style={styles.backgroundImage}
+        tabletSource={require("../../assets/backgrounds/hellTablet.png")}
       />
-      <View style={styles.backgroundOverlay} />
     </View>
   );
 }
@@ -130,21 +135,12 @@ const styles = StyleSheet.create({
     flex: 1,
     overflow: "hidden",
   },
-  cathedralBackground: {
-    aspectRatio: homeBackgroundImageAspectRatio,
-    width: "100%",
-  },
   backgroundGap: {
     flex: 1,
     minHeight: theme.spacing[10],
   },
-  hellBackground: {
-    aspectRatio: homeBackgroundImageAspectRatio,
+  backgroundImage: {
     width: "100%",
-  },
-  backgroundOverlay: {
-    ...StyleSheet.absoluteFill,
-    // backgroundColor: theme.colors.background.overlay,
   },
   streak: {
     alignItems: "center",

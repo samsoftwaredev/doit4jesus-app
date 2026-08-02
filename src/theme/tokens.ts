@@ -702,6 +702,11 @@ export const sizes = {
   contentMaxWidth: 1200,
 } as const;
 
+export const breakpoints = {
+  tablet: 768,
+  desktop: 1024,
+} as const;
+
 export const zIndex = {
   base: 0,
   card: 10,
@@ -728,6 +733,7 @@ export const theme = {
   shadows,
   opacity,
   sizes,
+  breakpoints,
   zIndex,
 } as const;
 
