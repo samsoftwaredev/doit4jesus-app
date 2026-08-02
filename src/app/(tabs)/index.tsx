@@ -1,14 +1,15 @@
-import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import { ScreenShell } from "@/components/screen-shell";
+import { HeaderActionGroup, ResponsiveImage } from "@/components/ui";
+import { AvatarPanel } from "@/features/avatar";
 import {
-  Button,
-  Card,
-  HeaderActionGroup,
-  ResponsiveImage,
-} from "@/components/ui";
+  ConfessionCard,
+  MassTimesCard,
+  TodaysRosaryCard,
+  TodaysScriptureCard,
+} from "@/features/daily-practice";
 import { VirtuesPanel } from "@/features/virtues";
 import { theme } from "@/theme/tokens";
 
@@ -29,58 +30,15 @@ export default function HomeScreen() {
         />
       }
     >
-      <VirtuesPanel />
       <View style={styles.grid}>
-        <Card
-          footer={
-            <Button
-              fullWidth
-              leftIcon={
-                <Feather
-                  color={theme.colors.text.white}
-                  name="heart"
-                  size={theme.sizes.iconSmall}
-                />
-              }
-              onPress={() => undefined}
-              variant="success"
-            >
-              Start prayer
-            </Button>
-          }
-          title="Prayer time"
-        >
-          <View style={styles.cardIcon}>
-            <Feather
-              color={theme.colors.icon.active}
-              name="heart"
-              size={theme.sizes.iconMedium}
-            />
-          </View>
-          <Text style={styles.cardDescription}>
-            Make room for a few quiet minutes with God.
-          </Text>
-        </Card>
-
-        <Card
-          footer={
-            <Button fullWidth onPress={() => undefined} variant="secondary">
-              See community
-            </Button>
-          }
-          title="Together"
-        >
-          <View style={styles.cardIcon}>
-            <Feather
-              color={theme.colors.icon.secondary}
-              name="users"
-              size={theme.sizes.iconMedium}
-            />
-          </View>
-          <Text style={styles.cardDescription}>
-            Find encouragement from people walking beside you.
-          </Text>
-        </Card>
+        <TodaysScriptureCard onPress={() => router.push("/prayer")} />
+        <TodaysRosaryCard onPress={() => router.push("/prayer")} />
+        <MassTimesCard onPress={() => router.push("/community")} />
+        <ConfessionCard onPress={() => router.push("/community")} />
+      </View>
+      <View style={styles.formationGrid}>
+        <AvatarPanel style={styles.avatarPanel} />
+        <VirtuesPanel fullWidth={false} style={styles.virtuesPanel} />
       </View>
     </ScreenShell>
   );
@@ -125,44 +83,23 @@ const styles = StyleSheet.create({
   backgroundImage: {
     width: "100%",
   },
-  streak: {
-    alignItems: "center",
-    backgroundColor: theme.colors.badge.successBackground,
-    borderRadius: theme.radii.pill,
-    flexDirection: "row",
-    gap: theme.spacing[1],
-    paddingHorizontal: theme.spacing[2],
-    paddingVertical: theme.spacing[1],
-  },
-  streakText: {
-    ...theme.typography.labelSmall,
-    color: theme.colors.badge.successText,
-  },
-  verse: {
-    ...theme.typography.heading2,
-    color: theme.colors.text.primary,
-  },
-  sectionTitle: {
-    ...theme.typography.heading3,
-    marginBottom: theme.spacing[3],
-    marginTop: theme.spacing[7],
-  },
-  grid: {
+  formationGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
     gap: theme.spacing[4],
   },
-  cardIcon: {
-    alignItems: "center",
-    backgroundColor: theme.colors.surface.tertiary,
-    borderRadius: theme.radii.md,
-    height: theme.sizes.iconHero,
-    justifyContent: "center",
-    width: theme.sizes.iconHero,
+  avatarPanel: {
+    flexBasis: theme.sizes.cardMinWidth,
+    flexGrow: 1,
   },
-  cardDescription: {
-    ...theme.typography.bodySmall,
-    color: theme.colors.text.muted,
-    marginTop: theme.spacing[3],
+  virtuesPanel: {
+    flexBasis: theme.sizes.cardMinWidth,
+    flexGrow: 2,
+  },
+  grid: {
+    marginTop: 400,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: theme.spacing[4],
   },
 });

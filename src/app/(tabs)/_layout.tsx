@@ -1,8 +1,41 @@
-import Feather from "@expo/vector-icons/Feather";
+import { Image } from "expo-image";
 import { Tabs } from "expo-router";
-import { Platform } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 
 import { theme } from "@/theme/tokens";
+
+const tabArtworkSources = {
+  home: require("../../assets/tabs/home.png"),
+  prayer: require("../../assets/tabs/prayer.png"),
+  community: require("../../assets/tabs/community.png"),
+  profile: require("../../assets/tabs/profile.png"),
+} as const;
+
+function TabArtworkIcon({
+  focused,
+  size,
+  source,
+}: {
+  focused: boolean;
+  size: number;
+  source: number;
+}) {
+  return (
+    <Image
+      accessible={false}
+      contentFit="cover"
+      source={source}
+      style={[
+        styles.tabArtwork,
+        {
+          height: size,
+          opacity: focused ? theme.opacity.full : theme.opacity.muted,
+          width: size,
+        },
+      ]}
+    />
+  );
+}
 
 export default function TabLayout() {
   return (
@@ -39,8 +72,12 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "Home",
-          tabBarIcon: ({ color, size }) => (
-            <Feather color={color} name="home" size={size} />
+          tabBarIcon: ({ focused, size }) => (
+            <TabArtworkIcon
+              focused={focused}
+              size={size}
+              source={tabArtworkSources.home}
+            />
           ),
         }}
       />
@@ -48,8 +85,12 @@ export default function TabLayout() {
         name="prayer"
         options={{
           title: "Prayer",
-          tabBarIcon: ({ color, size }) => (
-            <Feather color={color} name="heart" size={size} />
+          tabBarIcon: ({ focused, size }) => (
+            <TabArtworkIcon
+              focused={focused}
+              size={size}
+              source={tabArtworkSources.prayer}
+            />
           ),
         }}
       />
@@ -57,8 +98,12 @@ export default function TabLayout() {
         name="community"
         options={{
           title: "Community",
-          tabBarIcon: ({ color, size }) => (
-            <Feather color={color} name="users" size={size} />
+          tabBarIcon: ({ focused, size }) => (
+            <TabArtworkIcon
+              focused={focused}
+              size={size}
+              source={tabArtworkSources.community}
+            />
           ),
         }}
       />
@@ -66,11 +111,21 @@ export default function TabLayout() {
         name="profile"
         options={{
           title: "Profile",
-          tabBarIcon: ({ color, size }) => (
-            <Feather color={color} name="user" size={size} />
+          tabBarIcon: ({ focused, size }) => (
+            <TabArtworkIcon
+              focused={focused}
+              size={size}
+              source={tabArtworkSources.profile}
+            />
           ),
         }}
       />
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  tabArtwork: {
+    borderRadius: theme.radii.xs,
+  },
+});

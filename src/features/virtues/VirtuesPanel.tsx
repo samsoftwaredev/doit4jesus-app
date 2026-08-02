@@ -20,11 +20,19 @@ const defaultVirtues = [
 export function VirtuesPanel({
   virtues = defaultVirtues,
   maxValue = 100,
+  fullWidth = true,
   style,
   testID,
 }: VirtuesPanelProps) {
   return (
-    <Card accessibilityLabel="Virtues" fullWidth padding="lg" style={style} testID={testID} variant="elevated">
+    <Card
+      accessibilityLabel="Virtues"
+      fullWidth={fullWidth}
+      padding="lg"
+      style={style}
+      testID={testID}
+      variant="elevated"
+    >
       <View style={styles.header}>
         <Text accessibilityRole="header" style={styles.title}>
           Virtues
