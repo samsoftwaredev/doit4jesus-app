@@ -71,7 +71,7 @@ export const colors = {
     /**
      * Blue card surface.
      */
-    navy: "#153B5B",
+    navy: "#0a1e3090",
 
     /**
      * Deeper blue card surface.

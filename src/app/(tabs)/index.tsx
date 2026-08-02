@@ -10,6 +10,7 @@ import {
   TodaysRosaryCard,
   TodaysScriptureCard,
 } from "@/features/daily-practice";
+import { LevelsProgression } from "@/features/levels";
 import { VirtuesPanel } from "@/features/virtues";
 import { theme } from "@/theme/tokens";
 
@@ -31,12 +32,25 @@ export default function HomeScreen() {
       }
     >
       <View style={styles.grid}>
-        <TodaysScriptureCard onPress={() => router.push("/prayer")} />
-        <TodaysRosaryCard onPress={() => router.push("/prayer")} />
-        <MassTimesCard onPress={() => router.push("/community")} />
-        <ConfessionCard onPress={() => router.push("/community")} />
+        <TodaysScriptureCard
+          onPress={() => router.push("/prayer")}
+          style={styles.dailyPracticeCard}
+        />
+        <TodaysRosaryCard
+          onPress={() => router.push("/prayer")}
+          style={styles.dailyPracticeCard}
+        />
+        <MassTimesCard
+          onPress={() => router.push("/community")}
+          style={styles.dailyPracticeCard}
+        />
+        <ConfessionCard
+          onPress={() => router.push("/community")}
+          style={styles.dailyPracticeCard}
+        />
       </View>
       <View style={styles.formationGrid}>
+        <LevelsProgression style={styles.levelsProgression} />
         <AvatarPanel style={styles.avatarPanel} />
         <VirtuesPanel fullWidth={false} style={styles.virtuesPanel} />
       </View>
@@ -87,6 +101,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     gap: theme.spacing[4],
+    marginBottom: theme.spacing[4],
+  },
+  levelsProgression: {
+    marginBottom: theme.spacing[4],
   },
   avatarPanel: {
     flexBasis: theme.sizes.cardMinWidth,
@@ -101,5 +119,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     gap: theme.spacing[4],
+    marginBottom: 20,
+  },
+  dailyPracticeCard: {
+    flexBasis: "47%",
+    flexGrow: 1,
   },
 });
