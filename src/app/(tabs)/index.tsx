@@ -1,48 +1,68 @@
 import Feather from "@expo/vector-icons/Feather";
 import { StyleSheet, Text, View } from "react-native";
 
+import { Button, Card } from "@/components/ui";
 import { ScreenShell } from "@/components/screen-shell";
+import { theme } from "@/theme/tokens";
 
 export default function HomeScreen() {
   return (
     <ScreenShell
-      eyebrow="A NEW DAY"
+      eyebrow="TODAY"
       title="Welcome home"
-      subtitle="A quiet space to pause, pray, and grow in faith."
+      subtitle="Build a faithful rhythm, one moment at a time."
       headerAccessory={
         <View style={styles.streak}>
-          <Feather color="#8B5C22" name="sun" size={16} />
-          <Text style={styles.streakText}>7</Text>
+          <Feather color={theme.colors.icon.active} name="sun" size={theme.sizes.iconSmall} />
+          <Text style={styles.streakText}>7 day streak</Text>
         </View>
       }
     >
-      <View style={styles.verseCard}>
-        <View style={styles.verseTopRow}>
-          <Text style={styles.verseLabel}>TODAY&apos;S VERSE</Text>
-          <Feather color="#F8EEDC" name="bookmark" size={18} />
-        </View>
-        <Text style={styles.verseText}>
+      <Card
+        footer={
+          <Button fullWidth onPress={() => undefined} variant="outline">
+            Read passage
+          </Button>
+        }
+        headerRight={<Feather color={theme.colors.icon.active} name="bookmark" size={theme.sizes.iconSmall} />}
+        subtitle="Psalm 23:1"
+        title="Today&apos;s verse"
+        variant="info"
+      >
+        <Text style={styles.verse}>
           “The Lord is my shepherd; I shall not want.”
         </Text>
-        <Text style={styles.reference}>Psalm 23:1</Text>
-      </View>
+      </Card>
 
       <Text style={styles.sectionTitle}>Your rhythm</Text>
-      <View style={styles.rhythmRow}>
-        <View style={[styles.rhythmCard, styles.prayerCard]}>
-          <View style={[styles.iconCircle, styles.prayerIcon]}>
-            <Feather color="#7B57AC" name="heart" size={18} />
+      <View style={styles.grid}>
+        <Card
+          footer={
+            <Button fullWidth leftIcon={<Feather color={theme.colors.text.white} name="heart" size={theme.sizes.iconSmall} />} onPress={() => undefined} variant="success">
+              Start prayer
+            </Button>
+          }
+          title="Prayer time"
+        >
+          <View style={styles.cardIcon}>
+            <Feather color={theme.colors.icon.active} name="heart" size={theme.sizes.iconMedium} />
           </View>
-          <Text style={styles.cardTitle}>Prayer time</Text>
-          <Text style={styles.cardCaption}>Make space for five quiet minutes.</Text>
-        </View>
-        <View style={[styles.rhythmCard, styles.communityCard]}>
-          <View style={[styles.iconCircle, styles.communityIcon]}>
-            <Feather color="#28796D" name="users" size={18} />
+          <Text style={styles.cardDescription}>Make room for a few quiet minutes with God.</Text>
+        </Card>
+
+        <Card
+          footer={
+            <Button fullWidth onPress={() => undefined} variant="secondary">
+              See community
+            </Button>
+          }
+          title="Together"
+        >
+          <View style={styles.cardIcon}>
+            <Feather color={theme.colors.icon.secondary} name="users" size={theme.sizes.iconMedium} />
           </View>
-          <Text style={styles.cardTitle}>Together</Text>
-          <Text style={styles.cardCaption}>See what your community is sharing.</Text>
-        </View>
+          <Text style={styles.cardDescription}>Find encouragement from people walking beside you.</Text>
+        </Card>
       </View>
     </ScreenShell>
   );
@@ -51,98 +71,42 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   streak: {
     alignItems: "center",
-    backgroundColor: "#FFF1D8",
-    borderRadius: 18,
+    backgroundColor: theme.colors.badge.successBackground,
+    borderRadius: theme.radii.pill,
     flexDirection: "row",
-    gap: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 7,
+    gap: theme.spacing[1],
+    paddingHorizontal: theme.spacing[2],
+    paddingVertical: theme.spacing[1],
   },
   streakText: {
-    color: "#8B5C22",
-    fontSize: 13,
-    fontWeight: "800",
+    ...theme.typography.labelSmall,
+    color: theme.colors.badge.successText,
   },
-  verseCard: {
-    backgroundColor: "#64468F",
-    borderRadius: 24,
-    padding: 24,
-    shadowColor: "#4B2C75",
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.18,
-    shadowRadius: 20,
-  },
-  verseTopRow: {
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  verseLabel: {
-    color: "#E6D7FB",
-    fontSize: 11,
-    fontWeight: "800",
-    letterSpacing: 1.2,
-  },
-  verseText: {
-    color: "#FFFFFF",
-    fontSize: 24,
-    fontWeight: "700",
-    letterSpacing: -0.45,
-    lineHeight: 33,
-    marginTop: 26,
-  },
-  reference: {
-    color: "#E6D7FB",
-    fontSize: 14,
-    fontWeight: "700",
-    marginTop: 18,
+  verse: {
+    ...theme.typography.heading2,
+    color: theme.colors.text.primary,
   },
   sectionTitle: {
-    color: "#36303B",
-    fontSize: 20,
-    fontWeight: "800",
-    marginBottom: 13,
-    marginTop: 30,
+    ...theme.typography.heading3,
+    marginBottom: theme.spacing[3],
+    marginTop: theme.spacing[7],
   },
-  rhythmRow: {
+  grid: {
     flexDirection: "row",
-    gap: 12,
+    flexWrap: "wrap",
+    gap: theme.spacing[4],
   },
-  rhythmCard: {
-    borderRadius: 20,
-    flex: 1,
-    minHeight: 172,
-    padding: 17,
-  },
-  prayerCard: {
-    backgroundColor: "#F0EAFA",
-  },
-  communityCard: {
-    backgroundColor: "#E3F3EE",
-  },
-  iconCircle: {
+  cardIcon: {
     alignItems: "center",
-    borderRadius: 18,
-    height: 36,
+    backgroundColor: theme.colors.surface.tertiary,
+    borderRadius: theme.radii.md,
+    height: theme.sizes.iconHero,
     justifyContent: "center",
-    width: 36,
+    width: theme.sizes.iconHero,
   },
-  prayerIcon: {
-    backgroundColor: "#FFF9FF",
-  },
-  communityIcon: {
-    backgroundColor: "#F8FFFC",
-  },
-  cardTitle: {
-    color: "#37303F",
-    fontSize: 16,
-    fontWeight: "800",
-    marginTop: 17,
-  },
-  cardCaption: {
-    color: "#736D78",
-    fontSize: 13,
-    lineHeight: 19,
-    marginTop: 6,
+  cardDescription: {
+    ...theme.typography.bodySmall,
+    color: theme.colors.text.muted,
+    marginTop: theme.spacing[3],
   },
 });

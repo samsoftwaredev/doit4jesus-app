@@ -2,6 +2,8 @@ import Feather from "@expo/vector-icons/Feather";
 import { StyleSheet, Text, View } from "react-native";
 
 import { ScreenShell } from "@/components/screen-shell";
+import { Button, Card, DayCalendarTile } from "@/components/ui";
+import { theme } from "@/theme/tokens";
 
 const prompts = [
   {
@@ -28,33 +30,70 @@ export default function PrayerScreen() {
       title="Prayer"
       subtitle="There is no perfect way to begin. Just come as you are."
     >
-      <View style={styles.invitationCard}>
-        <View style={styles.crossBadge}>
-          <Feather color="#FFFFFF" name="plus" size={22} />
-        </View>
-        <Text style={styles.invitationTitle}>Take a moment with God</Text>
+      <DayCalendarTile
+        day={2}
+        state="completed"
+        flowerVariant="blueFlower"
+        style={{}}
+        accessibilityLabel="Day 2, rosary not yet completed"
+        testID="day-calendar-tile-2"
+      />
+      <Card
+        footer={
+          <Button
+            fullWidth
+            leftIcon={
+              <Feather
+                color={theme.colors.text.white}
+                name="play"
+                size={theme.sizes.iconSmall}
+              />
+            }
+            onPress={() => undefined}
+            variant="success"
+          >
+            Begin a prayer
+          </Button>
+        }
+        headerRight={
+          <Feather
+            color={theme.colors.icon.active}
+            name="heart"
+            size={theme.sizes.iconMedium}
+          />
+        }
+        subtitle="A moment to be still"
+        title="Take a moment with God"
+        variant="success"
+      >
         <Text style={styles.invitationText}>
           Breathe in grace. Breathe out what you are carrying.
         </Text>
-        <View style={styles.startPrompt}>
-          <Feather color="#FFFFFF" name="arrow-right" size={17} />
-          <Text style={styles.startPromptText}>Begin a prayer</Text>
-        </View>
-      </View>
+      </Card>
 
       <Text style={styles.sectionTitle}>Prayer prompts</Text>
       <View style={styles.promptList}>
         {prompts.map((prompt) => (
-          <View key={prompt.title} style={styles.promptCard}>
-            <View style={styles.promptIcon}>
-              <Feather color="#6B4FA1" name={prompt.icon} size={19} />
+          <Card key={prompt.title} padding="sm" variant="outlined">
+            <View style={styles.promptRow}>
+              <View style={styles.promptIcon}>
+                <Feather
+                  color={theme.colors.icon.active}
+                  name={prompt.icon}
+                  size={theme.sizes.iconSmall}
+                />
+              </View>
+              <View style={styles.promptCopy}>
+                <Text style={styles.promptTitle}>{prompt.title}</Text>
+                <Text style={styles.promptDetail}>{prompt.detail}</Text>
+              </View>
+              <Feather
+                color={theme.colors.icon.muted}
+                name="chevron-right"
+                size={theme.sizes.iconMedium}
+              />
             </View>
-            <View style={styles.promptCopy}>
-              <Text style={styles.promptTitle}>{prompt.title}</Text>
-              <Text style={styles.promptDetail}>{prompt.detail}</Text>
-            </View>
-            <Feather color="#B0A9B5" name="chevron-right" size={20} />
-          </View>
+          </Card>
         ))}
       </View>
     </ScreenShell>
@@ -62,89 +101,41 @@ export default function PrayerScreen() {
 }
 
 const styles = StyleSheet.create({
-  invitationCard: {
-    backgroundColor: "#7A5AA8",
-    borderRadius: 24,
-    overflow: "hidden",
-    padding: 24,
-  },
-  crossBadge: {
-    alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.17)",
-    borderRadius: 20,
-    height: 40,
-    justifyContent: "center",
-    width: 40,
-  },
-  invitationTitle: {
-    color: "#FFFFFF",
-    fontSize: 24,
-    fontWeight: "800",
-    letterSpacing: -0.45,
-    marginTop: 22,
-  },
   invitationText: {
-    color: "#F2EBFB",
-    fontSize: 15,
-    lineHeight: 22,
-    marginTop: 8,
-  },
-  startPrompt: {
-    alignItems: "center",
-    alignSelf: "flex-start",
-    backgroundColor: "#A986D6",
-    borderRadius: 18,
-    flexDirection: "row",
-    gap: 7,
-    marginTop: 22,
-    paddingHorizontal: 14,
-    paddingVertical: 9,
-  },
-  startPromptText: {
-    color: "#FFFFFF",
-    fontSize: 14,
-    fontWeight: "800",
+    ...theme.typography.bodyLarge,
+    color: theme.colors.text.secondary,
   },
   sectionTitle: {
-    color: "#36303B",
-    fontSize: 20,
-    fontWeight: "800",
-    marginBottom: 13,
-    marginTop: 30,
+    ...theme.typography.heading3,
+    marginBottom: theme.spacing[3],
+    marginTop: theme.spacing[7],
   },
   promptList: {
-    gap: 10,
+    gap: theme.spacing[3],
   },
-  promptCard: {
+  promptRow: {
     alignItems: "center",
-    backgroundColor: "#FFFFFF",
-    borderColor: "#EEE9F1",
-    borderRadius: 18,
-    borderWidth: 1,
     flexDirection: "row",
-    padding: 14,
   },
   promptIcon: {
     alignItems: "center",
-    backgroundColor: "#F1ECF8",
-    borderRadius: 17,
-    height: 38,
+    backgroundColor: theme.colors.surface.tertiary,
+    borderRadius: theme.radii.sm,
+    height: theme.sizes.iconHero,
     justifyContent: "center",
-    width: 38,
+    width: theme.sizes.iconHero,
   },
   promptCopy: {
     flex: 1,
-    marginLeft: 13,
+    marginHorizontal: theme.spacing[3],
+    minWidth: theme.spacing[0],
   },
   promptTitle: {
-    color: "#39333F",
-    fontSize: 15,
-    fontWeight: "800",
+    ...theme.typography.bodyMedium,
   },
   promptDetail: {
-    color: "#7A737F",
-    fontSize: 13,
-    lineHeight: 18,
-    marginTop: 3,
+    ...theme.typography.bodySmall,
+    color: theme.colors.text.muted,
+    marginTop: theme.spacing[0.5],
   },
 });

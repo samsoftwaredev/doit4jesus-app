@@ -1,7 +1,9 @@
 import Feather from "@expo/vector-icons/Feather";
 import { StyleSheet, Text, View } from "react-native";
 
+import { Button, Card } from "@/components/ui";
 import { ScreenShell } from "@/components/screen-shell";
+import { theme } from "@/theme/tokens";
 
 const profileItems = [
   { icon: "book-open", label: "Saved verses" },
@@ -16,144 +18,108 @@ export default function ProfileScreen() {
       title="Profile"
       subtitle="Keep showing up. Small steps become a faithful life."
     >
-      <View style={styles.profileCard}>
-        <View style={styles.avatar}>
-          <Text style={styles.avatarInitial}>Y</Text>
-        </View>
-        <View style={styles.profileCopy}>
-          <Text style={styles.profileName}>Your faith journey</Text>
+      <Card
+        headerRight={<Feather color={theme.colors.icon.secondary} name="edit-2" size={theme.sizes.iconSmall} />}
+        title="Your faith journey"
+        variant="elevated"
+      >
+        <View style={styles.profileRow}>
+          <View style={styles.avatar}>
+            <Text style={styles.avatarInitial}>Y</Text>
+          </View>
           <Text style={styles.profileCaption}>Growing one day at a time</Text>
         </View>
-        <Feather color="#928A98" name="edit-2" size={18} />
-      </View>
+      </Card>
 
-      <View style={styles.statsRow}>
-        <View style={styles.statCard}>
+      <View style={styles.statsGrid}>
+        <Card padding="sm" title="Day streak" variant="success">
           <Text style={styles.statValue}>7</Text>
-          <Text style={styles.statLabel}>day streak</Text>
-        </View>
-        <View style={styles.statCard}>
+        </Card>
+        <Card padding="sm" title="Prayers shared" variant="info">
           <Text style={styles.statValue}>12</Text>
-          <Text style={styles.statLabel}>prayers shared</Text>
-        </View>
+        </Card>
       </View>
 
       <Text style={styles.sectionTitle}>Account</Text>
-      <View style={styles.listCard}>
-        {profileItems.map((item, index) => (
-          <View
-            key={item.label}
-            style={[styles.listItem, index < profileItems.length - 1 && styles.listDivider]}
-          >
-            <View style={styles.listIcon}>
-              <Feather color="#6B4FA1" name={item.icon} size={18} />
+      <Card footer={<Button fullWidth onPress={() => undefined} variant="ghost">Manage profile</Button>} padding="none" title="Preferences">
+        <View style={styles.list}>
+          {profileItems.map((item, index) => (
+            <View
+              key={item.label}
+              style={[styles.listItem, index < profileItems.length - 1 && styles.listDivider]}
+            >
+              <View style={styles.listIcon}>
+                <Feather color={theme.colors.icon.secondary} name={item.icon} size={theme.sizes.iconSmall} />
+              </View>
+              <Text style={styles.listLabel}>{item.label}</Text>
+              <Feather color={theme.colors.icon.muted} name="chevron-right" size={theme.sizes.iconMedium} />
             </View>
-            <Text style={styles.listLabel}>{item.label}</Text>
-            <Feather color="#AAA3AD" name="chevron-right" size={20} />
-          </View>
-        ))}
-      </View>
+          ))}
+        </View>
+      </Card>
     </ScreenShell>
   );
 }
 
 const styles = StyleSheet.create({
-  profileCard: {
+  profileRow: {
     alignItems: "center",
-    backgroundColor: "#FFFFFF",
-    borderColor: "#EEE9F1",
-    borderRadius: 22,
-    borderWidth: 1,
     flexDirection: "row",
-    padding: 18,
   },
   avatar: {
     alignItems: "center",
-    backgroundColor: "#DCCEF1",
-    borderRadius: 27,
-    height: 54,
+    backgroundColor: theme.colors.surface.teal,
+    borderRadius: theme.radii.pill,
+    height: theme.sizes.iconHero,
     justifyContent: "center",
-    width: 54,
+    width: theme.sizes.iconHero,
   },
   avatarInitial: {
-    color: "#62448F",
-    fontSize: 22,
-    fontWeight: "800",
-  },
-  profileCopy: {
-    flex: 1,
-    marginLeft: 13,
-  },
-  profileName: {
-    color: "#38313E",
-    fontSize: 16,
-    fontWeight: "800",
+    ...theme.typography.heading3,
+    color: theme.colors.text.white,
   },
   profileCaption: {
-    color: "#7B7480",
-    fontSize: 13,
-    marginTop: 4,
+    ...theme.typography.body,
+    color: theme.colors.text.muted,
+    marginLeft: theme.spacing[3],
   },
-  statsRow: {
+  statsGrid: {
     flexDirection: "row",
-    gap: 12,
-    marginTop: 13,
-  },
-  statCard: {
-    alignItems: "center",
-    backgroundColor: "#F0EAF7",
-    borderRadius: 18,
-    flex: 1,
-    paddingVertical: 17,
+    flexWrap: "wrap",
+    gap: theme.spacing[4],
+    marginTop: theme.spacing[4],
   },
   statValue: {
-    color: "#694C97",
-    fontSize: 24,
-    fontWeight: "800",
-  },
-  statLabel: {
-    color: "#766B80",
-    fontSize: 12,
-    fontWeight: "700",
-    marginTop: 3,
+    ...theme.typography.metric,
   },
   sectionTitle: {
-    color: "#36303B",
-    fontSize: 20,
-    fontWeight: "800",
-    marginBottom: 13,
-    marginTop: 30,
+    ...theme.typography.heading3,
+    marginBottom: theme.spacing[3],
+    marginTop: theme.spacing[7],
   },
-  listCard: {
-    backgroundColor: "#FFFFFF",
-    borderColor: "#EEE9F1",
-    borderRadius: 20,
-    borderWidth: 1,
-    overflow: "hidden",
+  list: {
+    paddingHorizontal: theme.spacing[4],
   },
   listItem: {
     alignItems: "center",
     flexDirection: "row",
-    paddingHorizontal: 16,
-    paddingVertical: 14,
+    paddingVertical: theme.spacing[3],
   },
   listDivider: {
-    borderBottomColor: "#F0EDF1",
-    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.border.subtle,
+    borderBottomWidth: theme.borderWidths.hairline,
   },
   listIcon: {
     alignItems: "center",
-    backgroundColor: "#F0EAF7",
-    borderRadius: 15,
-    height: 34,
+    backgroundColor: theme.colors.surface.tertiary,
+    borderRadius: theme.radii.sm,
+    height: theme.sizes.iconMedium + theme.spacing[2],
     justifyContent: "center",
-    width: 34,
+    width: theme.sizes.iconMedium + theme.spacing[2],
   },
   listLabel: {
-    color: "#433C49",
+    ...theme.typography.bodyMedium,
     flex: 1,
-    fontSize: 15,
-    fontWeight: "700",
-    marginLeft: 12,
+    marginHorizontal: theme.spacing[3],
   },
 });

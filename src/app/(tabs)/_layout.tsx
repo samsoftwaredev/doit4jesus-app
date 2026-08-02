@@ -2,32 +2,36 @@ import Feather from "@expo/vector-icons/Feather";
 import { Tabs } from "expo-router";
 import { Platform } from "react-native";
 
-const colors = {
-  brand: "#6B4FA1",
-  inactive: "#807A87",
-  surface: "#FFFCFF",
-  border: "#ECE7F0",
-};
+import { theme } from "@/theme/tokens";
 
 export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: colors.brand,
-        tabBarInactiveTintColor: colors.inactive,
+        sceneStyle: {
+          backgroundColor: theme.colors.background.primary,
+        },
+        tabBarActiveTintColor: theme.colors.icon.active,
+        tabBarInactiveTintColor: theme.colors.icon.muted,
         tabBarHideOnKeyboard: true,
         tabBarLabelStyle: {
-          fontSize: 11,
-          fontWeight: "600",
-          marginTop: 2,
+          fontFamily: theme.fontFamilies.bodyMedium,
+          fontSize: theme.fontSizes.xs,
+          fontWeight: theme.fontWeights.semibold,
+          letterSpacing: theme.letterSpacing.wide,
+          lineHeight: theme.lineHeights.xs,
+          marginTop: theme.spacing[0.5],
         },
         tabBarStyle: {
-          backgroundColor: colors.surface,
-          borderTopColor: colors.border,
-          height: Platform.select({ ios: 88, default: 68 }),
-          paddingTop: 7,
-          paddingBottom: Platform.select({ ios: 24, default: 8 }),
+          backgroundColor: theme.colors.surface.navigation,
+          borderTopColor: theme.colors.border.default,
+          height: Platform.select({
+            ios: theme.sizes.bottomNavigationHeight + theme.spacing[5],
+            default: theme.sizes.bottomNavigationHeight,
+          }),
+          paddingBottom: Platform.select({ ios: theme.spacing[6], default: theme.spacing[2] }),
+          paddingTop: theme.spacing[1.5],
         },
       }}
     >

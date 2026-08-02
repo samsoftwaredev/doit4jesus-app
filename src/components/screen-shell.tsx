@@ -3,6 +3,8 @@ import type { StyleProp, ViewStyle } from "react-native";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { theme } from "@/theme/tokens";
+
 type ScreenShellProps = PropsWithChildren<{
   eyebrow?: string;
   title: string;
@@ -21,12 +23,8 @@ export function ScreenShell({
 }: ScreenShellProps) {
   return (
     <SafeAreaView edges={["top"]} style={styles.safeArea}>
-      <ScrollView
-        contentContainerStyle={contentContainerStyle}
-        showsVerticalScrollIndicator={false}
-        style={styles.scrollView}
-      >
-        <View style={styles.content}>
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        <View style={[styles.content, contentContainerStyle]}>
           <View style={styles.header}>
             <View style={styles.heading}>
               {eyebrow ? <Text style={styles.eyebrow}>{eyebrow}</Text> : null}
@@ -45,46 +43,41 @@ export function ScreenShell({
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#FAF8FC",
+    backgroundColor: theme.colors.background.primary,
   },
-  scrollView: {
-    flex: 1,
+  scrollContent: {
+    flexGrow: 1,
   },
   content: {
     alignSelf: "center",
-    maxWidth: 760,
-    paddingBottom: 32,
-    paddingHorizontal: 20,
+    maxWidth: theme.sizes.contentMaxWidth,
+    paddingBottom: theme.spacing[8],
+    paddingHorizontal: theme.spacing[4],
     width: "100%",
   },
   header: {
     alignItems: "flex-start",
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingBottom: 26,
-    paddingTop: 20,
+    paddingBottom: theme.spacing[6],
+    paddingTop: theme.spacing[5],
   },
   heading: {
     flex: 1,
-    paddingRight: 14,
+    minWidth: theme.spacing[0],
+    paddingRight: theme.spacing[3],
   },
   eyebrow: {
-    color: "#8A719D",
-    fontSize: 11,
-    fontWeight: "800",
-    letterSpacing: 1.1,
-    marginBottom: 6,
+    ...theme.typography.labelSmall,
+    color: theme.colors.text.link,
+    marginBottom: theme.spacing[1],
   },
   title: {
-    color: "#28232E",
-    fontSize: 32,
-    fontWeight: "800",
-    letterSpacing: -0.8,
+    ...theme.typography.heading1,
   },
   subtitle: {
-    color: "#736D78",
-    fontSize: 16,
-    lineHeight: 23,
-    marginTop: 7,
+    ...theme.typography.body,
+    color: theme.colors.text.muted,
+    marginTop: theme.spacing[1],
   },
 });
