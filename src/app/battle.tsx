@@ -1,21 +1,13 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Image } from "expo-image";
 import { useRouter } from "expo-router";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
 import { ScreenShell } from "@/components/screen-shell";
 import { Button, Card } from "@/components/ui";
-import {
-  BattleDemonDetails,
-  BattleDemonRoster,
-} from "@/features/battle";
-import {
-  fetchDemonBattleDetails,
-  fetchDemonCatalog,
-} from "@/features/demons";
-import type {
-  DemonBattleDetails,
-  DemonCatalogItem,
-} from "@/features/demons";
+import { ArenaDemonSelector, BattleDemonDetails } from "@/features/battle";
+import type { DemonBattleDetails, DemonCatalogItem } from "@/features/demons";
+import { fetchDemonBattleDetails, fetchDemonCatalog } from "@/features/demons";
 import { theme } from "@/theme/tokens";
 
 export default function BattleScreen() {
@@ -84,8 +76,13 @@ export default function BattleScreen() {
 
   return (
     <ScreenShell
+      background={<BattleBackground />}
       headerAccessory={
-        <Button onPress={() => router.push("/demonsCatalog")} size="sm" variant="ghost">
+        <Button
+          onPress={() => router.push("/demonsCatalog")}
+          size="sm"
+          variant="ghost"
+        >
           Catalog
         </Button>
       }
@@ -95,8 +92,13 @@ export default function BattleScreen() {
       {isLoadingCatalog ? (
         <Card fullWidth title="Loading demons">
           <View style={styles.stateContainer}>
-            <ActivityIndicator color={theme.colors.semantic.danger} size="large" />
-            <Text style={styles.stateText}>Gathering opponents for the arena.</Text>
+            <ActivityIndicator
+              color={theme.colors.semantic.danger}
+              size="large"
+            />
+            <Text style={styles.stateText}>
+              Gathering opponents for the arena.
+            </Text>
           </View>
         </Card>
       ) : null}
@@ -104,7 +106,11 @@ export default function BattleScreen() {
       {catalogError ? (
         <Card
           footer={
-            <Button fullWidth onPress={() => void loadCatalog()} variant="danger">
+            <Button
+              fullWidth
+              onPress={() => void loadCatalog()}
+              variant="danger"
+            >
               Retry
             </Button>
           }
@@ -118,8 +124,8 @@ export default function BattleScreen() {
 
       {!isLoadingCatalog && !catalogError ? (
         <>
-          <BattleDemonRoster
-            demons={demons}
+          <ArenaDemonSelector
+            demons={demons.slice(0, 4)}
             onSelect={(demon) => void selectDemon(demon)}
             selectedCode={selectedDemonCode}
           />
@@ -128,7 +134,9 @@ export default function BattleScreen() {
             <Card fullWidth title="Preparing the encounter">
               <View style={styles.stateContainer}>
                 <ActivityIndicator color={theme.colors.semantic.danger} />
-                <Text style={styles.stateText}>Reviewing this demon&apos;s tactics.</Text>
+                <Text style={styles.stateText}>
+                  Reviewing this demon&apos;s tactics.
+                </Text>
               </View>
             </Card>
           ) : null}
@@ -159,13 +167,25 @@ export default function BattleScreen() {
           {!selectedDemonCode && !isLoadingDetails ? (
             <Card fullWidth title="Select an opponent" variant="info">
               <Text style={styles.stateText}>
-                Swipe through the roster, then select a demon to view its attacks, defenses, and reward.
+                Select a demon in the arena to view its attacks, defenses, and
+                reward.
               </Text>
             </Card>
           ) : null}
         </>
       ) : null}
     </ScreenShell>
+  );
+}
+
+function BattleBackground() {
+  return (
+    <Image
+      accessible={false}
+      contentFit="contain"
+      source={require("../assets/backgrounds/arena1.png")}
+      style={StyleSheet.absoluteFill}
+    />
   );
 }
 

@@ -1,4 +1,5 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { LinearGradient } from "expo-linear-gradient";
 import { type Href, useRouter } from "expo-router";
 import { Image as RNImage, StyleSheet, Text, View } from "react-native";
 
@@ -113,25 +114,43 @@ export default function HomeScreen() {
 function HomeBackground() {
   return (
     <View style={styles.background}>
-      <ResponsiveImage
-        accessible={false}
-        contentFit="contain"
-        desktopSource={require("../../assets/backgrounds/cathedralDesktop.png")}
-        mobileSource={require("../../assets/backgrounds/cathedraMobile.png")}
-        preserveAspectRatio
-        style={styles.backgroundImage}
-        tabletSource={require("../../assets/backgrounds/cathedralTablet.png")}
-      />
+      <View style={styles.imageWrapper}>
+        <ResponsiveImage
+          accessible={false}
+          contentFit="contain"
+          desktopSource={require("../../assets/backgrounds/cathedralDesktop.png")}
+          mobileSource={require("../../assets/backgrounds/cathedraMobile.png")}
+          preserveAspectRatio
+          style={styles.backgroundImage}
+          tabletSource={require("../../assets/backgrounds/cathedralTablet.png")}
+        />
+        <LinearGradient
+          colors={["transparent", theme.colors.background.deep]}
+          end={{ x: 0, y: 1 }}
+          pointerEvents="none"
+          start={{ x: 0, y: 0 }}
+          style={styles.imageBottomGradient}
+        />
+      </View>
       <View style={styles.backgroundGap} />
-      <ResponsiveImage
-        accessible={false}
-        contentFit="contain"
-        desktopSource={require("../../assets/backgrounds/hellDesktop.png")}
-        mobileSource={require("../../assets/backgrounds/hellMobile.png")}
-        preserveAspectRatio
-        style={styles.backgroundImage}
-        tabletSource={require("../../assets/backgrounds/hellTablet.png")}
-      />
+      <View style={styles.imageWrapper}>
+        <ResponsiveImage
+          accessible={false}
+          contentFit="contain"
+          desktopSource={require("../../assets/backgrounds/hellDesktop.png")}
+          mobileSource={require("../../assets/backgrounds/hellMobile.png")}
+          preserveAspectRatio
+          style={styles.backgroundImage}
+          tabletSource={require("../../assets/backgrounds/hellTablet.png")}
+        />
+        <LinearGradient
+          colors={["transparent", theme.colors.background.deep]}
+          end={{ x: 0, y: 1 }}
+          pointerEvents="none"
+          start={{ x: 0, y: 0 }}
+          style={styles.imageBottomGradient}
+        />
+      </View>
     </View>
   );
 }
@@ -148,6 +167,16 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     width: "100%",
+  },
+  imageWrapper: {
+    position: "relative",
+  },
+  imageBottomGradient: {
+    bottom: 0,
+    height: theme.spacing[20],
+    left: 0,
+    position: "absolute",
+    right: 0,
   },
   formationGrid: {
     flexDirection: "row",

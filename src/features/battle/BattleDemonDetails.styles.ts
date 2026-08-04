@@ -3,6 +3,17 @@ import { StyleSheet } from "react-native";
 import { theme } from "@/theme/tokens";
 
 export const styles = StyleSheet.create({
+  artworkFrame: {
+    alignItems: "center",
+    alignSelf: "center",
+    aspectRatio: 2 / 3,
+    marginBottom: theme.spacing[4],
+    width: "50%",
+  },
+  artwork: {
+    height: "100%",
+    width: "100%",
+  },
   metadata: {
     flexDirection: "row",
     flexWrap: "wrap",

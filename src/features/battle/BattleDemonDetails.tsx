@@ -1,3 +1,4 @@
+import { Image } from "expo-image";
 import { Text, View } from "react-native";
 
 import { Card } from "@/components/ui";
@@ -6,6 +7,7 @@ import type {
   DemonBattleDetails,
   DemonDefense,
 } from "@/features/demons";
+import { getDemonArtwork } from "@/features/demons";
 
 import { styles } from "./BattleDemonDetails.styles";
 
@@ -47,9 +49,20 @@ function DefenseListItem({ defense }: { defense: DemonDefense }) {
 
 export function BattleDemonDetails({ details }: BattleDemonDetailsProps) {
   const { demon, attacks, defenses, defeatReward } = details;
+  const artwork = getDemonArtwork(demon);
 
   return (
     <Card fullWidth subtitle={demon.title} title={demon.name} variant="danger">
+      {artwork ? (
+        <View style={styles.artworkFrame}>
+          <Image
+            accessible={false}
+            contentFit="contain"
+            source={artwork}
+            style={styles.artwork}
+          />
+        </View>
+      ) : null}
       <View style={styles.metadata}>
         <View style={styles.categoryBadge}>
           <Text style={styles.badgeText}>{formatLabel(demon.category)}</Text>
@@ -90,7 +103,9 @@ export function BattleDemonDetails({ details }: BattleDemonDetailsProps) {
         <Text style={styles.rewardText}>{`XP +${defeatReward.xpReward}`}</Text>
       </View>
 
-      {demon.safetyNote ? <Text style={styles.safetyNote}>{demon.safetyNote}</Text> : null}
+      {demon.safetyNote ? (
+        <Text style={styles.safetyNote}>{demon.safetyNote}</Text>
+      ) : null}
     </Card>
   );
 }
