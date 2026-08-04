@@ -1,6 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "expo-router";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from "react-native";
+import type { ViewStyle } from "react-native";
 
 import { ScreenShell } from "@/components/screen-shell";
 import { Button, Card } from "@/components/ui";
@@ -11,8 +18,16 @@ import {
 import type { DemonCatalogItem } from "@/features/demons";
 import { theme } from "@/theme/tokens";
 
+const catalogCardBaseStyle = {
+  flexGrow: 0,
+  flexShrink: 1,
+  maxWidth: "100%",
+  minWidth: theme.spacing[0],
+} satisfies ViewStyle;
+
 export default function DemonsCatalogScreen() {
   const router = useRouter();
+  const { width } = useWindowDimensions();
   const [demons, setDemons] = useState<ReadonlyArray<DemonCatalogItem>>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string>();
@@ -37,6 +52,13 @@ export default function DemonsCatalogScreen() {
   useEffect(() => {
     void loadDemons();
   }, [loadDemons]);
+
+  const catalogCardStyle =
+    width >= theme.breakpoints.desktop
+      ? styles.catalogCardDesktop
+      : width >= theme.breakpoints.tablet
+        ? styles.catalogCardTablet
+        : styles.catalogCardMobile;
 
   return (
     <ScreenShell
@@ -81,7 +103,11 @@ export default function DemonsCatalogScreen() {
       {!isLoading && !errorMessage ? (
         <View style={styles.catalogList}>
           {demons.map((demon) => (
-            <DemonCatalogItemCard demon={demon} key={demon.id} />
+            <DemonCatalogItemCard
+              demon={demon}
+              key={demon.id}
+              style={catalogCardStyle}
+            />
           ))}
         </View>
       ) : null}
@@ -101,6 +127,20 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   catalogList: {
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: theme.spacing[4],
+  },
+  catalogCardMobile: {
+    ...catalogCardBaseStyle,
+    flexBasis: "100%",
+  },
+  catalogCardTablet: {
+    ...catalogCardBaseStyle,
+    flexBasis: "47%",
+  },
+  catalogCardDesktop: {
+    ...catalogCardBaseStyle,
+    flexBasis: "31%",
   },
 });

@@ -7,6 +7,7 @@ export interface DemonVirtueAffinity {
 
 export interface DemonCatalogItem {
   category: string;
+  code: string;
   description: string;
   id: string;
   maxHp: number;

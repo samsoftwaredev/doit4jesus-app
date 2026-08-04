@@ -57,6 +57,7 @@ function parseDemonCatalog(value: unknown): ReadonlyArray<DemonCatalogItem> {
 
     return {
       category: readString(demon.category, "demon category"),
+      code: readString(demon.code, "demon code"),
       description: readString(demon.description, "demon description"),
       id: readString(demon.id, "demon ID"),
       maxHp: readNumber(demon.max_hp, "demon max HP"),
