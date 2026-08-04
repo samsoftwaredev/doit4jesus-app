@@ -8,6 +8,7 @@ const tabArtworkSources = {
   home: require("../../assets/tabs/home.png"),
   prayer: require("../../assets/tabs/prayer.png"),
   community: require("../../assets/tabs/community.png"),
+  battle: require("../../assets/tabs/battle.png"),
   profile: require("../../assets/tabs/profile.png"),
 } as const;
 
@@ -63,7 +64,10 @@ export default function TabLayout() {
             ios: theme.sizes.bottomNavigationHeight + theme.spacing[5],
             default: theme.sizes.bottomNavigationHeight,
           }),
-          paddingBottom: Platform.select({ ios: theme.spacing[6], default: theme.spacing[2] }),
+          paddingBottom: Platform.select({
+            ios: theme.spacing[6],
+            default: theme.spacing[2],
+          }),
           paddingTop: theme.spacing[1.5],
         },
       }}
@@ -77,6 +81,19 @@ export default function TabLayout() {
               focused={focused}
               size={size}
               source={tabArtworkSources.home}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="battle"
+        options={{
+          title: "Battle",
+          tabBarIcon: ({ focused, size }) => (
+            <TabArtworkIcon
+              focused={focused}
+              size={size}
+              source={tabArtworkSources.battle}
             />
           ),
         }}

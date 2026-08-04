@@ -183,7 +183,8 @@ function BattleBackground() {
     <Image
       accessible={false}
       contentFit="contain"
-      source={require("../assets/backgrounds/arena1.png")}
+      contentPosition="top"
+      source={require("../../assets/backgrounds/arena1.png")}
       style={StyleSheet.absoluteFill}
     />
   );

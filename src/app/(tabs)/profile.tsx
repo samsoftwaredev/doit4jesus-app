@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 
 import { Button, Card } from "@/components/ui";
 import { ScreenShell } from "@/components/screen-shell";
+import { ArmorOfGodScreen } from "@/features/armor-of-god";
 import { theme } from "@/theme/tokens";
 
 const profileItems = [
@@ -57,6 +58,8 @@ export default function ProfileScreen() {
           ))}
         </View>
       </Card>
+
+      <ArmorOfGodScreen />
     </ScreenShell>
   );
 }
