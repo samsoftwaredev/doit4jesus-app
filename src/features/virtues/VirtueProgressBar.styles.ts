@@ -17,25 +17,21 @@ export const styles = StyleSheet.create({
   row: {
     alignItems: "center",
     flexDirection: "row",
-    gap: theme.spacing[2],
+    gap: theme.spacing[1],
   },
   identity: {
     alignItems: "center",
-    flexBasis: theme.spacing[20],
+    flexBasis: theme.spacing[0],
     flexDirection: "row",
     flexGrow: 1,
     minWidth: theme.spacing[0],
   },
   iconFrame: {
     alignItems: "center",
-    backgroundColor: theme.colors.surface.tertiary,
-    borderColor: theme.colors.border.subtle,
-    borderRadius: theme.radii.sm,
-    borderWidth: theme.borderWidths.hairline,
-    height: theme.sizes.iconLarge + theme.spacing[2],
     justifyContent: "center",
     overflow: "hidden",
-    width: theme.sizes.iconLarge + theme.spacing[2],
+    height: theme.sizes.iconXL + theme.spacing[2],
+    width: theme.sizes.iconXL + theme.spacing[2],
   },
   iconImage: {
     height: "100%",
@@ -49,15 +45,15 @@ export const styles = StyleSheet.create({
   progressTrack: {
     backgroundColor: theme.colors.background.deep,
     borderColor: theme.colors.border.subtle,
-    borderRadius: theme.radii.pill,
+    borderRadius: theme.radii.xs,
     borderWidth: theme.borderWidths.hairline,
     flex: 1,
-    height: theme.spacing[2],
+    height: theme.spacing[5],
     minWidth: theme.spacing[0],
     overflow: "hidden",
   },
   progressFill: {
-    borderRadius: theme.radii.pill,
+    borderRadius: theme.radii.xs,
     height: "100%",
   },
   progressHighlight: {

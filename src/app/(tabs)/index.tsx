@@ -1,8 +1,14 @@
-import { useRouter } from "expo-router";
-import { StyleSheet, View } from "react-native";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { type Href, useRouter } from "expo-router";
+import { Image as RNImage, StyleSheet, Text, View } from "react-native";
 
 import { ScreenShell } from "@/components/screen-shell";
-import { HeaderActionGroup, ResponsiveImage } from "@/components/ui";
+import {
+  Button,
+  Card,
+  HeaderActionGroup,
+  ResponsiveImage,
+} from "@/components/ui";
 import { AvatarPanel } from "@/features/avatar";
 import {
   ConfessionCard,
@@ -13,6 +19,8 @@ import {
 import { LevelsProgression } from "@/features/levels";
 import { VirtuesPanel } from "@/features/virtues";
 import { theme } from "@/theme/tokens";
+
+const battleImage = require("../../assets/tabs/battle.png");
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -54,6 +62,50 @@ export default function HomeScreen() {
         <AvatarPanel style={styles.avatarPanel} />
         <VirtuesPanel fullWidth={false} style={styles.virtuesPanel} />
       </View>
+      <Card
+        fullWidth
+        header={
+          <View style={styles.battleCardHeader}>
+            <RNImage source={battleImage} style={styles.battleCardImage} />
+            <View style={styles.battleCardTitleContainer}>
+              <Text style={styles.battleCardTitle}>The Arena</Text>
+              <Text style={styles.battleCardSubtitle}>
+                Fight the demons. Grow in virtue.
+              </Text>
+            </View>
+            <RNImage
+              source={battleImage}
+              style={[styles.battleCardImage, styles.battleCardImageFlipped]}
+            />
+          </View>
+        }
+        variant="danger"
+        style={styles.battleCard}
+      >
+        <Button
+          fullWidth
+          leftIcon={
+            <MaterialCommunityIcons
+              color={theme.colors.text.white}
+              name="sword-cross"
+              size={theme.sizes.iconMedium}
+            />
+          }
+          rightIcon={
+            <MaterialCommunityIcons
+              color={theme.colors.text.white}
+              name="chevron-right"
+              size={theme.sizes.iconMedium}
+            />
+          }
+          size="lg"
+          textStyle={styles.battleButtonLabel}
+          variant="danger"
+          onPress={() => router.push("/battle" as Href)}
+        >
+          Go to Battle
+        </Button>
+      </Card>
     </ScreenShell>
   );
 }
@@ -124,5 +176,39 @@ const styles = StyleSheet.create({
   dailyPracticeCard: {
     flexBasis: "47%",
     flexGrow: 1,
+  },
+  battleCard: {
+    marginBottom: theme.spacing[4],
+    marginTop: theme.spacing[4],
+  },
+  battleCardHeader: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: theme.spacing[3],
+  },
+  battleCardImage: {
+    height: theme.sizes.iconXL,
+    width: theme.sizes.iconXL,
+  },
+  battleCardImageFlipped: {
+    transform: [{ scaleX: -1 }],
+  },
+  battleCardTitleContainer: {
+    alignItems: "center",
+    flex: 1,
+  },
+  battleCardTitle: {
+    ...theme.typography.heading2,
+    color: theme.colors.text.primary,
+    textAlign: "center",
+  },
+  battleCardSubtitle: {
+    ...theme.typography.bodySmall,
+    color: theme.colors.text.secondary,
+    marginTop: theme.spacing[0.5],
+    textAlign: "center",
+  },
+  battleButtonLabel: {
+    flex: 1,
   },
 });

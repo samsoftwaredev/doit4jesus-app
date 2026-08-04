@@ -690,6 +690,7 @@ export const sizes = {
   iconMedium: 22,
   iconLarge: 28,
   iconHero: 40,
+  iconXL: 80,
 
   badge: 20,
 
