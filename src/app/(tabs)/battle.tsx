@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
 import { ScreenShell } from "@/components/screen-shell";
-import { Button, Card } from "@/components/ui";
+import { Button, Card, SpriteSheetAnimation } from "@/components/ui";
 import { ArenaDemonSelector, BattleDemonDetails } from "@/features/battle";
 import type { DemonBattleDetails, DemonCatalogItem } from "@/features/demons";
 import { fetchDemonBattleDetails, fetchDemonCatalog } from "@/features/demons";
@@ -130,6 +130,17 @@ export default function BattleScreen() {
             selectedCode={selectedDemonCode}
           />
 
+          <SpriteSheetAnimation
+            autoplay
+            fps={8}
+            frameHeight={224}
+            frameWidth={280}
+            loop
+            source={require("../../assets/animations/wrathFury.png")}
+            style={styles.wrathAnimation}
+            totalFrames={8}
+          />
+
           {isLoadingDetails ? (
             <Card fullWidth title="Preparing the encounter">
               <View style={styles.stateContainer}>
@@ -191,6 +202,10 @@ function BattleBackground() {
 }
 
 const styles = StyleSheet.create({
+  wrathAnimation: {
+    alignSelf: "center",
+    marginVertical: theme.spacing[4],
+  },
   stateContainer: {
     alignItems: "center",
     gap: theme.spacing[3],

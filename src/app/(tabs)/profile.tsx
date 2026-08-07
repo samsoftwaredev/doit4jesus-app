@@ -1,9 +1,13 @@
 import Feather from "@expo/vector-icons/Feather";
-import { StyleSheet, Text, View } from "react-native";
+import { Image } from "expo-image";
+import { useCallback, useEffect, useState } from "react";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
 import { Button, Card } from "@/components/ui";
 import { ScreenShell } from "@/components/screen-shell";
 import { ArmorOfGodScreen } from "@/features/armor-of-god";
+import { fetchCurrentUserProfile } from "@/features/profile";
+import type { CurrentUserProfile } from "@/features/profile";
 import { theme } from "@/theme/tokens";
 
 const profileItems = [
@@ -13,6 +17,31 @@ const profileItems = [
 ] as const;
 
 export default function ProfileScreen() {
+  const [profile, setProfile] = useState<CurrentUserProfile>();
+  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
+  const [profileError, setProfileError] = useState<string>();
+
+  const loadProfile = useCallback(async () => {
+    setProfileError(undefined);
+    setIsLoadingProfile(true);
+
+    try {
+      setProfile(await fetchCurrentUserProfile());
+    } catch (error) {
+      setProfileError(
+        error instanceof Error ? error.message : "Unable to load the profile.",
+      );
+    } finally {
+      setIsLoadingProfile(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadProfile();
+  }, [loadProfile]);
+
+  const profileInitial = profile?.displayName.slice(0, 1).toUpperCase() ?? "Y";
+
   return (
     <ScreenShell
       eyebrow="YOUR JOURNEY"
@@ -21,15 +50,47 @@ export default function ProfileScreen() {
     >
       <Card
         headerRight={<Feather color={theme.colors.icon.secondary} name="edit-2" size={theme.sizes.iconSmall} />}
-        title="Your faith journey"
+        subtitle={profile?.title ?? "Your faith journey"}
+        title={profile?.displayName ?? "Your profile"}
         variant="elevated"
       >
-        <View style={styles.profileRow}>
-          <View style={styles.avatar}>
-            <Text style={styles.avatarInitial}>Y</Text>
+        {isLoadingProfile ? (
+          <View style={styles.profileState}>
+            <ActivityIndicator color={theme.colors.brand.primaryLight} />
+            <Text style={styles.profileCaption}>Loading your faith journey.</Text>
           </View>
-          <Text style={styles.profileCaption}>Growing one day at a time</Text>
-        </View>
+        ) : null}
+
+        {profileError ? (
+          <View style={styles.profileState}>
+            <Text style={styles.profileCaption}>{profileError}</Text>
+            <Button onPress={() => void loadProfile()} size="sm" variant="secondary">
+              Retry
+            </Button>
+          </View>
+        ) : null}
+
+        {profile && !isLoadingProfile && !profileError ? (
+          <View style={styles.profileRow}>
+            {profile.avatarUrl ? (
+              <Image
+                accessibilityLabel={`${profile.displayName}'s profile picture`}
+                contentFit="cover"
+                source={profile.avatarUrl}
+                style={styles.avatarImage}
+              />
+            ) : (
+              <View style={styles.avatar}>
+                <Text style={styles.avatarInitial}>{profileInitial}</Text>
+              </View>
+            )}
+            <View style={styles.profileCopy}>
+              <Text style={styles.profileUsername}>{`@${profile.username}`}</Text>
+              <Text style={styles.profileCaption}>{profile.title}</Text>
+              <Text style={styles.profileMetadata}>{profile.timezone}</Text>
+            </View>
+          </View>
+        ) : null}
       </Card>
 
       <View style={styles.statsGrid}>
@@ -69,6 +130,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
   },
+  profileState: {
+    alignItems: "center",
+    gap: theme.spacing[3],
+    paddingVertical: theme.spacing[3],
+  },
   avatar: {
     alignItems: "center",
     backgroundColor: theme.colors.surface.teal,
@@ -77,6 +143,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: theme.sizes.iconHero,
   },
+  avatarImage: {
+    borderColor: theme.colors.brand.primaryLight,
+    borderRadius: theme.radii.pill,
+    borderWidth: theme.borderWidths.thin,
+    height: theme.sizes.iconHero + theme.spacing[4],
+    width: theme.sizes.iconHero + theme.spacing[4],
+  },
   avatarInitial: {
     ...theme.typography.heading3,
     color: theme.colors.text.white,
@@ -84,7 +157,20 @@ const styles = StyleSheet.create({
   profileCaption: {
     ...theme.typography.body,
     color: theme.colors.text.muted,
+  },
+  profileCopy: {
+    flex: 1,
+    gap: theme.spacing[1],
     marginLeft: theme.spacing[3],
+    minWidth: theme.spacing[0],
+  },
+  profileUsername: {
+    ...theme.typography.bodyMedium,
+    color: theme.colors.text.primary,
+  },
+  profileMetadata: {
+    ...theme.typography.caption,
+    color: theme.colors.text.subtle,
   },
   statsGrid: {
     flexDirection: "row",

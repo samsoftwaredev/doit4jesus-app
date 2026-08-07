@@ -24,3 +24,8 @@ export type {
   ResponsiveImageProps,
   ResponsiveImageSource,
 } from "./ResponsiveImage";
+export { SpriteSheetAnimation } from "./SpriteSheetAnimation";
+export type {
+  SpriteSheetAnimationHandle,
+  SpriteSheetAnimationProps,
+} from "./SpriteSheetAnimation";
