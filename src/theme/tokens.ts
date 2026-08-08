@@ -704,8 +704,50 @@ export const sizes = {
 } as const;
 
 export const breakpoints = {
+  smallPhone: 360,
+  largePhone: 480,
   tablet: 768,
   desktop: 1024,
+} as const;
+
+/** Tokens shared by devotional surfaces, bead controls, and their restrained motion. */
+export const rosaryTokens = {
+  colors: {
+    canvas: "#071A2A",
+    canvasLight: "#0E2D44",
+    card: "rgba(15, 42, 62, 0.94)",
+    cardInset: "#0B263A",
+    pearl: "#F5F0E5",
+    pearlShadow: "#BFC6C8",
+    gold: "#E6BA64",
+    goldBright: "#FFE09A",
+    goldMuted: "#987A3E",
+    chain: "#B58C42",
+    blueMuted: "#55758B",
+    scripture: "#C9D7DF",
+  },
+  borderWidths: {
+    goldHairline: hairlineWidth,
+    gold: 1,
+    goldEmphasis: 2,
+  },
+  glow: {
+    opacity: 0.42,
+    radius: 14,
+    activeScale: 1.16,
+  },
+  shadows: {
+    activeBead: Platform.select<ViewStyle>({
+      ios: {
+        shadowColor: "#FFE09A",
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.68,
+        shadowRadius: 12,
+      },
+      android: { elevation: 9 },
+      default: {},
+    }),
+  },
 } as const;
 
 export const zIndex = {
@@ -735,6 +777,7 @@ export const theme = {
   opacity,
   sizes,
   breakpoints,
+  rosary: rosaryTokens,
   zIndex,
 } as const;
 

@@ -16,6 +16,22 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    npx expo start
    ```
 
+## Rosary prayer screen
+
+The interactive Rosary lives in the Prayer tab and is assembled from reusable files in `src/components/rosary`, `src/hooks/useRosarySession.ts`, and `src/data`.
+
+Run the checks with:
+
+```bash
+npx tsc --noEmit
+npm test
+npm run test:coverage
+```
+
+The session persists its current mystery, bead, completed beads, completion status, and last-prayed date through AsyncStorage. Haptics are provided through `expo-haptics`; both are installed with SDK 57-compatible versions.
+
+The current mystery artwork is intentionally local placeholder artwork defined in `src/data/rosaryMysteries.ts`. Put licensed devotional images in `src/assets/rosary/`, then update each `imageSource` and `imageAlt` there. If custom devotional fonts are added, register them with `expo-font` and update `fontFamilies` in `src/theme/tokens.ts`; the screen currently uses the platform fonts for reliable iOS, Android, and accessibility sizing.
+
 In the output, you'll find options to open the app in a
 
 - [development build](https://docs.expo.dev/develop/development-builds/introduction/)
