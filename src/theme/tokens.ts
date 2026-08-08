@@ -395,6 +395,12 @@ function getHairlineWidth(): number {
 const StyleSheetHairlineWidth = getHairlineWidth();
 
 export const fontFamilies = {
+  devotional: Platform.select({
+    ios: "Georgia",
+    android: "serif",
+    default: "Georgia",
+  }),
+
   display: Platform.select({
     ios: "System",
     android: "sans-serif",

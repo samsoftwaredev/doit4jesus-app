@@ -35,9 +35,11 @@
     "@testing-library/react-native": "^14.0.1",
     "@types/jest": "29.5.14",
     "@types/react": "~19.2.2",
+    "@vitest/coverage-v8": "^4.1.10",
     "jest": "~29.7.0",
     "jest-expo": "~57.0.3",
-    "typescript": "~6.0.3"
+    "typescript": "~6.0.3",
+    "vitest": "^4.1.10"
   },
   "scripts": {
     "start": "expo start",
@@ -47,14 +49,21 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "test": "jest --runInBand",
-    "test:coverage": "jest --runInBand --coverage"
+    "test:coverage": "jest --runInBand --coverage",
+    "test:garden:logic": "vitest run --config vitest.config.ts",
+    "test:garden:coverage": "vitest run --coverage --config vitest.config.ts"
   },
   "jest": {
     "preset": "jest-expo",
-    "setupFilesAfterEnv": ["<rootDir>/jest.setup.ts"],
+    "setupFilesAfterEnv": [
+      "<rootDir>/jest.setup.ts"
+    ],
     "moduleNameMapper": {
       "^@/(.*)$": "<rootDir>/src/$1"
     },
+    "testPathIgnorePatterns": [
+      "\\.vitest\\.ts$"
+    ],
     "collectCoverageFrom": [
       "src/hooks/useRosarySession.ts",
       "src/components/rosary/**/*.{ts,tsx}",

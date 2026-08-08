@@ -108,7 +108,7 @@ export function RosaryPrayerScreen() {
             },
           ]}
         >
-          <RosaryHeader />
+          <RosaryHeader onOpenGarden={() => router.push("/rosary-garden")} />
           <View style={[styles.main, { gap: contentGap }]}>
             <View style={{ width: rosaryColumnWidth }}>
               <RosaryBeadNavigator

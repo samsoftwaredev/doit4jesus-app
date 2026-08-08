@@ -7,7 +7,13 @@ export type DayCalendarTileState =
   | "incomplete"
   | "unavailable";
 
-export type DayCalendarFlower = "redRose" | "pinkRose" | "whiteLily" | "blueFlower" | "mixed";
+export type DayCalendarFlower =
+  | "redRose"
+  | "pinkRose"
+  | "whiteLily"
+  | "blueFlower"
+  | "mixed"
+  | "mixedFlowers";
 
 export interface DayCalendarTileProps {
   day: number;

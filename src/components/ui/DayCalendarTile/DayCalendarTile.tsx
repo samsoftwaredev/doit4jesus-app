@@ -29,6 +29,7 @@ const flowerConfig = {
   whiteLily: { color: theme.colors.text.white, image: whiteLily },
   blueFlower: { color: theme.colors.accent.blueLight, image: blueFlower },
   mixed: { color: theme.colors.accent.amber, image: mixed },
+  mixedFlowers: { color: theme.colors.accent.amber, image: mixed },
 } as const;
 
 const stateAccessibilityLabels: Record<
@@ -71,6 +72,7 @@ export function DayCalendarTile({
         },
         stateConfig.shadow,
         isUnavailable && styles.unavailable,
+        state === "future" && styles.future,
         style,
       ]}
       testID={testID}
@@ -89,7 +91,7 @@ export function DayCalendarTile({
       <View style={styles.garden}>
         <View style={styles.soil} />
         {isCompleted ? (
-          flower === "mixed" ? (
+          flower === "mixed" || flower === "mixedFlowers" ? (
             <View style={styles.mixedFlowers}>
               <MaterialCommunityIcons
                 color={theme.colors.accent.red}

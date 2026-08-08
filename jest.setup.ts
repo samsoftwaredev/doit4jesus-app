@@ -12,7 +12,7 @@ jest.mock("@react-native-async-storage/async-storage", () => ({
 }));
 
 jest.mock("expo-router", () => ({
-  useRouter: () => ({ replace: jest.fn() }),
+  useRouter: () => ({ back: jest.fn(), navigate: jest.fn(), replace: jest.fn() }),
 }));
 
 jest.mock("react-native-reanimated", () => {

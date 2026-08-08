@@ -62,6 +62,9 @@ export const styles = StyleSheet.create({
   unavailable: {
     opacity: theme.opacity.muted,
   },
+  future: {
+    opacity: theme.opacity.secondary,
+  },
   completionAccent: {
     height: theme.borderWidths.thin,
     left: theme.spacing[2],
@@ -71,6 +74,7 @@ export const styles = StyleSheet.create({
   },
   dayNumber: {
     ...theme.typography.label,
+    alignSelf: "center",
     color: theme.colors.text.primary,
   },
   garden: {
@@ -113,8 +117,8 @@ export const styles = StyleSheet.create({
     height: theme.sizes.badge,
     justifyContent: "center",
     position: "absolute",
+    bottom: theme.spacing[1],
     right: theme.spacing[1],
-    top: theme.spacing[1],
     width: theme.sizes.badge,
     zIndex: theme.zIndex.dropdown,
   },
