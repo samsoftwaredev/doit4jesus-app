@@ -136,7 +136,7 @@ export default function BattleScreen() {
             frameHeight={224}
             frameWidth={280}
             loop
-            source={require("../../assets/animations/wrathFury.png")}
+            source={require("../assets/animations/wrathFury.png")}
             style={styles.wrathAnimation}
             totalFrames={8}
           />
@@ -195,7 +195,7 @@ function BattleBackground() {
       accessible={false}
       contentFit="contain"
       contentPosition="top"
-      source={require("../../assets/backgrounds/arena1.png")}
+      source={require("../assets/backgrounds/arena1.png")}
       style={StyleSheet.absoluteFill}
     />
   );

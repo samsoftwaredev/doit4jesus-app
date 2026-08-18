@@ -1,24 +1,11 @@
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { LinearGradient } from "expo-linear-gradient";
-import { type Href, useRouter } from "expo-router";
-import { Image as RNImage, StyleSheet, Text, View } from "react-native";
+import { useRouter } from "expo-router";
+import { StyleSheet, View } from "react-native";
 
 import { ScreenShell } from "@/components/screen-shell";
-import {
-  Button,
-  Card,
-  HeaderActionGroup,
-  ResponsiveImage,
-} from "@/components/ui";
+import { HeaderActionGroup, ResponsiveImage } from "@/components/ui";
 import { AvatarPanel } from "@/features/avatar";
-import {
-  ConfessionCard,
-  MassTimesCard,
-  TodaysRosaryCard,
-  TodaysScriptureCard,
-} from "@/features/daily-practice";
 import { LevelsProgression } from "@/features/levels";
-import { VirtuesPanel } from "@/features/virtues";
 import { theme } from "@/theme/tokens";
 
 const battleImage = require("../../assets/tabs/battle.png");
@@ -40,7 +27,7 @@ export default function HomeScreen() {
         />
       }
     >
-      <View style={styles.grid}>
+      {/* <View style={styles.grid}>
         <TodaysScriptureCard
           onPress={() => router.push("/prayer")}
           style={styles.dailyPracticeCard}
@@ -57,13 +44,13 @@ export default function HomeScreen() {
           onPress={() => router.push("/community")}
           style={styles.dailyPracticeCard}
         />
-      </View>
+      </View> */}
       <View style={styles.formationGrid}>
         <LevelsProgression style={styles.levelsProgression} />
         <AvatarPanel style={styles.avatarPanel} />
-        <VirtuesPanel fullWidth={false} style={styles.virtuesPanel} />
+        {/* <VirtuesPanel fullWidth={false} style={styles.virtuesPanel} /> */}
       </View>
-      <Card
+      {/* <Card
         fullWidth
         header={
           <View style={styles.battleCardHeader}>
@@ -106,7 +93,7 @@ export default function HomeScreen() {
         >
           Go to Battle
         </Button>
-      </Card>
+      </Card> */}
     </ScreenShell>
   );
 }

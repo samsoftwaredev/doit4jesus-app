@@ -8,7 +8,7 @@ const tabArtworkSources = {
   home: require("../../assets/tabs/home.png"),
   prayer: require("../../assets/tabs/prayer.png"),
   community: require("../../assets/tabs/community.png"),
-  battle: require("../../assets/tabs/battle.png"),
+  // battle: require("../../assets/tabs/battle.png"),
   profile: require("../../assets/tabs/profile.png"),
 } as const;
 
@@ -85,7 +85,7 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="battle"
         options={{
           title: "Battle",
@@ -97,7 +97,7 @@ export default function TabLayout() {
             />
           ),
         }}
-      />
+      /> */}
       <Tabs.Screen
         name="prayer"
         options={{
