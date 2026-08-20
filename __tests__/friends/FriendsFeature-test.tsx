@@ -218,7 +218,28 @@ describe("Friends feature", () => {
   });
 
   it("accepts and declines incoming friend requests", async () => {
+    const friendsReload = jest.fn(() => Promise.resolve());
+    const leaderboardReload = jest.fn(() => Promise.resolve());
     const resolve = jest.fn(() => Promise.resolve());
+    hooks.useFriends.mockReturnValue({
+      error: undefined,
+      friends: [maria],
+      hasMore: false,
+      isLoading: false,
+      isLoadingMore: false,
+      loadMore: jest.fn(),
+      reload: friendsReload,
+    });
+    hooks.useRosaryLeaderboard.mockReturnValue({
+      error: undefined,
+      isLoading: false,
+      isLoadingMore: false,
+      leaderboard,
+      loadMore: jest.fn(),
+      periodType: "weekly",
+      reload: leaderboardReload,
+      setPeriodType: jest.fn(),
+    });
     hooks.useFriendRequests.mockReturnValue({
       error: undefined,
       isLoading: false,
@@ -230,10 +251,14 @@ describe("Friends feature", () => {
     await render(<FriendsScreen />);
 
     await fireEvent.press(screen.getByLabelText("Accept friend request from John Paul"));
-    await fireEvent.press(screen.getByLabelText("Decline friend request from John Paul"));
-
     expect(resolve).toHaveBeenCalledWith(johnRequest, "accepted");
+    expect(friendsReload).toHaveBeenCalledTimes(1);
+    expect(leaderboardReload).toHaveBeenCalledTimes(1);
+
+    await fireEvent.press(screen.getByLabelText("Decline friend request from John Paul"));
     expect(resolve).toHaveBeenCalledWith(johnRequest, "rejected");
+    expect(friendsReload).toHaveBeenCalledTimes(1);
+    expect(leaderboardReload).toHaveBeenCalledTimes(1);
   });
 
   it("switches leaderboard periods and highlights the current user", async () => {

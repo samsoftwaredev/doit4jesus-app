@@ -1,22 +1,39 @@
 import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Alert, Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Alert,
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Button, Card } from "@/components/ui";
-import { FriendAvatar, FriendsHeader, FriendsState } from "@/features/friends/components";
+import {
+  FriendAvatar,
+  FriendsHeader,
+  FriendsState,
+} from "@/features/friends/components";
 import { removeFriend } from "@/features/friends/friends.api";
 import { useFriendProfile } from "@/features/friends/friends.hooks";
 import { theme } from "@/theme/tokens";
 
-export function FriendProfileScreen({ friendId }: { friendId: string | undefined }) {
+export function FriendProfileScreen({
+  friendId,
+}: {
+  friendId: string | undefined;
+}) {
   const router = useRouter();
   const profile = useFriendProfile(friendId);
   const [isRemoving, setIsRemoving] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
 
   const confirmRemove = () => {
+    console.log("confirmRemove", friendId, profile.friend);
     if (!friendId || !profile.friend) return;
     Alert.alert(
       "Remove friend?",
@@ -50,16 +67,46 @@ export function FriendProfileScreen({ friendId }: { friendId: string | undefined
       <FriendsHeader
         onBack={() => router.back()}
         rightAction={
-          <Pressable accessibilityLabel="Friend options" accessibilityRole="button" onPress={() => setShowOptions(true)} style={styles.optionsButton}>
-            <Feather color={theme.colors.icon.primary} name="more-horizontal" size={theme.sizes.iconMedium} />
+          <Pressable
+            accessibilityLabel="Friend options"
+            accessibilityRole="button"
+            onPress={() => setShowOptions(true)}
+            style={styles.optionsButton}
+          >
+            <Feather
+              color={theme.colors.icon.primary}
+              name="more-horizontal"
+              size={theme.sizes.iconMedium}
+            />
           </Pressable>
         }
         title="Friend Profile"
       />
-      {profile.isLoading ? <View style={styles.state}><FriendsState message="Loading this friend's profile…" title="Friend Profile" type="loading" /></View> : null}
-      {profile.error ? <View style={styles.state}><FriendsState actionLabel="Try again" message={profile.error} onAction={() => void profile.reload()} title="Couldn't load friend profile" type="error" /></View> : null}
+      {profile.isLoading ? (
+        <View style={styles.state}>
+          <FriendsState
+            message="Loading this friend's profile…"
+            title="Friend Profile"
+            type="loading"
+          />
+        </View>
+      ) : null}
+      {profile.error ? (
+        <View style={styles.state}>
+          <FriendsState
+            actionLabel="Try again"
+            message={profile.error}
+            onAction={() => void profile.reload()}
+            title="Couldn't load friend profile"
+            type="error"
+          />
+        </View>
+      ) : null}
       {profile.friend && !profile.isLoading && !profile.error ? (
-        <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+        <ScrollView
+          contentContainerStyle={styles.content}
+          showsVerticalScrollIndicator={false}
+        >
           <Card padding="lg" variant="elevated">
             <View style={styles.hero}>
               <FriendAvatar
@@ -68,32 +115,60 @@ export function FriendProfileScreen({ friendId }: { friendId: string | undefined
                 size="xl"
                 source={profile.friend.friend.avatarUrl}
               />
-              <Text style={styles.name}>{profile.friend.friend.displayName}</Text>
-              {profile.friend.friend.title ? <Text style={styles.title}>{profile.friend.friend.title}</Text> : null}
-              <Text style={styles.level}>{`Level ${profile.friend.progress.currentLevel.levelNumber}`}</Text>
-              <Text style={styles.xp}>{`${profile.friend.progress.totalXp.toLocaleString("en-US")} XP`}</Text>
+              <Text style={styles.name}>
+                {profile.friend.friend.displayName}
+              </Text>
+              {profile.friend.friend.title ? (
+                <Text style={styles.title}>{profile.friend.friend.title}</Text>
+              ) : null}
+              <Text
+                style={styles.level}
+              >{`Level ${profile.friend.progress.currentLevel.levelNumber}`}</Text>
+              <Text
+                style={styles.xp}
+              >{`${profile.friend.progress.totalXp.toLocaleString("en-US")} XP`}</Text>
             </View>
           </Card>
 
           <View style={styles.stats}>
-            <ProfileStat label="TOTAL ROSARIES" value={profile.friend.rosaryTotal.toLocaleString("en-US")} />
-            {profile.friend.rosaryStreak ? <ProfileStat label="DAY STREAK" value={profile.friend.rosaryStreak.currentStreak.toLocaleString("en-US")} /> : null}
-            <ProfileStat label="BADGES" value={profile.friend.badges.length.toLocaleString("en-US")} />
+            <ProfileStat
+              label="TOTAL ROSARIES"
+              value={profile.friend.rosaryTotal.toLocaleString("en-US")}
+            />
+            {profile.friend.rosaryStreak ? (
+              <ProfileStat
+                label="DAY STREAK"
+                value={profile.friend.rosaryStreak.currentStreak.toLocaleString(
+                  "en-US",
+                )}
+              />
+            ) : null}
+            <ProfileStat
+              label="BADGES"
+              value={profile.friend.badges.length.toLocaleString("en-US")}
+            />
           </View>
 
           <Card padding="md" title="Progress">
             <View style={styles.detailRow}>
               <Text style={styles.detailLabel}>Current level</Text>
-              <Text style={styles.detailValue}>{profile.friend.progress.currentLevel.name ?? `Level ${profile.friend.progress.currentLevel.levelNumber}`}</Text>
+              <Text style={styles.detailValue}>
+                {profile.friend.progress.currentLevel.name ??
+                  `Level ${profile.friend.progress.currentLevel.levelNumber}`}
+              </Text>
             </View>
             <View style={styles.detailRow}>
               <Text style={styles.detailLabel}>Total XP</Text>
-              <Text style={styles.detailValue}>{profile.friend.progress.totalXp.toLocaleString("en-US")}</Text>
+              <Text style={styles.detailValue}>
+                {profile.friend.progress.totalXp.toLocaleString("en-US")}
+              </Text>
             </View>
             {profile.friend.rosaryStreak ? (
               <View style={styles.detailRow}>
                 <Text style={styles.detailLabel}>Longest Rosary streak</Text>
-                <Text style={styles.detailValue}>{`${profile.friend.rosaryStreak.longestStreak} days`}</Text>
+                <Text
+                  style={styles.detailValue}
+                >{`${profile.friend.rosaryStreak.longestStreak} days`}</Text>
               </View>
             ) : null}
           </Card>
@@ -136,14 +211,48 @@ function FriendOptionsModal({
   visible: boolean;
 }) {
   return (
-    <Modal animationType="fade" onRequestClose={onClose} transparent visible={visible}>
+    <Modal
+      animationType="fade"
+      onRequestClose={onClose}
+      transparent
+      visible={visible}
+    >
       <View style={styles.modalOverlay}>
         <Card padding="md" style={styles.optionsCard} variant="elevated">
-          <Text accessibilityRole="header" style={styles.optionsTitle}>Friend options</Text>
-          <Button fullWidth onPress={onClose} variant="secondary">View Profile</Button>
-          <Button fullWidth onPress={onCompare} variant="outline">Compare Stats</Button>
-          <Button fullWidth loading={isRemoving} onPress={onRemove} variant="danger">Remove Friend</Button>
-          <Button fullWidth onPress={onClose} variant="ghost">Cancel</Button>
+          <Text
+            accessibilityRole="header"
+            style={[styles.optionsTitle, { marginBottom: theme.spacing[3] }]}
+          >
+            Friend options
+          </Text>
+          <Button
+            fullWidth
+            onPress={onClose}
+            variant="secondary"
+            style={{ marginBottom: theme.spacing[3] }}
+          >
+            View Profile
+          </Button>
+          <Button
+            fullWidth
+            onPress={onCompare}
+            variant="outline"
+            style={{ marginBottom: theme.spacing[3] }}
+          >
+            Compare Stats
+          </Button>
+          <Button
+            fullWidth
+            loading={isRemoving}
+            onPress={onRemove}
+            variant="danger"
+            style={{ marginBottom: theme.spacing[3] }}
+          >
+            Remove Friend
+          </Button>
+          <Button fullWidth onPress={onClose} variant="ghost">
+            Cancel
+          </Button>
         </Card>
       </View>
     </Modal>
@@ -203,6 +312,8 @@ const styles = StyleSheet.create({
     width: theme.sizes.touchTarget,
   },
   optionsCard: {
+    display: "flex",
+    flexDirection: "column",
     gap: theme.spacing[3],
     maxWidth: theme.sizes.contentMaxWidth,
     width: "100%",

@@ -10,7 +10,11 @@ import {
   PendingRequestsCard,
   RosaryLeaderboardCard,
 } from "@/features/friends/components";
-import { useFriendRequests, useFriends, useRosaryLeaderboard } from "@/features/friends/friends.hooks";
+import {
+  useFriendRequests,
+  useFriends,
+  useRosaryLeaderboard,
+} from "@/features/friends/friends.hooks";
 import type { FriendRequest } from "@/features/friends/friends.types";
 import { theme } from "@/theme/tokens";
 
@@ -28,30 +32,65 @@ export function FriendsScreen() {
     router.push("/friends/add");
   };
 
-  const resolveRequest = (request: FriendRequest, decision: "accepted" | "rejected") => {
-    void requests.resolve(request, decision).catch(() => undefined);
+  const resolveRequest = async (
+    request: FriendRequest,
+    decision: "accepted" | "rejected",
+  ) => {
+    try {
+      await requests.resolve(request, decision);
+
+      if (decision === "accepted") {
+        await Promise.all([leaderboard.reload(), friends.reload()]);
+      }
+    } catch {
+      // The request hook retains the card and exposes an inline retry state.
+    }
   };
 
   return (
     <SafeAreaView edges={["top"]} style={styles.safeArea}>
       <FriendsHeader
         rightAction={
-          <Pressable accessibilityLabel="Add friend" accessibilityRole="button" onPress={openAddFriend} style={styles.addButton}>
-            <Feather color={theme.colors.text.inverse} name="user-plus" size={theme.sizes.iconSmall} />
+          <Pressable
+            accessibilityLabel="Add friend"
+            accessibilityRole="button"
+            onPress={openAddFriend}
+            style={styles.addButton}
+          >
+            <Feather
+              color={theme.colors.text.inverse}
+              name="user-plus"
+              size={theme.sizes.iconSmall}
+            />
           </Pressable>
         }
         title="Community"
       />
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <Text style={styles.intro}>Compete with kindness and encourage one another in prayer.</Text>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+      >
+        <Text style={styles.intro}>Compete with one another in prayer.</Text>
 
         {leaderboard.isLoading ? (
-          <FriendsState message="Loading your friends' points…" title="Leaderboard" type="loading" />
+          <FriendsState
+            message="Loading your friends' points…"
+            title="Leaderboard"
+            type="loading"
+          />
         ) : null}
         {leaderboard.error ? (
-          <FriendsState actionLabel="Try again" message={leaderboard.error} onAction={() => void leaderboard.reload()} title="Couldn't load the leaderboard" type="error" />
+          <FriendsState
+            actionLabel="Try again"
+            message={leaderboard.error}
+            onAction={() => void leaderboard.reload()}
+            title="Couldn't load the leaderboard"
+            type="error"
+          />
         ) : null}
-        {leaderboard.leaderboard && !leaderboard.isLoading && !leaderboard.error ? (
+        {leaderboard.leaderboard &&
+        !leaderboard.isLoading &&
+        !leaderboard.error ? (
           leaderboard.leaderboard.entries.length ? (
             <RosaryLeaderboardCard
               leaderboard={leaderboard.leaderboard}
@@ -59,13 +98,31 @@ export function FriendsScreen() {
               onViewFullLeaderboard={() => router.push("/friends/leaderboard")}
             />
           ) : (
-            <FriendsState message="No Rosaries recorded yet" title="Leaderboard" type="empty" />
+            <FriendsState
+              message="No Rosaries recorded yet"
+              title="Leaderboard"
+              type="empty"
+            />
           )
         ) : null}
 
         <View style={styles.section}>
-          {requests.isLoading ? <FriendsState message="Loading pending requests…" title="Pending requests" type="loading" /> : null}
-          {requests.error ? <FriendsState actionLabel="Try again" message={requests.error} onAction={() => void requests.reload()} title="Couldn't load pending requests" type="error" /> : null}
+          {requests.isLoading ? (
+            <FriendsState
+              message="Loading pending requests…"
+              title="Pending requests"
+              type="loading"
+            />
+          ) : null}
+          {requests.error ? (
+            <FriendsState
+              actionLabel="Try again"
+              message={requests.error}
+              onAction={() => void requests.reload()}
+              title="Couldn't load pending requests"
+              type="error"
+            />
+          ) : null}
           {!requests.isLoading && !requests.error ? (
             <PendingRequestsCard
               isMutatingId={requests.isMutatingId}
@@ -78,9 +135,25 @@ export function FriendsScreen() {
         </View>
 
         <View style={styles.section}>
-          {friends.isLoading ? <FriendsState message="Loading your fellowship…" title="Your friends" type="loading" /> : null}
-          {friends.error ? <FriendsState actionLabel="Try again" message={friends.error} onAction={() => void friends.reload()} title="Couldn't load friends" type="error" /> : null}
-          {!friends.isLoading && !friends.error && friends.friends.length === 0 ? (
+          {friends.isLoading ? (
+            <FriendsState
+              message="Loading your fellowship…"
+              title="Your friends"
+              type="loading"
+            />
+          ) : null}
+          {friends.error ? (
+            <FriendsState
+              actionLabel="Try again"
+              message={friends.error}
+              onAction={() => void friends.reload()}
+              title="Couldn't load friends"
+              type="error"
+            />
+          ) : null}
+          {!friends.isLoading &&
+          !friends.error &&
+          friends.friends.length === 0 ? (
             <FriendsState
               actionLabel="Find Friends"
               message="Add friends and encourage one another in prayer and virtue."
@@ -93,8 +166,16 @@ export function FriendsScreen() {
             <FriendsList friends={friends.friends} onPressFriend={openFriend} />
           ) : null}
           {friends.hasMore ? (
-            <Pressable accessibilityRole="button" onPress={() => void friends.loadMore()} style={styles.moreFriends}>
-              <Text style={styles.moreFriendsText}>{friends.isLoadingMore ? "Loading friends…" : "Load more friends"}</Text>
+            <Pressable
+              accessibilityRole="button"
+              onPress={() => void friends.loadMore()}
+              style={styles.moreFriends}
+            >
+              <Text style={styles.moreFriendsText}>
+                {friends.isLoadingMore
+                  ? "Loading friends…"
+                  : "Load more friends"}
+              </Text>
             </Pressable>
           ) : null}
         </View>

@@ -69,7 +69,6 @@ export const styles = StyleSheet.create({
     alignSelf: "stretch",
     borderRadius: theme.radii.md,
     borderWidth: theme.borderWidths.thin,
-    flexBasis: theme.sizes.cardMinWidth,
     flexGrow: 1,
     flexShrink: 1,
     maxWidth: "100%",
@@ -83,6 +82,7 @@ export const styles = StyleSheet.create({
     opacity: theme.opacity.disabled,
   },
   header: {
+    margin: theme.spacing[3],
     borderBottomColor: theme.colors.border.subtle,
     borderBottomWidth: theme.borderWidths.hairline,
   },
@@ -93,6 +93,7 @@ export const styles = StyleSheet.create({
   },
   headerCopy: {
     flex: 1,
+    margin: theme.spacing[3],
     minWidth: theme.spacing[0],
   },
   title: {
@@ -110,7 +111,7 @@ export const styles = StyleSheet.create({
     flexGrow: 1,
   },
   footer: {
-    borderTopColor: theme.colors.border.subtle,
-    borderTopWidth: theme.borderWidths.hairline,
+    marginTop: theme.spacing[2],
+    marginBottom: theme.spacing[2],
   },
 });
