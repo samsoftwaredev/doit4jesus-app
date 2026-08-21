@@ -6,6 +6,7 @@ import { ScreenShell } from "@/components/screen-shell";
 import { HeaderActionGroup, ResponsiveImage } from "@/components/ui";
 import { AvatarPanel } from "@/features/avatar";
 import { LevelsProgression } from "@/features/levels";
+import { DailyLiturgyDashboard } from "@/features/liturgy/screens";
 import { theme } from "@/theme/tokens";
 
 const battleImage = require("../../assets/tabs/battle.png");
@@ -45,6 +46,7 @@ export default function HomeScreen() {
           style={styles.dailyPracticeCard}
         />
       </View> */}
+      <DailyLiturgyDashboard />
       <View style={styles.formationGrid}>
         <LevelsProgression style={styles.levelsProgression} />
         <AvatarPanel style={styles.avatarPanel} />
