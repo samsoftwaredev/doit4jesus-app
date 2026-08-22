@@ -1,3 +1,4 @@
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import type { PropsWithChildren, ReactNode } from "react";
 import type { StyleProp, ViewStyle } from "react-native";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
@@ -34,12 +35,24 @@ export function ScreenShell({
           ) : null}
           <View style={[styles.content, contentContainerStyle]}>
             <View style={styles.header}>
-              <View style={styles.heading}>
-                {eyebrow ? <Text style={styles.eyebrow}>{eyebrow}</Text> : null}
-                <Text style={styles.title}>{title}</Text>
-                <Text style={styles.subtitle}>{subtitle}</Text>
+              <View style={styles.brandRow}>
+                <View style={styles.brandIcon}>
+                  <MaterialCommunityIcons
+                    color={theme.colors.gold.pale}
+                    name="shield-cross"
+                    size={theme.sizes.iconMedium}
+                  />
+                </View>
+                <Text style={styles.brand}>doit4Jesus</Text>
               </View>
-              {headerAccessory}
+              <View style={styles.headingRow}>
+                <View style={styles.heading}>
+                  {eyebrow ? <Text style={styles.eyebrow}>{eyebrow}</Text> : null}
+                  <Text style={styles.title}>{title}</Text>
+                  <Text style={styles.subtitle}>{subtitle}</Text>
+                </View>
+                {headerAccessory}
+              </View>
             </View>
             {children}
           </View>
@@ -73,12 +86,35 @@ const styles = StyleSheet.create({
     width: "100%",
     zIndex: theme.zIndex.card,
   },
+  brand: {
+    ...theme.typography.heading3,
+    color: theme.colors.text.primary,
+  },
+  brandIcon: {
+    alignItems: "center",
+    backgroundColor: theme.colors.surface.tertiary,
+    borderColor: theme.colors.gold.strong,
+    borderRadius: theme.radii.pill,
+    borderWidth: theme.borderWidths.thin,
+    height: theme.sizes.touchTarget,
+    justifyContent: "center",
+    width: theme.sizes.touchTarget,
+  },
+  brandRow: {
+    alignItems: "center",
+    alignSelf: "flex-start",
+    flexDirection: "row",
+    gap: theme.spacing[2],
+    marginBottom: theme.spacing[4],
+  },
   header: {
+    paddingBottom: theme.spacing[6],
+    paddingTop: theme.spacing[5],
+  },
+  headingRow: {
     alignItems: "flex-start",
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingBottom: theme.spacing[6],
-    paddingTop: theme.spacing[5],
   },
   heading: {
     flex: 1,

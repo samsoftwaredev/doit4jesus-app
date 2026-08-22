@@ -1,4 +1,5 @@
 import Feather from "@expo/vector-icons/Feather";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useRouter } from "expo-router";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -49,6 +50,16 @@ export function FriendsScreen() {
 
   return (
     <SafeAreaView edges={["top"]} style={styles.safeArea}>
+      <View style={styles.brandRow}>
+        <View style={styles.brandIcon}>
+          <MaterialCommunityIcons
+            color={theme.colors.gold.pale}
+            name="shield-cross"
+            size={theme.sizes.iconMedium}
+          />
+        </View>
+        <Text style={styles.brand}>doit4Jesus</Text>
+      </View>
       <FriendsHeader
         rightAction={
           <Pressable
@@ -185,6 +196,29 @@ export function FriendsScreen() {
 }
 
 const styles = StyleSheet.create({
+  brand: {
+    ...theme.typography.heading3,
+    color: theme.colors.text.primary,
+  },
+  brandIcon: {
+    alignItems: "center",
+    backgroundColor: theme.colors.surface.tertiary,
+    borderColor: theme.colors.gold.strong,
+    borderRadius: theme.radii.pill,
+    borderWidth: theme.borderWidths.thin,
+    height: theme.sizes.touchTarget,
+    justifyContent: "center",
+    width: theme.sizes.touchTarget,
+  },
+  brandRow: {
+    alignItems: "center",
+    alignSelf: "flex-start",
+    flexDirection: "row",
+    gap: theme.spacing[2],
+    paddingHorizontal: theme.spacing[4],
+    paddingTop: theme.spacing[5],
+    marginBottom: theme.spacing[1],
+  },
   addButton: {
     alignItems: "center",
     backgroundColor: theme.colors.gold.light,

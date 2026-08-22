@@ -8,17 +8,6 @@ import { styles } from "./ArmorHeader.styles";
 export function ArmorHeader() {
   return (
     <View style={styles.container}>
-      <View style={styles.brandRow}>
-        <View style={styles.brandIcon}>
-          <MaterialCommunityIcons
-            color={theme.colors.gold.pale}
-            name="shield-cross"
-            size={theme.sizes.iconMedium}
-          />
-        </View>
-        <Text style={styles.brand}>doit4Jesus</Text>
-      </View>
-
       <View style={styles.titleRow}>
         <MaterialCommunityIcons
           accessible={false}

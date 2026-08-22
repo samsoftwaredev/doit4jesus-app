@@ -4,7 +4,7 @@ import { StyleSheet, View } from "react-native";
 
 import { ScreenShell } from "@/components/screen-shell";
 import { HeaderActionGroup, ResponsiveImage } from "@/components/ui";
-import { AvatarPanel } from "@/features/avatar";
+import { ArmorOfGodScreen } from "@/features/armor-of-god";
 import { LevelsProgression } from "@/features/levels";
 import { DailyLiturgyDashboard } from "@/features/liturgy/screens";
 import { theme } from "@/theme/tokens";
@@ -16,7 +16,6 @@ export default function HomeScreen() {
 
   return (
     <ScreenShell
-      eyebrow="TODAY"
       title="Welcome home"
       subtitle="Build a faithful rhythm, one moment at a time."
       background={<HomeBackground />}
@@ -49,7 +48,7 @@ export default function HomeScreen() {
       <DailyLiturgyDashboard />
       <View style={styles.formationGrid}>
         <LevelsProgression style={styles.levelsProgression} />
-        <AvatarPanel style={styles.avatarPanel} />
+        <ArmorOfGodScreen />
         {/* <VirtuesPanel fullWidth={false} style={styles.virtuesPanel} /> */}
       </View>
       {/* <Card
