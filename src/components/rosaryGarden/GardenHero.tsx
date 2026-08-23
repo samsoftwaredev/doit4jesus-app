@@ -5,7 +5,7 @@ import { LinearGradient } from "expo-linear-gradient";
 
 import { theme } from "@/theme/tokens";
 
-const maryArtwork = require("../../assets/saints/motherMary.png");
+const maryArtwork = require("../../assets/saints/blessed-virgin-mary.png");
 const flowersArtwork = require("../../assets/flowers/whiteFlowerVase.png");
 
 export function GardenHero() {

@@ -3,6 +3,7 @@ import type {
   LiturgicalColor,
   ReadingType,
 } from "./liturgy.types";
+import { getSupabaseAccessToken } from "@/lib/supabase";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
@@ -123,18 +124,17 @@ function parseDailyLiturgy(value: unknown): DailyLiturgyViewModel {
   };
 }
 
-function getRequestConfig() {
+async function getRequestConfig() {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
-  const accessToken = process.env.EXPO_PUBLIC_DEMONS_CATALOG_TOKEN;
 
   if (!apiUrl) throw new Error("Set EXPO_PUBLIC_API_URL before loading daily liturgy.");
-  if (!accessToken) throw new Error("Set EXPO_PUBLIC_DEMONS_CATALOG_TOKEN before loading daily liturgy.");
+  const accessToken = await getSupabaseAccessToken();
 
   return { accessToken, apiUrl: apiUrl.replace(/\/$/, "") };
 }
 
 async function requestLiturgy(path: string) {
-  const { accessToken, apiUrl } = getRequestConfig();
+  const { accessToken, apiUrl } = await getRequestConfig();
   const response = await fetch(`${apiUrl}${path}`, {
     headers: { Accept: "application/json", Authorization: `Bearer ${accessToken}` },
     method: "GET",
@@ -167,7 +167,7 @@ export async function recordDailyScriptureCompletion(input: {
   completedAt: string;
   idempotencyKey: string;
 }): Promise<RecordDailyScriptureCompletionResult> {
-  const { accessToken, apiUrl } = getRequestConfig();
+  const { accessToken, apiUrl } = await getRequestConfig();
   const response = await fetch(`${apiUrl}/api/v1/activities`, {
     body: JSON.stringify({
       activityCode: "PRAYER",

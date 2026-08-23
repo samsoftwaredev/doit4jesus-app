@@ -3,11 +3,10 @@ import { Image } from "expo-image";
 import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
-import { Button, Card } from "@/components/ui";
 import { ScreenShell } from "@/components/screen-shell";
-import { ArmorOfGodScreen } from "@/features/armor-of-god";
-import { fetchCurrentUserProfile } from "@/features/profile";
+import { Button, Card } from "@/components/ui";
 import type { CurrentUserProfile } from "@/features/profile";
+import { fetchCurrentUserProfile } from "@/features/profile";
 import { theme } from "@/theme/tokens";
 
 const profileItems = [
@@ -49,7 +48,13 @@ export default function ProfileScreen() {
       subtitle="Keep showing up. Small steps become a faithful life."
     >
       <Card
-        headerRight={<Feather color={theme.colors.icon.secondary} name="edit-2" size={theme.sizes.iconSmall} />}
+        headerRight={
+          <Feather
+            color={theme.colors.icon.secondary}
+            name="edit-2"
+            size={theme.sizes.iconSmall}
+          />
+        }
         subtitle={profile?.title ?? "Your faith journey"}
         title={profile?.displayName ?? "Your profile"}
         variant="elevated"
@@ -57,14 +62,20 @@ export default function ProfileScreen() {
         {isLoadingProfile ? (
           <View style={styles.profileState}>
             <ActivityIndicator color={theme.colors.brand.primaryLight} />
-            <Text style={styles.profileCaption}>Loading your faith journey.</Text>
+            <Text style={styles.profileCaption}>
+              Loading your faith journey.
+            </Text>
           </View>
         ) : null}
 
         {profileError ? (
           <View style={styles.profileState}>
             <Text style={styles.profileCaption}>{profileError}</Text>
-            <Button onPress={() => void loadProfile()} size="sm" variant="secondary">
+            <Button
+              onPress={() => void loadProfile()}
+              size="sm"
+              variant="secondary"
+            >
               Retry
             </Button>
           </View>
@@ -85,7 +96,9 @@ export default function ProfileScreen() {
               </View>
             )}
             <View style={styles.profileCopy}>
-              <Text style={styles.profileUsername}>{`@${profile.username}`}</Text>
+              <Text
+                style={styles.profileUsername}
+              >{`@${profile.username}`}</Text>
               <Text style={styles.profileCaption}>{profile.title}</Text>
               <Text style={styles.profileMetadata}>{profile.timezone}</Text>
             </View>
@@ -103,24 +116,41 @@ export default function ProfileScreen() {
       </View>
 
       <Text style={styles.sectionTitle}>Account</Text>
-      <Card footer={<Button fullWidth onPress={() => undefined} variant="ghost">Manage profile</Button>} padding="none" title="Preferences">
+      <Card
+        footer={
+          <Button fullWidth onPress={() => undefined} variant="ghost">
+            Manage profile
+          </Button>
+        }
+        padding="none"
+        title="Preferences"
+      >
         <View style={styles.list}>
           {profileItems.map((item, index) => (
             <View
               key={item.label}
-              style={[styles.listItem, index < profileItems.length - 1 && styles.listDivider]}
+              style={[
+                styles.listItem,
+                index < profileItems.length - 1 && styles.listDivider,
+              ]}
             >
               <View style={styles.listIcon}>
-                <Feather color={theme.colors.icon.secondary} name={item.icon} size={theme.sizes.iconSmall} />
+                <Feather
+                  color={theme.colors.icon.secondary}
+                  name={item.icon}
+                  size={theme.sizes.iconSmall}
+                />
               </View>
               <Text style={styles.listLabel}>{item.label}</Text>
-              <Feather color={theme.colors.icon.muted} name="chevron-right" size={theme.sizes.iconMedium} />
+              <Feather
+                color={theme.colors.icon.muted}
+                name="chevron-right"
+                size={theme.sizes.iconMedium}
+              />
             </View>
           ))}
         </View>
       </Card>
-
-      <ArmorOfGodScreen />
     </ScreenShell>
   );
 }

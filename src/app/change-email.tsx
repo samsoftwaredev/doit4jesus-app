@@ -1,0 +1,73 @@
+import { useRouter } from "expo-router";
+import { useState } from "react";
+import { View } from "react-native";
+
+import { Button } from "@/components/ui";
+import {
+  AuthMessage,
+  AuthScreen,
+  AuthTextInput,
+  authScreenStyles,
+  createAuthRedirectUrl,
+  useAuth,
+} from "@/features/auth";
+import { supabase } from "@/lib/supabase";
+
+export default function ChangeEmailScreen() {
+  const router = useRouter();
+  const { configurationError } = useAuth();
+  const [email, setEmail] = useState("");
+  const [errorMessage, setErrorMessage] = useState<string>();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string>();
+
+  const changeEmail = async () => {
+    setErrorMessage(undefined);
+    setSuccessMessage(undefined);
+    setIsSubmitting(true);
+
+    const { error } = await supabase.auth.updateUser(
+      { email: email.trim() },
+      { emailRedirectTo: createAuthRedirectUrl("/") },
+    );
+    if (error) {
+      setErrorMessage(error.message);
+    } else {
+      setSuccessMessage("Check your email to confirm this change.");
+    }
+    setIsSubmitting(false);
+  };
+
+  return (
+    <AuthScreen title="Change email" subtitle="Use the email address you want for your account.">
+      <AuthTextInput
+        accessibilityLabel="New email"
+        autoCapitalize="none"
+        autoComplete="email"
+        keyboardType="email-address"
+        label="New email"
+        onChangeText={setEmail}
+        placeholder="you@example.com"
+        textContentType="emailAddress"
+        value={email}
+      />
+      {configurationError || errorMessage ? (
+        <AuthMessage>{configurationError ?? errorMessage ?? ""}</AuthMessage>
+      ) : null}
+      {successMessage ? <AuthMessage tone="success">{successMessage}</AuthMessage> : null}
+      <View style={authScreenStyles.actions}>
+        <Button
+          disabled={!email.trim() || Boolean(configurationError)}
+          fullWidth
+          loading={isSubmitting}
+          onPress={() => void changeEmail()}
+        >
+          Change email
+        </Button>
+        <Button fullWidth onPress={() => router.back()} variant="ghost">
+          Cancel
+        </Button>
+      </View>
+    </AuthScreen>
+  );
+}

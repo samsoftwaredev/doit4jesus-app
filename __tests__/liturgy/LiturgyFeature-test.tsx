@@ -1,5 +1,9 @@
 import { fireEvent, render, screen } from "@testing-library/react-native";
 
+jest.mock("@/lib/supabase", () => ({
+  getSupabaseAccessToken: jest.fn(async () => "test-access-token"),
+}));
+
 import {
   parseDailyLiturgy,
   recordDailyScriptureCompletion,
@@ -49,7 +53,6 @@ const liturgyPayload = {
 describe("daily liturgy data", () => {
   beforeEach(() => {
     process.env.EXPO_PUBLIC_API_URL = "http://localhost:3000";
-    process.env.EXPO_PUBLIC_DEMONS_CATALOG_TOKEN = "test-token";
   });
 
   it("normalizes the active top-level readings and derives the Gospel excerpt", () => {
@@ -85,7 +88,10 @@ describe("daily liturgy data", () => {
     ).resolves.toEqual({ currentLevel: 2, points: 15, replayed: false, totalXp: 365 });
 
     const [, request] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
-    expect(request.headers).toMatchObject({ "Idempotency-Key": "daily-liturgy-key" });
+    expect(request.headers).toMatchObject({
+      Authorization: "Bearer test-access-token",
+      "Idempotency-Key": "daily-liturgy-key",
+    });
     expect(JSON.parse(String(request.body))).toMatchObject({
       activityCode: "PRAYER",
       completedAt: "2026-08-21T21:22:25.672Z",

@@ -11,7 +11,7 @@ export const rosaryMysteries: RosaryMystery[] = [
     id: "annunciation",
     title: "The Annunciation",
     category: "Joyful Mystery",
-    imageSource: require("../assets/saints/motherMary.png"),
+    imageSource: require("../assets/saints/blessed-virgin-mary.png"),
     imageAlt: "A devotional image of Mary for the mystery of the Annunciation.",
     scriptureReference: "Luke 1:38",
     scriptureText:

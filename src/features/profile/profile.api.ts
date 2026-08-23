@@ -1,4 +1,5 @@
 import type { CurrentUserProfile } from "./profile.types";
+import { getSupabaseAccessToken } from "@/lib/supabase";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
@@ -52,17 +53,12 @@ function parseCurrentUserProfile(value: unknown): CurrentUserProfile {
 
 export async function fetchCurrentUserProfile(): Promise<CurrentUserProfile> {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
-  const accessToken = process.env.EXPO_PUBLIC_DEMONS_CATALOG_TOKEN;
 
   if (!apiUrl) {
     throw new Error("Set EXPO_PUBLIC_API_URL before loading the profile.");
   }
 
-  if (!accessToken) {
-    throw new Error(
-      "Set EXPO_PUBLIC_DEMONS_CATALOG_TOKEN before loading the profile.",
-    );
-  }
+  const accessToken = await getSupabaseAccessToken();
 
   const response = await fetch(`${apiUrl.replace(/\/$/, "")}/api/v1/me`, {
     headers: {

@@ -16,6 +16,24 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    npx expo start
    ```
 
+## Authentication setup
+
+The app uses Supabase email-and-password authentication. Add these values to
+your local `.env` file from the Supabase project's Connect dialog:
+
+```env
+EXPO_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
+EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
+```
+
+The app's URL scheme is already `doit4jesus`. In Supabase **Authentication →
+URL Configuration**, add `doit4jesus://**` as a redirect URL. This is required
+for signup confirmations and password-reset links to reopen the app.
+
+Email confirmations and secure email changes are enabled by default in hosted
+Supabase projects. Configure an SMTP provider before production use so signup,
+email-change, and reset messages can be delivered reliably.
+
 ## Rosary prayer screen
 
 The interactive Rosary lives in the Prayer tab and is assembled from reusable files in `src/components/rosary`, `src/hooks/useRosarySession.ts`, and `src/data`.

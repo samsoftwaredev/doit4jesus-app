@@ -3,6 +3,7 @@ import type {
   RosaryCompletionApiResponse,
   RosaryStreakApiResponse,
 } from "@/types/rosaryGarden";
+import { getSupabaseAccessToken } from "@/lib/supabase";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
@@ -68,8 +69,8 @@ function parseStreakPayload(value: unknown): RosaryStreakApiResponse {
 
 async function requestRosaryGarden(path: string): Promise<unknown> {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
-  const accessToken = process.env.EXPO_PUBLIC_DEMONS_CATALOG_TOKEN;
-  if (!apiUrl || !accessToken) throw new Error("Rosary Garden API credentials are unavailable.");
+  if (!apiUrl) throw new Error("Set EXPO_PUBLIC_API_URL before loading the Rosary Garden.");
+  const accessToken = await getSupabaseAccessToken();
 
   const response = await fetch(`${apiUrl.replace(/\/$/, "")}${path}`, {
     headers: { Accept: "application/json", Authorization: `Bearer ${accessToken}` },

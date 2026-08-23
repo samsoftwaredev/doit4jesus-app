@@ -18,6 +18,7 @@ import type {
   RosaryStreak,
   UserSearchPage,
 } from "./friends.types";
+import { getSupabaseAccessToken } from "@/lib/supabase";
 
 type RequestOptions = {
   body?: Record<string, string>;
@@ -238,23 +239,20 @@ function parseEarnedFriendBadge(value: unknown): EarnedFriendBadge {
   };
 }
 
-function getRequestConfig() {
+async function getRequestConfig() {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
-  const accessToken = process.env.EXPO_PUBLIC_DEMONS_CATALOG_TOKEN;
 
   if (!apiUrl) {
     throw new Error("Set EXPO_PUBLIC_API_URL before loading Friends data.");
   }
 
-  if (!accessToken) {
-    throw new Error("Set EXPO_PUBLIC_DEMONS_CATALOG_TOKEN before loading Friends data.");
-  }
+  const accessToken = await getSupabaseAccessToken();
 
   return { accessToken, apiUrl: apiUrl.replace(/\/$/, "") };
 }
 
 async function request(path: string, options: RequestOptions = {}): Promise<unknown> {
-  const { accessToken, apiUrl } = getRequestConfig();
+  const { accessToken, apiUrl } = await getRequestConfig();
   const body = options.body ? JSON.stringify(options.body) : undefined;
   const response = await fetch(`${apiUrl}${path}`, {
     body,

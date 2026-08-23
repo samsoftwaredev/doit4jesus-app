@@ -7,6 +7,7 @@ import type {
   DemonDefense,
   DemonVirtueAffinity,
 } from "./demons.types";
+import { getSupabaseAccessToken } from "@/lib/supabase";
 
 const demonApiPath = "/api/v1/demons";
 
@@ -200,13 +201,7 @@ function getDemonApiUrl(demonCode?: string): string {
 }
 
 async function fetchDemonPayload(url: string): Promise<unknown> {
-  const accessToken = process.env.EXPO_PUBLIC_DEMONS_CATALOG_TOKEN;
-
-  if (!accessToken) {
-    throw new Error(
-      "Set EXPO_PUBLIC_DEMONS_CATALOG_TOKEN before loading demons.",
-    );
-  }
+  const accessToken = await getSupabaseAccessToken();
 
   const response = await fetch(url, {
     headers: {

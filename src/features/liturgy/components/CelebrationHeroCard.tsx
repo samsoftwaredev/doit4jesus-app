@@ -51,7 +51,7 @@ export function CelebrationHeroCard({ celebration }: CelebrationHeroCardProps) {
       <Image
         accessible={false}
         contentFit="contain"
-        source={require("../../../assets/saints/motherMary.png")}
+        source={require("../../../assets/saints/blessed-virgin-mary.png")}
         style={styles.mary}
       />
     </View>
