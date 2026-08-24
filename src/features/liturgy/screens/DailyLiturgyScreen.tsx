@@ -13,13 +13,18 @@ import {
   ScriptureReadingsCard,
 } from "../components";
 import {
-  fetchTodayLiturgy,
+  fetchLiturgyReadings,
   loadDailyReadingProgress,
   markCompletionToastShown,
   markDailyReadingComplete,
   recordDailyScriptureCompletion,
   recordRewardOnProgress,
 } from "../index";
+import {
+  addDaysToIsoDate,
+  canNavigateToNextLiturgyDate,
+  getLocalIsoDate,
+} from "../liturgy.dates";
 import type {
   DailyLiturgyViewModel,
   DailyReadingProgress,
@@ -61,7 +66,7 @@ function LiturgyLoadingState() {
 }
 
 /**
- * Home-dashboard section for today's Mass and Scripture. The parent dashboard
+ * Home-dashboard section for daily Mass and Scripture. The parent dashboard
  * owns scrolling so this component can live naturally alongside other cards.
  */
 export function DailyLiturgyDashboard({
@@ -78,6 +83,7 @@ export function DailyLiturgyDashboard({
   const [liturgy, setLiturgy] = useState<DailyLiturgyViewModel | null>(null);
   const [progress, setProgress] = useState<DailyReadingProgress | null>(null);
   const [rewardError, setRewardError] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState(() => getLocalIsoDate());
 
   const presentCompletionToast = useCallback(
     async (nextProgress: DailyReadingProgress, readingCount: number) => {
@@ -166,20 +172,23 @@ export function DailyLiturgyDashboard({
     [awardCompletion, presentCompletionToast],
   );
 
-  const reload = useCallback(async () => {
-    setError(null);
-    setIsLoading(true);
+  const reload = useCallback(
+    async (date = selectedDate) => {
+      setError(null);
+      setIsLoading(true);
 
-    try {
-      const model = await fetchTodayLiturgy(country);
-      setLiturgy(model);
-      await syncProgress(model);
-    } catch {
-      setError("Unable to load today’s liturgy.");
-    } finally {
-      setIsLoading(false);
-    }
-  }, [country, syncProgress]);
+      try {
+        const model = await fetchLiturgyReadings(date, country);
+        setLiturgy(model);
+        await syncProgress(model);
+      } catch {
+        setError("Unable to load this day’s liturgy.");
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [country, selectedDate, syncProgress],
+  );
 
   useEffect(() => {
     void reload();
@@ -195,6 +204,19 @@ export function DailyLiturgyDashboard({
     if (!liturgy || !progress) return;
     void awardCompletion(progress, liturgy.readings.length);
   }, [awardCompletion, liturgy, progress]);
+
+  const showPreviousDay = useCallback(() => {
+    setSelectedDate((date) => addDaysToIsoDate(date, -1));
+  }, []);
+
+  const showNextDay = useCallback(() => {
+    setSelectedDate((date) => {
+      if (!canNavigateToNextLiturgyDate(date)) return date;
+      return addDaysToIsoDate(date, 1);
+    });
+  }, []);
+
+  const nextDayDisabled = !canNavigateToNextLiturgyDate(selectedDate);
 
   const completeReading = useCallback(
     async (readingId: string) => {
@@ -224,7 +246,7 @@ export function DailyLiturgyDashboard({
       {error && !liturgy ? (
         <View style={styles.errorCard}>
           <Text accessibilityRole="header" style={styles.errorTitle}>
-            Unable to load today&apos;s liturgy.
+            Unable to load this day&apos;s liturgy.
           </Text>
           <Text style={styles.errorCopy}>
             Please try again when you&apos;re ready.
@@ -259,6 +281,12 @@ export function DailyLiturgyDashboard({
             metadata={liturgy.metadata}
             season={liturgy.celebration.season}
             onReadingComplete={completeReading}
+            isNavigating={isLoading}
+            nextDayDisabled={nextDayDisabled}
+            nextDate={addDaysToIsoDate(selectedDate, 1)}
+            previousDate={addDaysToIsoDate(selectedDate, -1)}
+            onNextDay={showNextDay}
+            onPreviousDay={showPreviousDay}
           />
           {rewardError ? (
             <View accessibilityRole="alert" style={styles.rewardError}>

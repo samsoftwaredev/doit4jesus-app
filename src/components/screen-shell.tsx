@@ -26,7 +26,10 @@ export function ScreenShell({
 }: ScreenShellProps) {
   return (
     <SafeAreaView edges={["top"]} style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.page}>
           {background ? (
             <View pointerEvents="none" style={styles.backgroundLayer}>
@@ -47,7 +50,9 @@ export function ScreenShell({
               </View>
               <View style={styles.headingRow}>
                 <View style={styles.heading}>
-                  {eyebrow ? <Text style={styles.eyebrow}>{eyebrow}</Text> : null}
+                  {eyebrow ? (
+                    <Text style={styles.eyebrow}>{eyebrow}</Text>
+                  ) : null}
                   <Text style={styles.title}>{title}</Text>
                   <Text style={styles.subtitle}>{subtitle}</Text>
                 </View>

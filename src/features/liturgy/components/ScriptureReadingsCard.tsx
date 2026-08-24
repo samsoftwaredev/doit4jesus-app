@@ -2,7 +2,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-import { Card } from "@/components/ui";
+import { Button, Card } from "@/components/ui";
 import { theme } from "@/theme/tokens";
 
 import type { DailyLiturgyViewModel, DailyReading } from "../liturgy.types";
@@ -15,6 +15,21 @@ interface ScriptureReadingsCardProps {
   onReadingComplete: (readingId: string) => Promise<void>;
   metadata: DailyLiturgyViewModel["metadata"];
   season: string;
+  isNavigating?: boolean;
+  nextDayDisabled?: boolean;
+  nextDate?: string;
+  previousDate?: string;
+  onNextDay?: () => void;
+  onPreviousDay?: () => void;
+}
+
+function formatNavDate(isoDate: string) {
+  const [year, month, day] = isoDate.split("-").map(Number);
+  return new Date(Date.UTC(year, month - 1, day)).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  });
 }
 
 export function ScriptureReadingsCard({
@@ -23,6 +38,12 @@ export function ScriptureReadingsCard({
   onReadingComplete,
   metadata,
   season,
+  isNavigating = false,
+  nextDayDisabled = false,
+  nextDate,
+  previousDate,
+  onNextDay,
+  onPreviousDay,
 }: ScriptureReadingsCardProps) {
   const completedCount = readings.filter((reading) =>
     completedReadingIds.includes(reading.id),
@@ -90,6 +111,47 @@ export function ScriptureReadingsCard({
           ))}
         </View>
       )}
+      <View style={styles.navigation}>
+        <Button
+          accessibilityLabel="Show the previous day's liturgy"
+          disabled={isNavigating || !onPreviousDay}
+          leftIcon={
+            <MaterialCommunityIcons
+              color={theme.colors.semantic.success}
+              name="chevron-left"
+              size={18}
+            />
+          }
+          onPress={onPreviousDay}
+          size="sm"
+          style={styles.navigationButton}
+          variant="outline"
+        >
+          {previousDate ? formatNavDate(previousDate) : "Previous"}
+        </Button>
+        <Button
+          accessibilityHint={
+            nextDayDisabled
+              ? "Tomorrow is the latest available liturgy."
+              : undefined
+          }
+          accessibilityLabel="Show the next day's liturgy"
+          disabled={isNavigating || nextDayDisabled || !onNextDay}
+          onPress={onNextDay}
+          rightIcon={
+            <MaterialCommunityIcons
+              color={theme.colors.semantic.success}
+              name="chevron-right"
+              size={18}
+            />
+          }
+          size="sm"
+          style={styles.navigationButton}
+          variant="outline"
+        >
+          {nextDate ? formatNavDate(nextDate) : "Next"}
+        </Button>
+      </View>
     </Card>
   );
 }
@@ -107,6 +169,12 @@ const styles = StyleSheet.create({
     paddingTop: theme.spacing[5],
     textAlign: "center",
   },
+  navigation: {
+    flexDirection: "row",
+    gap: theme.spacing[3],
+    marginTop: theme.spacing[3],
+  },
+  navigationButton: { flex: 1 },
   header: {
     alignItems: "flex-start",
     flexDirection: "row",
