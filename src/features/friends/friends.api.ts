@@ -111,6 +111,7 @@ function parseFriendProfile(value: unknown): FriendProfileSummary {
 
   return {
     avatarUrl: readNullableString(profile.avatarUrl, "friend avatar URL"),
+    countryCode: readString(profile.countryCode, "friend country code"),
     displayName: readString(profile.displayName, "friend display name"),
     id: readString(profile.id, "friend ID"),
     title: readNullableString(profile.title, "friend title"),

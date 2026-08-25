@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
 import { ScreenShell } from "@/components/screen-shell";
+import { CountryFlagBadge } from "@/components/CountryFlagBadge";
 import { Button, Card } from "@/components/ui";
 import type { CurrentUserProfile } from "@/features/profile";
 import { fetchCurrentUserProfile } from "@/features/profile";
@@ -83,18 +84,29 @@ export default function ProfileScreen() {
 
         {profile && !isLoadingProfile && !profileError ? (
           <View style={styles.profileRow}>
-            {profile.avatarUrl ? (
-              <Image
-                accessibilityLabel={`${profile.displayName}'s profile picture`}
-                contentFit="cover"
-                source={profile.avatarUrl}
-                style={styles.avatarImage}
+            <View
+              accessibilityLabel={`${profile.displayName}'s profile picture`}
+              accessible
+              style={styles.avatarContainer}
+            >
+              {profile.avatarUrl ? (
+                <Image
+                  accessible={false}
+                  contentFit="cover"
+                  source={profile.avatarUrl}
+                  style={styles.avatarImage}
+                />
+              ) : (
+                <View style={styles.avatar}>
+                  <Text style={styles.avatarInitial}>{profileInitial}</Text>
+                </View>
+              )}
+              <CountryFlagBadge
+                countryCode={profile.countryCode}
+                size={26}
+                style={styles.flag}
               />
-            ) : (
-              <View style={styles.avatar}>
-                <Text style={styles.avatarInitial}>{profileInitial}</Text>
-              </View>
-            )}
+            </View>
             <View style={styles.profileCopy}>
               <Text
                 style={styles.profileUsername}
@@ -156,6 +168,13 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
+  avatarContainer: {
+    alignItems: "center",
+    height: theme.sizes.iconHero + theme.spacing[4],
+    justifyContent: "center",
+    position: "relative",
+    width: theme.sizes.iconHero + theme.spacing[4],
+  },
   profileRow: {
     alignItems: "center",
     flexDirection: "row",
@@ -183,6 +202,11 @@ const styles = StyleSheet.create({
   avatarInitial: {
     ...theme.typography.heading3,
     color: theme.colors.text.white,
+  },
+  flag: {
+    bottom: 0,
+    position: "absolute",
+    right: -2,
   },
   profileCaption: {
     ...theme.typography.body,

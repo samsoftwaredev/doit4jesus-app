@@ -29,6 +29,7 @@ export function FriendRequestItem({
       <View style={styles.profileRow}>
         <FriendAvatar
           accessibilityLabel={`${request.user.displayName}'s profile image`}
+          countryCode={request.user.countryCode}
           name={request.user.displayName}
           source={request.user.avatarUrl}
         />

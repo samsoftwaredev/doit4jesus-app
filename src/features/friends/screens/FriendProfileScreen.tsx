@@ -111,6 +111,7 @@ export function FriendProfileScreen({
             <View style={styles.hero}>
               <FriendAvatar
                 accessibilityLabel={`${profile.friend.friend.displayName}'s profile image`}
+                countryCode={profile.friend.friend.countryCode}
                 name={profile.friend.friend.displayName}
                 size="xl"
                 source={profile.friend.friend.avatarUrl}

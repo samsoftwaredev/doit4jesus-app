@@ -25,6 +25,7 @@ export function FriendsList({ friends, onPressFriend }: FriendsListProps) {
           >
             <FriendAvatar
               accessibilityLabel={`${friend.displayName}'s profile image`}
+              countryCode={friend.countryCode}
               name={friend.displayName}
               source={friend.avatarUrl}
             />

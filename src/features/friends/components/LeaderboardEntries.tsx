@@ -57,6 +57,7 @@ export function LeaderboardEntries({ entries, onPressFriend, showHeader = true }
             <View style={styles.user}>
               <FriendAvatar
                 accessibilityLabel={`${entry.friend.displayName}'s profile image`}
+                countryCode={entry.friend.countryCode}
                 name={entry.friend.displayName}
                 size="sm"
                 source={entry.friend.avatarUrl}

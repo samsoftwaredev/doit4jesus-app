@@ -24,6 +24,7 @@ export interface CurrentLevel {
 
 export interface FriendProfileSummary {
   avatarUrl: string | null;
+  countryCode: string;
   displayName: string;
   id: string;
   title: string | null;
