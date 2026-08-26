@@ -146,6 +146,7 @@ describe("inline Scripture readings", () => {
     await render(
       <ScriptureReadingsCard
         completedReadingIds={[]}
+        metadata={{ country: "US", psalterWeek: 4, sundayCycle: "A", weekdayCycle: "II" }}
         onReadingComplete={onReadingComplete}
         readings={[
           {
@@ -155,6 +156,7 @@ describe("inline Scripture readings", () => {
             type: "FIRST_READING",
           },
         ]}
+        season="ORDINARY_TIME"
       />,
     );
 

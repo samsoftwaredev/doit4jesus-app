@@ -37,6 +37,7 @@ function RootNavigator() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Protected guard={isSignedIn && !isPasswordRecovery}>
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="about" />
         <Stack.Screen name="battle" />
         <Stack.Screen name="change-email" />
         <Stack.Screen name="demonsCatalog" />
