@@ -60,7 +60,7 @@ describe("RosaryPrayerScreen", () => {
   it("should render the current mystery content by default", async () => {
     await render(<RosaryPrayerScreen />);
 
-    expect(screen.getByText("iRosary")).toBeTruthy();
+    expect(screen.getByText("CURRENT MYSTERY")).toBeTruthy();
     expect(screen.getByText("The Annunciation")).toBeTruthy();
     expect(screen.getByText("Luke 1:38")).toBeTruthy();
     expect(screen.getByText("HAIL MARY")).toBeTruthy();
