@@ -1,5 +1,5 @@
-import { RosaryPrayerScreen } from "@/screens/RosaryPrayerScreen";
+import { PrayerScreen as PrayerSelectionScreen } from "@/screens/PrayerScreen";
 
-export default function PrayerScreen() {
-  return <RosaryPrayerScreen />;
+export default function PrayerTabRoute() {
+  return <PrayerSelectionScreen />;
 }

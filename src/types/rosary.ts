@@ -1,10 +1,12 @@
 import type { ImageSourcePropType } from "react-native";
 
 export type RosaryMysteryCategory =
-  | "Joyful Mystery"
-  | "Luminous Mystery"
-  | "Sorrowful Mystery"
-  | "Glorious Mystery";
+  | "Joyful Mysteries"
+  | "Luminous Mysteries"
+  | "Sorrowful Mysteries"
+  | "Glorious Mysteries";
+
+export type RosaryMysteryType = "joyful" | "luminous" | "sorrowful" | "glorious";
 
 export type RosaryBeadType =
   | "ourFather"
@@ -38,6 +40,15 @@ export interface RosaryMystery {
   scriptureReference: string;
   scriptureText: string;
   prayers: RosaryPrayer[];
+}
+
+export interface RosaryMysterySet {
+  type: RosaryMysteryType;
+  title: string;
+  subtitle: string;
+  imageSource: ImageSourcePropType;
+  imageAlt: string;
+  mysteries: RosaryMystery[];
 }
 
 export interface PrayerProgress {

@@ -15,6 +15,8 @@ import type { PrayerProgress } from "@/types/rosary";
 
 interface RosaryBottomNavigationProps {
   progress: PrayerProgress;
+  decadeCount?: number;
+  activeDecadeIndex?: number;
   disabled?: boolean;
   onAdvance: () => void;
   onRestart: () => void;
@@ -22,6 +24,8 @@ interface RosaryBottomNavigationProps {
 
 export function RosaryBottomNavigation({
   progress,
+  decadeCount = 5,
+  activeDecadeIndex = 0,
   disabled = false,
   onAdvance,
   onRestart,
@@ -87,8 +91,8 @@ export function RosaryBottomNavigation({
       </View>
 
       <View accessible={false} style={styles.indicators}>
-        {Array.from({ length: 5 }, (_, index) => (
-          <View key={index} style={[styles.indicator, index === 0 && styles.activeIndicator]} />
+        {Array.from({ length: decadeCount }, (_, index) => (
+          <View key={index} style={[styles.indicator, index === activeDecadeIndex && styles.activeIndicator]} />
         ))}
       </View>
 

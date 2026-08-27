@@ -1,7 +1,7 @@
 import Feather from "@expo/vector-icons/Feather";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   AccessibilityInfo,
   Modal,
@@ -23,9 +23,12 @@ import {
   RosaryHeader,
   ScriptureCard,
 } from "@/components/rosary";
-import { rosarySequence } from "@/data/rosarySequence";
+import { getRosaryMysteries } from "@/data/rosaryMysteries";
+import { fullRosarySequence, rosarySequence } from "@/data/rosarySequence";
+import { recordPrayerForIntention, recordRosaryActivity } from "@/features/prayer-intentions";
 import { useRosarySession } from "@/hooks/useRosarySession";
 import { theme } from "@/theme/tokens";
+import type { RosaryMysteryType } from "@/types/rosary";
 
 function completionDateLabel(date: string | null) {
   const value = date ? new Date(date) : new Date();
@@ -37,13 +40,33 @@ function completionDateLabel(date: string | null) {
   });
 }
 
-export function RosaryPrayerScreen() {
+export function RosaryPrayerScreen({
+  intentionId,
+  isDecade = true,
+  mysteryType = "joyful",
+  source: _source = "manual",
+}: {
+  intentionId?: string;
+  isDecade?: boolean;
+  mysteryType?: RosaryMysteryType;
+  source?: string;
+}) {
   const router = useRouter();
   const { width, height, fontScale } = useWindowDimensions();
   const reduceMotion = useReducedMotion();
   const [completionVisible, setCompletionVisible] = useState(false);
+  const [completionError, setCompletionError] = useState<string>();
+  const [intentionPrayerCount, setIntentionPrayerCount] = useState<number>();
+  const [isRecordingCompletion, setIsRecordingCompletion] = useState(false);
+  const [rosaryRecorded, setRosaryRecorded] = useState(false);
   const lastAnnouncement = useRef<string | null>(null);
   const hadCompletion = useRef(false);
+  const hydratedCompletionState = useRef(false);
+  const completionKey = useRef<string | undefined>(undefined);
+  const completionStartedAt = useRef(new Date());
+  const activityRecorded = useRef(false);
+  const intentionPrayerRecorded = useRef(false);
+  const completionRequestInFlight = useRef(false);
   const isTablet = width >= theme.breakpoints.tablet;
   const compact = width < theme.breakpoints.smallPhone || fontScale > 1.25;
   const rosaryColumnWidth = isTablet
@@ -51,11 +74,19 @@ export function RosaryPrayerScreen() {
     : Math.min(compact ? 104 : 142, Math.max(compact ? 88 : 108, width * (compact ? 0.28 : 0.3)));
   const imageHeight = isTablet ? 290 : compact ? 132 : Math.min(210, Math.max(158, height * 0.23));
   const contentGap = isTablet ? theme.spacing[6] : theme.spacing[3];
-  const session = useRosarySession();
+  const mysteries = useMemo(() => getRosaryMysteries(mysteryType), [mysteryType]);
+  const activeMysteries = useMemo(() => (isDecade ? [mysteries[0]].filter(Boolean) : mysteries), [isDecade, mysteries]);
+  const activeBeads = isDecade ? rosarySequence : fullRosarySequence;
+  const session = useRosarySession({
+    beads: activeBeads,
+    isFullRosary: !isDecade,
+    mysteries: activeMysteries,
+    storageKey: `@doit4jesus/rosary-session/v2/${mysteryType}/${isDecade ? "decade" : "full"}`,
+  });
 
   const progress = {
     currentIndex: session.currentBead ? session.currentBeadIndex + 1 : 0,
-    total: rosarySequence.length,
+    total: activeBeads.length,
     prayerName: session.currentPrayer?.name ?? "Prayer",
   };
 
@@ -75,19 +106,79 @@ export function RosaryPrayerScreen() {
     session.isTransitioning,
   ]);
 
+  const createIdempotencyKey = () => {
+    const random = Array.from({ length: 24 }, () => Math.floor(Math.random() * 36).toString(36)).join("");
+    return `rosary-${Date.now().toString(36)}-${random}`;
+  };
+
+  const recordCompletedPrayer = async () => {
+    if (completionRequestInFlight.current) return;
+    completionRequestInFlight.current = true;
+    setCompletionError(undefined);
+    setIsRecordingCompletion(true);
+
+    try {
+      if (!activityRecorded.current) {
+        const completedAt = new Date();
+        const result = await recordRosaryActivity({
+          completedAt: completedAt.toISOString(),
+          durationSeconds: Math.max(0, Math.floor((completedAt.getTime() - completionStartedAt.current.getTime()) / 1000)),
+          idempotencyKey: completionKey.current ?? (completionKey.current = createIdempotencyKey()),
+          occurredAt: completionStartedAt.current.toISOString(),
+        });
+        activityRecorded.current = true;
+        setRosaryRecorded(true);
+        if (result.points > 0) {
+          AccessibilityInfo.announceForAccessibility(`Rosary recorded. ${result.points} experience points earned.`);
+        }
+      }
+
+      if (intentionId && !intentionPrayerRecorded.current) {
+        try {
+          const intentionResult = await recordPrayerForIntention(intentionId);
+          intentionPrayerRecorded.current = true;
+          setIntentionPrayerCount(intentionResult.prayerCount);
+        } catch {
+          setCompletionError("Your Rosary was saved, but we couldn’t record the prayer for this intention. Try again when you’re ready.");
+        }
+      }
+    } catch (error) {
+      setCompletionError(error instanceof Error ? error.message : "Your Rosary was completed, but couldn’t be saved. Try again to record it.");
+    } finally {
+      completionRequestInFlight.current = false;
+      setIsRecordingCompletion(false);
+    }
+  };
+
   useEffect(() => {
+    if (!session.isHydrated) return;
+    if (!hydratedCompletionState.current) {
+      hydratedCompletionState.current = true;
+      hadCompletion.current = session.isRosaryCompleted;
+      if (session.isRosaryCompleted) setCompletionVisible(true);
+      return;
+    }
+
     if (session.isRosaryCompleted && !hadCompletion.current) {
       hadCompletion.current = true;
       setCompletionVisible(true);
       AccessibilityInfo.announceForAccessibility(
         `Rosary completed. ${session.currentMystery?.title ?? "Current mystery"} is complete.`,
       );
+      void recordCompletedPrayer();
     }
     if (!session.isRosaryCompleted) hadCompletion.current = false;
-  }, [session.currentMystery?.title, session.isRosaryCompleted]);
+  }, [session.currentMystery?.title, session.isHydrated, session.isRosaryCompleted]);
 
   const restart = () => {
     setCompletionVisible(false);
+    setCompletionError(undefined);
+    setIntentionPrayerCount(undefined);
+    setRosaryRecorded(false);
+    activityRecorded.current = false;
+    intentionPrayerRecorded.current = false;
+    completionKey.current = undefined;
+    completionStartedAt.current = new Date();
     session.restartMystery();
   };
 
@@ -144,8 +235,10 @@ export function RosaryPrayerScreen() {
             </ScrollView>
           </View>
 
-          <RosaryBottomNavigation
-            disabled={session.isTransitioning || rosarySequence.length === 0}
+            <RosaryBottomNavigation
+            activeDecadeIndex={isDecade ? 0 : Math.min(4, Math.floor(session.currentBeadIndex / 10))}
+            decadeCount={isDecade ? 1 : 5}
+            disabled={session.isTransitioning || activeBeads.length === 0}
             onAdvance={session.goToNextBead}
             onRestart={session.restartMystery}
             progress={progress}
@@ -172,6 +265,10 @@ export function RosaryPrayerScreen() {
             <Text style={styles.completionCopy}>
               May this time of prayer remain with you in peace.
             </Text>
+            {rosaryRecorded ? <Text style={styles.completionSuccess}>Rosary recorded</Text> : null}
+            {intentionPrayerCount !== undefined ? <Text style={styles.completionSuccess}>Prayer offered. {intentionPrayerCount} prayers have been offered for this intention.</Text> : null}
+            {completionError ? <Text accessibilityRole="alert" style={styles.completionError}>{completionError}</Text> : null}
+            {completionError ? <Pressable accessibilityLabel="Retry recording this completed Rosary" accessibilityRole="button" disabled={isRecordingCompletion} onPress={() => void recordCompletedPrayer()} style={({ pressed }) => [styles.retryAction, pressed && styles.pressed]}><Text style={styles.retryActionText}>{isRecordingCompletion ? "Recording…" : "Try Again"}</Text></Pressable> : null}
             <Pressable
               accessibilityLabel="Pray this mystery again"
               accessibilityRole="button"
@@ -273,6 +370,18 @@ const styles = StyleSheet.create({
     marginTop: theme.spacing[3],
     textAlign: "center",
   },
+  completionError: {
+    ...theme.typography.bodySmall,
+    color: theme.colors.text.warning,
+    marginTop: theme.spacing[2],
+    textAlign: "center",
+  },
+  completionSuccess: {
+    ...theme.typography.bodySmall,
+    color: theme.colors.text.success,
+    marginTop: theme.spacing[2],
+    textAlign: "center",
+  },
   primaryAction: {
     alignItems: "center",
     backgroundColor: theme.rosary.colors.gold,
@@ -299,6 +408,20 @@ const styles = StyleSheet.create({
   secondaryActionText: {
     ...theme.typography.button,
     color: theme.colors.text.primary,
+  },
+  retryAction: {
+    alignItems: "center",
+    borderColor: theme.rosary.colors.gold,
+    borderRadius: theme.radii.pill,
+    borderWidth: theme.rosary.borderWidths.goldHairline,
+    justifyContent: "center",
+    marginTop: theme.spacing[3],
+    minHeight: theme.sizes.buttonHeight,
+    width: "100%",
+  },
+  retryActionText: {
+    ...theme.typography.button,
+    color: theme.rosary.colors.goldBright,
   },
   pressed: {
     opacity: theme.opacity.pressed,

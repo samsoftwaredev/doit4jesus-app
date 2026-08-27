@@ -1,7 +1,7 @@
 import { act, renderHook, waitFor } from "@testing-library/react-native";
 
 import { rosaryMysteries } from "@/data/rosaryMysteries";
-import { rosarySequence } from "@/data/rosarySequence";
+import { fullRosarySequence, rosarySequence } from "@/data/rosarySequence";
 import { ROSARY_SESSION_STORAGE_KEY, useRosarySession } from "@/hooks/useRosarySession";
 import type { RosaryStorageAdapter } from "@/hooks/useRosarySession";
 
@@ -76,6 +76,27 @@ describe("useRosarySession", () => {
 
     expect(result.current.isRosaryCompleted).toBe(true);
     expect(result.current.completedBeadIds).toEqual(["hail-mary-1"]);
+  });
+
+  it("should advance to the next mystery after a decade in a full five-decade Rosary", async () => {
+    const storage = createStorage(
+      JSON.stringify({ currentBeadIndex: 9, completedBeadIds: [], currentMysteryIndex: 0 }),
+    );
+    const { result } = await renderHook(() =>
+      useRosarySession({
+        beads: fullRosarySequence,
+        isFullRosary: true,
+        mysteries: rosaryMysteries,
+        storage,
+      }),
+    );
+    await waitFor(() => expect(result.current.isHydrated).toBe(true));
+
+    await act(async () => result.current.goToNextBead());
+
+    expect(result.current.currentBeadIndex).toBe(10);
+    expect(result.current.currentMystery?.title).toBe("The Visitation");
+    expect(result.current.currentMysteryIndex).toBe(1);
   });
 
   it("should fall back to an in-memory prayer session when storage fails", async () => {
