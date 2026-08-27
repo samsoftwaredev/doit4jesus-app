@@ -1,15 +1,7 @@
 import type { ReactNode } from "react";
 import type { PressableProps, StyleProp, TextStyle, ViewStyle } from "react-native";
 
-export type ButtonVariant =
-  | "primary"
-  | "secondary"
-  | "success"
-  | "danger"
-  | "warning"
-  | "info"
-  | "outline"
-  | "ghost";
+export type ButtonVariant = "primary" | "secondary" | "success" | "danger" | "warning" | "info" | "outline" | "ghost";
 
 export type ButtonSize = "sm" | "md" | "lg";
 

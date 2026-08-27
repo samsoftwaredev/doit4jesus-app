@@ -22,9 +22,7 @@ export default function NotificationsScreen() {
       <Card title="All caught up">
         <View style={styles.emptyState}>
           <Feather color={theme.colors.icon.active} name="bell" size={theme.sizes.iconHero} />
-          <Text style={styles.description}>
-            New prayer reminders and community updates will appear here.
-          </Text>
+          <Text style={styles.description}>New prayer reminders and community updates will appear here.</Text>
         </View>
       </Card>
     </ScreenShell>

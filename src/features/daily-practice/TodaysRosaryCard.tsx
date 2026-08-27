@@ -26,9 +26,7 @@ export function TodaysRosaryCard({ onPress, style, testID }: DailyPracticeCardPr
         source={require("../../assets/icons/rosary.png")}
         style={styles.image}
       />
-      <Text style={styles.description}>
-        Enter the mysteries with a focused moment of prayer.
-      </Text>
+      <Text style={styles.description}>Enter the mysteries with a focused moment of prayer.</Text>
     </Card>
   );
 }

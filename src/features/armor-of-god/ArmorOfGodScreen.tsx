@@ -26,9 +26,7 @@ export function ArmorOfGodScreen() {
   const handleArmorAction = useCallback(() => {
     if (selectedItem.status === "available") {
       setItems((currentItems) =>
-        currentItems.map((item) =>
-          item.id === selectedItem.id ? { ...item, status: "equipped" } : item,
-        ),
+        currentItems.map((item) => (item.id === selectedItem.id ? { ...item, status: "equipped" } : item)),
       );
       return;
     }
@@ -39,18 +37,14 @@ export function ArmorOfGodScreen() {
   }, [selectedItem]);
 
   const handleReadScripture = useCallback(() => {
-    Alert.alert(
-      "Ephesians 6",
-      "Read Ephesians 6:10–18 to reflect on the full armor of God.",
-    );
+    Alert.alert("Ephesians 6", "Read Ephesians 6:10–18 to reflect on the full armor of God.");
   }, []);
 
   if (!selectedItem) {
     return null;
   }
 
-  const actionDisabled =
-    selectedItem.status === "equipped" || selectedItem.status === "locked";
+  const actionDisabled = selectedItem.status === "equipped" || selectedItem.status === "locked";
 
   return (
     <View style={styles.section}>
@@ -113,18 +107,11 @@ export function ArmorOfGodScreen() {
         <>
           <KnightDisplay selectedItem={selectedItem} />
           <ArmorProgress equippedCount={equippedCount} totalCount={items.length} />
-          <ArmorSelector
-            items={items}
-            onSelect={setSelectedId}
-            selectedId={selectedId}
-          />
+          <ArmorSelector items={items} onSelect={setSelectedId} selectedId={selectedId} />
           <ArmorDetailCard item={selectedItem} onAction={handleArmorAction} />
           <StickyActionBar
             actionDisabled={actionDisabled}
-            actionLabel={getArmorActionLabel(
-              selectedItem.status,
-              selectedItem.shortName,
-            )}
+            actionLabel={getArmorActionLabel(selectedItem.status, selectedItem.shortName)}
             onAction={handleArmorAction}
             onReadScripture={handleReadScripture}
           />

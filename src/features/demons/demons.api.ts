@@ -39,18 +39,14 @@ function readNullableString(value: unknown, field: string): string | null {
   return readString(value, field);
 }
 
-function parseVirtueAffinities(
-  value: unknown,
-): ReadonlyArray<DemonVirtueAffinity> {
+function parseVirtueAffinities(value: unknown): ReadonlyArray<DemonVirtueAffinity> {
   if (!Array.isArray(value)) {
     return [];
   }
 
   return value.map((affinity) => {
     if (!isRecord(affinity)) {
-      throw new Error(
-        "The demons catalog returned an invalid virtue affinity.",
-      );
+      throw new Error("The demons catalog returned an invalid virtue affinity.");
     }
 
     return {
@@ -60,10 +56,7 @@ function parseVirtueAffinities(
   });
 }
 
-function parseDemonCatalogItem(
-  demon: Record<string, unknown>,
-  virtueAffinities: unknown,
-): DemonCatalogItem {
+function parseDemonCatalogItem(demon: Record<string, unknown>, virtueAffinities: unknown): DemonCatalogItem {
   return {
     category: readString(demon.category, "demon category"),
     code: readString(demon.code, "demon code"),
@@ -104,14 +97,8 @@ function parseAttacks(value: unknown): ReadonlyArray<DemonAttack> {
       code: readString(attack.code, "attack code"),
       description: readString(attack.description, "attack description"),
       name: readString(attack.name, "attack name"),
-      targetVirtueCode: readString(
-        attack.target_virtue_code,
-        "attack target virtue code",
-      ),
-      virtueDecrease: readNumber(
-        attack.virtue_decrease,
-        "attack virtue decrease",
-      ),
+      targetVirtueCode: readString(attack.target_virtue_code, "attack target virtue code"),
+      virtueDecrease: readNumber(attack.virtue_decrease, "attack virtue decrease"),
     };
   });
 }
@@ -131,14 +118,8 @@ function parseDefenses(value: unknown): ReadonlyArray<DemonDefense> {
       code: readString(defense.code, "defense code"),
       demonDamage: readNumber(defense.demon_damage, "defense demon damage"),
       name: readString(defense.name, "defense name"),
-      rewardVirtueCode: readString(
-        defense.reward_virtue_code,
-        "defense reward virtue code",
-      ),
-      virtueIncrease: readNumber(
-        defense.virtue_increase,
-        "defense virtue increase",
-      ),
+      rewardVirtueCode: readString(defense.reward_virtue_code, "defense reward virtue code"),
+      virtueIncrease: readNumber(defense.virtue_increase, "defense virtue increase"),
     };
   });
 }
@@ -167,17 +148,11 @@ function parseDemonBattleDetails(value: unknown): DemonBattleDetails {
     throw new Error("The demon returned an invalid battle demon.");
   }
 
-  const baseDemon = parseDemonCatalogItem(
-    demonResponse,
-    data.virtueAffinities,
-  );
+  const baseDemon = parseDemonCatalogItem(demonResponse, data.virtueAffinities);
   const demon: DemonBattleDemon = {
     ...baseDemon,
     safetyNote: readNullableString(demonResponse.safety_note, "demon safety note"),
-    sillyPersonality: readString(
-      demonResponse.silly_personality,
-      "demon personality",
-    ),
+    sillyPersonality: readString(demonResponse.silly_personality, "demon personality"),
   };
 
   return {
@@ -218,17 +193,13 @@ async function fetchDemonPayload(url: string): Promise<unknown> {
   return response.json() as Promise<unknown>;
 }
 
-export async function fetchDemonCatalog(): Promise<
-  ReadonlyArray<DemonCatalogItem>
-> {
+export async function fetchDemonCatalog(): Promise<ReadonlyArray<DemonCatalogItem>> {
   const payload = await fetchDemonPayload(getDemonApiUrl());
 
   return parseDemonCatalog(payload);
 }
 
-export async function fetchDemonBattleDetails(
-  demonCode: string,
-): Promise<DemonBattleDetails> {
+export async function fetchDemonBattleDetails(demonCode: string): Promise<DemonBattleDetails> {
   const payload = await fetchDemonPayload(getDemonApiUrl(demonCode));
 
   return parseDemonBattleDetails(payload);

@@ -9,19 +9,9 @@ import whiteLily from "../../../assets/flowers/whiteLily.png";
 import { theme } from "@/theme/tokens";
 
 import { dayCalendarTileStateConfig, styles } from "./DayCalendarTile.styles";
-import type {
-  DayCalendarFlower,
-  DayCalendarTileProps,
-  DayCalendarTileState,
-} from "./DayCalendarTile.types";
+import type { DayCalendarFlower, DayCalendarTileProps, DayCalendarTileState } from "./DayCalendarTile.types";
 
-const completedFlowers: DayCalendarFlower[] = [
-  "redRose",
-  "pinkRose",
-  "whiteLily",
-  "blueFlower",
-  "mixed",
-];
+const completedFlowers: DayCalendarFlower[] = ["redRose", "pinkRose", "whiteLily", "blueFlower", "mixed"];
 
 const flowerConfig = {
   redRose: { color: theme.colors.accent.red, image: redRose },
@@ -32,10 +22,7 @@ const flowerConfig = {
   mixedFlowers: { color: theme.colors.accent.amber, image: mixed },
 } as const;
 
-const stateAccessibilityLabels: Record<
-  DayCalendarTileState,
-  (day: number) => string
-> = {
+const stateAccessibilityLabels: Record<DayCalendarTileState, (day: number) => string> = {
   completed: (day) => `Day ${day}, rosary completed`,
   current: (day) => `Today, day ${day}, rosary available`,
   future: (day) => `Day ${day}, upcoming`,
@@ -54,16 +41,13 @@ export function DayCalendarTile({
   const stateConfig = dayCalendarTileStateConfig[state];
   const isCompleted = state === "completed";
   const isUnavailable = state === "unavailable";
-  const flower =
-    flowerVariant ?? completedFlowers[Math.abs(day) % completedFlowers.length];
+  const flower = flowerVariant ?? completedFlowers[Math.abs(day) % completedFlowers.length];
   const flowerStyle = flowerConfig[flower];
 
   return (
     <View
       accessible
-      accessibilityLabel={
-        accessibilityLabel ?? stateAccessibilityLabels[state](day)
-      }
+      accessibilityLabel={accessibilityLabel ?? stateAccessibilityLabels[state](day)}
       style={[
         styles.tile,
         {
@@ -77,17 +61,8 @@ export function DayCalendarTile({
       ]}
       testID={testID}
     >
-      {isCompleted ? (
-        <View
-          style={[
-            styles.completionAccent,
-            { backgroundColor: stateConfig.accentColor },
-          ]}
-        />
-      ) : null}
-      <Text style={[styles.dayNumber, { color: stateConfig.accentColor }]}>
-        {day}
-      </Text>
+      {isCompleted ? <View style={[styles.completionAccent, { backgroundColor: stateConfig.accentColor }]} /> : null}
+      <Text style={[styles.dayNumber, { color: stateConfig.accentColor }]}>{day}</Text>
       <View style={styles.garden}>
         <View style={styles.soil} />
         {isCompleted ? (
@@ -98,11 +73,7 @@ export function DayCalendarTile({
                 name="flower-poppy"
                 size={theme.sizes.iconSmall}
               />
-              <MaterialCommunityIcons
-                color={theme.colors.accent.amber}
-                name="flower"
-                size={theme.sizes.iconMedium}
-              />
+              <MaterialCommunityIcons color={theme.colors.accent.amber} name="flower" size={theme.sizes.iconMedium} />
               <MaterialCommunityIcons
                 color={theme.colors.accent.blueLight}
                 name="flower-tulip"
@@ -110,10 +81,7 @@ export function DayCalendarTile({
               />
             </View>
           ) : (
-            <Image
-              source={flowerStyle.image}
-              style={[styles.gardenIcon, { width: 100, height: "100%" }]}
-            />
+            <Image source={flowerStyle.image} style={[styles.gardenIcon, { width: 100, height: "100%" }]} />
           )
         ) : (
           <MaterialCommunityIcons
@@ -125,17 +93,8 @@ export function DayCalendarTile({
         )}
       </View>
       {isCompleted ? (
-        <View
-          style={[
-            styles.checkBadge,
-            { backgroundColor: theme.colors.semantic.success },
-          ]}
-        >
-          <MaterialCommunityIcons
-            color={theme.colors.text.white}
-            name="check"
-            size={theme.sizes.iconXs}
-          />
+        <View style={[styles.checkBadge, { backgroundColor: theme.colors.semantic.success }]}>
+          <MaterialCommunityIcons color={theme.colors.text.white} name="check" size={theme.sizes.iconXs} />
         </View>
       ) : null}
     </View>

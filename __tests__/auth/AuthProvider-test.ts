@@ -12,8 +12,6 @@ describe("Supabase auth deep links", () => {
   });
 
   it("reads a PKCE code from the query string", () => {
-    expect(readAuthParameters("doit4jesus://?code=verification-code").get("code")).toBe(
-      "verification-code",
-    );
+    expect(readAuthParameters("doit4jesus://?code=verification-code").get("code")).toBe("verification-code");
   });
 });

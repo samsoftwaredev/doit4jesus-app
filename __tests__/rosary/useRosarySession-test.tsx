@@ -101,12 +101,8 @@ describe("useRosarySession", () => {
 
   it("should fall back to an in-memory prayer session when storage fails", async () => {
     const storage: jest.Mocked<RosaryStorageAdapter> = {
-      getItem: jest.fn<Promise<string | null>, [string]>(() =>
-        Promise.reject(new Error("Storage unavailable")),
-      ),
-      setItem: jest.fn<Promise<void>, [string, string]>(() =>
-        Promise.reject(new Error("Storage unavailable")),
-      ),
+      getItem: jest.fn<Promise<string | null>, [string]>(() => Promise.reject(new Error("Storage unavailable"))),
+      setItem: jest.fn<Promise<void>, [string, string]>(() => Promise.reject(new Error("Storage unavailable"))),
     };
     const { result } = await renderHook(() => useRosarySession({ storage }));
 

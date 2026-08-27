@@ -36,15 +36,10 @@ export default function SpriteSheetAnimationExample({ spriteSheetSource }) {
         <ControlButton label="Play" onPress={() => animationRef.current?.play()} />
         <ControlButton label="Pause" onPress={() => animationRef.current?.pause()} />
         <ControlButton label="Reset" onPress={() => animationRef.current?.reset()} />
-        <ControlButton
-          label="Restart"
-          onPress={() => animationRef.current?.restart()}
-        />
+        <ControlButton label="Restart" onPress={() => animationRef.current?.restart()} />
       </View>
 
-      <Text style={styles.note}>
-        Completed non-looping runs: {finishedRuns}
-      </Text>
+      <Text style={styles.note}>Completed non-looping runs: {finishedRuns}</Text>
     </View>
   );
 }

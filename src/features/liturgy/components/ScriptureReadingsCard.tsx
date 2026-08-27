@@ -45,48 +45,29 @@ export function ScriptureReadingsCard({
   onNextDay,
   onPreviousDay,
 }: ScriptureReadingsCardProps) {
-  const completedCount = readings.filter((reading) =>
-    completedReadingIds.includes(reading.id),
-  ).length;
-  const completionPercentage =
-    readings.length === 0 ? 0 : (completedCount / readings.length) * 100;
-  const [expandedReadingId, setExpandedReadingId] = useState<string | null>(
-    null,
-  );
+  const completedCount = readings.filter((reading) => completedReadingIds.includes(reading.id)).length;
+  const completionPercentage = readings.length === 0 ? 0 : (completedCount / readings.length) * 100;
+  const [expandedReadingId, setExpandedReadingId] = useState<string | null>(null);
 
   return (
     <Card fullWidth padding="md" style={styles.card}>
       <View style={styles.header}>
         <View style={styles.heading}>
-          <MaterialCommunityIcons
-            color={theme.colors.gold.pale}
-            name="book-open-page-variant-outline"
-            size={21}
-          />
+          <MaterialCommunityIcons color={theme.colors.gold.pale} name="book-open-page-variant-outline" size={21} />
           <Text accessibilityRole="header" style={styles.title}>
             Today&apos;s Scripture Readings
           </Text>
         </View>
-        <Text
-          accessibilityLabel={`${completedCount} of ${readings.length} readings completed`}
-          style={styles.count}
-        >
+        <Text accessibilityLabel={`${completedCount} of ${readings.length} readings completed`} style={styles.count}>
           {completedCount} of {readings.length} completed
         </Text>
       </View>
       <LiturgicalChipList metadata={metadata} season={season} />
-      <View
-        accessibilityLabel={`${Math.round(completionPercentage)} percent complete`}
-        style={styles.progressTrack}
-      >
-        <View
-          style={[styles.progressValue, { width: `${completionPercentage}%` }]}
-        />
+      <View accessibilityLabel={`${Math.round(completionPercentage)} percent complete`} style={styles.progressTrack}>
+        <View style={[styles.progressValue, { width: `${completionPercentage}%` }]} />
       </View>
       {readings.length === 0 ? (
-        <Text style={styles.empty}>
-          Today&apos;s Scripture readings are not available yet.
-        </Text>
+        <Text style={styles.empty}>Today&apos;s Scripture readings are not available yet.</Text>
       ) : (
         <View>
           {readings.map((reading) => (
@@ -96,15 +77,8 @@ export function ScriptureReadingsCard({
               key={reading.id}
               onComplete={onReadingComplete}
               onToggle={() => {
-                console.log(
-                  "Toggling reading",
-                  reading.id,
-                  "expandedReadingId:",
-                  expandedReadingId,
-                );
-                setExpandedReadingId((current) =>
-                  current === reading.id ? null : reading.id,
-                );
+                console.log("Toggling reading", reading.id, "expandedReadingId:", expandedReadingId);
+                setExpandedReadingId((current) => (current === reading.id ? null : reading.id));
               }}
               reading={reading}
             />
@@ -115,13 +89,7 @@ export function ScriptureReadingsCard({
         <Button
           accessibilityLabel="Show the previous day's liturgy"
           disabled={isNavigating || !onPreviousDay}
-          leftIcon={
-            <MaterialCommunityIcons
-              color={theme.colors.semantic.success}
-              name="chevron-left"
-              size={18}
-            />
-          }
+          leftIcon={<MaterialCommunityIcons color={theme.colors.semantic.success} name="chevron-left" size={18} />}
           onPress={onPreviousDay}
           size="sm"
           style={styles.navigationButton}
@@ -130,21 +98,11 @@ export function ScriptureReadingsCard({
           {previousDate ? formatNavDate(previousDate) : "Previous"}
         </Button>
         <Button
-          accessibilityHint={
-            nextDayDisabled
-              ? "Tomorrow is the latest available liturgy."
-              : undefined
-          }
+          accessibilityHint={nextDayDisabled ? "Tomorrow is the latest available liturgy." : undefined}
           accessibilityLabel="Show the next day's liturgy"
           disabled={isNavigating || nextDayDisabled || !onNextDay}
           onPress={onNextDay}
-          rightIcon={
-            <MaterialCommunityIcons
-              color={theme.colors.semantic.success}
-              name="chevron-right"
-              size={18}
-            />
-          }
+          rightIcon={<MaterialCommunityIcons color={theme.colors.semantic.success} name="chevron-right" size={18} />}
           size="sm"
           style={styles.navigationButton}
           variant="outline"

@@ -4,10 +4,7 @@ jest.mock("@/lib/supabase", () => ({
   getSupabaseAccessToken: jest.fn(async () => "test-access-token"),
 }));
 
-import {
-  parseDailyLiturgy,
-  recordDailyScriptureCompletion,
-} from "@/features/liturgy/liturgy.api";
+import { parseDailyLiturgy, recordDailyScriptureCompletion } from "@/features/liturgy/liturgy.api";
 import {
   loadDailyReadingProgress,
   markDailyReadingComplete,
@@ -60,11 +57,7 @@ describe("daily liturgy data", () => {
 
     expect(liturgy.celebration.liturgicalColor).toBe("WHITE");
     expect(liturgy.readings).toHaveLength(3);
-    expect(liturgy.readings.map((reading) => reading.citation)).toEqual([
-      "Ez 37:1-14",
-      "Ps 107",
-      "Mt 22:34-40",
-    ]);
+    expect(liturgy.readings.map((reading) => reading.citation)).toEqual(["Ez 37:1-14", "Ps 107", "Mt 22:34-40"]);
     expect(liturgy.highlightedVerse).toEqual({
       citation: "Mt 22:34-40",
       text: "You shall love the Lord, your God, with all your heart.",

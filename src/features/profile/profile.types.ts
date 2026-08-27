@@ -20,7 +20,4 @@ export interface CurrentUserProfile {
   username: string;
 }
 
-export type UpdateCurrentUserProfile = Pick<
-  CurrentUserProfile,
-  "displayName" | "gender" | "saintAvatarId"
->;
+export type UpdateCurrentUserProfile = Pick<CurrentUserProfile, "displayName" | "gender" | "saintAvatarId">;

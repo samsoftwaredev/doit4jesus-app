@@ -28,9 +28,7 @@ export default function BattleScreen() {
     try {
       setDemons(await fetchDemonCatalog());
     } catch (error) {
-      setCatalogError(
-        error instanceof Error ? error.message : "Unable to load demons.",
-      );
+      setCatalogError(error instanceof Error ? error.message : "Unable to load demons.");
     } finally {
       setIsLoadingCatalog(false);
     }
@@ -53,11 +51,7 @@ export default function BattleScreen() {
       }
     } catch (error) {
       if (selectionRequestId.current === requestId) {
-        setDetailsError(
-          error instanceof Error
-            ? error.message
-            : "Unable to load the selected demon.",
-        );
+        setDetailsError(error instanceof Error ? error.message : "Unable to load the selected demon.");
       }
     } finally {
       if (selectionRequestId.current === requestId) {
@@ -70,19 +64,13 @@ export default function BattleScreen() {
     void loadCatalog();
   }, [loadCatalog]);
 
-  const selectedDemon = demons.find(
-    (demon) => demon.code === selectedDemonCode,
-  );
+  const selectedDemon = demons.find((demon) => demon.code === selectedDemonCode);
 
   return (
     <ScreenShell
       background={<BattleBackground />}
       headerAccessory={
-        <Button
-          onPress={() => router.push("/demonsCatalog")}
-          size="sm"
-          variant="ghost"
-        >
+        <Button onPress={() => router.push("/demonsCatalog")} size="sm" variant="ghost">
           Catalog
         </Button>
       }
@@ -92,13 +80,8 @@ export default function BattleScreen() {
       {isLoadingCatalog ? (
         <Card fullWidth title="Loading demons">
           <View style={styles.stateContainer}>
-            <ActivityIndicator
-              color={theme.colors.semantic.danger}
-              size="large"
-            />
-            <Text style={styles.stateText}>
-              Gathering opponents for the arena.
-            </Text>
+            <ActivityIndicator color={theme.colors.semantic.danger} size="large" />
+            <Text style={styles.stateText}>Gathering opponents for the arena.</Text>
           </View>
         </Card>
       ) : null}
@@ -106,11 +89,7 @@ export default function BattleScreen() {
       {catalogError ? (
         <Card
           footer={
-            <Button
-              fullWidth
-              onPress={() => void loadCatalog()}
-              variant="danger"
-            >
+            <Button fullWidth onPress={() => void loadCatalog()} variant="danger">
               Retry
             </Button>
           }
@@ -145,9 +124,7 @@ export default function BattleScreen() {
             <Card fullWidth title="Preparing the encounter">
               <View style={styles.stateContainer}>
                 <ActivityIndicator color={theme.colors.semantic.danger} />
-                <Text style={styles.stateText}>
-                  Reviewing this demon&apos;s tactics.
-                </Text>
+                <Text style={styles.stateText}>Reviewing this demon&apos;s tactics.</Text>
               </View>
             </Card>
           ) : null}
@@ -156,11 +133,7 @@ export default function BattleScreen() {
             <Card
               footer={
                 selectedDemon ? (
-                  <Button
-                    fullWidth
-                    onPress={() => void selectDemon(selectedDemon)}
-                    variant="danger"
-                  >
+                  <Button fullWidth onPress={() => void selectDemon(selectedDemon)} variant="danger">
                     Retry
                   </Button>
                 ) : undefined
@@ -178,8 +151,7 @@ export default function BattleScreen() {
           {!selectedDemonCode && !isLoadingDetails ? (
             <Card fullWidth title="Select an opponent" variant="info">
               <Text style={styles.stateText}>
-                Select a demon in the arena to view its attacks, defenses, and
-                reward.
+                Select a demon in the arena to view its attacks, defenses, and reward.
               </Text>
             </Card>
           ) : null}

@@ -31,11 +31,7 @@ export function MysteryCard({ mystery, imageHeight }: MysteryCardProps) {
   }
 
   return (
-    <Animated.View
-      entering={reduceMotion ? undefined : FadeIn.duration(220)}
-      key={mystery.id}
-      style={styles.card}
-    >
+    <Animated.View entering={reduceMotion ? undefined : FadeIn.duration(220)} key={mystery.id} style={styles.card}>
       <Text style={styles.label}>CURRENT MYSTERY</Text>
       <Text accessibilityRole="header" style={styles.title}>
         {mystery.title}

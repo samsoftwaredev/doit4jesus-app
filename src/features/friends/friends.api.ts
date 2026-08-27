@@ -296,7 +296,9 @@ export async function getFriends({
   offset?: number;
 } = {}): Promise<FriendsPage> {
   const payload = readRecord(
-    await request(`/api/v1/me/friends?${createQuery({ include: includeRosaryStreak ? "rosaryStreak" : undefined, limit, offset })}`),
+    await request(
+      `/api/v1/me/friends?${createQuery({ include: includeRosaryStreak ? "rosaryStreak" : undefined, limit, offset })}`,
+    ),
     "friends response",
   );
 
@@ -341,7 +343,10 @@ export async function searchUsers(query: string, limit = 20, offset = 0): Promis
   return {
     data: readArray(payload.data, "user search results").map((result) => {
       const user = readRecord(result, "user search result");
-      const relationshipState = readString(user.relationshipState, "relationship state") as UserSearchPage["data"][number]["relationshipState"];
+      const relationshipState = readString(
+        user.relationshipState,
+        "relationship state",
+      ) as UserSearchPage["data"][number]["relationshipState"];
       if (!["none", "outgoingPending", "incomingPending", "friends"].includes(relationshipState)) {
         throw new Error("The Friends API returned an unknown relationship state.");
       }
@@ -399,7 +404,8 @@ export async function getRosaryLeaderboard({
   const currentUserEntry = data.currentUserEntry;
 
   return {
-    currentUserEntry: currentUserEntry === undefined || currentUserEntry === null ? null : parseLeaderboardEntry(currentUserEntry),
+    currentUserEntry:
+      currentUserEntry === undefined || currentUserEntry === null ? null : parseLeaderboardEntry(currentUserEntry),
     entries: readArray(data.entries, "leaderboard entries").map(parseLeaderboardEntry),
     period: parseLeaderboardPeriod(data.period),
     total: readNumber(data.total, "leaderboard total"),

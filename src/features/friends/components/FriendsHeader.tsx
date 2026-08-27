@@ -15,12 +15,20 @@ export function FriendsHeader({ onBack, rightAction, title }: FriendsHeaderProps
     <View style={styles.header}>
       <View style={styles.side}>
         {onBack ? (
-          <Pressable accessibilityLabel="Go back" accessibilityRole="button" hitSlop={theme.spacing[2]} onPress={onBack} style={styles.iconButton}>
+          <Pressable
+            accessibilityLabel="Go back"
+            accessibilityRole="button"
+            hitSlop={theme.spacing[2]}
+            onPress={onBack}
+            style={styles.iconButton}
+          >
             <Feather color={theme.colors.icon.primary} name="chevron-left" size={theme.sizes.iconMedium} />
           </Pressable>
         ) : null}
       </View>
-      <Text accessibilityRole="header" numberOfLines={1} style={styles.title}>{title}</Text>
+      <Text accessibilityRole="header" numberOfLines={1} style={styles.title}>
+        {title}
+      </Text>
       <View style={[styles.side, styles.rightAction]}>{rightAction}</View>
     </View>
   );

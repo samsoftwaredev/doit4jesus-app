@@ -25,9 +25,7 @@ export function ArmorHeader() {
           size={theme.sizes.iconSmall}
         />
       </View>
-      <Text style={styles.subtitle}>
-        Put on the full armor, stand firm, and win the battle!
-      </Text>
+      <Text style={styles.subtitle}>Put on the full armor, stand firm, and win the battle!</Text>
     </View>
   );
 }

@@ -53,7 +53,10 @@ describe("RosaryGardenScreen", () => {
   });
 
   it("should calculate the longest streak", () => {
-    const streaks = calculateStreaks(new Set(["2026-05-01", "2026-05-02", "2026-05-04", "2026-05-05", "2026-05-06"]), "2026-05-10");
+    const streaks = calculateStreaks(
+      new Set(["2026-05-01", "2026-05-02", "2026-05-04", "2026-05-05", "2026-05-06"]),
+      "2026-05-10",
+    );
 
     expect(streaks.longestStreak).toBe(3);
   });

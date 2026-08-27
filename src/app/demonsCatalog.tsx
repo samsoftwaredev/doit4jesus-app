@@ -1,20 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "expo-router";
-import {
-  ActivityIndicator,
-  StyleSheet,
-  Text,
-  useWindowDimensions,
-  View,
-} from "react-native";
+import { ActivityIndicator, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import type { ViewStyle } from "react-native";
 
 import { ScreenShell } from "@/components/screen-shell";
 import { Button, Card } from "@/components/ui";
-import {
-  DemonCatalogItemCard,
-  fetchDemonCatalog,
-} from "@/features/demons";
+import { DemonCatalogItemCard, fetchDemonCatalog } from "@/features/demons";
 import type { DemonCatalogItem } from "@/features/demons";
 import { theme } from "@/theme/tokens";
 
@@ -39,11 +30,7 @@ export default function DemonsCatalogScreen() {
     try {
       setDemons(await fetchDemonCatalog());
     } catch (error) {
-      setErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "Unable to load the demons catalog.",
-      );
+      setErrorMessage(error instanceof Error ? error.message : "Unable to load the demons catalog.");
     } finally {
       setIsLoading(false);
     }
@@ -103,11 +90,7 @@ export default function DemonsCatalogScreen() {
       {!isLoading && !errorMessage ? (
         <View style={styles.catalogList}>
           {demons.map((demon) => (
-            <DemonCatalogItemCard
-              demon={demon}
-              key={demon.id}
-              style={catalogCardStyle}
-            />
+            <DemonCatalogItemCard demon={demon} key={demon.id} style={catalogCardStyle} />
           ))}
         </View>
       ) : null}

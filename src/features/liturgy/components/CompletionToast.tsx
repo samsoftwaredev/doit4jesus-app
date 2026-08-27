@@ -13,14 +13,7 @@ interface CompletionToastProps {
   onDismiss: () => void;
 }
 
-export function CompletionToast({
-  count,
-  currentLevel,
-  points,
-  totalXp,
-  visible,
-  onDismiss,
-}: CompletionToastProps) {
+export function CompletionToast({ count, currentLevel, points, totalXp, visible, onDismiss }: CompletionToastProps) {
   const opacity = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(-8)).current;
 
@@ -46,7 +39,12 @@ export function CompletionToast({
         <Text style={styles.title}>All {count} scriptures completed</Text>
         <Text style={styles.message}>Well done — keep the Word in your heart.</Text>
         {typeof points === "number" ? <Text style={styles.points}>Points +{points}</Text> : null}
-        {typeof totalXp === "number" ? <Text style={styles.total}>Total XP {totalXp}{currentLevel ? ` · Level ${currentLevel}` : ""}</Text> : null}
+        {typeof totalXp === "number" ? (
+          <Text style={styles.total}>
+            Total XP {totalXp}
+            {currentLevel ? ` · Level ${currentLevel}` : ""}
+          </Text>
+        ) : null}
       </View>
       <Pressable
         accessibilityLabel="Dismiss completion message"

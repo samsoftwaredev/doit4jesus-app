@@ -31,7 +31,11 @@ export function MonthNavigator({ month, year, canGoPrevious, canGoNext, onPrevio
       >
         <Feather color={theme.colors.text.white} name="chevron-left" size={theme.sizes.iconMedium} />
       </Pressable>
-      <Animated.Text entering={reduceMotion ? undefined : FadeIn.duration(220)} key={`${year}-${month}`} style={styles.label}>
+      <Animated.Text
+        entering={reduceMotion ? undefined : FadeIn.duration(220)}
+        key={`${year}-${month}`}
+        style={styles.label}
+      >
         {monthLabel}
       </Animated.Text>
       <Pressable
@@ -50,8 +54,22 @@ export function MonthNavigator({ month, year, canGoPrevious, canGoNext, onPrevio
 }
 
 const styles = StyleSheet.create({
-  container: { alignItems: "center", flexDirection: "row", justifyContent: "space-between", paddingVertical: theme.spacing[2] },
-  monthButton: { alignItems: "center", backgroundColor: theme.colors.brand.primaryDark, borderColor: theme.colors.brand.primaryLight, borderRadius: theme.radii.pill, borderWidth: theme.borderWidths.thin, height: theme.sizes.touchTarget, justifyContent: "center", width: theme.sizes.touchTarget },
+  container: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingVertical: theme.spacing[2],
+  },
+  monthButton: {
+    alignItems: "center",
+    backgroundColor: theme.colors.brand.primaryDark,
+    borderColor: theme.colors.brand.primaryLight,
+    borderRadius: theme.radii.pill,
+    borderWidth: theme.borderWidths.thin,
+    height: theme.sizes.touchTarget,
+    justifyContent: "center",
+    width: theme.sizes.touchTarget,
+  },
   label: { ...theme.typography.heading2, color: theme.colors.text.white, fontFamily: theme.fontFamilies.devotional },
   disabled: { opacity: theme.opacity.disabled },
   pressed: { opacity: theme.opacity.pressed, transform: [{ scale: 0.96 }] },

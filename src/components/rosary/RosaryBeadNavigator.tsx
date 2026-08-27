@@ -2,12 +2,7 @@ import Feather from "@expo/vector-icons/Feather";
 import { useEffect, useMemo, useRef } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import Animated, {
-  useAnimatedStyle,
-  useReducedMotion,
-  useSharedValue,
-  withTiming,
-} from "react-native-reanimated";
+import Animated, { useAnimatedStyle, useReducedMotion, useSharedValue, withTiming } from "react-native-reanimated";
 
 import { RosaryBead } from "@/components/rosary/RosaryBead";
 import { theme } from "@/theme/tokens";

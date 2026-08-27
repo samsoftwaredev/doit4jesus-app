@@ -74,7 +74,12 @@ export function RosaryBottomNavigation({
                 {progress.currentIndex} of {progress.total}
               </Text>
             </View>
-            <Feather accessible={false} color={theme.rosary.colors.goldBright} name="chevron-right" size={theme.sizes.iconMedium} />
+            <Feather
+              accessible={false}
+              color={theme.rosary.colors.goldBright}
+              name="chevron-right"
+              size={theme.sizes.iconMedium}
+            />
           </Pressable>
         </Animated.View>
 
@@ -86,7 +91,12 @@ export function RosaryBottomNavigation({
           style={({ pressed }) => [styles.settingsButton, pressed && styles.pressed]}
           testID="open-rosary-settings"
         >
-          <Feather accessible={false} color={theme.rosary.colors.goldBright} name="settings" size={theme.sizes.iconMedium} />
+          <Feather
+            accessible={false}
+            color={theme.rosary.colors.goldBright}
+            name="settings"
+            size={theme.sizes.iconMedium}
+          />
         </Pressable>
       </View>
 

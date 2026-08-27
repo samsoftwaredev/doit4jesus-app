@@ -13,14 +13,25 @@ export default function AboutScreen() {
       subtitle="A companion for daily faithfulness."
       title="About Do It for Jesus"
       headerAccessory={
-        <Pressable accessibilityLabel="Go back" accessibilityRole="button" onPress={() => router.back()} style={styles.backButton}>
-          <Feather accessible={false} color={theme.colors.gold.pale} name="chevron-left" size={theme.sizes.iconMedium} />
+        <Pressable
+          accessibilityLabel="Go back"
+          accessibilityRole="button"
+          onPress={() => router.back()}
+          style={styles.backButton}
+        >
+          <Feather
+            accessible={false}
+            color={theme.colors.gold.pale}
+            name="chevron-left"
+            size={theme.sizes.iconMedium}
+          />
         </Pressable>
       }
     >
       <View style={styles.card}>
         <Text style={styles.copy}>
-          Do It for Jesus helps Catholics build consistent spiritual habits, grow in virtue, and encourage one another on their journey toward Christ.
+          Do It for Jesus helps Catholics build consistent spiritual habits, grow in virtue, and encourage one another
+          on their journey toward Christ.
         </Text>
       </View>
     </ScreenShell>

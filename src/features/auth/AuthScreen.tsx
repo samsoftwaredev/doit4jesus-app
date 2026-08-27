@@ -17,12 +17,7 @@ type AuthTextInputProps = ComponentProps<typeof TextInput> & {
 
 export function AuthScreen({ children, subtitle, title }: AuthScreenProps) {
   return (
-    <ScreenShell
-      eyebrow="WELCOME"
-      title={title}
-      subtitle={subtitle}
-      contentContainerStyle={styles.content}
-    >
+    <ScreenShell eyebrow="WELCOME" title={title} subtitle={subtitle} contentContainerStyle={styles.content}>
       <Card fullWidth>
         <View style={styles.form}>{children}</View>
       </Card>
@@ -34,27 +29,13 @@ export function AuthTextInput({ label, ...inputProps }: AuthTextInputProps) {
   return (
     <View style={styles.field}>
       <Text style={styles.label}>{label}</Text>
-      <TextInput
-        placeholderTextColor={theme.colors.text.subtle}
-        style={styles.input}
-        {...inputProps}
-      />
+      <TextInput placeholderTextColor={theme.colors.text.subtle} style={styles.input} {...inputProps} />
     </View>
   );
 }
 
-export function AuthMessage({
-  children,
-  tone = "error",
-}: {
-  children: string;
-  tone?: "error" | "success";
-}) {
-  return (
-    <Text style={[styles.message, tone === "error" ? styles.error : styles.success]}>
-      {children}
-    </Text>
-  );
+export function AuthMessage({ children, tone = "error" }: { children: string; tone?: "error" | "success" }) {
+  return <Text style={[styles.message, tone === "error" ? styles.error : styles.success]}>{children}</Text>;
 }
 
 export const authScreenStyles = StyleSheet.create({

@@ -32,10 +32,7 @@ export function RosaryBead({ bead, state, compact = false, disabled = false, onP
     cancelAnimation(scale);
     if (isActive && !reduceMotion) {
       scale.value = withRepeat(
-        withSequence(
-          withTiming(theme.rosary.glow.activeScale, { duration: 840 }),
-          withTiming(1, { duration: 840 }),
-        ),
+        withSequence(withTiming(theme.rosary.glow.activeScale, { duration: 840 }), withTiming(1, { duration: 840 })),
         -1,
         false,
       );

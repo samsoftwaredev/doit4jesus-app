@@ -80,15 +80,15 @@ export async function markDailyReadingComplete(
   const allReadingsCompleted =
     input.readingIds.length > 0 && input.readingIds.every((readingId) => completedReadingIds.includes(readingId));
   const didCompleteAllReadings = allReadingsCompleted && !current.completedAt;
-  const completedAt = allReadingsCompleted ? current.completedAt ?? new Date().toISOString() : undefined;
+  const completedAt = allReadingsCompleted ? (current.completedAt ?? new Date().toISOString()) : undefined;
   const reward =
     allReadingsCompleted && completedAt
-      ? current.reward ?? {
+      ? (current.reward ?? {
           completedAt,
           idempotencyKey: createIdempotencyKey(),
           occurredAt: completedAt,
           status: "pending" as const,
-        }
+        })
       : current.reward;
   const progress: DailyReadingProgress = {
     completedAt,

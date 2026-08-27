@@ -12,48 +12,23 @@ type FriendsStateProps = {
   type: "empty" | "error" | "loading";
 };
 
-export function FriendsState({
-  actionLabel,
-  message,
-  onAction,
-  title,
-  type,
-}: FriendsStateProps) {
+export function FriendsState({ actionLabel, message, onAction, title, type }: FriendsStateProps) {
   return (
-    <Card
-      accessibilityLabel={title}
-      fullWidth
-      padding="lg"
-      variant={type === "error" ? "danger" : "outlined"}
-    >
+    <Card accessibilityLabel={title} fullWidth padding="lg" variant={type === "error" ? "danger" : "outlined"}>
       <View style={styles.content}>
-        {type === "loading" ? (
-          <ActivityIndicator color={theme.colors.brand.primaryLight} />
-        ) : null}
+        {type === "loading" ? <ActivityIndicator color={theme.colors.brand.primaryLight} /> : null}
         {type === "empty" ? (
-          <Feather
-            color={theme.colors.icon.secondary}
-            name="users"
-            size={theme.sizes.iconLarge}
-          />
+          <Feather color={theme.colors.icon.secondary} name="users" size={theme.sizes.iconLarge} />
         ) : null}
         {type === "error" ? (
-          <Feather
-            color={theme.colors.semantic.danger}
-            name="alert-circle"
-            size={theme.sizes.iconLarge}
-          />
+          <Feather color={theme.colors.semantic.danger} name="alert-circle" size={theme.sizes.iconLarge} />
         ) : null}
         <Text accessibilityRole="header" style={styles.title}>
           {title}
         </Text>
         <Text style={styles.message}>{message}</Text>
         {actionLabel && onAction ? (
-          <Button
-            onPress={onAction}
-            size="sm"
-            variant={type === "error" ? "secondary" : "outline"}
-          >
+          <Button onPress={onAction} size="sm" variant={type === "error" ? "secondary" : "outline"}>
             {actionLabel}
           </Button>
         ) : null}

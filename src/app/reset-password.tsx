@@ -3,13 +3,7 @@ import { useState } from "react";
 import { View } from "react-native";
 
 import { Button } from "@/components/ui";
-import {
-  AuthMessage,
-  AuthScreen,
-  AuthTextInput,
-  authScreenStyles,
-  useAuth,
-} from "@/features/auth";
+import { AuthMessage, AuthScreen, AuthTextInput, authScreenStyles, useAuth } from "@/features/auth";
 import { supabase } from "@/lib/supabase";
 
 export default function ResetPasswordScreen() {

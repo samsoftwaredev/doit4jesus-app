@@ -42,9 +42,7 @@ export function Card({
       ]}
       testID={testID}
     >
-      {header ? (
-        <View style={[styles.header, cardPaddingStyles[padding], headerStyle]}>{header}</View>
-      ) : null}
+      {header ? <View style={[styles.header, cardPaddingStyles[padding], headerStyle]}>{header}</View> : null}
       {!header && hasStandardHeader ? (
         <View style={[styles.header, styles.standardHeader, cardPaddingStyles[padding], headerStyle]}>
           <View style={styles.headerCopy}>

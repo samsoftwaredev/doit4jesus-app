@@ -39,14 +39,30 @@ export function FriendsLeaderboardScreen() {
   return (
     <SafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
       <FriendsHeader onBack={() => router.back()} title="Leaderboard" />
-      {leaderboard.isLoading ? <View style={styles.state}><FriendsState message="Loading your friends' points…" title="Leaderboard" type="loading" /></View> : null}
-      {leaderboard.error ? <View style={styles.state}><FriendsState actionLabel="Try again" message={leaderboard.error} onAction={() => void leaderboard.reload()} title="Couldn't load the leaderboard" type="error" /></View> : null}
+      {leaderboard.isLoading ? (
+        <View style={styles.state}>
+          <FriendsState message="Loading your friends' points…" title="Leaderboard" type="loading" />
+        </View>
+      ) : null}
+      {leaderboard.error ? (
+        <View style={styles.state}>
+          <FriendsState
+            actionLabel="Try again"
+            message={leaderboard.error}
+            onAction={() => void leaderboard.reload()}
+            title="Couldn't load the leaderboard"
+            type="error"
+          />
+        </View>
+      ) : null}
       {data && !leaderboard.isLoading && !leaderboard.error ? (
         <FlatList
           contentContainerStyle={styles.listContent}
           data={data.entries}
           keyExtractor={(entry) => entry.friend.id}
-          ListEmptyComponent={<FriendsState message="No Rosaries recorded yet" title="No leaderboard data" type="empty" />}
+          ListEmptyComponent={
+            <FriendsState message="No Rosaries recorded yet" title="No leaderboard data" type="empty" />
+          }
           ListFooterComponent={
             <LeaderboardFooter
               currentUserEntry={data.currentUserEntry}
@@ -65,9 +81,19 @@ export function FriendsLeaderboardScreen() {
                     accessibilityState={{ selected: leaderboard.periodType === option.value }}
                     key={option.value}
                     onPress={() => leaderboard.setPeriodType(option.value)}
-                    style={[styles.periodButton, leaderboard.periodType === option.value && styles.periodButtonSelected]}
+                    style={[
+                      styles.periodButton,
+                      leaderboard.periodType === option.value && styles.periodButtonSelected,
+                    ]}
                   >
-                    <Text style={[styles.periodButtonText, leaderboard.periodType === option.value && styles.periodButtonTextSelected]}>{option.label}</Text>
+                    <Text
+                      style={[
+                        styles.periodButtonText,
+                        leaderboard.periodType === option.value && styles.periodButtonTextSelected,
+                      ]}
+                    >
+                      {option.label}
+                    </Text>
                   </Pressable>
                 ))}
               </View>
@@ -78,10 +104,20 @@ export function FriendsLeaderboardScreen() {
           }
           onEndReached={() => void leaderboard.loadMore()}
           onEndReachedThreshold={0.5}
-          refreshControl={<RefreshControl onRefresh={() => void leaderboard.reload()} refreshing={leaderboard.isLoading} tintColor={theme.colors.brand.primaryLight} />}
+          refreshControl={
+            <RefreshControl
+              onRefresh={() => void leaderboard.reload()}
+              refreshing={leaderboard.isLoading}
+              tintColor={theme.colors.brand.primaryLight}
+            />
+          }
           renderItem={({ item }) => (
             <View style={styles.entryCard}>
-              <LeaderboardEntries entries={[item]} onPressFriend={(friendId) => router.push(`/friends/${friendId}`)} showHeader={false} />
+              <LeaderboardEntries
+                entries={[item]}
+                onPressFriend={(friendId) => router.push(`/friends/${friendId}`)}
+                showHeader={false}
+              />
             </View>
           )}
           showsVerticalScrollIndicator={false}
@@ -106,7 +142,9 @@ function LeaderboardFooter({
 }) {
   const currentEntry = currentUserEntry ?? entries.find((entry) => entry.isCurrentUser) ?? null;
   const goal = getGoal(entries, currentEntry);
-  const isCurrentUserInList = currentEntry ? entries.some((entry) => entry.friend.id === currentEntry.friend.id) : false;
+  const isCurrentUserInList = currentEntry
+    ? entries.some((entry) => entry.friend.id === currentEntry.friend.id)
+    : false;
 
   return (
     <View style={styles.footer}>
@@ -121,8 +159,13 @@ function LeaderboardFooter({
           <Text style={styles.goalEyebrow}>YOUR GOAL</Text>
           {goal ? (
             <>
-              <Text style={styles.goalText}>{`${formatPoints(goal.pointsNeeded)} more points to reach #${goal.rank}`}</Text>
-              <View accessibilityLabel={`${Math.round(goal.progress * 100)} percent progress toward the next rank`} style={styles.progressTrack}>
+              <Text
+                style={styles.goalText}
+              >{`${formatPoints(goal.pointsNeeded)} more points to reach #${goal.rank}`}</Text>
+              <View
+                accessibilityLabel={`${Math.round(goal.progress * 100)} percent progress toward the next rank`}
+                style={styles.progressTrack}
+              >
                 <View style={[styles.progressFill, { width: `${goal.progress * 100}%` }]} />
               </View>
             </>

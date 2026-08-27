@@ -27,9 +27,7 @@ export function SettingsRow({
   showChevron = Boolean(onPress),
   value,
 }: SettingsRowProps) {
-  const iconColor = destructive
-    ? theme.colors.text.danger
-    : theme.colors.gold.pale;
+  const iconColor = destructive ? theme.colors.text.danger : theme.colors.gold.pale;
   const rightAccessory = external ? "external-link" : "chevron-right";
   const content = (
     <>
@@ -55,11 +53,7 @@ export function SettingsRow({
   );
 
   if (!onPress) {
-    return (
-      <View style={[styles.row, isLast && styles.lastRow, destructive && styles.destructiveRow]}>
-        {content}
-      </View>
-    );
+    return <View style={[styles.row, isLast && styles.lastRow, destructive && styles.destructiveRow]}>{content}</View>;
   }
 
   return (

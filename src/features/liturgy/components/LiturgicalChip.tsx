@@ -21,7 +21,21 @@ export function LiturgicalChip({ icon, label, value }: LiturgicalChipProps) {
 }
 
 const styles = StyleSheet.create({
-  chip: { alignItems: "center", backgroundColor: theme.colors.surface.tertiary, borderColor: theme.colors.border.subtle, borderRadius: theme.radii.pill, borderWidth: theme.borderWidths.thin, flexDirection: "row", paddingHorizontal: theme.spacing[2.5], paddingVertical: theme.spacing[1.5] },
-  label: { ...theme.typography.labelSmall, color: theme.colors.text.muted, marginLeft: theme.spacing[1], textTransform: "uppercase" },
+  chip: {
+    alignItems: "center",
+    backgroundColor: theme.colors.surface.tertiary,
+    borderColor: theme.colors.border.subtle,
+    borderRadius: theme.radii.pill,
+    borderWidth: theme.borderWidths.thin,
+    flexDirection: "row",
+    paddingHorizontal: theme.spacing[2.5],
+    paddingVertical: theme.spacing[1.5],
+  },
+  label: {
+    ...theme.typography.labelSmall,
+    color: theme.colors.text.muted,
+    marginLeft: theme.spacing[1],
+    textTransform: "uppercase",
+  },
   value: { ...theme.typography.label, color: theme.colors.text.primary, marginLeft: theme.spacing[1] },
 });

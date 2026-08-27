@@ -33,7 +33,10 @@ export function GardenHero() {
           Complete a rosary each day{"\n"}to make the garden bloom.
         </Text>
       </View>
-      <View accessibilityLabel="Devotional artwork of the Blessed Virgin Mary surrounded by flowers" style={styles.artworkArea}>
+      <View
+        accessibilityLabel="Devotional artwork of the Blessed Virgin Mary surrounded by flowers"
+        style={styles.artworkArea}
+      >
         <Image accessible={false} contentFit="contain" source={flowersArtwork} style={styles.flowerArtwork} />
         <Image accessible={false} contentFit="contain" source={maryArtwork} style={styles.maryArtwork} />
         <LinearGradient

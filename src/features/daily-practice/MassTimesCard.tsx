@@ -26,9 +26,7 @@ export function MassTimesCard({ onPress, style, testID }: DailyPracticeCardProps
         source={require("../../assets/icons/church.png")}
         style={styles.image}
       />
-      <Text style={styles.description}>
-        Find a nearby Mass and make room to encounter Christ.
-      </Text>
+      <Text style={styles.description}>Find a nearby Mass and make room to encounter Christ.</Text>
     </Card>
   );
 }

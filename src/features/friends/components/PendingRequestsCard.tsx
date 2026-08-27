@@ -27,8 +27,14 @@ export function PendingRequestsCard({
       header={
         <View style={styles.header}>
           <View style={styles.titleRow}>
-            <Text accessibilityRole="header" style={styles.heading}>PENDING REQUESTS</Text>
-            {requests.length ? <View accessibilityLabel={`${requests.length} pending friend requests`} style={styles.badge}><Text style={styles.badgeText}>{requests.length}</Text></View> : null}
+            <Text accessibilityRole="header" style={styles.heading}>
+              PENDING REQUESTS
+            </Text>
+            {requests.length ? (
+              <View accessibilityLabel={`${requests.length} pending friend requests`} style={styles.badge}>
+                <Text style={styles.badgeText}>{requests.length}</Text>
+              </View>
+            ) : null}
           </View>
           <Pressable accessibilityLabel="See all friend requests" onPress={onSeeAll} style={styles.seeAll}>
             <Text style={styles.seeAllText}>See all</Text>
@@ -39,15 +45,19 @@ export function PendingRequestsCard({
       padding="none"
     >
       <View style={styles.content}>
-        {requests.length ? requests.slice(0, 2).map((request) => (
-          <FriendRequestItem
-            isMutating={isMutatingId === request.id}
-            key={request.id}
-            onAccept={() => onAccept(request)}
-            onDecline={() => onDecline(request)}
-            request={request}
-          />
-        )) : (
+        {requests.length ? (
+          requests
+            .slice(0, 2)
+            .map((request) => (
+              <FriendRequestItem
+                isMutating={isMutatingId === request.id}
+                key={request.id}
+                onAccept={() => onAccept(request)}
+                onDecline={() => onDecline(request)}
+                request={request}
+              />
+            ))
+        ) : (
           <View style={styles.empty}>
             <Text style={styles.emptyText}>No pending requests</Text>
           </View>

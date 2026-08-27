@@ -19,13 +19,7 @@ function titleCaseReadingType(type: DailyReading["type"]) {
   return type.replaceAll("_", " ");
 }
 
-export function ScriptureReadingRow({
-  completed,
-  expanded,
-  reading,
-  onComplete,
-  onToggle,
-}: ScriptureReadingRowProps) {
+export function ScriptureReadingRow({ completed, expanded, reading, onComplete, onToggle }: ScriptureReadingRowProps) {
   const contentHeight = useRef(0);
   const viewportHeight = useRef(0);
   const [hasReachedEnd, setHasReachedEnd] = useState(false);
@@ -35,8 +29,7 @@ export function ScriptureReadingRow({
 
   const updateEndState = useCallback((offsetY: number) => {
     if (contentHeight.current <= 0 || viewportHeight.current <= 0) return;
-    if (offsetY + viewportHeight.current >= contentHeight.current - 24)
-      setHasReachedEnd(true);
+    if (offsetY + viewportHeight.current >= contentHeight.current - 24) setHasReachedEnd(true);
   }, []);
 
   const toggle = useCallback(() => {
@@ -60,11 +53,7 @@ export function ScriptureReadingRow({
   return (
     <View style={[styles.row, expanded && styles.rowExpanded]}>
       <Pressable
-        accessibilityHint={
-          expanded
-            ? "Collapses this Scripture reading."
-            : "Expands this Scripture reading."
-        }
+        accessibilityHint={expanded ? "Collapses this Scripture reading." : "Expands this Scripture reading."}
         accessibilityLabel={`${expanded ? "Collapse" : "Expand"} ${readingType}, ${reading.citation}`}
         accessibilityRole="button"
         accessibilityState={{ expanded }}
@@ -73,9 +62,7 @@ export function ScriptureReadingRow({
       >
         <View style={[styles.icon, completed && styles.completedIcon]}>
           <MaterialCommunityIcons
-            color={
-              completed ? theme.colors.text.success : theme.colors.gold.pale
-            }
+            color={completed ? theme.colors.text.success : theme.colors.gold.pale}
             name="book-open-page-variant-outline"
             size={19}
           />
@@ -85,15 +72,9 @@ export function ScriptureReadingRow({
           <Text style={styles.citation}>{reading.citation}</Text>
         </View>
         <View style={styles.disclosure}>
-          <Text style={[styles.read, completed && styles.completedText]}>
-            {completed ? "Read" : "Read"}
-          </Text>
+          <Text style={[styles.read, completed && styles.completedText]}>{completed ? "Read" : "Read"}</Text>
           {completed ? (
-            <MaterialCommunityIcons
-              color={theme.colors.semantic.success}
-              name="check-circle"
-              size={19}
-            />
+            <MaterialCommunityIcons color={theme.colors.semantic.success} name="check-circle" size={19} />
           ) : (
             <MaterialCommunityIcons
               color={theme.colors.text.muted}
@@ -116,9 +97,7 @@ export function ScriptureReadingRow({
               viewportHeight.current = event.nativeEvent.layout.height;
               updateEndState(0);
             }}
-            onScroll={(event) =>
-              updateEndState(event.nativeEvent.contentOffset.y)
-            }
+            onScroll={(event) => updateEndState(event.nativeEvent.contentOffset.y)}
             scrollEventThrottle={16}
             style={styles.readingScroll}
           >
@@ -126,14 +105,8 @@ export function ScriptureReadingRow({
               {reading.text}
             </Text>
             <View accessibilityLabel="End of reading" style={styles.endMarker}>
-              <MaterialCommunityIcons
-                color={theme.colors.semantic.success}
-                name="check-circle-outline"
-                size={18}
-              />
-              <Text style={styles.endCopy}>
-                You&apos;ve reached the end of this reading.
-              </Text>
+              <MaterialCommunityIcons color={theme.colors.semantic.success} name="check-circle-outline" size={18} />
+              <Text style={styles.endCopy}>You&apos;ve reached the end of this reading.</Text>
             </View>
           </ScrollView>
           {saveError ? (
@@ -143,9 +116,7 @@ export function ScriptureReadingRow({
           ) : null}
           <Button
             accessibilityHint={
-              hasReachedEnd || completed
-                ? undefined
-                : "Scroll to the end of the reading before marking it complete."
+              hasReachedEnd || completed ? undefined : "Scroll to the end of the reading before marking it complete."
             }
             disabled={!hasReachedEnd || completed}
             fullWidth
@@ -154,11 +125,7 @@ export function ScriptureReadingRow({
             size="sm"
             variant={completed ? "outline" : "primary"}
           >
-            {completed
-              ? "Completed"
-              : hasReachedEnd
-                ? "Mark as Read"
-                : "Read to the End"}
+            {completed ? "Completed" : hasReachedEnd ? "Mark as Read" : "Read to the End"}
           </Button>
         </View>
       ) : null}

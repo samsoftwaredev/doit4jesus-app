@@ -25,9 +25,7 @@ export function AvatarPanel({ style, testID }: AvatarPanelProps) {
           style={styles.portrait}
         />
       </View>
-      <Text style={styles.description}>
-        A faithful companion on your pilgrimage toward holiness.
-      </Text>
+      <Text style={styles.description}>A faithful companion on your pilgrimage toward holiness.</Text>
     </Card>
   );
 }

@@ -2,11 +2,7 @@ import { Image } from "expo-image";
 import { Text, View } from "react-native";
 
 import { Card } from "@/components/ui";
-import type {
-  DemonAttack,
-  DemonBattleDetails,
-  DemonDefense,
-} from "@/features/demons";
+import type { DemonAttack, DemonBattleDetails, DemonDefense } from "@/features/demons";
 import { getDemonArtwork } from "@/features/demons";
 
 import { styles } from "./BattleDemonDetails.styles";
@@ -28,9 +24,7 @@ function AttackListItem({ attack }: { attack: DemonAttack }) {
     <View style={styles.listItem}>
       <Text style={styles.itemTitle}>{attack.name}</Text>
       <Text style={styles.itemDescription}>{attack.description}</Text>
-      <Text style={styles.itemMeta}>
-        {`${formatLabel(attack.targetVirtueCode)} −${attack.virtueDecrease}`}
-      </Text>
+      <Text style={styles.itemMeta}>{`${formatLabel(attack.targetVirtueCode)} −${attack.virtueDecrease}`}</Text>
     </View>
   );
 }
@@ -55,12 +49,7 @@ export function BattleDemonDetails({ details }: BattleDemonDetailsProps) {
     <Card fullWidth subtitle={demon.title} title={demon.name} variant="danger">
       {artwork ? (
         <View style={styles.artworkFrame}>
-          <Image
-            accessible={false}
-            contentFit="contain"
-            source={artwork}
-            style={styles.artwork}
-          />
+          <Image accessible={false} contentFit="contain" source={artwork} style={styles.artwork} />
         </View>
       ) : null}
       <View style={styles.metadata}>
@@ -103,9 +92,7 @@ export function BattleDemonDetails({ details }: BattleDemonDetailsProps) {
         <Text style={styles.rewardText}>{`XP +${defeatReward.xpReward}`}</Text>
       </View>
 
-      {demon.safetyNote ? (
-        <Text style={styles.safetyNote}>{demon.safetyNote}</Text>
-      ) : null}
+      {demon.safetyNote ? <Text style={styles.safetyNote}>{demon.safetyNote}</Text> : null}
     </Card>
   );
 }

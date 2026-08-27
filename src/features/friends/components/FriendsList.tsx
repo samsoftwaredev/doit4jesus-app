@@ -30,7 +30,9 @@ export function FriendsList({ friends, onPressFriend }: FriendsListProps) {
               source={friend.avatarUrl}
             />
             <View style={styles.copy}>
-              <Text numberOfLines={1} style={styles.name}>{friend.displayName}</Text>
+              <Text numberOfLines={1} style={styles.name}>
+                {friend.displayName}
+              </Text>
               <Text numberOfLines={1} style={styles.metadata}>
                 {`Level ${friend.currentLevel.levelNumber}${friend.title ? ` • ${friend.title}` : ""}`}
               </Text>

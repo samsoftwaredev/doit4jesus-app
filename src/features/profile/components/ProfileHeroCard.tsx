@@ -12,11 +12,7 @@ type ProfileHeroCardProps = {
   profile: CurrentUserProfile;
 };
 
-export function ProfileHeroCard({
-  location,
-  onAvatarPress,
-  profile,
-}: ProfileHeroCardProps) {
+export function ProfileHeroCard({ location, onAvatarPress, profile }: ProfileHeroCardProps) {
   const selectedSaint = findSaintAvatar(profile.saintAvatarId);
   const avatarSource = selectedSaint?.image ?? profile.avatarUrl ?? saintAvatars[8].image;
 

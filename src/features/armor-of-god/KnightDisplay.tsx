@@ -23,9 +23,7 @@ const focusPositionByArmorId = {
 export function KnightDisplay({ selectedItem }: KnightDisplayProps) {
   const { height: windowHeight } = useWindowDimensions();
   const stageHeight = Math.min(windowHeight * 0.44, theme.spacing[24] * 6);
-  const focusPosition = focusPositionByArmorId[
-    selectedItem.id as keyof typeof focusPositionByArmorId
-  ];
+  const focusPosition = focusPositionByArmorId[selectedItem.id as keyof typeof focusPositionByArmorId];
 
   return (
     <View

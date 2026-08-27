@@ -1,8 +1,4 @@
-export {
-  fetchLiturgyReadings,
-  fetchTodayLiturgy,
-  recordDailyScriptureCompletion,
-} from "./liturgy.api";
+export { fetchLiturgyReadings, fetchTodayLiturgy, recordDailyScriptureCompletion } from "./liturgy.api";
 export {
   loadDailyReadingProgress,
   markCompletionToastShown,

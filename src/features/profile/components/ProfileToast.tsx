@@ -21,7 +21,12 @@ export function ProfileToast({ message, onDismiss }: ProfileToastProps) {
 
   return (
     <View accessibilityLiveRegion="polite" accessibilityRole="alert" style={styles.toast}>
-      <Feather accessible={false} color={theme.colors.semantic.success} name="check-circle" size={theme.sizes.iconSmall} />
+      <Feather
+        accessible={false}
+        color={theme.colors.semantic.success}
+        name="check-circle"
+        size={theme.sizes.iconSmall}
+      />
       <Text style={styles.message}>{message}</Text>
       <Pressable
         accessibilityLabel="Dismiss message"

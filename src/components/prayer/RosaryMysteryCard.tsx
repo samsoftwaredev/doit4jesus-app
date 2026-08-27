@@ -29,10 +29,19 @@ export function RosaryMysteryCard({ mysterySet, onPress, width }: RosaryMysteryC
           style={StyleSheet.absoluteFill}
         />
         <View style={styles.content}>
-          <Text numberOfLines={2} style={styles.title}>{mysterySet.title}</Text>
-          <Text numberOfLines={2} style={styles.subtitle}>{mysterySet.subtitle}</Text>
+          <Text numberOfLines={2} style={styles.title}>
+            {mysterySet.title}
+          </Text>
+          <Text numberOfLines={2} style={styles.subtitle}>
+            {mysterySet.subtitle}
+          </Text>
           <View style={styles.arrow}>
-            <Feather accessible={false} color={theme.colors.text.inverse} name="arrow-up-right" size={theme.sizes.iconSmall} />
+            <Feather
+              accessible={false}
+              color={theme.colors.text.inverse}
+              name="arrow-up-right"
+              size={theme.sizes.iconSmall}
+            />
           </View>
         </View>
       </OrnateCard>

@@ -1,8 +1,4 @@
-import type {
-  DailyLiturgyViewModel,
-  LiturgicalColor,
-  ReadingType,
-} from "./liturgy.types";
+import type { DailyLiturgyViewModel, LiturgicalColor, ReadingType } from "./liturgy.types";
 import { getSupabaseAccessToken } from "@/lib/supabase";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -54,7 +50,11 @@ function createGospelExcerpt(readings: DailyLiturgyViewModel["readings"]) {
   const gospel = readings.find((reading) => reading.type === "GOSPEL");
   if (!gospel?.text.trim()) return undefined;
 
-  const firstParagraph = gospel.text.trim().split(/\n\s*\n|\n/)[0]?.trim() ?? "";
+  const firstParagraph =
+    gospel.text
+      .trim()
+      .split(/\n\s*\n|\n/)[0]
+      ?.trim() ?? "";
   const excerpt = firstParagraph.length > 240 ? `${firstParagraph.slice(0, 237).trimEnd()}…` : firstParagraph;
   if (!excerpt) return undefined;
 
@@ -81,12 +81,14 @@ function parseDailyLiturgy(value: unknown): DailyLiturgyViewModel {
       if (!isRecord(rawReading)) throw new Error("Invalid reading");
       const type = readReadingType(rawReading.type);
       const citation = readString(rawReading.citation, "reading citation");
-      return [{
-        citation,
-        id: createReadingId(type, citation, index),
-        text: readString(rawReading.text, "reading text"),
-        type,
-      }];
+      return [
+        {
+          citation,
+          id: createReadingId(type, citation, index),
+          text: readString(rawReading.text, "reading text"),
+          type,
+        },
+      ];
     } catch {
       // Celebration and calendar metadata remain useful when reading text is temporarily unavailable.
       return [];
@@ -97,9 +99,7 @@ function parseDailyLiturgy(value: unknown): DailyLiturgyViewModel {
     celebration: {
       grade: readString(celebration.grade, "celebration grade"),
       id: readString(celebration.id, "celebration ID"),
-      liturgicalColor: readLiturgicalColor(
-        Array.isArray(celebration.color) ? celebration.color[0] : undefined,
-      ),
+      liturgicalColor: readLiturgicalColor(Array.isArray(celebration.color) ? celebration.color[0] : undefined),
       name: readString(celebration.name, "celebration name"),
       season: readString(celebration.season, "liturgical season"),
     },
@@ -108,16 +108,10 @@ function parseDailyLiturgy(value: unknown): DailyLiturgyViewModel {
     metadata: {
       country: readString(metadata.country, "country"),
       psalterWeek:
-        cycles.psalterWeek === 1 ||
-        cycles.psalterWeek === 2 ||
-        cycles.psalterWeek === 3 ||
-        cycles.psalterWeek === 4
+        cycles.psalterWeek === 1 || cycles.psalterWeek === 2 || cycles.psalterWeek === 3 || cycles.psalterWeek === 4
           ? cycles.psalterWeek
           : undefined,
-      sundayCycle:
-        cycles.sunday === "A" || cycles.sunday === "B" || cycles.sunday === "C"
-          ? cycles.sunday
-          : undefined,
+      sundayCycle: cycles.sunday === "A" || cycles.sunday === "B" || cycles.sunday === "C" ? cycles.sunday : undefined,
       weekdayCycle: cycles.weekday === "I" || cycles.weekday === "II" ? cycles.weekday : undefined,
     },
     readings,
@@ -149,9 +143,7 @@ export function fetchTodayLiturgy(country: string) {
 }
 
 export function fetchLiturgyReadings(date: string, country: string) {
-  return requestLiturgy(
-    `/api/v1/liturgy/readings/${encodeURIComponent(date)}?${new URLSearchParams({ country })}`,
-  );
+  return requestLiturgy(`/api/v1/liturgy/readings/${encodeURIComponent(date)}?${new URLSearchParams({ country })}`);
 }
 
 export interface RecordDailyScriptureCompletionResult {

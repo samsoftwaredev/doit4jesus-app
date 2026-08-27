@@ -1,8 +1,4 @@
-import type {
-  CurrentUserProfile,
-  Gender,
-  UpdateCurrentUserProfile,
-} from "./profile.types";
+import type { CurrentUserProfile, Gender, UpdateCurrentUserProfile } from "./profile.types";
 import { getSupabaseAccessToken } from "@/lib/supabase";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -48,15 +44,9 @@ function parseCurrentUserProfile(value: unknown): CurrentUserProfile {
     createdAt: readString(profile.createdAt, "creation date"),
     displayName: readString(profile.displayName, "display name"),
     gender: readGender(profile.gender),
-    leaderboardVisibility: readString(
-      profile.leaderboardVisibility,
-      "leaderboard visibility",
-    ),
+    leaderboardVisibility: readString(profile.leaderboardVisibility, "leaderboard visibility"),
     preferredLanguage: readString(profile.preferredLanguage, "preferred language"),
-    prayerMapVisibility: readString(
-      profile.prayerMapVisibility,
-      "prayer map visibility",
-    ),
+    prayerMapVisibility: readString(profile.prayerMapVisibility, "prayer map visibility"),
     saintAvatarId: readNullableString(profile.saintAvatarId, "saint avatar ID"),
     state: readNullableString(profile.state, "state"),
     timezone: readString(profile.timezone, "timezone"),
@@ -102,9 +92,7 @@ export async function fetchCurrentUserProfile(): Promise<CurrentUserProfile> {
   return parseCurrentUserProfile((await response.json()) as unknown);
 }
 
-export async function updateCurrentUserProfile(
-  update: Partial<UpdateCurrentUserProfile>,
-): Promise<CurrentUserProfile> {
+export async function updateCurrentUserProfile(update: Partial<UpdateCurrentUserProfile>): Promise<CurrentUserProfile> {
   const apiUrl = getProfileApiUrl();
   const headers = await getProfileHeaders();
 

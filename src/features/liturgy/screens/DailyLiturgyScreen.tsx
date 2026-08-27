@@ -20,15 +20,8 @@ import {
   recordDailyScriptureCompletion,
   recordRewardOnProgress,
 } from "../index";
-import {
-  addDaysToIsoDate,
-  canNavigateToNextLiturgyDate,
-  getLocalIsoDate,
-} from "../liturgy.dates";
-import type {
-  DailyLiturgyViewModel,
-  DailyReadingProgress,
-} from "../liturgy.types";
+import { addDaysToIsoDate, canNavigateToNextLiturgyDate, getLocalIsoDate } from "../liturgy.dates";
+import type { DailyLiturgyViewModel, DailyReadingProgress } from "../liturgy.types";
 
 interface CompletionToastState {
   count: number;
@@ -42,15 +35,9 @@ export interface DailyLiturgyDashboardProps {
   onCalendarPress?: () => void;
 }
 
-function hasCompletedAllReadings(
-  progress: DailyReadingProgress,
-  model: DailyLiturgyViewModel,
-) {
+function hasCompletedAllReadings(progress: DailyReadingProgress, model: DailyLiturgyViewModel) {
   return (
-    model.readings.length > 0 &&
-    model.readings.every((reading) =>
-      progress.completedReadingIds.includes(reading.id),
-    )
+    model.readings.length > 0 && model.readings.every((reading) => progress.completedReadingIds.includes(reading.id))
   );
 }
 
@@ -69,14 +56,10 @@ function LiturgyLoadingState() {
  * Home-dashboard section for daily Mass and Scripture. The parent dashboard
  * owns scrolling so this component can live naturally alongside other cards.
  */
-export function DailyLiturgyDashboard({
-  country = "US",
-  onCalendarPress,
-}: DailyLiturgyDashboardProps) {
+export function DailyLiturgyDashboard({ country = "US", onCalendarPress }: DailyLiturgyDashboardProps) {
   const rewardInFlight = useRef<string | null>(null);
   const toastPresentedFor = useRef<string | null>(null);
-  const [completionToast, setCompletionToast] =
-    useState<CompletionToastState | null>(null);
+  const [completionToast, setCompletionToast] = useState<CompletionToastState | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isRetryingReward, setIsRetryingReward] = useState(false);
@@ -85,46 +68,38 @@ export function DailyLiturgyDashboard({
   const [rewardError, setRewardError] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState(() => getLocalIsoDate());
 
-  const presentCompletionToast = useCallback(
-    async (nextProgress: DailyReadingProgress, readingCount: number) => {
-      const reward = nextProgress.reward;
-      if (
-        !reward ||
-        reward.status !== "recorded" ||
-        reward.toastShownAt ||
-        toastPresentedFor.current === reward.idempotencyKey
-      ) {
-        return;
-      }
+  const presentCompletionToast = useCallback(async (nextProgress: DailyReadingProgress, readingCount: number) => {
+    const reward = nextProgress.reward;
+    if (
+      !reward ||
+      reward.status !== "recorded" ||
+      reward.toastShownAt ||
+      toastPresentedFor.current === reward.idempotencyKey
+    ) {
+      return;
+    }
 
-      toastPresentedFor.current = reward.idempotencyKey;
-      setCompletionToast({
-        count: readingCount,
-        currentLevel: reward.currentLevel,
-        points: reward.points,
-        totalXp: reward.totalXp,
-      });
+    toastPresentedFor.current = reward.idempotencyKey;
+    setCompletionToast({
+      count: readingCount,
+      currentLevel: reward.currentLevel,
+      points: reward.points,
+      totalXp: reward.totalXp,
+    });
 
-      try {
-        const updated = await markCompletionToastShown(nextProgress);
-        setProgress(updated);
-      } catch {
-        // The toast is intentionally still shown; a storage retry is harmless on the next launch.
-      }
-    },
-    [],
-  );
+    try {
+      const updated = await markCompletionToastShown(nextProgress);
+      setProgress(updated);
+    } catch {
+      // The toast is intentionally still shown; a storage retry is harmless on the next launch.
+    }
+  }, []);
 
   const awardCompletion = useCallback(
     async (nextProgress: DailyReadingProgress, readingCount: number) => {
       const reward = nextProgress.reward;
-      if (
-        !reward ||
-        reward.status === "recorded" ||
-        rewardInFlight.current === reward.idempotencyKey
-      ) {
-        if (reward?.status === "recorded")
-          await presentCompletionToast(nextProgress, readingCount);
+      if (!reward || reward.status === "recorded" || rewardInFlight.current === reward.idempotencyKey) {
+        if (reward?.status === "recorded") await presentCompletionToast(nextProgress, readingCount);
         return;
       }
 
@@ -143,9 +118,7 @@ export function DailyLiturgyDashboard({
         setProgress(updated);
         await presentCompletionToast(updated, readingCount);
       } catch {
-        setRewardError(
-          "Your readings are saved. Points could not be recorded yet.",
-        );
+        setRewardError("Your readings are saved. Points could not be recorded yet.");
       } finally {
         rewardInFlight.current = null;
         setIsRetryingReward(false);
@@ -156,10 +129,7 @@ export function DailyLiturgyDashboard({
 
   const syncProgress = useCallback(
     async (model: DailyLiturgyViewModel) => {
-      const nextProgress = await loadDailyReadingProgress(
-        model.date,
-        model.metadata.country,
-      );
+      const nextProgress = await loadDailyReadingProgress(model.date, model.metadata.country);
       setProgress(nextProgress);
 
       if (!hasCompletedAllReadings(nextProgress, model)) return;
@@ -230,10 +200,7 @@ export function DailyLiturgyDashboard({
       });
       setProgress(result.progress);
 
-      if (
-        result.allReadingsCompleted &&
-        result.progress.reward?.status === "pending"
-      ) {
+      if (result.allReadingsCompleted && result.progress.reward?.status === "pending") {
         void awardCompletion(result.progress, liturgy.readings.length);
       }
     },
@@ -248,24 +215,15 @@ export function DailyLiturgyDashboard({
           <Text accessibilityRole="header" style={styles.errorTitle}>
             Unable to load this day&apos;s liturgy.
           </Text>
-          <Text style={styles.errorCopy}>
-            Please try again when you&apos;re ready.
-          </Text>
-          <Button
-            onPress={() => void reload()}
-            style={styles.retryButton}
-            variant="warning"
-          >
+          <Text style={styles.errorCopy}>Please try again when you&apos;re ready.</Text>
+          <Button onPress={() => void reload()} style={styles.retryButton} variant="warning">
             Retry
           </Button>
         </View>
       ) : null}
       {liturgy ? (
         <View style={styles.content}>
-          <DailyMassHeader
-            date={liturgy.date}
-            onCalendarPress={onCalendarPress}
-          />
+          <DailyMassHeader date={liturgy.date} onCalendarPress={onCalendarPress} />
           <CompletionToast
             count={completionToast?.count ?? 0}
             currentLevel={completionToast?.currentLevel}
@@ -291,19 +249,12 @@ export function DailyLiturgyDashboard({
           {rewardError ? (
             <View accessibilityRole="alert" style={styles.rewardError}>
               <Text style={styles.rewardErrorCopy}>{rewardError}</Text>
-              <Button
-                loading={isRetryingReward}
-                onPress={retryReward}
-                size="sm"
-                variant="outline"
-              >
+              <Button loading={isRetryingReward} onPress={retryReward} size="sm" variant="outline">
                 Retry points
               </Button>
             </View>
           ) : null}
-          {liturgy.highlightedVerse ? (
-            <DailyVerseCard {...liturgy.highlightedVerse} />
-          ) : null}
+          {liturgy.highlightedVerse ? <DailyVerseCard {...liturgy.highlightedVerse} /> : null}
         </View>
       ) : null}
       {isLoading && liturgy ? (

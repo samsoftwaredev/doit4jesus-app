@@ -19,13 +19,7 @@ const sizeByVariant = {
   xl: theme.sizes.iconHero + theme.spacing[8],
 } as const;
 
-export function FriendAvatar({
-  accessibilityLabel,
-  countryCode,
-  name,
-  size = "md",
-  source,
-}: FriendAvatarProps) {
+export function FriendAvatar({ accessibilityLabel, countryCode, name, size = "md", source }: FriendAvatarProps) {
   const avatarSize = sizeByVariant[size];
   const flagSize = Math.max(14, Math.round(avatarSize * 0.42));
   const initial = name.trim().slice(0, 1).toUpperCase() || "?";
@@ -48,11 +42,7 @@ export function FriendAvatar({
           <Text style={styles.initial}>{initial}</Text>
         </View>
       )}
-      <CountryFlagBadge
-        countryCode={countryCode}
-        size={flagSize}
-        style={styles.flag}
-      />
+      <CountryFlagBadge countryCode={countryCode} size={flagSize} style={styles.flag} />
     </View>
   );
 }

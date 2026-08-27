@@ -15,25 +15,65 @@ export function CompareStatsScreen({ friendId }: { friendId: string | undefined 
   return (
     <SafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
       <FriendsHeader onBack={() => router.back()} title="Compare Stats" />
-      {comparison.isLoading ? <View style={styles.state}><FriendsState message="Loading your comparison…" title="Compare progress" type="loading" /></View> : null}
-      {comparison.error ? <View style={styles.state}><FriendsState actionLabel="Try again" message={comparison.error} onAction={() => void comparison.reload()} title="Couldn't compare progress" type="error" /></View> : null}
+      {comparison.isLoading ? (
+        <View style={styles.state}>
+          <FriendsState message="Loading your comparison…" title="Compare progress" type="loading" />
+        </View>
+      ) : null}
+      {comparison.error ? (
+        <View style={styles.state}>
+          <FriendsState
+            actionLabel="Try again"
+            message={comparison.error}
+            onAction={() => void comparison.reload()}
+            title="Couldn't compare progress"
+            type="error"
+          />
+        </View>
+      ) : null}
       {comparison.currentUser && comparison.friend && !comparison.isLoading && !comparison.error ? (
         <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
           <View style={styles.names}>
-            <Text numberOfLines={1} style={styles.name}>YOU</Text>
+            <Text numberOfLines={1} style={styles.name}>
+              YOU
+            </Text>
             <Text style={styles.vs}>VS</Text>
-            <Text numberOfLines={1} style={styles.name}>{comparison.friend.profile.displayName.toUpperCase()}</Text>
+            <Text numberOfLines={1} style={styles.name}>
+              {comparison.friend.profile.displayName.toUpperCase()}
+            </Text>
           </View>
           <Text style={styles.period}>{comparison.comparison?.period.name ?? "This Week"}</Text>
           <Card padding="md" variant="elevated">
-            <CompareStatsRow friendValue={comparison.friend.periodPoints} label="Points" userValue={comparison.currentUser.periodPoints} />
-            <CompareStatsRow friendValue={comparison.friend.rosaryTotal} label="Total Rosaries" userValue={comparison.currentUser.rosaryTotal} />
-            <CompareStatsRow friendValue={comparison.friend.rosaryStreak.currentStreak} label="Rosary Streak" userValue={comparison.currentUser.rosaryStreak.currentStreak} />
-            <CompareStatsRow friendValue={comparison.friend.badgeCount} label="Badges" userValue={comparison.currentUser.badgeCount} />
-            <CompareStatsRow friendValue={comparison.friend.currentLevel.levelNumber} label="Level" userValue={comparison.currentUser.currentLevel.levelNumber} />
+            <CompareStatsRow
+              friendValue={comparison.friend.periodPoints}
+              label="Points"
+              userValue={comparison.currentUser.periodPoints}
+            />
+            <CompareStatsRow
+              friendValue={comparison.friend.rosaryTotal}
+              label="Total Rosaries"
+              userValue={comparison.currentUser.rosaryTotal}
+            />
+            <CompareStatsRow
+              friendValue={comparison.friend.rosaryStreak.currentStreak}
+              label="Rosary Streak"
+              userValue={comparison.currentUser.rosaryStreak.currentStreak}
+            />
+            <CompareStatsRow
+              friendValue={comparison.friend.badgeCount}
+              label="Badges"
+              userValue={comparison.currentUser.badgeCount}
+            />
+            <CompareStatsRow
+              friendValue={comparison.friend.currentLevel.levelNumber}
+              label="Level"
+              userValue={comparison.currentUser.currentLevel.levelNumber}
+            />
           </Card>
           <Card padding="md" variant="success">
-            <Text style={styles.encouragement}>{getEncouragement(comparison.currentUser.periodPoints, comparison.friend.periodPoints)}</Text>
+            <Text style={styles.encouragement}>
+              {getEncouragement(comparison.currentUser.periodPoints, comparison.friend.periodPoints)}
+            </Text>
           </Card>
         </ScrollView>
       ) : null}

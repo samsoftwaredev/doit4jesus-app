@@ -1,15 +1,7 @@
 import Feather from "@expo/vector-icons/Feather";
 import { Image } from "expo-image";
 import { useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  Modal,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { saintAvatars } from "@/features/profile/saints";
@@ -22,12 +14,7 @@ type SaintAvatarSelectorProps = {
   visible: boolean;
 };
 
-export function SaintAvatarSelector({
-  onDismiss,
-  onSelect,
-  selectedSaintAvatarId,
-  visible,
-}: SaintAvatarSelectorProps) {
+export function SaintAvatarSelector({ onDismiss, onSelect, selectedSaintAvatarId, visible }: SaintAvatarSelectorProps) {
   const [selectedId, setSelectedId] = useState(selectedSaintAvatarId);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -46,12 +33,7 @@ export function SaintAvatarSelector({
   };
 
   return (
-    <Modal
-      animationType="slide"
-      onRequestClose={onDismiss}
-      transparent
-      visible={visible}
-    >
+    <Modal animationType="slide" onRequestClose={onDismiss} transparent visible={visible}>
       <SafeAreaView edges={["bottom"]} style={styles.backdrop}>
         <Pressable accessibilityLabel="Close avatar selector" onPress={onDismiss} style={StyleSheet.absoluteFill} />
         <View accessibilityViewIsModal style={styles.sheet}>
@@ -98,7 +80,12 @@ export function SaintAvatarSelector({
                       {isSaving ? (
                         <ActivityIndicator color={theme.colors.text.inverse} size="small" />
                       ) : (
-                        <Feather accessible={false} color={theme.colors.text.inverse} name="check" size={theme.sizes.iconXs} />
+                        <Feather
+                          accessible={false}
+                          color={theme.colors.text.inverse}
+                          name="check"
+                          size={theme.sizes.iconXs}
+                        />
                       )}
                     </View>
                   ) : null}

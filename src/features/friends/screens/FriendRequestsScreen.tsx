@@ -35,8 +35,22 @@ export function FriendRequestsScreen() {
           </Pressable>
         ))}
       </View>
-      {requests.isLoading ? <View style={styles.state}><FriendsState message="Loading friend requests…" title="Friend requests" type="loading" /></View> : null}
-      {requests.error ? <View style={styles.state}><FriendsState actionLabel="Try again" message={requests.error} onAction={() => void requests.reload()} title="Couldn't load friend requests" type="error" /></View> : null}
+      {requests.isLoading ? (
+        <View style={styles.state}>
+          <FriendsState message="Loading friend requests…" title="Friend requests" type="loading" />
+        </View>
+      ) : null}
+      {requests.error ? (
+        <View style={styles.state}>
+          <FriendsState
+            actionLabel="Try again"
+            message={requests.error}
+            onAction={() => void requests.reload()}
+            title="Couldn't load friend requests"
+            type="error"
+          />
+        </View>
+      ) : null}
       {!requests.isLoading && !requests.error ? (
         <FlatList
           contentContainerStyle={styles.listContent}
@@ -58,7 +72,13 @@ export function FriendRequestsScreen() {
           }
           onEndReached={() => void requests.loadMore()}
           onEndReachedThreshold={0.5}
-          refreshControl={<RefreshControl onRefresh={() => void requests.reload()} refreshing={requests.isLoading} tintColor={theme.colors.brand.primaryLight} />}
+          refreshControl={
+            <RefreshControl
+              onRefresh={() => void requests.reload()}
+              refreshing={requests.isLoading}
+              tintColor={theme.colors.brand.primaryLight}
+            />
+          }
           renderItem={({ item }) => (
             <Card padding="none" style={styles.requestCard}>
               <View style={styles.requestContent}>

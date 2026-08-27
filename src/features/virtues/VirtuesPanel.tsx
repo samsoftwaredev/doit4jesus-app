@@ -10,7 +10,13 @@ import type { VirtueScore, VirtuesPanelProps } from "./virtues.types";
 
 const defaultVirtues = [
   { id: "faith", label: "Faith", value: 85, tone: "faith", icon: require("../../assets/virtues/cross.png") },
-  { id: "discipline", label: "Discipline", value: 90, tone: "discipline", icon: require("../../assets/virtues/candel.png") },
+  {
+    id: "discipline",
+    label: "Discipline",
+    value: 90,
+    tone: "discipline",
+    icon: require("../../assets/virtues/candel.png"),
+  },
   { id: "courage", label: "Courage", value: 75, tone: "courage", icon: require("../../assets/virtues/sword.png") },
   { id: "wisdom", label: "Wisdom", value: 80, tone: "wisdom", icon: require("../../assets/virtues/bible.png") },
   { id: "charity", label: "Charity", value: 88, tone: "charity", icon: require("../../assets/virtues/heart.png") },
@@ -39,7 +45,11 @@ export function VirtuesPanel({
         </Text>
         <View style={styles.divider}>
           <View style={styles.dividerLine} />
-          <MaterialCommunityIcons color={theme.colors.brand.primaryLight} name="star-four-points" size={theme.sizes.iconXs} />
+          <MaterialCommunityIcons
+            color={theme.colors.brand.primaryLight}
+            name="star-four-points"
+            size={theme.sizes.iconXs}
+          />
           <View style={styles.dividerLine} />
         </View>
       </View>

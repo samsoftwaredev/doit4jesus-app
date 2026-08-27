@@ -1,7 +1,4 @@
-import {
-  addDaysToIsoDate,
-  canNavigateToNextLiturgyDate,
-} from "@/features/liturgy/liturgy.dates";
+import { addDaysToIsoDate, canNavigateToNextLiturgyDate } from "@/features/liturgy/liturgy.dates";
 
 describe("daily liturgy date navigation", () => {
   it("moves across calendar boundaries and limits Next to tomorrow", () => {

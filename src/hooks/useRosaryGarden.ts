@@ -13,10 +13,7 @@ import {
   toIsoDate,
 } from "@/data/rosaryGardenUtils";
 import { fetchCurrentUserProfile } from "@/features/profile/profile.api";
-import type {
-  RosaryGardenStats,
-  UseRosaryGardenOptions,
-} from "@/types/rosaryGarden";
+import type { RosaryGardenStats, UseRosaryGardenOptions } from "@/types/rosaryGarden";
 
 function addMonth(year: number, month: number, amount: number) {
   const date = new Date(Date.UTC(year, month - 1 + amount, 1));
@@ -27,7 +24,10 @@ export function useRosaryGarden(options: UseRosaryGardenOptions = {}) {
   const fallbackTimezone = options.userTimezone ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
   const now = getLocalDateParts(fallbackTimezone);
   const [selected, setSelected] = useState({
-    month: options.selectedMonth && options.selectedMonth >= 1 && options.selectedMonth <= 12 ? options.selectedMonth : now.month,
+    month:
+      options.selectedMonth && options.selectedMonth >= 1 && options.selectedMonth <= 12
+        ? options.selectedMonth
+        : now.month,
     year: options.selectedYear ?? now.year,
   });
   const [timezone, setTimezone] = useState(fallbackTimezone);
@@ -83,7 +83,9 @@ export function useRosaryGarden(options: UseRosaryGardenOptions = {}) {
       } catch {
         if (!active) return;
         const mock = createRosaryGardenMockData(selected.year, selected.month, timezone);
-        setCompletionDates(new Set(mock.completion.days.filter((day) => day.completed === true).map((day) => day.date)));
+        setCompletionDates(
+          new Set(mock.completion.days.filter((day) => day.completed === true).map((day) => day.date)),
+        );
         setRemoteStreaks({ currentStreak: mock.streak.currentStreak, longestStreak: mock.streak.longestStreak });
         setUserCreatedAt(options.userCreatedAt ?? mock.userCreatedAt);
         setIsUsingMockData(true);

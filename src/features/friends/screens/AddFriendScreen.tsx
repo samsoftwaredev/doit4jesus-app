@@ -29,7 +29,10 @@ export function AddFriendScreen() {
   return (
     <SafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
       <FriendsHeader onBack={() => router.back()} title="Add Friend" />
-      <KeyboardAvoidingView behavior={Platform.select({ ios: "padding", default: undefined })} style={styles.keyboardAvoiding}>
+      <KeyboardAvoidingView
+        behavior={Platform.select({ ios: "padding", default: undefined })}
+        style={styles.keyboardAvoiding}
+      >
         <FlatList
           contentContainerStyle={styles.listContent}
           data={search.results}
@@ -41,7 +44,11 @@ export function AddFriendScreen() {
             ) : search.error ? (
               <FriendsState message={search.error} title="Search by username" type="empty" />
             ) : searchHint ? (
-              <FriendsState message="Enter at least four characters to find someone by username." title="Find a friend" type="empty" />
+              <FriendsState
+                message="Enter at least four characters to find someone by username."
+                title="Find a friend"
+                type="empty"
+              />
             ) : (
               <FriendsState message="Try a different username." title="No people found" type="empty" />
             )
@@ -64,7 +71,9 @@ export function AddFriendScreen() {
                 />
               </View>
               {request.error ? <Text style={styles.requestError}>{request.error}</Text> : null}
-              {!searchHint && !search.error && !search.isLoading ? <Text style={styles.resultsLabel}>SEARCH RESULTS</Text> : null}
+              {!searchHint && !search.error && !search.isLoading ? (
+                <Text style={styles.resultsLabel}>SEARCH RESULTS</Text>
+              ) : null}
             </View>
           }
           renderItem={({ item }) => (
@@ -98,15 +107,27 @@ function SearchResultItem({
   return (
     <Card padding="sm" style={styles.resultCard}>
       <View style={styles.resultRow}>
-        <FriendAvatar accessibilityLabel={`@${result.username}'s profile image`} name={result.username} source={result.avatarUrl} />
+        <FriendAvatar
+          accessibilityLabel={`@${result.username}'s profile image`}
+          name={result.username}
+          source={result.avatarUrl}
+        />
         <View style={styles.resultCopy}>
           <Text style={styles.username}>{`@${result.username}`}</Text>
           {result.title ? <Text style={styles.resultTitle}>{result.title}</Text> : null}
         </View>
         {status ? (
-          <Text accessibilityLabel={`${result.username}: ${status}`} style={styles.relationshipStatus}>{status}</Text>
+          <Text accessibilityLabel={`${result.username}: ${status}`} style={styles.relationshipStatus}>
+            {status}
+          </Text>
         ) : (
-          <Button accessibilityLabel={`Add @${result.username} as a friend`} loading={isSending} onPress={onAdd} size="sm" variant="warning">
+          <Button
+            accessibilityLabel={`Add @${result.username} as a friend`}
+            loading={isSending}
+            onPress={onAdd}
+            size="sm"
+            variant="warning"
+          >
             Add
           </Button>
         )}

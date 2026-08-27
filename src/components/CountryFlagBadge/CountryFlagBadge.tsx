@@ -10,11 +10,7 @@ interface CountryFlagBadgeProps {
   style?: StyleProp<ImageStyle>;
 }
 
-export function CountryFlagBadge({
-  countryCode,
-  size = 18,
-  style,
-}: CountryFlagBadgeProps) {
+export function CountryFlagBadge({ countryCode, size = 18, style }: CountryFlagBadgeProps) {
   const source = getCountryFlagSource(countryCode);
 
   if (!source) return null;
@@ -24,11 +20,7 @@ export function CountryFlagBadge({
       accessible={false}
       contentFit="cover"
       source={source}
-      style={[
-        styles.flag,
-        { height: size, width: Math.round(size * 1.5) },
-        style,
-      ]}
+      style={[styles.flag, { height: size, width: Math.round(size * 1.5) }, style]}
     />
   );
 }

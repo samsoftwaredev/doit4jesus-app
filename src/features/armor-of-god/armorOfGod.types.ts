@@ -1,11 +1,7 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import type { ComponentProps } from "react";
 
-export type ArmorStatus =
-  | "locked"
-  | "available"
-  | "equipped"
-  | "completed";
+export type ArmorStatus = "locked" | "available" | "equipped" | "completed";
 
 export type ArmorIconName = ComponentProps<typeof MaterialCommunityIcons>["name"];
 

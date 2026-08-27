@@ -22,9 +22,7 @@ export default function MessagesScreen() {
       <Card title="Your inbox">
         <View style={styles.emptyState}>
           <Feather color={theme.colors.icon.active} name="mail" size={theme.sizes.iconHero} />
-          <Text style={styles.description}>
-            Messages from friends and your prayer community will appear here.
-          </Text>
+          <Text style={styles.description}>Messages from friends and your prayer community will appear here.</Text>
         </View>
       </Card>
     </ScreenShell>

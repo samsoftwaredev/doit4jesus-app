@@ -2,16 +2,7 @@ import Feather from "@expo/vector-icons/Feather";
 import Constants from "expo-constants";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  Alert,
-  Modal,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { Alert, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { Linking } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -38,9 +29,7 @@ const countryNames: Record<string, string> = {
 
 export function formatProfileLocation(profile: CurrentUserProfile): string {
   const country = countryNames[profile.countryCode] ?? profile.countryCode;
-  const parts = [profile.cityName, profile.state, country].filter(
-    (value): value is string => Boolean(value?.trim()),
-  );
+  const parts = [profile.cityName, profile.state, country].filter((value): value is string => Boolean(value?.trim()));
 
   return parts.join(", ") || "Location unavailable";
 }
@@ -108,18 +97,14 @@ export function ProfileSettingsScreen() {
   const showSignOutConfirmation = () => {
     if (isSigningOut) return;
 
-    Alert.alert(
-      "Sign Out?",
-      "Are you sure you want to sign out of Do It for Jesus?",
-      [
-        { style: "cancel", text: "Cancel" },
-        {
-          style: "destructive",
-          text: "Sign Out",
-          onPress: () => void signOut(),
-        },
-      ],
-    );
+    Alert.alert("Sign Out?", "Are you sure you want to sign out of Do It for Jesus?", [
+      { style: "cancel", text: "Cancel" },
+      {
+        style: "destructive",
+        text: "Sign Out",
+        onPress: () => void signOut(),
+      },
+    ]);
   };
 
   const signOut = async () => {
@@ -203,7 +188,11 @@ export function ProfileSettingsScreen() {
             icon="headphones"
             isLast
             label="Contact Support"
-            onPress={() => void openExternalUrl(`mailto:${APP_CONFIG.supportEmail}?subject=${encodeURIComponent("Do It for Jesus Support")}`)}
+            onPress={() =>
+              void openExternalUrl(
+                `mailto:${APP_CONFIG.supportEmail}?subject=${encodeURIComponent("Do It for Jesus Support")}`,
+              )
+            }
           />
         </SettingsSection>
 
@@ -390,7 +379,14 @@ function GenderSelector({
                   style={({ pressed }) => [styles.choice, pressed && !isSaving && styles.pressed]}
                 >
                   <Text style={styles.choiceLabel}>{label}</Text>
-                  {selected ? <Feather accessible={false} color={theme.colors.gold.pale} name="check" size={theme.sizes.iconSmall} /> : null}
+                  {selected ? (
+                    <Feather
+                      accessible={false}
+                      color={theme.colors.gold.pale}
+                      name="check"
+                      size={theme.sizes.iconSmall}
+                    />
+                  ) : null}
                 </Pressable>
               );
             })}

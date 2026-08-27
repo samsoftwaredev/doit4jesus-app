@@ -39,18 +39,12 @@ export function LevelsProgression({
   testID,
 }: LevelsProgressionProps) {
   const safeCheckpointCount = Math.max(2, Math.floor(checkpointCount));
-  const safeCompletedCheckpoints = Math.min(
-    Math.max(0, Math.floor(completedCheckpoints)),
-    safeCheckpointCount,
-  );
+  const safeCompletedCheckpoints = Math.min(Math.max(0, Math.floor(completedCheckpoints)), safeCheckpointCount);
   const completedTrackWidth = `${Math.max(
     0,
     ((safeCompletedCheckpoints - 1) / (safeCheckpointCount - 1)) * 100,
   )}%` as `${number}%`;
-  const checkpoints = Array.from(
-    { length: safeCheckpointCount },
-    (_, index) => index < safeCompletedCheckpoints,
-  );
+  const checkpoints = Array.from({ length: safeCheckpointCount }, (_, index) => index < safeCompletedCheckpoints);
   const progressSummary = `${safeCompletedCheckpoints} of ${safeCheckpointCount} checkpoints completed`;
 
   return (
@@ -63,11 +57,7 @@ export function LevelsProgression({
       variant="elevated"
     >
       <View style={styles.titleRow}>
-        <MaterialCommunityIcons
-          color={theme.colors.gold.pale}
-          name="flag-variant"
-          size={theme.sizes.iconSmall}
-        />
+        <MaterialCommunityIcons color={theme.colors.gold.pale} name="flag-variant" size={theme.sizes.iconSmall} />
         <Text accessibilityRole="header" style={styles.title}>
           Levels
         </Text>
@@ -87,11 +77,7 @@ export function LevelsProgression({
               />
             </View>
             <View style={styles.guardianIdentity}>
-              <MaterialCommunityIcons
-                color={theme.colors.gold.pale}
-                name="shield-outline"
-                size={theme.sizes.iconXs}
-              />
+              <MaterialCommunityIcons color={theme.colors.gold.pale} name="shield-outline" size={theme.sizes.iconXs} />
               <Text style={styles.guardianLabel}>Guardian Level</Text>
             </View>
           </View>
@@ -107,10 +93,7 @@ export function LevelsProgression({
             style={styles.progressPath}
           >
             <View pointerEvents="none" style={styles.track} />
-            <View
-              pointerEvents="none"
-              style={[styles.completedTrack, { width: completedTrackWidth }]}
-            />
+            <View pointerEvents="none" style={[styles.completedTrack, { width: completedTrackWidth }]} />
             <View style={styles.checkpointRow}>
               {checkpoints.map((isCompleted, index) => (
                 <View

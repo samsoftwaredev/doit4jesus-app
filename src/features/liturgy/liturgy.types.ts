@@ -1,11 +1,6 @@
 export type LiturgicalColor = "GREEN" | "RED" | "WHITE" | "VIOLET" | "ROSE" | "BLACK";
 
-export type ReadingType =
-  | "FIRST_READING"
-  | "RESPONSORIAL_PSALM"
-  | "SECOND_READING"
-  | "GOSPEL_ACCLAMATION"
-  | "GOSPEL";
+export type ReadingType = "FIRST_READING" | "RESPONSORIAL_PSALM" | "SECOND_READING" | "GOSPEL_ACCLAMATION" | "GOSPEL";
 
 export interface DailyReading {
   id: string;

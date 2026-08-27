@@ -22,10 +22,12 @@ export default function RosaryRoute() {
   const rawMysteryType = firstString(params.mysteryType);
   const mysteryType = isMysteryType(rawMysteryType) ? rawMysteryType : getTodayRosaryMysteryType();
 
-  return <RosaryPrayerScreen
-    intentionId={firstString(params.intentionId)}
-    isDecade={firstString(params.isDecade) === "true"}
-    mysteryType={mysteryType}
-    source={firstString(params.source)}
-  />;
+  return (
+    <RosaryPrayerScreen
+      intentionId={firstString(params.intentionId)}
+      isDecade={firstString(params.isDecade) === "true"}
+      mysteryType={mysteryType}
+      source={firstString(params.source)}
+    />
+  );
 }

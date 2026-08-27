@@ -1,18 +1,8 @@
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
-import type {
-  LayoutChangeEvent,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-} from "react-native";
-import {
-  Pressable,
-  ScrollView,
-  Text,
-  useWindowDimensions,
-  View,
-} from "react-native";
+import type { LayoutChangeEvent, NativeScrollEvent, NativeSyntheticEvent } from "react-native";
+import { Pressable, ScrollView, Text, useWindowDimensions, View } from "react-native";
 
 import type { DemonCatalogItem } from "@/features/demons";
 import { getDemonArtwork } from "@/features/demons";
@@ -26,11 +16,7 @@ interface BattleDemonRosterProps {
   selectedCode?: string;
 }
 
-export function BattleDemonRoster({
-  demons,
-  onSelect,
-  selectedCode,
-}: BattleDemonRosterProps) {
+export function BattleDemonRoster({ demons, onSelect, selectedCode }: BattleDemonRosterProps) {
   const { width: screenWidth } = useWindowDimensions();
   const [containerWidth, setContainerWidth] = useState(0);
   const [contentWidth, setContentWidth] = useState(0);
@@ -38,18 +24,11 @@ export function BattleDemonRoster({
 
   const EDGE_THRESHOLD = 4;
   const showLeftFade = scrollX > EDGE_THRESHOLD;
-  const showRightFade =
-    contentWidth - containerWidth - scrollX > EDGE_THRESHOLD;
+  const showRightFade = contentWidth - containerWidth - scrollX > EDGE_THRESHOLD;
 
-  const cols =
-    screenWidth >= theme.breakpoints.desktop
-      ? 3
-      : screenWidth >= theme.breakpoints.tablet
-        ? 2.5
-        : 1.5;
+  const cols = screenWidth >= theme.breakpoints.desktop ? 3 : screenWidth >= theme.breakpoints.tablet ? 2.5 : 1.5;
   const gap = theme.spacing[3];
-  const tileWidth =
-    containerWidth > 0 ? (containerWidth - gap * (cols - 1)) / cols : undefined;
+  const tileWidth = containerWidth > 0 ? (containerWidth - gap * (cols - 1)) / cols : undefined;
 
   function handleLayout(e: LayoutChangeEvent) {
     setContainerWidth(e.nativeEvent.layout.width);
@@ -91,12 +70,7 @@ export function BattleDemonRoster({
               >
                 <View style={styles.imageFrame}>
                   {artwork ? (
-                    <Image
-                      accessible={false}
-                      contentFit="contain"
-                      source={artwork}
-                      style={styles.image}
-                    />
+                    <Image accessible={false} contentFit="contain" source={artwork} style={styles.image} />
                   ) : null}
                 </View>
                 <Text numberOfLines={2} style={styles.name}>

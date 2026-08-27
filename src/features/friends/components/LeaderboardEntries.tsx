@@ -67,10 +67,16 @@ export function LeaderboardEntries({ entries, onPressFriend, showHeader = true }
                   {entry.friend.displayName}
                   {entry.isCurrentUser ? " (You)" : ""}
                 </Text>
-                {entry.friend.title ? <Text numberOfLines={1} style={styles.title}>{entry.friend.title}</Text> : null}
+                {entry.friend.title ? (
+                  <Text numberOfLines={1} style={styles.title}>
+                    {entry.friend.title}
+                  </Text>
+                ) : null}
               </View>
             </View>
-            <Text accessibilityLabel={`${formatPoints(entry.points)} points`} style={styles.points}>{formatPoints(entry.points)}</Text>
+            <Text accessibilityLabel={`${formatPoints(entry.points)} points`} style={styles.points}>
+              {formatPoints(entry.points)}
+            </Text>
           </Pressable>
         );
       })}

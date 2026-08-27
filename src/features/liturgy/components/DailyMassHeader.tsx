@@ -17,18 +17,11 @@ function formatDate(date: string) {
   }).format(new Date(`${date}T12:00:00`));
 }
 
-export function DailyMassHeader({
-  date,
-  onCalendarPress,
-}: DailyMassHeaderProps) {
+export function DailyMassHeader({ date, onCalendarPress }: DailyMassHeaderProps) {
   return (
     <View accessibilityRole="header" style={styles.card}>
       <View accessible={false} style={styles.crossCircle}>
-        <MaterialCommunityIcons
-          color={theme.colors.gold.pale}
-          name="cross"
-          size={21}
-        />
+        <MaterialCommunityIcons color={theme.colors.gold.pale} name="cross" size={21} />
       </View>
       <View style={styles.copy}>
         <Text style={styles.title}>Daily Mass</Text>
@@ -40,16 +33,9 @@ export function DailyMassHeader({
         accessibilityRole="button"
         disabled={!onCalendarPress}
         onPress={onCalendarPress}
-        style={({ pressed }) => [
-          styles.calendarButton,
-          pressed && onCalendarPress ? styles.pressed : null,
-        ]}
+        style={({ pressed }) => [styles.calendarButton, pressed && onCalendarPress ? styles.pressed : null]}
       >
-        <MaterialCommunityIcons
-          color={theme.colors.gold.pale}
-          name="calendar-month-outline"
-          size={21}
-        />
+        <MaterialCommunityIcons color={theme.colors.gold.pale} name="calendar-month-outline" size={21} />
       </Pressable>
     </View>
   );

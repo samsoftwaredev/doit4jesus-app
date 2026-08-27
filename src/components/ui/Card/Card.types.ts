@@ -1,14 +1,7 @@
 import type { ReactNode } from "react";
 import type { StyleProp, TextStyle, ViewStyle } from "react-native";
 
-export type CardVariant =
-  | "default"
-  | "elevated"
-  | "outlined"
-  | "success"
-  | "info"
-  | "warning"
-  | "danger";
+export type CardVariant = "default" | "elevated" | "outlined" | "success" | "info" | "warning" | "danger";
 
 export type CardPadding = "none" | "sm" | "md" | "lg";
 

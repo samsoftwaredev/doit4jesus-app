@@ -4,12 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { rosaryMysteries } from "@/data/rosaryMysteries";
 import { rosarySequence } from "@/data/rosarySequence";
-import type {
-  PersistedRosarySession,
-  RosaryBead,
-  RosaryMystery,
-  RosarySessionState,
-} from "@/types/rosary";
+import type { PersistedRosarySession, RosaryBead, RosaryMystery, RosarySessionState } from "@/types/rosary";
 
 const STORAGE_KEY = "@doit4jesus/rosary-session/v1";
 const TRANSITION_LOCK_MS = 320;
@@ -42,7 +37,10 @@ function clamp(value: number, max: number) {
 
 function prayerIndexForBead(bead: RosaryBead | undefined, mystery: RosaryMystery | undefined) {
   if (!bead || !mystery) return 0;
-  return Math.max(0, mystery.prayers.findIndex((prayer) => prayer.id === bead.prayerId));
+  return Math.max(
+    0,
+    mystery.prayers.findIndex((prayer) => prayer.id === bead.prayerId),
+  );
 }
 
 function uniqueIds(ids: string[]) {
@@ -73,9 +71,7 @@ export function useRosarySession(options: UseRosarySessionOptions = {}) {
     : clamp(session.currentMysteryIndex, mysteries.length);
   const currentMystery = mysteries[calculatedMysteryIndex];
   const currentBead = beads[clamp(session.currentBeadIndex, beads.length)];
-  const currentPrayer = currentMystery?.prayers.find(
-    (prayer) => prayer.id === currentBead?.prayerId,
-  );
+  const currentPrayer = currentMystery?.prayers.find((prayer) => prayer.id === currentBead?.prayerId);
 
   const persist = useCallback(
     async (nextSession: RosarySessionState, nextCompleted: boolean, prayedOn: string | null) => {
@@ -176,9 +172,7 @@ export function useRosarySession(options: UseRosarySessionOptions = {}) {
     const didMove = startTransition((current) => {
       const index = clamp(current.currentBeadIndex, beads.length);
       const activeBead = beads[index];
-      const completed = activeBead
-        ? uniqueIds([...current.completedBeadIds, activeBead.id])
-        : current.completedBeadIds;
+      const completed = activeBead ? uniqueIds([...current.completedBeadIds, activeBead.id]) : current.completedBeadIds;
 
       if (index >= beads.length - 1) {
         setIsRosaryCompleted(true);

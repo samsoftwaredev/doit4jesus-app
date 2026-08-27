@@ -2,14 +2,7 @@ import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import {
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  useWindowDimensions,
-  View,
-} from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import {
@@ -38,10 +31,7 @@ export function RosaryGardenScreen() {
         start={{ x: 0, y: 0 }}
         style={styles.background}
       >
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-        >
+        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
           <View style={[styles.page, isTablet && styles.tabletPage]}>
             <View style={styles.topBar}>
               <Pressable
@@ -51,17 +41,10 @@ export function RosaryGardenScreen() {
                 onPress={() => router.back()}
                 style={styles.backButton}
               >
-                <Feather
-                  color={theme.colors.text.white}
-                  name="chevron-left"
-                  size={theme.sizes.iconMedium}
-                />
+                <Feather color={theme.colors.text.white} name="chevron-left" size={theme.sizes.iconMedium} />
               </Pressable>
               {garden.isUsingMockData ? (
-                <Text
-                  accessibilityLabel="Garden preview data"
-                  style={styles.offlineLabel}
-                >
+                <Text accessibilityLabel="Garden preview data" style={styles.offlineLabel}>
                   Garden preview
                 </Text>
               ) : null}
@@ -85,22 +68,11 @@ export function RosaryGardenScreen() {
               onPrevious={garden.goToPreviousMonth}
               year={garden.selectedYear}
             />
-            <View
-              style={[
-                styles.calendarArea,
-                isTablet && styles.tabletCalendarArea,
-              ]}
-            >
+            <View style={[styles.calendarArea, isTablet && styles.tabletCalendarArea]}>
               <View style={styles.calendarWrap}>
-                <GardenCalendar
-                  days={garden.days}
-                  month={garden.selectedMonthNumber}
-                  year={garden.selectedYear}
-                />
+                <GardenCalendar days={garden.days} month={garden.selectedMonthNumber} year={garden.selectedYear} />
               </View>
-              <View
-                style={[styles.quoteWrap, isTablet && styles.tabletQuoteWrap]}
-              >
+              <View style={[styles.quoteWrap, isTablet && styles.tabletQuoteWrap]}>
                 <GardenQuoteCard />
               </View>
             </View>

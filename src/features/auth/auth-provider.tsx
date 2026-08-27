@@ -2,10 +2,7 @@ import type { Session } from "@supabase/supabase-js";
 import * as Linking from "expo-linking";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
-import {
-  supabase,
-  supabaseConfigurationError,
-} from "@/lib/supabase";
+import { supabase, supabaseConfigurationError } from "@/lib/supabase";
 
 type AuthContextValue = {
   configurationError: string | null;

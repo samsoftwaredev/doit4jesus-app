@@ -26,9 +26,7 @@ export function TodaysScriptureCard({ onPress, style, testID }: DailyPracticeCar
         source={require("../../assets/icons/bible.png")}
         style={styles.image}
       />
-      <Text style={styles.description}>
-        Receive the day&apos;s reading and carry it into prayer.
-      </Text>
+      <Text style={styles.description}>Receive the day&apos;s reading and carry it into prayer.</Text>
     </Card>
   );
 }

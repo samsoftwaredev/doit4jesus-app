@@ -41,9 +41,7 @@ export function HeaderActionButton({
   const normalizedUnreadCount = Math.max(0, Math.floor(unreadCount));
   const badgeText = getUnreadBadgeText(normalizedUnreadCount);
   const unavailable = disabled || loading;
-  const accessibilityLabel = badgeText
-    ? `${label}, ${normalizedUnreadCount} unread`
-    : label;
+  const accessibilityLabel = badgeText ? `${label}, ${normalizedUnreadCount} unread` : label;
 
   return (
     <Pressable
@@ -65,12 +63,7 @@ export function HeaderActionButton({
       {loading ? (
         <ActivityIndicator color={theme.colors.gold.pale} size="small" />
       ) : (
-        <Image
-          accessible={false}
-          resizeMode="cover"
-          source={headerActionIconSources[iconName]}
-          style={styles.icon}
-        />
+        <Image accessible={false} resizeMode="cover" source={headerActionIconSources[iconName]} style={styles.icon} />
       )}
       {badgeText ? (
         <View accessible={false} style={styles.badge} testID={testID ? `${testID}-badge` : undefined}>

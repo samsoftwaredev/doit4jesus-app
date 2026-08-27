@@ -50,7 +50,15 @@ export function buildRosaryGardenMonth({
       const isFuture = date > today;
       const isEligible = date >= createdDate && !isFuture;
       const completed = isEligible && completionDates.has(date);
-      return { completed, date, day, flowerVariant: completed ? getFlowerVariant(date) : undefined, isEligible, isFuture, isToday: date === today };
+      return {
+        completed,
+        date,
+        day,
+        flowerVariant: completed ? getFlowerVariant(date) : undefined,
+        isEligible,
+        isFuture,
+        isToday: date === today,
+      };
     }),
     month,
     year,

@@ -22,9 +22,10 @@ export function GardenDayCell({ day, size }: GardenDayCellProps) {
   const bloom = useSharedValue(day.completed ? 1 : 0.96);
 
   useEffect(() => {
-    bloom.value = day.completed && !reduceMotion
-      ? withSequence(withTiming(0.9, { duration: 160 }), withTiming(1, { duration: 520 }))
-      : withTiming(1, { duration: reduceMotion ? 0 : 180 });
+    bloom.value =
+      day.completed && !reduceMotion
+        ? withSequence(withTiming(0.9, { duration: 160 }), withTiming(1, { duration: 520 }))
+        : withTiming(1, { duration: reduceMotion ? 0 : 180 });
   }, [bloom, day.completed, reduceMotion]);
 
   const animatedStyle = useAnimatedStyle(() => ({ transform: [{ scale: bloom.value }] }));
@@ -37,7 +38,13 @@ export function GardenDayCell({ day, size }: GardenDayCellProps) {
         : day.isEligible
           ? "incomplete"
           : "unavailable";
-  const status = day.completed ? "Rosary completed." : day.isFuture ? "Future date." : day.isEligible ? "Rosary not completed." : "Not yet eligible.";
+  const status = day.completed
+    ? "Rosary completed."
+    : day.isFuture
+      ? "Future date."
+      : day.isEligible
+        ? "Rosary not completed."
+        : "Not yet eligible.";
   const dateLabel = new Intl.DateTimeFormat(undefined, { day: "numeric", month: "long", timeZone: "UTC" }).format(
     new Date(`${day.date}T12:00:00Z`),
   );

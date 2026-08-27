@@ -27,12 +27,14 @@ describe("Rosary activity tracking", () => {
     }));
     global.fetch = fetchMock as unknown as typeof fetch;
 
-    await expect(recordRosaryActivity({
-      completedAt: "2026-08-26T19:30:00-05:00",
-      durationSeconds: 1800,
-      idempotencyKey: "rosary-activity-key",
-      occurredAt: "2026-08-26T19:00:00-05:00",
-    })).resolves.toEqual({ currentLevel: 3, points: 50, replayed: false, totalXp: 995 });
+    await expect(
+      recordRosaryActivity({
+        completedAt: "2026-08-26T19:30:00-05:00",
+        durationSeconds: 1800,
+        idempotencyKey: "rosary-activity-key",
+        occurredAt: "2026-08-26T19:00:00-05:00",
+      }),
+    ).resolves.toEqual({ currentLevel: 3, points: 50, replayed: false, totalXp: 995 });
 
     const [url, request] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
     expect(url).toBe("http://localhost:3000/api/v1/activities");

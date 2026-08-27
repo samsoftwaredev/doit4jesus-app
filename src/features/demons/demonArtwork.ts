@@ -36,6 +36,8 @@ export function getDemonArtwork({
   category,
   code,
 }: Pick<DemonCatalogItem, "category" | "code">): ImageSourcePropType | undefined {
-  return demonArtworkByCode[code as keyof typeof demonArtworkByCode]
-    ?? demonArtworkByCategory[category as keyof typeof demonArtworkByCategory];
+  return (
+    demonArtworkByCode[code as keyof typeof demonArtworkByCode] ??
+    demonArtworkByCategory[category as keyof typeof demonArtworkByCategory]
+  );
 }

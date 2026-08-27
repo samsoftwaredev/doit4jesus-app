@@ -11,7 +11,13 @@ interface DailyVerseCardProps {
 export function DailyVerseCard({ citation, text }: DailyVerseCardProps) {
   return (
     <View accessibilityLabel={`Gospel excerpt, ${citation}`} style={styles.card}>
-      <MaterialCommunityIcons accessible={false} color={theme.colors.gold.pale} name="format-quote-open" size={31} style={styles.quote} />
+      <MaterialCommunityIcons
+        accessible={false}
+        color={theme.colors.gold.pale}
+        name="format-quote-open"
+        size={31}
+        style={styles.quote}
+      />
       <Text style={styles.text}>{text}</Text>
       <Text style={styles.citation}>{citation}</Text>
     </View>
@@ -19,8 +25,23 @@ export function DailyVerseCard({ citation, text }: DailyVerseCardProps) {
 }
 
 const styles = StyleSheet.create({
-  card: { backgroundColor: theme.colors.surface.tertiary, borderColor: theme.colors.gold.strong, borderRadius: theme.radii.xl, borderWidth: theme.borderWidths.thin, marginTop: theme.spacing[4], overflow: "hidden", padding: theme.spacing[5] },
+  card: {
+    backgroundColor: theme.colors.surface.tertiary,
+    borderColor: theme.colors.gold.strong,
+    borderRadius: theme.radii.xl,
+    borderWidth: theme.borderWidths.thin,
+    marginTop: theme.spacing[4],
+    overflow: "hidden",
+    padding: theme.spacing[5],
+  },
   citation: { ...theme.typography.label, color: theme.colors.gold.pale, marginTop: theme.spacing[4] },
   quote: { marginBottom: theme.spacing[1] },
-  text: { ...theme.typography.body, color: theme.colors.text.primary, fontFamily: theme.fontFamilies.devotional, fontSize: theme.fontSizes.lg, fontStyle: "italic", lineHeight: theme.lineHeights.lg },
+  text: {
+    ...theme.typography.body,
+    color: theme.colors.text.primary,
+    fontFamily: theme.fontFamilies.devotional,
+    fontSize: theme.fontSizes.lg,
+    fontStyle: "italic",
+    lineHeight: theme.lineHeights.lg,
+  },
 });

@@ -11,8 +11,7 @@ export function getLocalDateParts(timezone = Intl.DateTimeFormat().resolvedOptio
     timeZone: timezone,
     year: "numeric",
   }).formatToParts(new Date());
-  const valueFor = (type: Intl.DateTimeFormatPartTypes) =>
-    parts.find((part) => part.type === type)?.value ?? "01";
+  const valueFor = (type: Intl.DateTimeFormatPartTypes) => parts.find((part) => part.type === type)?.value ?? "01";
 
   return {
     day: Number(valueFor("day")),
@@ -30,7 +29,11 @@ export function createRosaryGardenMockData(
   const today = getLocalDateParts(timezone);
   const daysInMonth = new Date(Date.UTC(year, month, 0)).getUTCDate();
   const isCurrentMonth = year === today.year && month === today.month;
-  const latestCompletedDay = isCurrentMonth ? Math.max(0, today.day - 1) : year < today.year || month < today.month ? daysInMonth : 0;
+  const latestCompletedDay = isCurrentMonth
+    ? Math.max(0, today.day - 1)
+    : year < today.year || month < today.month
+      ? daysInMonth
+      : 0;
   const days = Array.from({ length: daysInMonth }, (_, index) => {
     const day = index + 1;
     const isFuture = year > today.year || (year === today.year && month === today.month && day > today.day);

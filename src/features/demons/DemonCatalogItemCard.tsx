@@ -21,10 +21,7 @@ function formatLabel(value: string): string {
     .join(" ");
 }
 
-export function DemonCatalogItemCard({
-  demon,
-  style,
-}: DemonCatalogItemCardProps) {
+export function DemonCatalogItemCard({ demon, style }: DemonCatalogItemCardProps) {
   const artwork = getDemonArtwork(demon);
 
   return (
@@ -32,12 +29,7 @@ export function DemonCatalogItemCard({
       <View style={styles.content}>
         {artwork ? (
           <View style={styles.artworkFrame}>
-            <Image
-              accessible={false}
-              contentFit="contain"
-              source={artwork}
-              style={styles.artwork}
-            />
+            <Image accessible={false} contentFit="contain" source={artwork} style={styles.artwork} />
           </View>
         ) : null}
 
@@ -46,9 +38,7 @@ export function DemonCatalogItemCard({
             <Text style={styles.title}>{demon.name}</Text>
             <Text style={styles.subtitle}>{demon.title}</Text>
             <View style={styles.metadataBadge}>
-              <Text style={styles.badgeText}>
-                {formatLabel(demon.category)}
-              </Text>
+              <Text style={styles.badgeText}>{formatLabel(demon.category)}</Text>
             </View>
             <View style={[styles.metadataBadge, styles.hpBadge]}>
               <Text style={styles.badgeText}>{`Max HP ${demon.maxHp}`}</Text>
@@ -61,23 +51,14 @@ export function DemonCatalogItemCard({
             <Text style={styles.affinityHeading}>Virtue affinities</Text>
             <View style={styles.affinityList}>
               {demon.virtueAffinities.map((affinity) => {
-                const isPrimary =
-                  affinity.affinityType.toLowerCase() === "primary";
+                const isPrimary = affinity.affinityType.toLowerCase() === "primary";
 
                 return (
                   <View
                     key={`${demon.id}-${affinity.virtueCode}-${affinity.affinityType}`}
-                    style={[
-                      styles.affinityBadge,
-                      isPrimary && styles.primaryAffinity,
-                    ]}
+                    style={[styles.affinityBadge, isPrimary && styles.primaryAffinity]}
                   >
-                    <Text
-                      style={[
-                        styles.affinityText,
-                        isPrimary && styles.primaryAffinityText,
-                      ]}
-                    >
+                    <Text style={[styles.affinityText, isPrimary && styles.primaryAffinityText]}>
                       {`${formatLabel(affinity.affinityType)} · ${formatLabel(affinity.virtueCode)}`}
                     </Text>
                   </View>

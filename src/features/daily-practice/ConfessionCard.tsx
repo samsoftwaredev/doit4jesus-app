@@ -26,9 +26,7 @@ export function ConfessionCard({ onPress, style, testID }: DailyPracticeCardProp
         source={require("../../assets/icons/confession.png")}
         style={styles.image}
       />
-      <Text style={styles.description}>
-        Locate reconciliation times and prepare your heart for grace.
-      </Text>
+      <Text style={styles.description}>Locate reconciliation times and prepare your heart for grace.</Text>
     </Card>
   );
 }

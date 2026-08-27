@@ -360,10 +360,7 @@ export function useFriendsComparison(friendId: string | undefined) {
 
   const entries = comparison?.entries ?? [];
   const currentUser = useMemo(() => entries.find((entry) => entry.isCurrentUser), [entries]);
-  const friend = useMemo(
-    () => entries.find((entry) => entry.profile.id === friendId),
-    [entries, friendId],
-  );
+  const friend = useMemo(() => entries.find((entry) => entry.profile.id === friendId), [entries, friendId]);
 
   return { comparison, currentUser, error, friend, isLoading, reload: load };
 }

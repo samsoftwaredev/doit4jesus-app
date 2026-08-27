@@ -37,16 +37,9 @@ function getOrbitPosition(index: number, count: number): OrbitPosition {
   };
 }
 
-export function ArenaDemonSelector({
-  demons,
-  onSelect,
-  selectedCode,
-}: ArenaDemonSelectorProps) {
+export function ArenaDemonSelector({ demons, onSelect, selectedCode }: ArenaDemonSelectorProps) {
   return (
-    <View
-      accessibilityLabel="Demon arena. Select a demon to begin."
-      style={styles.arena}
-    >
+    <View accessibilityLabel="Demon arena. Select a demon to begin." style={styles.arena}>
       <Image
         accessible={false}
         contentFit="cover"
@@ -73,12 +66,7 @@ export function ArenaDemonSelector({
             ]}
           >
             {artwork ? (
-              <Image
-                accessible={false}
-                contentFit="contain"
-                source={artwork}
-                style={styles.demonImage}
-              />
+              <Image accessible={false} contentFit="contain" source={artwork} style={styles.demonImage} />
             ) : null}
           </Pressable>
         );

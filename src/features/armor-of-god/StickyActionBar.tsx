@@ -12,21 +12,11 @@ interface StickyActionBarProps {
   onReadScripture: () => void;
 }
 
-export function StickyActionBar({
-  actionDisabled,
-  actionLabel,
-  onAction,
-  onReadScripture,
-}: StickyActionBarProps) {
+export function StickyActionBar({ actionDisabled, actionLabel, onAction, onReadScripture }: StickyActionBarProps) {
   return (
     <SafeAreaView edges={["bottom"]} style={styles.safeArea}>
       <View style={styles.actions}>
-        <Button
-          disabled={actionDisabled}
-          fullWidth
-          onPress={onAction}
-          variant="warning"
-        >
+        <Button disabled={actionDisabled} fullWidth onPress={onAction} variant="warning">
           {actionLabel}
         </Button>
         <Button fullWidth onPress={onReadScripture} variant="ghost">

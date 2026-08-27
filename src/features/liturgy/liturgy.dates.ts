@@ -10,16 +10,9 @@ export function addDaysToIsoDate(date: string, amount: number) {
   const [year, month, day] = date.split("-").map(Number);
   const nextDate = new Date(Date.UTC(year, month - 1, day + amount));
 
-  return formatIsoDate(
-    nextDate.getUTCFullYear(),
-    nextDate.getUTCMonth() + 1,
-    nextDate.getUTCDate(),
-  );
+  return formatIsoDate(nextDate.getUTCFullYear(), nextDate.getUTCMonth() + 1, nextDate.getUTCDate());
 }
 
-export function canNavigateToNextLiturgyDate(
-  selectedDate: string,
-  today = getLocalIsoDate(),
-) {
+export function canNavigateToNextLiturgyDate(selectedDate: string, today = getLocalIsoDate()) {
   return selectedDate < addDaysToIsoDate(today, 1);
 }

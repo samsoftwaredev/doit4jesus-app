@@ -4,10 +4,7 @@ import { useWindowDimensions } from "react-native";
 
 import { theme } from "@/theme/tokens";
 
-import type {
-  ResponsiveImageProps,
-  ResponsiveImageSource,
-} from "./ResponsiveImage.types";
+import type { ResponsiveImageProps, ResponsiveImageSource } from "./ResponsiveImage.types";
 
 function selectImageSource({
   width,

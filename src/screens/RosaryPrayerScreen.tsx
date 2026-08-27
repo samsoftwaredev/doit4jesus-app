@@ -20,7 +20,6 @@ import {
   PrayerCard,
   RosaryBeadNavigator,
   RosaryBottomNavigation,
-  RosaryHeader,
   ScriptureCard,
 } from "@/components/rosary";
 import { getRosaryMysteries } from "@/data/rosaryMysteries";
@@ -122,7 +121,10 @@ export function RosaryPrayerScreen({
         const completedAt = new Date();
         const result = await recordRosaryActivity({
           completedAt: completedAt.toISOString(),
-          durationSeconds: Math.max(0, Math.floor((completedAt.getTime() - completionStartedAt.current.getTime()) / 1000)),
+          durationSeconds: Math.max(
+            0,
+            Math.floor((completedAt.getTime() - completionStartedAt.current.getTime()) / 1000),
+          ),
           idempotencyKey: completionKey.current ?? (completionKey.current = createIdempotencyKey()),
           occurredAt: completionStartedAt.current.toISOString(),
         });
@@ -139,11 +141,17 @@ export function RosaryPrayerScreen({
           intentionPrayerRecorded.current = true;
           setIntentionPrayerCount(intentionResult.prayerCount);
         } catch {
-          setCompletionError("Your Rosary was saved, but we couldn’t record the prayer for this intention. Try again when you’re ready.");
+          setCompletionError(
+            "Your Rosary was saved, but we couldn’t record the prayer for this intention. Try again when you’re ready.",
+          );
         }
       }
     } catch (error) {
-      setCompletionError(error instanceof Error ? error.message : "Your Rosary was completed, but couldn’t be saved. Try again to record it.");
+      setCompletionError(
+        error instanceof Error
+          ? error.message
+          : "Your Rosary was completed, but couldn’t be saved. Try again to record it.",
+      );
     } finally {
       completionRequestInFlight.current = false;
       setIsRecordingCompletion(false);
@@ -199,7 +207,6 @@ export function RosaryPrayerScreen({
             },
           ]}
         >
-          <RosaryHeader onOpenGarden={() => router.push("/rosary-garden")} />
           <View style={[styles.main, { gap: contentGap }]}>
             <View style={{ width: rosaryColumnWidth }}>
               <RosaryBeadNavigator
@@ -235,7 +242,7 @@ export function RosaryPrayerScreen({
             </ScrollView>
           </View>
 
-            <RosaryBottomNavigation
+          <RosaryBottomNavigation
             activeDecadeIndex={isDecade ? 0 : Math.min(4, Math.floor(session.currentBeadIndex / 10))}
             decadeCount={isDecade ? 1 : 5}
             disabled={session.isTransitioning || activeBeads.length === 0}
@@ -256,19 +263,40 @@ export function RosaryPrayerScreen({
         <View style={styles.completionOverlay}>
           <Animated.View entering={reduceMotion ? undefined : FadeIn.duration(220)} style={styles.completionCard}>
             <View style={styles.completionIcon}>
-              <Feather accessible={false} color={theme.rosary.colors.goldBright} name="heart" size={theme.sizes.iconLarge} />
+              <Feather
+                accessible={false}
+                color={theme.rosary.colors.goldBright}
+                name="heart"
+                size={theme.sizes.iconLarge}
+              />
             </View>
             <Text accessibilityRole="header" style={styles.completionTitle}>
               Rosary Completed
             </Text>
             <Text style={styles.completionDate}>{completionDateLabel(session.lastPrayedOn)}</Text>
-            <Text style={styles.completionCopy}>
-              May this time of prayer remain with you in peace.
-            </Text>
+            <Text style={styles.completionCopy}>May this time of prayer remain with you in peace.</Text>
             {rosaryRecorded ? <Text style={styles.completionSuccess}>Rosary recorded</Text> : null}
-            {intentionPrayerCount !== undefined ? <Text style={styles.completionSuccess}>Prayer offered. {intentionPrayerCount} prayers have been offered for this intention.</Text> : null}
-            {completionError ? <Text accessibilityRole="alert" style={styles.completionError}>{completionError}</Text> : null}
-            {completionError ? <Pressable accessibilityLabel="Retry recording this completed Rosary" accessibilityRole="button" disabled={isRecordingCompletion} onPress={() => void recordCompletedPrayer()} style={({ pressed }) => [styles.retryAction, pressed && styles.pressed]}><Text style={styles.retryActionText}>{isRecordingCompletion ? "Recording…" : "Try Again"}</Text></Pressable> : null}
+            {intentionPrayerCount !== undefined ? (
+              <Text style={styles.completionSuccess}>
+                Prayer offered. {intentionPrayerCount} prayers have been offered for this intention.
+              </Text>
+            ) : null}
+            {completionError ? (
+              <Text accessibilityRole="alert" style={styles.completionError}>
+                {completionError}
+              </Text>
+            ) : null}
+            {completionError ? (
+              <Pressable
+                accessibilityLabel="Retry recording this completed Rosary"
+                accessibilityRole="button"
+                disabled={isRecordingCompletion}
+                onPress={() => void recordCompletedPrayer()}
+                style={({ pressed }) => [styles.retryAction, pressed && styles.pressed]}
+              >
+                <Text style={styles.retryActionText}>{isRecordingCompletion ? "Recording…" : "Try Again"}</Text>
+              </Pressable>
+            ) : null}
             <Pressable
               accessibilityLabel="Pray this mystery again"
               accessibilityRole="button"

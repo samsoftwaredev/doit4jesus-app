@@ -41,7 +41,9 @@ export function CelebrationHeroCard({ celebration }: CelebrationHeroCardProps) {
           <View style={[styles.accentLine, { backgroundColor: colors.accent }]} />
           <Text style={[styles.season, { color: colors.label }]}>{displaySeason(celebration.season)}</Text>
         </View>
-        <Text accessibilityRole="header" style={styles.title}>{celebration.name}</Text>
+        <Text accessibilityRole="header" style={styles.title}>
+          {celebration.name}
+        </Text>
         <View style={styles.gradeRow}>
           <MaterialCommunityIcons color={colors.accent} name="church-outline" size={16} />
           <Text style={styles.grade}>{displayGrade(celebration.grade)}</Text>
@@ -87,5 +89,10 @@ const styles = StyleSheet.create({
   mary: { bottom: -12, height: 190, opacity: 0.82, position: "absolute", right: -18, width: 146 },
   season: { ...theme.typography.label, letterSpacing: theme.letterSpacing.widest, textTransform: "uppercase" },
   seasonRow: { alignItems: "center", flexDirection: "row", gap: theme.spacing[2], marginBottom: theme.spacing[3] },
-  title: { ...theme.typography.heading1, fontFamily: theme.fontFamilies.devotional, fontWeight: theme.fontWeights.bold, maxWidth: 260 },
+  title: {
+    ...theme.typography.heading1,
+    fontFamily: theme.fontFamilies.devotional,
+    fontWeight: theme.fontWeights.bold,
+    maxWidth: 260,
+  },
 });

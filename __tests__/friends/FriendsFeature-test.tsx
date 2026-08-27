@@ -72,7 +72,14 @@ const johnRequest: FriendRequest = {
 
 const leaderboard: FriendsLeaderboard = {
   currentUserEntry: {
-    friend: { avatarUrl: null, countryCode: "US", displayName: "Samuel Ruiz", id: "current-user", title: "Prayer Warrior", username: "samsoftwaredev" },
+    friend: {
+      avatarUrl: null,
+      countryCode: "US",
+      displayName: "Samuel Ruiz",
+      id: "current-user",
+      title: "Prayer Warrior",
+      username: "samsoftwaredev",
+    },
     isCurrentUser: true,
     points: 120,
     prayersCount: 5,
@@ -82,7 +89,14 @@ const leaderboard: FriendsLeaderboard = {
   },
   entries: [
     {
-      friend: { avatarUrl: null, countryCode: "MX", displayName: "Maria Santos", id: "friend-maria", title: "Prayer Champion", username: "mariasantos" },
+      friend: {
+        avatarUrl: null,
+        countryCode: "MX",
+        displayName: "Maria Santos",
+        id: "friend-maria",
+        title: "Prayer Champion",
+        username: "mariasantos",
+      },
       isCurrentUser: false,
       points: 240,
       prayersCount: 9,
@@ -91,7 +105,14 @@ const leaderboard: FriendsLeaderboard = {
       scriptureReadingsCount: 4,
     },
     {
-      friend: { avatarUrl: null, countryCode: "US", displayName: "Samuel Ruiz", id: "current-user", title: "Prayer Warrior", username: "samsoftwaredev" },
+      friend: {
+        avatarUrl: null,
+        countryCode: "US",
+        displayName: "Samuel Ruiz",
+        id: "current-user",
+        title: "Prayer Warrior",
+        username: "samsoftwaredev",
+      },
       isCurrentUser: true,
       points: 120,
       prayersCount: 5,
@@ -121,7 +142,14 @@ const comparison: FriendsComparison = {
       lifetimePoints: 1300,
       periodActivity: { prayersCount: 6, rosariesCount: 4, scriptureReadingsCount: 3 },
       periodPoints: 120,
-      profile: { avatarUrl: null, countryCode: "US", displayName: "Samuel Ruiz", id: "current-user", title: "Prayer Warrior", username: "samsoftwaredev" },
+      profile: {
+        avatarUrl: null,
+        countryCode: "US",
+        displayName: "Samuel Ruiz",
+        id: "current-user",
+        title: "Prayer Warrior",
+        username: "samsoftwaredev",
+      },
       rank: 2,
       rosaryStreak: { asOfDate: "2026-08-17", currentStreak: 8, longestStreak: 12, timezone: "America/Chicago" },
       rosaryTotal: 47,
@@ -134,7 +162,14 @@ const comparison: FriendsComparison = {
       lifetimePoints: 1500,
       periodActivity: { prayersCount: 8, rosariesCount: 6, scriptureReadingsCount: 4 },
       periodPoints: 240,
-      profile: { avatarUrl: null, countryCode: "MX", displayName: "Maria Santos", id: "friend-maria", title: "Prayer Champion", username: "mariasantos" },
+      profile: {
+        avatarUrl: null,
+        countryCode: "MX",
+        displayName: "Maria Santos",
+        id: "friend-maria",
+        title: "Prayer Champion",
+        username: "mariasantos",
+      },
       rank: 1,
       rosaryStreak: { asOfDate: "2026-08-17", currentStreak: 12, longestStreak: 21, timezone: "America/Mexico_City" },
       rosaryTotal: 61,
@@ -290,7 +325,12 @@ describe("Friends feature", () => {
       isLoading: false,
       results: [{ avatarUrl: null, relationshipState: "none", title: "Scripture Seeker", username: "johnpaul" }],
     });
-    hooks.useSendFriendRequest.mockReturnValue({ error: undefined, pendingUsername: undefined, requestedUsernames: [], send });
+    hooks.useSendFriendRequest.mockReturnValue({
+      error: undefined,
+      pendingUsername: undefined,
+      requestedUsernames: [],
+      send,
+    });
     await render(<AddFriendScreen />);
 
     await fireEvent.press(screen.getByLabelText("Add @johnpaul as a friend"));

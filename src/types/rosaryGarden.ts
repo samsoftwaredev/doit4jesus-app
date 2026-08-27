@@ -1,9 +1,4 @@
-export type FlowerVariant =
-  | "redRose"
-  | "pinkRose"
-  | "whiteLily"
-  | "blueFlower"
-  | "mixedFlowers";
+export type FlowerVariant = "redRose" | "pinkRose" | "whiteLily" | "blueFlower" | "mixedFlowers";
 
 export interface RosaryGardenDay {
   date: string;

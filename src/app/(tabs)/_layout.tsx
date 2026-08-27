@@ -12,15 +12,7 @@ const tabArtworkSources = {
   profile: require("../../assets/tabs/profile.png"),
 } as const;
 
-function TabArtworkIcon({
-  focused,
-  size,
-  source,
-}: {
-  focused: boolean;
-  size: number;
-  source: number;
-}) {
+function TabArtworkIcon({ focused, size, source }: { focused: boolean; size: number; source: number }) {
   return (
     <Image
       accessible={false}
@@ -77,11 +69,7 @@ export default function TabLayout() {
         options={{
           title: "Home",
           tabBarIcon: ({ focused, size }) => (
-            <TabArtworkIcon
-              focused={focused}
-              size={size}
-              source={tabArtworkSources.home}
-            />
+            <TabArtworkIcon focused={focused} size={size} source={tabArtworkSources.home} />
           ),
         }}
       />
@@ -103,11 +91,7 @@ export default function TabLayout() {
         options={{
           title: "Prayer",
           tabBarIcon: ({ focused, size }) => (
-            <TabArtworkIcon
-              focused={focused}
-              size={size}
-              source={tabArtworkSources.prayer}
-            />
+            <TabArtworkIcon focused={focused} size={size} source={tabArtworkSources.prayer} />
           ),
         }}
       />
@@ -116,11 +100,7 @@ export default function TabLayout() {
         options={{
           title: "Community",
           tabBarIcon: ({ focused, size }) => (
-            <TabArtworkIcon
-              focused={focused}
-              size={size}
-              source={tabArtworkSources.community}
-            />
+            <TabArtworkIcon focused={focused} size={size} source={tabArtworkSources.community} />
           ),
         }}
       />
@@ -129,11 +109,7 @@ export default function TabLayout() {
         options={{
           title: "Profile",
           tabBarIcon: ({ focused, size }) => (
-            <TabArtworkIcon
-              focused={focused}
-              size={size}
-              source={tabArtworkSources.profile}
-            />
+            <TabArtworkIcon focused={focused} size={size} source={tabArtworkSources.profile} />
           ),
         }}
       />

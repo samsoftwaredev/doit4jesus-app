@@ -2,13 +2,7 @@ import { Link } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
 
-import {
-  AuthMessage,
-  AuthScreen,
-  AuthTextInput,
-  authScreenStyles,
-  useAuth,
-} from "@/features/auth";
+import { AuthMessage, AuthScreen, AuthTextInput, authScreenStyles, useAuth } from "@/features/auth";
 import { Button } from "@/components/ui";
 import { supabase } from "@/lib/supabase";
 

@@ -154,7 +154,8 @@ export async function createPrayerIntention(input: CreatePrayerIntentionInput): 
   const title = input.title.trim();
   const description = input.description.trim();
   if (!title || title.length > 120) throw new Error("Title is required and must be 120 characters or fewer.");
-  if (!description || description.length > 250) throw new Error("Description is required and must be 250 characters or fewer.");
+  if (!description || description.length > 250)
+    throw new Error("Description is required and must be 250 characters or fewer.");
 
   const payload = readRecord(
     await request("/api/v1/prayer-intentions", {
@@ -176,7 +177,9 @@ export async function fetchMyPrayerIntentions({
   status?: MyPrayerIntentionsStatusFilter;
 } = {}): Promise<MyPrayerIntentionsPage> {
   const payload = readRecord(
-    await request(`/api/v1/me/prayer-intentions?${pageQuery(Math.min(100, Math.max(1, limit)), Math.max(0, offset), status)}`),
+    await request(
+      `/api/v1/me/prayer-intentions?${pageQuery(Math.min(100, Math.max(1, limit)), Math.max(0, offset), status)}`,
+    ),
     "your prayer intentions response",
   );
 

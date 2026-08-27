@@ -136,9 +136,7 @@ describe("Profile settings", () => {
 
     await fireEvent.press(screen.getByText("Contact Support"));
     await waitFor(() => {
-      expect(openUrl).toHaveBeenCalledWith(
-        "mailto:samuel@inripaintwall.com?subject=Do%20It%20for%20Jesus%20Support",
-      );
+      expect(openUrl).toHaveBeenCalledWith("mailto:samuel@inripaintwall.com?subject=Do%20It%20for%20Jesus%20Support");
     });
 
     await fireEvent.press(screen.getByText("Privacy Policy"));

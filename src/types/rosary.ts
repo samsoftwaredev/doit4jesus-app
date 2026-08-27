@@ -1,19 +1,11 @@
 import type { ImageSourcePropType } from "react-native";
 
 export type RosaryMysteryCategory =
-  | "Joyful Mysteries"
-  | "Luminous Mysteries"
-  | "Sorrowful Mysteries"
-  | "Glorious Mysteries";
+  "Joyful Mysteries" | "Luminous Mysteries" | "Sorrowful Mysteries" | "Glorious Mysteries";
 
 export type RosaryMysteryType = "joyful" | "luminous" | "sorrowful" | "glorious";
 
-export type RosaryBeadType =
-  | "ourFather"
-  | "hailMary"
-  | "gloryBe"
-  | "fatimaPrayer"
-  | "creed";
+export type RosaryBeadType = "ourFather" | "hailMary" | "gloryBe" | "fatimaPrayer" | "creed";
 
 export type BeadState = "completed" | "active" | "upcoming";
 
