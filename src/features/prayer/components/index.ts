@@ -1,0 +1,1 @@
+export { OrnateCard } from "./OrnateCard";

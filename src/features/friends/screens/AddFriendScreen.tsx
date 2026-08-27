@@ -4,8 +4,9 @@ import { useMemo, useState } from "react";
 import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { BackHeader } from "@/components/navigation";
 import { Button, Card } from "@/components/ui";
-import { FriendAvatar, FriendsHeader, FriendsState } from "@/features/friends/components";
+import { FriendAvatar, FriendsState } from "@/features/friends/components";
 import { useFriendSearch, useSendFriendRequest } from "@/features/friends/friends.hooks";
 import type { UserSearchResult } from "@/features/friends/friends.types";
 import { theme } from "@/theme/tokens";
@@ -28,7 +29,7 @@ export function AddFriendScreen() {
 
   return (
     <SafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
-      <FriendsHeader onBack={() => router.back()} title="Add Friend" />
+      <BackHeader onBack={() => router.back()} title="Add Friend" />
       <KeyboardAvoidingView
         behavior={Platform.select({ ios: "padding", default: undefined })}
         style={styles.keyboardAvoiding}

@@ -1,8 +1,8 @@
 import { useLocalSearchParams } from "expo-router";
 
-import { getTodayRosaryMysteryType } from "@/features/prayer-intentions";
-import { RosaryPrayerScreen } from "@/screens/RosaryPrayerScreen";
-import type { RosaryMysteryType } from "@/types/rosary";
+import { getTodayRosaryMysteryType } from "@/features/prayer/intentions";
+import { RosaryPrayerScreen } from "@/features/prayer/rosary/screens/RosaryPrayerScreen";
+import type { RosaryMysteryType } from "@/features/prayer/rosary/types";
 
 function firstString(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value;

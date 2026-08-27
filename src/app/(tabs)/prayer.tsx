@@ -1,5 +1,5 @@
-import { PrayerScreen as PrayerSelectionScreen } from "@/screens/PrayerScreen";
+import { PrayerHomeScreen } from "@/features/prayer";
 
 export default function PrayerTabRoute() {
-  return <PrayerSelectionScreen />;
+  return <PrayerHomeScreen />;
 }

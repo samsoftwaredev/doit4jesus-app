@@ -1,6 +1,5 @@
 export * from "./FriendAvatar";
 export * from "./FriendRequestItem";
-export * from "./FriendsHeader";
 export * from "./FriendsList";
 export * from "./FriendsState";
 export * from "./CompareStatsRow";

@@ -4,13 +4,8 @@ import { useRouter } from "expo-router";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import {
-  FriendsHeader,
-  FriendsList,
-  FriendsState,
-  PendingRequestsCard,
-  RosaryLeaderboardCard,
-} from "@/features/friends/components";
+import { BackHeader } from "@/components/navigation";
+import { FriendsList, FriendsState, PendingRequestsCard, RosaryLeaderboardCard } from "@/features/friends/components";
 import { useFriendRequests, useFriends, useRosaryLeaderboard } from "@/features/friends/friends.hooks";
 import type { FriendRequest } from "@/features/friends/friends.types";
 import { theme } from "@/theme/tokens";
@@ -49,7 +44,7 @@ export function FriendsScreen() {
         </View>
         <Text style={styles.brand}>doit4Jesus</Text>
       </View>
-      <FriendsHeader
+      <BackHeader
         rightAction={
           <Pressable
             accessibilityLabel="Add friend"

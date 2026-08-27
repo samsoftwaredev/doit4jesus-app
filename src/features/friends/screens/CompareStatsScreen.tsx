@@ -2,8 +2,9 @@ import { useRouter } from "expo-router";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { BackHeader } from "@/components/navigation";
 import { Card } from "@/components/ui";
-import { CompareStatsRow, FriendsHeader, FriendsState } from "@/features/friends/components";
+import { CompareStatsRow, FriendsState } from "@/features/friends/components";
 import { formatPoints } from "@/features/friends/components/LeaderboardEntries";
 import { useFriendsComparison } from "@/features/friends/friends.hooks";
 import { theme } from "@/theme/tokens";
@@ -14,7 +15,7 @@ export function CompareStatsScreen({ friendId }: { friendId: string | undefined 
 
   return (
     <SafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
-      <FriendsHeader onBack={() => router.back()} title="Compare Stats" />
+      <BackHeader onBack={() => router.back()} title="Compare Stats" />
       {comparison.isLoading ? (
         <View style={styles.state}>
           <FriendsState message="Loading your comparison…" title="Compare progress" type="loading" />

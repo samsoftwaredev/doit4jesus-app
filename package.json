@@ -84,9 +84,9 @@
       "\\.vitest\\.ts$"
     ],
     "collectCoverageFrom": [
-      "src/hooks/useRosarySession.ts",
-      "src/components/rosary/**/*.{ts,tsx}",
-      "src/screens/RosaryPrayerScreen.tsx"
+      "src/features/prayer/rosary/hooks/useRosarySession.ts",
+      "src/features/prayer/rosary/components/**/*.{ts,tsx}",
+      "src/features/prayer/rosary/screens/RosaryPrayerScreen.tsx"
     ],
     "coverageThreshold": {
       "global": {

@@ -1,4 +1,4 @@
-import { MyPrayerIntentionsScreen } from "@/screens/MyPrayerIntentionsScreen";
+import { MyPrayerIntentionsScreen } from "@/features/prayer/intentions/screens/MyPrayerIntentionsScreen";
 
 export default function MyPrayerIntentionsRoute() {
   return <MyPrayerIntentionsScreen />;

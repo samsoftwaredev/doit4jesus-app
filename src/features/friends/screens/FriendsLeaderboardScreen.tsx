@@ -2,8 +2,9 @@ import { useRouter } from "expo-router";
 import { FlatList, Pressable, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { BackHeader } from "@/components/navigation";
 import { Button, Card } from "@/components/ui";
-import { FriendsHeader, FriendsState, LeaderboardEntries } from "@/features/friends/components";
+import { FriendsState, LeaderboardEntries } from "@/features/friends/components";
 import { formatPoints } from "@/features/friends/components/LeaderboardEntries";
 import { useRosaryLeaderboard } from "@/features/friends/friends.hooks";
 import type { FriendsLeaderboardEntry, LeaderboardPeriodType } from "@/features/friends/friends.types";
@@ -38,7 +39,7 @@ export function FriendsLeaderboardScreen() {
 
   return (
     <SafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
-      <FriendsHeader onBack={() => router.back()} title="Leaderboard" />
+      <BackHeader onBack={() => router.back()} title="Leaderboard" />
       {leaderboard.isLoading ? (
         <View style={styles.state}>
           <FriendsState message="Loading your friends' points…" title="Leaderboard" type="loading" />

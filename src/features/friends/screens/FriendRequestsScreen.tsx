@@ -3,8 +3,9 @@ import { useRouter } from "expo-router";
 import { FlatList, Pressable, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { BackHeader } from "@/components/navigation";
 import { Card } from "@/components/ui";
-import { FriendRequestItem, FriendsHeader, FriendsState } from "@/features/friends/components";
+import { FriendRequestItem, FriendsState } from "@/features/friends/components";
 import { useFriendRequests } from "@/features/friends/friends.hooks";
 import type { FriendRequestDirection } from "@/features/friends/friends.types";
 import { theme } from "@/theme/tokens";
@@ -21,7 +22,7 @@ export function FriendRequestsScreen() {
 
   return (
     <SafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
-      <FriendsHeader onBack={() => router.back()} title="Friend Requests" />
+      <BackHeader onBack={() => router.back()} title="Friend Requests" />
       <View style={styles.tabs}>
         {tabs.map((tab) => (
           <Pressable

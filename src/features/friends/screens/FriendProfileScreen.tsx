@@ -4,8 +4,9 @@ import { useState } from "react";
 import { Alert, Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { BackHeader } from "@/components/navigation";
 import { Button, Card } from "@/components/ui";
-import { FriendAvatar, FriendsHeader, FriendsState } from "@/features/friends/components";
+import { FriendAvatar, FriendsState } from "@/features/friends/components";
 import { removeFriend } from "@/features/friends/friends.api";
 import { useFriendProfile } from "@/features/friends/friends.hooks";
 import { theme } from "@/theme/tokens";
@@ -48,7 +49,7 @@ export function FriendProfileScreen({ friendId }: { friendId: string | undefined
 
   return (
     <SafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
-      <FriendsHeader
+      <BackHeader
         onBack={() => router.back()}
         rightAction={
           <Pressable
