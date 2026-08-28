@@ -4,7 +4,7 @@ import Animated, { FadeIn, useReducedMotion } from "react-native-reanimated";
 
 import { GardenDayCell } from "@/features/prayer/rosary/garden/components/GardenDayCell";
 import { theme } from "@/theme/tokens";
-import type { RosaryGardenDay } from "@/features/prayer/rosary/types";
+import type { RosaryGardenDay } from "@/features/prayer/rosary/garden/types";
 
 interface GardenCalendarProps {
   days: RosaryGardenDay[];

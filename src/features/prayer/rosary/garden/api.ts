@@ -2,7 +2,7 @@ import type {
   RosaryCompletionApiDay,
   RosaryCompletionApiResponse,
   RosaryStreakApiResponse,
-} from "@/features/prayer/rosary/types";
+} from "@/features/prayer/rosary/garden/types";
 import { getSupabaseAccessToken } from "@/lib/supabase";
 
 function isRecord(value: unknown): value is Record<string, unknown> {

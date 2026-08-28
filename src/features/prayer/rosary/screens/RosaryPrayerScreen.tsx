@@ -22,7 +22,8 @@ import {
   RosaryBottomNavigation,
   ScriptureCard,
 } from "@/features/prayer/rosary/components";
-import { recordPrayerForIntention, recordRosaryActivity } from "@/features/prayer/intentions";
+import { recordPrayerForIntention } from "@/features/prayer/intentions";
+import { recordRosaryActivity } from "@/features/prayer/rosary/api/activities.api";
 import { getRosaryMysteries } from "@/features/prayer/rosary/data/rosaryMysteries";
 import { fullRosarySequence, rosarySequence } from "@/features/prayer/rosary/data/rosarySequence";
 import { useRosarySession } from "@/features/prayer/rosary/hooks/useRosarySession";

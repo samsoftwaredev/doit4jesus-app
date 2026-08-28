@@ -1,6 +1,6 @@
 import { useLocalSearchParams } from "expo-router";
 
-import { getTodayRosaryMysteryType } from "@/features/prayer/intentions";
+import { getTodayRosaryMysteryType } from "@/features/prayer/rosary/data/schedule";
 import { RosaryPrayerScreen } from "@/features/prayer/rosary/screens/RosaryPrayerScreen";
 import type { RosaryMysteryType } from "@/features/prayer/rosary/types";
 

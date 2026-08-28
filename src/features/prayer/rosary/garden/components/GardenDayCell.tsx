@@ -10,7 +10,7 @@ import Animated, {
 
 import { DayCalendarTile } from "@/components/ui";
 import { theme } from "@/theme/tokens";
-import type { RosaryGardenDay } from "@/features/prayer/rosary/types";
+import type { RosaryGardenDay } from "@/features/prayer/rosary/garden/types";
 
 interface GardenDayCellProps {
   day: RosaryGardenDay;

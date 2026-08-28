@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { fetchRosaryCompletion, fetchRosaryStreak } from "@/features/prayer/rosary/data/rosaryGarden.api";
-import { createRosaryGardenMockData, getLocalDateParts } from "@/features/prayer/rosary/data/rosaryGardenMockData";
+import { fetchRosaryCompletion, fetchRosaryStreak } from "@/features/prayer/rosary/garden/api";
+import { createRosaryGardenMockData, getLocalDateParts } from "@/features/prayer/rosary/garden/mockData";
 import {
   buildRosaryGardenMonth,
   calculateStreaks,
@@ -11,9 +11,9 @@ import {
   isMonthBefore,
   isValidIsoDate,
   toIsoDate,
-} from "@/features/prayer/rosary/data/rosaryGardenUtils";
+} from "@/features/prayer/rosary/garden/utils";
 import { fetchCurrentUserProfile } from "@/features/profile/profile.api";
-import type { RosaryGardenStats, UseRosaryGardenOptions } from "@/features/prayer/rosary/types";
+import type { RosaryGardenStats, UseRosaryGardenOptions } from "@/features/prayer/rosary/garden/types";
 
 function addMonth(year: number, month: number, amount: number) {
   const date = new Date(Date.UTC(year, month - 1 + amount, 1));
@@ -22,6 +22,7 @@ function addMonth(year: number, month: number, amount: number) {
 
 export function useRosaryGarden(options: UseRosaryGardenOptions = {}) {
   const fallbackTimezone = options.userTimezone ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const providedCompletionDates = options.rosaryCompletionDates?.filter(isValidIsoDate).join(",");
   const now = getLocalDateParts(fallbackTimezone);
   const [selected, setSelected] = useState({
     month:
@@ -33,7 +34,7 @@ export function useRosaryGarden(options: UseRosaryGardenOptions = {}) {
   const [timezone, setTimezone] = useState(fallbackTimezone);
   const [userCreatedAt, setUserCreatedAt] = useState(options.userCreatedAt ?? toIsoDate(now.year, 1, 1));
   const [completionDates, setCompletionDates] = useState<Set<string>>(
-    () => new Set((options.rosaryCompletionDates ?? []).filter(isValidIsoDate)),
+    () => new Set(providedCompletionDates?.split(",") ?? []),
   );
   const [remoteStreaks, setRemoteStreaks] = useState<{ currentStreak: number; longestStreak: number } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -57,8 +58,8 @@ export function useRosaryGarden(options: UseRosaryGardenOptions = {}) {
     let active = true;
     setIsLoading(true);
 
-    if (options.rosaryCompletionDates) {
-      setCompletionDates(new Set(options.rosaryCompletionDates.filter(isValidIsoDate)));
+    if (providedCompletionDates !== undefined) {
+      setCompletionDates(new Set(providedCompletionDates ? providedCompletionDates.split(",") : []));
       setRemoteStreaks(null);
       setIsUsingMockData(false);
       setIsLoading(false);
@@ -98,7 +99,7 @@ export function useRosaryGarden(options: UseRosaryGardenOptions = {}) {
     return () => {
       active = false;
     };
-  }, [options.rosaryCompletionDates, options.userCreatedAt, selected.month, selected.year, timezone]);
+  }, [options.userCreatedAt, providedCompletionDates, selected.month, selected.year, timezone]);
 
   const month = useMemo(
     () =>

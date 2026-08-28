@@ -7,16 +7,12 @@ import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, useWindowDi
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { OrnateCard } from "@/features/prayer/components";
-import { PrayerIntentionCard } from "@/features/prayer/intentions/components";
 import type { ApprovedPrayerIntention } from "@/features/prayer/intentions";
-import {
-  cacheApprovedPrayerIntentions,
-  fetchApprovedPrayerIntentions,
-  getTodayRosaryMysteryType,
-  getWeekdayLabel,
-} from "@/features/prayer/intentions";
+import { cacheApprovedPrayerIntentions, fetchApprovedPrayerIntentions } from "@/features/prayer/intentions";
+import { PrayerIntentionCard } from "@/features/prayer/intentions/components";
 import { RosaryMysteryCard } from "@/features/prayer/rosary/components";
 import { getRosaryMysterySet, rosaryMysterySets } from "@/features/prayer/rosary/data/rosaryMysteries";
+import { getTodayRosaryMysteryType, getWeekdayLabel } from "@/features/prayer/rosary/data/schedule";
 import { theme } from "@/theme/tokens";
 
 const previewLimit = 10;
@@ -198,7 +194,7 @@ function TodayRosaryCard({
       <Image
         accessible={false}
         contentFit="cover"
-        source={require("../../assets/saints/blessed-virgin-mary.png")}
+        source={require("../../../assets/saints/blessed-virgin-mary.png")}
         style={styles.todayImage}
       />
       <LinearGradient colors={["rgba(7, 26, 42, 0.24)", "rgba(7, 26, 42, 0.86)"]} style={StyleSheet.absoluteFill} />

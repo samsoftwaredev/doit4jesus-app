@@ -1,4 +1,4 @@
-import type { RosaryCompletionApiResponse, RosaryStreakApiResponse } from "@/features/prayer/rosary/types";
+import type { RosaryCompletionApiResponse, RosaryStreakApiResponse } from "@/features/prayer/rosary/garden/types";
 
 function toIsoDate(year: number, month: number, day: number) {
   return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;

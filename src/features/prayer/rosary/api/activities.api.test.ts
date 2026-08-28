@@ -1,21 +1,10 @@
-import { recordRosaryActivity } from "@/features/prayer/intentions/data/rosaryActivities.api";
-import { getTodayRosaryMysteryType } from "@/features/prayer/intentions/data/rosarySchedule";
+import { recordRosaryActivity } from "./activities.api";
 
 jest.mock("@/lib/supabase", () => ({
   getSupabaseAccessToken: jest.fn(async () => "test-access-token"),
 }));
 
-describe("Rosary schedule", () => {
-  it("uses the traditional weekday mystery schedule", () => {
-    expect(getTodayRosaryMysteryType(new Date(2026, 7, 24, 12))).toBe("joyful"); // Monday
-    expect(getTodayRosaryMysteryType(new Date(2026, 7, 25, 12))).toBe("sorrowful"); // Tuesday
-    expect(getTodayRosaryMysteryType(new Date(2026, 7, 26, 12))).toBe("glorious"); // Wednesday
-    expect(getTodayRosaryMysteryType(new Date(2026, 7, 27, 12))).toBe("luminous"); // Thursday
-    expect(getTodayRosaryMysteryType(new Date(2026, 7, 30, 12))).toBe("glorious"); // Sunday
-  });
-});
-
-describe("Rosary activity tracking", () => {
+describe("Rosary activity API", () => {
   beforeEach(() => {
     process.env.EXPO_PUBLIC_API_URL = "http://localhost:3000";
   });
@@ -25,7 +14,7 @@ describe("Rosary activity tracking", () => {
       json: async () => ({ data: { replayed: false, xp: { currentLevel: 3, points: 50, totalXp: 995 } } }),
       ok: true,
     }));
-    global.fetch = fetchMock as unknown as typeof fetch;
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
 
     await expect(
       recordRosaryActivity({

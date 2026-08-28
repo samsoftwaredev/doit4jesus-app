@@ -1,4 +1,4 @@
-import { RosaryGardenScreen } from "@/features/prayer/rosary/screens/RosaryGardenScreen";
+import { RosaryGardenScreen } from "@/features/prayer/rosary/garden/RosaryGardenScreen";
 
 export default function RosaryGardenRoute() {
   return <RosaryGardenScreen />;

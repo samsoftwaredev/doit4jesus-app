@@ -14,7 +14,7 @@ import {
   MonthNavigator,
   PrayTodayButton,
 } from "@/features/prayer/rosary/garden/components";
-import { useRosaryGarden } from "@/features/prayer/rosary/hooks/useRosaryGarden";
+import { useRosaryGarden } from "@/features/prayer/rosary/garden/useRosaryGarden";
 import { theme } from "@/theme/tokens";
 
 export function RosaryGardenScreen() {

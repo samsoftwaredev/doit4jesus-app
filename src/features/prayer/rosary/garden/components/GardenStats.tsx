@@ -3,7 +3,7 @@ import { StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import Animated, { FadeIn, useReducedMotion } from "react-native-reanimated";
 
 import { theme } from "@/theme/tokens";
-import type { RosaryGardenStats } from "@/features/prayer/rosary/types";
+import type { RosaryGardenStats } from "@/features/prayer/rosary/garden/types";
 
 interface GardenStatsProps {
   stats: RosaryGardenStats;

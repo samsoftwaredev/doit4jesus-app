@@ -1,4 +1,4 @@
-import { updateCurrentUserProfile } from "@/features/profile/profile.api";
+import { fetchCurrentUserProfile, updateCurrentUserProfile } from "@/features/profile/profile.api";
 
 jest.mock("@/lib/supabase", () => ({
   getSupabaseAccessToken: jest.fn(async () => "test-access-token"),
@@ -27,14 +27,36 @@ const profilePayload = {
 };
 
 describe("current profile API", () => {
-  const originalFetch = global.fetch;
+  const originalFetch = globalThis.fetch;
 
   beforeEach(() => {
     process.env.EXPO_PUBLIC_API_URL = "http://localhost:3000";
   });
 
   afterEach(() => {
-    global.fetch = originalFetch;
+    globalThis.fetch = originalFetch;
+  });
+
+  it("GETs and parses the current user profile", async () => {
+    const fetchMock = jest.fn(async () => ({
+      json: async () => ({ data: { ...profilePayload.data, gender: "female" } }),
+      ok: true,
+    }));
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+    await expect(fetchCurrentUserProfile()).resolves.toMatchObject({
+      displayName: "Samuel Ruiz",
+      gender: "female",
+      userId: "9629e3e7-72dc-4bb1-94d3-b5a2bdd9f002",
+    });
+
+    expect(fetchMock).toHaveBeenCalledWith("http://localhost:3000/api/v1/me", {
+      headers: {
+        Accept: "application/json",
+        Authorization: "Bearer test-access-token",
+      },
+      method: "GET",
+    });
   });
 
   it("PATCHes only permitted display, gender, and saint fields", async () => {
@@ -42,7 +64,7 @@ describe("current profile API", () => {
       json: async () => profilePayload,
       ok: true,
     }));
-    global.fetch = fetchMock as unknown as typeof fetch;
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
 
     const result = await updateCurrentUserProfile({
       displayName: "Samuel Ruiz",
@@ -65,5 +87,48 @@ describe("current profile API", () => {
     });
     expect(result.cityName).toBe("Austin");
     expect(result.saintAvatarId).toBe("a1000000-0000-4000-8000-000000000002");
+  });
+
+  it("rejects failed and malformed profile responses", async () => {
+    globalThis.fetch = jest.fn(async () => ({
+      ok: false,
+      status: 503,
+    })) as unknown as typeof fetch;
+
+    await expect(fetchCurrentUserProfile()).rejects.toThrow("Unable to load the profile (503).");
+
+    globalThis.fetch = jest.fn(async () => ({
+      json: async () => ({ data: { ...profilePayload.data, gender: "unknown" } }),
+      ok: true,
+    })) as unknown as typeof fetch;
+
+    await expect(fetchCurrentUserProfile()).rejects.toThrow("invalid gender");
+
+    globalThis.fetch = jest.fn(async () => ({
+      json: async () => ({}),
+      ok: true,
+    })) as unknown as typeof fetch;
+
+    await expect(fetchCurrentUserProfile()).rejects.toThrow("unexpected response");
+  });
+
+  it("rejects missing configuration, invalid fields, and failed updates", async () => {
+    delete process.env.EXPO_PUBLIC_API_URL;
+    await expect(fetchCurrentUserProfile()).rejects.toThrow("Set EXPO_PUBLIC_API_URL");
+
+    process.env.EXPO_PUBLIC_API_URL = "http://localhost:3000";
+    globalThis.fetch = jest.fn(async () => ({
+      json: async () => ({ data: { ...profilePayload.data, displayName: null } }),
+      ok: true,
+    })) as unknown as typeof fetch;
+    await expect(fetchCurrentUserProfile()).rejects.toThrow("invalid display name");
+
+    globalThis.fetch = jest.fn(async () => ({
+      ok: false,
+      status: 422,
+    })) as unknown as typeof fetch;
+    await expect(updateCurrentUserProfile({ displayName: "Samuel Ruiz" })).rejects.toThrow(
+      "Unable to update the profile (422).",
+    );
   });
 });

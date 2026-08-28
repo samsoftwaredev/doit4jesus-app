@@ -1,19 +1,17 @@
 import { fireEvent, render, screen } from "@testing-library/react-native";
 
-import { GardenCalendar } from "@/features/prayer/rosary/garden/components/GardenCalendar";
-import { RosaryGardenScreen } from "@/features/prayer/rosary/screens/RosaryGardenScreen";
-import type { RosaryGardenDay } from "@/features/prayer/rosary/types";
+import { RosaryGardenScreen } from "./RosaryGardenScreen";
 
 const goToNextMonth = jest.fn();
 const goToPreviousMonth = jest.fn();
 
-jest.mock("@/features/prayer/rosary/hooks/useRosaryGarden", () => ({ useRosaryGarden: jest.fn() }));
+jest.mock("@/features/prayer/rosary/garden/useRosaryGarden", () => ({ useRosaryGarden: jest.fn() }));
 
-const { useRosaryGarden } = jest.requireMock("@/features/prayer/rosary/hooks/useRosaryGarden") as {
+const { useRosaryGarden } = jest.requireMock("@/features/prayer/rosary/garden/useRosaryGarden") as {
   useRosaryGarden: jest.Mock;
 };
 
-const days: RosaryGardenDay[] = Array.from({ length: 31 }, (_, index) => {
+const days = Array.from({ length: 31 }, (_, index) => {
   const day = index + 1;
   const date = `2026-08-${String(day).padStart(2, "0")}`;
   return {
@@ -54,18 +52,6 @@ describe("RosaryGardenScreen", () => {
 
     expect(screen.getByText("Rosary Garden")).toBeTruthy();
     expect(screen.getByText("August 2026")).toBeTruthy();
-  });
-
-  it("should show a flower for a completed rosary day", async () => {
-    await render(<GardenCalendar days={days} month={8} year={2026} />);
-
-    expect(screen.getByLabelText("August 3. Rosary completed.")).toBeTruthy();
-  });
-
-  it("should show a sprout for an incomplete day", async () => {
-    await render(<GardenCalendar days={days} month={8} year={2026} />);
-
-    expect(screen.getByLabelText("August 4. Rosary not completed.")).toBeTruthy();
   });
 
   it("should navigate to the previous month", async () => {

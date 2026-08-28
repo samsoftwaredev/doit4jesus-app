@@ -1,4 +1,4 @@
-import type { FlowerVariant, RosaryGardenDay, RosaryGardenMonth } from "@/features/prayer/rosary/types";
+import type { FlowerVariant, RosaryGardenDay, RosaryGardenMonth } from "@/features/prayer/rosary/garden/types";
 
 const flowerVariants: FlowerVariant[] = ["redRose", "pinkRose", "whiteLily", "blueFlower", "mixedFlowers"];
 

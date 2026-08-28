@@ -1,14 +1,6 @@
-import { describe, expect, it } from "vitest";
+import { buildRosaryGardenMonth, calculateStreaks, getFlowerVariant, isMonthAfter, isMonthBefore } from "./utils";
 
-import {
-  buildRosaryGardenMonth,
-  calculateStreaks,
-  getFlowerVariant,
-  isMonthAfter,
-  isMonthBefore,
-} from "@/features/prayer/rosary/data/rosaryGardenUtils";
-
-describe("RosaryGardenScreen", () => {
+describe("Rosary Garden utilities", () => {
   it("should render the selected month", () => {
     const month = buildRosaryGardenMonth({
       completionDates: new Set(),
