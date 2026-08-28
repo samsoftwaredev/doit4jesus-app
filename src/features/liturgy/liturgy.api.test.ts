@@ -1,4 +1,9 @@
-import { parseDailyLiturgy, recordDailyScriptureCompletion } from "./liturgy.api";
+import {
+  fetchLiturgyReadings,
+  fetchTodayLiturgy,
+  parseDailyLiturgy,
+  recordDailyScriptureCompletion,
+} from "./liturgy.api";
 
 jest.mock("@/lib/supabase", () => ({
   getSupabaseAccessToken: jest.fn(async () => "test-access-token"),
@@ -72,5 +77,156 @@ describe("Daily Liturgy API", () => {
       countryCode: "US",
       occurredAt: "2026-08-21T21:22:25.672Z",
     });
+  });
+
+  it("normalizes every supported color and reading type while safely omitting invalid readings", () => {
+    for (const color of ["GREEN", "RED", "WHITE", "VIOLET", "ROSE", "BLACK"] as const) {
+      const liturgy = parseDailyLiturgy({
+        ...liturgyPayload,
+        data: { ...liturgyPayload.data, celebration: { ...liturgyPayload.data.celebration, color: [color] } },
+      });
+      expect(liturgy.celebration.liturgicalColor).toBe(color);
+    }
+
+    const liturgy = parseDailyLiturgy({
+      ...liturgyPayload,
+      data: {
+        ...liturgyPayload.data,
+        celebration: { ...liturgyPayload.data.celebration, color: [] },
+        cycles: { psalterWeek: 9, sunday: "D", weekday: "III" },
+        readings: [
+          { citation: "Genesis 1", text: "First", type: "FIRST_READING" },
+          { citation: "Psalm 1", text: "Psalm", type: "RESPONSORIAL_PSALM" },
+          { citation: "Romans 1", text: "Second", type: "SECOND_READING" },
+          { citation: "Alleluia", text: "Acclaim", type: "GOSPEL_ACCLAMATION" },
+          { citation: "John 1", text: "Gospel", type: "GOSPEL" },
+          { citation: "Invalid", text: "Ignored", type: "UNSUPPORTED" },
+          null,
+        ],
+      },
+    });
+
+    expect(liturgy.celebration.liturgicalColor).toBe("WHITE");
+    expect(liturgy.metadata).toEqual({
+      country: "US",
+      psalterWeek: undefined,
+      sundayCycle: undefined,
+      weekdayCycle: undefined,
+    });
+    expect(liturgy.readings.map((reading) => reading.type)).toEqual([
+      "FIRST_READING",
+      "RESPONSORIAL_PSALM",
+      "SECOND_READING",
+      "GOSPEL_ACCLAMATION",
+      "GOSPEL",
+    ]);
+  });
+
+  it("handles unavailable excerpts and validates incomplete payloads", () => {
+    const withoutGospel = parseDailyLiturgy({
+      ...liturgyPayload,
+      data: { ...liturgyPayload.data, readings: [{ citation: "Psalm 1", text: "Sing", type: "RESPONSORIAL_PSALM" }] },
+    });
+    expect(withoutGospel.highlightedVerse).toBeUndefined();
+
+    const longGospel = "A".repeat(260);
+    const withLongGospel = parseDailyLiturgy({
+      ...liturgyPayload,
+      data: { ...liturgyPayload.data, readings: [{ citation: "John 1", text: longGospel, type: "GOSPEL" }] },
+    });
+    expect(withLongGospel.highlightedVerse?.text).toHaveLength(238);
+
+    expect(() => parseDailyLiturgy(null)).toThrow("unexpected response");
+    expect(() => parseDailyLiturgy({ data: { ...liturgyPayload.data, metadata: null } })).toThrow(
+      "incomplete daily liturgy data",
+    );
+    expect(() =>
+      parseDailyLiturgy({
+        ...liturgyPayload,
+        data: { ...liturgyPayload.data, celebration: { ...liturgyPayload.data.celebration, grade: "" } },
+      }),
+    ).toThrow("invalid celebration grade");
+  });
+
+  it("requests both reading endpoints and provides safe default reward values", async () => {
+    const fetchMock = jest.fn(async () => ({
+      json: async () => ({ ...liturgyPayload, data: { ...liturgyPayload.data, readings: [] } }),
+      ok: true,
+    }));
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+    await fetchTodayLiturgy("US");
+    await fetchLiturgyReadings("2026-08-21/with space", "CA");
+    expect((fetchMock.mock.calls as unknown as [string][]).map(([url]) => url)).toEqual([
+      "http://localhost:3000/api/v1/liturgy/today?country=US",
+      "http://localhost:3000/api/v1/liturgy/readings/2026-08-21%2Fwith%20space?country=CA",
+    ]);
+
+    globalThis.fetch = jest.fn(async () => ({
+      json: async () => ({ data: { replayed: true, xp: { currentLevel: "two", points: null, totalXp: undefined } } }),
+      ok: true,
+    })) as unknown as typeof fetch;
+    await expect(
+      recordDailyScriptureCompletion({
+        completedAt: "2026-08-21T21:22:25.672Z",
+        country: "US",
+        idempotencyKey: "safe-defaults",
+        occurredAt: "2026-08-21T21:22:25.672Z",
+      }),
+    ).resolves.toEqual({ currentLevel: 0, points: 0, replayed: true, totalXp: 0 });
+  });
+
+  it("rejects unavailable, unsuccessful, and malformed network responses", async () => {
+    globalThis.fetch = jest.fn(async () => ({ ok: false, status: 503 })) as unknown as typeof fetch;
+    await expect(fetchTodayLiturgy("US")).rejects.toThrow("Unable to load daily liturgy (503)");
+
+    globalThis.fetch = jest.fn(async () => ({ json: async () => ({ data: {} }), ok: true })) as unknown as typeof fetch;
+    await expect(
+      recordDailyScriptureCompletion({
+        completedAt: "2026-08-21T21:22:25.672Z",
+        country: "US",
+        idempotencyKey: "bad-reward",
+        occurredAt: "2026-08-21T21:22:25.672Z",
+      }),
+    ).rejects.toThrow("unexpected reward response");
+
+    delete process.env.EXPO_PUBLIC_API_URL;
+    await expect(fetchTodayLiturgy("US")).rejects.toThrow("Set EXPO_PUBLIC_API_URL");
+  });
+
+  it("handles defensive parser fallbacks and a failed Scripture completion request", async () => {
+    const split = jest.spyOn(String.prototype, "split").mockReturnValueOnce([] as string[]);
+    try {
+      expect(
+        parseDailyLiturgy({
+          ...liturgyPayload,
+          data: { ...liturgyPayload.data, readings: [{ citation: "John 1", text: "Gospel", type: "GOSPEL" }] },
+        }).highlightedVerse,
+      ).toBeUndefined();
+    } finally {
+      split.mockRestore();
+    }
+
+    expect(() =>
+      parseDailyLiturgy({
+        data: { ...liturgyPayload.data, celebration: null, cycles: null, readings: null },
+      }),
+    ).toThrow("incomplete daily liturgy data");
+    expect(
+      parseDailyLiturgy({
+        ...liturgyPayload,
+        data: { ...liturgyPayload.data, celebration: { ...liturgyPayload.data.celebration, color: "RED" } },
+      }).celebration.liturgicalColor,
+    ).toBe("WHITE");
+
+    globalThis.fetch = jest.fn(async () => ({ ok: false, status: 503 })) as unknown as typeof fetch;
+    await expect(
+      recordDailyScriptureCompletion({
+        completedAt: "2026-08-21T21:22:25.672Z",
+        country: "US",
+        idempotencyKey: "failed-completion",
+        occurredAt: "2026-08-21T21:22:25.672Z",
+      }),
+    ).rejects.toThrow("Unable to record daily Scripture completion (503)");
   });
 });

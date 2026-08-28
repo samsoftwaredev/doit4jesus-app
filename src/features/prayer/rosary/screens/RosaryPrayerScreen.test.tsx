@@ -8,9 +8,17 @@ const goToNextBead = jest.fn();
 const goToPreviousBead = jest.fn();
 const restartMystery = jest.fn();
 const selectBead = jest.fn();
+const mockRecordRosaryActivity = jest.fn();
+const mockRecordPrayerForIntention = jest.fn();
 
 jest.mock("@/features/prayer/rosary/hooks/useRosarySession", () => ({
   useRosarySession: jest.fn(),
+}));
+jest.mock("@/features/prayer/rosary/api/activities.api", () => ({
+  recordRosaryActivity: (...args: unknown[]) => mockRecordRosaryActivity(...args),
+}));
+jest.mock("@/features/prayer/intentions", () => ({
+  recordPrayerForIntention: (...args: unknown[]) => mockRecordPrayerForIntention(...args),
 }));
 
 const { useRosarySession } = jest.requireMock("@/features/prayer/rosary/hooks/useRosarySession") as {
@@ -48,6 +56,8 @@ describe("RosaryPrayerScreen", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     useReducedMotion.mockReturnValue(true);
+    mockRecordRosaryActivity.mockResolvedValue({ points: 25 });
+    mockRecordPrayerForIntention.mockResolvedValue({ prayerCount: 4 });
     mockSession();
   });
 
@@ -115,5 +125,31 @@ describe("RosaryPrayerScreen", () => {
     expect(screen.getByText("No mystery available")).toBeTruthy();
     expect(screen.getByText(/progress could not be saved/i)).toBeTruthy();
     expect(screen.getByLabelText("Open Rosary settings")).toBeTruthy();
+  });
+
+  it("records a newly completed Rosary and its linked intention", async () => {
+    const rendered = await render(<RosaryPrayerScreen intentionId="intention-1" />);
+    mockSession({ isRosaryCompleted: true, lastPrayedOn: "2026-08-06T10:00:00.000Z" });
+
+    await rendered.rerender(<RosaryPrayerScreen intentionId="intention-1" />);
+
+    expect(await screen.findByText("Rosary recorded")).toBeTruthy();
+    expect(screen.getByText("Prayer offered. 4 prayers have been offered for this intention.")).toBeTruthy();
+    expect(mockRecordRosaryActivity).toHaveBeenCalledWith(
+      expect.objectContaining({ durationSeconds: expect.any(Number), idempotencyKey: expect.any(String) }),
+    );
+    expect(mockRecordPrayerForIntention).toHaveBeenCalledWith("intention-1");
+  });
+
+  it("shows a retry action when completion recording fails", async () => {
+    mockRecordRosaryActivity.mockRejectedValueOnce(new Error("Connection lost"));
+    const rendered = await render(<RosaryPrayerScreen />);
+    mockSession({ isRosaryCompleted: true });
+
+    await rendered.rerender(<RosaryPrayerScreen />);
+
+    expect(await screen.findByText("Connection lost")).toBeTruthy();
+    await fireEvent.press(screen.getByLabelText("Retry recording this completed Rosary"));
+    expect(await screen.findByText("Rosary recorded")).toBeTruthy();
   });
 });

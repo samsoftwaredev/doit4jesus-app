@@ -7,6 +7,7 @@ import { HeaderActionGroup, ResponsiveImage } from "@/components/ui";
 import { ArmorOfGodScreen } from "@/features/armor-of-god";
 import { LevelsProgression } from "@/features/levels";
 import { DailyLiturgyDashboard } from "@/features/liturgy/screens";
+import { UserProgressSection } from "@/features/progress";
 import { theme } from "@/theme/tokens";
 
 const battleImage = require("../../assets/tabs/battle.png");
@@ -45,6 +46,7 @@ export default function HomeScreen() {
           style={styles.dailyPracticeCard}
         />
       </View> */}
+      <UserProgressSection />
       <DailyLiturgyDashboard />
       <View style={styles.formationGrid}>
         <LevelsProgression style={styles.levelsProgression} />
