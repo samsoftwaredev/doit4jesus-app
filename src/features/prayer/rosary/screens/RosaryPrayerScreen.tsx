@@ -208,6 +208,22 @@ export function RosaryPrayerScreen({
             },
           ]}
         >
+          <View style={styles.topBar}>
+            <Pressable
+              accessibilityLabel="Go back"
+              accessibilityRole="button"
+              hitSlop={theme.spacing[2]}
+              onPress={() => router.back()}
+              style={styles.backButton}
+            >
+              <Feather
+                accessible={false}
+                color={theme.rosary.colors.goldBright}
+                name="chevron-left"
+                size={theme.sizes.iconMedium}
+              />
+            </Pressable>
+          </View>
           <View style={[styles.main, { gap: contentGap }]}>
             <View style={{ width: rosaryColumnWidth }}>
               <RosaryBeadNavigator
@@ -338,6 +354,17 @@ const styles = StyleSheet.create({
     minHeight: 0,
     paddingBottom: theme.spacing[2],
     width: "100%",
+  },
+  topBar: { alignItems: "flex-start", justifyContent: "center", minHeight: theme.sizes.touchTarget },
+  backButton: {
+    alignItems: "center",
+    backgroundColor: "rgba(230, 186, 100, 0.12)",
+    borderColor: theme.rosary.colors.goldMuted,
+    borderRadius: theme.radii.pill,
+    borderWidth: theme.rosary.borderWidths.goldHairline,
+    height: theme.sizes.touchTarget,
+    justifyContent: "center",
+    width: theme.sizes.touchTarget,
   },
   main: {
     flex: 1,

@@ -1,7 +1,7 @@
 import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { ScreenShell } from "@/components/screen-shell";
 import { Button, Card } from "@/components/ui";
@@ -30,9 +30,20 @@ export default function SettingsScreen() {
       title="Settings"
       subtitle="Shape the app around your life of prayer."
       headerAccessory={
-        <Button onPress={() => router.back()} size="sm" variant="ghost">
-          Back
-        </Button>
+        <Pressable
+          accessibilityLabel="Go back"
+          accessibilityRole="button"
+          hitSlop={theme.spacing[2]}
+          onPress={() => router.back()}
+          style={styles.headerBackButton}
+        >
+          <Feather
+            accessible={false}
+            color={theme.colors.icon.primary}
+            name="chevron-left"
+            size={theme.sizes.iconMedium}
+          />
+        </Pressable>
       }
     >
       <Card title="Prayer and reminders">
@@ -71,6 +82,12 @@ export default function SettingsScreen() {
 }
 
 const styles = StyleSheet.create({
+  headerBackButton: {
+    alignItems: "center",
+    height: theme.sizes.touchTarget,
+    justifyContent: "center",
+    width: theme.sizes.touchTarget,
+  },
   row: {
     alignItems: "flex-start",
     flexDirection: "row",

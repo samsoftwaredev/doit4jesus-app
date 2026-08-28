@@ -8,9 +8,11 @@ const goToNextBead = jest.fn();
 const goToPreviousBead = jest.fn();
 const restartMystery = jest.fn();
 const selectBead = jest.fn();
+const mockBack = jest.fn();
 const mockRecordRosaryActivity = jest.fn();
 const mockRecordPrayerForIntention = jest.fn();
 
+jest.mock("expo-router", () => ({ useRouter: () => ({ back: mockBack, replace: jest.fn() }) }));
 jest.mock("@/features/prayer/rosary/hooks/useRosarySession", () => ({
   useRosarySession: jest.fn(),
 }));
@@ -68,6 +70,13 @@ describe("RosaryPrayerScreen", () => {
     expect(screen.getByText("The Annunciation")).toBeTruthy();
     expect(screen.getByText("Luke 1:38")).toBeTruthy();
     expect(screen.getByText("HAIL MARY")).toBeTruthy();
+  });
+
+  it("provides a chevron back action for this non-tab route", async () => {
+    await render(<RosaryPrayerScreen />);
+
+    await fireEvent.press(screen.getByRole("button", { name: "Go back" }));
+    expect(mockBack).toHaveBeenCalledTimes(1);
   });
 
   it("should advance to the next bead when the progress button is pressed", async () => {

@@ -1,6 +1,7 @@
+import Feather from "@expo/vector-icons/Feather";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "expo-router";
-import { ActivityIndicator, StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import type { ViewStyle } from "react-native";
 
 import { ScreenShell } from "@/components/screen-shell";
@@ -52,9 +53,20 @@ export default function DemonsCatalogScreen() {
       title="Demons Catalog"
       subtitle="A comprehensive guide to various demons and their attributes."
       headerAccessory={
-        <Button onPress={() => router.back()} size="sm" variant="ghost">
-          Back
-        </Button>
+        <Pressable
+          accessibilityLabel="Go back"
+          accessibilityRole="button"
+          hitSlop={theme.spacing[2]}
+          onPress={() => router.back()}
+          style={styles.headerBackButton}
+        >
+          <Feather
+            accessible={false}
+            color={theme.colors.icon.primary}
+            name="chevron-left"
+            size={theme.sizes.iconMedium}
+          />
+        </Pressable>
       }
     >
       {isLoading ? (
@@ -99,6 +111,12 @@ export default function DemonsCatalogScreen() {
 }
 
 const styles = StyleSheet.create({
+  headerBackButton: {
+    alignItems: "center",
+    height: theme.sizes.touchTarget,
+    justifyContent: "center",
+    width: theme.sizes.touchTarget,
+  },
   stateContainer: {
     alignItems: "center",
     gap: theme.spacing[3],

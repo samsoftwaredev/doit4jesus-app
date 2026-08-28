@@ -1,5 +1,7 @@
+import Feather from "@expo/vector-icons/Feather";
+import { useRouter } from "expo-router";
 import type { ComponentProps } from "react";
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 import { ScreenShell } from "@/components/screen-shell";
 import { Card } from "@/components/ui";
@@ -16,8 +18,31 @@ type AuthTextInputProps = ComponentProps<typeof TextInput> & {
 };
 
 export function AuthScreen({ children, subtitle, title }: AuthScreenProps) {
+  const router = useRouter();
+
   return (
-    <ScreenShell eyebrow="WELCOME" title={title} subtitle={subtitle} contentContainerStyle={styles.content}>
+    <ScreenShell
+      contentContainerStyle={styles.content}
+      eyebrow="WELCOME"
+      headerAccessory={
+        <Pressable
+          accessibilityLabel="Go back"
+          accessibilityRole="button"
+          hitSlop={theme.spacing[2]}
+          onPress={() => router.back()}
+          style={styles.backButton}
+        >
+          <Feather
+            accessible={false}
+            color={theme.colors.icon.primary}
+            name="chevron-left"
+            size={theme.sizes.iconMedium}
+          />
+        </Pressable>
+      }
+      subtitle={subtitle}
+      title={title}
+    >
       <Card fullWidth>
         <View style={styles.form}>{children}</View>
       </Card>
@@ -51,6 +76,12 @@ export const authScreenStyles = StyleSheet.create({
 });
 
 const styles = StyleSheet.create({
+  backButton: {
+    alignItems: "center",
+    height: theme.sizes.touchTarget,
+    justifyContent: "center",
+    width: theme.sizes.touchTarget,
+  },
   content: {
     maxWidth: 480,
   },

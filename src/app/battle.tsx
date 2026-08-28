@@ -1,7 +1,8 @@
+import Feather from "@expo/vector-icons/Feather";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { ScreenShell } from "@/components/screen-shell";
 import { Button, Card, SpriteSheetAnimation } from "@/components/ui";
@@ -70,9 +71,25 @@ export default function BattleScreen() {
     <ScreenShell
       background={<BattleBackground />}
       headerAccessory={
-        <Button onPress={() => router.push("/demonsCatalog")} size="sm" variant="ghost">
-          Catalog
-        </Button>
+        <View style={styles.headerActions}>
+          <Pressable
+            accessibilityLabel="Go back"
+            accessibilityRole="button"
+            hitSlop={theme.spacing[2]}
+            onPress={() => router.back()}
+            style={styles.headerBackButton}
+          >
+            <Feather
+              accessible={false}
+              color={theme.colors.icon.primary}
+              name="chevron-left"
+              size={theme.sizes.iconMedium}
+            />
+          </Pressable>
+          <Button onPress={() => router.push("/demonsCatalog")} size="sm" variant="ghost">
+            Catalog
+          </Button>
+        </View>
       }
       subtitle="Choose a spiritual obstacle to understand its tactics and prepare a response."
       title="Arena"
@@ -174,6 +191,13 @@ function BattleBackground() {
 }
 
 const styles = StyleSheet.create({
+  headerActions: { alignItems: "center", flexDirection: "row", gap: theme.spacing[1] },
+  headerBackButton: {
+    alignItems: "center",
+    height: theme.sizes.touchTarget,
+    justifyContent: "center",
+    width: theme.sizes.touchTarget,
+  },
   wrathAnimation: {
     alignSelf: "center",
     marginVertical: theme.spacing[4],
