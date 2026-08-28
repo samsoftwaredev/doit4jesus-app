@@ -1,4 +1,8 @@
-import { fetchCurrentUserProfile, updateCurrentUserProfile } from "@/features/profile/profile.api";
+import {
+  deleteCurrentUserProfile,
+  fetchCurrentUserProfile,
+  updateCurrentUserProfile,
+} from "@/features/profile/profile.api";
 
 jest.mock("@/lib/supabase", () => ({
   getSupabaseAccessToken: jest.fn(async () => "test-access-token"),
@@ -10,11 +14,18 @@ const profilePayload = {
     cityId: "city-austin",
     cityName: "Austin",
     countryCode: "US",
+    countryName: "United States",
     createdAt: "2026-08-22T15:28:02.335433+00:00",
     displayName: "Samuel Ruiz",
     gender: "male",
     leaderboardVisibility: "public",
     preferredLanguage: "en",
+    profileSetup: {
+      complete: true,
+      completedAt: "2026-08-24T12:00:00.000Z",
+      missingFields: [],
+      nextStep: null,
+    },
     prayerMapVisibility: "aggregated",
     saintAvatarId: "a1000000-0000-4000-8000-000000000002",
     state: "Texas",
@@ -59,7 +70,7 @@ describe("current profile API", () => {
     });
   });
 
-  it("PATCHes only permitted display, gender, and saint fields", async () => {
+  it("PATCHes only supplied profile fields", async () => {
     const fetchMock = jest.fn(async () => ({
       json: async () => profilePayload,
       ok: true,
@@ -87,6 +98,21 @@ describe("current profile API", () => {
     });
     expect(result.cityName).toBe("Austin");
     expect(result.saintAvatarId).toBe("a1000000-0000-4000-8000-000000000002");
+  });
+
+  it("DELETEs the authenticated user's profile", async () => {
+    const fetchMock = jest.fn(async () => ({ ok: true }));
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+    await expect(deleteCurrentUserProfile()).resolves.toBeUndefined();
+
+    expect(fetchMock).toHaveBeenCalledWith("http://localhost:3000/api/v1/me", {
+      headers: {
+        Accept: "application/json",
+        Authorization: "Bearer test-access-token",
+      },
+      method: "DELETE",
+    });
   });
 
   it("rejects failed and malformed profile responses", async () => {
@@ -118,7 +144,7 @@ describe("current profile API", () => {
 
     process.env.EXPO_PUBLIC_API_URL = "http://localhost:3000";
     globalThis.fetch = jest.fn(async () => ({
-      json: async () => ({ data: { ...profilePayload.data, displayName: null } }),
+      json: async () => ({ data: { ...profilePayload.data, displayName: 42 } }),
       ok: true,
     })) as unknown as typeof fetch;
     await expect(fetchCurrentUserProfile()).rejects.toThrow("invalid display name");
@@ -130,5 +156,36 @@ describe("current profile API", () => {
     await expect(updateCurrentUserProfile({ displayName: "Samuel Ruiz" })).rejects.toThrow(
       "Unable to update the profile (422).",
     );
+  });
+
+  it("parses nullable onboarding fields and the server resume step", async () => {
+    globalThis.fetch = jest.fn(async () => ({
+      json: async () => ({
+        data: {
+          ...profilePayload.data,
+          cityId: null,
+          cityName: null,
+          displayName: null,
+          gender: null,
+          profileSetup: {
+            complete: false,
+            completedAt: null,
+            missingFields: ["displayName", "city"],
+            nextStep: "name",
+          },
+          title: null,
+          username: null,
+        },
+      }),
+      ok: true,
+    })) as unknown as typeof fetch;
+
+    await expect(fetchCurrentUserProfile()).resolves.toMatchObject({
+      cityId: null,
+      displayName: null,
+      profileSetup: { complete: false, nextStep: "name" },
+      title: null,
+      username: null,
+    });
   });
 });

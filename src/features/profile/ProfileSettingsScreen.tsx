@@ -2,17 +2,17 @@ import Feather from "@expo/vector-icons/Feather";
 import Constants from "expo-constants";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Alert, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
-import { Linking } from "react-native";
+import { Alert, Linking, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { APP_CONFIG } from "@/config/app-config";
 import { useAuth } from "@/features/auth";
 import {
+  deleteCurrentUserProfile,
   fetchCurrentUserProfile,
+  updateCurrentUserProfile,
   type CurrentUserProfile,
   type Gender,
-  updateCurrentUserProfile,
 } from "@/features/profile";
 import { supabase } from "@/lib/supabase";
 import { theme } from "@/theme/tokens";
@@ -28,7 +28,8 @@ const countryNames: Record<string, string> = {
 };
 
 export function formatProfileLocation(profile: CurrentUserProfile): string {
-  const country = countryNames[profile.countryCode] ?? profile.countryCode;
+  const countryCode = profile.countryCode ?? "";
+  const country = countryNames[countryCode] ?? profile.countryName ?? countryCode;
   const parts = [profile.cityName, profile.state, country].filter((value): value is string => Boolean(value?.trim()));
 
   return parts.join(", ") || "Location unavailable";
@@ -43,7 +44,9 @@ export function ProfileSettingsScreen() {
   const [profileError, setProfileError] = useState<string>();
   const [isUpdating, setIsUpdating] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const [isDeletingProfile, setIsDeletingProfile] = useState(false);
   const signOutInFlightRef = useRef(false);
+  const deleteProfileInFlightRef = useRef(false);
   const [nameEditorVisible, setNameEditorVisible] = useState(false);
   const [genderSelectorVisible, setGenderSelectorVisible] = useState(false);
   const [saintSelectorVisible, setSaintSelectorVisible] = useState(false);
@@ -94,21 +97,8 @@ export function ProfileSettingsScreen() {
     }
   };
 
-  const showSignOutConfirmation = () => {
-    if (isSigningOut) return;
-
-    Alert.alert("Sign Out?", "Are you sure you want to sign out of Do It for Jesus?", [
-      { style: "cancel", text: "Cancel" },
-      {
-        style: "destructive",
-        text: "Sign Out",
-        onPress: () => void signOut(),
-      },
-    ]);
-  };
-
   const signOut = async () => {
-    if (signOutInFlightRef.current) return;
+    if (signOutInFlightRef.current || deleteProfileInFlightRef.current) return;
     if (configurationError) {
       setToastMessage(configurationError);
       return;
@@ -127,6 +117,50 @@ export function ProfileSettingsScreen() {
       signOutInFlightRef.current = false;
       setToastMessage("Something went wrong. Please try again.");
       setIsSigningOut(false);
+    }
+  };
+
+  const showDeleteProfileConfirmation = () => {
+    if (isDeletingProfile || isSigningOut) return;
+
+    Alert.alert("Delete account?", "This permanently deletes your Do It for Jesus profile and cannot be undone.", [
+      { style: "cancel", text: "Cancel" },
+      {
+        style: "destructive",
+        text: "Delete Account",
+        onPress: () => void deleteProfile(),
+      },
+    ]);
+  };
+
+  const deleteProfile = async () => {
+    if (deleteProfileInFlightRef.current || isSigningOut) return;
+    if (configurationError) {
+      setToastMessage(configurationError);
+      return;
+    }
+
+    deleteProfileInFlightRef.current = true;
+    setIsDeletingProfile(true);
+    try {
+      await deleteCurrentUserProfile();
+    } catch {
+      deleteProfileInFlightRef.current = false;
+      setIsDeletingProfile(false);
+      setToastMessage("We couldn't delete your account. Please try again.");
+      return;
+    }
+
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (!error) return;
+
+      setToastMessage("Your account was deleted, but we couldn't sign you out. Please use Sign Out to finish.");
+    } catch {
+      setToastMessage("Your account was deleted, but we couldn't sign you out. Please use Sign Out to finish.");
+    } finally {
+      deleteProfileInFlightRef.current = false;
+      setIsDeletingProfile(false);
     }
   };
 
@@ -170,7 +204,7 @@ export function ProfileSettingsScreen() {
                 icon="user"
                 label="Name"
                 onPress={() => setNameEditorVisible(true)}
-                value={profile.displayName}
+                value={profile.displayName ?? "Not set"}
               />
               <SettingsRow
                 icon="users"
@@ -216,10 +250,18 @@ export function ProfileSettingsScreen() {
         <SettingsSection title="ACCOUNT">
           <SettingsRow
             destructive
+            icon="trash-2"
+            label="Delete Account"
+            onPress={showDeleteProfileConfirmation}
+            showChevron={!isDeletingProfile}
+            value={isDeletingProfile ? "Deleting…" : undefined}
+          />
+          <SettingsRow
+            destructive
             icon="log-out"
             isLast
             label="Sign Out"
-            onPress={showSignOutConfirmation}
+            onPress={signOut}
             showChevron={!isSigningOut}
             value={isSigningOut ? "Signing out…" : undefined}
           />
@@ -235,7 +277,7 @@ export function ProfileSettingsScreen() {
               const saved = await updateProfile({ displayName }, "Name updated");
               if (saved) setNameEditorVisible(false);
             }}
-            value={profile.displayName}
+            value={profile.displayName ?? ""}
             visible={nameEditorVisible}
           />
           <GenderSelector
@@ -245,7 +287,7 @@ export function ProfileSettingsScreen() {
               const saved = await updateProfile({ gender }, "Gender updated");
               if (saved) setGenderSelectorVisible(false);
             }}
-            selectedGender={profile.gender}
+            selectedGender={profile.gender ?? "male"}
             visible={genderSelectorVisible}
           />
           <SaintAvatarSelector

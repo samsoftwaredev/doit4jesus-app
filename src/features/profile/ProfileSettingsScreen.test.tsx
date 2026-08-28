@@ -2,12 +2,13 @@ import { act, fireEvent, render, screen, waitFor } from "@testing-library/react-
 import { Alert, Linking } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import { ProfileSettingsScreen } from "@/features/profile/ProfileSettingsScreen";
 import type { CurrentUserProfile } from "@/features/profile";
+import { ProfileSettingsScreen } from "@/features/profile/ProfileSettingsScreen";
 
 const mockPush = jest.fn();
 const mockFetchProfile = jest.fn();
 const mockUpdateProfile = jest.fn();
+const mockDeleteProfile = jest.fn();
 const mockSignOut = jest.fn();
 const safeAreaMetrics = {
   frame: { height: 844, width: 390, x: 0, y: 0 },
@@ -23,6 +24,7 @@ jest.mock("@/features/auth", () => ({
 }));
 
 jest.mock("@/features/profile", () => ({
+  deleteCurrentUserProfile: (...args: unknown[]) => mockDeleteProfile(...args),
   fetchCurrentUserProfile: (...args: unknown[]) => mockFetchProfile(...args),
   updateCurrentUserProfile: (...args: unknown[]) => mockUpdateProfile(...args),
 }));
@@ -40,11 +42,13 @@ const profile: CurrentUserProfile = {
   cityId: "city-austin",
   cityName: "Austin",
   countryCode: "US",
+  countryName: "United States",
   createdAt: "2026-08-22T15:28:02.335433+00:00",
   displayName: "Test User",
   gender: "male",
   leaderboardVisibility: "public",
   preferredLanguage: "en",
+  profileSetup: { complete: true, completedAt: "2026-08-22T15:28:02.335433+00:00", missingFields: [], nextStep: null },
   prayerMapVisibility: "aggregated",
   saintAvatarId: null,
   state: "Texas",
@@ -70,6 +74,7 @@ describe("Profile settings", () => {
     jest.clearAllMocks();
     mockFetchProfile.mockReset();
     mockUpdateProfile.mockReset();
+    mockDeleteProfile.mockResolvedValue(undefined);
     mockSignOut.mockResolvedValue({ error: null });
   });
 
@@ -84,6 +89,7 @@ describe("Profile settings", () => {
     expect(screen.getByText("Terms of Service")).toBeTruthy();
     expect(screen.getByText("App Version")).toBeTruthy();
     expect(screen.getByText("Sign Out")).toBeTruthy();
+    expect(screen.getByText("Delete Account")).toBeTruthy();
     expect(screen.queryByText("PREFERENCES")).toBeNull();
   });
 
@@ -149,25 +155,38 @@ describe("Profile settings", () => {
     openUrl.mockRestore();
   });
 
-  it("confirms before signing out and prevents duplicate requests", async () => {
-    const alert = jest.spyOn(Alert, "alert");
+  it("signs out and prevents duplicate requests", async () => {
     await renderProfile();
 
     await fireEvent.press(screen.getByText("Sign Out"));
+    await fireEvent.press(screen.getByText("Sign Out"));
+
+    expect(mockSignOut).toHaveBeenCalledTimes(1);
+  });
+
+  it("confirms before permanently deleting the profile, then signs out", async () => {
+    const alert = jest.spyOn(Alert, "alert");
+    await renderProfile();
+
+    await fireEvent.press(screen.getByText("Delete Account"));
     expect(alert).toHaveBeenCalledWith(
-      "Sign Out?",
-      "Are you sure you want to sign out of Do It for Jesus?",
+      "Delete account?",
+      "This permanently deletes your Do It for Jesus profile and cannot be undone.",
       expect.any(Array),
     );
+    expect(mockDeleteProfile).not.toHaveBeenCalled();
 
     const buttons = alert.mock.calls[0]?.[2] ?? [];
-    const confirm = buttons.find((button) => button.text === "Sign Out");
+    const confirm = buttons.find((button) => button.text === "Delete Account");
     await act(async () => {
       confirm?.onPress?.();
       confirm?.onPress?.();
     });
 
-    expect(mockSignOut).toHaveBeenCalledTimes(1);
+    await waitFor(() => {
+      expect(mockDeleteProfile).toHaveBeenCalledTimes(1);
+      expect(mockSignOut).toHaveBeenCalledTimes(1);
+    });
     alert.mockRestore();
   });
 

@@ -1,23 +1,39 @@
 export type Gender = "female" | "male";
 
+export interface ProfileSetup {
+  complete: boolean;
+  completedAt: string | null;
+  missingFields: string[];
+  nextStep: string | null;
+}
+
 export interface CurrentUserProfile {
   avatarUrl: string | null;
   cityId: string | null;
   cityName: string | null;
-  countryCode: string;
+  countryCode: string | null;
+  countryName: string | null;
   createdAt: string;
-  displayName: string;
-  gender: Gender;
+  displayName: string | null;
+  gender: Gender | null;
   leaderboardVisibility: string;
   preferredLanguage: string;
+  profileSetup: ProfileSetup;
   prayerMapVisibility: string;
   saintAvatarId: string | null;
   state: string | null;
   timezone: string;
-  title: string;
+  title: string | null;
   updatedAt: string;
   userId: string;
-  username: string;
+  username: string | null;
 }
 
-export type UpdateCurrentUserProfile = Pick<CurrentUserProfile, "displayName" | "gender" | "saintAvatarId">;
+export type UpdateCurrentUserProfile = Partial<{
+  cityId: string | null;
+  countryCode: string;
+  displayName: string;
+  gender: Gender;
+  saintAvatarId: string | null;
+  username: string;
+}>;
