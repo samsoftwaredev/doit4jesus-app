@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { LayoutChangeEvent, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import Animated, { FadeIn, useReducedMotion } from "react-native-reanimated";
 
 import { GardenDayCell } from "@/features/prayer/rosary/garden/components/GardenDayCell";
@@ -13,42 +12,71 @@ interface GardenCalendarProps {
 }
 
 const weekDays = ["S", "M", "T", "W", "T", "F", "S"];
+const daysInWeek = weekDays.length;
+const gridGap = theme.spacing[1];
+
+export function buildCalendarRows(days: RosaryGardenDay[], month: number, year: number) {
+  const firstWeekday = new Date(Date.UTC(year, month - 1, 1)).getUTCDay();
+  const cells: (RosaryGardenDay | null)[] = [...Array.from({ length: firstWeekday }, () => null), ...days];
+  const trailingCellCount = (daysInWeek - (cells.length % daysInWeek)) % daysInWeek;
+
+  cells.push(...Array.from({ length: trailingCellCount }, () => null));
+
+  return Array.from({ length: cells.length / daysInWeek }, (_, rowIndex) =>
+    cells.slice(rowIndex * daysInWeek, (rowIndex + 1) * daysInWeek),
+  );
+}
 
 export function GardenCalendar({ days, month, year }: GardenCalendarProps) {
-  const [calendarWidth, setCalendarWidth] = useState(0);
   const reduceMotion = useReducedMotion();
   const firstWeekday = new Date(Date.UTC(year, month - 1, 1)).getUTCDay();
-  const gap = theme.spacing[1];
-  const cellSize = calendarWidth ? Math.floor((calendarWidth - gap * 6) / 7) : 42;
+  const calendarRows = buildCalendarRows(days, month, year);
   const isFullBloom =
     days.filter((day) => day.isEligible).length > 0 &&
     days.filter((day) => day.isEligible).every((day) => day.completed);
-  const blanks = Array.from({ length: firstWeekday });
 
   return (
-    <View
-      accessibilityLabel="Monthly Rosary Garden calendar"
-      onLayout={(event: LayoutChangeEvent) => setCalendarWidth(event.nativeEvent.layout.width)}
-      style={[styles.card, isFullBloom && styles.fullBloom]}
-    >
+    <View accessibilityLabel="Monthly Rosary Garden calendar" style={[styles.card, isFullBloom && styles.fullBloom]}>
       {isFullBloom ? <Text style={styles.fullBloomLabel}>Garden in Full Bloom</Text> : null}
       <View accessible={false} style={styles.weekHeader}>
         {weekDays.map((day, index) => (
-          <Text key={`${day}-${index}`} style={styles.weekDay}>
-            {day}
-          </Text>
+          <View key={`${day}-${index}`} style={styles.column} testID={`garden-weekday-${index}`}>
+            <Text style={styles.weekDay}>{day}</Text>
+          </View>
         ))}
       </View>
       <Animated.View
         entering={reduceMotion ? undefined : FadeIn.duration(220)}
         key={`${year}-${month}`}
-        style={[styles.grid, { gap }]}
+        style={styles.grid}
+        testID="garden-calendar-grid"
       >
-        {blanks.map((_, index) => (
-          <View key={`blank-${index}`} style={{ height: cellSize, width: cellSize }} />
-        ))}
-        {days.map((day) => (
-          <GardenDayCell day={day} key={day.date} size={cellSize} />
+        {calendarRows.map((row, rowIndex) => (
+          <View key={`week-${rowIndex}`} style={styles.calendarRow} testID={`garden-calendar-row-${rowIndex}`}>
+            {row.map((day, columnIndex) => {
+              const cellIndex = rowIndex * daysInWeek + columnIndex;
+              const isLeadingCell = day === null && cellIndex < firstWeekday;
+
+              return (
+                <View
+                  accessible={false}
+                  key={day?.date ?? `empty-${cellIndex}`}
+                  style={[styles.column, styles.dateCell]}
+                  testID={`garden-calendar-cell-${rowIndex}-${columnIndex}`}
+                >
+                  {day ? (
+                    <GardenDayCell day={day} />
+                  ) : (
+                    <View
+                      accessible={false}
+                      style={styles.emptyCell}
+                      testID={`${isLeadingCell ? "garden-leading-empty" : "garden-trailing-empty"}-${cellIndex}`}
+                    />
+                  )}
+                </View>
+              );
+            })}
+          </View>
         ))}
       </Animated.View>
     </View>
@@ -72,7 +100,11 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing[1],
     textAlign: "center",
   },
-  weekHeader: { flexDirection: "row", marginBottom: theme.spacing[1] },
-  weekDay: { ...theme.typography.labelSmall, color: theme.colors.text.muted, flex: 1, textAlign: "center" },
-  grid: { flexDirection: "row", flexWrap: "wrap" },
+  column: { flex: 1, minWidth: 0 },
+  weekHeader: { flexDirection: "row", gap: gridGap, marginBottom: gridGap },
+  weekDay: { ...theme.typography.labelSmall, color: theme.colors.text.muted, textAlign: "center" },
+  grid: { gap: gridGap, width: "100%" },
+  calendarRow: { flexDirection: "row", gap: gridGap, width: "100%" },
+  dateCell: { aspectRatio: 1, overflow: "hidden" },
+  emptyCell: { flex: 1 },
 });

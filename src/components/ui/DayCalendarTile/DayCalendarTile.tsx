@@ -13,13 +13,13 @@ import type { DayCalendarFlower, DayCalendarTileProps, DayCalendarTileState } fr
 
 const completedFlowers: DayCalendarFlower[] = ["redRose", "pinkRose", "whiteLily", "blueFlower", "mixed"];
 
-const flowerConfig = {
-  redRose: { color: theme.colors.accent.red, image: redRose },
-  pinkRose: { color: theme.colors.accent.purpleLight, image: pinkRose },
-  whiteLily: { color: theme.colors.text.white, image: whiteLily },
-  blueFlower: { color: theme.colors.accent.blueLight, image: blueFlower },
-  mixed: { color: theme.colors.accent.amber, image: mixed },
-  mixedFlowers: { color: theme.colors.accent.amber, image: mixed },
+const flowerImages = {
+  redRose,
+  pinkRose,
+  whiteLily,
+  blueFlower,
+  mixed,
+  mixedFlowers: mixed,
 } as const;
 
 const stateAccessibilityLabels: Record<DayCalendarTileState, (day: number) => string> = {
@@ -42,7 +42,6 @@ export function DayCalendarTile({
   const isCompleted = state === "completed";
   const isUnavailable = state === "unavailable";
   const flower = flowerVariant ?? completedFlowers[Math.abs(day) % completedFlowers.length];
-  const flowerStyle = flowerConfig[flower];
 
   return (
     <View
@@ -63,38 +62,27 @@ export function DayCalendarTile({
     >
       {isCompleted ? <View style={[styles.completionAccent, { backgroundColor: stateConfig.accentColor }]} /> : null}
       <Text style={[styles.dayNumber, { color: stateConfig.accentColor }]}>{day}</Text>
-      <View style={styles.garden}>
+      <View accessible={false} pointerEvents="none" style={styles.reward} testID="day-calendar-reward">
         <View style={styles.soil} />
         {isCompleted ? (
-          flower === "mixed" || flower === "mixedFlowers" ? (
-            <View style={styles.mixedFlowers}>
-              <MaterialCommunityIcons
-                color={theme.colors.accent.red}
-                name="flower-poppy"
-                size={theme.sizes.iconSmall}
-              />
-              <MaterialCommunityIcons color={theme.colors.accent.amber} name="flower" size={theme.sizes.iconMedium} />
-              <MaterialCommunityIcons
-                color={theme.colors.accent.blueLight}
-                name="flower-tulip"
-                size={theme.sizes.iconSmall}
-              />
-            </View>
-          ) : (
-            <Image source={flowerStyle.image} style={[styles.gardenIcon, { width: 100, height: "100%" }]} />
-          )
+          <Image accessible={false} resizeMode="contain" source={flowerImages[flower]} style={styles.rewardIcon} />
         ) : (
           <MaterialCommunityIcons
             color={stateConfig.accentColor}
             name={state === "current" ? "sprout" : "sprout-outline"}
-            size={theme.sizes.iconMedium}
-            style={styles.gardenIcon}
+            size={theme.sizes.iconXs}
+            style={styles.rewardIcon}
           />
         )}
       </View>
       {isCompleted ? (
-        <View style={[styles.checkBadge, { backgroundColor: theme.colors.semantic.success }]}>
-          <MaterialCommunityIcons color={theme.colors.text.white} name="check" size={theme.sizes.iconXs} />
+        <View
+          accessible={false}
+          pointerEvents="none"
+          style={[styles.checkBadge, { backgroundColor: theme.colors.semantic.success }]}
+          testID="day-calendar-completion-check"
+        >
+          <MaterialCommunityIcons color={theme.colors.text.white} name="check" size={theme.spacing[2.5]} />
         </View>
       ) : null}
     </View>

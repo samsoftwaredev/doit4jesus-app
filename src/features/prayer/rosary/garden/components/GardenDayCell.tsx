@@ -14,10 +14,9 @@ import type { RosaryGardenDay } from "@/features/prayer/rosary/garden/types";
 
 interface GardenDayCellProps {
   day: RosaryGardenDay;
-  size: number;
 }
 
-export function GardenDayCell({ day, size }: GardenDayCellProps) {
+export function GardenDayCell({ day }: GardenDayCellProps) {
   const reduceMotion = useReducedMotion();
   const bloom = useSharedValue(day.completed ? 1 : 0.96);
 
@@ -39,20 +38,23 @@ export function GardenDayCell({ day, size }: GardenDayCellProps) {
           ? "incomplete"
           : "unavailable";
   const status = day.completed
-    ? "Rosary completed."
+    ? "completed"
     : day.isFuture
-      ? "Future date."
+      ? "future date"
       : day.isEligible
-        ? "Rosary not completed."
-        : "Not yet eligible.";
-  const dateLabel = new Intl.DateTimeFormat(undefined, { day: "numeric", month: "long", timeZone: "UTC" }).format(
-    new Date(`${day.date}T12:00:00Z`),
-  );
+        ? "not completed"
+        : "not yet eligible";
+  const dateLabel = new Intl.DateTimeFormat(undefined, {
+    day: "numeric",
+    month: "long",
+    timeZone: "UTC",
+    year: "numeric",
+  }).format(new Date(`${day.date}T12:00:00Z`));
 
   return (
-    <Animated.View style={[styles.cell, { height: size, width: size }, animatedStyle]}>
+    <Animated.View style={[styles.cell, animatedStyle]}>
       <DayCalendarTile
-        accessibilityLabel={`${dateLabel}. ${status}`}
+        accessibilityLabel={`${dateLabel}, ${status}`}
         day={day.day}
         flowerVariant={day.flowerVariant}
         state={state}
@@ -64,6 +66,6 @@ export function GardenDayCell({ day, size }: GardenDayCellProps) {
 }
 
 const styles = StyleSheet.create({
-  cell: { minWidth: 0 },
-  tile: { flex: 1, minHeight: 0, padding: theme.spacing[1] },
+  cell: { flex: 1, minHeight: 0, minWidth: 0, overflow: "hidden" },
+  tile: { flex: 1, minHeight: 0, minWidth: 0, padding: theme.spacing[1] },
 });
