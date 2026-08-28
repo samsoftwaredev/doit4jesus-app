@@ -2,6 +2,7 @@ export { Button } from "./Button";
 export type { ButtonProps, ButtonSize, ButtonVariant } from "./Button";
 export { Card } from "./Card";
 export type { CardPadding, CardProps, CardVariant } from "./Card";
+export { CountryFlagBadge } from "./CountryFlagBadge";
 export { DayCalendarTile } from "./DayCalendarTile";
 export type { DayCalendarFlower, DayCalendarTileProps, DayCalendarTileState } from "./DayCalendarTile";
 export { HeaderActionGroup, MessageAction, NotificationAction, SettingsAction } from "./HeaderActionGroup";

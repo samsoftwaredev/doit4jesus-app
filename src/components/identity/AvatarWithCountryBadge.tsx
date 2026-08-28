@@ -1,9 +1,9 @@
-import { Image } from "expo-image";
 import type { ImageProps } from "expo-image";
+import { Image } from "expo-image";
 import type { ImageStyle, StyleProp, TextStyle } from "react-native";
 import { StyleSheet, Text, View } from "react-native";
 
-import { CountryFlagBadge } from "@/components/CountryFlagBadge";
+import { CountryFlagBadge } from "@/components/ui";
 import { theme } from "@/theme/tokens";
 
 type AvatarWithCountryBadgeProps = {
