@@ -3,7 +3,13 @@ import { useCallback, useEffect, useState } from "react";
 import { AppState, StyleSheet, View } from "react-native";
 
 import { DailyLiturgyDashboard } from "@/features/liturgy/screens";
-import { fetchDashboardProgress, fetchRosaryStats, UserProgressSection } from "@/features/progress";
+import {
+  fetchDashboardProgress,
+  fetchLevels,
+  fetchRecentRosaryActivities,
+  fetchRosaryStats,
+  UserProgressSection,
+} from "@/features/progress";
 import { subscribeToRosaryCompletion } from "@/features/prayer/rosary/rosary-completion-events";
 import { theme } from "@/theme/tokens";
 
@@ -12,6 +18,7 @@ import { ConscienceQuestionCard } from "./components/ConscienceQuestionCard";
 import { DailyRosaryCard } from "./components/DailyRosaryCard";
 import { HolyProgressCard } from "./components/HolyProgressCard";
 import { LeaderboardCard } from "./components/LeaderboardCard";
+import type { LevelCatalogEntry, RecentRosaryActivity } from "@/features/progress";
 import type {
   ConscienceQuestionViewModel,
   LeaderboardEntryViewModel,
@@ -24,18 +31,22 @@ export function HolyProgressDashboard() {
   const [conscience, setConscience] = useState<ConscienceQuestionViewModel | null>(null);
   const [conscienceError, setConscienceError] = useState(false);
   const [isLoadingConscience, setIsLoadingConscience] = useState(true);
+  const [isLoadingHolyDetails, setIsLoadingHolyDetails] = useState(true);
   const [isLoadingLeaderboard, setIsLoadingLeaderboard] = useState(true);
   const [isLoadingProgress, setIsLoadingProgress] = useState(true);
   const [isLoadingReminder, setIsLoadingReminder] = useState(true);
   const [isLoadingStats, setIsLoadingStats] = useState(true);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntryViewModel[] | null>(null);
   const [leaderboardError, setLeaderboardError] = useState(false);
+  const [levelCatalog, setLevelCatalog] = useState<LevelCatalogEntry[] | null>(null);
   const [progress, setProgress] = useState<Awaited<ReturnType<typeof fetchDashboardProgress>> | null>(null);
   const [progressError, setProgressError] = useState(false);
   const [reminder, setReminder] = useState<RosaryReminderViewModel | null>(null);
   const [reminderError, setReminderError] = useState(false);
+  const [recentRosaryActivities, setRecentRosaryActivities] = useState<RecentRosaryActivity[] | null>(null);
   const [rosaryStats, setRosaryStats] = useState<Awaited<ReturnType<typeof fetchRosaryStats>> | null>(null);
   const [statsError, setStatsError] = useState(false);
+  const [holyDetailsError, setHolyDetailsError] = useState(false);
 
   const loadProgress = useCallback(async () => {
     setIsLoadingProgress(true);
@@ -61,6 +72,29 @@ export function HolyProgressDashboard() {
     } finally {
       setIsLoadingStats(false);
     }
+  }, []);
+
+  const loadHolyDetails = useCallback(async () => {
+    setIsLoadingHolyDetails(true);
+    setHolyDetailsError(false);
+
+    const [levels, activities] = await Promise.allSettled([fetchLevels(), fetchRecentRosaryActivities()]);
+
+    if (levels.status === "fulfilled") {
+      setLevelCatalog(levels.value);
+    } else {
+      setLevelCatalog(null);
+    }
+
+    if (activities.status === "fulfilled") {
+      setRecentRosaryActivities(activities.value);
+    } else {
+      setRecentRosaryActivities(null);
+    }
+
+    // A failed activity request must not be presented as an empty Rosary history.
+    setHolyDetailsError(activities.status === "rejected");
+    setIsLoadingHolyDetails(false);
   }, []);
 
   const loadConscience = useCallback(async () => {
@@ -105,10 +139,11 @@ export function HolyProgressDashboard() {
   const refreshAll = useCallback(() => {
     void loadProgress();
     void loadStats();
+    void loadHolyDetails();
     void loadConscience();
     void loadReminder();
     void loadLeaderboard();
-  }, [loadConscience, loadLeaderboard, loadProgress, loadReminder, loadStats]);
+  }, [loadConscience, loadHolyDetails, loadLeaderboard, loadProgress, loadReminder, loadStats]);
 
   useFocusEffect(
     useCallback(() => {
@@ -120,9 +155,10 @@ export function HolyProgressDashboard() {
     return subscribeToRosaryCompletion(() => {
       void loadProgress();
       void loadStats();
+      void loadHolyDetails();
       void loadReminder();
     });
-  }, [loadProgress, loadReminder, loadStats]);
+  }, [loadHolyDetails, loadProgress, loadReminder, loadStats]);
 
   useEffect(() => {
     const subscription = AppState.addEventListener("change", (state) => {
@@ -134,10 +170,14 @@ export function HolyProgressDashboard() {
   return (
     <View accessibilityLabel="Holy Progress Dashboard" style={styles.dashboard}>
       <HolyProgressCard
+        detailsError={holyDetailsError}
+        isLoadingDetails={isLoadingHolyDetails}
         isLoadingProgress={isLoadingProgress}
         isLoadingStats={isLoadingStats}
+        levelCatalog={levelCatalog}
         progress={progress}
         progressError={progressError}
+        recentRosaryActivities={recentRosaryActivities}
         rosaryStats={rosaryStats}
         statsError={statsError}
       />

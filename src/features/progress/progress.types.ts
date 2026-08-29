@@ -5,10 +5,39 @@ export interface UserRosaryStats {
 /** Minimal progress model used by the Home dashboard. */
 export interface DashboardProgress {
   currentLevel: {
+    code: string | null;
     levelNumber: number;
+    minimumTotalXp: number | null;
     name: string | null;
   } | null;
+  levelProgressPercentage: number | null;
   lifetimePoints: number;
+  nextLevel: {
+    code: string | null;
+    levelNumber: number;
+    minimumTotalXp: number | null;
+    name: string | null;
+  } | null;
+  totalXp: number | null;
+  weeklyPoints: number | null;
+  xpIntoCurrentLevel: number | null;
+  xpRequiredForNextLevel: number | null;
+  yearlyPoints: number | null;
+}
+
+/** Display fields from the authenticated level catalogue. */
+export interface LevelCatalogEntry {
+  levelNumber: number;
+  minimumTotalXp: number;
+  name: string;
+}
+
+/** A completed Rosary from the authenticated activity history. */
+export interface RecentRosaryActivity {
+  completedAt: string | null;
+  id: string;
+  occurredAt: string;
+  quantity: number;
 }
 
 export interface ProgressLevel {

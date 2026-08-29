@@ -1,6 +1,14 @@
 import { getSupabaseAccessToken } from "@/lib/supabase";
 
-import type { DashboardProgress, EarnedBadge, ProgressLevel, UserProgress, UserRosaryStats } from "./progress.types";
+import type {
+  DashboardProgress,
+  EarnedBadge,
+  LevelCatalogEntry,
+  ProgressLevel,
+  RecentRosaryActivity,
+  UserProgress,
+  UserRosaryStats,
+} from "./progress.types";
 
 type BadgeDefinition = {
   code: string;
@@ -38,6 +46,10 @@ function readNumber(value: unknown, field: string): number {
   }
 
   return value;
+}
+
+function readOptionalNumber(value: unknown, field: string): number | null {
+  return value === undefined || value === null ? null : readNumber(value, field);
 }
 
 function readRecord(value: unknown, field: string): Record<string, unknown> {
@@ -84,8 +96,33 @@ function parseDashboardProgressLevel(value: unknown): DashboardProgress["current
 
   const level = readRecord(value, "current level");
   return {
+    code: readOptionalNullableString(level.code, "current level code"),
     levelNumber: readNumber(level.level_number, "current level number"),
+    minimumTotalXp: readOptionalNumber(level.minimum_total_xp, "current level minimum XP"),
     name: readOptionalNullableString(level.name, "current level name"),
+  };
+}
+
+function parseLevelCatalogEntry(value: unknown): LevelCatalogEntry {
+  const level = readRecord(value, "level");
+  return {
+    levelNumber: readNumber(level.level_number, "level number"),
+    minimumTotalXp: readNumber(level.minimum_total_xp, "level minimum XP"),
+    name: readString(level.name, "level name"),
+  };
+}
+
+function parseRecentRosaryActivity(value: unknown): RecentRosaryActivity {
+  const activity = readRecord(value, "Rosary activity");
+  if (readString(activity.activity_code, "activity code") !== "ROSARY") {
+    throw new Error("The progress endpoint returned a non-Rosary activity.");
+  }
+
+  return {
+    completedAt: readOptionalNullableString(activity.completed_at, "Rosary completion date"),
+    id: readString(activity.id, "Rosary activity ID"),
+    occurredAt: readString(activity.occurred_at, "Rosary activity date"),
+    quantity: readNumber(activity.quantity, "Rosary activity quantity"),
   };
 }
 
@@ -171,8 +208,25 @@ export async function fetchDashboardProgress(): Promise<DashboardProgress> {
 
   return {
     currentLevel: parseDashboardProgressLevel(data.currentLevel),
+    levelProgressPercentage: readOptionalNumber(data.levelProgressPercentage, "level progress percentage"),
     lifetimePoints: readNumber(data.lifetimePoints, "lifetime points"),
+    nextLevel: parseDashboardProgressLevel(data.nextLevel),
+    totalXp: readOptionalNumber(data.totalXp, "total XP"),
+    weeklyPoints: readOptionalNumber(data.weeklyPoints, "weekly points"),
+    xpIntoCurrentLevel: readOptionalNumber(data.xpIntoCurrentLevel, "XP into current level"),
+    xpRequiredForNextLevel: readOptionalNumber(data.xpRequiredForNextLevel, "XP required for next level"),
+    yearlyPoints: readOptionalNumber(data.yearlyPoints, "yearly points"),
   };
+}
+
+export async function fetchLevels(): Promise<LevelCatalogEntry[]> {
+  const data = readData(await requestProgress("/api/v1/levels"));
+  return readArray(data, "levels").map(parseLevelCatalogEntry);
+}
+
+export async function fetchRecentRosaryActivities(): Promise<RecentRosaryActivity[]> {
+  const data = readData(await requestProgress("/api/v1/activities?limit=20&activityCode=ROSARY"));
+  return readArray(data, "Rosary activities").map(parseRecentRosaryActivity);
 }
 
 function toEarnedBadges(badges: UserBadgeResponse[]): EarnedBadge[] {

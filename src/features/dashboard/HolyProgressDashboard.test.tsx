@@ -6,6 +6,8 @@ import { HolyProgressDashboard } from "./HolyProgressDashboard";
 
 const mockPush = jest.fn();
 const mockFetchDashboardProgress = jest.fn();
+const mockFetchLevels = jest.fn();
+const mockFetchRecentRosaryActivities = jest.fn();
 const mockFetchRosaryStats = jest.fn();
 const mockGetConscienceQuestion = jest.fn();
 const mockGetRosaryReminder = jest.fn();
@@ -24,6 +26,8 @@ jest.mock("@/features/progress", () => ({
     const { Text } = jest.requireActual<typeof import("react-native")>("react-native");
     return {
       fetchDashboardProgress: (...args: unknown[]) => mockFetchDashboardProgress(...args),
+      fetchLevels: (...args: unknown[]) => mockFetchLevels(...args),
+      fetchRecentRosaryActivities: (...args: unknown[]) => mockFetchRecentRosaryActivities(...args),
       fetchRosaryStats: (...args: unknown[]) => mockFetchRosaryStats(...args),
       UserProgressSection: () => <Text>Existing User Progress</Text>,
     };
@@ -45,9 +49,25 @@ describe("HolyProgressDashboard", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockFetchDashboardProgress.mockResolvedValue({
-      currentLevel: { levelNumber: 3, name: "Disciple" },
+      currentLevel: { code: "devoted", levelNumber: 3, minimumTotalXp: 3000, name: "Devoted" },
+      levelProgressPercentage: 44,
       lifetimePoints: 4320,
+      nextLevel: { code: "faithful", levelNumber: 4, minimumTotalXp: 6000, name: "Faithful" },
+      totalXp: 4320,
+      weeklyPoints: 210,
+      xpIntoCurrentLevel: 1320,
+      xpRequiredForNextLevel: 3000,
+      yearlyPoints: 4320,
     });
+    mockFetchLevels.mockResolvedValue([{ levelNumber: 4, minimumTotalXp: 6000, name: "Faithful" }]);
+    mockFetchRecentRosaryActivities.mockResolvedValue([
+      {
+        completedAt: "2026-08-29T15:25:00.000Z",
+        id: "activity-1",
+        occurredAt: "2026-08-29T15:00:00.000Z",
+        quantity: 1,
+      },
+    ]);
     mockFetchRosaryStats.mockResolvedValue({ rosariesPrayed: 86 });
     mockGetConscienceQuestion.mockResolvedValue({
       id: "conscience-1",
@@ -79,6 +99,8 @@ describe("HolyProgressDashboard", () => {
 
     await waitFor(() => {
       expect(mockFetchDashboardProgress).toHaveBeenCalledTimes(2);
+      expect(mockFetchLevels).toHaveBeenCalledTimes(2);
+      expect(mockFetchRecentRosaryActivities).toHaveBeenCalledTimes(2);
       expect(mockFetchRosaryStats).toHaveBeenCalledTimes(2);
       expect(mockGetRosaryReminder).toHaveBeenCalledTimes(2);
     });

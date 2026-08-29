@@ -1,4 +1,11 @@
-import { fetchDashboardProgress, fetchEarnedBadges, fetchRosaryStats, fetchUserProgress } from "./progress.api";
+import {
+  fetchDashboardProgress,
+  fetchEarnedBadges,
+  fetchLevels,
+  fetchRecentRosaryActivities,
+  fetchRosaryStats,
+  fetchUserProgress,
+} from "./progress.api";
 
 jest.mock("@/lib/supabase", () => ({
   getSupabaseAccessToken: jest.fn(async () => "test-token"),
@@ -73,7 +80,71 @@ describe("progress API", () => {
       ok: true,
     })) as unknown as typeof fetch;
 
-    await expect(fetchDashboardProgress()).resolves.toEqual({ currentLevel: null, lifetimePoints: 4320 });
+    await expect(fetchDashboardProgress()).resolves.toEqual({
+      currentLevel: null,
+      levelProgressPercentage: null,
+      lifetimePoints: 4320,
+      nextLevel: null,
+      totalXp: null,
+      weeklyPoints: null,
+      xpIntoCurrentLevel: null,
+      xpRequiredForNextLevel: null,
+      yearlyPoints: null,
+    });
+  });
+
+  it("loads the authenticated level catalogue used for the next-level goal", async () => {
+    const fetchMock = jest.fn(async () => ({
+      json: async () => ({
+        data: [
+          {
+            code: "faithful",
+            level_number: 4,
+            minimum_total_xp: 6000,
+            name: "Faithful",
+          },
+        ],
+      }),
+      ok: true,
+    }));
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+    await expect(fetchLevels()).resolves.toEqual([{ levelNumber: 4, minimumTotalXp: 6000, name: "Faithful" }]);
+    expect(fetchMock).toHaveBeenCalledWith("https://api.example.test/api/v1/levels", {
+      headers: { Accept: "application/json", Authorization: "Bearer test-token" },
+      method: "GET",
+    });
+  });
+
+  it("loads authenticated Rosary activity records without treating the page size as a total", async () => {
+    const fetchMock = jest.fn(async () => ({
+      json: async () => ({
+        data: [
+          {
+            activity_code: "ROSARY",
+            completed_at: "2026-08-29T15:25:00.000Z",
+            id: "activity-uuid",
+            occurred_at: "2026-08-29T15:00:00.000Z",
+            quantity: 1,
+          },
+        ],
+      }),
+      ok: true,
+    }));
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+    await expect(fetchRecentRosaryActivities()).resolves.toEqual([
+      {
+        completedAt: "2026-08-29T15:25:00.000Z",
+        id: "activity-uuid",
+        occurredAt: "2026-08-29T15:00:00.000Z",
+        quantity: 1,
+      },
+    ]);
+    expect(fetchMock).toHaveBeenCalledWith("https://api.example.test/api/v1/activities?limit=20&activityCode=ROSARY", {
+      headers: { Accept: "application/json", Authorization: "Bearer test-token" },
+      method: "GET",
+    });
   });
 
   it("supports nullable optional progress fields", async () => {
