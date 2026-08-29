@@ -2,6 +2,15 @@ export interface UserRosaryStats {
   rosariesPrayed: number;
 }
 
+/** Minimal progress model used by the Home dashboard. */
+export interface DashboardProgress {
+  currentLevel: {
+    levelNumber: number;
+    name: string | null;
+  } | null;
+  lifetimePoints: number;
+}
+
 export interface ProgressLevel {
   code: string;
   levelNumber: number;

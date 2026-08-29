@@ -1,6 +1,6 @@
 import { getSupabaseAccessToken } from "@/lib/supabase";
 
-import type { EarnedBadge, ProgressLevel, UserProgress, UserRosaryStats } from "./progress.types";
+import type { DashboardProgress, EarnedBadge, ProgressLevel, UserProgress, UserRosaryStats } from "./progress.types";
 
 type BadgeDefinition = {
   code: string;
@@ -79,6 +79,16 @@ function parseProgressLevel(value: unknown, field: string): ProgressLevel {
   };
 }
 
+function parseDashboardProgressLevel(value: unknown): DashboardProgress["currentLevel"] {
+  if (value === null || value === undefined) return null;
+
+  const level = readRecord(value, "current level");
+  return {
+    levelNumber: readNumber(level.level_number, "current level number"),
+    name: readOptionalNullableString(level.name, "current level name"),
+  };
+}
+
 function parseBadgeDefinition(value: unknown): BadgeDefinition {
   const definition = readRecord(value, "badge definition");
 
@@ -153,6 +163,15 @@ export async function fetchUserProgress(): Promise<UserProgress> {
     xpIntoCurrentLevel: readNumber(data.xpIntoCurrentLevel, "XP into current level"),
     xpRequiredForNextLevel: readNumber(data.xpRequiredForNextLevel, "XP required for next level"),
     yearlyPoints: readNumber(data.yearlyPoints, "yearly points"),
+  };
+}
+
+export async function fetchDashboardProgress(): Promise<DashboardProgress> {
+  const data = readData(await requestProgress("/api/v1/progress"));
+
+  return {
+    currentLevel: parseDashboardProgressLevel(data.currentLevel),
+    lifetimePoints: readNumber(data.lifetimePoints, "lifetime points"),
   };
 }
 

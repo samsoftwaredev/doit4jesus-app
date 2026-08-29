@@ -7,9 +7,12 @@ import { theme } from "@/theme/tokens";
 
 import { liturgicalTheme } from "../liturgicalTheme";
 import type { DailyLiturgyViewModel } from "../liturgy.types";
+import { DailyMassHeader } from "./DailyMassHeader";
 
 interface CelebrationHeroCardProps {
   celebration: DailyLiturgyViewModel["celebration"];
+  date: string;
+  onCalendarPress?: () => void;
 }
 
 function displaySeason(season: string) {
@@ -20,7 +23,7 @@ function displayGrade(grade: string) {
   return grade.replaceAll("_", " ");
 }
 
-export function CelebrationHeroCard({ celebration }: CelebrationHeroCardProps) {
+export function CelebrationHeroCard({ celebration, date, onCalendarPress }: CelebrationHeroCardProps) {
   const colors = liturgicalTheme[celebration.liturgicalColor];
 
   return (
@@ -36,6 +39,7 @@ export function CelebrationHeroCard({ celebration }: CelebrationHeroCardProps) {
         style={styles.gradient}
       />
       <View pointerEvents="none" style={[styles.glow, { backgroundColor: colors.glow }]} />
+      <DailyMassHeader date={date} onCalendarPress={onCalendarPress} />
       <View style={styles.copy}>
         <View style={styles.seasonRow}>
           <View style={[styles.accentLine, { backgroundColor: colors.accent }]} />

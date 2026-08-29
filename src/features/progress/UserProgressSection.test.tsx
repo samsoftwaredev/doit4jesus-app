@@ -59,8 +59,6 @@ describe("UserProgressSection", () => {
 
     expect(await screen.findByLabelText("STREAK, 14 days")).toBeTruthy();
     expect(screen.getByLabelText("LONGEST STREAK, 27 days")).toBeTruthy();
-    expect(screen.getByLabelText("ROSARIES PRAYED, 25 rosaries")).toBeTruthy();
-    expect(screen.getByLabelText("POINTS EARNED, 4,320 points")).toBeTruthy();
   });
 
   it("navigates to the Rosary creation flow from the whole CTA", async () => {

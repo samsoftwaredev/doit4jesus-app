@@ -1,5 +1,11 @@
 import { recordRosaryActivity } from "./activities.api";
 
+const mockNotifyRosaryCompletion = jest.fn();
+
+jest.mock("../rosary-completion-events", () => ({
+  notifyRosaryCompletionRecorded: () => mockNotifyRosaryCompletion(),
+}));
+
 jest.mock("@/lib/supabase", () => ({
   getSupabaseAccessToken: jest.fn(async () => "test-access-token"),
 }));
@@ -39,5 +45,6 @@ describe("Rosary activity API", () => {
       occurredAt: "2026-08-26T19:00:00-05:00",
       quantity: 1,
     });
+    expect(mockNotifyRosaryCompletion).toHaveBeenCalledTimes(1);
   });
 });

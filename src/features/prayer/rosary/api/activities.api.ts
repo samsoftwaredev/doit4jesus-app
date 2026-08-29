@@ -1,5 +1,7 @@
 import { getSupabaseAccessToken } from "@/lib/supabase";
 
+import { notifyRosaryCompletionRecorded } from "../rosary-completion-events";
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
@@ -45,10 +47,12 @@ export async function recordRosaryActivity(input: {
   }
 
   const xp = payload.data.xp;
-  return {
+  const result = {
     currentLevel: typeof xp.currentLevel === "number" ? xp.currentLevel : 0,
     points: typeof xp.points === "number" ? xp.points : 0,
     replayed: payload.data.replayed === true,
     totalXp: typeof xp.totalXp === "number" ? xp.totalXp : 0,
   };
+  notifyRosaryCompletionRecorded();
+  return result;
 }

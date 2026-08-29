@@ -20,9 +20,6 @@ function formatDate(date: string) {
 export function DailyMassHeader({ date, onCalendarPress }: DailyMassHeaderProps) {
   return (
     <View accessibilityRole="header" style={styles.card}>
-      <View accessible={false} style={styles.crossCircle}>
-        <MaterialCommunityIcons color={theme.colors.gold.pale} name="cross" size={21} />
-      </View>
       <View style={styles.copy}>
         <Text style={styles.title}>Daily Mass</Text>
         <Text style={styles.date}>{formatDate(date)}</Text>
@@ -59,6 +56,7 @@ const styles = StyleSheet.create({
     borderWidth: theme.borderWidths.thin,
     flexDirection: "row",
     padding: theme.spacing[3],
+    marginBottom: theme.spacing[3],
   },
   copy: {
     flex: 1,

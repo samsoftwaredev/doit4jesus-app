@@ -115,27 +115,6 @@ export function UserProgressSection() {
             suffix="days"
             value={formatNumber(stats.longestStreak)}
           />
-          <ProgressStatCard
-            icon={<Image accessible={false} contentFit="contain" source={rosaryIcon} style={styles.rosaryStatIcon} />}
-            label="ROSARIES PRAYED"
-            style={{ width: cardWidth }}
-            suffix="rosaries"
-            value={formatNumber(stats.rosariesPrayed)}
-          />
-          <ProgressStatCard
-            icon={
-              <MaterialCommunityIcons
-                accessible={false}
-                color={theme.rosary.colors.gold}
-                name="trophy"
-                size={theme.sizes.iconLarge}
-              />
-            }
-            label="POINTS EARNED"
-            style={{ width: cardWidth }}
-            suffix="points"
-            value={formatNumber(stats.lifetimePoints)}
-          />
         </View>
       ) : (
         <ProgressLoadError message="We couldn't load your progress." onRetry={loadProgress} />

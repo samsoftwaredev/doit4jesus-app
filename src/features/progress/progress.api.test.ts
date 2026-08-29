@@ -1,4 +1,4 @@
-import { fetchEarnedBadges, fetchRosaryStats, fetchUserProgress } from "./progress.api";
+import { fetchDashboardProgress, fetchEarnedBadges, fetchRosaryStats, fetchUserProgress } from "./progress.api";
 
 jest.mock("@/lib/supabase", () => ({
   getSupabaseAccessToken: jest.fn(async () => "test-token"),
@@ -65,6 +65,15 @@ describe("progress API", () => {
       lifetimePoints: 4320,
       nextLevel: { levelNumber: 4, name: "Witness" },
     });
+  });
+
+  it("maps only the dashboard progress fields and safely accepts a missing current level", async () => {
+    globalThis.fetch = jest.fn(async () => ({
+      json: async () => ({ data: { currentLevel: null, lifetimePoints: 4320 } }),
+      ok: true,
+    })) as unknown as typeof fetch;
+
+    await expect(fetchDashboardProgress()).resolves.toEqual({ currentLevel: null, lifetimePoints: 4320 });
   });
 
   it("supports nullable optional progress fields", async () => {

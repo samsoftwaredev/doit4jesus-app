@@ -5,13 +5,7 @@ import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { Button } from "@/components/ui";
 import { theme } from "@/theme/tokens";
 
-import {
-  CelebrationHeroCard,
-  CompletionToast,
-  DailyMassHeader,
-  DailyVerseCard,
-  ScriptureReadingsCard,
-} from "../components";
+import { CelebrationHeroCard, CompletionToast, DailyVerseCard, ScriptureReadingsCard } from "../components";
 import {
   fetchLiturgyReadings,
   loadDailyReadingProgress,
@@ -223,7 +217,6 @@ export function DailyLiturgyDashboard({ country = "US", onCalendarPress }: Daily
       ) : null}
       {liturgy ? (
         <View style={styles.content}>
-          <DailyMassHeader date={liturgy.date} onCalendarPress={onCalendarPress} />
           <CompletionToast
             count={completionToast?.count ?? 0}
             currentLevel={completionToast?.currentLevel}
@@ -232,7 +225,11 @@ export function DailyLiturgyDashboard({ country = "US", onCalendarPress }: Daily
             visible={completionToast !== null}
             onDismiss={() => setCompletionToast(null)}
           />
-          <CelebrationHeroCard celebration={liturgy.celebration} />
+          <CelebrationHeroCard
+            celebration={liturgy.celebration}
+            date={liturgy.date}
+            onCalendarPress={onCalendarPress}
+          />
           <ScriptureReadingsCard
             completedReadingIds={progress?.completedReadingIds ?? []}
             readings={liturgy.readings}
