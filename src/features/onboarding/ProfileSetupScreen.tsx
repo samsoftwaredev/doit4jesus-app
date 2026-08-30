@@ -9,9 +9,10 @@ import { ProfileApiError, updateCurrentUserProfile } from "@/features/profile/pr
 import type { CurrentUserProfile, UpdateCurrentUserProfile } from "@/features/profile/profile.types";
 import { theme } from "@/theme/tokens";
 
-import { CityAutocomplete } from "./CityAutocomplete";
 import type { CitySelection } from "./CityAutocomplete";
+import { CityAutocomplete } from "./CityAutocomplete";
 import { CountrySelector } from "./CountrySelector";
+import { validateFullName } from "./name-validation";
 import {
   completeOnboarding,
   getNotificationPreferences,
@@ -198,6 +199,9 @@ export function ProfileSetupScreen() {
 
   if (!profile) return null;
 
+  const nameValidation = validateFullName(form.displayName);
+  const showNameValidation = Boolean(form.displayName.trim()) && !nameValidation.valid;
+
   const syncProfile = (updatedProfile: CurrentUserProfile, clearCity = false) => {
     replaceProfile(updatedProfile);
     setForm((current) => ({
@@ -259,11 +263,11 @@ export function ProfileSetupScreen() {
 
     switch (step) {
       case 1: {
-        const displayName = form.displayName.trim();
-        if (!displayName || displayName.length > 80) {
-          setError("Enter your name.");
+        if (!nameValidation.valid) {
+          setError(nameValidation.message);
           return;
         }
+        const displayName = nameValidation.normalizedName;
         if (displayName === profile.displayName) {
           advance(2);
           return;
@@ -352,9 +356,14 @@ export function ProfileSetupScreen() {
   const enterMission = async () => {
     if (completionInFlightRef.current) return;
     const preferences = form.notificationPreferences;
-    const displayName = form.displayName.trim();
+    const finalNameValidation = validateFullName(form.displayName);
     const username = form.username.trim();
-    if (!displayName || !username || !form.gender || !form.countryCode || !form.cityId || !preferences) {
+    if (!finalNameValidation.valid) {
+      setError(finalNameValidation.message);
+      return;
+    }
+    const displayName = finalNameValidation.normalizedName;
+    if (!username || !form.gender || !form.countryCode || !form.cityId || !preferences) {
       setError("Review your setup answers before entering the mission.");
       return;
     }
@@ -418,20 +427,22 @@ export function ProfileSetupScreen() {
           {...shared}
           description="We’ll use this for formal communications."
           icon="account-outline"
-          nextDisabled={!form.displayName.trim()}
-          title="What’s your name?"
+          nextDisabled={!nameValidation.valid}
+          title="What’s your first and last name?"
         >
           <ProfileSetupTextField
             accessibilityLabel="Display Name"
             autoCapitalize="words"
-            helper="e.g. John Bosco"
-            label="Display Name"
+            helper="Enter your first and last name, separated by a space. No numbers."
+            invalid={showNameValidation}
+            label="First and last name"
             maxLength={80}
             onChangeText={(displayName) => {
               setError(null);
               setForm((current) => ({ ...current, displayName }));
             }}
-            placeholder="Your name"
+            placeholder="e.g. John Bosco"
+            validationMessage={showNameValidation ? nameValidation.message : undefined}
             value={form.displayName}
           />
         </ProfileSetupLayout>
@@ -489,7 +500,7 @@ export function ProfileSetupScreen() {
       return (
         <ProfileSetupLayout
           {...shared}
-          description="This will personalize your experience."
+          description="This will personalize your experience and challenges."
           icon="shield-crown-outline"
           nextDisabled={!form.gender}
           title="Who do you identify as?"
@@ -655,14 +666,30 @@ export function ProfileSetupScreen() {
 
 function ProfileSetupTextField({
   helper,
+  invalid = false,
   label,
+  validationMessage,
   ...props
-}: React.ComponentProps<typeof TextInput> & { helper: string; label: string }) {
+}: React.ComponentProps<typeof TextInput> & {
+  helper: string;
+  invalid?: boolean;
+  label: string;
+  validationMessage?: string;
+}) {
   return (
     <View style={styles.field}>
       <Text style={styles.fieldLabel}>{label}</Text>
-      <TextInput placeholderTextColor={theme.colors.text.subtle} style={styles.textInput} {...props} />
+      <TextInput
+        placeholderTextColor={theme.colors.text.subtle}
+        style={[styles.textInput, invalid && styles.textInputInvalid]}
+        {...props}
+      />
       <Text style={styles.helper}>{helper}</Text>
+      {validationMessage ? (
+        <Text accessibilityLiveRegion="polite" accessibilityRole="alert" style={styles.fieldValidationMessage}>
+          {validationMessage}
+        </Text>
+      ) : null}
     </View>
   );
 }
@@ -789,6 +816,7 @@ const styles = StyleSheet.create({
   feedbackText: { ...theme.typography.bodySmall, flex: 1 },
   field: { gap: theme.spacing[1.5] },
   fieldLabel: { ...theme.typography.label, color: theme.colors.text.secondary },
+  fieldValidationMessage: { ...theme.typography.bodySmall, color: theme.colors.text.danger },
   genderIcon: {
     alignItems: "center",
     backgroundColor: theme.colors.background.deep,
@@ -878,5 +906,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing[3],
     paddingVertical: theme.spacing[2],
   },
+  textInputInvalid: { borderColor: theme.colors.semantic.danger },
   usernameFeedback: { alignItems: "center", flexDirection: "row", gap: theme.spacing[2] },
 });

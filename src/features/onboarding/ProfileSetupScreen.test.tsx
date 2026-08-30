@@ -148,7 +148,7 @@ describe("required profile setup", () => {
     expect(screen.getByLabelText("Country, United States")).toBeTruthy();
   });
 
-  it("trims surrounding display-name whitespace and uses the normalized PATCH response", async () => {
+  it("requires first and last names, explains invalid input, and saves a normalized name", async () => {
     const incomplete = {
       ...baseProfile,
       cityId: null,
@@ -177,10 +177,17 @@ describe("required profile setup", () => {
     });
     await renderSetup(incomplete);
 
+    await fireEvent.changeText(screen.getByLabelText("Display Name"), "Samuel3 Ruiz");
+    expect(await screen.findByText("Your name cannot contain numbers.")).toBeTruthy();
+    expect(screen.getByTestId("profile-setup-next").props.accessibilityState.disabled).toBe(true);
+
+    await fireEvent.changeText(screen.getByLabelText("Display Name"), "Samuel");
+    expect(await screen.findByText("Enter both your first and last name, separated by a space.")).toBeTruthy();
+
     await fireEvent.changeText(screen.getByLabelText("Display Name"), "  Samuel   Ruiz  ");
     await fireEvent.press(screen.getByTestId("profile-setup-next"));
 
-    await waitFor(() => expect(mockUpdateProfile).toHaveBeenCalledWith({ displayName: "Samuel   Ruiz" }));
+    await waitFor(() => expect(mockUpdateProfile).toHaveBeenCalledWith({ displayName: "Samuel Ruiz" }));
     expect(await screen.findByText("Choose your username")).toBeTruthy();
   });
 
