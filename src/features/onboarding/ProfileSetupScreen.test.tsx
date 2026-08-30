@@ -6,6 +6,7 @@ import type { CurrentUserProfile } from "@/features/profile/profile.types";
 import { ProfileSetupScreen } from "./ProfileSetupScreen";
 
 const mockCompleteOnboarding = jest.fn();
+const mockGetCities = jest.fn();
 const mockGetCountries = jest.fn();
 const mockGetNotificationPreferences = jest.fn();
 const mockReplaceNotificationPreferences = jest.fn();
@@ -48,7 +49,7 @@ jest.mock("./onboarding.api", () => {
   return {
     ...actual,
     completeOnboarding: (...args: unknown[]) => mockCompleteOnboarding(...args),
-    getCities: jest.fn(),
+    getCities: (...args: unknown[]) => mockGetCities(...args),
     getCountries: (...args: unknown[]) => mockGetCountries(...args),
     getNotificationPreferences: (...args: unknown[]) => mockGetNotificationPreferences(...args),
     updateNotificationPreferences: (...args: unknown[]) => mockUpdateNotificationPreferences(...args),
@@ -114,6 +115,10 @@ describe("required profile setup", () => {
     mockCurrentPreferences = null;
     mockGetCountries.mockResolvedValue({
       countries: [],
+      meta: { hasMore: false, limit: 20, nextOffset: null, offset: 0 },
+    });
+    mockGetCities.mockResolvedValue({
+      cities: [],
       meta: { hasMore: false, limit: 20, nextOffset: null, offset: 0 },
     });
     mockGetNotificationPreferences.mockResolvedValue(preferences);
@@ -237,6 +242,7 @@ describe("required profile setup", () => {
     });
 
     await fireEvent.press(screen.getByLabelText("Country, United States"));
+    await fireEvent.changeText(screen.getByLabelText("Search countries"), "Mexico");
     expect(await screen.findByLabelText("Mexico")).toBeTruthy();
     await fireEvent.press(screen.getByLabelText("Mexico"));
     await fireEvent.press(screen.getByTestId("profile-setup-next"));
@@ -244,6 +250,32 @@ describe("required profile setup", () => {
     await waitFor(() => expect(mockUpdateProfile).toHaveBeenCalledWith({ countryCode: "MX" }));
     expect(await screen.findByText("Which city are you in?")).toBeTruthy();
     expect(screen.getByLabelText("City").props.value).toBe("");
+  });
+
+  it("allows a user to continue when their city search has no matches", async () => {
+    jest.useFakeTimers();
+    await renderSetup({
+      ...baseProfile,
+      cityId: null,
+      cityName: null,
+      profileSetup: { complete: false, completedAt: null, missingFields: ["city"], nextStep: "city" },
+      state: null,
+    });
+
+    await fireEvent.changeText(screen.getByLabelText("City"), "Nowhere");
+    await act(async () => {
+      jest.advanceTimersByTime(400);
+      await Promise.resolve();
+    });
+
+    await waitFor(() =>
+      expect(mockGetCities).toHaveBeenCalledWith(expect.objectContaining({ q: "Nowhere" }), expect.any(AbortSignal)),
+    );
+    expect(await screen.findByLabelText("Continue without a city")).toBeTruthy();
+
+    await fireEvent.press(screen.getByLabelText("Continue without a city"));
+    expect(await screen.findByText("Stay close to Jesus")).toBeTruthy();
+    jest.useRealTimers();
   });
 
   it("loads API notification defaults and persists the latest toggles before All Set", async () => {

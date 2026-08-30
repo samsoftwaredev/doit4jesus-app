@@ -13,10 +13,11 @@ type CityAutocompleteProps = {
   countryCode: string;
   countryName: string | null;
   onSelect: (city: CitySelection | null) => void;
+  onSkip: () => void;
   selectedCity: CitySelection | null;
 };
 
-export function CityAutocomplete({ countryCode, countryName, onSelect, selectedCity }: CityAutocompleteProps) {
+export function CityAutocomplete({ countryCode, countryName, onSelect, onSkip, selectedCity }: CityAutocompleteProps) {
   const activeQueryRef = useRef("");
   const hasSelectedCity = Boolean(selectedCity);
   const [cities, setCities] = useState<City[]>([]);
@@ -69,6 +70,9 @@ export function CityAutocomplete({ countryCode, countryName, onSelect, selectedC
     setQuery(value);
     if (selectedCity && value !== selectedCity.name) onSelect(null);
   };
+
+  const hasNoMatches =
+    !isLoading && query.trim() === search && search.length >= 2 && cities.length === 0 && !selectedCity && !error;
 
   return (
     <View style={styles.container}>
@@ -125,8 +129,20 @@ export function CityAutocomplete({ countryCode, countryName, onSelect, selectedC
           })}
         </View>
       ) : null}
-      {!isLoading && search.length >= 2 && cities.length === 0 && !selectedCity && !error ? (
-        <Text style={styles.helper}>No matching cities found.</Text>
+      {hasNoMatches ? (
+        <View style={styles.noMatches}>
+          <Text accessibilityRole="alert" style={styles.helper}>
+            No matching cities found for “{search}”.
+          </Text>
+          <Pressable
+            accessibilityLabel="Continue without a city"
+            accessibilityRole="button"
+            onPress={onSkip}
+            style={({ pressed }) => [styles.skipButton, pressed && styles.pressed]}
+          >
+            <Text style={styles.skipButtonLabel}>Continue without a city</Text>
+          </Pressable>
+        </View>
       ) : null}
     </View>
   );
@@ -149,6 +165,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing[3],
   },
   label: { ...theme.typography.label, color: theme.colors.text.secondary },
+  noMatches: { alignItems: "flex-start", gap: theme.spacing[1] },
   pressed: { opacity: theme.opacity.pressed },
   region: { ...theme.typography.caption, color: theme.colors.text.muted, marginTop: theme.spacing[0.5] },
   result: {
@@ -171,4 +188,6 @@ const styles = StyleSheet.create({
   },
   selectedInput: { borderColor: theme.colors.semantic.successBorder },
   selectedResult: { backgroundColor: theme.colors.surface.green },
+  skipButton: { minHeight: theme.sizes.touchTarget, justifyContent: "center" },
+  skipButtonLabel: { ...theme.typography.bodyMedium, color: theme.colors.text.link },
 });

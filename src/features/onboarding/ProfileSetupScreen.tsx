@@ -363,7 +363,7 @@ export function ProfileSetupScreen() {
       return;
     }
     const displayName = finalNameValidation.normalizedName;
-    if (!username || !form.gender || !form.countryCode || !form.cityId || !preferences) {
+    if (!username || !form.gender || !form.countryCode || !preferences) {
       setError("Review your setup answers before entering the mission.");
       return;
     }
@@ -400,6 +400,12 @@ export function ProfileSetupScreen() {
   const goBack = () => {
     setError(null);
     setStep((current) => Math.max(1, current - 1) as OnboardingStep);
+  };
+
+  const skipCity = () => {
+    setError(null);
+    setForm((current) => ({ ...current, cityId: null, cityName: null, state: null }));
+    advance(6);
   };
 
   const selectedCity: CitySelection | null =
@@ -576,6 +582,7 @@ export function ProfileSetupScreen() {
                   state: city?.regionName ?? null,
                 }));
               }}
+              onSkip={skipCity}
               selectedCity={selectedCity}
             />
           ) : (

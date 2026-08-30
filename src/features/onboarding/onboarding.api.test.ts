@@ -176,6 +176,26 @@ describe("onboarding API", () => {
     );
   });
 
+  it("allows onboarding completion without a city", async () => {
+    globalThis.fetch = jest.fn(async () =>
+      response({ data: { notificationPreferences: preferences, profile: completeProfile } }),
+    ) as unknown as typeof fetch;
+    const payload = {
+      cityId: null,
+      countryCode: "US",
+      displayName: "Samuel Ruiz",
+      gender: "male" as const,
+      notificationPreferences: preferences,
+      username: "SamuelR",
+    };
+
+    await expect(completeOnboarding(payload)).resolves.toMatchObject({ profile: { profileSetup: { complete: true } } });
+    expect(globalThis.fetch).toHaveBeenCalledWith(
+      "https://api.example.test/api/v1/me/onboarding/complete",
+      expect.objectContaining({ body: JSON.stringify(payload), method: "POST" }),
+    );
+  });
+
   it("preserves HTTP status, reason, and suggestions for conflicts", async () => {
     globalThis.fetch = jest.fn(async () =>
       response({ data: { reason: "USERNAME_TAKEN", suggestions: ["samuel_123"] } }, 409),

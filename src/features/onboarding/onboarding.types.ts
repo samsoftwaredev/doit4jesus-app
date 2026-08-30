@@ -89,7 +89,7 @@ export interface ProfileSetupState {
 }
 
 export interface CompleteOnboardingPayload {
-  cityId: string;
+  cityId: string | null;
   countryCode: string;
   displayName: string;
   gender: Gender;

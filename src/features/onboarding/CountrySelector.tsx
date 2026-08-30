@@ -1,12 +1,12 @@
 import Feather from "@expo/vector-icons/Feather";
-import { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, FlatList, Modal, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { useMemo, useState } from "react";
+import { FlatList, Modal, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { CountryFlagBadge } from "@/components/ui";
 import { theme } from "@/theme/tokens";
 
-import { getCountries } from "./onboarding.api";
+import { filterCountriesWithFlags } from "./country-selector-data";
 import type { Country } from "./onboarding.types";
 
 type CountrySelectorProps = {
@@ -16,83 +16,13 @@ type CountrySelectorProps = {
 };
 
 export function CountrySelector({ onSelect, selectedCode, selectedName }: CountrySelectorProps) {
-  const activeQueryRef = useRef("");
-  const requestControllerRef = useRef<AbortController | null>(null);
-  const [countries, setCountries] = useState<Country[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [hasMore, setHasMore] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [nextOffset, setNextOffset] = useState<number | null>(null);
   const [query, setQuery] = useState("");
-  const [search, setSearch] = useState("");
   const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const nextQuery = query.trim();
-    activeQueryRef.current = nextQuery;
-    requestControllerRef.current?.abort();
-    setIsLoading(false);
-    const timeout = setTimeout(() => setSearch(nextQuery), 400);
-    return () => clearTimeout(timeout);
-  }, [query]);
-
-  useEffect(() => {
-    if (!visible) return;
-    const controller = new AbortController();
-    requestControllerRef.current = controller;
-    activeQueryRef.current = search;
-    setCountries([]);
-    setError(null);
-    setHasMore(false);
-    setIsLoading(true);
-    setNextOffset(null);
-
-    void getCountries({ limit: 20, offset: 0, q: search || undefined }, controller.signal)
-      .then((page) => {
-        if (controller.signal.aborted || activeQueryRef.current !== search) return;
-        setCountries(page.countries);
-        setHasMore(page.meta.hasMore);
-        setNextOffset(page.meta.nextOffset);
-      })
-      .catch((requestError) => {
-        if (controller.signal.aborted) return;
-        setError(requestError instanceof Error ? requestError.message : "We couldn't load countries.");
-      })
-      .finally(() => {
-        if (!controller.signal.aborted) setIsLoading(false);
-      });
-
-    return () => {
-      controller.abort();
-      if (requestControllerRef.current === controller) requestControllerRef.current = null;
-    };
-  }, [search, visible]);
-
-  const loadMore = async () => {
-    if (!hasMore || nextOffset === null || isLoading || isLoadingMore) return;
-    const requestedQuery = activeQueryRef.current;
-    setIsLoadingMore(true);
-    try {
-      const page = await getCountries({ limit: 20, offset: nextOffset, q: requestedQuery || undefined });
-      if (activeQueryRef.current !== requestedQuery) return;
-      setCountries((current) => [
-        ...current,
-        ...page.countries.filter((country) => !current.some((c) => c.code === country.code)),
-      ]);
-      setHasMore(page.meta.hasMore);
-      setNextOffset(page.meta.nextOffset);
-    } catch {
-      setError("We couldn't load more countries. Try again.");
-    } finally {
-      setIsLoadingMore(false);
-    }
-  };
+  const countries = useMemo(() => filterCountriesWithFlags(query), [query]);
 
   const dismiss = () => {
     setVisible(false);
     setQuery("");
-    setSearch("");
   };
 
   return (
@@ -147,22 +77,13 @@ export function CountrySelector({ onSelect, selectedCode, selectedName }: Countr
                 style={styles.searchInput}
                 value={query}
               />
-              {isLoading ? <ActivityIndicator color={theme.colors.brand.primaryLight} size="small" /> : null}
             </View>
-            {error ? (
-              <Text accessibilityRole="alert" style={styles.error}>
-                {error}
-              </Text>
-            ) : null}
             <FlatList
               contentContainerStyle={styles.list}
               data={countries}
               keyboardShouldPersistTaps="handled"
               keyExtractor={(country) => country.code}
-              ListEmptyComponent={!isLoading ? <Text style={styles.empty}>No countries found.</Text> : null}
-              ListFooterComponent={isLoadingMore ? <ActivityIndicator color={theme.colors.brand.primaryLight} /> : null}
-              onEndReached={() => void loadMore()}
-              onEndReachedThreshold={0.3}
+              ListEmptyComponent={<Text style={styles.empty}>No countries found.</Text>}
               renderItem={({ item }) => {
                 const selected = item.code === selectedCode;
                 return (
@@ -210,12 +131,6 @@ const styles = StyleSheet.create({
     color: theme.colors.text.muted,
     paddingVertical: theme.spacing[6],
     textAlign: "center",
-  },
-  error: {
-    ...theme.typography.bodySmall,
-    color: theme.colors.text.danger,
-    paddingHorizontal: theme.spacing[4],
-    paddingTop: theme.spacing[2],
   },
   fieldLabel: { ...theme.typography.labelSmall, color: theme.colors.text.muted },
   flagWrap: { alignItems: "center", justifyContent: "center", width: theme.spacing[10] },

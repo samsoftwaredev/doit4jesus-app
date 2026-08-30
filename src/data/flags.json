@@ -1,0 +1,1277 @@
+{
+  "ad": {
+    "countryCode": "ad",
+    "countryName": "Andorra",
+    "flagLocation": "./assets/country-flags/ad.svg"
+  },
+  "ae": {
+    "countryCode": "ae",
+    "countryName": "United Arab Emirates",
+    "flagLocation": "./assets/country-flags/ae.svg"
+  },
+  "af": {
+    "countryCode": "af",
+    "countryName": "Afghanistan",
+    "flagLocation": "./assets/country-flags/af.svg"
+  },
+  "ag": {
+    "countryCode": "ag",
+    "countryName": "Antigua & Barbuda",
+    "flagLocation": "./assets/country-flags/ag.svg"
+  },
+  "ai": {
+    "countryCode": "ai",
+    "countryName": "Anguilla",
+    "flagLocation": "./assets/country-flags/ai.svg"
+  },
+  "al": {
+    "countryCode": "al",
+    "countryName": "Albania",
+    "flagLocation": "./assets/country-flags/al.svg"
+  },
+  "am": {
+    "countryCode": "am",
+    "countryName": "Armenia",
+    "flagLocation": "./assets/country-flags/am.svg"
+  },
+  "ao": {
+    "countryCode": "ao",
+    "countryName": "Angola",
+    "flagLocation": "./assets/country-flags/ao.svg"
+  },
+  "aq": {
+    "countryCode": "aq",
+    "countryName": "Antarctica",
+    "flagLocation": "./assets/country-flags/aq.svg"
+  },
+  "ar": {
+    "countryCode": "ar",
+    "countryName": "Argentina",
+    "flagLocation": "./assets/country-flags/ar.svg"
+  },
+  "as": {
+    "countryCode": "as",
+    "countryName": "American Samoa",
+    "flagLocation": "./assets/country-flags/as.svg"
+  },
+  "at": {
+    "countryCode": "at",
+    "countryName": "Austria",
+    "flagLocation": "./assets/country-flags/at.svg"
+  },
+  "au": {
+    "countryCode": "au",
+    "countryName": "Australia",
+    "flagLocation": "./assets/country-flags/au.svg"
+  },
+  "aw": {
+    "countryCode": "aw",
+    "countryName": "Aruba",
+    "flagLocation": "./assets/country-flags/aw.svg"
+  },
+  "ax": {
+    "countryCode": "ax",
+    "countryName": "Åland Islands",
+    "flagLocation": "./assets/country-flags/ax.svg"
+  },
+  "az": {
+    "countryCode": "az",
+    "countryName": "Azerbaijan",
+    "flagLocation": "./assets/country-flags/az.svg"
+  },
+  "ba": {
+    "countryCode": "ba",
+    "countryName": "Bosnia & Herzegovina",
+    "flagLocation": "./assets/country-flags/ba.svg"
+  },
+  "bb": {
+    "countryCode": "bb",
+    "countryName": "Barbados",
+    "flagLocation": "./assets/country-flags/bb.svg"
+  },
+  "bd": {
+    "countryCode": "bd",
+    "countryName": "Bangladesh",
+    "flagLocation": "./assets/country-flags/bd.svg"
+  },
+  "be": {
+    "countryCode": "be",
+    "countryName": "Belgium",
+    "flagLocation": "./assets/country-flags/be.svg"
+  },
+  "bf": {
+    "countryCode": "bf",
+    "countryName": "Burkina Faso",
+    "flagLocation": "./assets/country-flags/bf.svg"
+  },
+  "bg": {
+    "countryCode": "bg",
+    "countryName": "Bulgaria",
+    "flagLocation": "./assets/country-flags/bg.svg"
+  },
+  "bh": {
+    "countryCode": "bh",
+    "countryName": "Bahrain",
+    "flagLocation": "./assets/country-flags/bh.svg"
+  },
+  "bi": {
+    "countryCode": "bi",
+    "countryName": "Burundi",
+    "flagLocation": "./assets/country-flags/bi.svg"
+  },
+  "bj": {
+    "countryCode": "bj",
+    "countryName": "Benin",
+    "flagLocation": "./assets/country-flags/bj.svg"
+  },
+  "bl": {
+    "countryCode": "bl",
+    "countryName": "St. Barthélemy",
+    "flagLocation": "./assets/country-flags/bl.svg"
+  },
+  "bm": {
+    "countryCode": "bm",
+    "countryName": "Bermuda",
+    "flagLocation": "./assets/country-flags/bm.svg"
+  },
+  "bn": {
+    "countryCode": "bn",
+    "countryName": "Brunei",
+    "flagLocation": "./assets/country-flags/bn.svg"
+  },
+  "bo": {
+    "countryCode": "bo",
+    "countryName": "Bolivia",
+    "flagLocation": "./assets/country-flags/bo.svg"
+  },
+  "bq": {
+    "countryCode": "bq",
+    "countryName": "Caribbean Netherlands",
+    "flagLocation": "./assets/country-flags/bq.svg"
+  },
+  "br": {
+    "countryCode": "br",
+    "countryName": "Brazil",
+    "flagLocation": "./assets/country-flags/br.svg"
+  },
+  "bs": {
+    "countryCode": "bs",
+    "countryName": "Bahamas",
+    "flagLocation": "./assets/country-flags/bs.svg"
+  },
+  "bt": {
+    "countryCode": "bt",
+    "countryName": "Bhutan",
+    "flagLocation": "./assets/country-flags/bt.svg"
+  },
+  "bv": {
+    "countryCode": "bv",
+    "countryName": "Bouvet Island",
+    "flagLocation": "./assets/country-flags/bv.svg"
+  },
+  "bw": {
+    "countryCode": "bw",
+    "countryName": "Botswana",
+    "flagLocation": "./assets/country-flags/bw.svg"
+  },
+  "by": {
+    "countryCode": "by",
+    "countryName": "Belarus",
+    "flagLocation": "./assets/country-flags/by.svg"
+  },
+  "bz": {
+    "countryCode": "bz",
+    "countryName": "Belize",
+    "flagLocation": "./assets/country-flags/bz.svg"
+  },
+  "ca": {
+    "countryCode": "ca",
+    "countryName": "Canada",
+    "flagLocation": "./assets/country-flags/ca.svg"
+  },
+  "cc": {
+    "countryCode": "cc",
+    "countryName": "Cocos (Keeling) Islands",
+    "flagLocation": "./assets/country-flags/cc.svg"
+  },
+  "cd": {
+    "countryCode": "cd",
+    "countryName": "Congo - Kinshasa",
+    "flagLocation": "./assets/country-flags/cd.svg"
+  },
+  "cf": {
+    "countryCode": "cf",
+    "countryName": "Central African Republic",
+    "flagLocation": "./assets/country-flags/cf.svg"
+  },
+  "cg": {
+    "countryCode": "cg",
+    "countryName": "Congo - Brazzaville",
+    "flagLocation": "./assets/country-flags/cg.svg"
+  },
+  "ch": {
+    "countryCode": "ch",
+    "countryName": "Switzerland",
+    "flagLocation": "./assets/country-flags/ch.svg"
+  },
+  "ci": {
+    "countryCode": "ci",
+    "countryName": "Côte d’Ivoire",
+    "flagLocation": "./assets/country-flags/ci.svg"
+  },
+  "ck": {
+    "countryCode": "ck",
+    "countryName": "Cook Islands",
+    "flagLocation": "./assets/country-flags/ck.svg"
+  },
+  "cl": {
+    "countryCode": "cl",
+    "countryName": "Chile",
+    "flagLocation": "./assets/country-flags/cl.svg"
+  },
+  "cm": {
+    "countryCode": "cm",
+    "countryName": "Cameroon",
+    "flagLocation": "./assets/country-flags/cm.svg"
+  },
+  "cn": {
+    "countryCode": "cn",
+    "countryName": "China",
+    "flagLocation": "./assets/country-flags/cn.svg"
+  },
+  "co": {
+    "countryCode": "co",
+    "countryName": "Colombia",
+    "flagLocation": "./assets/country-flags/co.svg"
+  },
+  "cr": {
+    "countryCode": "cr",
+    "countryName": "Costa Rica",
+    "flagLocation": "./assets/country-flags/cr.svg"
+  },
+  "cu": {
+    "countryCode": "cu",
+    "countryName": "Cuba",
+    "flagLocation": "./assets/country-flags/cu.svg"
+  },
+  "cv": {
+    "countryCode": "cv",
+    "countryName": "Cape Verde",
+    "flagLocation": "./assets/country-flags/cv.svg"
+  },
+  "cw": {
+    "countryCode": "cw",
+    "countryName": "Curaçao",
+    "flagLocation": "./assets/country-flags/cw.svg"
+  },
+  "cx": {
+    "countryCode": "cx",
+    "countryName": "Christmas Island",
+    "flagLocation": "./assets/country-flags/cx.svg"
+  },
+  "cy": {
+    "countryCode": "cy",
+    "countryName": "Cyprus",
+    "flagLocation": "./assets/country-flags/cy.svg"
+  },
+  "cz": {
+    "countryCode": "cz",
+    "countryName": "Czechia",
+    "flagLocation": "./assets/country-flags/cz.svg"
+  },
+  "de": {
+    "countryCode": "de",
+    "countryName": "Germany",
+    "flagLocation": "./assets/country-flags/de.svg"
+  },
+  "dj": {
+    "countryCode": "dj",
+    "countryName": "Djibouti",
+    "flagLocation": "./assets/country-flags/dj.svg"
+  },
+  "dk": {
+    "countryCode": "dk",
+    "countryName": "Denmark",
+    "flagLocation": "./assets/country-flags/dk.svg"
+  },
+  "dm": {
+    "countryCode": "dm",
+    "countryName": "Dominica",
+    "flagLocation": "./assets/country-flags/dm.svg"
+  },
+  "do": {
+    "countryCode": "do",
+    "countryName": "Dominican Republic",
+    "flagLocation": "./assets/country-flags/do.svg"
+  },
+  "dz": {
+    "countryCode": "dz",
+    "countryName": "Algeria",
+    "flagLocation": "./assets/country-flags/dz.svg"
+  },
+  "ec": {
+    "countryCode": "ec",
+    "countryName": "Ecuador",
+    "flagLocation": "./assets/country-flags/ec.svg"
+  },
+  "ee": {
+    "countryCode": "ee",
+    "countryName": "Estonia",
+    "flagLocation": "./assets/country-flags/ee.svg"
+  },
+  "eg": {
+    "countryCode": "eg",
+    "countryName": "Egypt",
+    "flagLocation": "./assets/country-flags/eg.svg"
+  },
+  "eh": {
+    "countryCode": "eh",
+    "countryName": "Western Sahara",
+    "flagLocation": "./assets/country-flags/eh.svg"
+  },
+  "er": {
+    "countryCode": "er",
+    "countryName": "Eritrea",
+    "flagLocation": "./assets/country-flags/er.svg"
+  },
+  "es": {
+    "countryCode": "es",
+    "countryName": "Spain",
+    "flagLocation": "./assets/country-flags/es.svg"
+  },
+  "et": {
+    "countryCode": "et",
+    "countryName": "Ethiopia",
+    "flagLocation": "./assets/country-flags/et.svg"
+  },
+  "eu": {
+    "countryCode": "eu",
+    "countryName": "European Union",
+    "flagLocation": "./assets/country-flags/eu.svg"
+  },
+  "fi": {
+    "countryCode": "fi",
+    "countryName": "Finland",
+    "flagLocation": "./assets/country-flags/fi.svg"
+  },
+  "fj": {
+    "countryCode": "fj",
+    "countryName": "Fiji",
+    "flagLocation": "./assets/country-flags/fj.svg"
+  },
+  "fk": {
+    "countryCode": "fk",
+    "countryName": "Falkland Islands",
+    "flagLocation": "./assets/country-flags/fk.svg"
+  },
+  "fm": {
+    "countryCode": "fm",
+    "countryName": "Micronesia",
+    "flagLocation": "./assets/country-flags/fm.svg"
+  },
+  "fo": {
+    "countryCode": "fo",
+    "countryName": "Faroe Islands",
+    "flagLocation": "./assets/country-flags/fo.svg"
+  },
+  "fr": {
+    "countryCode": "fr",
+    "countryName": "France",
+    "flagLocation": "./assets/country-flags/fr.svg"
+  },
+  "ga": {
+    "countryCode": "ga",
+    "countryName": "Gabon",
+    "flagLocation": "./assets/country-flags/ga.svg"
+  },
+  "gb": {
+    "countryCode": "gb",
+    "countryName": "United Kingdom",
+    "flagLocation": "./assets/country-flags/gb.svg"
+  },
+  "gb-eng": {
+    "countryCode": "gb-eng",
+    "countryName": "England",
+    "flagLocation": "./assets/country-flags/gb-eng.svg"
+  },
+  "gb-nir": {
+    "countryCode": "gb-nir",
+    "countryName": "Northern Ireland",
+    "flagLocation": "./assets/country-flags/gb-nir.svg"
+  },
+  "gb-sct": {
+    "countryCode": "gb-sct",
+    "countryName": "Scotland",
+    "flagLocation": "./assets/country-flags/gb-sct.svg"
+  },
+  "gb-wls": {
+    "countryCode": "gb-wls",
+    "countryName": "Wales",
+    "flagLocation": "./assets/country-flags/gb-wls.svg"
+  },
+  "gd": {
+    "countryCode": "gd",
+    "countryName": "Grenada",
+    "flagLocation": "./assets/country-flags/gd.svg"
+  },
+  "ge": {
+    "countryCode": "ge",
+    "countryName": "Georgia",
+    "flagLocation": "./assets/country-flags/ge.svg"
+  },
+  "gf": {
+    "countryCode": "gf",
+    "countryName": "French Guiana",
+    "flagLocation": "./assets/country-flags/gf.svg"
+  },
+  "gg": {
+    "countryCode": "gg",
+    "countryName": "Guernsey",
+    "flagLocation": "./assets/country-flags/gg.svg"
+  },
+  "gh": {
+    "countryCode": "gh",
+    "countryName": "Ghana",
+    "flagLocation": "./assets/country-flags/gh.svg"
+  },
+  "gi": {
+    "countryCode": "gi",
+    "countryName": "Gibraltar",
+    "flagLocation": "./assets/country-flags/gi.svg"
+  },
+  "gl": {
+    "countryCode": "gl",
+    "countryName": "Greenland",
+    "flagLocation": "./assets/country-flags/gl.svg"
+  },
+  "gm": {
+    "countryCode": "gm",
+    "countryName": "Gambia",
+    "flagLocation": "./assets/country-flags/gm.svg"
+  },
+  "gn": {
+    "countryCode": "gn",
+    "countryName": "Guinea",
+    "flagLocation": "./assets/country-flags/gn.svg"
+  },
+  "gp": {
+    "countryCode": "gp",
+    "countryName": "Guadeloupe",
+    "flagLocation": "./assets/country-flags/gp.svg"
+  },
+  "gq": {
+    "countryCode": "gq",
+    "countryName": "Equatorial Guinea",
+    "flagLocation": "./assets/country-flags/gq.svg"
+  },
+  "gr": {
+    "countryCode": "gr",
+    "countryName": "Greece",
+    "flagLocation": "./assets/country-flags/gr.svg"
+  },
+  "gs": {
+    "countryCode": "gs",
+    "countryName": "South Georgia & South Sandwich Islands",
+    "flagLocation": "./assets/country-flags/gs.svg"
+  },
+  "gt": {
+    "countryCode": "gt",
+    "countryName": "Guatemala",
+    "flagLocation": "./assets/country-flags/gt.svg"
+  },
+  "gu": {
+    "countryCode": "gu",
+    "countryName": "Guam",
+    "flagLocation": "./assets/country-flags/gu.svg"
+  },
+  "gw": {
+    "countryCode": "gw",
+    "countryName": "Guinea-Bissau",
+    "flagLocation": "./assets/country-flags/gw.svg"
+  },
+  "gy": {
+    "countryCode": "gy",
+    "countryName": "Guyana",
+    "flagLocation": "./assets/country-flags/gy.svg"
+  },
+  "hk": {
+    "countryCode": "hk",
+    "countryName": "Hong Kong SAR China",
+    "flagLocation": "./assets/country-flags/hk.svg"
+  },
+  "hm": {
+    "countryCode": "hm",
+    "countryName": "Heard & McDonald Islands",
+    "flagLocation": "./assets/country-flags/hm.svg"
+  },
+  "hn": {
+    "countryCode": "hn",
+    "countryName": "Honduras",
+    "flagLocation": "./assets/country-flags/hn.svg"
+  },
+  "hr": {
+    "countryCode": "hr",
+    "countryName": "Croatia",
+    "flagLocation": "./assets/country-flags/hr.svg"
+  },
+  "ht": {
+    "countryCode": "ht",
+    "countryName": "Haiti",
+    "flagLocation": "./assets/country-flags/ht.svg"
+  },
+  "hu": {
+    "countryCode": "hu",
+    "countryName": "Hungary",
+    "flagLocation": "./assets/country-flags/hu.svg"
+  },
+  "id": {
+    "countryCode": "id",
+    "countryName": "Indonesia",
+    "flagLocation": "./assets/country-flags/id.svg"
+  },
+  "ie": {
+    "countryCode": "ie",
+    "countryName": "Ireland",
+    "flagLocation": "./assets/country-flags/ie.svg"
+  },
+  "il": {
+    "countryCode": "il",
+    "countryName": "Israel",
+    "flagLocation": "./assets/country-flags/il.svg"
+  },
+  "im": {
+    "countryCode": "im",
+    "countryName": "Isle of Man",
+    "flagLocation": "./assets/country-flags/im.svg"
+  },
+  "in": {
+    "countryCode": "in",
+    "countryName": "India",
+    "flagLocation": "./assets/country-flags/in.svg"
+  },
+  "io": {
+    "countryCode": "io",
+    "countryName": "British Indian Ocean Territory",
+    "flagLocation": "./assets/country-flags/io.svg"
+  },
+  "iq": {
+    "countryCode": "iq",
+    "countryName": "Iraq",
+    "flagLocation": "./assets/country-flags/iq.svg"
+  },
+  "ir": {
+    "countryCode": "ir",
+    "countryName": "Iran",
+    "flagLocation": "./assets/country-flags/ir.svg"
+  },
+  "is": {
+    "countryCode": "is",
+    "countryName": "Iceland",
+    "flagLocation": "./assets/country-flags/is.svg"
+  },
+  "it": {
+    "countryCode": "it",
+    "countryName": "Italy",
+    "flagLocation": "./assets/country-flags/it.svg"
+  },
+  "je": {
+    "countryCode": "je",
+    "countryName": "Jersey",
+    "flagLocation": "./assets/country-flags/je.svg"
+  },
+  "jm": {
+    "countryCode": "jm",
+    "countryName": "Jamaica",
+    "flagLocation": "./assets/country-flags/jm.svg"
+  },
+  "jo": {
+    "countryCode": "jo",
+    "countryName": "Jordan",
+    "flagLocation": "./assets/country-flags/jo.svg"
+  },
+  "jp": {
+    "countryCode": "jp",
+    "countryName": "Japan",
+    "flagLocation": "./assets/country-flags/jp.svg"
+  },
+  "ke": {
+    "countryCode": "ke",
+    "countryName": "Kenya",
+    "flagLocation": "./assets/country-flags/ke.svg"
+  },
+  "kg": {
+    "countryCode": "kg",
+    "countryName": "Kyrgyzstan",
+    "flagLocation": "./assets/country-flags/kg.svg"
+  },
+  "kh": {
+    "countryCode": "kh",
+    "countryName": "Cambodia",
+    "flagLocation": "./assets/country-flags/kh.svg"
+  },
+  "ki": {
+    "countryCode": "ki",
+    "countryName": "Kiribati",
+    "flagLocation": "./assets/country-flags/ki.svg"
+  },
+  "km": {
+    "countryCode": "km",
+    "countryName": "Comoros",
+    "flagLocation": "./assets/country-flags/km.svg"
+  },
+  "kn": {
+    "countryCode": "kn",
+    "countryName": "St. Kitts & Nevis",
+    "flagLocation": "./assets/country-flags/kn.svg"
+  },
+  "kp": {
+    "countryCode": "kp",
+    "countryName": "North Korea",
+    "flagLocation": "./assets/country-flags/kp.svg"
+  },
+  "kr": {
+    "countryCode": "kr",
+    "countryName": "South Korea",
+    "flagLocation": "./assets/country-flags/kr.svg"
+  },
+  "kw": {
+    "countryCode": "kw",
+    "countryName": "Kuwait",
+    "flagLocation": "./assets/country-flags/kw.svg"
+  },
+  "ky": {
+    "countryCode": "ky",
+    "countryName": "Cayman Islands",
+    "flagLocation": "./assets/country-flags/ky.svg"
+  },
+  "kz": {
+    "countryCode": "kz",
+    "countryName": "Kazakhstan",
+    "flagLocation": "./assets/country-flags/kz.svg"
+  },
+  "la": {
+    "countryCode": "la",
+    "countryName": "Laos",
+    "flagLocation": "./assets/country-flags/la.svg"
+  },
+  "lb": {
+    "countryCode": "lb",
+    "countryName": "Lebanon",
+    "flagLocation": "./assets/country-flags/lb.svg"
+  },
+  "lc": {
+    "countryCode": "lc",
+    "countryName": "St. Lucia",
+    "flagLocation": "./assets/country-flags/lc.svg"
+  },
+  "li": {
+    "countryCode": "li",
+    "countryName": "Liechtenstein",
+    "flagLocation": "./assets/country-flags/li.svg"
+  },
+  "lk": {
+    "countryCode": "lk",
+    "countryName": "Sri Lanka",
+    "flagLocation": "./assets/country-flags/lk.svg"
+  },
+  "lr": {
+    "countryCode": "lr",
+    "countryName": "Liberia",
+    "flagLocation": "./assets/country-flags/lr.svg"
+  },
+  "ls": {
+    "countryCode": "ls",
+    "countryName": "Lesotho",
+    "flagLocation": "./assets/country-flags/ls.svg"
+  },
+  "lt": {
+    "countryCode": "lt",
+    "countryName": "Lithuania",
+    "flagLocation": "./assets/country-flags/lt.svg"
+  },
+  "lu": {
+    "countryCode": "lu",
+    "countryName": "Luxembourg",
+    "flagLocation": "./assets/country-flags/lu.svg"
+  },
+  "lv": {
+    "countryCode": "lv",
+    "countryName": "Latvia",
+    "flagLocation": "./assets/country-flags/lv.svg"
+  },
+  "ly": {
+    "countryCode": "ly",
+    "countryName": "Libya",
+    "flagLocation": "./assets/country-flags/ly.svg"
+  },
+  "ma": {
+    "countryCode": "ma",
+    "countryName": "Morocco",
+    "flagLocation": "./assets/country-flags/ma.svg"
+  },
+  "mc": {
+    "countryCode": "mc",
+    "countryName": "Monaco",
+    "flagLocation": "./assets/country-flags/mc.svg"
+  },
+  "md": {
+    "countryCode": "md",
+    "countryName": "Moldova",
+    "flagLocation": "./assets/country-flags/md.svg"
+  },
+  "me": {
+    "countryCode": "me",
+    "countryName": "Montenegro",
+    "flagLocation": "./assets/country-flags/me.svg"
+  },
+  "mf": {
+    "countryCode": "mf",
+    "countryName": "St. Martin",
+    "flagLocation": "./assets/country-flags/mf.svg"
+  },
+  "mg": {
+    "countryCode": "mg",
+    "countryName": "Madagascar",
+    "flagLocation": "./assets/country-flags/mg.svg"
+  },
+  "mh": {
+    "countryCode": "mh",
+    "countryName": "Marshall Islands",
+    "flagLocation": "./assets/country-flags/mh.svg"
+  },
+  "mk": {
+    "countryCode": "mk",
+    "countryName": "North Macedonia",
+    "flagLocation": "./assets/country-flags/mk.svg"
+  },
+  "ml": {
+    "countryCode": "ml",
+    "countryName": "Mali",
+    "flagLocation": "./assets/country-flags/ml.svg"
+  },
+  "mm": {
+    "countryCode": "mm",
+    "countryName": "Myanmar (Burma)",
+    "flagLocation": "./assets/country-flags/mm.svg"
+  },
+  "mn": {
+    "countryCode": "mn",
+    "countryName": "Mongolia",
+    "flagLocation": "./assets/country-flags/mn.svg"
+  },
+  "mo": {
+    "countryCode": "mo",
+    "countryName": "Macao SAR China",
+    "flagLocation": "./assets/country-flags/mo.svg"
+  },
+  "mp": {
+    "countryCode": "mp",
+    "countryName": "Northern Mariana Islands",
+    "flagLocation": "./assets/country-flags/mp.svg"
+  },
+  "mq": {
+    "countryCode": "mq",
+    "countryName": "Martinique",
+    "flagLocation": "./assets/country-flags/mq.svg"
+  },
+  "mr": {
+    "countryCode": "mr",
+    "countryName": "Mauritania",
+    "flagLocation": "./assets/country-flags/mr.svg"
+  },
+  "ms": {
+    "countryCode": "ms",
+    "countryName": "Montserrat",
+    "flagLocation": "./assets/country-flags/ms.svg"
+  },
+  "mt": {
+    "countryCode": "mt",
+    "countryName": "Malta",
+    "flagLocation": "./assets/country-flags/mt.svg"
+  },
+  "mu": {
+    "countryCode": "mu",
+    "countryName": "Mauritius",
+    "flagLocation": "./assets/country-flags/mu.svg"
+  },
+  "mv": {
+    "countryCode": "mv",
+    "countryName": "Maldives",
+    "flagLocation": "./assets/country-flags/mv.svg"
+  },
+  "mw": {
+    "countryCode": "mw",
+    "countryName": "Malawi",
+    "flagLocation": "./assets/country-flags/mw.svg"
+  },
+  "mx": {
+    "countryCode": "mx",
+    "countryName": "Mexico",
+    "flagLocation": "./assets/country-flags/mx.svg"
+  },
+  "my": {
+    "countryCode": "my",
+    "countryName": "Malaysia",
+    "flagLocation": "./assets/country-flags/my.svg"
+  },
+  "mz": {
+    "countryCode": "mz",
+    "countryName": "Mozambique",
+    "flagLocation": "./assets/country-flags/mz.svg"
+  },
+  "na": {
+    "countryCode": "na",
+    "countryName": "Namibia",
+    "flagLocation": "./assets/country-flags/na.svg"
+  },
+  "nc": {
+    "countryCode": "nc",
+    "countryName": "New Caledonia",
+    "flagLocation": "./assets/country-flags/nc.svg"
+  },
+  "ne": {
+    "countryCode": "ne",
+    "countryName": "Niger",
+    "flagLocation": "./assets/country-flags/ne.svg"
+  },
+  "nf": {
+    "countryCode": "nf",
+    "countryName": "Norfolk Island",
+    "flagLocation": "./assets/country-flags/nf.svg"
+  },
+  "ng": {
+    "countryCode": "ng",
+    "countryName": "Nigeria",
+    "flagLocation": "./assets/country-flags/ng.svg"
+  },
+  "ni": {
+    "countryCode": "ni",
+    "countryName": "Nicaragua",
+    "flagLocation": "./assets/country-flags/ni.svg"
+  },
+  "nl": {
+    "countryCode": "nl",
+    "countryName": "Netherlands",
+    "flagLocation": "./assets/country-flags/nl.svg"
+  },
+  "no": {
+    "countryCode": "no",
+    "countryName": "Norway",
+    "flagLocation": "./assets/country-flags/no.svg"
+  },
+  "np": {
+    "countryCode": "np",
+    "countryName": "Nepal",
+    "flagLocation": "./assets/country-flags/np.svg"
+  },
+  "nr": {
+    "countryCode": "nr",
+    "countryName": "Nauru",
+    "flagLocation": "./assets/country-flags/nr.svg"
+  },
+  "nu": {
+    "countryCode": "nu",
+    "countryName": "Niue",
+    "flagLocation": "./assets/country-flags/nu.svg"
+  },
+  "nz": {
+    "countryCode": "nz",
+    "countryName": "New Zealand",
+    "flagLocation": "./assets/country-flags/nz.svg"
+  },
+  "om": {
+    "countryCode": "om",
+    "countryName": "Oman",
+    "flagLocation": "./assets/country-flags/om.svg"
+  },
+  "pa": {
+    "countryCode": "pa",
+    "countryName": "Panama",
+    "flagLocation": "./assets/country-flags/pa.svg"
+  },
+  "pe": {
+    "countryCode": "pe",
+    "countryName": "Peru",
+    "flagLocation": "./assets/country-flags/pe.svg"
+  },
+  "pf": {
+    "countryCode": "pf",
+    "countryName": "French Polynesia",
+    "flagLocation": "./assets/country-flags/pf.svg"
+  },
+  "pg": {
+    "countryCode": "pg",
+    "countryName": "Papua New Guinea",
+    "flagLocation": "./assets/country-flags/pg.svg"
+  },
+  "ph": {
+    "countryCode": "ph",
+    "countryName": "Philippines",
+    "flagLocation": "./assets/country-flags/ph.svg"
+  },
+  "pk": {
+    "countryCode": "pk",
+    "countryName": "Pakistan",
+    "flagLocation": "./assets/country-flags/pk.svg"
+  },
+  "pl": {
+    "countryCode": "pl",
+    "countryName": "Poland",
+    "flagLocation": "./assets/country-flags/pl.svg"
+  },
+  "pm": {
+    "countryCode": "pm",
+    "countryName": "St. Pierre & Miquelon",
+    "flagLocation": "./assets/country-flags/pm.svg"
+  },
+  "pn": {
+    "countryCode": "pn",
+    "countryName": "Pitcairn Islands",
+    "flagLocation": "./assets/country-flags/pn.svg"
+  },
+  "pr": {
+    "countryCode": "pr",
+    "countryName": "Puerto Rico",
+    "flagLocation": "./assets/country-flags/pr.svg"
+  },
+  "ps": {
+    "countryCode": "ps",
+    "countryName": "Palestinian Territories",
+    "flagLocation": "./assets/country-flags/ps.svg"
+  },
+  "pt": {
+    "countryCode": "pt",
+    "countryName": "Portugal",
+    "flagLocation": "./assets/country-flags/pt.svg"
+  },
+  "pw": {
+    "countryCode": "pw",
+    "countryName": "Palau",
+    "flagLocation": "./assets/country-flags/pw.svg"
+  },
+  "py": {
+    "countryCode": "py",
+    "countryName": "Paraguay",
+    "flagLocation": "./assets/country-flags/py.svg"
+  },
+  "qa": {
+    "countryCode": "qa",
+    "countryName": "Qatar",
+    "flagLocation": "./assets/country-flags/qa.svg"
+  },
+  "re": {
+    "countryCode": "re",
+    "countryName": "Réunion",
+    "flagLocation": "./assets/country-flags/re.svg"
+  },
+  "ro": {
+    "countryCode": "ro",
+    "countryName": "Romania",
+    "flagLocation": "./assets/country-flags/ro.svg"
+  },
+  "rs": {
+    "countryCode": "rs",
+    "countryName": "Serbia",
+    "flagLocation": "./assets/country-flags/rs.svg"
+  },
+  "ru": {
+    "countryCode": "ru",
+    "countryName": "Russia",
+    "flagLocation": "./assets/country-flags/ru.svg"
+  },
+  "rw": {
+    "countryCode": "rw",
+    "countryName": "Rwanda",
+    "flagLocation": "./assets/country-flags/rw.svg"
+  },
+  "sa": {
+    "countryCode": "sa",
+    "countryName": "Saudi Arabia",
+    "flagLocation": "./assets/country-flags/sa.svg"
+  },
+  "sb": {
+    "countryCode": "sb",
+    "countryName": "Solomon Islands",
+    "flagLocation": "./assets/country-flags/sb.svg"
+  },
+  "sc": {
+    "countryCode": "sc",
+    "countryName": "Seychelles",
+    "flagLocation": "./assets/country-flags/sc.svg"
+  },
+  "sd": {
+    "countryCode": "sd",
+    "countryName": "Sudan",
+    "flagLocation": "./assets/country-flags/sd.svg"
+  },
+  "se": {
+    "countryCode": "se",
+    "countryName": "Sweden",
+    "flagLocation": "./assets/country-flags/se.svg"
+  },
+  "sg": {
+    "countryCode": "sg",
+    "countryName": "Singapore",
+    "flagLocation": "./assets/country-flags/sg.svg"
+  },
+  "sh": {
+    "countryCode": "sh",
+    "countryName": "St. Helena",
+    "flagLocation": "./assets/country-flags/sh.svg"
+  },
+  "si": {
+    "countryCode": "si",
+    "countryName": "Slovenia",
+    "flagLocation": "./assets/country-flags/si.svg"
+  },
+  "sj": {
+    "countryCode": "sj",
+    "countryName": "Svalbard & Jan Mayen",
+    "flagLocation": "./assets/country-flags/sj.svg"
+  },
+  "sk": {
+    "countryCode": "sk",
+    "countryName": "Slovakia",
+    "flagLocation": "./assets/country-flags/sk.svg"
+  },
+  "sl": {
+    "countryCode": "sl",
+    "countryName": "Sierra Leone",
+    "flagLocation": "./assets/country-flags/sl.svg"
+  },
+  "sm": {
+    "countryCode": "sm",
+    "countryName": "San Marino",
+    "flagLocation": "./assets/country-flags/sm.svg"
+  },
+  "sn": {
+    "countryCode": "sn",
+    "countryName": "Senegal",
+    "flagLocation": "./assets/country-flags/sn.svg"
+  },
+  "so": {
+    "countryCode": "so",
+    "countryName": "Somalia",
+    "flagLocation": "./assets/country-flags/so.svg"
+  },
+  "sr": {
+    "countryCode": "sr",
+    "countryName": "Suriname",
+    "flagLocation": "./assets/country-flags/sr.svg"
+  },
+  "ss": {
+    "countryCode": "ss",
+    "countryName": "South Sudan",
+    "flagLocation": "./assets/country-flags/ss.svg"
+  },
+  "st": {
+    "countryCode": "st",
+    "countryName": "São Tomé & Príncipe",
+    "flagLocation": "./assets/country-flags/st.svg"
+  },
+  "sv": {
+    "countryCode": "sv",
+    "countryName": "El Salvador",
+    "flagLocation": "./assets/country-flags/sv.svg"
+  },
+  "sx": {
+    "countryCode": "sx",
+    "countryName": "Sint Maarten",
+    "flagLocation": "./assets/country-flags/sx.svg"
+  },
+  "sy": {
+    "countryCode": "sy",
+    "countryName": "Syria",
+    "flagLocation": "./assets/country-flags/sy.svg"
+  },
+  "sz": {
+    "countryCode": "sz",
+    "countryName": "Eswatini",
+    "flagLocation": "./assets/country-flags/sz.svg"
+  },
+  "tc": {
+    "countryCode": "tc",
+    "countryName": "Turks & Caicos Islands",
+    "flagLocation": "./assets/country-flags/tc.svg"
+  },
+  "td": {
+    "countryCode": "td",
+    "countryName": "Chad",
+    "flagLocation": "./assets/country-flags/td.svg"
+  },
+  "tf": {
+    "countryCode": "tf",
+    "countryName": "French Southern Territories",
+    "flagLocation": "./assets/country-flags/tf.svg"
+  },
+  "tg": {
+    "countryCode": "tg",
+    "countryName": "Togo",
+    "flagLocation": "./assets/country-flags/tg.svg"
+  },
+  "th": {
+    "countryCode": "th",
+    "countryName": "Thailand",
+    "flagLocation": "./assets/country-flags/th.svg"
+  },
+  "tj": {
+    "countryCode": "tj",
+    "countryName": "Tajikistan",
+    "flagLocation": "./assets/country-flags/tj.svg"
+  },
+  "tk": {
+    "countryCode": "tk",
+    "countryName": "Tokelau",
+    "flagLocation": "./assets/country-flags/tk.svg"
+  },
+  "tl": {
+    "countryCode": "tl",
+    "countryName": "Timor-Leste",
+    "flagLocation": "./assets/country-flags/tl.svg"
+  },
+  "tm": {
+    "countryCode": "tm",
+    "countryName": "Turkmenistan",
+    "flagLocation": "./assets/country-flags/tm.svg"
+  },
+  "tn": {
+    "countryCode": "tn",
+    "countryName": "Tunisia",
+    "flagLocation": "./assets/country-flags/tn.svg"
+  },
+  "to": {
+    "countryCode": "to",
+    "countryName": "Tonga",
+    "flagLocation": "./assets/country-flags/to.svg"
+  },
+  "tr": {
+    "countryCode": "tr",
+    "countryName": "Türkiye",
+    "flagLocation": "./assets/country-flags/tr.svg"
+  },
+  "tt": {
+    "countryCode": "tt",
+    "countryName": "Trinidad & Tobago",
+    "flagLocation": "./assets/country-flags/tt.svg"
+  },
+  "tv": {
+    "countryCode": "tv",
+    "countryName": "Tuvalu",
+    "flagLocation": "./assets/country-flags/tv.svg"
+  },
+  "tw": {
+    "countryCode": "tw",
+    "countryName": "Taiwan",
+    "flagLocation": "./assets/country-flags/tw.svg"
+  },
+  "tz": {
+    "countryCode": "tz",
+    "countryName": "Tanzania",
+    "flagLocation": "./assets/country-flags/tz.svg"
+  },
+  "ua": {
+    "countryCode": "ua",
+    "countryName": "Ukraine",
+    "flagLocation": "./assets/country-flags/ua.svg"
+  },
+  "ug": {
+    "countryCode": "ug",
+    "countryName": "Uganda",
+    "flagLocation": "./assets/country-flags/ug.svg"
+  },
+  "um": {
+    "countryCode": "um",
+    "countryName": "U.S. Outlying Islands",
+    "flagLocation": "./assets/country-flags/um.svg"
+  },
+  "us": {
+    "countryCode": "us",
+    "countryName": "United States",
+    "flagLocation": "./assets/country-flags/us.svg"
+  },
+  "uy": {
+    "countryCode": "uy",
+    "countryName": "Uruguay",
+    "flagLocation": "./assets/country-flags/uy.svg"
+  },
+  "uz": {
+    "countryCode": "uz",
+    "countryName": "Uzbekistan",
+    "flagLocation": "./assets/country-flags/uz.svg"
+  },
+  "va": {
+    "countryCode": "va",
+    "countryName": "Vatican City",
+    "flagLocation": "./assets/country-flags/va.svg"
+  },
+  "vc": {
+    "countryCode": "vc",
+    "countryName": "St. Vincent & Grenadines",
+    "flagLocation": "./assets/country-flags/vc.svg"
+  },
+  "ve": {
+    "countryCode": "ve",
+    "countryName": "Venezuela",
+    "flagLocation": "./assets/country-flags/ve.svg"
+  },
+  "vg": {
+    "countryCode": "vg",
+    "countryName": "British Virgin Islands",
+    "flagLocation": "./assets/country-flags/vg.svg"
+  },
+  "vi": {
+    "countryCode": "vi",
+    "countryName": "U.S. Virgin Islands",
+    "flagLocation": "./assets/country-flags/vi.svg"
+  },
+  "vn": {
+    "countryCode": "vn",
+    "countryName": "Vietnam",
+    "flagLocation": "./assets/country-flags/vn.svg"
+  },
+  "vu": {
+    "countryCode": "vu",
+    "countryName": "Vanuatu",
+    "flagLocation": "./assets/country-flags/vu.svg"
+  },
+  "wf": {
+    "countryCode": "wf",
+    "countryName": "Wallis & Futuna",
+    "flagLocation": "./assets/country-flags/wf.svg"
+  },
+  "ws": {
+    "countryCode": "ws",
+    "countryName": "Samoa",
+    "flagLocation": "./assets/country-flags/ws.svg"
+  },
+  "xk": {
+    "countryCode": "xk",
+    "countryName": "Kosovo",
+    "flagLocation": "./assets/country-flags/xk.svg"
+  },
+  "ye": {
+    "countryCode": "ye",
+    "countryName": "Yemen",
+    "flagLocation": "./assets/country-flags/ye.svg"
+  },
+  "yt": {
+    "countryCode": "yt",
+    "countryName": "Mayotte",
+    "flagLocation": "./assets/country-flags/yt.svg"
+  },
+  "za": {
+    "countryCode": "za",
+    "countryName": "South Africa",
+    "flagLocation": "./assets/country-flags/za.svg"
+  },
+  "zm": {
+    "countryCode": "zm",
+    "countryName": "Zambia",
+    "flagLocation": "./assets/country-flags/zm.svg"
+  },
+  "zw": {
+    "countryCode": "zw",
+    "countryName": "Zimbabwe",
+    "flagLocation": "./assets/country-flags/zw.svg"
+  }
+}
