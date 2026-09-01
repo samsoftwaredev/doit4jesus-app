@@ -1,6 +1,5 @@
 import {
   completeOnboarding,
-  getCities,
   getCountries,
   getNotificationPreferences,
   OnboardingApiError,
@@ -20,8 +19,6 @@ const preferences = {
 
 const completeProfile = {
   avatarUrl: null,
-  cityId: "city-austin",
-  cityName: "Austin",
   countryCode: "US",
   countryName: "United States",
   createdAt: "2026-08-28T12:00:00.000Z",
@@ -37,7 +34,6 @@ const completeProfile = {
   },
   prayerMapVisibility: "aggregated",
   saintAvatarId: null,
-  state: "Texas",
   timezone: "America/Chicago",
   title: "Faithful Beginner",
   updatedAt: "2026-08-28T12:30:00.000Z",
@@ -108,33 +104,6 @@ describe("onboarding API", () => {
     );
   });
 
-  it("searches cities within the authoritative country code", async () => {
-    globalThis.fetch = jest.fn(async () =>
-      response({
-        data: [
-          {
-            countryCode: "US",
-            id: "city-austin",
-            latitude: 30.26715,
-            longitude: -97.74306,
-            name: "Austin",
-            regionName: "Texas",
-            timezone: "America/Chicago",
-          },
-        ],
-        meta: { hasMore: false, limit: 20, nextOffset: null, offset: 0 },
-      }),
-    ) as unknown as typeof fetch;
-
-    await expect(getCities({ countryCode: "US", q: "aus" })).resolves.toMatchObject({
-      cities: [{ countryCode: "US", id: "city-austin", name: "Austin" }],
-    });
-    expect(globalThis.fetch).toHaveBeenCalledWith(
-      "https://api.example.test/api/v1/locations/cities?countryCode=US&q=aus&limit=20&offset=0",
-      expect.objectContaining({ method: "GET" }),
-    );
-  });
-
   it("loads and partially updates notification preferences", async () => {
     const fetchMock = jest
       .fn()
@@ -158,7 +127,6 @@ describe("onboarding API", () => {
       response({ data: { notificationPreferences: preferences, profile: completeProfile } }),
     ) as unknown as typeof fetch;
     const payload = {
-      cityId: "city-austin",
       countryCode: "US",
       displayName: "Samuel Ruiz",
       gender: "male" as const,
@@ -170,26 +138,6 @@ describe("onboarding API", () => {
       notificationPreferences: preferences,
       profile: { profileSetup: { complete: true } },
     });
-    expect(globalThis.fetch).toHaveBeenCalledWith(
-      "https://api.example.test/api/v1/me/onboarding/complete",
-      expect.objectContaining({ body: JSON.stringify(payload), method: "POST" }),
-    );
-  });
-
-  it("allows onboarding completion without a city", async () => {
-    globalThis.fetch = jest.fn(async () =>
-      response({ data: { notificationPreferences: preferences, profile: completeProfile } }),
-    ) as unknown as typeof fetch;
-    const payload = {
-      cityId: null,
-      countryCode: "US",
-      displayName: "Samuel Ruiz",
-      gender: "male" as const,
-      notificationPreferences: preferences,
-      username: "SamuelR",
-    };
-
-    await expect(completeOnboarding(payload)).resolves.toMatchObject({ profile: { profileSetup: { complete: true } } });
     expect(globalThis.fetch).toHaveBeenCalledWith(
       "https://api.example.test/api/v1/me/onboarding/complete",
       expect.objectContaining({ body: JSON.stringify(payload), method: "POST" }),

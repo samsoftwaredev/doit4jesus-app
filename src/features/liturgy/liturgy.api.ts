@@ -163,7 +163,6 @@ export async function recordDailyScriptureCompletion(input: {
   const response = await fetch(`${apiUrl}/api/v1/activities`, {
     body: JSON.stringify({
       activityCode: "PRAYER",
-      cityId: null,
       completedAt: input.completedAt,
       countryCode: input.country,
       durationSeconds: 0,

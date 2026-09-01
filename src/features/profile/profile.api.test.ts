@@ -11,8 +11,6 @@ jest.mock("@/lib/supabase", () => ({
 const profilePayload = {
   data: {
     avatarUrl: null,
-    cityId: "city-austin",
-    cityName: "Austin",
     countryCode: "US",
     countryName: "United States",
     createdAt: "2026-08-22T15:28:02.335433+00:00",
@@ -28,7 +26,6 @@ const profilePayload = {
     },
     prayerMapVisibility: "aggregated",
     saintAvatarId: "a1000000-0000-4000-8000-000000000002",
-    state: "Texas",
     timezone: "America/Chicago",
     title: "Faithful Beginner",
     updatedAt: "2026-08-24T12:00:00.000Z",
@@ -96,7 +93,7 @@ describe("current profile API", () => {
       },
       method: "PATCH",
     });
-    expect(result.cityName).toBe("Austin");
+    expect(result.countryName).toBe("United States");
     expect(result.saintAvatarId).toBe("a1000000-0000-4000-8000-000000000002");
   });
 
@@ -163,14 +160,12 @@ describe("current profile API", () => {
       json: async () => ({
         data: {
           ...profilePayload.data,
-          cityId: null,
-          cityName: null,
           displayName: null,
           gender: null,
           profileSetup: {
             complete: false,
             completedAt: null,
-            missingFields: ["displayName", "city"],
+            missingFields: ["displayName", "country"],
             nextStep: "name",
           },
           title: null,
@@ -181,7 +176,6 @@ describe("current profile API", () => {
     })) as unknown as typeof fetch;
 
     await expect(fetchCurrentUserProfile()).resolves.toMatchObject({
-      cityId: null,
       displayName: null,
       profileSetup: { complete: false, nextStep: "name" },
       title: null,

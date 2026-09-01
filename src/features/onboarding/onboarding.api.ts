@@ -2,8 +2,6 @@ import { parseCurrentUserProfileData } from "@/features/profile/profile.api";
 import { getSupabaseAccessToken } from "@/lib/supabase";
 
 import type {
-  City,
-  CityPage,
   CompleteOnboardingPayload,
   CompleteOnboardingResult,
   Country,
@@ -90,19 +88,6 @@ function parseCountry(value: unknown): Country {
   };
 }
 
-function parseCity(value: unknown): City {
-  const city = readRecord(value, "city");
-  return {
-    countryCode: readString(city.countryCode, "city country code"),
-    id: readString(city.id, "city ID"),
-    latitude: readNumber(city.latitude, "city latitude"),
-    longitude: readNumber(city.longitude, "city longitude"),
-    name: readString(city.name, "city name"),
-    regionName: readNullableString(city.regionName, "city region"),
-    timezone: readString(city.timezone, "city timezone"),
-  };
-}
-
 export function parseNotificationPreferences(value: unknown): NotificationPreferences {
   const preferences = readRecord(value, "notification preferences");
   return {
@@ -170,7 +155,7 @@ export async function validateUsername(username: string, signal?: AbortSignal): 
   };
 }
 
-function pageParts(payloadValue: unknown, itemKey: "cities" | "countries") {
+function pageParts(payloadValue: unknown, itemKey: "countries") {
   const payload = readRecord(payloadValue, `${itemKey} response`);
   if (Array.isArray(payload.data)) return { items: payload.data, meta: parseMeta(payload.meta) };
 
@@ -190,20 +175,6 @@ export async function getCountries(
   search.set("offset", String(offset));
   const { items, meta } = pageParts(await request(`/api/v1/locations/countries?${search}`, { signal }), "countries");
   return { countries: items.map(parseCountry), meta };
-}
-
-export async function getCities(
-  { countryCode, limit = 20, offset = 0, q }: { countryCode: string; limit?: number; offset?: number; q: string },
-  signal?: AbortSignal,
-): Promise<CityPage> {
-  const search = new URLSearchParams({
-    countryCode,
-    q: q.trim(),
-    limit: String(limit),
-    offset: String(offset),
-  });
-  const { items, meta } = pageParts(await request(`/api/v1/locations/cities?${search}`, { signal }), "cities");
-  return { cities: items.map(parseCity), meta };
 }
 
 export async function getNotificationPreferences(): Promise<NotificationPreferences> {

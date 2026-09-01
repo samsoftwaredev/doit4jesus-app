@@ -30,9 +30,7 @@ const countryNames: Record<string, string> = {
 export function formatProfileLocation(profile: CurrentUserProfile): string {
   const countryCode = profile.countryCode ?? "";
   const country = countryNames[countryCode] ?? profile.countryName ?? countryCode;
-  const parts = [profile.cityName, profile.state, country].filter((value): value is string => Boolean(value?.trim()));
-
-  return parts.join(", ") || "Location unavailable";
+  return country || "Country unavailable";
 }
 
 export function ProfileSettingsScreen() {
@@ -164,7 +162,7 @@ export function ProfileSettingsScreen() {
     }
   };
 
-  const location = profile ? formatProfileLocation(profile) : "Location unavailable";
+  const location = profile ? formatProfileLocation(profile) : "Country unavailable";
   const appVersion = Constants.expoConfig?.version ?? Constants.nativeAppVersion ?? "—";
 
   return (
@@ -212,7 +210,7 @@ export function ProfileSettingsScreen() {
                 onPress={() => setGenderSelectorVisible(true)}
                 value={profile.gender === "male" ? "Male" : "Female"}
               />
-              <SettingsRow icon="map-pin" isLast label="Location" value={location} />
+              <SettingsRow icon="map-pin" isLast label="Country" value={location} />
             </SettingsSection>
           </>
         ) : null}

@@ -5,7 +5,7 @@ import type { ComponentProps, ReactNode } from "react";
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { Button } from "@/components/ui";
+import { Button, Confetti } from "@/components/ui";
 import { theme } from "@/theme/tokens";
 
 import type { OnboardingStep } from "./onboarding.types";
@@ -20,11 +20,12 @@ type ProfileSetupLayoutProps = {
   nextLoading?: boolean;
   onBack?: () => void;
   onNext: () => void;
+  showConfetti?: boolean;
   step: OnboardingStep;
   title: string;
 };
 
-const totalSteps = 7;
+const totalSteps = 6;
 
 export function ProfileSetupLayout({
   children,
@@ -36,6 +37,7 @@ export function ProfileSetupLayout({
   nextLoading,
   onBack,
   onNext,
+  showConfetti = false,
   step,
   title,
 }: ProfileSetupLayoutProps) {
@@ -133,6 +135,7 @@ export function ProfileSetupLayout({
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
+      {showConfetti ? <Confetti particleCount={48} testID="profile-setup-confetti" /> : null}
     </LinearGradient>
   );
 }

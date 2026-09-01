@@ -39,8 +39,6 @@ jest.mock("@/lib/supabase", () => ({
 
 const profile: CurrentUserProfile = {
   avatarUrl: "https://example.com/avatar.png",
-  cityId: "city-austin",
-  cityName: "Austin",
   countryCode: "US",
   countryName: "United States",
   createdAt: "2026-08-22T15:28:02.335433+00:00",
@@ -51,7 +49,6 @@ const profile: CurrentUserProfile = {
   profileSetup: { complete: true, completedAt: "2026-08-22T15:28:02.335433+00:00", missingFields: [], nextStep: null },
   prayerMapVisibility: "aggregated",
   saintAvatarId: null,
-  state: "Texas",
   timezone: "America/Chicago",
   title: "Faithful Beginner",
   updatedAt: "2026-08-22T15:28:02.335433+00:00",
@@ -78,11 +75,11 @@ describe("Profile settings", () => {
     mockSignOut.mockResolvedValue({ error: null });
   });
 
-  it("renders the API profile, location, account controls, and no deferred preferences", async () => {
+  it("renders the API profile, country, account controls, and no deferred preferences", async () => {
     await renderProfile();
 
     expect(screen.getByText("Profile & Settings")).toBeTruthy();
-    expect(screen.getAllByText("Austin, Texas, USA")).toHaveLength(2);
+    expect(screen.getAllByText("USA")).toHaveLength(2);
     expect(screen.getByLabelText("Gender, Male")).toBeTruthy();
     expect(screen.getByText("Contact Support")).toBeTruthy();
     expect(screen.getByText("Privacy Policy")).toBeTruthy();

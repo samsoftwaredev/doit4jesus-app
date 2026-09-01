@@ -15,7 +15,7 @@ jest.mock("./profile.api", () => ({
 }));
 
 const profile = {
-  profileSetup: { complete: false, completedAt: null, missingFields: ["city"], nextStep: "city" },
+  profileSetup: { complete: false, completedAt: null, missingFields: ["country"], nextStep: "country" },
   userId: "user-1",
 } as CurrentUserProfile;
 
@@ -45,7 +45,7 @@ describe("ProfileProvider", () => {
 
     await act(async () => resolveProfile(profile));
     await waitFor(() => expect(result.current.isLoading).toBe(false));
-    expect(result.current.profile?.profileSetup.nextStep).toBe("city");
+    expect(result.current.profile?.profileSetup.nextStep).toBe("country");
   });
 
   it("keeps protected content unavailable after a profile load failure and supports retry", async () => {

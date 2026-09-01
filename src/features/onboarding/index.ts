@@ -1,6 +1,5 @@
 export {
   completeOnboarding,
-  getCities,
   getCountries,
   getNotificationPreferences,
   OnboardingApiError,
@@ -10,7 +9,6 @@ export {
 export { ProfileSetupScreen } from "./ProfileSetupScreen";
 export { getResumeStep, onboardingStepMap } from "./onboarding.types";
 export type {
-  City,
   CompleteOnboardingPayload,
   CompleteOnboardingResult,
   Country,

@@ -1,18 +1,16 @@
 import type { CurrentUserProfile, Gender, ProfileSetup } from "@/features/profile/profile.types";
 
-export type OnboardingStep = 1 | 2 | 3 | 4 | 5 | 6 | 7;
+export type OnboardingStep = 1 | 2 | 3 | 4 | 5 | 6;
 
 export const onboardingStepMap: Readonly<Record<string, OnboardingStep>> = {
-  allSet: 7,
-  city: 5,
-  cityId: 5,
-  complete: 7,
+  allSet: 6,
+  complete: 6,
   country: 4,
   countryCode: 4,
   displayName: 1,
   gender: 3,
   name: 1,
-  notifications: 6,
+  notifications: 5,
   username: 2,
 };
 
@@ -21,7 +19,7 @@ export function getResumeStep(profileSetup: ProfileSetup): OnboardingStep {
   if (serverStep) return serverStep;
 
   const missingStep = profileSetup.missingFields.map((field) => onboardingStepMap[field]).find(Boolean);
-  return missingStep ?? (profileSetup.missingFields.length === 0 ? 7 : 1);
+  return missingStep ?? (profileSetup.missingFields.length === 0 ? 6 : 1);
 }
 
 export interface NotificationPreferences {
@@ -37,16 +35,6 @@ export interface Country {
   name: string;
 }
 
-export interface City {
-  countryCode: string;
-  id: string;
-  latitude: number;
-  longitude: number;
-  name: string;
-  regionName: string | null;
-  timezone: string;
-}
-
 export interface OffsetPageMeta {
   hasMore: boolean;
   limit: number;
@@ -56,11 +44,6 @@ export interface OffsetPageMeta {
 
 export interface CountryPage {
   countries: Country[];
-  meta: OffsetPageMeta;
-}
-
-export interface CityPage {
-  cities: City[];
   meta: OffsetPageMeta;
 }
 
@@ -77,19 +60,15 @@ export interface UsernameValidation {
 }
 
 export interface ProfileSetupState {
-  cityId: string | null;
-  cityName: string | null;
   countryCode: string | null;
   countryName: string | null;
   displayName: string;
   gender: Gender | null;
   notificationPreferences: NotificationPreferences | null;
-  state: string | null;
   username: string;
 }
 
 export interface CompleteOnboardingPayload {
-  cityId: string | null;
   countryCode: string;
   displayName: string;
   gender: Gender;

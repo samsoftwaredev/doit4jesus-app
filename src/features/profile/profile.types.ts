@@ -9,8 +9,6 @@ export interface ProfileSetup {
 
 export interface CurrentUserProfile {
   avatarUrl: string | null;
-  cityId: string | null;
-  cityName: string | null;
   countryCode: string | null;
   countryName: string | null;
   createdAt: string;
@@ -21,7 +19,6 @@ export interface CurrentUserProfile {
   profileSetup: ProfileSetup;
   prayerMapVisibility: string;
   saintAvatarId: string | null;
-  state: string | null;
   timezone: string;
   title: string | null;
   updatedAt: string;
@@ -30,7 +27,6 @@ export interface CurrentUserProfile {
 }
 
 export type UpdateCurrentUserProfile = Partial<{
-  cityId: string | null;
   countryCode: string;
   displayName: string;
   gender: Gender;

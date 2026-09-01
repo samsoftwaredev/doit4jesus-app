@@ -9,8 +9,6 @@ import { ProfileApiError, updateCurrentUserProfile } from "@/features/profile/pr
 import type { CurrentUserProfile, UpdateCurrentUserProfile } from "@/features/profile/profile.types";
 import { theme } from "@/theme/tokens";
 
-import type { CitySelection } from "./CityAutocomplete";
-import { CityAutocomplete } from "./CityAutocomplete";
 import { CountrySelector } from "./CountrySelector";
 import { validateFullName } from "./name-validation";
 import {
@@ -36,14 +34,11 @@ function stateFromProfile(
   notificationPreferences: NotificationPreferences | null,
 ): ProfileSetupState {
   return {
-    cityId: profile.cityId,
-    cityName: profile.cityName,
     countryCode: profile.countryCode,
     countryName: profile.countryName,
     displayName: profile.displayName ?? "",
     gender: profile.gender,
     notificationPreferences,
-    state: profile.state,
     username: profile.username ?? "",
   };
 }
@@ -96,14 +91,11 @@ export function ProfileSetupScreen() {
     profile
       ? stateFromProfile(profile, cachedPreferences)
       : {
-          cityId: null,
-          cityName: null,
           countryCode: null,
           countryName: null,
           displayName: "",
           gender: null,
           notificationPreferences: cachedPreferences,
-          state: null,
           username: "",
         },
   );
@@ -120,7 +112,7 @@ export function ProfileSetupScreen() {
   }, [step]);
 
   useEffect(() => {
-    if (!profile || step < 6 || form.notificationPreferences || preferenceRequestInFlightRef.current) return;
+    if (!profile || step < 5 || form.notificationPreferences || preferenceRequestInFlightRef.current) return;
     let active = true;
     preferenceRequestInFlightRef.current = true;
     setIsLoadingPreferences(true);
@@ -202,17 +194,14 @@ export function ProfileSetupScreen() {
   const nameValidation = validateFullName(form.displayName);
   const showNameValidation = Boolean(form.displayName.trim()) && !nameValidation.valid;
 
-  const syncProfile = (updatedProfile: CurrentUserProfile, clearCity = false) => {
+  const syncProfile = (updatedProfile: CurrentUserProfile) => {
     replaceProfile(updatedProfile);
     setForm((current) => ({
       ...current,
-      cityId: clearCity ? null : updatedProfile.cityId,
-      cityName: clearCity ? null : updatedProfile.cityName,
       countryCode: updatedProfile.countryCode,
       countryName: updatedProfile.countryName,
       displayName: updatedProfile.displayName ?? "",
       gender: updatedProfile.gender,
-      state: clearCity ? null : updatedProfile.state,
       username: updatedProfile.username ?? "",
     }));
   };
@@ -225,13 +214,13 @@ export function ProfileSetupScreen() {
   const saveProfile = async (
     update: UpdateCurrentUserProfile,
     nextStep: OnboardingStep,
-    options: { clearCity?: boolean; username?: boolean } = {},
+    options: { username?: boolean } = {},
   ) => {
     setError(null);
     setIsSaving(true);
     try {
       const updatedProfile = await updateCurrentUserProfile(update);
-      syncProfile(updatedProfile, options.clearCity);
+      syncProfile(updatedProfile);
       advance(nextStep);
     } catch (requestError) {
       if (options.username && requestError instanceof ProfileApiError && requestError.status === 409) {
@@ -308,28 +297,17 @@ export function ProfileSetupScreen() {
           advance(5);
           return;
         }
-        await saveProfile({ countryCode: form.countryCode }, 5, { clearCity: true });
+        await saveProfile({ countryCode: form.countryCode }, 5);
         return;
       }
-      case 5:
-        if (!form.cityId || !form.countryCode) {
-          setError("Select a city from the results.");
-          return;
-        }
-        if (form.cityId === profile.cityId && form.countryCode === profile.countryCode) {
-          advance(6);
-          return;
-        }
-        await saveProfile({ cityId: form.cityId }, 6);
-        return;
-      case 6: {
+      case 5: {
         const preferences = form.notificationPreferences;
         if (!preferences) {
           setError("Load your notification preferences before continuing.");
           return;
         }
         if (savedPreferencesRef.current && samePreferences(preferences, savedPreferencesRef.current)) {
-          advance(7);
+          advance(6);
           return;
         }
         setError(null);
@@ -339,7 +317,7 @@ export function ProfileSetupScreen() {
           savedPreferencesRef.current = saved;
           replaceNotificationPreferences(saved);
           setForm((current) => ({ ...current, notificationPreferences: saved }));
-          advance(7);
+          advance(6);
         } catch {
           setError("We couldn't save your notification preferences. Please try again.");
         } finally {
@@ -347,7 +325,7 @@ export function ProfileSetupScreen() {
         }
         return;
       }
-      case 7:
+      case 6:
         await enterMission();
         return;
     }
@@ -373,7 +351,6 @@ export function ProfileSetupScreen() {
     setIsCompleting(true);
     try {
       const result = await completeOnboarding({
-        cityId: form.cityId,
         countryCode: form.countryCode,
         displayName,
         gender: form.gender,
@@ -401,22 +378,6 @@ export function ProfileSetupScreen() {
     setError(null);
     setStep((current) => Math.max(1, current - 1) as OnboardingStep);
   };
-
-  const skipCity = () => {
-    setError(null);
-    setForm((current) => ({ ...current, cityId: null, cityName: null, state: null }));
-    advance(6);
-  };
-
-  const selectedCity: CitySelection | null =
-    form.cityId && form.cityName && form.countryCode
-      ? {
-          countryCode: form.countryCode,
-          id: form.cityId,
-          name: form.cityName,
-          regionName: form.state,
-        }
-      : null;
 
   const shared = {
     error,
@@ -547,11 +508,8 @@ export function ProfileSetupScreen() {
               setError(null);
               setForm((current) => ({
                 ...current,
-                cityId: country.code === current.countryCode ? current.cityId : null,
-                cityName: country.code === current.countryCode ? current.cityName : null,
                 countryCode: country.code,
                 countryName: country.name,
-                state: country.code === current.countryCode ? current.state : null,
               }));
             }}
             selectedCode={form.countryCode}
@@ -560,39 +518,6 @@ export function ProfileSetupScreen() {
         </ProfileSetupLayout>
       );
     case 5:
-      return (
-        <ProfileSetupLayout
-          {...shared}
-          description="We’ll show churches near you."
-          icon="map-marker-outline"
-          nextDisabled={!form.cityId || !form.countryCode}
-          title="Which city are you in?"
-        >
-          {form.countryCode ? (
-            <CityAutocomplete
-              countryCode={form.countryCode}
-              countryName={form.countryName}
-              key={form.countryCode}
-              onSelect={(city) => {
-                setError(null);
-                setForm((current) => ({
-                  ...current,
-                  cityId: city?.id ?? null,
-                  cityName: city?.name ?? null,
-                  state: city?.regionName ?? null,
-                }));
-              }}
-              onSkip={skipCity}
-              selectedCity={selectedCity}
-            />
-          ) : (
-            <Text accessibilityRole="alert" style={styles.inlineError}>
-              Go back and select a country first.
-            </Text>
-          )}
-        </ProfileSetupLayout>
-      );
-    case 6:
       return (
         <ProfileSetupLayout
           {...shared}
@@ -641,7 +566,7 @@ export function ProfileSetupScreen() {
           ) : null}
         </ProfileSetupLayout>
       );
-    case 7:
+    case 6:
       return (
         <ProfileSetupLayout
           {...shared}
@@ -650,6 +575,7 @@ export function ProfileSetupScreen() {
           icon="shield-cross"
           nextDisabled={!form.notificationPreferences || Boolean(preferencesError)}
           nextLabel="Enter the Mission"
+          showConfetti
           title="You’re all set!"
         >
           <View style={styles.missionCard}>

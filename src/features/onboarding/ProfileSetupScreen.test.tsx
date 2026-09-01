@@ -6,7 +6,6 @@ import type { CurrentUserProfile } from "@/features/profile/profile.types";
 import { ProfileSetupScreen } from "./ProfileSetupScreen";
 
 const mockCompleteOnboarding = jest.fn();
-const mockGetCities = jest.fn();
 const mockGetCountries = jest.fn();
 const mockGetNotificationPreferences = jest.fn();
 const mockReplaceNotificationPreferences = jest.fn();
@@ -49,7 +48,6 @@ jest.mock("./onboarding.api", () => {
   return {
     ...actual,
     completeOnboarding: (...args: unknown[]) => mockCompleteOnboarding(...args),
-    getCities: (...args: unknown[]) => mockGetCities(...args),
     getCountries: (...args: unknown[]) => mockGetCountries(...args),
     getNotificationPreferences: (...args: unknown[]) => mockGetNotificationPreferences(...args),
     updateNotificationPreferences: (...args: unknown[]) => mockUpdateNotificationPreferences(...args),
@@ -64,8 +62,6 @@ const safeAreaMetrics = {
 
 const baseProfile: CurrentUserProfile = {
   avatarUrl: null,
-  cityId: "city-austin",
-  cityName: "Austin",
   countryCode: "US",
   countryName: "United States",
   createdAt: "2026-08-28T12:00:00.000Z",
@@ -76,12 +72,11 @@ const baseProfile: CurrentUserProfile = {
   profileSetup: {
     complete: false,
     completedAt: null,
-    missingFields: ["city"],
-    nextStep: "city",
+    missingFields: ["notifications"],
+    nextStep: "notifications",
   },
   prayerMapVisibility: "aggregated",
   saintAvatarId: null,
-  state: "Texas",
   timezone: "America/Chicago",
   title: "Faithful Beginner",
   updatedAt: "2026-08-28T12:00:00.000Z",
@@ -117,10 +112,6 @@ describe("required profile setup", () => {
       countries: [],
       meta: { hasMore: false, limit: 20, nextOffset: null, offset: 0 },
     });
-    mockGetCities.mockResolvedValue({
-      cities: [],
-      meta: { hasMore: false, limit: 20, nextOffset: null, offset: 0 },
-    });
     mockGetNotificationPreferences.mockResolvedValue(preferences);
     mockUpdateNotificationPreferences.mockImplementation(async (update) => ({ ...preferences, ...update }));
     mockValidateUsername.mockResolvedValue({
@@ -137,27 +128,21 @@ describe("required profile setup", () => {
     jest.useRealTimers();
   });
 
-  it("resumes at the server-provided City step and preserves earlier values when going back", async () => {
+  it("resumes at the server-provided country step and preserves earlier values when going back", async () => {
     await renderSetup({
       ...baseProfile,
-      cityId: null,
-      cityName: null,
-      profileSetup: { complete: false, completedAt: null, missingFields: ["city"], nextStep: "city" },
-      state: null,
+      profileSetup: { complete: false, completedAt: null, missingFields: ["country"], nextStep: "country" },
     });
 
-    expect(screen.getByText("Which city are you in?")).toBeTruthy();
+    expect(screen.getByText("Which country will you represent?")).toBeTruthy();
     await fireEvent.press(screen.getByLabelText("Previous setup step"));
 
-    expect(screen.getByText("Which country will you represent?")).toBeTruthy();
-    expect(screen.getByLabelText("Country, United States")).toBeTruthy();
+    expect(screen.getByText("Who do you identify as?")).toBeTruthy();
   });
 
   it("requires first and last names, explains invalid input, and saves a normalized name", async () => {
     const incomplete = {
       ...baseProfile,
-      cityId: null,
-      cityName: null,
       countryCode: null,
       countryName: null,
       displayName: null,
@@ -165,10 +150,9 @@ describe("required profile setup", () => {
       profileSetup: {
         complete: false,
         completedAt: null,
-        missingFields: ["displayName", "username", "gender", "country", "city"],
+        missingFields: ["displayName", "username", "gender", "country"],
         nextStep: "displayName",
       },
-      state: null,
       username: null,
     } satisfies CurrentUserProfile;
     mockUpdateProfile.mockResolvedValue({
@@ -176,7 +160,7 @@ describe("required profile setup", () => {
       displayName: "Samuel Ruiz",
       profileSetup: {
         ...incomplete.profileSetup,
-        missingFields: ["username", "gender", "country", "city"],
+        missingFields: ["username", "gender", "country"],
         nextStep: "username",
       },
     });
@@ -225,7 +209,7 @@ describe("required profile setup", () => {
     jest.useRealTimers();
   });
 
-  it("invalidates a saved city when the country changes", async () => {
+  it("advances to notification preferences when the country changes", async () => {
     mockGetCountries.mockResolvedValue({
       countries: [{ code: "MX", latitude: null, longitude: null, name: "Mexico" }],
       meta: { hasMore: false, limit: 20, nextOffset: null, offset: 0 },
@@ -234,7 +218,7 @@ describe("required profile setup", () => {
       ...baseProfile,
       countryCode: "MX",
       countryName: "Mexico",
-      profileSetup: { ...baseProfile.profileSetup, nextStep: "city" },
+      profileSetup: { complete: false, completedAt: null, missingFields: ["notifications"], nextStep: "notifications" },
     });
     await renderSetup({
       ...baseProfile,
@@ -248,34 +232,7 @@ describe("required profile setup", () => {
     await fireEvent.press(screen.getByTestId("profile-setup-next"));
 
     await waitFor(() => expect(mockUpdateProfile).toHaveBeenCalledWith({ countryCode: "MX" }));
-    expect(await screen.findByText("Which city are you in?")).toBeTruthy();
-    expect(screen.getByLabelText("City").props.value).toBe("");
-  });
-
-  it("allows a user to continue when their city search has no matches", async () => {
-    jest.useFakeTimers();
-    await renderSetup({
-      ...baseProfile,
-      cityId: null,
-      cityName: null,
-      profileSetup: { complete: false, completedAt: null, missingFields: ["city"], nextStep: "city" },
-      state: null,
-    });
-
-    await fireEvent.changeText(screen.getByLabelText("City"), "Nowhere");
-    await act(async () => {
-      jest.advanceTimersByTime(400);
-      await Promise.resolve();
-    });
-
-    await waitFor(() =>
-      expect(mockGetCities).toHaveBeenCalledWith(expect.objectContaining({ q: "Nowhere" }), expect.any(AbortSignal)),
-    );
-    expect(await screen.findByLabelText("Continue without a city")).toBeTruthy();
-
-    await fireEvent.press(screen.getByLabelText("Continue without a city"));
     expect(await screen.findByText("Stay close to Jesus")).toBeTruthy();
-    jest.useRealTimers();
   });
 
   it("loads API notification defaults and persists the latest toggles before All Set", async () => {
@@ -317,11 +274,11 @@ describe("required profile setup", () => {
       preferences,
     );
 
+    expect(screen.getByTestId("profile-setup-confetti")).toBeTruthy();
     await fireEvent.press(screen.getByText("Enter the Mission"));
 
     await waitFor(() => expect(mockRouterReplace).toHaveBeenCalledWith("/"));
     expect(mockCompleteOnboarding).toHaveBeenCalledWith({
-      cityId: "city-austin",
       countryCode: "US",
       displayName: "Samuel Ruiz",
       gender: "male",

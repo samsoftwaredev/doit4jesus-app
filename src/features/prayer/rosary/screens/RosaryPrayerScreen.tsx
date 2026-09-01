@@ -1,7 +1,7 @@
 import Feather from "@expo/vector-icons/Feather";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   AccessibilityInfo,
   Modal,
@@ -15,6 +15,7 @@ import {
 import Animated, { FadeIn, useReducedMotion } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { Confetti } from "@/components/ui";
 import {
   MysteryCard,
   PrayerCard,
@@ -40,6 +41,11 @@ function completionDateLabel(date: string | null) {
   });
 }
 
+function createIdempotencyKey() {
+  const random = Array.from({ length: 24 }, () => Math.floor(Math.random() * 36).toString(36)).join("");
+  return `rosary-${Date.now().toString(36)}-${random}`;
+}
+
 export function RosaryPrayerScreen({
   intentionId,
   isDecade = true,
@@ -55,6 +61,7 @@ export function RosaryPrayerScreen({
   const { width, height, fontScale } = useWindowDimensions();
   const reduceMotion = useReducedMotion();
   const [completionVisible, setCompletionVisible] = useState(false);
+  const [completionCelebration, setCompletionCelebration] = useState(0);
   const [completionError, setCompletionError] = useState<string>();
   const [intentionPrayerCount, setIntentionPrayerCount] = useState<number>();
   const [isRecordingCompletion, setIsRecordingCompletion] = useState(false);
@@ -106,12 +113,7 @@ export function RosaryPrayerScreen({
     session.isTransitioning,
   ]);
 
-  const createIdempotencyKey = () => {
-    const random = Array.from({ length: 24 }, () => Math.floor(Math.random() * 36).toString(36)).join("");
-    return `rosary-${Date.now().toString(36)}-${random}`;
-  };
-
-  const recordCompletedPrayer = async () => {
+  const recordCompletedPrayer = useCallback(async () => {
     if (completionRequestInFlight.current) return;
     completionRequestInFlight.current = true;
     setCompletionError(undefined);
@@ -157,7 +159,7 @@ export function RosaryPrayerScreen({
       completionRequestInFlight.current = false;
       setIsRecordingCompletion(false);
     }
-  };
+  }, [intentionId]);
 
   useEffect(() => {
     if (!session.isHydrated) return;
@@ -171,13 +173,14 @@ export function RosaryPrayerScreen({
     if (session.isRosaryCompleted && !hadCompletion.current) {
       hadCompletion.current = true;
       setCompletionVisible(true);
+      setCompletionCelebration((current) => current + 1);
       AccessibilityInfo.announceForAccessibility(
         `Rosary completed. ${session.currentMystery?.title ?? "Current mystery"} is complete.`,
       );
       void recordCompletedPrayer();
     }
     if (!session.isRosaryCompleted) hadCompletion.current = false;
-  }, [session.currentMystery?.title, session.isHydrated, session.isRosaryCompleted]);
+  }, [recordCompletedPrayer, session.currentMystery?.title, session.isHydrated, session.isRosaryCompleted]);
 
   const restart = () => {
     setCompletionVisible(false);
@@ -278,6 +281,15 @@ export function RosaryPrayerScreen({
         visible={completionVisible}
       >
         <View style={styles.completionOverlay}>
+          {completionCelebration > 0 ? (
+            <Confetti
+              active={completionVisible}
+              particleCount={52}
+              style={styles.completionConfetti}
+              testID="rosary-completion-confetti"
+              trigger={completionCelebration}
+            />
+          ) : null}
           <Animated.View entering={reduceMotion ? undefined : FadeIn.duration(220)} style={styles.completionCard}>
             <View style={styles.completionIcon}>
               <Feather
@@ -399,6 +411,10 @@ const styles = StyleSheet.create({
     maxWidth: 410,
     padding: theme.spacing[6],
     width: "100%",
+    zIndex: 1,
+  },
+  completionConfetti: {
+    zIndex: 0,
   },
   completionIcon: {
     alignItems: "center",

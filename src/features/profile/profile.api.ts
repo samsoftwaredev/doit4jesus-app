@@ -66,8 +66,6 @@ export function parseCurrentUserProfileData(value: unknown): CurrentUserProfile 
 
   return {
     avatarUrl: readNullableString(value.avatarUrl, "avatar URL"),
-    cityId: readNullableString(value.cityId, "city ID"),
-    cityName: readNullableString(value.cityName, "city name"),
     countryCode: readNullableString(value.countryCode, "country code"),
     countryName: readNullableString(value.countryName, "country name"),
     createdAt: readString(value.createdAt, "creation date"),
@@ -78,7 +76,6 @@ export function parseCurrentUserProfileData(value: unknown): CurrentUserProfile 
     profileSetup: parseProfileSetup(value.profileSetup),
     prayerMapVisibility: readString(value.prayerMapVisibility, "prayer map visibility"),
     saintAvatarId: readNullableString(value.saintAvatarId, "saint avatar ID"),
-    state: readNullableString(value.state, "state"),
     timezone: readString(value.timezone, "timezone"),
     title: readNullableString(value.title, "title"),
     updatedAt: readString(value.updatedAt, "update date"),

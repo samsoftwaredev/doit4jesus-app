@@ -142,6 +142,7 @@ describe("RosaryPrayerScreen", () => {
 
     await rendered.rerender(<RosaryPrayerScreen intentionId="intention-1" />);
 
+    expect(await screen.findByTestId("rosary-completion-confetti")).toBeTruthy();
     expect(await screen.findByText("Rosary recorded")).toBeTruthy();
     expect(screen.getByText("Prayer offered. 4 prayers have been offered for this intention.")).toBeTruthy();
     expect(mockRecordRosaryActivity).toHaveBeenCalledWith(
