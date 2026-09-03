@@ -68,4 +68,26 @@ describe("HolyProgressCard", () => {
     expect(screen.getByLabelText("Level, unavailable")).toBeTruthy();
     expect(screen.getByLabelText("Points, unavailable")).toBeTruthy();
   });
+
+  it("uses Awakened and zero values before a progress record exists", async () => {
+    await render(
+      <HolyProgressCard
+        detailsError={false}
+        isLoadingDetails={false}
+        isLoadingProgress={false}
+        isLoadingStats={false}
+        levelCatalog={[]}
+        progress={null}
+        progressError={false}
+        recentRosaryActivities={[]}
+        rosaryStats={{ rosariesPrayed: 0 }}
+        statsError={false}
+      />,
+    );
+
+    expect(screen.getByLabelText("Level, 1")).toBeTruthy();
+    expect(screen.getByText("Awakened")).toBeTruthy();
+    expect(screen.getByLabelText("Points, 0")).toBeTruthy();
+    expect(screen.getAllByText("0")).toHaveLength(4);
+  });
 });

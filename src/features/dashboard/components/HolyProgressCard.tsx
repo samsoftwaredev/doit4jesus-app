@@ -10,6 +10,9 @@ import { theme } from "@/theme/tokens";
 import { formatPoints } from "../rosary-reminder";
 
 const rosaryIcon = require("../../../assets/icons/rosary.png");
+const DEFAULT_LEVEL_NAME = "Awakened";
+const DEFAULT_LEVEL_NUMBER = 1;
+const DEFAULT_PROGRESS_VALUE = 0;
 
 type HolyProgressCardProps = {
   detailsError: boolean;
@@ -50,15 +53,15 @@ export function HolyProgressCard({
   rosaryStats,
   statsError,
 }: HolyProgressCardProps) {
-  const level = progress?.currentLevel?.levelNumber ?? null;
-  const levelName = progress?.currentLevel?.name ?? null;
-  const points = progress?.lifetimePoints ?? null;
+  const level = progress?.currentLevel?.levelNumber ?? DEFAULT_LEVEL_NUMBER;
+  const levelName = progress?.currentLevel?.name ?? DEFAULT_LEVEL_NAME;
+  const points = progress?.lifetimePoints ?? DEFAULT_PROGRESS_VALUE;
   const rosaries = rosaryStats?.rosariesPrayed ?? null;
   const latestRosary = recentRosaryActivities?.[0] ?? null;
   const nextLevelFromCatalog = levelCatalog?.find((entry) => entry.levelNumber === progress?.nextLevel?.levelNumber);
   const nextLevelName = nextLevelFromCatalog?.name ?? progress?.nextLevel?.name ?? null;
-  const totalXp = progress?.totalXp ?? null;
-  const weeklyPoints = progress?.weeklyPoints ?? null;
+  const totalXp = progress?.totalXp ?? DEFAULT_PROGRESS_VALUE;
+  const weeklyPoints = progress?.weeklyPoints ?? DEFAULT_PROGRESS_VALUE;
   const xpIntoCurrentLevel = progress?.xpIntoCurrentLevel ?? null;
   const xpRequiredForNextLevel = progress?.xpRequiredForNextLevel ?? null;
   const levelProgressPercentage = progress?.levelProgressPercentage ?? null;
@@ -97,7 +100,7 @@ export function HolyProgressCard({
           />
         </View>
 
-        <View accessibilityLabel={`Level, ${level ?? "unavailable"}`} style={styles.levelMetric}>
+        <View accessibilityLabel={`Level, ${progressError ? "unavailable" : level}`} style={styles.levelMetric}>
           <View style={styles.levelBadge}>
             <MaterialCommunityIcons
               accessible={false}
@@ -106,16 +109,12 @@ export function HolyProgressCard({
               size={theme.sizes.iconMedium}
             />
             <Text style={styles.metricLabel}>LEVEL</Text>
-            <MetricValue
-              error={progressError}
-              isLoading={isLoadingProgress}
-              value={level === null ? null : String(level)}
-            />
+            <MetricValue error={progressError} isLoading={isLoadingProgress} value={String(level)} />
           </View>
           {!isLoadingProgress && !progressError && levelName ? <Text style={styles.levelName}>{levelName}</Text> : null}
         </View>
 
-        <View accessibilityLabel={`Points, ${points ?? "unavailable"}`} style={styles.sideMetric}>
+        <View accessibilityLabel={`Points, ${progressError ? "unavailable" : points}`} style={styles.sideMetric}>
           <MaterialCommunityIcons
             accessible={false}
             color={theme.colors.gold.pale}
@@ -123,11 +122,7 @@ export function HolyProgressCard({
             size={theme.sizes.iconLarge}
           />
           <Text style={styles.metricLabel}>POINTS</Text>
-          <MetricValue
-            error={progressError}
-            isLoading={isLoadingProgress}
-            value={points === null ? null : formatPoints(points)}
-          />
+          <MetricValue error={progressError} isLoading={isLoadingProgress} value={formatPoints(points)} />
         </View>
       </View>
 
@@ -180,9 +175,7 @@ export function HolyProgressCard({
             <Text style={styles.detailLabel}>TOTAL XP</Text>
             {isLoadingProgress ? <View accessibilityLabel="Loading total XP" style={styles.compactSkeleton} /> : null}
             {!isLoadingProgress ? (
-              <Text style={styles.secondaryValue}>
-                {totalXp === null || progressError ? "—" : formatPoints(totalXp)}
-              </Text>
+              <Text style={styles.secondaryValue}>{progressError ? "—" : formatPoints(totalXp)}</Text>
             ) : null}
           </View>
           <View style={styles.secondaryMetric}>
@@ -191,9 +184,7 @@ export function HolyProgressCard({
               <View accessibilityLabel="Loading weekly points" style={styles.compactSkeleton} />
             ) : null}
             {!isLoadingProgress ? (
-              <Text style={styles.secondaryValue}>
-                {weeklyPoints === null || progressError ? "—" : formatPoints(weeklyPoints)}
-              </Text>
+              <Text style={styles.secondaryValue}>{progressError ? "—" : formatPoints(weeklyPoints)}</Text>
             ) : null}
           </View>
           <View style={styles.secondaryMetric}>
