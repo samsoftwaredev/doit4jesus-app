@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react-native";
 
-import { rosarySequence } from "@/features/prayer/rosary/data/rosarySequence";
+import { fullRosarySequence, rosarySequence } from "@/features/prayer/rosary/data/rosarySequence";
 
 import { RosaryBeadNavigator } from "./RosaryBeadNavigator";
 
@@ -45,4 +45,54 @@ describe("RosaryBeadNavigator", () => {
 
     expect(screen.getByLabelText(/completed bead 1/i)).toBeTruthy();
   });
+
+  it("shows a highlighted crucifix for the Apostles' Creed", async () => {
+    await render(
+      <RosaryBeadNavigator
+        beads={fullRosarySequence}
+        completedBeadIds={[]}
+        currentBeadIndex={0}
+        isTransitioning={false}
+        onNext={jest.fn()}
+        onPrevious={jest.fn()}
+        onSelectBead={jest.fn()}
+      />,
+    );
+
+    expect(screen.getByRole("button", { name: "current crucifix, Apostles' Creed" })).toBeTruthy();
+  });
+
+  it.each([
+    { prayer: "Glory Be", prayerId: "glory-be", previousBeadNumber: 4, nextBeadNumber: 5 },
+    { prayer: "Fatima Prayer", prayerId: "fatima-prayer", previousBeadNumber: 15, nextBeadNumber: 16 },
+    { prayer: "Hail, Holy Queen", prayerId: "hail-holy-queen", previousBeadNumber: 59 },
+    { prayer: "closing Sign of the Cross", prayerId: "sign-of-cross", previousBeadNumber: 59, section: "closing" },
+  ])(
+    "hides $prayer without a gap and keeps physical bead $previousBeadNumber highlighted",
+    async ({ nextBeadNumber, prayerId, previousBeadNumber, section }) => {
+      const stepIndex = fullRosarySequence.findIndex(
+        (bead) => bead.prayerId === prayerId && (!section || bead.section === section),
+      );
+      const stepSequence = fullRosarySequence[stepIndex]?.sequence;
+      expect(stepIndex).toBeGreaterThanOrEqual(0);
+
+      await render(
+        <RosaryBeadNavigator
+          beads={fullRosarySequence}
+          completedBeadIds={[]}
+          currentBeadIndex={stepIndex}
+          isTransitioning={false}
+          onNext={jest.fn()}
+          onPrevious={jest.fn()}
+          onSelectBead={jest.fn()}
+        />,
+      );
+
+      expect(screen.queryByTestId(`rosary-bead-${stepSequence}`)).toBeNull();
+      expect(screen.getByLabelText(new RegExp(`current bead ${previousBeadNumber}, Hail Mary`, "i"))).toBeTruthy();
+      if (nextBeadNumber) {
+        expect(screen.getByLabelText(new RegExp(`upcoming bead ${nextBeadNumber}, Our Father`, "i"))).toBeTruthy();
+      }
+    },
+  );
 });

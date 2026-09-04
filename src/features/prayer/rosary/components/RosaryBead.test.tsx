@@ -41,4 +41,17 @@ describe("RosaryBead", () => {
     expect(ourFatherStyle.width).toBeGreaterThan(hailMaryStyle.width);
     expect(ourFatherStyle.height).toBeGreaterThan(hailMaryStyle.height);
   });
+
+  it("renders the Apostles' Creed as a selectable highlighted crucifix", async () => {
+    const apostlesCreed = fullRosarySequence.find((bead) => bead.type === "creed");
+    expect(apostlesCreed).toBeDefined();
+
+    await render(<RosaryBead bead={apostlesCreed!} onPress={jest.fn()} state="active" />);
+
+    expect(screen.getByRole("button", { name: "current crucifix, Apostles' Creed" }).props.accessibilityState).toEqual(
+      expect.objectContaining({ selected: true }),
+    );
+    expect(screen.getByTestId(`rosary-crucifix-shape-${apostlesCreed?.sequence}`)).toBeTruthy();
+    expect(screen.queryByTestId(`rosary-bead-shape-${apostlesCreed?.sequence}`)).toBeNull();
+  });
 });

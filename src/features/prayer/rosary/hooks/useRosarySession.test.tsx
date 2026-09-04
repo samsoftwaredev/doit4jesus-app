@@ -116,8 +116,8 @@ describe("useRosarySession", () => {
 
     await waitFor(() => expect(result.current.isHydrated).toBe(true));
 
-    expect(result.current.currentBead?.prayerId).toBe("hail-holy-queen");
-    expect(result.current.currentPrayer?.name).toBe("Hail, Holy Queen");
+    expect(result.current.currentBead?.prayerId).toBe("sign-of-cross");
+    expect(result.current.currentPrayer?.name).toBe("Sign of the Cross");
     expect(result.current.currentMystery?.title).toBe("The Finding of Jesus in the Temple");
     expect(result.current.currentMysteryIndex).toBe(4);
   });

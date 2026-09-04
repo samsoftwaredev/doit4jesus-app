@@ -21,6 +21,44 @@ interface RosaryBeadNavigatorProps {
 
 const SWIPE_THRESHOLD = 36;
 
+/** Returns whether a prayer step has a physical navigator marker. */
+function hasVisibleMarker(bead: RosaryBeadModel) {
+  return bead.type === "creed" || bead.isPhysicalBead !== false;
+}
+
+/** Finds the current marker, falling back to the preceding physical marker for non-bead prayers. */
+function highlightedMarkerIndex(beads: RosaryBeadModel[], visibleBeads: RosaryBeadModel[], currentBeadIndex: number) {
+  if (visibleBeads.length === 0) return -1;
+  const boundedIndex = Math.max(0, Math.min(currentBeadIndex, beads.length - 1));
+  const visibleIds = new Set(visibleBeads.map((bead) => bead.id));
+
+  for (let index = boundedIndex; index >= 0; index -= 1) {
+    if (visibleIds.has(beads[index]?.id)) {
+      return visibleBeads.findIndex((bead) => bead.id === beads[index].id);
+    }
+  }
+
+  return 0;
+}
+
+/** Assigns continuous one-based numbers to physical beads while leaving the crucifix unnumbered. */
+function physicalBeadNumbers(beads: RosaryBeadModel[]) {
+  const numbers = new Map<string, number>();
+  let physicalBeadCount = 0;
+
+  for (const bead of beads) {
+    if (bead.isPhysicalBead === false) continue;
+    physicalBeadCount += 1;
+    numbers.set(bead.id, physicalBeadCount);
+  }
+
+  return numbers;
+}
+
+/**
+ * Displays only physical Rosary markers while navigation continues through every prayer step.
+ * Non-bead prayers retain the preceding marker as the active selection.
+ */
 export function RosaryBeadNavigator({
   beads,
   currentBeadIndex,
@@ -35,14 +73,21 @@ export function RosaryBeadNavigator({
   const reduceMotion = useReducedMotion();
   const chainOffset = useSharedValue(0);
   const rowHeight = compact ? 44 : 52;
+  const visibleBeads = useMemo(() => beads.filter(hasVisibleMarker), [beads]);
+  const activeMarkerIndex = useMemo(
+    () => highlightedMarkerIndex(beads, visibleBeads, currentBeadIndex),
+    [beads, currentBeadIndex, visibleBeads],
+  );
+  const beadNumbers = useMemo(() => physicalBeadNumbers(visibleBeads), [visibleBeads]);
+  const sourceIndexById = useMemo(() => new Map(beads.map((bead, index) => [bead.id, index])), [beads]);
 
   useEffect(() => {
-    const targetOffset = Math.max(0, currentBeadIndex * rowHeight - rowHeight * 1.8);
+    const targetOffset = Math.max(0, activeMarkerIndex * rowHeight - rowHeight * 1.8);
     scrollView.current?.scrollTo({ y: targetOffset, animated: !reduceMotion });
-    chainOffset.value = withTiming(-Math.min(currentBeadIndex * 2, 18), {
+    chainOffset.value = withTiming(-Math.min(Math.max(0, activeMarkerIndex) * 2, 18), {
       duration: reduceMotion ? 0 : 260,
     });
-  }, [chainOffset, currentBeadIndex, reduceMotion, rowHeight]);
+  }, [activeMarkerIndex, chainOffset, reduceMotion, rowHeight]);
 
   const chainStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: chainOffset.value }],
@@ -62,9 +107,11 @@ export function RosaryBeadNavigator({
     [isTransitioning, onNext, onPrevious],
   );
 
+  /** Resolves marker state against the full prayer sequence rather than the filtered visual list. */
   const beadState = (bead: RosaryBeadModel, index: number) => {
-    if (index === currentBeadIndex) return "active" as const;
-    if (completedBeadIds.includes(bead.id) || index < currentBeadIndex) return "completed" as const;
+    if (index === activeMarkerIndex) return "active" as const;
+    const sourceIndex = sourceIndexById.get(bead.id) ?? -1;
+    if (completedBeadIds.includes(bead.id) || sourceIndex < currentBeadIndex) return "completed" as const;
     return "upcoming" as const;
   };
 
@@ -96,32 +143,19 @@ export function RosaryBeadNavigator({
             style={styles.scrollView}
           >
             <Animated.View style={chainStyle}>
-              {beads.map((bead, index) => (
+              {visibleBeads.map((bead, index) => (
                 <View key={bead.id} style={[styles.beadRow, { minHeight: rowHeight }]}>
                   <RosaryBead
                     bead={bead}
                     compact={compact}
                     disabled={isTransitioning}
+                    displayNumber={beadNumbers.get(bead.id)}
                     onPress={onSelectBead}
                     state={beadState(bead, index)}
                   />
-                  {index < beads.length - 1 ? <View style={styles.chainLink} /> : null}
+                  {index < visibleBeads.length - 1 ? <View style={styles.chainLink} /> : null}
                 </View>
               ))}
-              <View style={styles.medalWrap}>
-                <View accessibilityLabel="Marian medal" style={styles.medal}>
-                  <Text style={styles.medalText}>M</Text>
-                </View>
-              </View>
-              <View style={styles.additionalBeads}>
-                <View style={styles.smallBead} />
-                <View style={styles.shortChain} />
-                <View style={styles.smallBead} />
-              </View>
-              <View accessibilityLabel="Rosary crucifix" style={styles.crucifix}>
-                <View style={styles.crossHorizontal} />
-                <View style={styles.crossVertical} />
-              </View>
             </Animated.View>
           </ScrollView>
         </View>
@@ -223,62 +257,6 @@ const styles = StyleSheet.create({
     opacity: 0.72,
     position: "absolute",
     width: theme.borderWidths.thin,
-  },
-  medalWrap: {
-    alignItems: "center",
-    marginTop: theme.spacing[1],
-  },
-  medal: {
-    alignItems: "center",
-    backgroundColor: "#27445A",
-    borderColor: theme.rosary.colors.gold,
-    borderRadius: theme.radii.pill,
-    borderWidth: theme.rosary.borderWidths.goldEmphasis,
-    height: theme.spacing[8],
-    justifyContent: "center",
-    width: theme.spacing[8],
-  },
-  medalText: {
-    ...theme.typography.heading3,
-    color: theme.rosary.colors.goldBright,
-    fontFamily: theme.fontFamilies.display,
-    fontSize: theme.fontSizes.lg,
-  },
-  additionalBeads: {
-    alignItems: "center",
-    marginTop: theme.spacing[2],
-  },
-  smallBead: {
-    backgroundColor: theme.rosary.colors.pearlShadow,
-    borderColor: theme.rosary.colors.goldMuted,
-    borderRadius: theme.radii.pill,
-    borderWidth: theme.rosary.borderWidths.gold,
-    height: theme.spacing[3],
-    width: theme.spacing[3],
-  },
-  shortChain: {
-    backgroundColor: theme.rosary.colors.chain,
-    height: theme.spacing[2],
-    width: theme.borderWidths.thin,
-  },
-  crucifix: {
-    alignItems: "center",
-    height: theme.spacing[8],
-    justifyContent: "center",
-    marginTop: theme.spacing[1],
-    width: theme.spacing[8],
-  },
-  crossHorizontal: {
-    backgroundColor: theme.rosary.colors.gold,
-    height: theme.spacing[1],
-    position: "absolute",
-    width: theme.spacing[6],
-  },
-  crossVertical: {
-    backgroundColor: theme.rosary.colors.gold,
-    height: theme.spacing[8],
-    position: "absolute",
-    width: theme.spacing[1],
   },
   swipeHint: {
     ...theme.typography.caption,

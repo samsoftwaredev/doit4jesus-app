@@ -70,20 +70,29 @@ describe("RosaryPrayerScreen", () => {
     expect(screen.getByText("CURRENT MYSTERY")).toBeTruthy();
     expect(screen.getByText("The Annunciation")).toBeTruthy();
     expect(screen.getByText("Luke 1:26-38")).toBeTruthy();
+    expect(screen.getByText("FRUIT OF THE MYSTERY")).toBeTruthy();
+    expect(screen.getByRole("header", { name: "Humility" })).toBeTruthy();
+    expect(
+      screen.getByText(
+        "Mary receives God's message with trust and calls herself his servant. Ask for grace to surrender pride and welcome God's will with a humble heart.",
+      ),
+    ).toBeTruthy();
     expect(screen.getByText("HAIL MARY")).toBeTruthy();
   });
 
-  it("renders every full-Rosary prayer step and its bead-specific Scripture", async () => {
+  it("renders every physical bead without rendering non-bead prayer markers", async () => {
+    const scriptureStepIndex = fullRosarySequence.findIndex((bead) => bead.scriptureReference === "Luke 1:28");
     mockSession({
-      currentBead: fullRosarySequence[8],
-      currentBeadIndex: 8,
+      currentBead: fullRosarySequence[scriptureStepIndex],
+      currentBeadIndex: scriptureStepIndex,
       currentPrayer: prayerById["hail-mary"],
     });
 
     await render(<RosaryPrayerScreen isDecade={false} />);
 
-    expect(screen.getByTestId("rosary-bead-72")).toBeTruthy();
-    expect(screen.getByLabelText(/upcoming bead 72, Hail, Holy Queen/i)).toBeTruthy();
+    expect(screen.getByRole("button", { name: "completed crucifix, Apostles' Creed" })).toBeTruthy();
+    expect(screen.getByLabelText(/upcoming bead 59, Hail Mary/i)).toBeTruthy();
+    expect(screen.queryByTestId("rosary-bead-72")).toBeNull();
     expect(screen.getByText("Luke 1:28")).toBeTruthy();
     expect(
       screen.getByText("Hail, thou that art highly favoured, the Lord is with thee: blessed art thou among women."),
@@ -91,6 +100,47 @@ describe("RosaryPrayerScreen", () => {
     expect(useRosarySession).toHaveBeenCalledWith(
       expect.objectContaining({ beads: expect.arrayContaining([fullRosarySequence[71]]), isFullRosary: true }),
     );
+  });
+
+  it("starts and ends with an unnumbered Sign of the Cross while retaining the correct highlight", async () => {
+    mockSession({
+      currentBead: fullRosarySequence[0],
+      currentBeadIndex: 0,
+      currentPrayer: prayerById["sign-of-cross"],
+    });
+    const rendered = await render(<RosaryPrayerScreen isDecade={false} />);
+
+    expect(screen.getByText("SIGN OF THE CROSS")).toBeTruthy();
+    expect(screen.getByText("0 of 59")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "current crucifix, Apostles' Creed" })).toBeTruthy();
+
+    const closingIndex = fullRosarySequence.length - 1;
+    mockSession({
+      currentBead: fullRosarySequence[closingIndex],
+      currentBeadIndex: closingIndex,
+      currentPrayer: prayerById["sign-of-cross"],
+    });
+    await rendered.rerender(<RosaryPrayerScreen isDecade={false} />);
+
+    expect(screen.getByText("SIGN OF THE CROSS")).toBeTruthy();
+    expect(screen.getByText("59 of 59")).toBeTruthy();
+    expect(screen.getByLabelText(/current bead 59, Hail Mary/i)).toBeTruthy();
+  });
+
+  it("shows non-bead prayers without incrementing bead progress or moving the highlight", async () => {
+    const fatimaPrayerIndex = fullRosarySequence.findIndex((bead) => bead.type === "fatimaPrayer");
+    mockSession({
+      currentBead: fullRosarySequence[fatimaPrayerIndex],
+      currentBeadIndex: fatimaPrayerIndex,
+      currentPrayer: prayerById["fatima-prayer"],
+    });
+
+    await render(<RosaryPrayerScreen isDecade={false} />);
+
+    expect(screen.getByText("FATIMA PRAYER")).toBeTruthy();
+    expect(screen.getByText("15 of 59")).toBeTruthy();
+    expect(screen.getByLabelText(/current bead 15, Hail Mary/i)).toBeTruthy();
+    expect(screen.queryByTestId("rosary-bead-19")).toBeNull();
   });
 
   it("provides a chevron back action for this non-tab route", async () => {

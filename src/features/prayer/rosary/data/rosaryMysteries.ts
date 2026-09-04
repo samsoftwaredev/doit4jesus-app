@@ -51,6 +51,8 @@ function createMysterySet(content: RosaryContent, type: RosaryMysteryType): Rosa
     id: mystery.id,
     title: mystery.title,
     category,
+    fruit: mystery.fruit,
+    fruitDescription: mystery.fruit_description,
     imageSource: mysteryImageSources[mystery.app_image_key] ?? fallbackImageSource,
     imageAlt: mystery.image_alt,
     scriptureReference: mystery.primary_scripture,

@@ -1,3 +1,4 @@
+export { FruitOfMysteryCard } from "./FruitOfMysteryCard";
 export { MysteryCard } from "./MysteryCard";
 export { PrayerCard } from "./PrayerCard";
 export { RosaryBead } from "./RosaryBead";

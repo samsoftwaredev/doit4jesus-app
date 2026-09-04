@@ -5,7 +5,8 @@ export type RosaryMysteryCategory =
 
 export type RosaryMysteryType = "joyful" | "luminous" | "sorrowful" | "glorious";
 
-export type RosaryBeadType = "ourFather" | "hailMary" | "gloryBe" | "fatimaPrayer" | "creed" | "hailHolyQueen";
+export type RosaryBeadType =
+  "ourFather" | "hailMary" | "gloryBe" | "fatimaPrayer" | "creed" | "hailHolyQueen" | "signOfCross";
 
 export type RosarySection = "opening" | "decade" | "closing";
 
@@ -37,6 +38,8 @@ export interface RosaryMystery {
   id: string;
   title: string;
   category: RosaryMysteryCategory;
+  fruit: string;
+  fruitDescription: string;
   imageSource: ImageSourcePropType;
   imageAlt: string;
   scriptureReference: string;

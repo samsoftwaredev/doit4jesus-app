@@ -1,8 +1,8 @@
 {
-  "schema_version": "1.1.0",
+  "schema_version": "1.3.0",
   "name": "Complete Catholic Rosary",
   "language": "en",
-  "description": "App-ready Rosary data containing the Joyful, Luminous, Sorrowful, and Glorious Mysteries. Every mystery-decade prayer includes a distinct, mystery-appropriate Scripture reference and a related public-domain Scripture excerpt, in addition to its prayer text and unique image/audio asset paths. Mystery records also include the bundled app image key and accessible alternative text used by the Expo client.",
+  "description": "App-ready Rosary data containing the Joyful, Luminous, Sorrowful, and Glorious Mysteries, including unnumbered opening and closing Sign of the Cross prayer steps. Every mystery includes its spiritual fruit and a brief reflection. Every mystery-decade prayer includes a distinct, mystery-appropriate Scripture reference and a related public-domain Scripture excerpt, in addition to its prayer text and unique image/audio asset paths. Mystery records also include the bundled app image key and accessible alternative text used by the Expo client.",
   "asset_conventions": {
     "image_format": "png",
     "audio_format": "mp3",
@@ -11,6 +11,10 @@
     "note": "Asset files are referenced by path only; replace or generate the files using these exact names."
   },
   "prayer_library": {
+    "sign_of_cross": {
+      "title": "Sign of the Cross",
+      "text": "In the name of the Father, and of the Son, and of the Holy Spirit. Amen."
+    },
     "apostles_creed": {
       "title": "Apostles' Creed",
       "text": "I believe in God, the Father almighty, Creator of heaven and earth, and in Jesus Christ, his only Son, our Lord, who was conceived by the Holy Spirit, born of the Virgin Mary, suffered under Pontius Pilate, was crucified, died and was buried; he descended into hell; on the third day he rose again from the dead; he ascended into heaven, and is seated at the right hand of God the Father almighty; from there he will come to judge the living and the dead. I believe in the Holy Spirit, the holy catholic Church, the communion of saints, the forgiveness of sins, the resurrection of the body, and life everlasting. Amen."
@@ -49,6 +53,7 @@
           "primary_scripture": "Luke 1:26-38",
           "supporting_scriptures": ["Isaiah 7:14"],
           "fruit": "Humility",
+          "fruit_description": "Mary receives God's message with trust and calls herself his servant. Ask for grace to surrender pride and welcome God's will with a humble heart.",
           "image": "/assets/rosary/images/joyful/mysteries/01_the_annunciation.png",
           "app_image_key": "blessed_virgin_mary",
           "image_alt": "A devotional image of Mary for the mystery of the Annunciation.",
@@ -62,6 +67,7 @@
           "primary_scripture": "Luke 1:39-56",
           "supporting_scriptures": [],
           "fruit": "Love of Neighbor",
+          "fruit_description": "Mary carries Christ to Elizabeth and serves her with generous haste. Ask for grace to notice others' needs and bring Christ's love through practical acts of charity.",
           "image": "/assets/rosary/images/joyful/mysteries/02_the_visitation.png",
           "app_image_key": "saint_monica",
           "image_alt": "A devotional image for the mystery of the Visitation.",
@@ -75,6 +81,7 @@
           "primary_scripture": "Luke 2:1-20",
           "supporting_scriptures": ["Matthew 1:18-25"],
           "fruit": "Poverty of Spirit",
+          "fruit_description": "Jesus is born in a humble manger, revealing that true riches are found in God. Ask for grace to loosen attachment to material wealth and treasure what draws the heart toward him.",
           "image": "/assets/rosary/images/joyful/mysteries/03_the_nativity.png",
           "app_image_key": "cathedral_desktop",
           "image_alt": "A sacred church interior for the mystery of the Nativity.",
@@ -88,6 +95,7 @@
           "primary_scripture": "Luke 2:22-40",
           "supporting_scriptures": ["Leviticus 12:2-8", "Exodus 13:2"],
           "fruit": "Obedience",
+          "fruit_description": "Mary and Joseph present Jesus according to God's law, even at personal cost. Ask for grace to obey God faithfully and offer him every part of life.",
           "image": "/assets/rosary/images/joyful/mysteries/04_the_presentation.png",
           "app_image_key": "white_lily",
           "image_alt": "White lilies representing the mystery of the Presentation.",
@@ -101,6 +109,7 @@
           "primary_scripture": "Luke 2:41-52",
           "supporting_scriptures": [],
           "fruit": "Joy in Finding Jesus",
+          "fruit_description": "After searching in sorrow, Mary and Joseph find Jesus in his Father's house. Ask for grace to seek Christ persistently and rejoice whenever he is found anew.",
           "image": "/assets/rosary/images/joyful/mysteries/05_finding_jesus_in_the_temple.png",
           "app_image_key": "bible",
           "image_alt": "A Bible representing the mystery of Finding Jesus in the Temple.",
@@ -110,8 +119,34 @@
       ],
       "prayer_sequence": [
         {
-          "id": "joyful_bead_01",
+          "id": "joyful_sign_of_cross_opening",
           "sequence": 1,
+          "section": "opening",
+          "decade": null,
+          "bead_in_decade": null,
+          "prayer_type": "sign_of_cross",
+          "title": "Sign of the Cross",
+          "text": "In the name of the Father, and of the Son, and of the Holy Spirit. Amen.",
+          "mystery_id": null,
+          "mystery_title": null,
+          "scripture_reference": null,
+          "fruit_of_mystery": null,
+          "image": {
+            "src": "/assets/rosary/images/joyful/joyful_sign_of_cross_opening.png",
+            "alt": "Sign of the Cross — Opening",
+            "unique_per_bead": true
+          },
+          "audio": {
+            "src": "/assets/rosary/audio/joyful/joyful_sign_of_cross_opening.mp3",
+            "format": "audio/mpeg",
+            "unique_per_bead": true
+          },
+          "is_physical_bead": false,
+          "scripture_text": null
+        },
+        {
+          "id": "joyful_bead_01",
+          "sequence": 2,
           "section": "opening",
           "decade": null,
           "bead_in_decade": null,
@@ -137,7 +172,7 @@
         },
         {
           "id": "joyful_bead_02",
-          "sequence": 2,
+          "sequence": 3,
           "section": "opening",
           "decade": null,
           "bead_in_decade": null,
@@ -163,7 +198,7 @@
         },
         {
           "id": "joyful_bead_03",
-          "sequence": 3,
+          "sequence": 4,
           "section": "opening",
           "decade": null,
           "bead_in_decade": 1,
@@ -190,7 +225,7 @@
         },
         {
           "id": "joyful_bead_04",
-          "sequence": 4,
+          "sequence": 5,
           "section": "opening",
           "decade": null,
           "bead_in_decade": 2,
@@ -217,7 +252,7 @@
         },
         {
           "id": "joyful_bead_05",
-          "sequence": 5,
+          "sequence": 6,
           "section": "opening",
           "decade": null,
           "bead_in_decade": 3,
@@ -244,7 +279,7 @@
         },
         {
           "id": "joyful_bead_06",
-          "sequence": 6,
+          "sequence": 7,
           "section": "opening",
           "decade": null,
           "bead_in_decade": null,
@@ -270,7 +305,7 @@
         },
         {
           "id": "joyful_bead_07",
-          "sequence": 7,
+          "sequence": 8,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 0,
@@ -296,7 +331,7 @@
         },
         {
           "id": "joyful_bead_08",
-          "sequence": 8,
+          "sequence": 9,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 1,
@@ -322,7 +357,7 @@
         },
         {
           "id": "joyful_bead_09",
-          "sequence": 9,
+          "sequence": 10,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 2,
@@ -348,7 +383,7 @@
         },
         {
           "id": "joyful_bead_10",
-          "sequence": 10,
+          "sequence": 11,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 3,
@@ -374,7 +409,7 @@
         },
         {
           "id": "joyful_bead_11",
-          "sequence": 11,
+          "sequence": 12,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 4,
@@ -400,7 +435,7 @@
         },
         {
           "id": "joyful_bead_12",
-          "sequence": 12,
+          "sequence": 13,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 5,
@@ -426,7 +461,7 @@
         },
         {
           "id": "joyful_bead_13",
-          "sequence": 13,
+          "sequence": 14,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 6,
@@ -452,7 +487,7 @@
         },
         {
           "id": "joyful_bead_14",
-          "sequence": 14,
+          "sequence": 15,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 7,
@@ -478,7 +513,7 @@
         },
         {
           "id": "joyful_bead_15",
-          "sequence": 15,
+          "sequence": 16,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 8,
@@ -504,7 +539,7 @@
         },
         {
           "id": "joyful_bead_16",
-          "sequence": 16,
+          "sequence": 17,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 9,
@@ -530,7 +565,7 @@
         },
         {
           "id": "joyful_bead_17",
-          "sequence": 17,
+          "sequence": 18,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 10,
@@ -556,7 +591,7 @@
         },
         {
           "id": "joyful_bead_18",
-          "sequence": 18,
+          "sequence": 19,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 11,
@@ -582,7 +617,7 @@
         },
         {
           "id": "joyful_bead_19",
-          "sequence": 19,
+          "sequence": 20,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 12,
@@ -608,7 +643,7 @@
         },
         {
           "id": "joyful_bead_20",
-          "sequence": 20,
+          "sequence": 21,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 0,
@@ -634,7 +669,7 @@
         },
         {
           "id": "joyful_bead_21",
-          "sequence": 21,
+          "sequence": 22,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 1,
@@ -660,7 +695,7 @@
         },
         {
           "id": "joyful_bead_22",
-          "sequence": 22,
+          "sequence": 23,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 2,
@@ -686,7 +721,7 @@
         },
         {
           "id": "joyful_bead_23",
-          "sequence": 23,
+          "sequence": 24,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 3,
@@ -712,7 +747,7 @@
         },
         {
           "id": "joyful_bead_24",
-          "sequence": 24,
+          "sequence": 25,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 4,
@@ -738,7 +773,7 @@
         },
         {
           "id": "joyful_bead_25",
-          "sequence": 25,
+          "sequence": 26,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 5,
@@ -764,7 +799,7 @@
         },
         {
           "id": "joyful_bead_26",
-          "sequence": 26,
+          "sequence": 27,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 6,
@@ -790,7 +825,7 @@
         },
         {
           "id": "joyful_bead_27",
-          "sequence": 27,
+          "sequence": 28,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 7,
@@ -816,7 +851,7 @@
         },
         {
           "id": "joyful_bead_28",
-          "sequence": 28,
+          "sequence": 29,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 8,
@@ -842,7 +877,7 @@
         },
         {
           "id": "joyful_bead_29",
-          "sequence": 29,
+          "sequence": 30,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 9,
@@ -868,7 +903,7 @@
         },
         {
           "id": "joyful_bead_30",
-          "sequence": 30,
+          "sequence": 31,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 10,
@@ -894,7 +929,7 @@
         },
         {
           "id": "joyful_bead_31",
-          "sequence": 31,
+          "sequence": 32,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 11,
@@ -920,7 +955,7 @@
         },
         {
           "id": "joyful_bead_32",
-          "sequence": 32,
+          "sequence": 33,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 12,
@@ -946,7 +981,7 @@
         },
         {
           "id": "joyful_bead_33",
-          "sequence": 33,
+          "sequence": 34,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 0,
@@ -972,7 +1007,7 @@
         },
         {
           "id": "joyful_bead_34",
-          "sequence": 34,
+          "sequence": 35,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 1,
@@ -998,7 +1033,7 @@
         },
         {
           "id": "joyful_bead_35",
-          "sequence": 35,
+          "sequence": 36,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 2,
@@ -1024,7 +1059,7 @@
         },
         {
           "id": "joyful_bead_36",
-          "sequence": 36,
+          "sequence": 37,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 3,
@@ -1050,7 +1085,7 @@
         },
         {
           "id": "joyful_bead_37",
-          "sequence": 37,
+          "sequence": 38,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 4,
@@ -1076,7 +1111,7 @@
         },
         {
           "id": "joyful_bead_38",
-          "sequence": 38,
+          "sequence": 39,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 5,
@@ -1102,7 +1137,7 @@
         },
         {
           "id": "joyful_bead_39",
-          "sequence": 39,
+          "sequence": 40,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 6,
@@ -1128,7 +1163,7 @@
         },
         {
           "id": "joyful_bead_40",
-          "sequence": 40,
+          "sequence": 41,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 7,
@@ -1154,7 +1189,7 @@
         },
         {
           "id": "joyful_bead_41",
-          "sequence": 41,
+          "sequence": 42,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 8,
@@ -1180,7 +1215,7 @@
         },
         {
           "id": "joyful_bead_42",
-          "sequence": 42,
+          "sequence": 43,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 9,
@@ -1206,7 +1241,7 @@
         },
         {
           "id": "joyful_bead_43",
-          "sequence": 43,
+          "sequence": 44,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 10,
@@ -1232,7 +1267,7 @@
         },
         {
           "id": "joyful_bead_44",
-          "sequence": 44,
+          "sequence": 45,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 11,
@@ -1258,7 +1293,7 @@
         },
         {
           "id": "joyful_bead_45",
-          "sequence": 45,
+          "sequence": 46,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 12,
@@ -1284,7 +1319,7 @@
         },
         {
           "id": "joyful_bead_46",
-          "sequence": 46,
+          "sequence": 47,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 0,
@@ -1310,7 +1345,7 @@
         },
         {
           "id": "joyful_bead_47",
-          "sequence": 47,
+          "sequence": 48,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 1,
@@ -1336,7 +1371,7 @@
         },
         {
           "id": "joyful_bead_48",
-          "sequence": 48,
+          "sequence": 49,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 2,
@@ -1362,7 +1397,7 @@
         },
         {
           "id": "joyful_bead_49",
-          "sequence": 49,
+          "sequence": 50,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 3,
@@ -1388,7 +1423,7 @@
         },
         {
           "id": "joyful_bead_50",
-          "sequence": 50,
+          "sequence": 51,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 4,
@@ -1414,7 +1449,7 @@
         },
         {
           "id": "joyful_bead_51",
-          "sequence": 51,
+          "sequence": 52,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 5,
@@ -1440,7 +1475,7 @@
         },
         {
           "id": "joyful_bead_52",
-          "sequence": 52,
+          "sequence": 53,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 6,
@@ -1466,7 +1501,7 @@
         },
         {
           "id": "joyful_bead_53",
-          "sequence": 53,
+          "sequence": 54,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 7,
@@ -1492,7 +1527,7 @@
         },
         {
           "id": "joyful_bead_54",
-          "sequence": 54,
+          "sequence": 55,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 8,
@@ -1518,7 +1553,7 @@
         },
         {
           "id": "joyful_bead_55",
-          "sequence": 55,
+          "sequence": 56,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 9,
@@ -1544,7 +1579,7 @@
         },
         {
           "id": "joyful_bead_56",
-          "sequence": 56,
+          "sequence": 57,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 10,
@@ -1570,7 +1605,7 @@
         },
         {
           "id": "joyful_bead_57",
-          "sequence": 57,
+          "sequence": 58,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 11,
@@ -1596,7 +1631,7 @@
         },
         {
           "id": "joyful_bead_58",
-          "sequence": 58,
+          "sequence": 59,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 12,
@@ -1622,7 +1657,7 @@
         },
         {
           "id": "joyful_bead_59",
-          "sequence": 59,
+          "sequence": 60,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 0,
@@ -1648,7 +1683,7 @@
         },
         {
           "id": "joyful_bead_60",
-          "sequence": 60,
+          "sequence": 61,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 1,
@@ -1674,7 +1709,7 @@
         },
         {
           "id": "joyful_bead_61",
-          "sequence": 61,
+          "sequence": 62,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 2,
@@ -1700,7 +1735,7 @@
         },
         {
           "id": "joyful_bead_62",
-          "sequence": 62,
+          "sequence": 63,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 3,
@@ -1726,7 +1761,7 @@
         },
         {
           "id": "joyful_bead_63",
-          "sequence": 63,
+          "sequence": 64,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 4,
@@ -1752,7 +1787,7 @@
         },
         {
           "id": "joyful_bead_64",
-          "sequence": 64,
+          "sequence": 65,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 5,
@@ -1778,7 +1813,7 @@
         },
         {
           "id": "joyful_bead_65",
-          "sequence": 65,
+          "sequence": 66,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 6,
@@ -1804,7 +1839,7 @@
         },
         {
           "id": "joyful_bead_66",
-          "sequence": 66,
+          "sequence": 67,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 7,
@@ -1830,7 +1865,7 @@
         },
         {
           "id": "joyful_bead_67",
-          "sequence": 67,
+          "sequence": 68,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 8,
@@ -1856,7 +1891,7 @@
         },
         {
           "id": "joyful_bead_68",
-          "sequence": 68,
+          "sequence": 69,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 9,
@@ -1882,7 +1917,7 @@
         },
         {
           "id": "joyful_bead_69",
-          "sequence": 69,
+          "sequence": 70,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 10,
@@ -1908,7 +1943,7 @@
         },
         {
           "id": "joyful_bead_70",
-          "sequence": 70,
+          "sequence": 71,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 11,
@@ -1934,7 +1969,7 @@
         },
         {
           "id": "joyful_bead_71",
-          "sequence": 71,
+          "sequence": 72,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 12,
@@ -1960,7 +1995,7 @@
         },
         {
           "id": "joyful_bead_72",
-          "sequence": 72,
+          "sequence": 73,
           "section": "closing",
           "decade": null,
           "bead_in_decade": null,
@@ -1983,15 +2018,42 @@
           },
           "is_physical_bead": false,
           "scripture_text": null
+        },
+        {
+          "id": "joyful_sign_of_cross_closing",
+          "sequence": 74,
+          "section": "closing",
+          "decade": null,
+          "bead_in_decade": null,
+          "prayer_type": "sign_of_cross",
+          "title": "Sign of the Cross",
+          "text": "In the name of the Father, and of the Son, and of the Holy Spirit. Amen.",
+          "mystery_id": null,
+          "mystery_title": null,
+          "scripture_reference": null,
+          "fruit_of_mystery": null,
+          "image": {
+            "src": "/assets/rosary/images/joyful/joyful_sign_of_cross_closing.png",
+            "alt": "Sign of the Cross — Closing",
+            "unique_per_bead": true
+          },
+          "audio": {
+            "src": "/assets/rosary/audio/joyful/joyful_sign_of_cross_closing.mp3",
+            "format": "audio/mpeg",
+            "unique_per_bead": true
+          },
+          "is_physical_bead": false,
+          "scripture_text": null
         }
       ],
       "counts": {
-        "sequence_items": 72,
+        "sequence_items": 74,
         "physical_beads": 59,
         "hail_marys": 53,
         "our_fathers": 6,
         "glory_bes": 6,
-        "fatima_prayers": 5
+        "fatima_prayers": 5,
+        "signs_of_cross": 2
       }
     },
     {
@@ -2006,6 +2068,7 @@
           "primary_scripture": "Matthew 3:13-17",
           "supporting_scriptures": ["Mark 1:9-11", "Luke 3:21-22", "John 1:29-34"],
           "fruit": "Openness to the Holy Spirit",
+          "fruit_description": "At Jesus' baptism, the Father speaks and the Holy Spirit descends upon the Son. Ask for grace to hear God's voice and follow the Spirit's guidance with an open heart.",
           "image": "/assets/rosary/images/luminous/mysteries/01_baptism_of_jesus.png",
           "app_image_key": "saint_john_the_evangelist",
           "image_alt": "A devotional image for the Baptism in the Jordan.",
@@ -2019,6 +2082,7 @@
           "primary_scripture": "John 2:1-11",
           "supporting_scriptures": [],
           "fruit": "Trust in Mary's Intercession",
+          "fruit_description": "Mary notices the need at Cana, brings it to Jesus, and tells the servants to follow him. Ask for grace to trust her intercession and to do whatever Christ asks.",
           "image": "/assets/rosary/images/luminous/mysteries/02_wedding_at_cana.png",
           "app_image_key": "saint_joseph",
           "image_alt": "A devotional image for the mystery of the Wedding at Cana.",
@@ -2032,6 +2096,7 @@
           "primary_scripture": "Mark 1:14-15",
           "supporting_scriptures": ["Matthew 4:17", "Matthew 5:1-12", "Luke 4:16-21"],
           "fruit": "Conversion",
+          "fruit_description": "Jesus proclaims God's kingdom and calls everyone to repent and believe the Gospel. Ask for grace to turn away from sin and let Christ reshape daily life.",
           "image": "/assets/rosary/images/luminous/mysteries/03_proclamation_of_the_kingdom.png",
           "app_image_key": "bible",
           "image_alt": "A Bible representing the Proclamation of the Kingdom.",
@@ -2045,6 +2110,7 @@
           "primary_scripture": "Matthew 17:1-8",
           "supporting_scriptures": ["Mark 9:2-8", "Luke 9:28-36"],
           "fruit": "Desire for Holiness",
+          "fruit_description": "Jesus reveals his glory to strengthen the disciples for the road ahead. Ask for grace to desire transformation and reflect Christ's light in ordinary life.",
           "image": "/assets/rosary/images/luminous/mysteries/04_the_transfiguration.png",
           "app_image_key": "saint_francis_of_assisi",
           "image_alt": "A devotional image for the Transfiguration.",
@@ -2058,6 +2124,7 @@
           "primary_scripture": "Luke 22:14-20",
           "supporting_scriptures": ["Matthew 26:26-29", "Mark 14:22-25", "1 Corinthians 11:23-26", "John 6:51-58"],
           "fruit": "Eucharistic Love",
+          "fruit_description": "Jesus gives his Body and Blood as food and remains with his people in the Eucharist. Ask for grace to love his presence and become a self-giving gift to others.",
           "image": "/assets/rosary/images/luminous/mysteries/05_institution_of_the_eucharist.png",
           "app_image_key": "cathedral_desktop",
           "image_alt": "A sacred church interior for the Institution of the Eucharist.",
@@ -2067,8 +2134,34 @@
       ],
       "prayer_sequence": [
         {
-          "id": "luminous_bead_01",
+          "id": "luminous_sign_of_cross_opening",
           "sequence": 1,
+          "section": "opening",
+          "decade": null,
+          "bead_in_decade": null,
+          "prayer_type": "sign_of_cross",
+          "title": "Sign of the Cross",
+          "text": "In the name of the Father, and of the Son, and of the Holy Spirit. Amen.",
+          "mystery_id": null,
+          "mystery_title": null,
+          "scripture_reference": null,
+          "fruit_of_mystery": null,
+          "image": {
+            "src": "/assets/rosary/images/luminous/luminous_sign_of_cross_opening.png",
+            "alt": "Sign of the Cross — Opening",
+            "unique_per_bead": true
+          },
+          "audio": {
+            "src": "/assets/rosary/audio/luminous/luminous_sign_of_cross_opening.mp3",
+            "format": "audio/mpeg",
+            "unique_per_bead": true
+          },
+          "is_physical_bead": false,
+          "scripture_text": null
+        },
+        {
+          "id": "luminous_bead_01",
+          "sequence": 2,
           "section": "opening",
           "decade": null,
           "bead_in_decade": null,
@@ -2094,7 +2187,7 @@
         },
         {
           "id": "luminous_bead_02",
-          "sequence": 2,
+          "sequence": 3,
           "section": "opening",
           "decade": null,
           "bead_in_decade": null,
@@ -2120,7 +2213,7 @@
         },
         {
           "id": "luminous_bead_03",
-          "sequence": 3,
+          "sequence": 4,
           "section": "opening",
           "decade": null,
           "bead_in_decade": 1,
@@ -2147,7 +2240,7 @@
         },
         {
           "id": "luminous_bead_04",
-          "sequence": 4,
+          "sequence": 5,
           "section": "opening",
           "decade": null,
           "bead_in_decade": 2,
@@ -2174,7 +2267,7 @@
         },
         {
           "id": "luminous_bead_05",
-          "sequence": 5,
+          "sequence": 6,
           "section": "opening",
           "decade": null,
           "bead_in_decade": 3,
@@ -2201,7 +2294,7 @@
         },
         {
           "id": "luminous_bead_06",
-          "sequence": 6,
+          "sequence": 7,
           "section": "opening",
           "decade": null,
           "bead_in_decade": null,
@@ -2227,7 +2320,7 @@
         },
         {
           "id": "luminous_bead_07",
-          "sequence": 7,
+          "sequence": 8,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 0,
@@ -2253,7 +2346,7 @@
         },
         {
           "id": "luminous_bead_08",
-          "sequence": 8,
+          "sequence": 9,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 1,
@@ -2279,7 +2372,7 @@
         },
         {
           "id": "luminous_bead_09",
-          "sequence": 9,
+          "sequence": 10,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 2,
@@ -2305,7 +2398,7 @@
         },
         {
           "id": "luminous_bead_10",
-          "sequence": 10,
+          "sequence": 11,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 3,
@@ -2331,7 +2424,7 @@
         },
         {
           "id": "luminous_bead_11",
-          "sequence": 11,
+          "sequence": 12,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 4,
@@ -2357,7 +2450,7 @@
         },
         {
           "id": "luminous_bead_12",
-          "sequence": 12,
+          "sequence": 13,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 5,
@@ -2383,7 +2476,7 @@
         },
         {
           "id": "luminous_bead_13",
-          "sequence": 13,
+          "sequence": 14,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 6,
@@ -2409,7 +2502,7 @@
         },
         {
           "id": "luminous_bead_14",
-          "sequence": 14,
+          "sequence": 15,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 7,
@@ -2435,7 +2528,7 @@
         },
         {
           "id": "luminous_bead_15",
-          "sequence": 15,
+          "sequence": 16,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 8,
@@ -2461,7 +2554,7 @@
         },
         {
           "id": "luminous_bead_16",
-          "sequence": 16,
+          "sequence": 17,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 9,
@@ -2487,7 +2580,7 @@
         },
         {
           "id": "luminous_bead_17",
-          "sequence": 17,
+          "sequence": 18,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 10,
@@ -2513,7 +2606,7 @@
         },
         {
           "id": "luminous_bead_18",
-          "sequence": 18,
+          "sequence": 19,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 11,
@@ -2539,7 +2632,7 @@
         },
         {
           "id": "luminous_bead_19",
-          "sequence": 19,
+          "sequence": 20,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 12,
@@ -2565,7 +2658,7 @@
         },
         {
           "id": "luminous_bead_20",
-          "sequence": 20,
+          "sequence": 21,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 0,
@@ -2591,7 +2684,7 @@
         },
         {
           "id": "luminous_bead_21",
-          "sequence": 21,
+          "sequence": 22,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 1,
@@ -2617,7 +2710,7 @@
         },
         {
           "id": "luminous_bead_22",
-          "sequence": 22,
+          "sequence": 23,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 2,
@@ -2643,7 +2736,7 @@
         },
         {
           "id": "luminous_bead_23",
-          "sequence": 23,
+          "sequence": 24,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 3,
@@ -2669,7 +2762,7 @@
         },
         {
           "id": "luminous_bead_24",
-          "sequence": 24,
+          "sequence": 25,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 4,
@@ -2695,7 +2788,7 @@
         },
         {
           "id": "luminous_bead_25",
-          "sequence": 25,
+          "sequence": 26,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 5,
@@ -2721,7 +2814,7 @@
         },
         {
           "id": "luminous_bead_26",
-          "sequence": 26,
+          "sequence": 27,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 6,
@@ -2747,7 +2840,7 @@
         },
         {
           "id": "luminous_bead_27",
-          "sequence": 27,
+          "sequence": 28,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 7,
@@ -2773,7 +2866,7 @@
         },
         {
           "id": "luminous_bead_28",
-          "sequence": 28,
+          "sequence": 29,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 8,
@@ -2799,7 +2892,7 @@
         },
         {
           "id": "luminous_bead_29",
-          "sequence": 29,
+          "sequence": 30,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 9,
@@ -2825,7 +2918,7 @@
         },
         {
           "id": "luminous_bead_30",
-          "sequence": 30,
+          "sequence": 31,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 10,
@@ -2851,7 +2944,7 @@
         },
         {
           "id": "luminous_bead_31",
-          "sequence": 31,
+          "sequence": 32,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 11,
@@ -2877,7 +2970,7 @@
         },
         {
           "id": "luminous_bead_32",
-          "sequence": 32,
+          "sequence": 33,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 12,
@@ -2903,7 +2996,7 @@
         },
         {
           "id": "luminous_bead_33",
-          "sequence": 33,
+          "sequence": 34,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 0,
@@ -2929,7 +3022,7 @@
         },
         {
           "id": "luminous_bead_34",
-          "sequence": 34,
+          "sequence": 35,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 1,
@@ -2955,7 +3048,7 @@
         },
         {
           "id": "luminous_bead_35",
-          "sequence": 35,
+          "sequence": 36,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 2,
@@ -2981,7 +3074,7 @@
         },
         {
           "id": "luminous_bead_36",
-          "sequence": 36,
+          "sequence": 37,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 3,
@@ -3007,7 +3100,7 @@
         },
         {
           "id": "luminous_bead_37",
-          "sequence": 37,
+          "sequence": 38,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 4,
@@ -3033,7 +3126,7 @@
         },
         {
           "id": "luminous_bead_38",
-          "sequence": 38,
+          "sequence": 39,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 5,
@@ -3059,7 +3152,7 @@
         },
         {
           "id": "luminous_bead_39",
-          "sequence": 39,
+          "sequence": 40,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 6,
@@ -3085,7 +3178,7 @@
         },
         {
           "id": "luminous_bead_40",
-          "sequence": 40,
+          "sequence": 41,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 7,
@@ -3111,7 +3204,7 @@
         },
         {
           "id": "luminous_bead_41",
-          "sequence": 41,
+          "sequence": 42,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 8,
@@ -3137,7 +3230,7 @@
         },
         {
           "id": "luminous_bead_42",
-          "sequence": 42,
+          "sequence": 43,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 9,
@@ -3163,7 +3256,7 @@
         },
         {
           "id": "luminous_bead_43",
-          "sequence": 43,
+          "sequence": 44,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 10,
@@ -3189,7 +3282,7 @@
         },
         {
           "id": "luminous_bead_44",
-          "sequence": 44,
+          "sequence": 45,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 11,
@@ -3215,7 +3308,7 @@
         },
         {
           "id": "luminous_bead_45",
-          "sequence": 45,
+          "sequence": 46,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 12,
@@ -3241,7 +3334,7 @@
         },
         {
           "id": "luminous_bead_46",
-          "sequence": 46,
+          "sequence": 47,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 0,
@@ -3267,7 +3360,7 @@
         },
         {
           "id": "luminous_bead_47",
-          "sequence": 47,
+          "sequence": 48,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 1,
@@ -3293,7 +3386,7 @@
         },
         {
           "id": "luminous_bead_48",
-          "sequence": 48,
+          "sequence": 49,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 2,
@@ -3319,7 +3412,7 @@
         },
         {
           "id": "luminous_bead_49",
-          "sequence": 49,
+          "sequence": 50,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 3,
@@ -3345,7 +3438,7 @@
         },
         {
           "id": "luminous_bead_50",
-          "sequence": 50,
+          "sequence": 51,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 4,
@@ -3371,7 +3464,7 @@
         },
         {
           "id": "luminous_bead_51",
-          "sequence": 51,
+          "sequence": 52,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 5,
@@ -3397,7 +3490,7 @@
         },
         {
           "id": "luminous_bead_52",
-          "sequence": 52,
+          "sequence": 53,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 6,
@@ -3423,7 +3516,7 @@
         },
         {
           "id": "luminous_bead_53",
-          "sequence": 53,
+          "sequence": 54,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 7,
@@ -3449,7 +3542,7 @@
         },
         {
           "id": "luminous_bead_54",
-          "sequence": 54,
+          "sequence": 55,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 8,
@@ -3475,7 +3568,7 @@
         },
         {
           "id": "luminous_bead_55",
-          "sequence": 55,
+          "sequence": 56,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 9,
@@ -3501,7 +3594,7 @@
         },
         {
           "id": "luminous_bead_56",
-          "sequence": 56,
+          "sequence": 57,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 10,
@@ -3527,7 +3620,7 @@
         },
         {
           "id": "luminous_bead_57",
-          "sequence": 57,
+          "sequence": 58,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 11,
@@ -3553,7 +3646,7 @@
         },
         {
           "id": "luminous_bead_58",
-          "sequence": 58,
+          "sequence": 59,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 12,
@@ -3579,7 +3672,7 @@
         },
         {
           "id": "luminous_bead_59",
-          "sequence": 59,
+          "sequence": 60,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 0,
@@ -3605,7 +3698,7 @@
         },
         {
           "id": "luminous_bead_60",
-          "sequence": 60,
+          "sequence": 61,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 1,
@@ -3631,7 +3724,7 @@
         },
         {
           "id": "luminous_bead_61",
-          "sequence": 61,
+          "sequence": 62,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 2,
@@ -3657,7 +3750,7 @@
         },
         {
           "id": "luminous_bead_62",
-          "sequence": 62,
+          "sequence": 63,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 3,
@@ -3683,7 +3776,7 @@
         },
         {
           "id": "luminous_bead_63",
-          "sequence": 63,
+          "sequence": 64,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 4,
@@ -3709,7 +3802,7 @@
         },
         {
           "id": "luminous_bead_64",
-          "sequence": 64,
+          "sequence": 65,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 5,
@@ -3735,7 +3828,7 @@
         },
         {
           "id": "luminous_bead_65",
-          "sequence": 65,
+          "sequence": 66,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 6,
@@ -3761,7 +3854,7 @@
         },
         {
           "id": "luminous_bead_66",
-          "sequence": 66,
+          "sequence": 67,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 7,
@@ -3787,7 +3880,7 @@
         },
         {
           "id": "luminous_bead_67",
-          "sequence": 67,
+          "sequence": 68,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 8,
@@ -3813,7 +3906,7 @@
         },
         {
           "id": "luminous_bead_68",
-          "sequence": 68,
+          "sequence": 69,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 9,
@@ -3839,7 +3932,7 @@
         },
         {
           "id": "luminous_bead_69",
-          "sequence": 69,
+          "sequence": 70,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 10,
@@ -3865,7 +3958,7 @@
         },
         {
           "id": "luminous_bead_70",
-          "sequence": 70,
+          "sequence": 71,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 11,
@@ -3891,7 +3984,7 @@
         },
         {
           "id": "luminous_bead_71",
-          "sequence": 71,
+          "sequence": 72,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 12,
@@ -3917,7 +4010,7 @@
         },
         {
           "id": "luminous_bead_72",
-          "sequence": 72,
+          "sequence": 73,
           "section": "closing",
           "decade": null,
           "bead_in_decade": null,
@@ -3940,15 +4033,42 @@
           },
           "is_physical_bead": false,
           "scripture_text": null
+        },
+        {
+          "id": "luminous_sign_of_cross_closing",
+          "sequence": 74,
+          "section": "closing",
+          "decade": null,
+          "bead_in_decade": null,
+          "prayer_type": "sign_of_cross",
+          "title": "Sign of the Cross",
+          "text": "In the name of the Father, and of the Son, and of the Holy Spirit. Amen.",
+          "mystery_id": null,
+          "mystery_title": null,
+          "scripture_reference": null,
+          "fruit_of_mystery": null,
+          "image": {
+            "src": "/assets/rosary/images/luminous/luminous_sign_of_cross_closing.png",
+            "alt": "Sign of the Cross — Closing",
+            "unique_per_bead": true
+          },
+          "audio": {
+            "src": "/assets/rosary/audio/luminous/luminous_sign_of_cross_closing.mp3",
+            "format": "audio/mpeg",
+            "unique_per_bead": true
+          },
+          "is_physical_bead": false,
+          "scripture_text": null
         }
       ],
       "counts": {
-        "sequence_items": 72,
+        "sequence_items": 74,
         "physical_beads": 59,
         "hail_marys": 53,
         "our_fathers": 6,
         "glory_bes": 6,
-        "fatima_prayers": 5
+        "fatima_prayers": 5,
+        "signs_of_cross": 2
       }
     },
     {
@@ -3963,6 +4083,7 @@
           "primary_scripture": "Matthew 26:36-46",
           "supporting_scriptures": ["Mark 14:32-42", "Luke 22:39-46"],
           "fruit": "Contrition",
+          "fruit_description": "In Gethsemane, Jesus grieves deeply yet entrusts himself to the Father's will. Ask for true sorrow for sin and the grace to return to God's mercy with a changed heart.",
           "image": "/assets/rosary/images/sorrowful/mysteries/01_agony_in_the_garden.png",
           "app_image_key": "saint_padre_pio",
           "image_alt": "A devotional image for the Agony in the Garden.",
@@ -3976,6 +4097,7 @@
           "primary_scripture": "John 19:1",
           "supporting_scriptures": ["Matthew 27:26", "Mark 15:15"],
           "fruit": "Purity",
+          "fruit_description": "The innocent Jesus bears the wounds inflicted by human sin. Ask for purity of heart and body, and for choices that honor the God-given dignity of every person.",
           "image": "/assets/rosary/images/sorrowful/mysteries/02_scourging_at_the_pillar.png",
           "app_image_key": "saint_sebastian",
           "image_alt": "A devotional image for the Scourging at the Pillar.",
@@ -3989,6 +4111,7 @@
           "primary_scripture": "Matthew 27:27-31",
           "supporting_scriptures": ["Mark 15:16-20", "John 19:2-3"],
           "fruit": "Moral Courage",
+          "fruit_description": "Jesus endures ridicule and cruelty without abandoning truth or love. Ask for courage to remain faithful to what is right, especially when facing pressure or contempt.",
           "image": "/assets/rosary/images/sorrowful/mysteries/03_crowning_with_thorns.png",
           "app_image_key": "saint_joan_of_arc",
           "image_alt": "A devotional image for the Crowning with Thorns.",
@@ -4002,6 +4125,7 @@
           "primary_scripture": "Luke 23:26-32",
           "supporting_scriptures": ["John 19:16-17", "Matthew 27:31-32", "Mark 15:20-22"],
           "fruit": "Patience",
+          "fruit_description": "Jesus carries the cross step by step and accepts Simon's help along the way. Ask for patience in hardship and humility both to receive help and to offer it.",
           "image": "/assets/rosary/images/sorrowful/mysteries/04_carrying_of_the_cross.png",
           "app_image_key": "saint_francis_xavier",
           "image_alt": "A devotional image for the Carrying of the Cross.",
@@ -4015,6 +4139,7 @@
           "primary_scripture": "Luke 23:33-46",
           "supporting_scriptures": ["John 19:18-30", "Matthew 27:33-54", "Mark 15:22-39"],
           "fruit": "Self-Sacrificing Love",
+          "fruit_description": "Jesus gives his life, forgives his persecutors, and entrusts everything to the Father. Ask for love that forgives, serves generously, and accepts the cost of seeking another's good.",
           "image": "/assets/rosary/images/sorrowful/mysteries/05_the_crucifixion.png",
           "app_image_key": "cathedral_tablet",
           "image_alt": "A sacred church interior for the Crucifixion.",
@@ -4024,8 +4149,34 @@
       ],
       "prayer_sequence": [
         {
-          "id": "sorrowful_bead_01",
+          "id": "sorrowful_sign_of_cross_opening",
           "sequence": 1,
+          "section": "opening",
+          "decade": null,
+          "bead_in_decade": null,
+          "prayer_type": "sign_of_cross",
+          "title": "Sign of the Cross",
+          "text": "In the name of the Father, and of the Son, and of the Holy Spirit. Amen.",
+          "mystery_id": null,
+          "mystery_title": null,
+          "scripture_reference": null,
+          "fruit_of_mystery": null,
+          "image": {
+            "src": "/assets/rosary/images/sorrowful/sorrowful_sign_of_cross_opening.png",
+            "alt": "Sign of the Cross — Opening",
+            "unique_per_bead": true
+          },
+          "audio": {
+            "src": "/assets/rosary/audio/sorrowful/sorrowful_sign_of_cross_opening.mp3",
+            "format": "audio/mpeg",
+            "unique_per_bead": true
+          },
+          "is_physical_bead": false,
+          "scripture_text": null
+        },
+        {
+          "id": "sorrowful_bead_01",
+          "sequence": 2,
           "section": "opening",
           "decade": null,
           "bead_in_decade": null,
@@ -4051,7 +4202,7 @@
         },
         {
           "id": "sorrowful_bead_02",
-          "sequence": 2,
+          "sequence": 3,
           "section": "opening",
           "decade": null,
           "bead_in_decade": null,
@@ -4077,7 +4228,7 @@
         },
         {
           "id": "sorrowful_bead_03",
-          "sequence": 3,
+          "sequence": 4,
           "section": "opening",
           "decade": null,
           "bead_in_decade": 1,
@@ -4104,7 +4255,7 @@
         },
         {
           "id": "sorrowful_bead_04",
-          "sequence": 4,
+          "sequence": 5,
           "section": "opening",
           "decade": null,
           "bead_in_decade": 2,
@@ -4131,7 +4282,7 @@
         },
         {
           "id": "sorrowful_bead_05",
-          "sequence": 5,
+          "sequence": 6,
           "section": "opening",
           "decade": null,
           "bead_in_decade": 3,
@@ -4158,7 +4309,7 @@
         },
         {
           "id": "sorrowful_bead_06",
-          "sequence": 6,
+          "sequence": 7,
           "section": "opening",
           "decade": null,
           "bead_in_decade": null,
@@ -4184,7 +4335,7 @@
         },
         {
           "id": "sorrowful_bead_07",
-          "sequence": 7,
+          "sequence": 8,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 0,
@@ -4210,7 +4361,7 @@
         },
         {
           "id": "sorrowful_bead_08",
-          "sequence": 8,
+          "sequence": 9,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 1,
@@ -4236,7 +4387,7 @@
         },
         {
           "id": "sorrowful_bead_09",
-          "sequence": 9,
+          "sequence": 10,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 2,
@@ -4262,7 +4413,7 @@
         },
         {
           "id": "sorrowful_bead_10",
-          "sequence": 10,
+          "sequence": 11,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 3,
@@ -4288,7 +4439,7 @@
         },
         {
           "id": "sorrowful_bead_11",
-          "sequence": 11,
+          "sequence": 12,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 4,
@@ -4314,7 +4465,7 @@
         },
         {
           "id": "sorrowful_bead_12",
-          "sequence": 12,
+          "sequence": 13,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 5,
@@ -4340,7 +4491,7 @@
         },
         {
           "id": "sorrowful_bead_13",
-          "sequence": 13,
+          "sequence": 14,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 6,
@@ -4366,7 +4517,7 @@
         },
         {
           "id": "sorrowful_bead_14",
-          "sequence": 14,
+          "sequence": 15,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 7,
@@ -4392,7 +4543,7 @@
         },
         {
           "id": "sorrowful_bead_15",
-          "sequence": 15,
+          "sequence": 16,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 8,
@@ -4418,7 +4569,7 @@
         },
         {
           "id": "sorrowful_bead_16",
-          "sequence": 16,
+          "sequence": 17,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 9,
@@ -4444,7 +4595,7 @@
         },
         {
           "id": "sorrowful_bead_17",
-          "sequence": 17,
+          "sequence": 18,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 10,
@@ -4470,7 +4621,7 @@
         },
         {
           "id": "sorrowful_bead_18",
-          "sequence": 18,
+          "sequence": 19,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 11,
@@ -4496,7 +4647,7 @@
         },
         {
           "id": "sorrowful_bead_19",
-          "sequence": 19,
+          "sequence": 20,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 12,
@@ -4522,7 +4673,7 @@
         },
         {
           "id": "sorrowful_bead_20",
-          "sequence": 20,
+          "sequence": 21,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 0,
@@ -4548,7 +4699,7 @@
         },
         {
           "id": "sorrowful_bead_21",
-          "sequence": 21,
+          "sequence": 22,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 1,
@@ -4574,7 +4725,7 @@
         },
         {
           "id": "sorrowful_bead_22",
-          "sequence": 22,
+          "sequence": 23,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 2,
@@ -4600,7 +4751,7 @@
         },
         {
           "id": "sorrowful_bead_23",
-          "sequence": 23,
+          "sequence": 24,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 3,
@@ -4626,7 +4777,7 @@
         },
         {
           "id": "sorrowful_bead_24",
-          "sequence": 24,
+          "sequence": 25,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 4,
@@ -4652,7 +4803,7 @@
         },
         {
           "id": "sorrowful_bead_25",
-          "sequence": 25,
+          "sequence": 26,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 5,
@@ -4678,7 +4829,7 @@
         },
         {
           "id": "sorrowful_bead_26",
-          "sequence": 26,
+          "sequence": 27,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 6,
@@ -4704,7 +4855,7 @@
         },
         {
           "id": "sorrowful_bead_27",
-          "sequence": 27,
+          "sequence": 28,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 7,
@@ -4730,7 +4881,7 @@
         },
         {
           "id": "sorrowful_bead_28",
-          "sequence": 28,
+          "sequence": 29,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 8,
@@ -4756,7 +4907,7 @@
         },
         {
           "id": "sorrowful_bead_29",
-          "sequence": 29,
+          "sequence": 30,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 9,
@@ -4782,7 +4933,7 @@
         },
         {
           "id": "sorrowful_bead_30",
-          "sequence": 30,
+          "sequence": 31,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 10,
@@ -4808,7 +4959,7 @@
         },
         {
           "id": "sorrowful_bead_31",
-          "sequence": 31,
+          "sequence": 32,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 11,
@@ -4834,7 +4985,7 @@
         },
         {
           "id": "sorrowful_bead_32",
-          "sequence": 32,
+          "sequence": 33,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 12,
@@ -4860,7 +5011,7 @@
         },
         {
           "id": "sorrowful_bead_33",
-          "sequence": 33,
+          "sequence": 34,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 0,
@@ -4886,7 +5037,7 @@
         },
         {
           "id": "sorrowful_bead_34",
-          "sequence": 34,
+          "sequence": 35,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 1,
@@ -4912,7 +5063,7 @@
         },
         {
           "id": "sorrowful_bead_35",
-          "sequence": 35,
+          "sequence": 36,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 2,
@@ -4938,7 +5089,7 @@
         },
         {
           "id": "sorrowful_bead_36",
-          "sequence": 36,
+          "sequence": 37,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 3,
@@ -4964,7 +5115,7 @@
         },
         {
           "id": "sorrowful_bead_37",
-          "sequence": 37,
+          "sequence": 38,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 4,
@@ -4990,7 +5141,7 @@
         },
         {
           "id": "sorrowful_bead_38",
-          "sequence": 38,
+          "sequence": 39,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 5,
@@ -5016,7 +5167,7 @@
         },
         {
           "id": "sorrowful_bead_39",
-          "sequence": 39,
+          "sequence": 40,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 6,
@@ -5042,7 +5193,7 @@
         },
         {
           "id": "sorrowful_bead_40",
-          "sequence": 40,
+          "sequence": 41,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 7,
@@ -5068,7 +5219,7 @@
         },
         {
           "id": "sorrowful_bead_41",
-          "sequence": 41,
+          "sequence": 42,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 8,
@@ -5094,7 +5245,7 @@
         },
         {
           "id": "sorrowful_bead_42",
-          "sequence": 42,
+          "sequence": 43,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 9,
@@ -5120,7 +5271,7 @@
         },
         {
           "id": "sorrowful_bead_43",
-          "sequence": 43,
+          "sequence": 44,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 10,
@@ -5146,7 +5297,7 @@
         },
         {
           "id": "sorrowful_bead_44",
-          "sequence": 44,
+          "sequence": 45,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 11,
@@ -5172,7 +5323,7 @@
         },
         {
           "id": "sorrowful_bead_45",
-          "sequence": 45,
+          "sequence": 46,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 12,
@@ -5198,7 +5349,7 @@
         },
         {
           "id": "sorrowful_bead_46",
-          "sequence": 46,
+          "sequence": 47,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 0,
@@ -5224,7 +5375,7 @@
         },
         {
           "id": "sorrowful_bead_47",
-          "sequence": 47,
+          "sequence": 48,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 1,
@@ -5250,7 +5401,7 @@
         },
         {
           "id": "sorrowful_bead_48",
-          "sequence": 48,
+          "sequence": 49,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 2,
@@ -5276,7 +5427,7 @@
         },
         {
           "id": "sorrowful_bead_49",
-          "sequence": 49,
+          "sequence": 50,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 3,
@@ -5302,7 +5453,7 @@
         },
         {
           "id": "sorrowful_bead_50",
-          "sequence": 50,
+          "sequence": 51,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 4,
@@ -5328,7 +5479,7 @@
         },
         {
           "id": "sorrowful_bead_51",
-          "sequence": 51,
+          "sequence": 52,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 5,
@@ -5354,7 +5505,7 @@
         },
         {
           "id": "sorrowful_bead_52",
-          "sequence": 52,
+          "sequence": 53,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 6,
@@ -5380,7 +5531,7 @@
         },
         {
           "id": "sorrowful_bead_53",
-          "sequence": 53,
+          "sequence": 54,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 7,
@@ -5406,7 +5557,7 @@
         },
         {
           "id": "sorrowful_bead_54",
-          "sequence": 54,
+          "sequence": 55,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 8,
@@ -5432,7 +5583,7 @@
         },
         {
           "id": "sorrowful_bead_55",
-          "sequence": 55,
+          "sequence": 56,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 9,
@@ -5458,7 +5609,7 @@
         },
         {
           "id": "sorrowful_bead_56",
-          "sequence": 56,
+          "sequence": 57,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 10,
@@ -5484,7 +5635,7 @@
         },
         {
           "id": "sorrowful_bead_57",
-          "sequence": 57,
+          "sequence": 58,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 11,
@@ -5510,7 +5661,7 @@
         },
         {
           "id": "sorrowful_bead_58",
-          "sequence": 58,
+          "sequence": 59,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 12,
@@ -5536,7 +5687,7 @@
         },
         {
           "id": "sorrowful_bead_59",
-          "sequence": 59,
+          "sequence": 60,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 0,
@@ -5562,7 +5713,7 @@
         },
         {
           "id": "sorrowful_bead_60",
-          "sequence": 60,
+          "sequence": 61,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 1,
@@ -5588,7 +5739,7 @@
         },
         {
           "id": "sorrowful_bead_61",
-          "sequence": 61,
+          "sequence": 62,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 2,
@@ -5614,7 +5765,7 @@
         },
         {
           "id": "sorrowful_bead_62",
-          "sequence": 62,
+          "sequence": 63,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 3,
@@ -5640,7 +5791,7 @@
         },
         {
           "id": "sorrowful_bead_63",
-          "sequence": 63,
+          "sequence": 64,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 4,
@@ -5666,7 +5817,7 @@
         },
         {
           "id": "sorrowful_bead_64",
-          "sequence": 64,
+          "sequence": 65,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 5,
@@ -5692,7 +5843,7 @@
         },
         {
           "id": "sorrowful_bead_65",
-          "sequence": 65,
+          "sequence": 66,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 6,
@@ -5718,7 +5869,7 @@
         },
         {
           "id": "sorrowful_bead_66",
-          "sequence": 66,
+          "sequence": 67,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 7,
@@ -5744,7 +5895,7 @@
         },
         {
           "id": "sorrowful_bead_67",
-          "sequence": 67,
+          "sequence": 68,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 8,
@@ -5770,7 +5921,7 @@
         },
         {
           "id": "sorrowful_bead_68",
-          "sequence": 68,
+          "sequence": 69,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 9,
@@ -5796,7 +5947,7 @@
         },
         {
           "id": "sorrowful_bead_69",
-          "sequence": 69,
+          "sequence": 70,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 10,
@@ -5822,7 +5973,7 @@
         },
         {
           "id": "sorrowful_bead_70",
-          "sequence": 70,
+          "sequence": 71,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 11,
@@ -5848,7 +5999,7 @@
         },
         {
           "id": "sorrowful_bead_71",
-          "sequence": 71,
+          "sequence": 72,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 12,
@@ -5874,7 +6025,7 @@
         },
         {
           "id": "sorrowful_bead_72",
-          "sequence": 72,
+          "sequence": 73,
           "section": "closing",
           "decade": null,
           "bead_in_decade": null,
@@ -5897,15 +6048,42 @@
           },
           "is_physical_bead": false,
           "scripture_text": null
+        },
+        {
+          "id": "sorrowful_sign_of_cross_closing",
+          "sequence": 74,
+          "section": "closing",
+          "decade": null,
+          "bead_in_decade": null,
+          "prayer_type": "sign_of_cross",
+          "title": "Sign of the Cross",
+          "text": "In the name of the Father, and of the Son, and of the Holy Spirit. Amen.",
+          "mystery_id": null,
+          "mystery_title": null,
+          "scripture_reference": null,
+          "fruit_of_mystery": null,
+          "image": {
+            "src": "/assets/rosary/images/sorrowful/sorrowful_sign_of_cross_closing.png",
+            "alt": "Sign of the Cross — Closing",
+            "unique_per_bead": true
+          },
+          "audio": {
+            "src": "/assets/rosary/audio/sorrowful/sorrowful_sign_of_cross_closing.mp3",
+            "format": "audio/mpeg",
+            "unique_per_bead": true
+          },
+          "is_physical_bead": false,
+          "scripture_text": null
         }
       ],
       "counts": {
-        "sequence_items": 72,
+        "sequence_items": 74,
         "physical_beads": 59,
         "hail_marys": 53,
         "our_fathers": 6,
         "glory_bes": 6,
-        "fatima_prayers": 5
+        "fatima_prayers": 5,
+        "signs_of_cross": 2
       }
     },
     {
@@ -5920,6 +6098,7 @@
           "primary_scripture": "Matthew 28:1-10",
           "supporting_scriptures": ["Mark 16:1-8", "Luke 24:1-12", "John 20:1-18", "1 Corinthians 15:3-8"],
           "fruit": "Faith",
+          "fruit_description": "The risen Christ conquers sin and death, confirming every promise he made. Ask for steadfast faith in Jesus, especially when fear or uncertainty makes hope difficult.",
           "image": "/assets/rosary/images/glorious/mysteries/01_the_resurrection.png",
           "app_image_key": "saint_michael_the_archangel",
           "image_alt": "A devotional image for the Resurrection.",
@@ -5933,6 +6112,7 @@
           "primary_scripture": "Acts 1:6-11",
           "supporting_scriptures": ["Luke 24:50-53", "Mark 16:19"],
           "fruit": "Hope",
+          "fruit_description": "Jesus returns to the Father and prepares a place for his people while sending them on mission. Ask for hope in heaven that gives courage and purpose to life today.",
           "image": "/assets/rosary/images/glorious/mysteries/02_the_ascension.png",
           "app_image_key": "saint_paul",
           "image_alt": "A devotional image for the Ascension.",
@@ -5946,6 +6126,7 @@
           "primary_scripture": "Acts 2:1-13",
           "supporting_scriptures": ["John 14:15-17", "John 16:7-15"],
           "fruit": "Love of God",
+          "fruit_description": "The Holy Spirit fills the disciples and sets their hearts aflame for the Gospel. Ask for deeper love of God that shapes every word, decision, and act of service.",
           "image": "/assets/rosary/images/glorious/mysteries/03_descent_of_the_holy_spirit.png",
           "app_image_key": "saint_peter",
           "image_alt": "A devotional image for the Descent of the Holy Spirit.",
@@ -5959,6 +6140,7 @@
           "primary_scripture": "Revelation 12:1-6",
           "supporting_scriptures": ["Luke 1:46-55", "Psalm 45:10-16", "1 Corinthians 15:20-23"],
           "fruit": "Grace of a Happy Death",
+          "fruit_description": "Mary is brought body and soul into heavenly glory, sharing fully in her Son's victory. Ask for grace to live close to God and meet death with trust in the promised resurrection.",
           "image": "/assets/rosary/images/glorious/mysteries/04_the_assumption.png",
           "app_image_key": "our_lady_queen_of_heaven",
           "image_alt": "A devotional image of Mary for the Assumption.",
@@ -5972,6 +6154,7 @@
           "primary_scripture": "Revelation 12:1",
           "supporting_scriptures": ["Psalm 45:10-16", "1 Kings 2:19", "Luke 1:32-33", "Revelation 19:16"],
           "fruit": "Trust in Mary's Intercession",
+          "fruit_description": "Mary is crowned Queen of Heaven and continues to lead God's children toward her Son. Ask for grace to entrust every need to her prayer while following Christ more faithfully.",
           "image": "/assets/rosary/images/glorious/mysteries/05_the_coronation.png",
           "app_image_key": "blessed_virgin_mary",
           "image_alt": "A devotional image of Mary for her Coronation.",
@@ -5981,8 +6164,34 @@
       ],
       "prayer_sequence": [
         {
-          "id": "glorious_bead_01",
+          "id": "glorious_sign_of_cross_opening",
           "sequence": 1,
+          "section": "opening",
+          "decade": null,
+          "bead_in_decade": null,
+          "prayer_type": "sign_of_cross",
+          "title": "Sign of the Cross",
+          "text": "In the name of the Father, and of the Son, and of the Holy Spirit. Amen.",
+          "mystery_id": null,
+          "mystery_title": null,
+          "scripture_reference": null,
+          "fruit_of_mystery": null,
+          "image": {
+            "src": "/assets/rosary/images/glorious/glorious_sign_of_cross_opening.png",
+            "alt": "Sign of the Cross — Opening",
+            "unique_per_bead": true
+          },
+          "audio": {
+            "src": "/assets/rosary/audio/glorious/glorious_sign_of_cross_opening.mp3",
+            "format": "audio/mpeg",
+            "unique_per_bead": true
+          },
+          "is_physical_bead": false,
+          "scripture_text": null
+        },
+        {
+          "id": "glorious_bead_01",
+          "sequence": 2,
           "section": "opening",
           "decade": null,
           "bead_in_decade": null,
@@ -6008,7 +6217,7 @@
         },
         {
           "id": "glorious_bead_02",
-          "sequence": 2,
+          "sequence": 3,
           "section": "opening",
           "decade": null,
           "bead_in_decade": null,
@@ -6034,7 +6243,7 @@
         },
         {
           "id": "glorious_bead_03",
-          "sequence": 3,
+          "sequence": 4,
           "section": "opening",
           "decade": null,
           "bead_in_decade": 1,
@@ -6061,7 +6270,7 @@
         },
         {
           "id": "glorious_bead_04",
-          "sequence": 4,
+          "sequence": 5,
           "section": "opening",
           "decade": null,
           "bead_in_decade": 2,
@@ -6088,7 +6297,7 @@
         },
         {
           "id": "glorious_bead_05",
-          "sequence": 5,
+          "sequence": 6,
           "section": "opening",
           "decade": null,
           "bead_in_decade": 3,
@@ -6115,7 +6324,7 @@
         },
         {
           "id": "glorious_bead_06",
-          "sequence": 6,
+          "sequence": 7,
           "section": "opening",
           "decade": null,
           "bead_in_decade": null,
@@ -6141,7 +6350,7 @@
         },
         {
           "id": "glorious_bead_07",
-          "sequence": 7,
+          "sequence": 8,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 0,
@@ -6167,7 +6376,7 @@
         },
         {
           "id": "glorious_bead_08",
-          "sequence": 8,
+          "sequence": 9,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 1,
@@ -6193,7 +6402,7 @@
         },
         {
           "id": "glorious_bead_09",
-          "sequence": 9,
+          "sequence": 10,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 2,
@@ -6219,7 +6428,7 @@
         },
         {
           "id": "glorious_bead_10",
-          "sequence": 10,
+          "sequence": 11,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 3,
@@ -6245,7 +6454,7 @@
         },
         {
           "id": "glorious_bead_11",
-          "sequence": 11,
+          "sequence": 12,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 4,
@@ -6271,7 +6480,7 @@
         },
         {
           "id": "glorious_bead_12",
-          "sequence": 12,
+          "sequence": 13,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 5,
@@ -6297,7 +6506,7 @@
         },
         {
           "id": "glorious_bead_13",
-          "sequence": 13,
+          "sequence": 14,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 6,
@@ -6323,7 +6532,7 @@
         },
         {
           "id": "glorious_bead_14",
-          "sequence": 14,
+          "sequence": 15,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 7,
@@ -6349,7 +6558,7 @@
         },
         {
           "id": "glorious_bead_15",
-          "sequence": 15,
+          "sequence": 16,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 8,
@@ -6375,7 +6584,7 @@
         },
         {
           "id": "glorious_bead_16",
-          "sequence": 16,
+          "sequence": 17,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 9,
@@ -6401,7 +6610,7 @@
         },
         {
           "id": "glorious_bead_17",
-          "sequence": 17,
+          "sequence": 18,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 10,
@@ -6427,7 +6636,7 @@
         },
         {
           "id": "glorious_bead_18",
-          "sequence": 18,
+          "sequence": 19,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 11,
@@ -6453,7 +6662,7 @@
         },
         {
           "id": "glorious_bead_19",
-          "sequence": 19,
+          "sequence": 20,
           "section": "decade",
           "decade": 1,
           "bead_in_decade": 12,
@@ -6479,7 +6688,7 @@
         },
         {
           "id": "glorious_bead_20",
-          "sequence": 20,
+          "sequence": 21,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 0,
@@ -6505,7 +6714,7 @@
         },
         {
           "id": "glorious_bead_21",
-          "sequence": 21,
+          "sequence": 22,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 1,
@@ -6531,7 +6740,7 @@
         },
         {
           "id": "glorious_bead_22",
-          "sequence": 22,
+          "sequence": 23,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 2,
@@ -6557,7 +6766,7 @@
         },
         {
           "id": "glorious_bead_23",
-          "sequence": 23,
+          "sequence": 24,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 3,
@@ -6583,7 +6792,7 @@
         },
         {
           "id": "glorious_bead_24",
-          "sequence": 24,
+          "sequence": 25,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 4,
@@ -6609,7 +6818,7 @@
         },
         {
           "id": "glorious_bead_25",
-          "sequence": 25,
+          "sequence": 26,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 5,
@@ -6635,7 +6844,7 @@
         },
         {
           "id": "glorious_bead_26",
-          "sequence": 26,
+          "sequence": 27,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 6,
@@ -6661,7 +6870,7 @@
         },
         {
           "id": "glorious_bead_27",
-          "sequence": 27,
+          "sequence": 28,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 7,
@@ -6687,7 +6896,7 @@
         },
         {
           "id": "glorious_bead_28",
-          "sequence": 28,
+          "sequence": 29,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 8,
@@ -6713,7 +6922,7 @@
         },
         {
           "id": "glorious_bead_29",
-          "sequence": 29,
+          "sequence": 30,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 9,
@@ -6739,7 +6948,7 @@
         },
         {
           "id": "glorious_bead_30",
-          "sequence": 30,
+          "sequence": 31,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 10,
@@ -6765,7 +6974,7 @@
         },
         {
           "id": "glorious_bead_31",
-          "sequence": 31,
+          "sequence": 32,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 11,
@@ -6791,7 +7000,7 @@
         },
         {
           "id": "glorious_bead_32",
-          "sequence": 32,
+          "sequence": 33,
           "section": "decade",
           "decade": 2,
           "bead_in_decade": 12,
@@ -6817,7 +7026,7 @@
         },
         {
           "id": "glorious_bead_33",
-          "sequence": 33,
+          "sequence": 34,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 0,
@@ -6843,7 +7052,7 @@
         },
         {
           "id": "glorious_bead_34",
-          "sequence": 34,
+          "sequence": 35,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 1,
@@ -6869,7 +7078,7 @@
         },
         {
           "id": "glorious_bead_35",
-          "sequence": 35,
+          "sequence": 36,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 2,
@@ -6895,7 +7104,7 @@
         },
         {
           "id": "glorious_bead_36",
-          "sequence": 36,
+          "sequence": 37,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 3,
@@ -6921,7 +7130,7 @@
         },
         {
           "id": "glorious_bead_37",
-          "sequence": 37,
+          "sequence": 38,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 4,
@@ -6947,7 +7156,7 @@
         },
         {
           "id": "glorious_bead_38",
-          "sequence": 38,
+          "sequence": 39,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 5,
@@ -6973,7 +7182,7 @@
         },
         {
           "id": "glorious_bead_39",
-          "sequence": 39,
+          "sequence": 40,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 6,
@@ -6999,7 +7208,7 @@
         },
         {
           "id": "glorious_bead_40",
-          "sequence": 40,
+          "sequence": 41,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 7,
@@ -7025,7 +7234,7 @@
         },
         {
           "id": "glorious_bead_41",
-          "sequence": 41,
+          "sequence": 42,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 8,
@@ -7051,7 +7260,7 @@
         },
         {
           "id": "glorious_bead_42",
-          "sequence": 42,
+          "sequence": 43,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 9,
@@ -7077,7 +7286,7 @@
         },
         {
           "id": "glorious_bead_43",
-          "sequence": 43,
+          "sequence": 44,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 10,
@@ -7103,7 +7312,7 @@
         },
         {
           "id": "glorious_bead_44",
-          "sequence": 44,
+          "sequence": 45,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 11,
@@ -7129,7 +7338,7 @@
         },
         {
           "id": "glorious_bead_45",
-          "sequence": 45,
+          "sequence": 46,
           "section": "decade",
           "decade": 3,
           "bead_in_decade": 12,
@@ -7155,7 +7364,7 @@
         },
         {
           "id": "glorious_bead_46",
-          "sequence": 46,
+          "sequence": 47,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 0,
@@ -7181,7 +7390,7 @@
         },
         {
           "id": "glorious_bead_47",
-          "sequence": 47,
+          "sequence": 48,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 1,
@@ -7207,7 +7416,7 @@
         },
         {
           "id": "glorious_bead_48",
-          "sequence": 48,
+          "sequence": 49,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 2,
@@ -7233,7 +7442,7 @@
         },
         {
           "id": "glorious_bead_49",
-          "sequence": 49,
+          "sequence": 50,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 3,
@@ -7259,7 +7468,7 @@
         },
         {
           "id": "glorious_bead_50",
-          "sequence": 50,
+          "sequence": 51,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 4,
@@ -7285,7 +7494,7 @@
         },
         {
           "id": "glorious_bead_51",
-          "sequence": 51,
+          "sequence": 52,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 5,
@@ -7311,7 +7520,7 @@
         },
         {
           "id": "glorious_bead_52",
-          "sequence": 52,
+          "sequence": 53,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 6,
@@ -7337,7 +7546,7 @@
         },
         {
           "id": "glorious_bead_53",
-          "sequence": 53,
+          "sequence": 54,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 7,
@@ -7363,7 +7572,7 @@
         },
         {
           "id": "glorious_bead_54",
-          "sequence": 54,
+          "sequence": 55,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 8,
@@ -7389,7 +7598,7 @@
         },
         {
           "id": "glorious_bead_55",
-          "sequence": 55,
+          "sequence": 56,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 9,
@@ -7415,7 +7624,7 @@
         },
         {
           "id": "glorious_bead_56",
-          "sequence": 56,
+          "sequence": 57,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 10,
@@ -7441,7 +7650,7 @@
         },
         {
           "id": "glorious_bead_57",
-          "sequence": 57,
+          "sequence": 58,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 11,
@@ -7467,7 +7676,7 @@
         },
         {
           "id": "glorious_bead_58",
-          "sequence": 58,
+          "sequence": 59,
           "section": "decade",
           "decade": 4,
           "bead_in_decade": 12,
@@ -7493,7 +7702,7 @@
         },
         {
           "id": "glorious_bead_59",
-          "sequence": 59,
+          "sequence": 60,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 0,
@@ -7519,7 +7728,7 @@
         },
         {
           "id": "glorious_bead_60",
-          "sequence": 60,
+          "sequence": 61,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 1,
@@ -7545,7 +7754,7 @@
         },
         {
           "id": "glorious_bead_61",
-          "sequence": 61,
+          "sequence": 62,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 2,
@@ -7571,7 +7780,7 @@
         },
         {
           "id": "glorious_bead_62",
-          "sequence": 62,
+          "sequence": 63,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 3,
@@ -7597,7 +7806,7 @@
         },
         {
           "id": "glorious_bead_63",
-          "sequence": 63,
+          "sequence": 64,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 4,
@@ -7623,7 +7832,7 @@
         },
         {
           "id": "glorious_bead_64",
-          "sequence": 64,
+          "sequence": 65,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 5,
@@ -7649,7 +7858,7 @@
         },
         {
           "id": "glorious_bead_65",
-          "sequence": 65,
+          "sequence": 66,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 6,
@@ -7675,7 +7884,7 @@
         },
         {
           "id": "glorious_bead_66",
-          "sequence": 66,
+          "sequence": 67,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 7,
@@ -7701,7 +7910,7 @@
         },
         {
           "id": "glorious_bead_67",
-          "sequence": 67,
+          "sequence": 68,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 8,
@@ -7727,7 +7936,7 @@
         },
         {
           "id": "glorious_bead_68",
-          "sequence": 68,
+          "sequence": 69,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 9,
@@ -7753,7 +7962,7 @@
         },
         {
           "id": "glorious_bead_69",
-          "sequence": 69,
+          "sequence": 70,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 10,
@@ -7779,7 +7988,7 @@
         },
         {
           "id": "glorious_bead_70",
-          "sequence": 70,
+          "sequence": 71,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 11,
@@ -7805,7 +8014,7 @@
         },
         {
           "id": "glorious_bead_71",
-          "sequence": 71,
+          "sequence": 72,
           "section": "decade",
           "decade": 5,
           "bead_in_decade": 12,
@@ -7831,7 +8040,7 @@
         },
         {
           "id": "glorious_bead_72",
-          "sequence": 72,
+          "sequence": 73,
           "section": "closing",
           "decade": null,
           "bead_in_decade": null,
@@ -7854,15 +8063,42 @@
           },
           "is_physical_bead": false,
           "scripture_text": null
+        },
+        {
+          "id": "glorious_sign_of_cross_closing",
+          "sequence": 74,
+          "section": "closing",
+          "decade": null,
+          "bead_in_decade": null,
+          "prayer_type": "sign_of_cross",
+          "title": "Sign of the Cross",
+          "text": "In the name of the Father, and of the Son, and of the Holy Spirit. Amen.",
+          "mystery_id": null,
+          "mystery_title": null,
+          "scripture_reference": null,
+          "fruit_of_mystery": null,
+          "image": {
+            "src": "/assets/rosary/images/glorious/glorious_sign_of_cross_closing.png",
+            "alt": "Sign of the Cross — Closing",
+            "unique_per_bead": true
+          },
+          "audio": {
+            "src": "/assets/rosary/audio/glorious/glorious_sign_of_cross_closing.mp3",
+            "format": "audio/mpeg",
+            "unique_per_bead": true
+          },
+          "is_physical_bead": false,
+          "scripture_text": null
         }
       ],
       "counts": {
-        "sequence_items": 72,
+        "sequence_items": 74,
         "physical_beads": 59,
         "hail_marys": 53,
         "our_fathers": 6,
         "glory_bes": 6,
-        "fatima_prayers": 5
+        "fatima_prayers": 5,
+        "signs_of_cross": 2
       }
     }
   ],

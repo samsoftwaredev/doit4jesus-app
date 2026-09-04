@@ -2,7 +2,7 @@ import englishRosaryJson from "@/data/en.rosary.json";
 import type { RosaryMysteryType } from "@/features/prayer/rosary/types";
 
 export type RosaryContentPrayerId =
-  "apostles_creed" | "our_father" | "hail_mary" | "glory_be" | "fatima_prayer" | "hail_holy_queen";
+  "apostles_creed" | "our_father" | "hail_mary" | "glory_be" | "fatima_prayer" | "hail_holy_queen" | "sign_of_cross";
 
 export interface RosaryContentPrayer {
   title: string;
@@ -12,6 +12,8 @@ export interface RosaryContentPrayer {
 export interface RosaryContentMystery {
   id: string;
   title: string;
+  fruit: string;
+  fruit_description: string;
   primary_scripture: string;
   scripture_text: string;
   app_image_key: string;

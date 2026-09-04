@@ -13,6 +13,7 @@ const prayerIdByContentId: Record<RosaryContentPrayerId, string> = {
   hail_holy_queen: "hail-holy-queen",
   hail_mary: "hail-mary",
   our_father: "our-father",
+  sign_of_cross: "sign-of-cross",
 };
 
 const beadTypeByContentId: Record<RosaryContentPrayerId, RosaryBeadType> = {
@@ -22,6 +23,7 @@ const beadTypeByContentId: Record<RosaryContentPrayerId, RosaryBeadType> = {
   hail_holy_queen: "hailHolyQueen",
   hail_mary: "hailMary",
   our_father: "ourFather",
+  sign_of_cross: "signOfCross",
 };
 
 /** Converts one localized content step into the model consumed by the session and navigator. */

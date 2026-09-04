@@ -17,6 +17,7 @@ import Animated, { FadeIn, useReducedMotion } from "react-native-reanimated";
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { Confetti, SacredAtmosphere } from "@/components/ui";
 import {
+  FruitOfMysteryCard,
   MysteryCard,
   PrayerCard,
   RosaryBeadNavigator,
@@ -30,7 +31,7 @@ import { getRosaryMysteries } from "@/features/prayer/rosary/data/rosaryMysterie
 import { getFullRosarySequence, rosarySequence } from "@/features/prayer/rosary/data/rosarySequence";
 import { useRosarySession } from "@/features/prayer/rosary/hooks/useRosarySession";
 import { theme } from "@/theme/tokens";
-import type { RosaryMystery, RosaryMysteryType } from "@/features/prayer/rosary/types";
+import type { RosaryBead, RosaryMystery, RosaryMysteryType } from "@/features/prayer/rosary/types";
 
 function completionDateLabel(date: string | null) {
   const value = date ? new Date(date) : new Date();
@@ -45,6 +46,15 @@ function completionDateLabel(date: string | null) {
 function createIdempotencyKey() {
   const random = Array.from({ length: 24 }, () => Math.floor(Math.random() * 36).toString(36)).join("");
   return `rosary-${Date.now().toString(36)}-${random}`;
+}
+
+/** Counts only physical beads through the current prayer step, excluding the crucifix and non-bead prayers. */
+function physicalBeadProgress(beads: RosaryBead[], currentBeadIndex: number) {
+  const total = beads.filter((bead) => bead.isPhysicalBead !== false).length;
+  const boundedIndex = Math.max(0, Math.min(currentBeadIndex, beads.length - 1));
+  const currentIndex = beads.slice(0, boundedIndex + 1).filter((bead) => bead.isPhysicalBead !== false).length;
+
+  return { currentIndex, total };
 }
 
 /**
@@ -97,18 +107,27 @@ export function RosaryPrayerScreen({
     beads: activeBeads,
     isFullRosary: !isDecade,
     mysteries: activeMysteries,
-    storageKey: `@doit4jesus/rosary-session/v3/${mysteryType}/${isDecade ? "decade" : "full"}`,
+    storageKey: `@doit4jesus/rosary-session/${isDecade ? "v3" : "v4"}/${mysteryType}/${isDecade ? "decade" : "full"}`,
   });
 
+  const beadProgress = useMemo(
+    () => physicalBeadProgress(activeBeads, session.currentBeadIndex),
+    [activeBeads, session.currentBeadIndex],
+  );
   const progress = {
-    currentIndex: session.currentBead ? session.currentBeadIndex + 1 : 0,
-    total: activeBeads.length,
+    ...beadProgress,
     prayerName: session.currentPrayer?.name ?? "Prayer",
   };
 
   useEffect(() => {
     if (!session.isHydrated || !session.currentMystery || !session.currentBead || session.isTransitioning) return;
-    const announcement = `${session.currentPrayer?.name ?? "Prayer"} ${session.currentBeadIndex + 1} of ${activeBeads.length}. ${session.currentMystery.title}.`;
+    const isAtCrucifix =
+      session.currentBead.type === "creed" ||
+      (session.currentBead.type === "signOfCross" && session.currentBead.section === "opening");
+    const markerPosition = isAtCrucifix
+      ? `at the crucifix before bead 1 of ${progress.total}`
+      : `at bead ${progress.currentIndex} of ${progress.total}`;
+    const announcement = `${session.currentPrayer?.name ?? "Prayer"}, ${markerPosition}. ${session.currentMystery.title}.`;
     if (lastAnnouncement.current === announcement) return;
     lastAnnouncement.current = announcement;
     const timeout = setTimeout(() => AccessibilityInfo.announceForAccessibility(announcement), 220);
@@ -120,7 +139,8 @@ export function RosaryPrayerScreen({
     session.currentPrayer?.name,
     session.isHydrated,
     session.isTransitioning,
-    activeBeads.length,
+    progress.currentIndex,
+    progress.total,
   ]);
 
   const recordCompletedPrayer = useCallback(async () => {
@@ -260,6 +280,10 @@ export function RosaryPrayerScreen({
               style={styles.contentScroll}
             >
               <MysteryCard imageHeight={imageHeight} mystery={session.currentMystery} />
+              <FruitOfMysteryCard
+                description={session.currentMystery?.fruitDescription}
+                fruit={session.currentMystery?.fruit}
+              />
               <PrayerCard prayer={session.currentPrayer} />
               <ScriptureCard
                 quotation={
