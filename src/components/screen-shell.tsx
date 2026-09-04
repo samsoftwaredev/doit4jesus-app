@@ -4,6 +4,7 @@ import type { StyleProp, ViewStyle } from "react-native";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { SacredAtmosphere } from "@/components/ui/SacredAtmosphere";
 import { theme } from "@/theme/tokens";
 
 type ScreenShellProps = PropsWithChildren<{
@@ -15,6 +16,14 @@ type ScreenShellProps = PropsWithChildren<{
   contentContainerStyle?: StyleProp<ViewStyle>;
 }>;
 
+/**
+ * Displays the shared application header and a scrollable screen body.
+ * Warm light remains behind the UI while non-interactive dust passes above
+ * normal screen content.
+ *
+ * @param props Header, body, and optional background content for the screen.
+ * @returns A safe-area screen shell with its content above the background.
+ */
 export function ScreenShell({
   eyebrow,
   title,
@@ -28,11 +37,10 @@ export function ScreenShell({
     <SafeAreaView edges={["top"]} style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <View style={styles.page}>
-          {background ? (
-            <View pointerEvents="none" style={styles.backgroundLayer}>
-              {background}
-            </View>
-          ) : null}
+          <View pointerEvents="none" style={styles.backgroundLayer}>
+            {background}
+            <SacredAtmosphere />
+          </View>
           <View style={[styles.content, contentContainerStyle]}>
             <View style={styles.header}>
               <View style={styles.brandRow}>
@@ -58,6 +66,7 @@ export function ScreenShell({
           </View>
         </View>
       </ScrollView>
+      <SacredAtmosphere layer="foregroundDust" testID="sacred-atmosphere-foreground" />
     </SafeAreaView>
   );
 }
@@ -66,6 +75,7 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: theme.colors.background.primary,
+    position: "relative",
   },
   scrollContent: {
     flexGrow: 1,

@@ -13,9 +13,9 @@ import {
   View,
 } from "react-native";
 import Animated, { FadeIn, useReducedMotion } from "react-native-reanimated";
-import { SafeAreaView } from "react-native-safe-area-context";
 
-import { Confetti } from "@/components/ui";
+import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
+import { Confetti, SacredAtmosphere } from "@/components/ui";
 import {
   MysteryCard,
   PrayerCard,
@@ -25,11 +25,12 @@ import {
 } from "@/features/prayer/rosary/components";
 import { recordPrayerForIntention } from "@/features/prayer/intentions";
 import { recordRosaryActivity } from "@/features/prayer/rosary/api/activities.api";
+import { englishRosaryContent } from "@/features/prayer/rosary/data/rosaryContent";
 import { getRosaryMysteries } from "@/features/prayer/rosary/data/rosaryMysteries";
-import { fullRosarySequence, rosarySequence } from "@/features/prayer/rosary/data/rosarySequence";
+import { getFullRosarySequence, rosarySequence } from "@/features/prayer/rosary/data/rosarySequence";
 import { useRosarySession } from "@/features/prayer/rosary/hooks/useRosarySession";
 import { theme } from "@/theme/tokens";
-import type { RosaryMysteryType } from "@/features/prayer/rosary/types";
+import type { RosaryMystery, RosaryMysteryType } from "@/features/prayer/rosary/types";
 
 function completionDateLabel(date: string | null) {
   const value = date ? new Date(date) : new Date();
@@ -46,14 +47,20 @@ function createIdempotencyKey() {
   return `rosary-${Date.now().toString(36)}-${random}`;
 }
 
+/**
+ * Renders the guided Rosary within the shared atmosphere using the selected set's localized prayer sequence.
+ * Full sessions include opening, five decades, and closing prayers; focused sessions retain the ten-bead mode.
+ */
 export function RosaryPrayerScreen({
   intentionId,
   isDecade = true,
+  mysteries: providedMysteries,
   mysteryType = "joyful",
   source: _source = "manual",
 }: {
   intentionId?: string;
   isDecade?: boolean;
+  mysteries?: RosaryMystery[];
   mysteryType?: RosaryMysteryType;
   source?: string;
 }) {
@@ -81,14 +88,16 @@ export function RosaryPrayerScreen({
     : Math.min(compact ? 104 : 142, Math.max(compact ? 88 : 108, width * (compact ? 0.28 : 0.3)));
   const imageHeight = isTablet ? 290 : compact ? 132 : Math.min(210, Math.max(158, height * 0.23));
   const contentGap = isTablet ? theme.spacing[6] : theme.spacing[3];
-  const mysteries = useMemo(() => getRosaryMysteries(mysteryType), [mysteryType]);
+  const defaultMysteries = useMemo(() => getRosaryMysteries(mysteryType), [mysteryType]);
+  const mysteries = providedMysteries ?? defaultMysteries;
   const activeMysteries = useMemo(() => (isDecade ? [mysteries[0]].filter(Boolean) : mysteries), [isDecade, mysteries]);
-  const activeBeads = isDecade ? rosarySequence : fullRosarySequence;
+  const fullRosaryBeads = useMemo(() => getFullRosarySequence(englishRosaryContent, mysteryType), [mysteryType]);
+  const activeBeads = isDecade ? rosarySequence : fullRosaryBeads;
   const session = useRosarySession({
     beads: activeBeads,
     isFullRosary: !isDecade,
     mysteries: activeMysteries,
-    storageKey: `@doit4jesus/rosary-session/v2/${mysteryType}/${isDecade ? "decade" : "full"}`,
+    storageKey: `@doit4jesus/rosary-session/v3/${mysteryType}/${isDecade ? "decade" : "full"}`,
   });
 
   const progress = {
@@ -99,7 +108,7 @@ export function RosaryPrayerScreen({
 
   useEffect(() => {
     if (!session.isHydrated || !session.currentMystery || !session.currentBead || session.isTransitioning) return;
-    const announcement = `${session.currentPrayer?.name ?? "Prayer"} ${session.currentBeadIndex + 1} of ${rosarySequence.length}. ${session.currentMystery.title}.`;
+    const announcement = `${session.currentPrayer?.name ?? "Prayer"} ${session.currentBeadIndex + 1} of ${activeBeads.length}. ${session.currentMystery.title}.`;
     if (lastAnnouncement.current === announcement) return;
     lastAnnouncement.current = announcement;
     const timeout = setTimeout(() => AccessibilityInfo.announceForAccessibility(announcement), 220);
@@ -111,6 +120,7 @@ export function RosaryPrayerScreen({
     session.currentPrayer?.name,
     session.isHydrated,
     session.isTransitioning,
+    activeBeads.length,
   ]);
 
   const recordCompletedPrayer = useCallback(async () => {
@@ -195,13 +205,14 @@ export function RosaryPrayerScreen({
   };
 
   return (
-    <SafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
+    <AtmosphericSafeAreaView edges={["top", "bottom"]} includeAtmosphere={false} style={styles.safeArea}>
       <LinearGradient
         colors={[theme.rosary.colors.canvas, theme.rosary.colors.canvasLight, theme.rosary.colors.canvas]}
         end={{ x: 1, y: 1 }}
         start={{ x: 0, y: 0 }}
         style={styles.background}
       >
+        <SacredAtmosphere />
         <View
           style={[
             styles.page,
@@ -230,7 +241,7 @@ export function RosaryPrayerScreen({
           <View style={[styles.main, { gap: contentGap }]}>
             <View style={{ width: rosaryColumnWidth }}>
               <RosaryBeadNavigator
-                beads={rosarySequence}
+                beads={activeBeads}
                 compact={compact}
                 completedBeadIds={session.completedBeadIds}
                 currentBeadIndex={session.currentBeadIndex}
@@ -251,8 +262,13 @@ export function RosaryPrayerScreen({
               <MysteryCard imageHeight={imageHeight} mystery={session.currentMystery} />
               <PrayerCard prayer={session.currentPrayer} />
               <ScriptureCard
-                quotation={session.currentMystery?.scriptureText}
-                reference={session.currentMystery?.scriptureReference}
+                quotation={
+                  session.currentBead?.scriptureText ?? (isDecade ? session.currentMystery?.scriptureText : undefined)
+                }
+                reference={
+                  session.currentBead?.scriptureReference ??
+                  (isDecade ? session.currentMystery?.scriptureReference : undefined)
+                }
               />
               {session.storageError ? (
                 <Text accessibilityRole="alert" style={styles.storageNote}>
@@ -263,7 +279,7 @@ export function RosaryPrayerScreen({
           </View>
 
           <RosaryBottomNavigation
-            activeDecadeIndex={isDecade ? 0 : Math.min(4, Math.floor(session.currentBeadIndex / 10))}
+            activeDecadeIndex={isDecade ? 0 : session.currentMysteryIndex}
             decadeCount={isDecade ? 1 : 5}
             disabled={session.isTransitioning || activeBeads.length === 0}
             onAdvance={session.goToNextBead}
@@ -348,7 +364,7 @@ export function RosaryPrayerScreen({
           </Animated.View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </AtmosphericSafeAreaView>
   );
 }
 
@@ -359,6 +375,7 @@ const styles = StyleSheet.create({
   },
   background: {
     flex: 1,
+    position: "relative",
   },
   page: {
     alignSelf: "center",
@@ -366,6 +383,7 @@ const styles = StyleSheet.create({
     minHeight: 0,
     paddingBottom: theme.spacing[2],
     width: "100%",
+    zIndex: theme.zIndex.card,
   },
   topBar: { alignItems: "flex-start", justifyContent: "center", minHeight: theme.sizes.touchTarget },
   backButton: {

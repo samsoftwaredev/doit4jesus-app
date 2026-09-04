@@ -11,21 +11,38 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { theme } from "@/theme/tokens";
-import type { BeadState, RosaryBead } from "@/features/prayer/rosary/types";
+import type { BeadState, RosaryBead as RosaryBeadModel } from "@/features/prayer/rosary/types";
 
 interface RosaryBeadProps {
-  bead: RosaryBead;
+  bead: RosaryBeadModel;
   state: BeadState;
   compact?: boolean;
   disabled?: boolean;
   onPress: (beadId: string) => void;
 }
 
+const prayerNameByBeadType: Record<RosaryBeadModel["type"], string> = {
+  creed: "Apostles' Creed",
+  fatimaPrayer: "Fatima Prayer",
+  gloryBe: "Glory Be",
+  hailHolyQueen: "Hail, Holy Queen",
+  hailMary: "Hail Mary",
+  ourFather: "Our Father",
+};
+
+/** Returns a visually distinct bead diameter while preserving the separate minimum touch target. */
+function beadDiameter(type: RosaryBeadModel["type"], compact: boolean) {
+  if (type === "ourFather") return compact ? 32 : 38;
+  if (type === "hailMary") return compact ? 18 : 22;
+  return compact ? 22 : 28;
+}
+
+/** Renders one selectable prayer step with prayer-specific sizing and its current-position state. */
 export function RosaryBead({ bead, state, compact = false, disabled = false, onPress }: RosaryBeadProps) {
   const reduceMotion = useReducedMotion();
   const scale = useSharedValue(1);
   const opacity = useSharedValue(1);
-  const beadSize = compact ? 24 : 30;
+  const beadSize = beadDiameter(bead.type, compact);
   const isActive = state === "active";
 
   useEffect(() => {
@@ -54,7 +71,7 @@ export function RosaryBead({ bead, state, compact = false, disabled = false, onP
   return (
     <Pressable
       accessibilityHint="Double tap to move directly to this bead."
-      accessibilityLabel={`${stateLabel} bead ${bead.sequence}, ${bead.type === "hailMary" ? "Hail Mary" : bead.type}`}
+      accessibilityLabel={`${stateLabel} bead ${bead.sequence}, ${prayerNameByBeadType[bead.type]}`}
       accessibilityRole="button"
       accessibilityState={{ disabled, selected: isActive }}
       disabled={disabled}
@@ -76,6 +93,7 @@ export function RosaryBead({ bead, state, compact = false, disabled = false, onP
           isActive && theme.rosary.shadows.activeBead,
           animatedStyle,
         ]}
+        testID={`rosary-bead-shape-${bead.sequence}`}
       >
         {isActive ? <View style={styles.activeCore} /> : null}
       </Animated.View>

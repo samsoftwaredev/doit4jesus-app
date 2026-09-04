@@ -3,8 +3,9 @@ import Constants from "expo-constants";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Alert, Linking, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { APP_CONFIG } from "@/config/app-config";
 import { useAuth } from "@/features/auth";
 import {
@@ -33,6 +34,7 @@ export function formatProfileLocation(profile: CurrentUserProfile): string {
   return country || "Country unavailable";
 }
 
+/** Renders profile management and settings within the shared atmosphere. */
 export function ProfileSettingsScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
@@ -166,7 +168,7 @@ export function ProfileSettingsScreen() {
   const appVersion = Constants.expoConfig?.version ?? Constants.nativeAppVersion ?? "—";
 
   return (
-    <SafeAreaView edges={["top"]} style={styles.safeArea}>
+    <AtmosphericSafeAreaView edges={["top"]} style={styles.safeArea}>
       <ScrollView
         contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + theme.spacing[8] }]}
         showsVerticalScrollIndicator={false}
@@ -296,7 +298,7 @@ export function ProfileSettingsScreen() {
           />
         </>
       ) : null}
-    </SafeAreaView>
+    </AtmosphericSafeAreaView>
   );
 }
 

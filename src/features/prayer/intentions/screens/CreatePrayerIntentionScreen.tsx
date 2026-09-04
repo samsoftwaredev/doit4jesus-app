@@ -2,8 +2,8 @@ import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
+import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { Button } from "@/components/ui";
 import { BackHeader } from "@/components/navigation";
 import { ProfileToast } from "@/features/profile/components/ProfileToast";
@@ -16,6 +16,7 @@ import {
 import type { PrayerIntentionSymbol } from "@/features/prayer/intentions";
 import { theme } from "@/theme/tokens";
 
+/** Renders the authenticated form for creating a prayer intention. */
 export function CreatePrayerIntentionScreen() {
   const router = useRouter();
   const [title, setTitle] = useState("");
@@ -44,7 +45,7 @@ export function CreatePrayerIntentionScreen() {
   };
 
   return (
-    <SafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
+    <AtmosphericSafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
       <BackHeader onBack={() => router.back()} title="Share an Intention" />
       <ScrollView
         contentContainerStyle={styles.content}
@@ -104,7 +105,7 @@ export function CreatePrayerIntentionScreen() {
         </Button>
         <ProfileToast message={success} onDismiss={() => setSuccess(undefined)} />
       </ScrollView>
-    </SafeAreaView>
+    </AtmosphericSafeAreaView>
   );
 }
 

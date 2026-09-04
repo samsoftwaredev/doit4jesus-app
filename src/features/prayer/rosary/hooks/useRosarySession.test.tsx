@@ -17,7 +17,7 @@ describe("useRosarySession", () => {
     const { result } = await renderHook(() => useRosarySession());
     await waitFor(() => expect(result.current.isHydrated).toBe(true));
 
-    expect(result.current.currentMystery?.id).toBe("annunciation");
+    expect(result.current.currentMystery?.id).toBe("the_annunciation");
     expect(result.current.currentBead?.id).toBe("hail-mary-1");
   });
 
@@ -79,8 +79,9 @@ describe("useRosarySession", () => {
   });
 
   it("should advance to the next mystery after a decade in a full five-decade Rosary", async () => {
+    const secondMysteryIndex = fullRosarySequence.findIndex((bead) => bead.mysteryId === rosaryMysteries[1].id);
     const storage = createStorage(
-      JSON.stringify({ currentBeadIndex: 9, completedBeadIds: [], currentMysteryIndex: 0 }),
+      JSON.stringify({ currentBeadIndex: secondMysteryIndex - 1, completedBeadIds: [], currentMysteryIndex: 0 }),
     );
     const { result } = await renderHook(() =>
       useRosarySession({
@@ -94,9 +95,31 @@ describe("useRosarySession", () => {
 
     await act(async () => result.current.goToNextBead());
 
-    expect(result.current.currentBeadIndex).toBe(10);
+    expect(result.current.currentBeadIndex).toBe(secondMysteryIndex);
     expect(result.current.currentMystery?.title).toBe("The Visitation");
     expect(result.current.currentMysteryIndex).toBe(1);
+  });
+
+  it("should restore opening, decade, and closing prayers to the correct mystery", async () => {
+    const closingIndex = fullRosarySequence.length - 1;
+    const storage = createStorage(
+      JSON.stringify({ currentBeadIndex: closingIndex, completedBeadIds: [], currentMysteryIndex: 0 }),
+    );
+    const { result } = await renderHook(() =>
+      useRosarySession({
+        beads: fullRosarySequence,
+        isFullRosary: true,
+        mysteries: rosaryMysteries,
+        storage,
+      }),
+    );
+
+    await waitFor(() => expect(result.current.isHydrated).toBe(true));
+
+    expect(result.current.currentBead?.prayerId).toBe("hail-holy-queen");
+    expect(result.current.currentPrayer?.name).toBe("Hail, Holy Queen");
+    expect(result.current.currentMystery?.title).toBe("The Finding of Jesus in the Temple");
+    expect(result.current.currentMysteryIndex).toBe(4);
   });
 
   it("should fall back to an in-memory prayer session when storage fails", async () => {

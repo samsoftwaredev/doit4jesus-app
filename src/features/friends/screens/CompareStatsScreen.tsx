@@ -1,7 +1,7 @@
 import { useRouter } from "expo-router";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
+import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { BackHeader } from "@/components/navigation";
 import { Card } from "@/components/ui";
 import { CompareStatsRow, FriendsState } from "@/features/friends/components";
@@ -9,12 +9,13 @@ import { formatPoints } from "@/features/friends/components/LeaderboardEntries";
 import { useFriendsComparison } from "@/features/friends/friends.hooks";
 import { theme } from "@/theme/tokens";
 
+/** Renders a side-by-side comparison with a friend within the shared atmosphere. */
 export function CompareStatsScreen({ friendId }: { friendId: string | undefined }) {
   const router = useRouter();
   const comparison = useFriendsComparison(friendId);
 
   return (
-    <SafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
+    <AtmosphericSafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
       <BackHeader onBack={() => router.back()} title="Compare Stats" />
       {comparison.isLoading ? (
         <View style={styles.state}>
@@ -78,7 +79,7 @@ export function CompareStatsScreen({ friendId }: { friendId: string | undefined 
           </Card>
         </ScrollView>
       ) : null}
-    </SafeAreaView>
+    </AtmosphericSafeAreaView>
   );
 }
 

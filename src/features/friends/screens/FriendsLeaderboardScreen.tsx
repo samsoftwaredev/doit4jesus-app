@@ -1,7 +1,7 @@
 import { useRouter } from "expo-router";
 import { FlatList, Pressable, RefreshControl, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
+import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { BackHeader } from "@/components/navigation";
 import { Button, Card } from "@/components/ui";
 import { FriendsState, LeaderboardEntries } from "@/features/friends/components";
@@ -32,13 +32,14 @@ function getGoal(entries: FriendsLeaderboardEntry[], currentUser: FriendsLeaderb
   };
 }
 
+/** Renders the authenticated friends leaderboard within the shared atmosphere. */
 export function FriendsLeaderboardScreen() {
   const router = useRouter();
   const leaderboard = useRosaryLeaderboard();
   const data = leaderboard.leaderboard;
 
   return (
-    <SafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
+    <AtmosphericSafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
       <BackHeader onBack={() => router.back()} title="Leaderboard" />
       {leaderboard.isLoading ? (
         <View style={styles.state}>
@@ -124,7 +125,7 @@ export function FriendsLeaderboardScreen() {
           showsVerticalScrollIndicator={false}
         />
       ) : null}
-    </SafeAreaView>
+    </AtmosphericSafeAreaView>
   );
 }
 

@@ -1,7 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react-native";
 
 import { rosaryMysteries } from "@/features/prayer/rosary/data/rosaryMysteries";
-import { rosarySequence } from "@/features/prayer/rosary/data/rosarySequence";
+import { prayerById } from "@/features/prayer/rosary/data/rosaryPrayers";
+import { fullRosarySequence, rosarySequence } from "@/features/prayer/rosary/data/rosarySequence";
 import { RosaryPrayerScreen } from "@/features/prayer/rosary/screens/RosaryPrayerScreen";
 
 const goToNextBead = jest.fn();
@@ -68,8 +69,28 @@ describe("RosaryPrayerScreen", () => {
 
     expect(screen.getByText("CURRENT MYSTERY")).toBeTruthy();
     expect(screen.getByText("The Annunciation")).toBeTruthy();
-    expect(screen.getByText("Luke 1:38")).toBeTruthy();
+    expect(screen.getByText("Luke 1:26-38")).toBeTruthy();
     expect(screen.getByText("HAIL MARY")).toBeTruthy();
+  });
+
+  it("renders every full-Rosary prayer step and its bead-specific Scripture", async () => {
+    mockSession({
+      currentBead: fullRosarySequence[8],
+      currentBeadIndex: 8,
+      currentPrayer: prayerById["hail-mary"],
+    });
+
+    await render(<RosaryPrayerScreen isDecade={false} />);
+
+    expect(screen.getByTestId("rosary-bead-72")).toBeTruthy();
+    expect(screen.getByLabelText(/upcoming bead 72, Hail, Holy Queen/i)).toBeTruthy();
+    expect(screen.getByText("Luke 1:28")).toBeTruthy();
+    expect(
+      screen.getByText("Hail, thou that art highly favoured, the Lord is with thee: blessed art thou among women."),
+    ).toBeTruthy();
+    expect(useRosarySession).toHaveBeenCalledWith(
+      expect.objectContaining({ beads: expect.arrayContaining([fullRosarySequence[71]]), isFullRosary: true }),
+    );
   });
 
   it("provides a chevron back action for this non-tab route", async () => {

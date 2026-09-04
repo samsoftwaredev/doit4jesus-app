@@ -4,8 +4,9 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
+import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
+import { SacredAtmosphere } from "@/components/ui";
 import { OrnateCard } from "@/features/prayer/components";
 import type { ApprovedPrayerIntention } from "@/features/prayer/intentions";
 import { cacheApprovedPrayerIntentions, fetchApprovedPrayerIntentions } from "@/features/prayer/intentions";
@@ -17,6 +18,7 @@ import { theme } from "@/theme/tokens";
 
 const previewLimit = 10;
 
+/** Renders the daily prayer dashboard within the shared atmosphere. */
 export function PrayerScreen() {
   const router = useRouter();
   const { width } = useWindowDimensions();
@@ -55,12 +57,17 @@ export function PrayerScreen() {
   };
 
   return (
-    <SafeAreaView edges={["top"]} style={styles.safeArea}>
+    <AtmosphericSafeAreaView edges={["top"]} includeAtmosphere={false} style={styles.safeArea}>
       <LinearGradient
         colors={[theme.rosary.colors.canvas, "#0B263A", theme.rosary.colors.canvas]}
         style={styles.background}
       >
-        <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+        <SacredAtmosphere />
+        <ScrollView
+          contentContainerStyle={styles.content}
+          showsVerticalScrollIndicator={false}
+          style={styles.atmosphereContent}
+        >
           <View style={styles.brandRow}>
             <View>
               <Text style={styles.brandEyebrow}>A MOMENT OF PRAYER</Text>
@@ -176,7 +183,7 @@ export function PrayerScreen() {
           </View>
         </ScrollView>
       </LinearGradient>
-    </SafeAreaView>
+    </AtmosphericSafeAreaView>
   );
 }
 
@@ -241,7 +248,8 @@ function PrayerIntentionSkeletons() {
 }
 
 const styles = StyleSheet.create({
-  background: { flex: 1 },
+  background: { flex: 1, position: "relative" },
+  atmosphereContent: { zIndex: theme.zIndex.card },
   brand: {
     ...theme.typography.heading2,
     color: theme.colors.text.white,

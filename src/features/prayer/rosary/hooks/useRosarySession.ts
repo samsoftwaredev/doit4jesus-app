@@ -48,6 +48,28 @@ function prayerIndexForBead(bead: RosaryBead | undefined, mystery: RosaryMystery
   );
 }
 
+/** Resolves the mystery represented by a prayer step, including opening and closing prayers. */
+function mysteryIndexForBead(bead: RosaryBead | undefined, mysteries: RosaryMystery[], fallbackIndex: number) {
+  if (mysteries.length === 0) return 0;
+
+  if (bead?.mysteryId) {
+    const linkedMysteryIndex = mysteries.findIndex((mystery) => mystery.id === bead.mysteryId);
+    if (linkedMysteryIndex >= 0) return linkedMysteryIndex;
+  }
+
+  if (bead?.decade !== undefined) return clamp(bead.decade - 1, mysteries.length);
+  if (bead?.section === "closing") return mysteries.length - 1;
+  if (bead?.section === "opening") return 0;
+  return clamp(fallbackIndex, mysteries.length);
+}
+
+/** Finds the first prayer step belonging to a mystery, with legacy ten-bead sequences as a fallback. */
+function beadIndexForMystery(beads: RosaryBead[], mystery: RosaryMystery, mysteryIndex: number) {
+  const linkedBeadIndex = beads.findIndex((bead) => bead.mysteryId === mystery.id);
+  if (linkedBeadIndex >= 0) return linkedBeadIndex;
+  return Math.min(mysteryIndex * 10, Math.max(0, beads.length - 1));
+}
+
 function uniqueIds(ids: string[]) {
   return [...new Set(ids)];
 }
@@ -71,12 +93,13 @@ export function useRosarySession(options: UseRosarySessionOptions = {}) {
   const transitionLock = useRef(false);
   const transitionTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const currentBead = beads[clamp(session.currentBeadIndex, beads.length)];
   const calculatedMysteryIndex = isFullRosary
-    ? clamp(Math.floor(clamp(session.currentBeadIndex, beads.length) / 10), mysteries.length)
+    ? mysteryIndexForBead(currentBead, mysteries, session.currentMysteryIndex)
     : clamp(session.currentMysteryIndex, mysteries.length);
   const currentMystery = mysteries[calculatedMysteryIndex];
-  const currentBead = beads[clamp(session.currentBeadIndex, beads.length)];
-  const currentPrayer = currentMystery?.prayers.find((prayer) => prayer.id === currentBead?.prayerId);
+  const currentPrayer =
+    currentBead?.prayer ?? currentMystery?.prayers.find((prayer) => prayer.id === currentBead?.prayerId);
 
   const persist = useCallback(
     async (nextSession: RosarySessionState, nextCompleted: boolean, prayedOn: string | null) => {
@@ -119,13 +142,14 @@ export function useRosarySession(options: UseRosarySessionOptions = {}) {
         const completedBeadIds = Array.isArray(restored.completedBeadIds)
           ? restored.completedBeadIds.filter((id): id is string => typeof id === "string" && validIds.has(id))
           : [];
-        const restoredMystery = mysteries[restoredMysteryIndex];
         const restoredBead = beads[restoredBeadIndex];
+        const resolvedMysteryIndex = isFullRosary
+          ? mysteryIndexForBead(restoredBead, mysteries, restoredMysteryIndex)
+          : restoredMysteryIndex;
+        const restoredMystery = mysteries[resolvedMysteryIndex];
 
         setSession({
-          currentMysteryIndex: isFullRosary
-            ? clamp(Math.floor(restoredBeadIndex / 10), mysteries.length)
-            : restoredMysteryIndex,
+          currentMysteryIndex: resolvedMysteryIndex,
           currentBeadIndex: restoredBeadIndex,
           currentPrayerIndex: prayerIndexForBead(restoredBead, restoredMystery),
           completedBeadIds: uniqueIds(completedBeadIds),
@@ -185,16 +209,14 @@ export function useRosarySession(options: UseRosarySessionOptions = {}) {
       }
 
       const nextIndex = index + 1;
+      const nextMysteryIndex = isFullRosary
+        ? mysteryIndexForBead(beads[nextIndex], mysteries, current.currentMysteryIndex)
+        : current.currentMysteryIndex;
       return {
         ...current,
         currentBeadIndex: nextIndex,
-        currentMysteryIndex: isFullRosary
-          ? clamp(Math.floor(nextIndex / 10), mysteries.length)
-          : current.currentMysteryIndex,
-        currentPrayerIndex: prayerIndexForBead(
-          beads[nextIndex],
-          isFullRosary ? mysteries[clamp(Math.floor(nextIndex / 10), mysteries.length)] : currentMystery,
-        ),
+        currentMysteryIndex: nextMysteryIndex,
+        currentPrayerIndex: prayerIndexForBead(beads[nextIndex], mysteries[nextMysteryIndex] ?? currentMystery),
         completedBeadIds: completed,
       };
     });
@@ -205,34 +227,47 @@ export function useRosarySession(options: UseRosarySessionOptions = {}) {
     const didMove = startTransition((current) => {
       const currentIndex = clamp(current.currentBeadIndex, beads.length);
       const previousIndex = Math.max(0, currentIndex - 1);
+      const previousMysteryIndex = isFullRosary
+        ? mysteryIndexForBead(beads[previousIndex], mysteries, current.currentMysteryIndex)
+        : current.currentMysteryIndex;
       return {
         ...current,
         currentBeadIndex: previousIndex,
-        currentPrayerIndex: prayerIndexForBead(beads[previousIndex], currentMystery),
+        currentMysteryIndex: previousMysteryIndex,
+        currentPrayerIndex: prayerIndexForBead(beads[previousIndex], mysteries[previousMysteryIndex] ?? currentMystery),
       };
     });
     if (didMove) markActivity();
-  }, [beads, currentMystery, markActivity, startTransition]);
+  }, [beads, currentMystery, isFullRosary, markActivity, mysteries, startTransition]);
 
   const selectBead = useCallback(
     (beadId: string) => {
       const selectedIndex = beads.findIndex((bead) => bead.id === beadId);
       if (selectedIndex < 0) return;
-      const didMove = startTransition((current) => ({
-        ...current,
-        currentBeadIndex: selectedIndex,
-        currentPrayerIndex: prayerIndexForBead(beads[selectedIndex], currentMystery),
-      }));
+      const didMove = startTransition((current) => {
+        const selectedMysteryIndex = isFullRosary
+          ? mysteryIndexForBead(beads[selectedIndex], mysteries, current.currentMysteryIndex)
+          : current.currentMysteryIndex;
+        return {
+          ...current,
+          currentBeadIndex: selectedIndex,
+          currentMysteryIndex: selectedMysteryIndex,
+          currentPrayerIndex: prayerIndexForBead(
+            beads[selectedIndex],
+            mysteries[selectedMysteryIndex] ?? currentMystery,
+          ),
+        };
+      });
       if (didMove) markActivity();
     },
-    [beads, currentMystery, markActivity, startTransition],
+    [beads, currentMystery, isFullRosary, markActivity, mysteries, startTransition],
   );
 
   const goToMystery = useCallback(
     (index: number) => {
       if (mysteries.length === 0) return;
       const mysteryIndex = clamp(index, mysteries.length);
-      const startBeadIndex = isFullRosary ? Math.min(mysteryIndex * 10, Math.max(0, beads.length - 1)) : 0;
+      const startBeadIndex = isFullRosary ? beadIndexForMystery(beads, mysteries[mysteryIndex], mysteryIndex) : 0;
       const didMove = startTransition((current) => ({
         ...current,
         currentMysteryIndex: mysteryIndex,
@@ -298,6 +333,7 @@ export function useRosarySession(options: UseRosarySessionOptions = {}) {
     }),
     [
       currentBead,
+      calculatedMysteryIndex,
       currentMystery,
       currentPrayer,
       goToMystery,

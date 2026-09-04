@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { SacredAtmosphere } from "@/components/ui";
 import { theme } from "@/theme/tokens";
 
 type LandingSlide = {
@@ -63,6 +64,7 @@ const competitionActions = [
 const appComparisons = ["Prayer apps help you listen.", "Bible apps help you read.", "Habit apps help you track."];
 const sainthoodActions = ["Build discipline.", "Grow in virtue.", "Get closer to Christ."];
 
+/** Renders the public landing carousel with shared light and foreground dust. */
 export default function LandingScreen() {
   const listRef = useRef<FlatList<LandingSlide>>(null);
   const router = useRouter();
@@ -99,6 +101,7 @@ export default function LandingScreen() {
         pointerEvents="none"
         style={styles.backgroundOverlay}
       />
+      <SacredAtmosphere />
 
       <SafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
         <View style={styles.topBar}>
@@ -200,6 +203,7 @@ export default function LandingScreen() {
           </Pressable>
         </View>
       </SafeAreaView>
+      <SacredAtmosphere layer="foregroundDust" testID="landing-atmosphere-foreground" />
     </View>
   );
 }
@@ -428,10 +432,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   finalContent: { alignItems: "center", width: "100%" },
-  page: { backgroundColor: theme.colors.background.deep, flex: 1 },
+  page: { backgroundColor: theme.colors.background.deep, flex: 1, position: "relative" },
   pagination: { alignItems: "center", flexDirection: "row", gap: theme.spacing[2] },
   pressed: { opacity: theme.opacity.pressed, transform: [{ scale: 0.96 }] },
-  safeArea: { flex: 1 },
+  safeArea: { flex: 1, position: "relative", zIndex: theme.zIndex.card },
   signIn: {
     ...theme.typography.label,
     color: theme.colors.text.primary,

@@ -5,7 +5,9 @@ export type RosaryMysteryCategory =
 
 export type RosaryMysteryType = "joyful" | "luminous" | "sorrowful" | "glorious";
 
-export type RosaryBeadType = "ourFather" | "hailMary" | "gloryBe" | "fatimaPrayer" | "creed";
+export type RosaryBeadType = "ourFather" | "hailMary" | "gloryBe" | "fatimaPrayer" | "creed" | "hailHolyQueen";
+
+export type RosarySection = "opening" | "decade" | "closing";
 
 export type BeadState = "completed" | "active" | "upcoming";
 
@@ -21,6 +23,14 @@ export interface RosaryBead {
   sequence: number;
   prayerId: string;
   type: RosaryBeadType;
+  section?: RosarySection;
+  decade?: number;
+  beadInDecade?: number;
+  mysteryId?: string;
+  scriptureReference?: string;
+  scriptureText?: string;
+  isPhysicalBead?: boolean;
+  prayer?: RosaryPrayer;
 }
 
 export interface RosaryMystery {

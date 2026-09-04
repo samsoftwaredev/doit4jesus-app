@@ -2,8 +2,8 @@ import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
 import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
+import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { BackHeader } from "@/components/navigation";
 import { Button, Card } from "@/components/ui";
 import { FriendAvatar, FriendsState } from "@/features/friends/components";
@@ -20,6 +20,7 @@ function statusLabel(result: UserSearchResult, requestedUsernames: string[]): st
   return undefined;
 }
 
+/** Renders the friend search and invitation flow within the shared atmosphere. */
 export function AddFriendScreen() {
   const router = useRouter();
   const [query, setQuery] = useState("");
@@ -28,7 +29,7 @@ export function AddFriendScreen() {
   const searchHint = useMemo(() => query.trim().length === 0, [query]);
 
   return (
-    <SafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
+    <AtmosphericSafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
       <BackHeader onBack={() => router.back()} title="Add Friend" />
       <KeyboardAvoidingView
         behavior={Platform.select({ ios: "padding", default: undefined })}
@@ -88,7 +89,7 @@ export function AddFriendScreen() {
           showsVerticalScrollIndicator={false}
         />
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </AtmosphericSafeAreaView>
   );
 }
 

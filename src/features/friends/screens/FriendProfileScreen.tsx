@@ -2,8 +2,8 @@ import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert, Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
+import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { BackHeader } from "@/components/navigation";
 import { Button, Card } from "@/components/ui";
 import { FriendAvatar, FriendsState } from "@/features/friends/components";
@@ -11,6 +11,7 @@ import { removeFriend } from "@/features/friends/friends.api";
 import { useFriendProfile } from "@/features/friends/friends.hooks";
 import { theme } from "@/theme/tokens";
 
+/** Renders a selected friend's profile within the shared atmosphere. */
 export function FriendProfileScreen({ friendId }: { friendId: string | undefined }) {
   const router = useRouter();
   const profile = useFriendProfile(friendId);
@@ -48,7 +49,7 @@ export function FriendProfileScreen({ friendId }: { friendId: string | undefined
   };
 
   return (
-    <SafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
+    <AtmosphericSafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
       <BackHeader
         onBack={() => router.back()}
         rightAction={
@@ -139,7 +140,7 @@ export function FriendProfileScreen({ friendId }: { friendId: string | undefined
         onRemove={confirmRemove}
         visible={showOptions}
       />
-    </SafeAreaView>
+    </AtmosphericSafeAreaView>
   );
 }
 

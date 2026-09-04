@@ -3,8 +3,8 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { LinearGradient } from "expo-linear-gradient";
 import type { ComponentProps, ReactNode } from "react";
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
+import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { Button, Confetti } from "@/components/ui";
 import { theme } from "@/theme/tokens";
 
@@ -27,6 +27,7 @@ type ProfileSetupLayoutProps = {
 
 const totalSteps = 6;
 
+/** Renders a profile-setup step over the shared atmosphere and optional confetti. */
 export function ProfileSetupLayout({
   children,
   description,
@@ -43,7 +44,7 @@ export function ProfileSetupLayout({
 }: ProfileSetupLayoutProps) {
   return (
     <LinearGradient colors={["#071824", "#0A2A3A", "#071824"]} style={styles.background}>
-      <SafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
+      <AtmosphericSafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : undefined}
           keyboardVerticalOffset={0}
@@ -134,7 +135,7 @@ export function ProfileSetupLayout({
             </View>
           </ScrollView>
         </KeyboardAvoidingView>
-      </SafeAreaView>
+      </AtmosphericSafeAreaView>
       {showConfetti ? <Confetti particleCount={48} testID="profile-setup-confetti" /> : null}
     </LinearGradient>
   );

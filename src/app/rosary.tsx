@@ -1,5 +1,8 @@
 import { useLocalSearchParams } from "expo-router";
+import { useMemo } from "react";
 
+import { englishRosaryContent } from "@/features/prayer/rosary/data/rosaryContent";
+import { getRosaryMysteriesFromContent } from "@/features/prayer/rosary/data/rosaryMysteries";
 import { getTodayRosaryMysteryType } from "@/features/prayer/rosary/data/schedule";
 import { RosaryPrayerScreen } from "@/features/prayer/rosary/screens/RosaryPrayerScreen";
 import type { RosaryMysteryType } from "@/features/prayer/rosary/types";
@@ -21,11 +24,13 @@ export default function RosaryRoute() {
   }>();
   const rawMysteryType = firstString(params.mysteryType);
   const mysteryType = isMysteryType(rawMysteryType) ? rawMysteryType : getTodayRosaryMysteryType();
+  const mysteries = useMemo(() => getRosaryMysteriesFromContent(englishRosaryContent, mysteryType), [mysteryType]);
 
   return (
     <RosaryPrayerScreen
       intentionId={firstString(params.intentionId)}
-      isDecade={firstString(params.isDecade) === "true"}
+      isDecade={false}
+      mysteries={mysteries}
       mysteryType={mysteryType}
       source={firstString(params.source)}
     />

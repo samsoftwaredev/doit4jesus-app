@@ -2,8 +2,8 @@ import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
+import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { BackHeader } from "@/components/navigation";
 import {
   getPrayerIntentionTheme,
@@ -22,6 +22,7 @@ const filters: ReadonlyArray<{ label: string; value: MyPrayerIntentionsStatusFil
 
 const statusLabels = { pending: "Pending review", visible: "Approved / Visible", rejected: "Not approved" } as const;
 
+/** Renders the current user's submitted intentions within the shared atmosphere. */
 export function MyPrayerIntentionsScreen() {
   const router = useRouter();
   const [status, setStatus] = useState<MyPrayerIntentionsStatusFilter>("all");
@@ -73,7 +74,7 @@ export function MyPrayerIntentionsScreen() {
     status === "all" ? "You haven&apos;t submitted any prayer intentions." : `No ${statusLabels[status]} intentions.`;
 
   return (
-    <SafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
+    <AtmosphericSafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
       <BackHeader
         onBack={() => router.back()}
         rightAction={
@@ -158,7 +159,7 @@ export function MyPrayerIntentionsScreen() {
         )}
         showsVerticalScrollIndicator={false}
       />
-    </SafeAreaView>
+    </AtmosphericSafeAreaView>
   );
 }
 

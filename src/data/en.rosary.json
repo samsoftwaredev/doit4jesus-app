@@ -1,8 +1,8 @@
 {
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "name": "Complete Catholic Rosary",
   "language": "en",
-  "description": "App-ready Rosary data containing the Joyful, Luminous, Sorrowful, and Glorious Mysteries. Every mystery-decade prayer includes a distinct, mystery-appropriate Scripture reference and a related public-domain Scripture excerpt, in addition to its prayer text and unique image/audio asset paths.",
+  "description": "App-ready Rosary data containing the Joyful, Luminous, Sorrowful, and Glorious Mysteries. Every mystery-decade prayer includes a distinct, mystery-appropriate Scripture reference and a related public-domain Scripture excerpt, in addition to its prayer text and unique image/audio asset paths. Mystery records also include the bundled app image key and accessible alternative text used by the Expo client.",
   "asset_conventions": {
     "image_format": "png",
     "audio_format": "mp3",
@@ -50,6 +50,8 @@
           "supporting_scriptures": ["Isaiah 7:14"],
           "fruit": "Humility",
           "image": "/assets/rosary/images/joyful/mysteries/01_the_annunciation.png",
+          "app_image_key": "blessed_virgin_mary",
+          "image_alt": "A devotional image of Mary for the mystery of the Annunciation.",
           "audio_intro": "/assets/rosary/audio/joyful/mysteries/01_the_annunciation_intro.mp3",
           "scripture_text": "The angel Gabriel was sent from God unto a city of Galilee, named Nazareth."
         },
@@ -61,6 +63,8 @@
           "supporting_scriptures": [],
           "fruit": "Love of Neighbor",
           "image": "/assets/rosary/images/joyful/mysteries/02_the_visitation.png",
+          "app_image_key": "saint_monica",
+          "image_alt": "A devotional image for the mystery of the Visitation.",
           "audio_intro": "/assets/rosary/audio/joyful/mysteries/02_the_visitation_intro.mp3",
           "scripture_text": "Mary arose in those days, and went into the hill country with haste."
         },
@@ -72,6 +76,8 @@
           "supporting_scriptures": ["Matthew 1:18-25"],
           "fruit": "Poverty of Spirit",
           "image": "/assets/rosary/images/joyful/mysteries/03_the_nativity.png",
+          "app_image_key": "cathedral_desktop",
+          "image_alt": "A sacred church interior for the mystery of the Nativity.",
           "audio_intro": "/assets/rosary/audio/joyful/mysteries/03_the_nativity_intro.mp3",
           "scripture_text": "There went out a decree from Caesar Augustus, that all the world should be taxed."
         },
@@ -83,6 +89,8 @@
           "supporting_scriptures": ["Leviticus 12:2-8", "Exodus 13:2"],
           "fruit": "Obedience",
           "image": "/assets/rosary/images/joyful/mysteries/04_the_presentation.png",
+          "app_image_key": "white_lily",
+          "image_alt": "White lilies representing the mystery of the Presentation.",
           "audio_intro": "/assets/rosary/audio/joyful/mysteries/04_the_presentation_intro.mp3",
           "scripture_text": "They brought him to Jerusalem, to present him to the Lord."
         },
@@ -94,6 +102,8 @@
           "supporting_scriptures": [],
           "fruit": "Joy in Finding Jesus",
           "image": "/assets/rosary/images/joyful/mysteries/05_finding_jesus_in_the_temple.png",
+          "app_image_key": "bible",
+          "image_alt": "A Bible representing the mystery of Finding Jesus in the Temple.",
           "audio_intro": "/assets/rosary/audio/joyful/mysteries/05_finding_jesus_in_the_temple_intro.mp3",
           "scripture_text": "The child grew, and waxed strong in spirit, filled with wisdom."
         }
@@ -1997,6 +2007,8 @@
           "supporting_scriptures": ["Mark 1:9-11", "Luke 3:21-22", "John 1:29-34"],
           "fruit": "Openness to the Holy Spirit",
           "image": "/assets/rosary/images/luminous/mysteries/01_baptism_of_jesus.png",
+          "app_image_key": "saint_john_the_evangelist",
+          "image_alt": "A devotional image for the Baptism in the Jordan.",
           "audio_intro": "/assets/rosary/audio/luminous/mysteries/01_baptism_of_jesus_intro.mp3",
           "scripture_text": "Then cometh Jesus from Galilee to Jordan unto John, to be baptized of him."
         },
@@ -2008,6 +2020,8 @@
           "supporting_scriptures": [],
           "fruit": "Trust in Mary's Intercession",
           "image": "/assets/rosary/images/luminous/mysteries/02_wedding_at_cana.png",
+          "app_image_key": "saint_joseph",
+          "image_alt": "A devotional image for the mystery of the Wedding at Cana.",
           "audio_intro": "/assets/rosary/audio/luminous/mysteries/02_wedding_at_cana_intro.mp3",
           "scripture_text": "There was a marriage in Cana of Galilee; and the mother of Jesus was there."
         },
@@ -2019,6 +2033,8 @@
           "supporting_scriptures": ["Matthew 4:17", "Matthew 5:1-12", "Luke 4:16-21"],
           "fruit": "Conversion",
           "image": "/assets/rosary/images/luminous/mysteries/03_proclamation_of_the_kingdom.png",
+          "app_image_key": "bible",
+          "image_alt": "A Bible representing the Proclamation of the Kingdom.",
           "audio_intro": "/assets/rosary/audio/luminous/mysteries/03_proclamation_of_the_kingdom_intro.mp3",
           "scripture_text": "Jesus came into Galilee, preaching the gospel of the kingdom of God."
         },
@@ -2030,6 +2046,8 @@
           "supporting_scriptures": ["Mark 9:2-8", "Luke 9:28-36"],
           "fruit": "Desire for Holiness",
           "image": "/assets/rosary/images/luminous/mysteries/04_the_transfiguration.png",
+          "app_image_key": "saint_francis_of_assisi",
+          "image_alt": "A devotional image for the Transfiguration.",
           "audio_intro": "/assets/rosary/audio/luminous/mysteries/04_the_transfiguration_intro.mp3",
           "scripture_text": "Jesus taketh Peter, James, and John his brother, and bringeth them up into an high mountain apart."
         },
@@ -2041,6 +2059,8 @@
           "supporting_scriptures": ["Matthew 26:26-29", "Mark 14:22-25", "1 Corinthians 11:23-26", "John 6:51-58"],
           "fruit": "Eucharistic Love",
           "image": "/assets/rosary/images/luminous/mysteries/05_institution_of_the_eucharist.png",
+          "app_image_key": "cathedral_desktop",
+          "image_alt": "A sacred church interior for the Institution of the Eucharist.",
           "audio_intro": "/assets/rosary/audio/luminous/mysteries/05_institution_of_the_eucharist_intro.mp3",
           "scripture_text": "When the hour was come, he sat down, and the twelve apostles with him."
         }
@@ -3944,6 +3964,8 @@
           "supporting_scriptures": ["Mark 14:32-42", "Luke 22:39-46"],
           "fruit": "Contrition",
           "image": "/assets/rosary/images/sorrowful/mysteries/01_agony_in_the_garden.png",
+          "app_image_key": "saint_padre_pio",
+          "image_alt": "A devotional image for the Agony in the Garden.",
           "audio_intro": "/assets/rosary/audio/sorrowful/mysteries/01_agony_in_the_garden_intro.mp3",
           "scripture_text": "He came out, and went, as he was wont, to the mount of Olives."
         },
@@ -3955,6 +3977,8 @@
           "supporting_scriptures": ["Matthew 27:26", "Mark 15:15"],
           "fruit": "Purity",
           "image": "/assets/rosary/images/sorrowful/mysteries/02_scourging_at_the_pillar.png",
+          "app_image_key": "saint_sebastian",
+          "image_alt": "A devotional image for the Scourging at the Pillar.",
           "audio_intro": "/assets/rosary/audio/sorrowful/mysteries/02_scourging_at_the_pillar_intro.mp3",
           "scripture_text": "Then Pilate therefore took Jesus, and scourged him."
         },
@@ -3966,6 +3990,8 @@
           "supporting_scriptures": ["Mark 15:16-20", "John 19:2-3"],
           "fruit": "Moral Courage",
           "image": "/assets/rosary/images/sorrowful/mysteries/03_crowning_with_thorns.png",
+          "app_image_key": "saint_joan_of_arc",
+          "image_alt": "A devotional image for the Crowning with Thorns.",
           "audio_intro": "/assets/rosary/audio/sorrowful/mysteries/03_crowning_with_thorns_intro.mp3",
           "scripture_text": "The soldiers of the governor took Jesus into the common hall."
         },
@@ -3977,6 +4003,8 @@
           "supporting_scriptures": ["John 19:16-17", "Matthew 27:31-32", "Mark 15:20-22"],
           "fruit": "Patience",
           "image": "/assets/rosary/images/sorrowful/mysteries/04_carrying_of_the_cross.png",
+          "app_image_key": "saint_francis_xavier",
+          "image_alt": "A devotional image for the Carrying of the Cross.",
           "audio_intro": "/assets/rosary/audio/sorrowful/mysteries/04_carrying_of_the_cross_intro.mp3",
           "scripture_text": "They laid hold upon one Simon, a Cyrenian... and on him they laid the cross, that he might bear it after Jesus."
         },
@@ -3988,6 +4016,8 @@
           "supporting_scriptures": ["John 19:18-30", "Matthew 27:33-54", "Mark 15:22-39"],
           "fruit": "Self-Sacrificing Love",
           "image": "/assets/rosary/images/sorrowful/mysteries/05_the_crucifixion.png",
+          "app_image_key": "cathedral_tablet",
+          "image_alt": "A sacred church interior for the Crucifixion.",
           "audio_intro": "/assets/rosary/audio/sorrowful/mysteries/05_the_crucifixion_intro.mp3",
           "scripture_text": "There stood by the cross of Jesus his mother."
         }
@@ -5891,6 +5921,8 @@
           "supporting_scriptures": ["Mark 16:1-8", "Luke 24:1-12", "John 20:1-18", "1 Corinthians 15:3-8"],
           "fruit": "Faith",
           "image": "/assets/rosary/images/glorious/mysteries/01_the_resurrection.png",
+          "app_image_key": "saint_michael_the_archangel",
+          "image_alt": "A devotional image for the Resurrection.",
           "audio_intro": "/assets/rosary/audio/glorious/mysteries/01_the_resurrection_intro.mp3",
           "scripture_text": "In the end of the sabbath... came Mary Magdalene and the other Mary to see the sepulchre."
         },
@@ -5902,6 +5934,8 @@
           "supporting_scriptures": ["Luke 24:50-53", "Mark 16:19"],
           "fruit": "Hope",
           "image": "/assets/rosary/images/glorious/mysteries/02_the_ascension.png",
+          "app_image_key": "saint_paul",
+          "image_alt": "A devotional image for the Ascension.",
           "audio_intro": "/assets/rosary/audio/glorious/mysteries/02_the_ascension_intro.mp3",
           "scripture_text": "Lord, wilt thou at this time restore again the kingdom to Israel?"
         },
@@ -5913,6 +5947,8 @@
           "supporting_scriptures": ["John 14:15-17", "John 16:7-15"],
           "fruit": "Love of God",
           "image": "/assets/rosary/images/glorious/mysteries/03_descent_of_the_holy_spirit.png",
+          "app_image_key": "saint_peter",
+          "image_alt": "A devotional image for the Descent of the Holy Spirit.",
           "audio_intro": "/assets/rosary/audio/glorious/mysteries/03_descent_of_the_holy_spirit_intro.mp3",
           "scripture_text": "When the day of Pentecost was fully come, they were all with one accord in one place."
         },
@@ -5924,6 +5960,8 @@
           "supporting_scriptures": ["Luke 1:46-55", "Psalm 45:10-16", "1 Corinthians 15:20-23"],
           "fruit": "Grace of a Happy Death",
           "image": "/assets/rosary/images/glorious/mysteries/04_the_assumption.png",
+          "app_image_key": "our_lady_queen_of_heaven",
+          "image_alt": "A devotional image of Mary for the Assumption.",
           "audio_intro": "/assets/rosary/audio/glorious/mysteries/04_the_assumption_intro.mp3",
           "scripture_text": "I will put enmity between thee and the woman, and between thy seed and her seed."
         },
@@ -5935,6 +5973,8 @@
           "supporting_scriptures": ["Psalm 45:10-16", "1 Kings 2:19", "Luke 1:32-33", "Revelation 19:16"],
           "fruit": "Trust in Mary's Intercession",
           "image": "/assets/rosary/images/glorious/mysteries/05_the_coronation.png",
+          "app_image_key": "blessed_virgin_mary",
+          "image_alt": "A devotional image of Mary for her Coronation.",
           "audio_intro": "/assets/rosary/audio/glorious/mysteries/05_the_coronation_intro.mp3",
           "scripture_text": "To the woman were given two wings of a great eagle, that she might fly into the wilderness."
         }

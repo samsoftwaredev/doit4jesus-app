@@ -3,8 +3,9 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
+import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
+import { SacredAtmosphere } from "@/components/ui";
 import {
   GardenCalendar,
   GardenHero,
@@ -17,6 +18,7 @@ import {
 import { useRosaryGarden } from "@/features/prayer/rosary/garden/useRosaryGarden";
 import { theme } from "@/theme/tokens";
 
+/** Renders the rosary garden and its progress within the shared atmosphere. */
 export function RosaryGardenScreen() {
   const router = useRouter();
   const { width } = useWindowDimensions();
@@ -24,14 +26,19 @@ export function RosaryGardenScreen() {
   const garden = useRosaryGarden();
 
   return (
-    <SafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
+    <AtmosphericSafeAreaView edges={["top", "bottom"]} includeAtmosphere={false} style={styles.safeArea}>
       <LinearGradient
         colors={["#071B2A", "#0A2C3A", "#071B2A"]}
         end={{ x: 1, y: 1 }}
         start={{ x: 0, y: 0 }}
         style={styles.background}
       >
-        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        <SacredAtmosphere />
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          style={styles.atmosphereContent}
+        >
           <View style={[styles.page, isTablet && styles.tabletPage]}>
             <View style={styles.topBar}>
               <Pressable
@@ -82,13 +89,14 @@ export function RosaryGardenScreen() {
           </View>
         </ScrollView>
       </LinearGradient>
-    </SafeAreaView>
+    </AtmosphericSafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   safeArea: { backgroundColor: "#071B2A", flex: 1 },
-  background: { flex: 1 },
+  background: { flex: 1, position: "relative" },
+  atmosphereContent: { zIndex: theme.zIndex.card },
   scrollContent: { flexGrow: 1 },
   page: {
     alignSelf: "center",

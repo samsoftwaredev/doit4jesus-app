@@ -11,5 +11,7 @@ export { HeaderActionGroup, MessageAction, NotificationAction, SettingsAction } 
 export type { HeaderActionGroupProps, HeaderActionProps, UnreadHeaderActionProps } from "./HeaderActionGroup";
 export { ResponsiveImage } from "./ResponsiveImage";
 export type { ResponsiveImageProps, ResponsiveImageSource } from "./ResponsiveImage";
+export { SacredAtmosphere } from "./SacredAtmosphere";
+export type { SacredAtmosphereProps } from "./SacredAtmosphere";
 export { SpriteSheetAnimation } from "./SpriteSheetAnimation";
 export type { SpriteSheetAnimationHandle, SpriteSheetAnimationProps } from "./SpriteSheetAnimation";

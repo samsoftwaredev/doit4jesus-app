@@ -2,8 +2,8 @@ import Feather from "@expo/vector-icons/Feather";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
+import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { BackHeader } from "@/components/navigation";
 import { PrayerIntentionAvatar } from "@/features/prayer/intentions/components";
 import { fetchPrayerIntentionPrayerSummary, getPrayerIntentionTheme } from "@/features/prayer/intentions";
@@ -14,6 +14,7 @@ function firstString(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value;
 }
 
+/** Renders the prayer history for one intention within the shared atmosphere. */
 export function PrayerIntentionPrayerHistoryScreen() {
   const router = useRouter();
   const { intentionId: rawIntentionId } = useLocalSearchParams<{ intentionId?: string | string[] }>();
@@ -43,7 +44,7 @@ export function PrayerIntentionPrayerHistoryScreen() {
   const intentionTheme = getPrayerIntentionTheme(summary?.symbol);
 
   return (
-    <SafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
+    <AtmosphericSafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
       <BackHeader onBack={() => router.back()} title="Prayer Activity" />
       {isLoading ? (
         <View style={styles.state}>
@@ -86,7 +87,7 @@ export function PrayerIntentionPrayerHistoryScreen() {
           <Text style={styles.note}>Prayer records are only shown when the protected endpoint provides them.</Text>
         </ScrollView>
       ) : null}
-    </SafeAreaView>
+    </AtmosphericSafeAreaView>
   );
 }
 

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useRouter } from "expo-router";
 import { FlatList, Pressable, RefreshControl, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
+import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { BackHeader } from "@/components/navigation";
 import { Card } from "@/components/ui";
 import { FriendRequestItem, FriendsState } from "@/features/friends/components";
@@ -15,13 +15,14 @@ const tabs: ReadonlyArray<{ label: string; value: FriendRequestDirection }> = [
   { label: "Sent", value: "outgoing" },
 ];
 
+/** Renders incoming and outgoing friend requests within the shared atmosphere. */
 export function FriendRequestsScreen() {
   const router = useRouter();
   const [direction, setDirection] = useState<FriendRequestDirection>("incoming");
   const requests = useFriendRequests(direction);
 
   return (
-    <SafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
+    <AtmosphericSafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
       <BackHeader onBack={() => router.back()} title="Friend Requests" />
       <View style={styles.tabs}>
         {tabs.map((tab) => (
@@ -96,7 +97,7 @@ export function FriendRequestsScreen() {
           showsVerticalScrollIndicator={false}
         />
       ) : null}
-    </SafeAreaView>
+    </AtmosphericSafeAreaView>
   );
 }
 

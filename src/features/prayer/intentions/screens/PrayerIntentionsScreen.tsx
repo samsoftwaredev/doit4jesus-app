@@ -2,14 +2,15 @@ import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
+import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { BackHeader } from "@/components/navigation";
 import { PrayerIntentionCard } from "@/features/prayer/intentions/components";
 import { fetchApprovedPrayerIntentions, cacheApprovedPrayerIntentions } from "@/features/prayer/intentions";
 import type { ApprovedPrayerIntention } from "@/features/prayer/intentions";
 import { theme } from "@/theme/tokens";
 
+/** Renders approved prayer intentions within the shared atmosphere. */
 export function PrayerIntentionsScreen() {
   const router = useRouter();
   const [intentions, setIntentions] = useState<ApprovedPrayerIntention[]>([]);
@@ -55,7 +56,7 @@ export function PrayerIntentionsScreen() {
   }, [hasMore, isLoadingMore, nextOffset]);
 
   return (
-    <SafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
+    <AtmosphericSafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
       <BackHeader
         onBack={() => router.back()}
         rightAction={
@@ -147,7 +148,7 @@ export function PrayerIntentionsScreen() {
           size={theme.sizes.iconSmall}
         />
       </Pressable>
-    </SafeAreaView>
+    </AtmosphericSafeAreaView>
   );
 }
 

@@ -2,14 +2,15 @@ import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useRouter } from "expo-router";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
+import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { BackHeader } from "@/components/navigation";
 import { FriendsList, FriendsState, PendingRequestsCard, RosaryLeaderboardCard } from "@/features/friends/components";
 import { useFriendRequests, useFriends, useRosaryLeaderboard } from "@/features/friends/friends.hooks";
 import type { FriendRequest } from "@/features/friends/friends.types";
 import { theme } from "@/theme/tokens";
 
+/** Renders the authenticated community dashboard within the shared atmosphere. */
 export function FriendsScreen() {
   const router = useRouter();
   const friends = useFriends();
@@ -37,7 +38,7 @@ export function FriendsScreen() {
   };
 
   return (
-    <SafeAreaView edges={["top"]} style={styles.safeArea}>
+    <AtmosphericSafeAreaView edges={["top"]} style={styles.safeArea}>
       <View style={styles.brandRow}>
         <View style={styles.brandIcon}>
           <MaterialCommunityIcons color={theme.colors.gold.pale} name="shield-cross" size={theme.sizes.iconMedium} />
@@ -142,7 +143,7 @@ export function FriendsScreen() {
           ) : null}
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </AtmosphericSafeAreaView>
   );
 }
 

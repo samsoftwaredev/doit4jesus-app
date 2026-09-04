@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react-native";
+import { StyleSheet } from "react-native";
 
-import { rosarySequence } from "@/features/prayer/rosary/data/rosarySequence";
+import { fullRosarySequence, rosarySequence } from "@/features/prayer/rosary/data/rosarySequence";
 
 import { RosaryBead } from "./RosaryBead";
 
@@ -19,5 +20,25 @@ describe("RosaryBead", () => {
 
     expect(onPress).toHaveBeenCalledWith("hail-mary-1");
     expect(onPress).toHaveBeenCalledTimes(1);
+  });
+
+  it("renders Our Father beads larger than Hail Mary beads", async () => {
+    const ourFatherBead = fullRosarySequence.find((bead) => bead.type === "ourFather");
+    expect(ourFatherBead).toBeDefined();
+
+    await render(
+      <>
+        <RosaryBead bead={rosarySequence[0]} onPress={jest.fn()} state="upcoming" />
+        <RosaryBead bead={ourFatherBead!} onPress={jest.fn()} state="upcoming" />
+      </>,
+    );
+
+    const hailMaryStyle = StyleSheet.flatten(screen.getByTestId("rosary-bead-shape-1").props.style);
+    const ourFatherStyle = StyleSheet.flatten(
+      screen.getByTestId(`rosary-bead-shape-${ourFatherBead?.sequence}`).props.style,
+    );
+
+    expect(ourFatherStyle.width).toBeGreaterThan(hailMaryStyle.width);
+    expect(ourFatherStyle.height).toBeGreaterThan(hailMaryStyle.height);
   });
 });
