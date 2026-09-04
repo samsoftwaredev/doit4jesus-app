@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { ActivityIndicator, Image, Pressable, Text, View } from "react-native";
 
+import { useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
-import { styles } from "./HeaderActionGroup.styles";
+import { styles as styleSheet } from "./HeaderActionGroup.styles";
 import type { HeaderActionProps } from "./HeaderActionGroup.types";
 
 type HeaderActionIconName = "bell" | "mail" | "settings";
@@ -28,6 +29,7 @@ function getUnreadBadgeText(unreadCount: number): string | undefined {
   return unreadCount > 99 ? "99+" : String(unreadCount);
 }
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function HeaderActionButton({
   iconName,
   label,
@@ -37,6 +39,7 @@ export function HeaderActionButton({
   onPress,
   testID,
 }: HeaderActionButtonProps) {
+  const styles = useThemedStyles(styleSheet);
   const [focused, setFocused] = useState(false);
   const normalizedUnreadCount = Math.max(0, Math.floor(unreadCount));
   const badgeText = getUnreadBadgeText(normalizedUnreadCount);

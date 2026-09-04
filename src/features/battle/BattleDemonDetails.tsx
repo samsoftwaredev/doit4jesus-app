@@ -1,11 +1,12 @@
 import { Image } from "expo-image";
 import { Text, View } from "react-native";
 
+import { useThemedStyles } from "@/theme/createThemedStyles";
 import { Card } from "@/components/ui";
 import type { DemonAttack, DemonBattleDetails, DemonDefense } from "@/features/demons";
 import { getDemonArtwork } from "@/features/demons";
 
-import { styles } from "./BattleDemonDetails.styles";
+import { styles as styleSheet } from "./BattleDemonDetails.styles";
 
 interface BattleDemonDetailsProps {
   details: DemonBattleDetails;
@@ -19,7 +20,9 @@ function formatLabel(value: string): string {
     .join(" ");
 }
 
+/** Renders AttackListItem with styles resolved from the active appearance. */
 function AttackListItem({ attack }: { attack: DemonAttack }) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <View style={styles.listItem}>
       <Text style={styles.itemTitle}>{attack.name}</Text>
@@ -29,7 +32,9 @@ function AttackListItem({ attack }: { attack: DemonAttack }) {
   );
 }
 
+/** Renders DefenseListItem with styles resolved from the active appearance. */
 function DefenseListItem({ defense }: { defense: DemonDefense }) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <View style={styles.listItem}>
       <Text style={styles.itemTitle}>{defense.name}</Text>
@@ -41,7 +46,9 @@ function DefenseListItem({ defense }: { defense: DemonDefense }) {
   );
 }
 
+/** Renders BattleDemonDetails with styles resolved from the active appearance. */
 export function BattleDemonDetails({ details }: BattleDemonDetailsProps) {
+  const styles = useThemedStyles(styleSheet);
   const { demon, attacks, defenses, defeatReward } = details;
   const artwork = getDemonArtwork(demon);
 

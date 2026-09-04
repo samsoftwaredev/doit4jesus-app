@@ -1,19 +1,20 @@
-import { StyleSheet } from "react-native";
-
-import { theme } from "@/theme/tokens";
+import { createThemedStyles, createThemedValue } from "@/theme/createThemedStyles";
 
 import type { VirtueTone } from "./virtues.types";
 
-export const virtueToneColors = {
-  faith: theme.colors.accent.blueLight,
-  discipline: theme.colors.semantic.success,
-  courage: theme.colors.accent.red,
-  wisdom: theme.colors.accent.purpleLight,
-  charity: theme.colors.accent.redLight,
-  purity: theme.colors.text.white,
-} as const satisfies Record<VirtueTone, string>;
+export const virtueToneColors = createThemedValue(
+  (theme) =>
+    ({
+      faith: theme.colors.accent.blueLight,
+      discipline: theme.colors.semantic.success,
+      courage: theme.colors.accent.red,
+      wisdom: theme.colors.accent.purpleLight,
+      charity: theme.colors.accent.redLight,
+      purity: theme.colors.text.white,
+    }) as const satisfies Record<VirtueTone, string>,
+);
 
-export const styles = StyleSheet.create({
+export const styles = createThemedStyles((theme) => ({
   row: {
     alignItems: "center",
     flexDirection: "row",
@@ -71,4 +72,4 @@ export const styles = StyleSheet.create({
     textAlign: "right",
     width: theme.spacing[14],
   },
-});
+}));

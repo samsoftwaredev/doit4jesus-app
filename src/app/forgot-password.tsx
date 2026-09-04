@@ -12,8 +12,11 @@ import {
   useAuth,
 } from "@/features/auth";
 import { supabase } from "@/lib/supabase";
+import { useThemedStyles } from "@/theme/createThemedStyles";
 
+/** Renders password-recovery controls with appearance-aware shared authentication styles. */
 export default function ForgotPasswordScreen() {
+  const styles = useThemedStyles(authScreenStyles);
   const { configurationError } = useAuth();
   const [email, setEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState<string>();
@@ -55,7 +58,7 @@ export default function ForgotPasswordScreen() {
         <AuthMessage>{configurationError ?? errorMessage ?? ""}</AuthMessage>
       ) : null}
       {successMessage ? <AuthMessage tone="success">{successMessage}</AuthMessage> : null}
-      <View style={authScreenStyles.actions}>
+      <View style={styles.actions}>
         <Button
           disabled={!email.trim() || Boolean(configurationError)}
           fullWidth
@@ -65,7 +68,7 @@ export default function ForgotPasswordScreen() {
           Email reset link
         </Button>
       </View>
-      <Link href="/sign-in" style={authScreenStyles.link}>
+      <Link href="/sign-in" style={styles.link}>
         Back to sign in
       </Link>
     </AuthScreen>

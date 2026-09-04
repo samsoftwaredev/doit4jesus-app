@@ -1,8 +1,9 @@
 import { useState } from "react";
 import Feather from "@expo/vector-icons/Feather";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, View } from "react-native";
 import Animated, { FadeIn, useReducedMotion } from "react-native-reanimated";
 
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 interface MonthNavigatorProps {
@@ -16,6 +17,7 @@ interface MonthNavigatorProps {
 
 const monthFormatter = new Intl.DateTimeFormat(undefined, { month: "long", year: "numeric", timeZone: "UTC" });
 
+/** Renders MonthButton with styles resolved from the active appearance. */
 function MonthButton({
   accessibilityLabel,
   canNavigate,
@@ -29,6 +31,7 @@ function MonthButton({
   onPress: () => void;
   testID: string;
 }) {
+  const styles = useThemedStyles(styleSheet);
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -57,7 +60,9 @@ function MonthButton({
   );
 }
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function MonthNavigator({ month, year, canGoPrevious, canGoNext, onPrevious, onNext }: MonthNavigatorProps) {
+  const styles = useThemedStyles(styleSheet);
   const reduceMotion = useReducedMotion();
   const monthLabel = monthFormatter.format(new Date(Date.UTC(year, month - 1, 1)));
   return (
@@ -87,7 +92,7 @@ export function MonthNavigator({ month, year, canGoPrevious, canGoNext, onPrevio
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   container: {
     alignItems: "center",
     flexDirection: "row",
@@ -104,8 +109,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: theme.sizes.touchTarget,
   },
-  label: { ...theme.typography.heading2, color: theme.colors.text.white, fontFamily: theme.fontFamilies.devotional },
+  label: {
+    ...theme.typography.heading2,
+    color: theme.colors.text.white,
+    flex: 1,
+    fontFamily: theme.fontFamilies.devotional,
+    minWidth: 0,
+    paddingHorizontal: theme.spacing[2],
+    textAlign: "center",
+  },
   hovered: { backgroundColor: theme.colors.brand.primary, opacity: theme.opacity.hover },
   disabled: { opacity: theme.opacity.disabled },
   pressed: { opacity: theme.opacity.pressed, transform: [{ scale: 0.96 }] },
-});
+}));

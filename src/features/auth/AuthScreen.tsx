@@ -1,10 +1,11 @@
 import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
 import type { ComponentProps } from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, Text, TextInput, View } from "react-native";
 
 import { ScreenShell } from "@/components/screen-shell";
 import { Card } from "@/components/ui";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 type AuthScreenProps = {
@@ -17,7 +18,9 @@ type AuthTextInputProps = ComponentProps<typeof TextInput> & {
   label: string;
 };
 
+/** Renders the shared themed frame used by sign-in and account recovery screens. */
 export function AuthScreen({ children, subtitle, title }: AuthScreenProps) {
+  const styles = useThemedStyles(styleSheet);
   const router = useRouter();
 
   return (
@@ -50,7 +53,9 @@ export function AuthScreen({ children, subtitle, title }: AuthScreenProps) {
   );
 }
 
+/** Renders a labeled authentication input using the active palette. */
 export function AuthTextInput({ label, ...inputProps }: AuthTextInputProps) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <View style={styles.field}>
       <Text style={styles.label}>{label}</Text>
@@ -59,11 +64,13 @@ export function AuthTextInput({ label, ...inputProps }: AuthTextInputProps) {
   );
 }
 
+/** Renders a semantic success or error message for authentication flows. */
 export function AuthMessage({ children, tone = "error" }: { children: string; tone?: "error" | "success" }) {
+  const styles = useThemedStyles(styleSheet);
   return <Text style={[styles.message, tone === "error" ? styles.error : styles.success]}>{children}</Text>;
 }
 
-export const authScreenStyles = StyleSheet.create({
+export const authScreenStyles = createThemedStyles((theme) => ({
   actions: {
     gap: theme.spacing[3],
     marginTop: theme.spacing[5],
@@ -73,9 +80,9 @@ export const authScreenStyles = StyleSheet.create({
     color: theme.colors.text.link,
     textAlign: "center",
   },
-});
+}));
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   backButton: {
     alignItems: "center",
     height: theme.sizes.touchTarget,
@@ -117,4 +124,4 @@ const styles = StyleSheet.create({
   success: {
     color: theme.colors.text.success,
   },
-});
+}));

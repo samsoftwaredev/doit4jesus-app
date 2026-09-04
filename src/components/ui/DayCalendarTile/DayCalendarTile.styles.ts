@@ -1,7 +1,6 @@
 import type { ViewStyle } from "react-native";
-import { StyleSheet } from "react-native";
 
-import { theme } from "@/theme/tokens";
+import { createThemedStyles, createThemedValue } from "@/theme/createThemedStyles";
 
 import type { DayCalendarTileState } from "./DayCalendarTile.types";
 
@@ -12,40 +11,43 @@ type DayCalendarTileStateConfig = {
   surfaceColor: string;
 };
 
-export const dayCalendarTileStateConfig = {
-  completed: {
-    accentColor: theme.colors.semantic.success,
-    borderColor: theme.colors.semantic.successBorder,
-    shadow: theme.shadows.none,
-    surfaceColor: theme.colors.surface.green,
-  },
-  current: {
-    accentColor: theme.colors.brand.primaryLight,
-    borderColor: theme.colors.border.focus,
-    shadow: theme.shadows.focus,
-    surfaceColor: theme.colors.surface.secondary,
-  },
-  future: {
-    accentColor: theme.colors.icon.muted,
-    borderColor: theme.colors.border.info,
-    shadow: theme.shadows.none,
-    surfaceColor: theme.colors.surface.navyDeep,
-  },
-  incomplete: {
-    accentColor: theme.colors.icon.secondary,
-    borderColor: theme.colors.border.info,
-    shadow: theme.shadows.none,
-    surfaceColor: theme.colors.surface.navyDeep,
-  },
-  unavailable: {
-    accentColor: theme.colors.text.disabled,
-    borderColor: theme.colors.border.subtle,
-    shadow: theme.shadows.none,
-    surfaceColor: theme.colors.background.deep,
-  },
-} as const satisfies Record<DayCalendarTileState, DayCalendarTileStateConfig>;
+export const dayCalendarTileStateConfig = createThemedValue(
+  (theme) =>
+    ({
+      completed: {
+        accentColor: theme.colors.semantic.success,
+        borderColor: theme.colors.semantic.successBorder,
+        shadow: theme.shadows.none,
+        surfaceColor: theme.colors.surface.green,
+      },
+      current: {
+        accentColor: theme.colors.brand.primaryLight,
+        borderColor: theme.colors.border.focus,
+        shadow: theme.shadows.focus,
+        surfaceColor: theme.colors.surface.secondary,
+      },
+      future: {
+        accentColor: theme.colors.icon.muted,
+        borderColor: theme.colors.border.info,
+        shadow: theme.shadows.none,
+        surfaceColor: theme.colors.surface.navyDeep,
+      },
+      incomplete: {
+        accentColor: theme.colors.icon.secondary,
+        borderColor: theme.colors.border.info,
+        shadow: theme.shadows.none,
+        surfaceColor: theme.colors.surface.navyDeep,
+      },
+      unavailable: {
+        accentColor: theme.colors.text.disabled,
+        borderColor: theme.colors.border.subtle,
+        shadow: theme.shadows.none,
+        surfaceColor: theme.colors.background.deep,
+      },
+    }) as const satisfies Record<DayCalendarTileState, DayCalendarTileStateConfig>,
+);
 
-export const styles = StyleSheet.create({
+export const styles = createThemedStyles((theme) => ({
   tile: {
     borderRadius: theme.radii.md,
     borderWidth: theme.borderWidths.thin,
@@ -114,4 +116,4 @@ export const styles = StyleSheet.create({
     width: theme.sizes.iconXs,
     zIndex: theme.zIndex.dropdown,
   },
-});
+}));

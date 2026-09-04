@@ -87,7 +87,16 @@ describe("Profile settings", () => {
     expect(screen.getByText("App Version")).toBeTruthy();
     expect(screen.getByText("Sign Out")).toBeTruthy();
     expect(screen.getByText("Delete Account")).toBeTruthy();
-    expect(screen.queryByText("PREFERENCES")).toBeNull();
+    expect(screen.getByText("APPEARANCE")).toBeTruthy();
+    expect(screen.getByLabelText("Appearance, System (Dark)")).toBeTruthy();
+  });
+
+  it("opens Appearance settings from its current theme summary", async () => {
+    await renderProfile();
+
+    await fireEvent.press(screen.getByLabelText("Appearance, System (Dark)"));
+
+    expect(mockPush).toHaveBeenCalledWith("/settings");
   });
 
   it("edits only the display name", async () => {

@@ -1,8 +1,10 @@
 import Feather from "@expo/vector-icons/Feather";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 import type { ConscienceQuestionViewModel } from "../dashboard.types";
@@ -16,13 +18,17 @@ type ConscienceQuestionCardProps = {
   question: ConscienceQuestionViewModel | null;
 };
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function ConscienceQuestionCard({ error, isLoading, onRetry, question }: ConscienceQuestionCardProps) {
+  const styles = useThemedStyles(styleSheet);
+  const { isLargeText, isNarrowPhone } = useResponsiveLayout();
+  const stackContent = isLargeText || isNarrowPhone;
   return (
     <LinearGradient
-      colors={["#1D203F", "#111B32", "#24213F"]}
+      colors={theme.colors.gradients.conscience}
       end={{ x: 1, y: 1 }}
       start={{ x: 0, y: 0 }}
-      style={styles.card}
+      style={[styles.card, stackContent && styles.cardStacked]}
     >
       <View pointerEvents="none" style={styles.illumination} />
       <View style={styles.artwork}>
@@ -35,7 +41,7 @@ export function ConscienceQuestionCard({ error, isLoading, onRetry, question }: 
           style={styles.cross}
         />
       </View>
-      <View style={styles.copy}>
+      <View style={[styles.copy, stackContent && styles.copyStacked]}>
         <Text accessibilityRole="header" style={styles.heading}>
           QUESTION OF CONSCIENCE
         </Text>
@@ -64,7 +70,9 @@ export function ConscienceQuestionCard({ error, isLoading, onRetry, question }: 
   );
 }
 
+/** Renders QuestionSkeleton with styles resolved from the active appearance. */
 function QuestionSkeleton() {
+  const styles = useThemedStyles(styleSheet);
   return (
     <View accessibilityLabel="Loading conscience question" style={styles.skeletons}>
       <View style={styles.questionSkeleton} />
@@ -74,7 +82,7 @@ function QuestionSkeleton() {
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   artwork: {
     alignItems: "center",
     height: 96,
@@ -93,7 +101,9 @@ const styles = StyleSheet.create({
     padding: theme.spacing[4],
     position: "relative",
   },
+  cardStacked: { flexDirection: "column" },
   copy: { flex: 1, minWidth: 0, paddingLeft: theme.spacing[3] },
+  copyStacked: { paddingLeft: theme.spacing[0], paddingTop: theme.spacing[2] },
   cross: { position: "absolute", right: theme.spacing[0], top: theme.spacing[0] },
   error: { ...theme.typography.body, color: theme.colors.text.secondary, marginTop: theme.spacing[3] },
   heading: {
@@ -140,4 +150,4 @@ const styles = StyleSheet.create({
   retry: { alignSelf: "flex-start", minHeight: theme.sizes.touchTarget, justifyContent: "center" },
   retryText: { ...theme.typography.button, color: theme.colors.gold.pale },
   skeletons: { marginTop: theme.spacing[3] },
-});
+}));

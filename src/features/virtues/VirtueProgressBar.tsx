@@ -1,9 +1,12 @@
+import { useThemedStyles } from "@/theme/createThemedStyles";
 import { Image, Text, View } from "react-native";
 
-import { styles, virtueToneColors } from "./VirtueProgressBar.styles";
+import { styles as styleSheet, virtueToneColors } from "./VirtueProgressBar.styles";
 import type { VirtueProgressBarProps } from "./virtues.types";
 
+/** Renders VirtueProgressBar with styles resolved from the active appearance. */
 export function VirtueProgressBar({ label, value, maxValue, tone, icon }: VirtueProgressBarProps) {
+  const styles = useThemedStyles(styleSheet);
   const safeMaxValue = Math.max(maxValue, 1);
   const clampedValue = Math.min(Math.max(value, 0), safeMaxValue);
   const progress = (clampedValue / safeMaxValue) * 100;

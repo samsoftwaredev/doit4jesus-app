@@ -1,9 +1,10 @@
 import Feather from "@expo/vector-icons/Feather";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
 import { saintAvatars } from "@/features/profile/saints";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 import type { LeaderboardEntryViewModel } from "../dashboard.types";
@@ -31,9 +32,16 @@ function medal(rank: number): string | null {
   return null;
 }
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function LeaderboardCard({ entries, error, isLoading, onRetry, onViewFull }: LeaderboardCardProps) {
+  const styles = useThemedStyles(styleSheet);
   return (
-    <LinearGradient colors={["#142B3E", "#091923"]} end={{ x: 1, y: 1 }} start={{ x: 0, y: 0 }} style={styles.card}>
+    <LinearGradient
+      colors={theme.colors.gradients.leaderboard}
+      end={{ x: 1, y: 1 }}
+      start={{ x: 0, y: 0 }}
+      style={styles.card}
+    >
       <View style={styles.header}>
         <View style={styles.titleRow}>
           <Feather accessible={false} color={theme.colors.gold.pale} name="award" size={theme.sizes.iconMedium} />
@@ -41,22 +49,6 @@ export function LeaderboardCard({ entries, error, isLoading, onRetry, onViewFull
             LEADERBOARD
           </Text>
         </View>
-        <Pressable
-          accessibilityLabel="View full leaderboard"
-          accessibilityRole="button"
-          onPress={onViewFull}
-          style={styles.viewAll}
-        >
-          <Text numberOfLines={1} style={styles.viewAllText}>
-            VIEW FULL LEADERBOARD
-          </Text>
-          <Feather
-            accessible={false}
-            color={theme.colors.gold.pale}
-            name="chevron-right"
-            size={theme.sizes.iconSmall}
-          />
-        </Pressable>
       </View>
       <Text style={styles.subtitle}>WEEKLY · GLOBAL</Text>
       {isLoading ? <LeaderboardSkeleton /> : null}
@@ -74,11 +66,24 @@ export function LeaderboardCard({ entries, error, isLoading, onRetry, onViewFull
         </View>
       ) : null}
       {!isLoading && !error && entries ? <LeaderboardRows entries={entries.slice(0, 5)} /> : null}
+      <Pressable
+        accessibilityLabel="View leaderboard"
+        accessibilityRole="button"
+        onPress={onViewFull}
+        style={styles.viewAll}
+      >
+        <Text numberOfLines={1} style={styles.viewAllText}>
+          VIEW LEADERBOARD
+        </Text>
+        <Feather accessible={false} color={theme.colors.gold.pale} name="chevron-right" size={theme.sizes.iconSmall} />
+      </Pressable>
     </LinearGradient>
   );
 }
 
+/** Renders LeaderboardRows with styles resolved from the active appearance. */
 function LeaderboardRows({ entries }: { entries: LeaderboardEntryViewModel[] }) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <View>
       <View style={[styles.row, styles.columnLabels]}>
@@ -121,7 +126,9 @@ function LeaderboardRows({ entries }: { entries: LeaderboardEntryViewModel[] }) 
   );
 }
 
+/** Renders LeaderboardSkeleton with styles resolved from the active appearance. */
 function LeaderboardSkeleton() {
+  const styles = useThemedStyles(styleSheet);
   return (
     <View accessibilityLabel="Loading leaderboard" style={styles.skeletons}>
       {Array.from({ length: 5 }, (_, index) => (
@@ -136,7 +143,7 @@ function LeaderboardSkeleton() {
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   avatar: { borderRadius: theme.radii.pill, height: 32, width: 32 },
   card: {
     borderColor: theme.colors.gold.strong,
@@ -170,7 +177,7 @@ const styles = StyleSheet.create({
   rankColumn: { alignItems: "center", flexDirection: "row", gap: theme.spacing[1], width: "20%" },
   retry: { alignSelf: "flex-start", justifyContent: "center", minHeight: theme.sizes.touchTarget },
   retryText: { ...theme.typography.button, color: theme.colors.gold.pale },
-  rosariesColumn: { ...theme.typography.bodyMedium, color: theme.colors.gold.pale, textAlign: "right", width: "21%" },
+  rosariesColumn: { ...theme.typography.bodyMedium, color: theme.colors.gold.pale, textAlign: "right", width: "25%" },
   row: { alignItems: "center", flexDirection: "row" },
   skeletonAvatar: {
     backgroundColor: theme.colors.surface.tertiary,
@@ -218,4 +225,4 @@ const styles = StyleSheet.create({
     letterSpacing: theme.letterSpacing.wide,
   },
   warriorColumn: { alignItems: "center", flex: 1, flexDirection: "row", minWidth: 0 },
-});
+}));

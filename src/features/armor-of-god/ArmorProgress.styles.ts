@@ -1,8 +1,6 @@
-import { StyleSheet } from "react-native";
+import { createThemedStyles } from "@/theme/createThemedStyles";
 
-import { theme } from "@/theme/tokens";
-
-export const styles = StyleSheet.create({
+export const styles = createThemedStyles((theme) => ({
   container: {
     gap: theme.spacing[2],
     marginTop: theme.spacing[4],
@@ -26,4 +24,4 @@ export const styles = StyleSheet.create({
     borderRadius: theme.radii.pill,
     height: "100%",
   },
-});
+}));

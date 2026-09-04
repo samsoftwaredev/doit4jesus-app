@@ -5,8 +5,11 @@ import { View } from "react-native";
 import { Button } from "@/components/ui";
 import { AuthMessage, AuthScreen, AuthTextInput, authScreenStyles, useAuth } from "@/features/auth";
 import { supabase } from "@/lib/supabase";
+import { useThemedStyles } from "@/theme/createThemedStyles";
 
+/** Renders password-reset controls with appearance-aware shared authentication styles. */
 export default function ResetPasswordScreen() {
+  const styles = useThemedStyles(authScreenStyles);
   const router = useRouter();
   const { configurationError, finishPasswordRecovery } = useAuth();
   const [errorMessage, setErrorMessage] = useState<string>();
@@ -44,7 +47,7 @@ export default function ResetPasswordScreen() {
       {configurationError || errorMessage ? (
         <AuthMessage>{configurationError ?? errorMessage ?? ""}</AuthMessage>
       ) : null}
-      <View style={authScreenStyles.actions}>
+      <View style={styles.actions}>
         <Button
           disabled={!password || Boolean(configurationError)}
           fullWidth

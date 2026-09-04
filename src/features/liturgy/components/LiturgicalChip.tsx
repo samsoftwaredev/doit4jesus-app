@@ -1,7 +1,8 @@
 import type { ComponentProps } from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 interface LiturgicalChipProps {
@@ -10,7 +11,9 @@ interface LiturgicalChipProps {
   value: string;
 }
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function LiturgicalChip({ icon, label, value }: LiturgicalChipProps) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <View accessibilityLabel={`${label}: ${value}`} style={styles.chip}>
       <MaterialCommunityIcons color={theme.colors.gold.light} name={icon} size={15} />
@@ -20,7 +23,7 @@ export function LiturgicalChip({ icon, label, value }: LiturgicalChipProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   chip: {
     alignItems: "center",
     backgroundColor: theme.colors.surface.tertiary,
@@ -38,4 +41,4 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
   },
   value: { ...theme.typography.label, color: theme.colors.text.primary, marginLeft: theme.spacing[1] },
-});
+}));

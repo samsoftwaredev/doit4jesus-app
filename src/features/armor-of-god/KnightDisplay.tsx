@@ -2,9 +2,10 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Image } from "expo-image";
 import { useWindowDimensions, View } from "react-native";
 
+import { useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
-import { styles } from "./KnightDisplay.styles";
+import { styles as styleSheet } from "./KnightDisplay.styles";
 import type { ArmorItem } from "./armorOfGod.types";
 
 interface KnightDisplayProps {
@@ -20,7 +21,9 @@ const focusPositionByArmorId = {
   sword: { left: "35%", top: "65%" },
 } as const;
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function KnightDisplay({ selectedItem }: KnightDisplayProps) {
+  const styles = useThemedStyles(styleSheet);
   const { height: windowHeight } = useWindowDimensions();
   const stageHeight = Math.min(windowHeight * 0.44, theme.spacing[24] * 6);
   const focusPosition = focusPositionByArmorId[selectedItem.id as keyof typeof focusPositionByArmorId];

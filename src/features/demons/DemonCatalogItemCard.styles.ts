@@ -1,8 +1,6 @@
-import { StyleSheet } from "react-native";
+import { createThemedStyles } from "@/theme/createThemedStyles";
 
-import { theme } from "@/theme/tokens";
-
-export const styles = StyleSheet.create({
+export const styles = createThemedStyles((theme) => ({
   title: {
     ...theme.typography.displayMedium,
     color: theme.colors.text.primary,
@@ -96,4 +94,4 @@ export const styles = StyleSheet.create({
   primaryAffinityText: {
     color: theme.colors.text.success,
   },
-});
+}));

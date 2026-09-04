@@ -12,6 +12,8 @@ import Animated, {
 } from "react-native-reanimated";
 import { LinearGradient } from "expo-linear-gradient";
 
+import { useAppTheme } from "@/theme/AppThemeProvider";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 const MOBILE_PARTICLE_COUNT = 36;
@@ -77,6 +79,7 @@ export function getSacredAtmosphereDustDuration(index: number) {
  * @returns A responsive, reduced-motion-aware atmosphere visual.
  */
 export function SacredAtmosphere({ layer = "background", style, testID = "sacred-atmosphere" }: SacredAtmosphereProps) {
+  const styles = useThemedStyles(styleSheet);
   const { height, width } = useWindowDimensions();
   const reduceMotion = useReducedMotion();
   const particleCount = getSacredAtmosphereParticleCount(width, reduceMotion);
@@ -109,6 +112,8 @@ export function SacredAtmosphere({ layer = "background", style, testID = "sacred
  * @returns Decorative light and haze elements that do not receive input.
  */
 function SunlightAndHaze({ height, reduceMotion }: { height: number; reduceMotion: boolean }) {
+  const styles = useThemedStyles(styleSheet);
+  const { theme: appTheme } = useAppTheme();
   const glow = useSharedValue(0);
   const haze = useSharedValue(0);
 
@@ -163,7 +168,11 @@ function SunlightAndHaze({ height, reduceMotion }: { height: number; reduceMotio
       <Animated.View style={[styles.sunGlowInner, glowStyle]} />
       <Animated.View style={[styles.sunBeam, styles.sunBeamOne, { height: height * 1.25 }, beamOneStyle]}>
         <LinearGradient
-          colors={["rgba(255, 223, 157, 0)", "rgba(255, 226, 169, 0.11)", "rgba(255, 223, 157, 0)"]}
+          colors={[
+            appTheme.colors.atmosphere.beamEdge,
+            appTheme.colors.atmosphere.beamPrimary,
+            appTheme.colors.atmosphere.beamEdge,
+          ]}
           end={{ x: 1, y: 0 }}
           start={{ x: 0, y: 0 }}
           style={StyleSheet.absoluteFill}
@@ -171,7 +180,11 @@ function SunlightAndHaze({ height, reduceMotion }: { height: number; reduceMotio
       </Animated.View>
       <Animated.View style={[styles.sunBeam, styles.sunBeamTwo, { height: height * 1.18 }, beamTwoStyle]}>
         <LinearGradient
-          colors={["rgba(255, 223, 157, 0)", "rgba(255, 226, 169, 0.08)", "rgba(255, 223, 157, 0)"]}
+          colors={[
+            appTheme.colors.atmosphere.beamEdge,
+            appTheme.colors.atmosphere.beamSecondary,
+            appTheme.colors.atmosphere.beamEdge,
+          ]}
           end={{ x: 1, y: 0 }}
           start={{ x: 0, y: 0 }}
           style={StyleSheet.absoluteFill}
@@ -189,6 +202,8 @@ function SunlightAndHaze({ height, reduceMotion }: { height: number; reduceMotio
  * @returns A non-accessible animated particle.
  */
 function DustParticle({ height, index, reduceMotion, width }: DustParticleProps) {
+  const styles = useThemedStyles(styleSheet);
+  const { theme: appTheme } = useAppTheme();
   const initialProgress = seededUnit(index, 1);
   const travel = useSharedValue(initialProgress);
   const depth = seededUnit(index, 2);
@@ -236,7 +251,7 @@ function DustParticle({ height, index, reduceMotion, width }: DustParticleProps)
       style={[
         styles.dustParticle,
         {
-          backgroundColor: inSunlight ? "#FFE6A6" : "#D6E7D8",
+          backgroundColor: inSunlight ? appTheme.colors.atmosphere.dustWarm : appTheme.colors.atmosphere.dustCool,
           borderRadius: size / 2,
           height: size,
           left: startX,
@@ -250,7 +265,7 @@ function DustParticle({ height, index, reduceMotion, width }: DustParticleProps)
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   container: {
     ...StyleSheet.absoluteFill,
     overflow: "hidden",
@@ -266,7 +281,7 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   haze: {
-    backgroundColor: "rgba(239, 224, 194, 0.035)",
+    backgroundColor: theme.colors.atmosphere.haze,
     borderRadius: theme.radii.pill,
     height: 220,
     left: "-24%",
@@ -291,7 +306,7 @@ const styles = StyleSheet.create({
     width: 110,
   },
   sunGlowInner: {
-    backgroundColor: "rgba(255, 225, 169, 0.065)",
+    backgroundColor: theme.colors.atmosphere.sunInner,
     borderRadius: theme.radii.pill,
     height: 350,
     left: -90,
@@ -300,7 +315,7 @@ const styles = StyleSheet.create({
     width: 510,
   },
   sunGlowMiddle: {
-    backgroundColor: "rgba(255, 225, 169, 0.04)",
+    backgroundColor: theme.colors.atmosphere.sunMiddle,
     borderRadius: theme.radii.pill,
     height: 520,
     left: -180,
@@ -309,7 +324,7 @@ const styles = StyleSheet.create({
     width: 720,
   },
   sunGlowOuter: {
-    backgroundColor: "rgba(255, 225, 169, 0.025)",
+    backgroundColor: theme.colors.atmosphere.sunOuter,
     borderRadius: theme.radii.pill,
     height: 760,
     left: -290,
@@ -317,4 +332,4 @@ const styles = StyleSheet.create({
     top: -480,
     width: 980,
   },
-});
+}));

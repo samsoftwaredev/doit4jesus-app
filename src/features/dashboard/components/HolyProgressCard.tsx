@@ -2,9 +2,10 @@ import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
 import type { DashboardProgress, LevelCatalogEntry, RecentRosaryActivity, UserRosaryStats } from "@/features/progress";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 import { formatPoints } from "../rosary-reminder";
@@ -27,7 +28,9 @@ type HolyProgressCardProps = {
   statsError: boolean;
 };
 
+/** Renders MetricValue with styles resolved from the active appearance. */
 function MetricValue({ error, isLoading, value }: { error: boolean; isLoading: boolean; value: string | null }) {
+  const styles = useThemedStyles(styleSheet);
   if (isLoading) return <View accessibilityLabel="Loading holy progress" style={styles.metricSkeleton} />;
   if (error || value === null) return <Text style={styles.unavailable}>—</Text>;
   return <Text style={styles.metricValue}>{value}</Text>;
@@ -53,6 +56,7 @@ export function HolyProgressCard({
   rosaryStats,
   statsError,
 }: HolyProgressCardProps) {
+  const styles = useThemedStyles(styleSheet);
   const level = progress?.currentLevel?.levelNumber ?? DEFAULT_LEVEL_NUMBER;
   const levelName = progress?.currentLevel?.name ?? DEFAULT_LEVEL_NAME;
   const points = progress?.lifetimePoints ?? DEFAULT_PROGRESS_VALUE;
@@ -78,7 +82,7 @@ export function HolyProgressCard({
 
   return (
     <LinearGradient
-      colors={["rgba(23, 53, 73, 0.98)", "rgba(9, 25, 38, 0.98)"]}
+      colors={theme.colors.gradients.holyProgress}
       end={{ x: 0.5, y: 1 }}
       start={{ x: 0.5, y: 0 }}
       style={styles.card}
@@ -200,15 +204,11 @@ export function HolyProgressCard({
           </View>
         </View>
       </View>
-
-      <View accessibilityLabel="Sacred heart ornament" style={styles.heartOrnament}>
-        <Feather accessible={false} color={theme.colors.gold.pale} name="heart" size={theme.sizes.iconXs} />
-      </View>
     </LinearGradient>
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   card: {
     borderColor: theme.colors.gold.strong,
     borderRadius: theme.radii.xl,
@@ -422,4 +422,4 @@ const styles = StyleSheet.create({
     marginTop: theme.spacing[1],
     textAlign: "center",
   },
-});
+}));

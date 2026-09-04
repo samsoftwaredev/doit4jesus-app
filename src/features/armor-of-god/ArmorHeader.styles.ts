@@ -1,8 +1,6 @@
-import { StyleSheet } from "react-native";
+import { createThemedStyles } from "@/theme/createThemedStyles";
 
-import { theme } from "@/theme/tokens";
-
-export const styles = StyleSheet.create({
+export const styles = createThemedStyles((theme) => ({
   container: {
     alignItems: "center",
     marginTop: theme.spacing[10],
@@ -44,4 +42,4 @@ export const styles = StyleSheet.create({
     marginTop: theme.spacing[2],
     textAlign: "center",
   },
-});
+}));

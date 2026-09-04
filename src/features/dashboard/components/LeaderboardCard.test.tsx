@@ -29,7 +29,7 @@ describe("LeaderboardCard", () => {
     );
 
     expect(screen.getByLabelText("St. Michael's avatar")).toBeTruthy();
-    await fireEvent.press(screen.getByLabelText("View full leaderboard"));
+    await fireEvent.press(screen.getByLabelText("View leaderboard"));
     expect(onViewFull).toHaveBeenCalledTimes(1);
   });
 

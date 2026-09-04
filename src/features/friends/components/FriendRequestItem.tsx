@@ -1,7 +1,7 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
 import { Button } from "@/components/ui";
-import { theme } from "@/theme/tokens";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 
 import type { FriendRequest } from "../friends.types";
 import { FriendAvatar } from "./FriendAvatar";
@@ -14,6 +14,7 @@ type FriendRequestItemProps = {
   request: FriendRequest;
 };
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function FriendRequestItem({
   isMutating = false,
   onAccept,
@@ -21,6 +22,7 @@ export function FriendRequestItem({
   onDecline,
   request,
 }: FriendRequestItemProps) {
+  const styles = useThemedStyles(styleSheet);
   const isIncoming = request.direction === "incoming";
   const levelText = request.user.title ?? "Fellow pilgrim";
 
@@ -82,7 +84,7 @@ export function FriendRequestItem({
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   actions: {
     flexDirection: "row",
     gap: theme.spacing[2],
@@ -132,4 +134,4 @@ const styles = StyleSheet.create({
     color: theme.colors.text.info,
     marginTop: theme.spacing[1],
   },
-});
+}));

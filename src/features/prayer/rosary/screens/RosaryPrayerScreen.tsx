@@ -2,16 +2,7 @@ import Feather from "@expo/vector-icons/Feather";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  AccessibilityInfo,
-  Modal,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  useWindowDimensions,
-  View,
-} from "react-native";
+import { AccessibilityInfo, Modal, Pressable, ScrollView, Text, useWindowDimensions, View } from "react-native";
 import Animated, { FadeIn, useReducedMotion } from "react-native-reanimated";
 
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
@@ -30,6 +21,7 @@ import { englishRosaryContent } from "@/features/prayer/rosary/data/rosaryConten
 import { getRosaryMysteries } from "@/features/prayer/rosary/data/rosaryMysteries";
 import { getFullRosarySequence, rosarySequence } from "@/features/prayer/rosary/data/rosarySequence";
 import { useRosarySession } from "@/features/prayer/rosary/hooks/useRosarySession";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 import type { RosaryBead, RosaryMystery, RosaryMysteryType } from "@/features/prayer/rosary/types";
 
@@ -74,6 +66,7 @@ export function RosaryPrayerScreen({
   mysteryType?: RosaryMysteryType;
   source?: string;
 }) {
+  const styles = useThemedStyles(styleSheet);
   const router = useRouter();
   const { width, height, fontScale } = useWindowDimensions();
   const reduceMotion = useReducedMotion();
@@ -392,7 +385,7 @@ export function RosaryPrayerScreen({
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   safeArea: {
     backgroundColor: theme.rosary.colors.canvas,
     flex: 1,
@@ -540,4 +533,4 @@ const styles = StyleSheet.create({
   pressed: {
     opacity: theme.opacity.pressed,
   },
-});
+}));

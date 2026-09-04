@@ -1,8 +1,9 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Image } from "expo-image";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
 import type { EarnedBadge } from "./progress.types";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 type EarnedBadgeRowProps = {
@@ -43,7 +44,9 @@ function resolveBadgeIconUrl(iconUrl: string | null) {
   return new URL(iconUrl, `${apiUrl.replace(/\/$/, "")}/`).toString();
 }
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function EarnedBadgeRow({ badge, isLast }: EarnedBadgeRowProps) {
+  const styles = useThemedStyles(styleSheet);
   const earnedDate = formatEarnedDate(badge.earnedAt);
   const iconUrl = resolveBadgeIconUrl(badge.iconUrl);
   const accessibilityLabel = `Badge earned: ${badge.name}. ${badge.description} Earned ${earnedDate}.`;
@@ -63,19 +66,15 @@ export function EarnedBadgeRow({ badge, isLast }: EarnedBadgeRowProps) {
         )}
       </View>
       <View style={styles.copy}>
-        <Text numberOfLines={1} style={styles.name}>
-          {badge.name}
-        </Text>
-        <Text numberOfLines={2} style={styles.description}>
-          {badge.description}
-        </Text>
+        <Text style={styles.name}>{badge.name}</Text>
+        <Text style={styles.description}>{badge.description}</Text>
       </View>
       <Text style={styles.date}>{earnedDate}</Text>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   badgeImage: {
     height: theme.sizes.iconMedium,
     width: theme.sizes.iconMedium,
@@ -122,4 +121,4 @@ const styles = StyleSheet.create({
     borderBottomColor: theme.colors.border.subtle,
     borderBottomWidth: theme.borderWidths.hairline,
   },
-});
+}));

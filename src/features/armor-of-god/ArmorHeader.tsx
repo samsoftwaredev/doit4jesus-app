@@ -1,11 +1,14 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Text, View } from "react-native";
 
+import { useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
-import { styles } from "./ArmorHeader.styles";
+import { styles as styleSheet } from "./ArmorHeader.styles";
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function ArmorHeader() {
+  const styles = useThemedStyles(styleSheet);
   return (
     <View style={styles.container}>
       <View style={styles.titleRow}>

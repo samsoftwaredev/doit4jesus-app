@@ -12,6 +12,19 @@ const mockFetchRosaryStats = jest.fn();
 const mockGetConscienceQuestion = jest.fn();
 const mockGetRosaryReminder = jest.fn();
 const mockGetWeeklyGlobalLeaderboard = jest.fn();
+const mockResponsiveLayout = jest.fn(() => ({
+  contentWidth: 390,
+  fontScale: 1,
+  gutter: 16,
+  height: 844,
+  isDesktop: false,
+  isLandscape: false,
+  isLargeText: false,
+  isNarrowPhone: false,
+  isTablet: false,
+  size: "phone",
+  width: 390,
+}));
 
 jest.mock("expo-router", () => {
   const React = jest.requireActual("react") as typeof import("react");
@@ -25,6 +38,7 @@ jest.mock("@/features/progress", () => ({
   ...(() => {
     const { Text } = jest.requireActual<typeof import("react-native")>("react-native");
     return {
+      EarnedBadgesSection: () => <Text>Dashboard Earned Badges</Text>,
       fetchDashboardProgress: (...args: unknown[]) => mockFetchDashboardProgress(...args),
       fetchLevels: (...args: unknown[]) => mockFetchLevels(...args),
       fetchRecentRosaryActivities: (...args: unknown[]) => mockFetchRecentRosaryActivities(...args),
@@ -45,9 +59,26 @@ jest.mock("./dashboard.api", () => ({
   getWeeklyGlobalLeaderboard: (...args: unknown[]) => mockGetWeeklyGlobalLeaderboard(...args),
 }));
 
+jest.mock("@/hooks/useResponsiveLayout", () => ({
+  useResponsiveLayout: () => mockResponsiveLayout(),
+}));
+
 describe("HolyProgressDashboard", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockResponsiveLayout.mockReturnValue({
+      contentWidth: 390,
+      fontScale: 1,
+      gutter: 16,
+      height: 844,
+      isDesktop: false,
+      isLandscape: false,
+      isLargeText: false,
+      isNarrowPhone: false,
+      isTablet: false,
+      size: "phone",
+      width: 390,
+    });
     mockFetchDashboardProgress.mockResolvedValue({
       currentLevel: { code: "devoted", levelNumber: 3, minimumTotalXp: 3000, name: "Devoted" },
       levelProgressPercentage: 44,
@@ -113,16 +144,36 @@ describe("HolyProgressDashboard", () => {
     await screen.findByLabelText("Pray Rosary");
 
     await fireEvent.press(screen.getByLabelText("Pray Rosary"));
-    await fireEvent.press(screen.getByLabelText("View full leaderboard"));
+    await fireEvent.press(screen.getByLabelText("View leaderboard"));
 
     expect(mockPush).toHaveBeenCalledWith({ pathname: "/rosary", params: { source: "home-dashboard" } });
     expect(mockPush).toHaveBeenCalledWith("/friends/leaderboard");
   });
 
-  it("renders the existing progress and daily liturgy sections after the primary dashboard cards", async () => {
+  it("renders progress, earned badges, and daily liturgy directly in the dashboard composition", async () => {
     await render(<HolyProgressDashboard />);
 
     expect(screen.getByText("Existing User Progress")).toBeTruthy();
+    expect(screen.getByText("Dashboard Earned Badges")).toBeTruthy();
     expect(screen.getByText("Existing Daily Liturgy")).toBeTruthy();
+  });
+
+  it("reflows primary cards into columns only when the viewport has room", async () => {
+    mockResponsiveLayout.mockReturnValue({
+      ...mockResponsiveLayout(),
+      contentWidth: 1200,
+      height: 900,
+      isDesktop: true,
+      isLandscape: true,
+      isTablet: true,
+      size: "desktop",
+      width: 1440,
+    });
+
+    await render(<HolyProgressDashboard />);
+
+    expect(screen.getByTestId("dashboard-primary-grid").props.style).toEqual(
+      expect.arrayContaining([expect.objectContaining({ flexDirection: "row" })]),
+    );
   });
 });

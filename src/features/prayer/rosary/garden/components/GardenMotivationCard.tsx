@@ -3,16 +3,19 @@ import { Image } from "expo-image";
 import { StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 const lilyArtwork = require("../../../../../assets/flowers/whiteLily.png");
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function GardenMotivationCard() {
+  const styles = useThemedStyles(styleSheet);
   const { width } = useWindowDimensions();
   const compact = width < theme.breakpoints.largePhone;
   return (
     <View style={styles.card}>
-      <LinearGradient accessible={false} colors={["rgba(230, 186, 100, 0.26)", "transparent"]} style={styles.rays} />
+      <LinearGradient accessible={false} colors={theme.colors.gradients.gardenRays} style={styles.rays} />
       <View style={styles.flowerPot}>
         <Image accessible={false} contentFit="contain" source={lilyArtwork} style={styles.lily} />
       </View>
@@ -35,7 +38,7 @@ export function GardenMotivationCard() {
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   card: {
     alignItems: "center",
     backgroundColor: "#123D43",
@@ -77,4 +80,4 @@ const styles = StyleSheet.create({
     marginTop: theme.spacing[1],
     textAlign: "center",
   },
-});
+}));

@@ -1,7 +1,7 @@
 import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
-import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, View } from "react-native";
+import { FlatList, KeyboardAvoidingView, Platform, Text, TextInput, View } from "react-native";
 
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { BackHeader } from "@/components/navigation";
@@ -9,6 +9,7 @@ import { Button, Card } from "@/components/ui";
 import { FriendAvatar, FriendsState } from "@/features/friends/components";
 import { useFriendSearch, useSendFriendRequest } from "@/features/friends/friends.hooks";
 import type { UserSearchResult } from "@/features/friends/friends.types";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 function statusLabel(result: UserSearchResult, requestedUsernames: string[]): string | undefined {
@@ -22,6 +23,7 @@ function statusLabel(result: UserSearchResult, requestedUsernames: string[]): st
 
 /** Renders the friend search and invitation flow within the shared atmosphere. */
 export function AddFriendScreen() {
+  const styles = useThemedStyles(styleSheet);
   const router = useRouter();
   const [query, setQuery] = useState("");
   const search = useFriendSearch(query);
@@ -93,6 +95,7 @@ export function AddFriendScreen() {
   );
 }
 
+/** Renders SearchResultItem with styles resolved from the active appearance. */
 function SearchResultItem({
   isSending,
   onAdd,
@@ -104,6 +107,7 @@ function SearchResultItem({
   requestedUsernames: string[];
   result: UserSearchResult;
 }) {
+  const styles = useThemedStyles(styleSheet);
   const status = statusLabel(result, requestedUsernames);
 
   return (
@@ -138,7 +142,7 @@ function SearchResultItem({
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   keyboardAvoiding: {
     flex: 1,
   },
@@ -146,7 +150,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     flexGrow: 1,
     gap: theme.spacing[3],
-    maxWidth: theme.sizes.contentMaxWidth,
+    maxWidth: 700,
     paddingBottom: theme.spacing[8],
     paddingHorizontal: theme.spacing[4],
     paddingTop: theme.spacing[4],
@@ -209,4 +213,4 @@ const styles = StyleSheet.create({
   username: {
     ...theme.typography.bodyMedium,
   },
-});
+}));

@@ -1,8 +1,6 @@
-import { StyleSheet } from "react-native";
+import { createThemedStyles } from "@/theme/createThemedStyles";
 
-import { theme } from "@/theme/tokens";
-
-export const styles = StyleSheet.create({
+export const styles = createThemedStyles((theme) => ({
   safeArea: {
     backgroundColor: theme.colors.background.deep,
     borderColor: theme.colors.gold.strong,
@@ -14,4 +12,4 @@ export const styles = StyleSheet.create({
   actions: {
     gap: theme.spacing[2],
   },
-});
+}));

@@ -1,10 +1,11 @@
 import Feather from "@expo/vector-icons/Feather";
 import { useEffect, useMemo, useRef } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { useAnimatedStyle, useReducedMotion, useSharedValue, withTiming } from "react-native-reanimated";
 
 import { RosaryBead } from "@/features/prayer/rosary/components/RosaryBead";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 import type { RosaryBead as RosaryBeadModel } from "@/features/prayer/rosary/types";
 
@@ -69,6 +70,7 @@ export function RosaryBeadNavigator({
   onPrevious,
   onSelectBead,
 }: RosaryBeadNavigatorProps) {
+  const styles = useThemedStyles(styleSheet);
   const scrollView = useRef<ScrollView>(null);
   const reduceMotion = useReducedMotion();
   const chainOffset = useSharedValue(0);
@@ -184,7 +186,7 @@ export function RosaryBeadNavigator({
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   container: {
     alignItems: "center",
     backgroundColor: "rgba(8, 31, 47, 0.64)",
@@ -271,4 +273,4 @@ const styles = StyleSheet.create({
     fontSize: 8,
     lineHeight: 10,
   },
-});
+}));

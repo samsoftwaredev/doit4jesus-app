@@ -6,6 +6,11 @@ jest.mock("expo-haptics", () => ({
   selectionAsync: jest.fn(() => Promise.resolve()),
 }));
 
+jest.mock("expo-splash-screen", () => ({
+  hideAsync: jest.fn(() => Promise.resolve()),
+  preventAutoHideAsync: jest.fn(() => Promise.resolve()),
+}));
+
 jest.mock("@react-native-async-storage/async-storage", () => ({
   getItem: jest.fn(() => Promise.resolve(null)),
   setItem: jest.fn(() => Promise.resolve()),

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import Animated, {
   cancelAnimation,
   useAnimatedStyle,
@@ -10,6 +10,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 import type { BeadState, RosaryBead as RosaryBeadModel } from "@/features/prayer/rosary/types";
 
@@ -51,6 +52,7 @@ export function RosaryBead({
   disabled = false,
   onPress,
 }: RosaryBeadProps) {
+  const styles = useThemedStyles(styleSheet);
   const reduceMotion = useReducedMotion();
   const scale = useSharedValue(1);
   const opacity = useSharedValue(1);
@@ -148,7 +150,7 @@ export function RosaryBead({
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   touchTarget: {
     alignItems: "center",
     justifyContent: "center",
@@ -213,4 +215,4 @@ const styles = StyleSheet.create({
     fontSize: 8,
     right: -theme.spacing[2.5],
   },
-});
+}));

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "expo-router";
-import { FlatList, Pressable, RefreshControl, StyleSheet, Text, View } from "react-native";
+import { FlatList, Pressable, RefreshControl, Text, View } from "react-native";
 
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { BackHeader } from "@/components/navigation";
@@ -8,15 +8,17 @@ import { Card } from "@/components/ui";
 import { FriendRequestItem, FriendsState } from "@/features/friends/components";
 import { useFriendRequests } from "@/features/friends/friends.hooks";
 import type { FriendRequestDirection } from "@/features/friends/friends.types";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
-const tabs: ReadonlyArray<{ label: string; value: FriendRequestDirection }> = [
+const tabs: readonly { label: string; value: FriendRequestDirection }[] = [
   { label: "Received", value: "incoming" },
   { label: "Sent", value: "outgoing" },
 ];
 
 /** Renders incoming and outgoing friend requests within the shared atmosphere. */
 export function FriendRequestsScreen() {
+  const styles = useThemedStyles(styleSheet);
   const router = useRouter();
   const [direction, setDirection] = useState<FriendRequestDirection>("incoming");
   const requests = useFriendRequests(direction);
@@ -101,7 +103,7 @@ export function FriendRequestsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   activeTab: {
     borderBottomColor: theme.colors.gold.light,
   },
@@ -157,4 +159,4 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     paddingHorizontal: theme.spacing[4],
   },
-});
+}));

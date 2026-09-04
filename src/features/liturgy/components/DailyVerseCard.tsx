@@ -1,6 +1,7 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 interface DailyVerseCardProps {
@@ -8,7 +9,9 @@ interface DailyVerseCardProps {
   text: string;
 }
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function DailyVerseCard({ citation, text }: DailyVerseCardProps) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <View accessibilityLabel={`Gospel excerpt, ${citation}`} style={styles.card}>
       <MaterialCommunityIcons
@@ -24,7 +27,7 @@ export function DailyVerseCard({ citation, text }: DailyVerseCardProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   card: {
     backgroundColor: theme.colors.surface.tertiary,
     borderColor: theme.colors.gold.strong,
@@ -44,4 +47,4 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
     lineHeight: theme.lineHeights.lg,
   },
-});
+}));

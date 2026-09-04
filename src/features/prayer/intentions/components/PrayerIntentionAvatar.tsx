@@ -1,5 +1,6 @@
 import { AvatarWithCountryBadge } from "@/components/identity";
 
+import { useAppTheme } from "@/theme/AppThemeProvider";
 import { theme } from "@/theme/tokens";
 
 type PrayerIntentionAvatarProps = {
@@ -11,7 +12,9 @@ type PrayerIntentionAvatarProps = {
 
 const defaultAvatar = require("../../../../assets/avatar/knight.png");
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function PrayerIntentionAvatar({ countryCode, displayName, size = 38, source }: PrayerIntentionAvatarProps) {
+  useAppTheme();
   return (
     <AvatarWithCountryBadge
       accessibilityLabel={`${displayName}'s avatar`}

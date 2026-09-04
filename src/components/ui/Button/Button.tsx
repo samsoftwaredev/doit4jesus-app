@@ -1,8 +1,11 @@
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 
-import { buttonSizeConfig, buttonVariantConfig, styles } from "./Button.styles";
+import { useThemedStyles } from "@/theme/createThemedStyles";
+
+import { buttonSizeConfig, buttonVariantConfig, styles as styleSheet } from "./Button.styles";
 import type { ButtonProps } from "./Button.types";
 
+/** Renders an accessible, theme-aware button with consistent loading and disabled behavior. */
 export function Button({
   children,
   variant = "primary",
@@ -22,6 +25,7 @@ export function Button({
   testID,
   ...pressableProps
 }: ButtonProps) {
+  const styles = useThemedStyles(styleSheet);
   const isUnavailable = disabled || loading;
   const variantConfig = buttonVariantConfig[variant];
   const sizeConfig = buttonSizeConfig[size];
@@ -53,10 +57,7 @@ export function Button({
         {loading ? <ActivityIndicator color={variantConfig.activityIndicatorColor} size="small" /> : null}
         {!loading ? leftIcon : null}
         {isTextLabel ? (
-          <Text
-            numberOfLines={1}
-            style={[styles.label, sizeConfig.textStyle, { color: variantConfig.textColor }, textStyle]}
-          >
+          <Text style={[styles.label, sizeConfig.textStyle, { color: variantConfig.textColor }, textStyle]}>
             {children}
           </Text>
         ) : (

@@ -12,8 +12,11 @@ import {
   useAuth,
 } from "@/features/auth";
 import { supabase } from "@/lib/supabase";
+import { useThemedStyles } from "@/theme/createThemedStyles";
 
+/** Renders email-change controls with appearance-aware shared authentication styles. */
 export default function ChangeEmailScreen() {
+  const styles = useThemedStyles(authScreenStyles);
   const router = useRouter();
   const { configurationError } = useAuth();
   const [email, setEmail] = useState("");
@@ -55,7 +58,7 @@ export default function ChangeEmailScreen() {
         <AuthMessage>{configurationError ?? errorMessage ?? ""}</AuthMessage>
       ) : null}
       {successMessage ? <AuthMessage tone="success">{successMessage}</AuthMessage> : null}
-      <View style={authScreenStyles.actions}>
+      <View style={styles.actions}>
         <Button
           disabled={!email.trim() || Boolean(configurationError)}
           fullWidth

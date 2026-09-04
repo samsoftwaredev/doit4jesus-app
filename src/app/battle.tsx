@@ -9,11 +9,14 @@ import { Button, Card, SpriteSheetAnimation } from "@/components/ui";
 import { ArenaDemonSelector, BattleDemonDetails } from "@/features/battle";
 import type { DemonBattleDetails, DemonCatalogItem } from "@/features/demons";
 import { fetchDemonBattleDetails, fetchDemonCatalog } from "@/features/demons";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export default function BattleScreen() {
+  const styles = useThemedStyles(styleSheet);
   const router = useRouter();
-  const [demons, setDemons] = useState<ReadonlyArray<DemonCatalogItem>>([]);
+  const [demons, setDemons] = useState<readonly DemonCatalogItem[]>([]);
   const [isLoadingCatalog, setIsLoadingCatalog] = useState(true);
   const [catalogError, setCatalogError] = useState<string>();
   const [selectedDemonCode, setSelectedDemonCode] = useState<string>();
@@ -190,7 +193,7 @@ function BattleBackground() {
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   headerActions: { alignItems: "center", flexDirection: "row", gap: theme.spacing[1] },
   headerBackButton: {
     alignItems: "center",
@@ -212,4 +215,4 @@ const styles = StyleSheet.create({
     color: theme.colors.text.secondary,
     textAlign: "center",
   },
-});
+}));

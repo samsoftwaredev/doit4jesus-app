@@ -5,18 +5,12 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import type { ComponentProps } from "react";
 import { useCallback, useRef, useState } from "react";
-import {
-  FlatList,
-  type ListRenderItemInfo,
-  Pressable,
-  StyleSheet,
-  Text,
-  useWindowDimensions,
-  View,
-} from "react-native";
+import { FlatList, type ListRenderItemInfo, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { SacredAtmosphere } from "@/components/ui";
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 type LandingSlide = {
@@ -66,9 +60,10 @@ const sainthoodActions = ["Build discipline.", "Grow in virtue.", "Get closer to
 
 /** Renders the public landing carousel with shared light and foreground dust. */
 export default function LandingScreen() {
+  const styles = useThemedStyles(styleSheet);
   const listRef = useRef<FlatList<LandingSlide>>(null);
   const router = useRouter();
-  const { width } = useWindowDimensions();
+  const { isDesktop, isLandscape, isLargeText, isTablet, width } = useResponsiveLayout();
   const [activeSlide, setActiveSlide] = useState(0);
 
   const goToSlide = useCallback(
@@ -82,10 +77,22 @@ export default function LandingScreen() {
 
   const renderItem = useCallback(
     ({ item }: ListRenderItemInfo<LandingSlide>) => (
-      <LandingSlideContent onStartJourney={() => router.push("/sign-up")} slide={item} width={width} />
+      <LandingSlideContent
+        isLargeText={isLargeText}
+        useWideLayout={isDesktop || (isTablet && isLandscape)}
+        onStartJourney={() => router.push("/sign-up")}
+        slide={item}
+        width={width}
+      />
     ),
-    [router, width],
+    [isDesktop, isLandscape, isLargeText, isTablet, router, width],
   );
+
+  const backgroundSource = isDesktop
+    ? require("../assets/backgrounds/cathedralDesktop.png")
+    : isTablet
+      ? require("../assets/backgrounds/cathedralTablet.png")
+      : require("../assets/backgrounds/cathedraMobile.png");
 
   return (
     <View style={styles.page}>
@@ -93,14 +100,10 @@ export default function LandingScreen() {
         accessible={false}
         contentFit="cover"
         pointerEvents="none"
-        source={require("../assets/backgrounds/cathedraMobile.png")}
+        source={backgroundSource}
         style={styles.backgroundImage}
       />
-      <LinearGradient
-        colors={["rgba(3, 11, 18, 0.75)", "rgba(4, 17, 27, 0.88)", "#07131D"]}
-        pointerEvents="none"
-        style={styles.backgroundOverlay}
-      />
+      <LinearGradient colors={theme.colors.gradients.landing} pointerEvents="none" style={styles.backgroundOverlay} />
       <SacredAtmosphere />
 
       <SafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
@@ -208,61 +211,79 @@ export default function LandingScreen() {
   );
 }
 
+/** Renders one vertically scrollable landing page and reflows its art beside copy when space permits. */
 function LandingSlideContent({
+  isLargeText,
   onStartJourney,
   slide,
+  useWideLayout,
   width,
 }: {
+  isLargeText: boolean;
   onStartJourney: () => void;
   slide: LandingSlide;
+  useWideLayout: boolean;
   width: number;
 }) {
+  const styles = useThemedStyles(styleSheet);
   return (
-    <View style={[styles.slide, { width }]}>
-      <View style={styles.slideContent}>
-        <View style={[styles.artworkHalo, slide.id === "sainthood" && styles.crownHalo]}>
-          <View style={styles.artworkCircle}>
-            <MaterialCommunityIcons
-              accessible={false}
-              color={theme.rosary.colors.goldBright}
-              name={slide.icon}
-              size={theme.sizes.iconXL}
-            />
-          </View>
-        </View>
-
-        <View style={styles.copy}>
-          {slide.label ? <Text style={styles.eyebrow}>{slide.label}</Text> : null}
-          <Text accessibilityRole="header" style={styles.title}>
-            {slide.title}
-          </Text>
-          {slide.description ? <Text style={styles.description}>{slide.description}</Text> : null}
-
-          {slide.id === "mission" ? <ActionList items={missionActions} /> : null}
-          {slide.id === "difference" ? <DifferenceCopy /> : null}
-          {slide.id === "competition" ? <ActionList items={competitionActions} /> : null}
-          {slide.id === "sainthood" ? (
-            <View style={styles.finalContent}>
-              <ActionList items={sainthoodActions} />
-              <Pressable
-                accessibilityLabel="Start your journey"
-                accessibilityRole="button"
-                onPress={onStartJourney}
-                style={({ pressed }) => [styles.startButton, pressed && styles.startButtonPressed]}
-              >
-                <Text style={styles.startButtonText}>DO IT FOR JESUS</Text>
-                <View style={styles.startButtonDivider} />
-                <Text style={styles.startButtonLabel}>START YOUR JOURNEY</Text>
-              </Pressable>
-            </View>
-          ) : null}
+    <ScrollView
+      contentContainerStyle={[styles.slideContent, useWideLayout && styles.slideContentWide]}
+      showsVerticalScrollIndicator={false}
+      style={[styles.slide, { width }]}
+    >
+      <View
+        style={[
+          styles.artworkHalo,
+          isLargeText && styles.artworkHaloLargeText,
+          slide.id === "sainthood" && styles.crownHalo,
+        ]}
+      >
+        <View style={styles.artworkCircle}>
+          <MaterialCommunityIcons
+            accessible={false}
+            color={theme.rosary.colors.goldBright}
+            name={slide.icon}
+            size={theme.sizes.iconXL}
+          />
         </View>
       </View>
-    </View>
+
+      <View style={[styles.copy, useWideLayout && styles.copyWide]}>
+        {slide.label ? <Text style={[styles.eyebrow, useWideLayout && styles.textWide]}>{slide.label}</Text> : null}
+        <Text accessibilityRole="header" style={[styles.title, useWideLayout && styles.textWide]}>
+          {slide.title}
+        </Text>
+        {slide.description ? (
+          <Text style={[styles.description, useWideLayout && styles.textWide]}>{slide.description}</Text>
+        ) : null}
+
+        {slide.id === "mission" ? <ActionList items={missionActions} /> : null}
+        {slide.id === "difference" ? <DifferenceCopy /> : null}
+        {slide.id === "competition" ? <ActionList items={competitionActions} /> : null}
+        {slide.id === "sainthood" ? (
+          <View style={styles.finalContent}>
+            <ActionList items={sainthoodActions} />
+            <Pressable
+              accessibilityLabel="Start your journey"
+              accessibilityRole="button"
+              onPress={onStartJourney}
+              style={({ pressed }) => [styles.startButton, pressed && styles.startButtonPressed]}
+            >
+              <Text style={styles.startButtonText}>DO IT FOR JESUS</Text>
+              <View style={styles.startButtonDivider} />
+              <Text style={styles.startButtonLabel}>START YOUR JOURNEY</Text>
+            </Pressable>
+          </View>
+        ) : null}
+      </View>
+    </ScrollView>
   );
 }
 
+/** Displays short landing actions as readable, wrapping bullet rows. */
 function ActionList({ items }: { items: readonly string[] }) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <View style={styles.actionList}>
       {items.map((item) => (
@@ -275,7 +296,9 @@ function ActionList({ items }: { items: readonly string[] }) {
   );
 }
 
+/** Explains the product distinction in a compact comparison block. */
 function DifferenceCopy() {
+  const styles = useThemedStyles(styleSheet);
   return (
     <View style={styles.differenceContent}>
       <View style={styles.comparisonList}>
@@ -296,7 +319,7 @@ function DifferenceCopy() {
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   actionList: {
     alignItems: "flex-start",
     gap: theme.spacing[2],
@@ -354,6 +377,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: 136,
   },
+  artworkHaloLargeText: {
+    height: 112,
+    width: 112,
+  },
   backgroundImage: { ...StyleSheet.absoluteFill, opacity: 0.68 },
   backgroundOverlay: { ...StyleSheet.absoluteFill },
   brand: {
@@ -398,6 +425,7 @@ const styles = StyleSheet.create({
     paddingTop: theme.spacing[2],
   },
   copy: { alignItems: "center", maxWidth: 520, width: "100%" },
+  copyWide: { alignItems: "flex-start", flex: 1, minWidth: 0 },
   crownHalo: { backgroundColor: "rgba(230, 186, 100, 0.18)" },
   description: {
     ...theme.typography.bodyLarge,
@@ -449,11 +477,16 @@ const styles = StyleSheet.create({
   slide: { flex: 1 },
   slideContent: {
     alignItems: "center",
-    flex: 1,
+    flexGrow: 1,
     justifyContent: "center",
     paddingBottom: theme.spacing[4],
     paddingHorizontal: theme.spacing[6],
     paddingTop: theme.spacing[4],
+  },
+  slideContentWide: {
+    flexDirection: "row",
+    gap: theme.spacing[12],
+    paddingHorizontal: theme.spacing[10],
   },
   startButton: {
     alignItems: "center",
@@ -490,6 +523,7 @@ const styles = StyleSheet.create({
     letterSpacing: theme.letterSpacing.normal,
     textAlign: "center",
   },
+  textWide: { textAlign: "left" },
   topBar: {
     alignItems: "center",
     flexDirection: "row",
@@ -497,4 +531,4 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing[5],
     paddingTop: theme.spacing[2],
   },
-});
+}));

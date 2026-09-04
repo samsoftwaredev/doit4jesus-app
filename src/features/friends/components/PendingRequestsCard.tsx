@@ -1,7 +1,8 @@
 import Feather from "@expo/vector-icons/Feather";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
 import { Card } from "@/components/ui";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 import type { FriendRequest } from "../friends.types";
@@ -15,6 +16,7 @@ type PendingRequestsCardProps = {
   requests: FriendRequest[];
 };
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function PendingRequestsCard({
   isMutatingId,
   onAccept,
@@ -22,6 +24,7 @@ export function PendingRequestsCard({
   onSeeAll,
   requests,
 }: PendingRequestsCardProps) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <Card
       header={
@@ -67,7 +70,7 @@ export function PendingRequestsCard({
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   badge: {
     alignItems: "center",
     backgroundColor: theme.colors.gold.primary,
@@ -117,4 +120,4 @@ const styles = StyleSheet.create({
     gap: theme.spacing[2],
     minWidth: theme.spacing[0],
   },
-});
+}));

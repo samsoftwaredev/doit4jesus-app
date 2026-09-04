@@ -1,8 +1,9 @@
 import Feather from "@expo/vector-icons/Feather";
 import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useRef } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 import type { RosaryReminderState, RosaryReminderViewModel } from "../dashboard.types";
@@ -22,13 +23,16 @@ function twoDigits(value: number) {
   return String(value).padStart(2, "0");
 }
 
+/** Renders StreakCopy with styles resolved from the active appearance. */
 function StreakCopy({ reminder }: { reminder: RosaryReminderViewModel }) {
+  const styles = useThemedStyles(styleSheet);
   if (reminder.streak.status === "none" || reminder.streak.current <= 0) {
     return <Text style={styles.streak}>Begin a prayerful rhythm today.</Text>;
   }
   return <Text style={styles.streak}>{`${reminder.streak.current} Day Streak`}</Text>;
 }
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function DailyRosaryCard({
   error,
   isLoading,
@@ -76,7 +80,9 @@ export function DailyRosaryCard({
   );
 }
 
+/** Renders CardAction with styles resolved from the active appearance. */
 function CardAction({ onPress }: { onPress: () => void }) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <Pressable
       accessibilityLabel="Pray Rosary"
@@ -90,6 +96,7 @@ function CardAction({ onPress }: { onPress: () => void }) {
   );
 }
 
+/** Renders CompactRosaryState with styles resolved from the active appearance. */
 function CompactRosaryState({
   onPrayRosary,
   reminder,
@@ -97,8 +104,14 @@ function CompactRosaryState({
   onPrayRosary: () => void;
   reminder: RosaryReminderViewModel;
 }) {
+  const styles = useThemedStyles(styleSheet);
   return (
-    <LinearGradient colors={["#132C42", "#0B1A26"]} end={{ x: 1, y: 1 }} start={{ x: 0, y: 0 }} style={styles.card}>
+    <LinearGradient
+      colors={theme.colors.gradients.dailyRosary}
+      end={{ x: 1, y: 1 }}
+      start={{ x: 0, y: 0 }}
+      style={styles.card}
+    >
       <View style={styles.compactCopy}>
         <View style={styles.titleRow}>
           <Feather accessible={false} color={theme.colors.gold.pale} name="circle" size={theme.sizes.iconSmall} />
@@ -114,6 +127,7 @@ function CompactRosaryState({
   );
 }
 
+/** Renders CountdownRosaryState with styles resolved from the active appearance. */
 function CountdownRosaryState({
   countdown,
   onPrayRosary,
@@ -125,12 +139,13 @@ function CountdownRosaryState({
   reminder: RosaryReminderViewModel;
   state: Exclude<RosaryReminderState, "completed" | "expired" | "normal">;
 }) {
+  const styles = useThemedStyles(styleSheet);
   const colors =
     state === "final-fifteen"
-      ? (["#573129", "#25191C"] as const)
+      ? theme.colors.gradients.countdownFinal
       : state === "one-hour"
-        ? (["#614321", "#261C16"] as const)
-        : (["#4B3827", "#182331"] as const);
+        ? theme.colors.gradients.countdownHour
+        : theme.colors.gradients.countdownDefault;
 
   return (
     <LinearGradient
@@ -167,9 +182,16 @@ function CountdownRosaryState({
   );
 }
 
+/** Renders CompletedRosaryState with styles resolved from the active appearance. */
 function CompletedRosaryState({ reminder }: { reminder: RosaryReminderViewModel }) {
+  const styles = useThemedStyles(styleSheet);
   return (
-    <LinearGradient colors={["#183D35", "#0D2530"]} end={{ x: 1, y: 1 }} start={{ x: 0, y: 0 }} style={styles.card}>
+    <LinearGradient
+      colors={theme.colors.gradients.dailyRosaryComplete}
+      end={{ x: 1, y: 1 }}
+      start={{ x: 0, y: 0 }}
+      style={styles.card}
+    >
       <View style={styles.completedIcon}>
         <Feather accessible={false} color={theme.colors.gold.pale} name="check" size={theme.sizes.iconMedium} />
       </View>
@@ -183,7 +205,9 @@ function CompletedRosaryState({ reminder }: { reminder: RosaryReminderViewModel 
   );
 }
 
+/** Renders ExpiredRosaryState with styles resolved from the active appearance. */
 function ExpiredRosaryState() {
+  const styles = useThemedStyles(styleSheet);
   return (
     <View accessibilityLabel="Updating today's Rosary status" style={[styles.card, styles.transitionCard]}>
       <Text accessibilityRole="header" style={styles.title}>
@@ -194,9 +218,16 @@ function ExpiredRosaryState() {
   );
 }
 
+/** Renders ResetRosaryState with styles resolved from the active appearance. */
 function ResetRosaryState({ onPrayRosary }: { onPrayRosary: () => void }) {
+  const styles = useThemedStyles(styleSheet);
   return (
-    <LinearGradient colors={["#233044", "#111E2D"]} end={{ x: 1, y: 1 }} start={{ x: 0, y: 0 }} style={styles.card}>
+    <LinearGradient
+      colors={theme.colors.gradients.dailyRosaryReset}
+      end={{ x: 1, y: 1 }}
+      start={{ x: 0, y: 0 }}
+      style={styles.card}
+    >
       <View style={styles.compactCopy}>
         <Text accessibilityRole="header" style={styles.title}>
           Streak Reset
@@ -208,6 +239,7 @@ function ResetRosaryState({ onPrayRosary }: { onPrayRosary: () => void }) {
   );
 }
 
+/** Renders RosaryUnavailable with styles resolved from the active appearance. */
 function RosaryUnavailable({
   error,
   onPrayRosary,
@@ -217,6 +249,7 @@ function RosaryUnavailable({
   onPrayRosary: () => void;
   onRetry: () => void;
 }) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <View style={styles.card}>
       <View style={styles.compactCopy}>
@@ -242,7 +275,9 @@ function RosaryUnavailable({
   );
 }
 
+/** Renders RosarySkeleton with styles resolved from the active appearance. */
 function RosarySkeleton() {
+  const styles = useThemedStyles(styleSheet);
   return (
     <View accessibilityLabel="Loading Daily Rosary" style={[styles.card, styles.skeletonCard]}>
       <View style={styles.skeletonTitle} />
@@ -251,7 +286,7 @@ function RosarySkeleton() {
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   action: {
     alignItems: "center",
     backgroundColor: theme.colors.gold.pale,
@@ -322,10 +357,13 @@ const styles = StyleSheet.create({
   supporting: { ...theme.typography.bodySmall, color: theme.colors.text.secondary, marginTop: theme.spacing[1] },
   timer: {
     color: theme.colors.gold.light,
+    flexShrink: 1,
     fontFamily: theme.fontFamilies.devotional,
     fontSize: 33,
     lineHeight: 42,
     marginTop: theme.spacing[2],
+    maxWidth: "100%",
+    textAlign: "center",
   },
   timerLabel: {
     ...theme.typography.labelSmall,
@@ -337,4 +375,4 @@ const styles = StyleSheet.create({
   title: { ...theme.typography.heading3, color: theme.colors.text.primary, fontFamily: theme.fontFamilies.display },
   titleRow: { alignItems: "center", flexDirection: "row", gap: theme.spacing[2] },
   transitionCard: { backgroundColor: theme.colors.surface.navy, justifyContent: "center" },
-});
+}));

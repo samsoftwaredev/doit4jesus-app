@@ -1,11 +1,13 @@
 import { Image } from "expo-image";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
-import { theme } from "@/theme/tokens";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 
 const rosaryArtwork = require("../../../../../assets/icons/rosary.png");
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function GardenQuoteCard() {
+  const styles = useThemedStyles(styleSheet);
   return (
     <View accessibilityLabel="Devotional quote from Our Lady of Fatima" style={styles.card}>
       <Image accessible={false} contentFit="contain" source={rosaryArtwork} style={styles.rosary} />
@@ -17,7 +19,7 @@ export function GardenQuoteCard() {
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   card: {
     backgroundColor: "rgba(20, 57, 70, 0.8)",
     borderColor: "rgba(230, 186, 100, 0.35)",
@@ -43,4 +45,4 @@ const styles = StyleSheet.create({
     lineHeight: theme.lineHeights.lg + theme.spacing[1],
   },
   attribution: { ...theme.typography.labelSmall, color: theme.rosary.colors.gold, marginTop: theme.spacing[3] },
-});
+}));

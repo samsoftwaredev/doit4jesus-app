@@ -2,10 +2,11 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import type { StyleProp, ViewStyle } from "react-native";
 import { Pressable, Text, View } from "react-native";
 
+import { useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 import { ArmorStatusBadge } from "./ArmorStatusBadge";
-import { styles } from "./ArmorItemCard.styles";
+import { styles as styleSheet } from "./ArmorItemCard.styles";
 import type { ArmorItem } from "./armorOfGod.types";
 
 interface ArmorItemCardProps {
@@ -15,7 +16,9 @@ interface ArmorItemCardProps {
   style?: StyleProp<ViewStyle>;
 }
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function ArmorItemCard({ item, onPress, selected, style }: ArmorItemCardProps) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <Pressable
       accessibilityLabel={`${item.order}. ${item.name}. ${item.status}.`}

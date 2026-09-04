@@ -1,10 +1,9 @@
-import { StyleSheet } from "react-native";
-
+import { createThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 const selectorItemSize = theme.sizes.touchTarget + theme.spacing[4];
 
-export const styles = StyleSheet.create({
+export const styles = createThemedStyles((theme) => ({
   content: {
     gap: theme.spacing[2],
     paddingVertical: theme.spacing[4],
@@ -52,4 +51,4 @@ export const styles = StyleSheet.create({
     right: -theme.spacing[1],
     width: theme.sizes.badge,
   },
-});
+}));

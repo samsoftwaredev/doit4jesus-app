@@ -2,11 +2,12 @@ import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, BackHandler, Pressable, StyleSheet, Switch, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, BackHandler, Pressable, Switch, Text, TextInput, View } from "react-native";
 
 import { useCurrentProfile } from "@/features/profile";
 import { ProfileApiError, updateCurrentUserProfile } from "@/features/profile/profile.api";
 import type { CurrentUserProfile, UpdateCurrentUserProfile } from "@/features/profile/profile.types";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 import { CountrySelector } from "./CountrySelector";
@@ -66,7 +67,9 @@ function usernameReasonMessage(reason: string | null) {
   }
 }
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function ProfileSetupScreen() {
+  const styles = useThemedStyles(styleSheet);
   const router = useRouter();
   const {
     notificationPreferences: cachedPreferences,
@@ -597,6 +600,7 @@ export function ProfileSetupScreen() {
   }
 }
 
+/** Renders ProfileSetupTextField with styles resolved from the active appearance. */
 function ProfileSetupTextField({
   helper,
   invalid = false,
@@ -609,6 +613,7 @@ function ProfileSetupTextField({
   label: string;
   validationMessage?: string;
 }) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <View style={styles.field}>
       <Text style={styles.fieldLabel}>{label}</Text>
@@ -627,7 +632,9 @@ function ProfileSetupTextField({
   );
 }
 
+/** Renders UsernameFeedback with styles resolved from the active appearance. */
 function UsernameFeedback({ result, status }: { result: UsernameValidation | null; status: UsernameStatus }) {
+  const styles = useThemedStyles(styleSheet);
   const message =
     status === "checking"
       ? "Checking username…"
@@ -658,6 +665,7 @@ function UsernameFeedback({ result, status }: { result: UsernameValidation | nul
   );
 }
 
+/** Renders GenderOption with styles resolved from the active appearance. */
 function GenderOption({
   icon,
   label,
@@ -669,6 +677,7 @@ function GenderOption({
   onPress: () => void;
   selected: boolean;
 }) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <Pressable
       accessibilityRole="radio"
@@ -691,6 +700,7 @@ function GenderOption({
   );
 }
 
+/** Renders NotificationPreferenceRow with styles resolved from the active appearance. */
 function NotificationPreferenceRow({
   copy,
   label,
@@ -702,6 +712,7 @@ function NotificationPreferenceRow({
   onValueChange: (value: boolean) => void;
   value: boolean;
 }) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <View style={styles.preferenceRow}>
       <View style={styles.preferenceCopy}>
@@ -733,7 +744,7 @@ function updatePreference(
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   chip: {
     backgroundColor: theme.colors.surface.tertiary,
     borderColor: theme.colors.border.interactive,
@@ -841,4 +852,4 @@ const styles = StyleSheet.create({
   },
   textInputInvalid: { borderColor: theme.colors.semantic.danger },
   usernameFeedback: { alignItems: "center", flexDirection: "row", gap: theme.spacing[2] },
-});
+}));

@@ -1,8 +1,6 @@
-import { StyleSheet } from "react-native";
+import { createThemedStyles } from "@/theme/createThemedStyles";
 
-import { theme } from "@/theme/tokens";
-
-export const styles = StyleSheet.create({
+export const styles = createThemedStyles((theme) => ({
   container: {
     alignItems: "center",
     flexDirection: "row",
@@ -13,4 +11,4 @@ export const styles = StyleSheet.create({
     ...theme.typography.label,
     color: theme.colors.gold.pale,
   },
-});
+}));

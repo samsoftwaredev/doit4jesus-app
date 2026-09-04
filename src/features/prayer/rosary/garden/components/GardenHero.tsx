@@ -1,25 +1,29 @@
 import Feather from "@expo/vector-icons/Feather";
 import { Image } from "expo-image";
-import { StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 const maryArtwork = require("../../../../../assets/saints/blessed-virgin-mary.png");
 const flowersArtwork = require("../../../../../assets/flowers/whiteFlowerVase.png");
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function GardenHero() {
-  const { width } = useWindowDimensions();
-  const compact = width < theme.breakpoints.smallPhone;
+  const styles = useThemedStyles(styleSheet);
+  const { isLargeText, isNarrowPhone } = useResponsiveLayout();
+  const compact = isNarrowPhone;
 
   return (
     <LinearGradient
-      colors={["#153F4C", "#0F3144", "#0A2338"]}
+      colors={theme.colors.gradients.gardenHero}
       end={{ x: 1, y: 1 }}
       start={{ x: 0, y: 0 }}
       style={[styles.card, compact && styles.compactCard]}
     >
-      <View style={styles.copyArea}>
+      <View style={[styles.copyArea, isLargeText && styles.copyAreaLargeText]}>
         <View style={styles.titleRow}>
           <View accessible={false} style={styles.rosaryIcon}>
             <Feather color={theme.rosary.colors.goldBright} name="circle" size={theme.sizes.iconSmall} />
@@ -35,13 +39,13 @@ export function GardenHero() {
       </View>
       <View
         accessibilityLabel="Devotional artwork of the Blessed Virgin Mary surrounded by flowers"
-        style={styles.artworkArea}
+        style={[styles.artworkArea, isLargeText && styles.artworkAreaLargeText]}
       >
         <Image accessible={false} contentFit="contain" source={flowersArtwork} style={styles.flowerArtwork} />
         <Image accessible={false} contentFit="contain" source={maryArtwork} style={styles.maryArtwork} />
         <LinearGradient
           accessible={false}
-          colors={["transparent", "rgba(10, 35, 56, 0.94)"]}
+          colors={theme.colors.gradients.gardenHeroImage}
           end={{ x: 1, y: 0.5 }}
           start={{ x: 0.25, y: 0.5 }}
           style={styles.artworkFade}
@@ -51,7 +55,7 @@ export function GardenHero() {
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   card: {
     borderColor: "rgba(230, 186, 100, 0.5)",
     borderRadius: theme.radii["2xl"],
@@ -73,6 +77,7 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing[4],
     zIndex: theme.zIndex.card,
   },
+  copyAreaLargeText: { flex: 3 },
   titleRow: {
     alignItems: "center",
     flexDirection: "row",
@@ -115,6 +120,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     position: "relative",
   },
+  artworkAreaLargeText: { flex: 0.35, opacity: 0.18 },
   maryArtwork: {
     bottom: -theme.spacing[2],
     height: "108%",
@@ -133,4 +139,4 @@ const styles = StyleSheet.create({
   artworkFade: {
     ...StyleSheet.absoluteFill,
   },
-});
+}));

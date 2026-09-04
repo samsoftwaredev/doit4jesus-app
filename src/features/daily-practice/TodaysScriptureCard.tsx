@@ -1,12 +1,15 @@
 import { Image } from "expo-image";
 import { Text } from "react-native";
 
+import { useThemedStyles } from "@/theme/createThemedStyles";
 import { Button, Card } from "@/components/ui";
 
-import { styles } from "./DailyPracticeCard.styles";
+import { styles as styleSheet } from "./DailyPracticeCard.styles";
 import type { DailyPracticeCardProps } from "./DailyPracticeCard.types";
 
+/** Renders TodaysScriptureCard with styles resolved from the active appearance. */
 export function TodaysScriptureCard({ onPress, style, testID }: DailyPracticeCardProps) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <Card
       footer={

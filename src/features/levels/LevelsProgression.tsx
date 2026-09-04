@@ -3,9 +3,10 @@ import { Image } from "expo-image";
 import { Text, View } from "react-native";
 
 import { Card } from "@/components/ui";
+import { useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
-import { styles } from "./LevelsProgression.styles";
+import { styles as styleSheet } from "./LevelsProgression.styles";
 import type { LevelsProgressionProps } from "./LevelsProgression.types";
 
 interface LevelBadgeProps {
@@ -13,7 +14,9 @@ interface LevelBadgeProps {
   level: number;
 }
 
+/** Renders LevelBadge with styles resolved from the active appearance. */
 function LevelBadge({ label, level }: LevelBadgeProps) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <View style={styles.levelColumn}>
       <View style={styles.shield}>
@@ -30,6 +33,7 @@ function LevelBadge({ label, level }: LevelBadgeProps) {
   );
 }
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function LevelsProgression({
   currentLevel = 12,
   nextLevel = 13,
@@ -38,6 +42,7 @@ export function LevelsProgression({
   style,
   testID,
 }: LevelsProgressionProps) {
+  const styles = useThemedStyles(styleSheet);
   const safeCheckpointCount = Math.max(2, Math.floor(checkpointCount));
   const safeCompletedCheckpoints = Math.min(Math.max(0, Math.floor(completedCheckpoints)), safeCheckpointCount);
   const completedTrackWidth = `${Math.max(

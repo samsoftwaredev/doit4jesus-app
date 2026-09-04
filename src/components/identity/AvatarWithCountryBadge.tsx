@@ -1,9 +1,10 @@
 import type { ImageProps } from "expo-image";
 import { Image } from "expo-image";
 import type { ImageStyle, StyleProp, TextStyle } from "react-native";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
 import { CountryFlagBadge } from "@/components/ui";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 type AvatarWithCountryBadgeProps = {
@@ -40,6 +41,7 @@ export function AvatarWithCountryBadge({
   size,
   source,
 }: AvatarWithCountryBadgeProps) {
+  const styles = useThemedStyles(styleSheet);
   const imageSource = source ?? fallbackSource;
   const countryFlagSize = flagSize ?? Math.max(14, Math.round(size * 0.42));
   const initial = name.trim().slice(0, 1).toUpperCase() || "?";
@@ -65,9 +67,9 @@ export function AvatarWithCountryBadge({
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   container: { position: "relative" },
   fallback: { alignItems: "center", justifyContent: "center" },
   flag: { bottom: -2, position: "absolute", right: -4 },
   initial: { ...theme.typography.bodyMedium, color: theme.colors.text.white },
-});
+}));

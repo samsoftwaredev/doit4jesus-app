@@ -1,8 +1,11 @@
 import Feather from "@expo/vector-icons/Feather";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
 import { getPrayerIntentionTheme } from "@/features/prayer/intentions/data/prayerIntentionTheme";
 import type { ApprovedPrayerIntention } from "@/features/prayer/intentions/data/prayerIntentions.types";
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
+import { useAppTheme } from "@/theme/AppThemeProvider";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 import { PrayerIntentionAvatar } from "./PrayerIntentionAvatar";
@@ -12,8 +15,12 @@ type PrayerIntentionCardProps = {
   onPress: () => void;
 };
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function PrayerIntentionCard({ intention, onPress }: PrayerIntentionCardProps) {
-  const intentionTheme = getPrayerIntentionTheme(intention.symbol);
+  const styles = useThemedStyles(styleSheet);
+  const { colorScheme } = useAppTheme();
+  const { isLargeText } = useResponsiveLayout();
+  const intentionTheme = getPrayerIntentionTheme(intention.symbol, colorScheme);
   return (
     <Pressable
       accessibilityLabel={`Open prayer intention from ${intention.creator.displayName}: ${intention.title}`}
@@ -21,6 +28,7 @@ export function PrayerIntentionCard({ intention, onPress }: PrayerIntentionCardP
       onPress={onPress}
       style={({ pressed }) => [
         styles.card,
+        isLargeText && styles.cardLargeText,
         { backgroundColor: intentionTheme.surface, borderColor: intentionTheme.surfaceLight },
         pressed && styles.pressed,
       ]}
@@ -40,10 +48,10 @@ export function PrayerIntentionCard({ intention, onPress }: PrayerIntentionCardP
           />
         </View>
       </View>
-      <Text numberOfLines={2} style={styles.title}>
+      <Text numberOfLines={isLargeText ? undefined : 2} style={styles.title}>
         {intention.title}
       </Text>
-      <Text numberOfLines={3} style={styles.description}>
+      <Text numberOfLines={isLargeText ? undefined : 3} style={styles.description}>
         {intention.description}
       </Text>
       <Text numberOfLines={1} style={styles.creator}>
@@ -53,7 +61,7 @@ export function PrayerIntentionCard({ intention, onPress }: PrayerIntentionCardP
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   card: {
     borderRadius: theme.radii.lg,
     borderWidth: theme.borderWidths.thin,
@@ -61,6 +69,7 @@ const styles = StyleSheet.create({
     padding: theme.spacing[3],
     width: 142,
   },
+  cardLargeText: { minHeight: 240, width: 220 },
   creator: {
     ...theme.typography.caption,
     color: theme.rosary.colors.goldBright,
@@ -80,4 +89,4 @@ const styles = StyleSheet.create({
   },
   title: { ...theme.typography.bodyMedium, color: theme.colors.text.white, marginTop: theme.spacing[3] },
   topRow: { alignItems: "center", flexDirection: "row", justifyContent: "space-between" },
-});
+}));

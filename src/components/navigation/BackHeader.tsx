@@ -1,7 +1,9 @@
 import Feather from "@expo/vector-icons/Feather";
 import type { ReactNode } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 type BackHeaderProps = {
@@ -12,6 +14,9 @@ type BackHeaderProps = {
 
 /** A centered screen header for feature routes that need a back action. */
 export function BackHeader({ onBack, rightAction, title }: BackHeaderProps) {
+  const styles = useThemedStyles(styleSheet);
+  const { isLargeText } = useResponsiveLayout();
+
   return (
     <View style={styles.header}>
       <View style={styles.side}>
@@ -27,7 +32,7 @@ export function BackHeader({ onBack, rightAction, title }: BackHeaderProps) {
           </Pressable>
         ) : null}
       </View>
-      <Text accessibilityRole="header" numberOfLines={1} style={styles.title}>
+      <Text accessibilityRole="header" numberOfLines={isLargeText ? undefined : 2} style={styles.title}>
         {title}
       </Text>
       <View style={[styles.side, styles.rightAction]}>{rightAction}</View>
@@ -35,7 +40,7 @@ export function BackHeader({ onBack, rightAction, title }: BackHeaderProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   header: {
     alignItems: "center",
     flexDirection: "row",
@@ -53,9 +58,9 @@ const styles = StyleSheet.create({
   side: { minWidth: theme.sizes.touchTarget },
   title: {
     ...theme.typography.heading3,
-    left: 0,
-    position: "absolute",
-    right: 0,
+    flex: 1,
+    minWidth: 0,
+    paddingHorizontal: theme.spacing[2],
     textAlign: "center",
   },
-});
+}));

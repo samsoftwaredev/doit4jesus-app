@@ -1,8 +1,6 @@
-import { StyleSheet } from "react-native";
+import { createThemedStyles } from "@/theme/createThemedStyles";
 
-import { theme } from "@/theme/tokens";
-
-export const styles = StyleSheet.create({
+export const styles = createThemedStyles((theme) => ({
   header: {
     alignItems: "center",
     flexDirection: "row",
@@ -53,4 +51,4 @@ export const styles = StyleSheet.create({
     color: theme.colors.text.success,
     marginTop: theme.spacing[2],
   },
-});
+}));

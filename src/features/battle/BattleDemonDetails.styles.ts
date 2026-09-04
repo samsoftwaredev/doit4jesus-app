@@ -1,13 +1,12 @@
-import { StyleSheet } from "react-native";
+import { createThemedStyles } from "@/theme/createThemedStyles";
 
-import { theme } from "@/theme/tokens";
-
-export const styles = StyleSheet.create({
+export const styles = createThemedStyles((theme) => ({
   artworkFrame: {
     alignItems: "center",
     alignSelf: "center",
     aspectRatio: 2 / 3,
     marginBottom: theme.spacing[4],
+    maxWidth: 240,
     width: "50%",
   },
   artwork: {
@@ -94,4 +93,4 @@ export const styles = StyleSheet.create({
     color: theme.colors.text.warning,
     marginTop: theme.spacing[4],
   },
-});
+}));

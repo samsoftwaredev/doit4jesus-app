@@ -2,10 +2,11 @@ import { Image } from "expo-image";
 import type { StyleProp, ViewStyle } from "react-native";
 import { Text, View } from "react-native";
 
+import { useThemedStyles } from "@/theme/createThemedStyles";
 import { Card } from "@/components/ui";
 
 import { getDemonArtwork } from "./demonArtwork";
-import { styles } from "./DemonCatalogItemCard.styles";
+import { styles as styleSheet } from "./DemonCatalogItemCard.styles";
 import type { DemonCatalogItem } from "./demons.types";
 
 interface DemonCatalogItemCardProps {
@@ -21,7 +22,9 @@ function formatLabel(value: string): string {
     .join(" ");
 }
 
+/** Renders DemonCatalogItemCard with styles resolved from the active appearance. */
 export function DemonCatalogItemCard({ demon, style }: DemonCatalogItemCardProps) {
+  const styles = useThemedStyles(styleSheet);
   const artwork = getDemonArtwork(demon);
 
   return (

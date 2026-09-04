@@ -1,6 +1,7 @@
 import Feather from "@expo/vector-icons/Feather";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 interface ScriptureCardProps {
@@ -8,7 +9,9 @@ interface ScriptureCardProps {
   quotation?: string;
 }
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function ScriptureCard({ reference, quotation }: ScriptureCardProps) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <View accessibilityLabel={`Scripture. ${reference ?? "Reference unavailable"}`} style={styles.card}>
       <View style={styles.labelRow}>
@@ -22,7 +25,7 @@ export function ScriptureCard({ reference, quotation }: ScriptureCardProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   card: {
     backgroundColor: "rgba(21, 49, 67, 0.9)",
     borderColor: "rgba(230, 186, 100, 0.28)",
@@ -58,4 +61,4 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
     lineHeight: theme.lineHeights.lg + theme.spacing[1],
   },
-});
+}));

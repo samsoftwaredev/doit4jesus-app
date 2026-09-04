@@ -1,13 +1,14 @@
 import Feather from "@expo/vector-icons/Feather";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "expo-router";
-import { ActivityIndicator, Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import { ActivityIndicator, Pressable, Text, useWindowDimensions, View } from "react-native";
 import type { ViewStyle } from "react-native";
 
 import { ScreenShell } from "@/components/screen-shell";
 import { Button, Card } from "@/components/ui";
 import { DemonCatalogItemCard, fetchDemonCatalog } from "@/features/demons";
 import type { DemonCatalogItem } from "@/features/demons";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 const catalogCardBaseStyle = {
@@ -17,10 +18,12 @@ const catalogCardBaseStyle = {
   minWidth: theme.spacing[0],
 } satisfies ViewStyle;
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export default function DemonsCatalogScreen() {
+  const styles = useThemedStyles(styleSheet);
   const router = useRouter();
   const { width } = useWindowDimensions();
-  const [demons, setDemons] = useState<ReadonlyArray<DemonCatalogItem>>([]);
+  const [demons, setDemons] = useState<readonly DemonCatalogItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string>();
 
@@ -110,7 +113,7 @@ export default function DemonsCatalogScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   headerBackButton: {
     alignItems: "center",
     height: theme.sizes.touchTarget,
@@ -144,4 +147,4 @@ const styles = StyleSheet.create({
     ...catalogCardBaseStyle,
     flexBasis: "31%",
   },
-});
+}));

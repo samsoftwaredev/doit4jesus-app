@@ -1,10 +1,13 @@
 import { Image } from "expo-image";
 import { Pressable, View } from "react-native";
 
+import { useThemedStyles } from "@/theme/createThemedStyles";
 import type { DemonCatalogItem } from "@/features/demons";
 import { getDemonArtwork } from "@/features/demons";
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
+import { theme } from "@/theme/tokens";
 
-import { styles } from "./ArenaDemonSelector.styles";
+import { styles as styleSheet } from "./ArenaDemonSelector.styles";
 
 interface ArenaDemonSelectorProps {
   demons: ReadonlyArray<DemonCatalogItem>;
@@ -20,10 +23,12 @@ interface OrbitPosition {
 const orbitCenter = 50;
 const orbitRadius = 34;
 
+/** Formats an orbit coordinate for React Native percentage positioning. */
 function toPercent(value: number): `${number}%` {
   return `${value}%`;
 }
 
+/** Evenly distributes a demon around the arena's visual orbit. */
 function getOrbitPosition(index: number, count: number): OrbitPosition {
   if (count <= 1) {
     return { left: toPercent(orbitCenter), top: toPercent(orbitCenter) };
@@ -37,7 +42,13 @@ function getOrbitPosition(index: number, count: number): OrbitPosition {
   };
 }
 
+/** Renders a fluid square arena whose selectable artwork scales with the available phone or desktop width. */
 export function ArenaDemonSelector({ demons, onSelect, selectedCode }: ArenaDemonSelectorProps) {
+  const styles = useThemedStyles(styleSheet);
+  const { isLargeText, width } = useResponsiveLayout();
+  const arenaWidth = Math.min(Math.max(width - theme.spacing[8], 0), theme.spacing[24] * 5);
+  const demonButtonSize = Math.max(theme.sizes.touchTarget * 2, Math.min(isLargeText ? 128 : 180, arenaWidth * 0.36));
+
   return (
     <View accessibilityLabel="Demon arena. Select a demon to begin." style={styles.arena}>
       <Image
@@ -61,6 +72,12 @@ export function ArenaDemonSelector({ demons, onSelect, selectedCode }: ArenaDemo
             style={({ pressed }) => [
               styles.demonButton,
               getOrbitPosition(index, demons.length),
+              {
+                height: demonButtonSize,
+                marginLeft: -demonButtonSize / 2,
+                marginTop: -demonButtonSize / 2,
+                width: demonButtonSize,
+              },
               isSelected && styles.demonButtonSelected,
               pressed && styles.demonButtonPressed,
             ]}

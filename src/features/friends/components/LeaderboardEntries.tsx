@@ -1,6 +1,6 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
-import { theme } from "@/theme/tokens";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 
 import type { FriendsLeaderboardEntry } from "../friends.types";
 import { FriendAvatar } from "./FriendAvatar";
@@ -22,7 +22,9 @@ export function formatPoints(points: number): string {
   return new Intl.NumberFormat("en-US").format(points);
 }
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function LeaderboardEntries({ entries, onPressFriend, showHeader = true }: LeaderboardEntriesProps) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <View>
       {showHeader ? (
@@ -84,7 +86,7 @@ export function LeaderboardEntries({ entries, onPressFriend, showHeader = true }
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   columnLabel: {
     ...theme.typography.labelSmall,
     color: theme.colors.text.subtle,
@@ -158,4 +160,4 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     minWidth: theme.spacing[0],
   },
-});
+}));

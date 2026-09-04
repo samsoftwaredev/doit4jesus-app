@@ -5,8 +5,11 @@ import { View } from "react-native";
 import { AuthMessage, AuthScreen, AuthTextInput, authScreenStyles, useAuth } from "@/features/auth";
 import { Button } from "@/components/ui";
 import { supabase } from "@/lib/supabase";
+import { useThemedStyles } from "@/theme/createThemedStyles";
 
+/** Renders sign-in controls with appearance-aware shared authentication styles. */
 export default function SignInScreen() {
+  const styles = useThemedStyles(authScreenStyles);
   const { configurationError } = useAuth();
   const [email, setEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState<string>();
@@ -53,7 +56,7 @@ export default function SignInScreen() {
       {configurationError || errorMessage ? (
         <AuthMessage>{configurationError ?? errorMessage ?? ""}</AuthMessage>
       ) : null}
-      <View style={authScreenStyles.actions}>
+      <View style={styles.actions}>
         <Button
           disabled={!email.trim() || !password || Boolean(configurationError)}
           fullWidth
@@ -63,10 +66,10 @@ export default function SignInScreen() {
           Sign in
         </Button>
       </View>
-      <Link href="/forgot-password" style={authScreenStyles.link}>
+      <Link href="/forgot-password" style={styles.link}>
         Forgot password?
       </Link>
-      <Link href="/sign-up" style={authScreenStyles.link}>
+      <Link href="/sign-up" style={styles.link}>
         Create an account
       </Link>
     </AuthScreen>

@@ -1,13 +1,15 @@
 import Feather from "@expo/vector-icons/Feather";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, ScrollView, Text, View } from "react-native";
 
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { BackHeader } from "@/components/navigation";
 import { PrayerIntentionAvatar } from "@/features/prayer/intentions/components";
 import { fetchPrayerIntentionPrayerSummary, getPrayerIntentionTheme } from "@/features/prayer/intentions";
 import type { PrayerIntentionPrayerSummary } from "@/features/prayer/intentions";
+import { useAppTheme } from "@/theme/AppThemeProvider";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 function firstString(value: string | string[] | undefined) {
@@ -16,6 +18,8 @@ function firstString(value: string | string[] | undefined) {
 
 /** Renders the prayer history for one intention within the shared atmosphere. */
 export function PrayerIntentionPrayerHistoryScreen() {
+  const styles = useThemedStyles(styleSheet);
+  const { colorScheme } = useAppTheme();
   const router = useRouter();
   const { intentionId: rawIntentionId } = useLocalSearchParams<{ intentionId?: string | string[] }>();
   const intentionId = firstString(rawIntentionId);
@@ -41,7 +45,7 @@ export function PrayerIntentionPrayerHistoryScreen() {
   useEffect(() => {
     void load();
   }, [load]);
-  const intentionTheme = getPrayerIntentionTheme(summary?.symbol);
+  const intentionTheme = getPrayerIntentionTheme(summary?.symbol, colorScheme);
 
   return (
     <AtmosphericSafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
@@ -91,8 +95,15 @@ export function PrayerIntentionPrayerHistoryScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  content: { alignItems: "center", gap: theme.spacing[3], padding: theme.spacing[5] },
+const styleSheet = createThemedStyles((theme) => ({
+  content: {
+    alignItems: "center",
+    alignSelf: "center",
+    gap: theme.spacing[3],
+    maxWidth: 700,
+    padding: theme.spacing[5],
+    width: "100%",
+  },
   count: {
     ...theme.typography.heading2,
     color: theme.rosary.colors.goldBright,
@@ -140,4 +151,4 @@ const styles = StyleSheet.create({
     fontFamily: theme.fontFamilies.display,
     textAlign: "center",
   },
-});
+}));

@@ -1,6 +1,7 @@
 import Feather from "@expo/vector-icons/Feather";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 interface FruitOfMysteryCardProps {
@@ -10,6 +11,7 @@ interface FruitOfMysteryCardProps {
 
 /** Presents the active mystery's spiritual fruit and a short reflection before the vocal prayer. */
 export function FruitOfMysteryCard({ description, fruit }: FruitOfMysteryCardProps) {
+  const styles = useThemedStyles(styleSheet);
   const visibleFruit = fruit?.trim() || "Fruit unavailable";
   const visibleDescription = description?.trim() || "A reflection for this mystery is not available.";
 
@@ -27,7 +29,7 @@ export function FruitOfMysteryCard({ description, fruit }: FruitOfMysteryCardPro
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   card: {
     backgroundColor: "rgba(62, 45, 36, 0.92)",
     borderColor: "rgba(230, 186, 100, 0.38)",
@@ -58,4 +60,4 @@ const styles = StyleSheet.create({
     lineHeight: theme.lineHeights.lg + theme.spacing[1],
     marginTop: theme.spacing[2],
   },
-});
+}));

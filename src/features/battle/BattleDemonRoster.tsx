@@ -6,17 +6,20 @@ import { Pressable, ScrollView, Text, useWindowDimensions, View } from "react-na
 
 import type { DemonCatalogItem } from "@/features/demons";
 import { getDemonArtwork } from "@/features/demons";
+import { useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
-import { CARD_BG, styles } from "./BattleDemonRoster.styles";
+import { styles as styleSheet } from "./BattleDemonRoster.styles";
 
 interface BattleDemonRosterProps {
-  demons: ReadonlyArray<DemonCatalogItem>;
+  demons: readonly DemonCatalogItem[];
   onSelect: (demon: DemonCatalogItem) => void;
   selectedCode?: string;
 }
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function BattleDemonRoster({ demons, onSelect, selectedCode }: BattleDemonRosterProps) {
+  const styles = useThemedStyles(styleSheet);
   const { width: screenWidth } = useWindowDimensions();
   const [containerWidth, setContainerWidth] = useState(0);
   const [contentWidth, setContentWidth] = useState(0);
@@ -82,7 +85,7 @@ export function BattleDemonRoster({ demons, onSelect, selectedCode }: BattleDemo
         </ScrollView>
         {showLeftFade ? (
           <LinearGradient
-            colors={[CARD_BG, "transparent"]}
+            colors={[theme.colors.surface.tertiary, theme.colors.transparent]}
             end={{ x: 1, y: 0 }}
             pointerEvents="none"
             start={{ x: 0, y: 0 }}
@@ -91,7 +94,7 @@ export function BattleDemonRoster({ demons, onSelect, selectedCode }: BattleDemo
         ) : null}
         {showRightFade ? (
           <LinearGradient
-            colors={["transparent", CARD_BG]}
+            colors={[theme.colors.transparent, theme.colors.surface.tertiary]}
             end={{ x: 1, y: 0 }}
             pointerEvents="none"
             start={{ x: 0, y: 0 }}

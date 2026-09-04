@@ -1,8 +1,9 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
 import { Button, Card } from "@/components/ui";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 import type { DailyLiturgyViewModel, DailyReading } from "../liturgy.types";
@@ -32,6 +33,7 @@ function formatNavDate(isoDate: string) {
   });
 }
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function ScriptureReadingsCard({
   completedReadingIds,
   readings,
@@ -45,6 +47,7 @@ export function ScriptureReadingsCard({
   onNextDay,
   onPreviousDay,
 }: ScriptureReadingsCardProps) {
+  const styles = useThemedStyles(styleSheet);
   const completedCount = readings.filter((reading) => completedReadingIds.includes(reading.id)).length;
   const completionPercentage = readings.length === 0 ? 0 : (completedCount / readings.length) * 100;
   const [expandedReadingId, setExpandedReadingId] = useState<string | null>(null);
@@ -114,7 +117,7 @@ export function ScriptureReadingsCard({
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   card: { marginTop: theme.spacing[4] },
   count: {
     ...theme.typography.labelSmall,
@@ -163,4 +166,4 @@ const styles = StyleSheet.create({
     color: theme.colors.text.primary,
     marginLeft: theme.spacing[2],
   },
-});
+}));

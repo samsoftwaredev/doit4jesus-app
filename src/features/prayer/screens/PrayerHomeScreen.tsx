@@ -3,7 +3,7 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { SacredAtmosphere } from "@/components/ui";
@@ -14,22 +14,30 @@ import { PrayerIntentionCard } from "@/features/prayer/intentions/components";
 import { RosaryMysteryCard } from "@/features/prayer/rosary/components";
 import { getRosaryMysterySet, rosaryMysterySets } from "@/features/prayer/rosary/data/rosaryMysteries";
 import { getTodayRosaryMysteryType, getWeekdayLabel } from "@/features/prayer/rosary/data/schedule";
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 const previewLimit = 10;
 
 /** Renders the daily prayer dashboard within the shared atmosphere. */
 export function PrayerScreen() {
+  const styles = useThemedStyles(styleSheet);
   const router = useRouter();
-  const { width } = useWindowDimensions();
+  const { contentWidth, gutter, isDesktop, isLargeText, isNarrowPhone, isTablet, width } = useResponsiveLayout();
   const [intentions, setIntentions] = useState<ApprovedPrayerIntention[]>([]);
   const [isLoadingIntentions, setIsLoadingIntentions] = useState(true);
   const [intentionsError, setIntentionsError] = useState<string>();
   const todayMysteryType = getTodayRosaryMysteryType();
   const todaySet = getRosaryMysterySet(todayMysteryType);
   const columnGap = theme.spacing[2];
-  const horizontalPadding = theme.spacing[3];
-  const mysteryCardWidth = Math.max(132, (width - horizontalPadding * 2 - columnGap) / 2);
+  const containerMaxWidth = isDesktop ? 960 : isTablet ? 760 : width;
+  const usableWidth = Math.max(0, Math.min(contentWidth, containerMaxWidth) - gutter * 2);
+  const mysteryColumns = isLargeText || isNarrowPhone ? 1 : isDesktop ? 4 : 2;
+  const mysteryCardWidth = Math.max(
+    theme.sizes.touchTarget * 3,
+    (usableWidth - columnGap * (mysteryColumns - 1)) / mysteryColumns,
+  );
 
   const loadIntentions = useCallback(async () => {
     setIntentionsError(undefined);
@@ -58,13 +66,10 @@ export function PrayerScreen() {
 
   return (
     <AtmosphericSafeAreaView edges={["top"]} includeAtmosphere={false} style={styles.safeArea}>
-      <LinearGradient
-        colors={[theme.rosary.colors.canvas, "#0B263A", theme.rosary.colors.canvas]}
-        style={styles.background}
-      >
+      <LinearGradient colors={theme.colors.gradients.prayerHome} style={styles.background}>
         <SacredAtmosphere />
         <ScrollView
-          contentContainerStyle={styles.content}
+          contentContainerStyle={[styles.content, { maxWidth: containerMaxWidth, paddingHorizontal: gutter }]}
           showsVerticalScrollIndicator={false}
           style={styles.atmosphereContent}
         >
@@ -187,6 +192,7 @@ export function PrayerScreen() {
   );
 }
 
+/** Renders TodayRosaryCard with styles resolved from the active appearance. */
 function TodayRosaryCard({
   mysteryTitle,
   onPress,
@@ -196,6 +202,7 @@ function TodayRosaryCard({
   onPress: () => void;
   weekday: string;
 }) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <OrnateCard style={styles.todayCard}>
       <Image
@@ -204,7 +211,7 @@ function TodayRosaryCard({
         source={require("../../../assets/saints/blessed-virgin-mary.png")}
         style={styles.todayImage}
       />
-      <LinearGradient colors={["rgba(7, 26, 42, 0.24)", "rgba(7, 26, 42, 0.86)"]} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={theme.colors.gradients.prayerImage} style={StyleSheet.absoluteFill} />
       <View style={styles.todayContent}>
         <View style={styles.todayLabel}>
           <Feather accessible={false} color={theme.rosary.colors.gold} name="calendar" size={theme.sizes.iconSmall} />
@@ -231,11 +238,15 @@ function TodayRosaryCard({
   );
 }
 
+/** Renders SectionLabel with styles resolved from the active appearance. */
 function SectionLabel({ label }: { label: string }) {
+  const styles = useThemedStyles(styleSheet);
   return <Text style={styles.sectionLabel}>{label.toUpperCase()}</Text>;
 }
 
+/** Renders PrayerIntentionSkeletons with styles resolved from the active appearance. */
 function PrayerIntentionSkeletons() {
+  const styles = useThemedStyles(styleSheet);
   return (
     <View accessibilityLabel="Loading prayer intentions" style={styles.skeletonRow}>
       {[0, 1, 2].map((item) => (
@@ -247,7 +258,7 @@ function PrayerIntentionSkeletons() {
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   background: { flex: 1, position: "relative" },
   atmosphereContent: { zIndex: theme.zIndex.card },
   brand: {
@@ -269,9 +280,7 @@ const styles = StyleSheet.create({
   content: {
     alignSelf: "center",
     gap: theme.spacing[4],
-    maxWidth: 620,
     paddingBottom: theme.spacing[7],
-    paddingHorizontal: theme.spacing[3],
     width: "100%",
   },
   gardenButton: {
@@ -297,6 +306,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: theme.spacing[1],
+    flexWrap: "wrap",
   },
   intentionsList: { gap: theme.spacing[2], paddingRight: theme.spacing[3] },
   managementButton: {
@@ -307,6 +317,7 @@ const styles = StyleSheet.create({
   },
   managementRow: {
     flexDirection: "row",
+    flexWrap: "wrap",
     gap: theme.spacing[4],
     justifyContent: "center",
   },
@@ -402,4 +413,4 @@ const styles = StyleSheet.create({
     color: theme.rosary.colors.scripture,
     marginTop: theme.spacing[1],
   },
-});
+}));

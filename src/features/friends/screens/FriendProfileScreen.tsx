@@ -1,7 +1,7 @@
 import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Alert, Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, Modal, Pressable, ScrollView, Text, View } from "react-native";
 
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { BackHeader } from "@/components/navigation";
@@ -9,10 +9,12 @@ import { Button, Card } from "@/components/ui";
 import { FriendAvatar, FriendsState } from "@/features/friends/components";
 import { removeFriend } from "@/features/friends/friends.api";
 import { useFriendProfile } from "@/features/friends/friends.hooks";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 /** Renders a selected friend's profile within the shared atmosphere. */
 export function FriendProfileScreen({ friendId }: { friendId: string | undefined }) {
+  const styles = useThemedStyles(styleSheet);
   const router = useRouter();
   const profile = useFriendProfile(friendId);
   const [isRemoving, setIsRemoving] = useState(false);
@@ -144,7 +146,9 @@ export function FriendProfileScreen({ friendId }: { friendId: string | undefined
   );
 }
 
+/** Renders ProfileStat with styles resolved from the active appearance. */
 function ProfileStat({ label, value }: { label: string; value: string }) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <Card padding="sm" style={styles.stat} variant="outlined">
       <Text style={styles.statValue}>{value}</Text>
@@ -153,6 +157,7 @@ function ProfileStat({ label, value }: { label: string; value: string }) {
   );
 }
 
+/** Renders FriendOptionsModal with styles resolved from the active appearance. */
 function FriendOptionsModal({
   isRemoving,
   onClose,
@@ -166,6 +171,7 @@ function FriendOptionsModal({
   onRemove: () => void;
   visible: boolean;
 }) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <Modal animationType="fade" onRequestClose={onClose} transparent visible={visible}>
       <View style={styles.modalOverlay}>
@@ -197,11 +203,11 @@ function FriendOptionsModal({
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   content: {
     alignSelf: "center",
     gap: theme.spacing[4],
-    maxWidth: theme.sizes.contentMaxWidth,
+    maxWidth: 760,
     paddingBottom: theme.spacing[8],
     paddingHorizontal: theme.spacing[4],
     width: "100%",
@@ -253,7 +259,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     gap: theme.spacing[3],
-    maxWidth: theme.sizes.contentMaxWidth,
+    maxWidth: 560,
     width: "100%",
   },
   optionsTitle: {
@@ -300,4 +306,4 @@ const styles = StyleSheet.create({
     color: theme.colors.text.warning,
     marginTop: theme.spacing[1],
   },
-});
+}));

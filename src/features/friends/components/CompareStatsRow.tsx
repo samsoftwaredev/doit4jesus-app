@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
-import { theme } from "@/theme/tokens";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 
 type CompareStatsRowProps = {
   friendValue: number;
@@ -8,7 +8,9 @@ type CompareStatsRowProps = {
   userValue: number;
 };
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function CompareStatsRow({ friendValue, label, userValue }: CompareStatsRowProps) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <View style={styles.row}>
       <Text style={[styles.value, userValue > friendValue && styles.leading]}>{userValue}</Text>
@@ -18,7 +20,7 @@ export function CompareStatsRow({ friendValue, label, userValue }: CompareStatsR
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   label: {
     ...theme.typography.bodySmall,
     color: theme.colors.text.muted,
@@ -40,4 +42,4 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: "center",
   },
-});
+}));

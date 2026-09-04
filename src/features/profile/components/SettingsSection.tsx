@@ -1,13 +1,15 @@
 import type { PropsWithChildren } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
-import { theme } from "@/theme/tokens";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 
 type SettingsSectionProps = PropsWithChildren<{
   title: string;
 }>;
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function SettingsSection({ children, title }: SettingsSectionProps) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <View style={styles.section}>
       <Text accessibilityRole="header" style={styles.title}>
@@ -18,7 +20,7 @@ export function SettingsSection({ children, title }: SettingsSectionProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   group: {
     backgroundColor: theme.colors.surface.navy,
     borderColor: theme.colors.border.default,
@@ -36,4 +38,4 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing[2],
     paddingHorizontal: theme.spacing[1],
   },
-});
+}));

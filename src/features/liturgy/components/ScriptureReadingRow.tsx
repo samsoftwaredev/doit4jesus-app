@@ -1,8 +1,9 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useCallback, useRef, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
 
 import { Button } from "@/components/ui";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 import type { DailyReading } from "../liturgy.types";
@@ -19,7 +20,9 @@ function titleCaseReadingType(type: DailyReading["type"]) {
   return type.replaceAll("_", " ");
 }
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function ScriptureReadingRow({ completed, expanded, reading, onComplete, onToggle }: ScriptureReadingRowProps) {
+  const styles = useThemedStyles(styleSheet);
   const contentHeight = useRef(0);
   const viewportHeight = useRef(0);
   const [hasReachedEnd, setHasReachedEnd] = useState(false);
@@ -133,7 +136,7 @@ export function ScriptureReadingRow({ completed, expanded, reading, onComplete, 
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   citation: {
     ...theme.typography.body,
     color: theme.colors.text.primary,
@@ -210,4 +213,4 @@ const styles = StyleSheet.create({
     color: theme.colors.text.muted,
     letterSpacing: theme.letterSpacing.wide,
   },
-});
+}));

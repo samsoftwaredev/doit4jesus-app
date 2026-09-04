@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
-import { Alert, StyleSheet, useWindowDimensions, View } from "react-native";
+import { Alert, useWindowDimensions, View } from "react-native";
 
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 import { ArmorDetailCard } from "./ArmorDetailCard";
@@ -14,9 +15,11 @@ import { armorItems } from "./armorOfGod.data";
 import type { ArmorItem } from "./armorOfGod.types";
 import { getArmorActionLabel, isArmorEquipped } from "./armorOfGod.utils";
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function ArmorOfGodScreen() {
+  const styles = useThemedStyles(styleSheet);
   const { width } = useWindowDimensions();
-  const [items, setItems] = useState<ReadonlyArray<ArmorItem>>(armorItems);
+  const [items, setItems] = useState<readonly ArmorItem[]>(armorItems);
   const [selectedId, setSelectedId] = useState(armorItems[0].id);
   const selectedItem = items.find((item) => item.id === selectedId) ?? items[0];
   const equippedCount = items.filter((item) => isArmorEquipped(item.status)).length;
@@ -121,7 +124,7 @@ export function ArmorOfGodScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   section: {
     marginTop: theme.spacing[10],
   },
@@ -153,4 +156,4 @@ const styles = StyleSheet.create({
   detailContainer: {
     marginTop: theme.spacing[5],
   },
-});
+}));

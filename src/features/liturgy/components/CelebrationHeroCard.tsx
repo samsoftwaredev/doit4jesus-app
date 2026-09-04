@@ -3,6 +3,8 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { StyleSheet, Text, View } from "react-native";
 
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 import { liturgicalTheme } from "../liturgicalTheme";
@@ -23,7 +25,11 @@ function displayGrade(grade: string) {
   return grade.replaceAll("_", " ");
 }
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function CelebrationHeroCard({ celebration, date, onCalendarPress }: CelebrationHeroCardProps) {
+  const styles = useThemedStyles(styleSheet);
+  const { isLargeText, isNarrowPhone } = useResponsiveLayout();
+  const reduceArtwork = isLargeText || isNarrowPhone;
   const colors = liturgicalTheme[celebration.liturgicalColor];
 
   return (
@@ -32,7 +38,7 @@ export function CelebrationHeroCard({ celebration, date, onCalendarPress }: Cele
       style={[styles.card, { borderColor: colors.border, shadowColor: colors.accent }]}
     >
       <LinearGradient
-        colors={["rgba(29, 62, 91, 0.88)", "rgba(10, 30, 48, 0.98)"]}
+        colors={theme.colors.gradients.celebrationHero}
         end={{ x: 1, y: 1 }}
         pointerEvents="none"
         start={{ x: 0, y: 0 }}
@@ -40,7 +46,7 @@ export function CelebrationHeroCard({ celebration, date, onCalendarPress }: Cele
       />
       <View pointerEvents="none" style={[styles.glow, { backgroundColor: colors.glow }]} />
       <DailyMassHeader date={date} onCalendarPress={onCalendarPress} />
-      <View style={styles.copy}>
+      <View style={[styles.copy, reduceArtwork && styles.copyWithReducedArtwork]}>
         <View style={styles.seasonRow}>
           <View style={[styles.accentLine, { backgroundColor: colors.accent }]} />
           <Text style={[styles.season, { color: colors.label }]}>{displaySeason(celebration.season)}</Text>
@@ -58,13 +64,13 @@ export function CelebrationHeroCard({ celebration, date, onCalendarPress }: Cele
         accessible={false}
         contentFit="contain"
         source={require("../../../assets/saints/blessed-virgin-mary.png")}
-        style={styles.mary}
+        style={[styles.mary, reduceArtwork && styles.maryReduced]}
       />
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   accentLine: { borderRadius: theme.radii.pill, height: 4, width: 28 },
   card: {
     backgroundColor: theme.colors.surface.navy,
@@ -80,6 +86,7 @@ const styles = StyleSheet.create({
     shadowRadius: 14,
   },
   copy: { flex: 1, paddingRight: theme.spacing[16], zIndex: 1 },
+  copyWithReducedArtwork: { paddingRight: theme.spacing[0] },
   devotion: {
     ...theme.typography.bodySmall,
     color: theme.colors.text.secondary,
@@ -91,12 +98,12 @@ const styles = StyleSheet.create({
   grade: { ...theme.typography.bodySmall, color: theme.colors.text.secondary, marginLeft: theme.spacing[1.5] },
   gradeRow: { alignItems: "center", flexDirection: "row", marginTop: theme.spacing[3] },
   mary: { bottom: -12, height: 190, opacity: 0.82, position: "absolute", right: -18, width: 146 },
+  maryReduced: { opacity: 0.14 },
   season: { ...theme.typography.label, letterSpacing: theme.letterSpacing.widest, textTransform: "uppercase" },
   seasonRow: { alignItems: "center", flexDirection: "row", gap: theme.spacing[2], marginBottom: theme.spacing[3] },
   title: {
     ...theme.typography.heading1,
     fontFamily: theme.fontFamilies.devotional,
     fontWeight: theme.fontWeights.bold,
-    maxWidth: 260,
   },
-});
+}));

@@ -1,7 +1,8 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useEffect, useRef } from "react";
-import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
+import { Animated, Pressable, Text, View } from "react-native";
 
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 interface CompletionToastProps {
@@ -13,7 +14,9 @@ interface CompletionToastProps {
   onDismiss: () => void;
 }
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function CompletionToast({ count, currentLevel, points, totalXp, visible, onDismiss }: CompletionToastProps) {
+  const styles = useThemedStyles(styleSheet);
   const opacity = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(-8)).current;
 
@@ -59,7 +62,7 @@ export function CompletionToast({ count, currentLevel, points, totalXp, visible,
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   checkCircle: {
     alignItems: "center",
     backgroundColor: theme.colors.semantic.success,
@@ -106,4 +109,4 @@ const styles = StyleSheet.create({
     color: theme.colors.text.muted,
     marginTop: theme.spacing[0.5],
   },
-});
+}));

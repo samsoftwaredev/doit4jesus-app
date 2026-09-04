@@ -1,10 +1,8 @@
-import { StyleSheet } from "react-native";
-
-import { theme } from "@/theme/tokens";
+import { createThemedStyles } from "@/theme/createThemedStyles";
 
 const knightPortraitAspectRatio = 1024 / 1536;
 
-export const styles = StyleSheet.create({
+export const styles = createThemedStyles((theme) => ({
   portraitFrame: {
     alignSelf: "center",
     aspectRatio: knightPortraitAspectRatio,
@@ -23,4 +21,4 @@ export const styles = StyleSheet.create({
     marginTop: theme.spacing[4],
     textAlign: "center",
   },
-});
+}));

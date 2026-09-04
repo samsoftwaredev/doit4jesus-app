@@ -1,7 +1,9 @@
 import Feather from "@expo/vector-icons/Feather";
-import { StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import { Text, View } from "react-native";
 import Animated, { FadeIn, useReducedMotion } from "react-native-reanimated";
 
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 import type { RosaryGardenStats } from "@/features/prayer/rosary/garden/types";
 
@@ -9,10 +11,13 @@ interface GardenStatsProps {
   stats: RosaryGardenStats;
 }
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function GardenStats({ stats }: GardenStatsProps) {
-  const { width } = useWindowDimensions();
+  const styles = useThemedStyles(styleSheet);
+  const { isLargeText, isNarrowPhone } = useResponsiveLayout();
   const reduceMotion = useReducedMotion();
-  const compact = width < theme.breakpoints.smallPhone;
+  const compact = isNarrowPhone;
+  const stackStats = isLargeText || compact;
   const values = [
     {
       accessibility: `${stats.completedDays} rosaries completed this month`,
@@ -41,13 +46,13 @@ export function GardenStats({ stats }: GardenStatsProps) {
   ] as const;
 
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, stackStats && styles.cardStacked]}>
       {values.map((item, index) => (
         <Animated.View
           accessibilityLabel={item.accessibility}
           entering={reduceMotion ? undefined : FadeIn.duration(250)}
           key={item.label}
-          style={[styles.stat, index > 0 && styles.separator]}
+          style={[styles.stat, index > 0 && styles.separator, stackStats && index > 0 && styles.separatorStacked]}
         >
           <View style={[styles.iconCircle, { backgroundColor: `${item.color}22` }]}>
             <Feather
@@ -57,11 +62,11 @@ export function GardenStats({ stats }: GardenStatsProps) {
               size={compact ? theme.sizes.iconXs : theme.sizes.iconSmall}
             />
           </View>
-          <Text numberOfLines={1} style={[styles.label, compact && styles.compactLabel]}>
+          <Text numberOfLines={stackStats ? undefined : 1} style={[styles.label, compact && styles.compactLabel]}>
             {item.label}
           </Text>
           <Text style={[styles.value, compact && styles.compactValue]}>{item.value}</Text>
-          <Text numberOfLines={1} style={[styles.sublabel, compact && styles.compactSubLabel]}>
+          <Text numberOfLines={stackStats ? undefined : 1} style={[styles.sublabel, compact && styles.compactSubLabel]}>
             {item.sublabel}
           </Text>
         </Animated.View>
@@ -70,7 +75,7 @@ export function GardenStats({ stats }: GardenStatsProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   card: {
     backgroundColor: "rgba(14, 44, 60, 0.92)",
     borderColor: theme.colors.border.default,
@@ -79,8 +84,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     paddingVertical: theme.spacing[3],
   },
+  cardStacked: { flexDirection: "column" },
   stat: { alignItems: "center", flex: 1, minWidth: 0, paddingHorizontal: theme.spacing[1] },
   separator: { borderLeftColor: theme.colors.border.default, borderLeftWidth: theme.borderWidths.hairline },
+  separatorStacked: {
+    borderLeftWidth: theme.spacing[0],
+    borderTopColor: theme.colors.border.default,
+    borderTopWidth: theme.borderWidths.hairline,
+  },
   iconCircle: {
     alignItems: "center",
     borderRadius: theme.radii.pill,
@@ -106,4 +117,4 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   compactSubLabel: { fontSize: 7 },
-});
+}));

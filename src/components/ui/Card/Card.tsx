@@ -1,8 +1,11 @@
 import { Text, View } from "react-native";
 
-import { cardPaddingStyles, cardVariantConfig, styles } from "./Card.styles";
+import { useThemedStyles } from "@/theme/createThemedStyles";
+
+import { cardPaddingStyles, cardVariantConfig, styles as styleSheet } from "./Card.styles";
 import type { CardProps } from "./Card.types";
 
+/** Renders a responsive themed content surface with optional header and footer regions. */
 export function Card({
   children,
   title,
@@ -23,6 +26,7 @@ export function Card({
   accessibilityLabel,
   testID,
 }: CardProps) {
+  const styles = useThemedStyles(styleSheet);
   const variantStyle = cardVariantConfig[variant];
   const hasStandardHeader = Boolean(title || subtitle || headerRight);
 

@@ -1,9 +1,10 @@
 import { LinearGradient } from "expo-linear-gradient";
 import type { ReactNode } from "react";
 import type { StyleProp, ViewStyle } from "react-native";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
 import { Card } from "@/components/ui";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 export type ProgressStatCardProps = {
@@ -14,7 +15,9 @@ export type ProgressStatCardProps = {
   style?: StyleProp<ViewStyle>;
 };
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function ProgressStatCard({ icon, label, suffix, value, style }: ProgressStatCardProps) {
+  const styles = useThemedStyles(styleSheet);
   const accessibilityLabel = `${label}, ${value}${suffix ? ` ${suffix}` : ""}`;
 
   return (
@@ -41,7 +44,7 @@ export function ProgressStatCard({ icon, label, suffix, value, style }: Progress
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   card: {
     minHeight: 136,
     overflow: "hidden",
@@ -83,4 +86,4 @@ const styles = StyleSheet.create({
     marginTop: theme.spacing[1],
     textAlign: "center",
   },
-});
+}));

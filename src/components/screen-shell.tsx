@@ -5,6 +5,8 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { SacredAtmosphere } from "@/components/ui/SacredAtmosphere";
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 type ScreenShellProps = PropsWithChildren<{
@@ -14,6 +16,7 @@ type ScreenShellProps = PropsWithChildren<{
   headerAccessory?: ReactNode;
   background?: ReactNode;
   contentContainerStyle?: StyleProp<ViewStyle>;
+  testID?: string;
 }>;
 
 /**
@@ -32,16 +35,21 @@ export function ScreenShell({
   background,
   children,
   contentContainerStyle,
+  testID,
 }: ScreenShellProps) {
+  const styles = useThemedStyles(styleSheet);
+  const responsive = useResponsiveLayout();
+  const stackHeading = responsive.isNarrowPhone || responsive.isLargeText;
+
   return (
-    <SafeAreaView edges={["top"]} style={styles.safeArea}>
+    <SafeAreaView edges={["top"]} style={styles.safeArea} testID={testID}>
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <View style={styles.page}>
           <View pointerEvents="none" style={styles.backgroundLayer}>
             {background}
             <SacredAtmosphere />
           </View>
-          <View style={[styles.content, contentContainerStyle]}>
+          <View style={[styles.content, { paddingHorizontal: responsive.gutter }, contentContainerStyle]}>
             <View style={styles.header}>
               <View style={styles.brandRow}>
                 <View style={styles.brandIcon}>
@@ -53,13 +61,22 @@ export function ScreenShell({
                 </View>
                 <Text style={styles.brand}>doit4Jesus</Text>
               </View>
-              <View style={styles.headingRow}>
-                <View style={styles.heading}>
+              <View
+                style={[styles.headingRow, stackHeading && styles.headingRowStacked]}
+                testID="screen-shell-heading-row"
+              >
+                <View style={[styles.heading, stackHeading && styles.headingStacked]}>
                   {eyebrow ? <Text style={styles.eyebrow}>{eyebrow}</Text> : null}
-                  <Text style={styles.title}>{title}</Text>
+                  <Text accessibilityRole="header" style={styles.title}>
+                    {title}
+                  </Text>
                   <Text style={styles.subtitle}>{subtitle}</Text>
                 </View>
-                {headerAccessory}
+                {headerAccessory ? (
+                  <View style={[styles.headerAccessory, stackHeading && styles.headerAccessoryStacked]}>
+                    {headerAccessory}
+                  </View>
+                ) : null}
               </View>
             </View>
             {children}
@@ -71,7 +88,7 @@ export function ScreenShell({
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   safeArea: {
     flex: 1,
     backgroundColor: theme.colors.background.primary,
@@ -126,10 +143,24 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
+  headingRowStacked: {
+    flexDirection: "column",
+  },
   heading: {
     flex: 1,
     minWidth: theme.spacing[0],
     paddingRight: theme.spacing[3],
+  },
+  headingStacked: {
+    paddingRight: theme.spacing[0],
+    width: "100%",
+  },
+  headerAccessory: {
+    flexShrink: 0,
+  },
+  headerAccessoryStacked: {
+    alignSelf: "flex-start",
+    marginTop: theme.spacing[3],
   },
   eyebrow: {
     ...theme.typography.labelSmall,
@@ -144,4 +175,4 @@ const styles = StyleSheet.create({
     color: theme.colors.text.muted,
     marginTop: theme.spacing[1],
   },
-});
+}));

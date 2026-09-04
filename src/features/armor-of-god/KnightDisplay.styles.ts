@@ -1,10 +1,9 @@
-import { StyleSheet } from "react-native";
-
+import { createThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 const halfFocusMarker = theme.sizes.touchTarget / 2;
 
-export const styles = StyleSheet.create({
+export const styles = createThemedStyles((theme) => ({
   stage: {
     alignSelf: "center",
     backgroundColor: theme.colors.background.deep,
@@ -45,4 +44,4 @@ export const styles = StyleSheet.create({
     width: theme.sizes.touchTarget,
     ...theme.shadows.goldGlow,
   },
-});
+}));

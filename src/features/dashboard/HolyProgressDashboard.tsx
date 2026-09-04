@@ -1,33 +1,37 @@
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { AppState, StyleSheet, View } from "react-native";
+import { AppState, View } from "react-native";
 
 import { DailyLiturgyDashboard } from "@/features/liturgy/screens";
+import { subscribeToRosaryCompletion } from "@/features/prayer/rosary/rosary-completion-events";
 import {
+  EarnedBadgesSection,
   fetchDashboardProgress,
   fetchLevels,
   fetchRecentRosaryActivities,
   fetchRosaryStats,
   UserProgressSection,
 } from "@/features/progress";
-import { subscribeToRosaryCompletion } from "@/features/prayer/rosary/rosary-completion-events";
-import { theme } from "@/theme/tokens";
+import { useResponsiveLayout } from "@/hooks";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 
-import { getConscienceQuestion, getRosaryReminder, getWeeklyGlobalLeaderboard } from "./dashboard.api";
+import type { LevelCatalogEntry, RecentRosaryActivity } from "@/features/progress";
 import { ConscienceQuestionCard } from "./components/ConscienceQuestionCard";
 import { DailyRosaryCard } from "./components/DailyRosaryCard";
 import { HolyProgressCard } from "./components/HolyProgressCard";
 import { LeaderboardCard } from "./components/LeaderboardCard";
-import type { LevelCatalogEntry, RecentRosaryActivity } from "@/features/progress";
+import { getConscienceQuestion, getRosaryReminder, getWeeklyGlobalLeaderboard } from "./dashboard.api";
 import type {
   ConscienceQuestionViewModel,
   LeaderboardEntryViewModel,
   RosaryReminderViewModel,
 } from "./dashboard.types";
 
-/** The Home dashboard's four primary API-backed cards and existing follow-on sections. */
+/** Composes the Home dashboard's API-backed cards, streak progress, and earned badges. */
 export function HolyProgressDashboard() {
+  const styles = useThemedStyles(styleSheet);
   const router = useRouter();
+  const { contentWidth, isLargeText, isTablet } = useResponsiveLayout();
   const [conscience, setConscience] = useState<ConscienceQuestionViewModel | null>(null);
   const [conscienceError, setConscienceError] = useState(false);
   const [isLoadingConscience, setIsLoadingConscience] = useState(true);
@@ -167,50 +171,78 @@ export function HolyProgressDashboard() {
     return () => subscription.remove();
   }, [refreshAll]);
 
+  const useCardColumns = isTablet && contentWidth >= 700 && !isLargeText;
+
   return (
     <View accessibilityLabel="Holy Progress Dashboard" style={styles.dashboard}>
-      <HolyProgressCard
-        detailsError={holyDetailsError}
-        isLoadingDetails={isLoadingHolyDetails}
-        isLoadingProgress={isLoadingProgress}
-        isLoadingStats={isLoadingStats}
-        levelCatalog={levelCatalog}
-        progress={progress}
-        progressError={progressError}
-        recentRosaryActivities={recentRosaryActivities}
-        rosaryStats={rosaryStats}
-        statsError={statsError}
-      />
-      <ConscienceQuestionCard
-        error={conscienceError}
-        isLoading={isLoadingConscience}
-        onRetry={() => void loadConscience()}
-        question={conscience}
-      />
-      <DailyRosaryCard
-        error={reminderError}
-        isLoading={isLoadingReminder}
-        onExpired={() => void loadReminder()}
-        onPrayRosary={() => router.push({ pathname: "/rosary", params: { source: "home-dashboard" } })}
-        onRetry={() => void loadReminder()}
-        reminder={reminder}
-      />
-      <LeaderboardCard
-        entries={leaderboard}
-        error={leaderboardError}
-        isLoading={isLoadingLeaderboard}
-        onRetry={() => void loadLeaderboard()}
-        onViewFull={() => router.push("/friends/leaderboard")}
-      />
       <UserProgressSection />
       <DailyLiturgyDashboard />
+      <View style={[styles.primaryGrid, useCardColumns && styles.primaryGridColumns]} testID="dashboard-primary-grid">
+        <View style={[styles.primaryCard, useCardColumns && styles.primaryCardColumn]}>
+          <HolyProgressCard
+            detailsError={holyDetailsError}
+            isLoadingDetails={isLoadingHolyDetails}
+            isLoadingProgress={isLoadingProgress}
+            isLoadingStats={isLoadingStats}
+            levelCatalog={levelCatalog}
+            progress={progress}
+            progressError={progressError}
+            recentRosaryActivities={recentRosaryActivities}
+            rosaryStats={rosaryStats}
+            statsError={statsError}
+          />
+        </View>
+        <View style={[styles.primaryCard, useCardColumns && styles.primaryCardColumn]}>
+          <LeaderboardCard
+            entries={leaderboard}
+            error={leaderboardError}
+            isLoading={isLoadingLeaderboard}
+            onRetry={() => void loadLeaderboard()}
+            onViewFull={() => router.push("/friends/leaderboard")}
+          />
+        </View>
+        <View style={[styles.primaryCard, useCardColumns && styles.primaryCardColumn]}>
+          <DailyRosaryCard
+            error={reminderError}
+            isLoading={isLoadingReminder}
+            onExpired={() => void loadReminder()}
+            onPrayRosary={() => router.push({ pathname: "/rosary", params: { source: "home-dashboard" } })}
+            onRetry={() => void loadReminder()}
+            reminder={reminder}
+          />
+        </View>
+        <View style={[styles.primaryCard, useCardColumns && styles.primaryCardColumn]}>
+          <ConscienceQuestionCard
+            error={conscienceError}
+            isLoading={isLoadingConscience}
+            onRetry={() => void loadConscience()}
+            question={conscience}
+          />
+        </View>
+        <EarnedBadgesSection />
+      </View>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   dashboard: {
     gap: theme.spacing[4],
     paddingBottom: theme.spacing[4],
   },
-});
+  primaryCard: {
+    minWidth: theme.spacing[0],
+    width: "100%",
+  },
+  primaryCardColumn: {
+    flexBasis: "47%",
+    flexGrow: 1,
+  },
+  primaryGrid: {
+    gap: theme.spacing[4],
+  },
+  primaryGridColumns: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
+}));

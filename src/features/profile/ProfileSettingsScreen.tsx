@@ -2,7 +2,18 @@ import Feather from "@expo/vector-icons/Feather";
 import Constants from "expo-constants";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Alert, Linking, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Linking,
+  Modal,
+  Platform,
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
@@ -16,6 +27,9 @@ import {
   type Gender,
 } from "@/features/profile";
 import { supabase } from "@/lib/supabase";
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
+import { formatAppearancePreference, useAppTheme } from "@/theme/AppThemeProvider";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 import { ProfileHeroCard } from "./components/ProfileHeroCard";
@@ -36,9 +50,12 @@ export function formatProfileLocation(profile: CurrentUserProfile): string {
 
 /** Renders profile management and settings within the shared atmosphere. */
 export function ProfileSettingsScreen() {
+  const styles = useThemedStyles(styleSheet);
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { configurationError } = useAuth();
+  const { colorScheme, preference } = useAppTheme();
+  const { gutter, isTablet } = useResponsiveLayout();
   const [profile, setProfile] = useState<CurrentUserProfile>();
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [profileError, setProfileError] = useState<string>();
@@ -166,11 +183,19 @@ export function ProfileSettingsScreen() {
 
   const location = profile ? formatProfileLocation(profile) : "Country unavailable";
   const appVersion = Constants.expoConfig?.version ?? Constants.nativeAppVersion ?? "—";
+  const appearanceSummary = formatAppearancePreference(preference, colorScheme);
 
   return (
     <AtmosphericSafeAreaView edges={["top"]} style={styles.safeArea}>
       <ScrollView
-        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + theme.spacing[8] }]}
+        contentContainerStyle={[
+          styles.content,
+          {
+            maxWidth: isTablet ? 760 : 700,
+            paddingBottom: insets.bottom + theme.spacing[8],
+            paddingHorizontal: gutter,
+          },
+        ]}
         showsVerticalScrollIndicator={false}
       >
         <Text accessibilityRole="header" style={styles.pageTitle}>
@@ -216,6 +241,16 @@ export function ProfileSettingsScreen() {
             </SettingsSection>
           </>
         ) : null}
+
+        <SettingsSection title="APPEARANCE">
+          <SettingsRow
+            icon="sun"
+            isLast
+            label="Appearance"
+            onPress={() => router.push("/settings")}
+            value={appearanceSummary}
+          />
+        </SettingsSection>
 
         <SettingsSection title="SUPPORT">
           <SettingsRow
@@ -302,7 +337,9 @@ export function ProfileSettingsScreen() {
   );
 }
 
+/** Renders ProfileSkeleton with styles resolved from the active appearance. */
 function ProfileSkeleton() {
+  const styles = useThemedStyles(styleSheet);
   return (
     <>
       <View accessibilityLabel="Loading profile" style={styles.skeletonHero}>
@@ -322,6 +359,7 @@ function ProfileSkeleton() {
   );
 }
 
+/** Presents a keyboard-safe display-name editor that remains centered on large viewports. */
 function EditNameSheet({
   isSaving,
   onDismiss,
@@ -335,6 +373,7 @@ function EditNameSheet({
   value: string;
   visible: boolean;
 }) {
+  const styles = useThemedStyles(styleSheet);
   const [displayName, setDisplayName] = useState(value);
   const trimmedName = displayName.trim();
   const canSave = trimmedName.length >= 2 && trimmedName.length <= 80 && trimmedName !== value;
@@ -345,7 +384,7 @@ function EditNameSheet({
 
   return (
     <Modal animationType="fade" onRequestClose={onDismiss} transparent visible={visible}>
-      <View style={styles.modalBackdrop}>
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={styles.modalBackdrop}>
         <View accessibilityViewIsModal style={styles.dialog}>
           <Text accessibilityRole="header" style={styles.dialogTitle}>
             Edit Name
@@ -381,11 +420,12 @@ function EditNameSheet({
             </Pressable>
           </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
 
+/** Presents the compact gender choice dialog with accessible selected state. */
 function GenderSelector({
   isSaving,
   onDismiss,
@@ -399,6 +439,7 @@ function GenderSelector({
   selectedGender: Gender;
   visible: boolean;
 }) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <Modal animationType="fade" onRequestClose={onDismiss} transparent visible={visible}>
       <View style={styles.modalBackdrop}>
@@ -442,7 +483,7 @@ function GenderSelector({
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   actionButton: {
     alignItems: "center",
     justifyContent: "center",
@@ -477,8 +518,6 @@ const styles = StyleSheet.create({
   },
   content: {
     alignSelf: "center",
-    maxWidth: 700,
-    paddingHorizontal: theme.spacing[4],
     paddingTop: theme.spacing[5],
     width: "100%",
   },
@@ -488,6 +527,7 @@ const styles = StyleSheet.create({
     borderRadius: theme.radii.xl,
     borderWidth: theme.borderWidths.thin,
     padding: theme.spacing[5],
+    maxWidth: 560,
     width: "100%",
   },
   dialogActions: {
@@ -634,4 +674,4 @@ const styles = StyleSheet.create({
     minHeight: theme.sizes.inputHeight,
     paddingHorizontal: theme.spacing[3],
   },
-});
+}));

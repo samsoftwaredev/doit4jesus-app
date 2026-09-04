@@ -1,7 +1,6 @@
 import type { ViewStyle } from "react-native";
-import { StyleSheet } from "react-native";
 
-import { theme } from "@/theme/tokens";
+import { createThemedStyles, createThemedValue } from "@/theme/createThemedStyles";
 
 import type { CardPadding, CardVariant } from "./Card.types";
 
@@ -11,45 +10,48 @@ type CardVariantConfig = {
   shadow: ViewStyle;
 };
 
-export const cardVariantConfig = {
-  default: {
-    backgroundColor: theme.colors.surface.navy,
-    borderColor: theme.colors.border.default,
-    shadow: theme.shadows.none,
-  },
-  elevated: {
-    backgroundColor: theme.colors.surface.navy,
-    borderColor: theme.colors.border.default,
-    shadow: theme.shadows.small,
-  },
-  outlined: {
-    backgroundColor: theme.colors.surface.tertiary,
-    borderColor: theme.colors.border.strong,
-    shadow: theme.shadows.none,
-  },
-  success: {
-    backgroundColor: theme.colors.surface.navy,
-    borderColor: theme.colors.semantic.successBorder,
-    shadow: theme.shadows.none,
-  },
-  info: {
-    backgroundColor: theme.colors.surface.navy,
-    borderColor: theme.colors.semantic.infoBorder,
-    shadow: theme.shadows.none,
-  },
-  warning: {
-    backgroundColor: theme.colors.surface.navy,
-    borderColor: theme.colors.semantic.warningBorder,
-    shadow: theme.shadows.none,
-  },
-  danger: {
-    backgroundColor: theme.colors.surface.navy,
-    borderColor: theme.colors.semantic.dangerBorder,
-    shadow: theme.shadows.none,
-  },
-} as const satisfies Record<CardVariant, CardVariantConfig>;
+export const cardVariantConfig = createThemedValue(
+  (theme) =>
+    ({
+      default: {
+        backgroundColor: theme.colors.surface.navy,
+        borderColor: theme.colors.border.default,
+        shadow: theme.shadows.none,
+      },
+      elevated: {
+        backgroundColor: theme.colors.surface.navy,
+        borderColor: theme.colors.border.default,
+        shadow: theme.shadows.small,
+      },
+      outlined: {
+        backgroundColor: theme.colors.surface.tertiary,
+        borderColor: theme.colors.border.strong,
+        shadow: theme.shadows.none,
+      },
+      success: {
+        backgroundColor: theme.colors.surface.navy,
+        borderColor: theme.colors.semantic.successBorder,
+        shadow: theme.shadows.none,
+      },
+      info: {
+        backgroundColor: theme.colors.surface.navy,
+        borderColor: theme.colors.semantic.infoBorder,
+        shadow: theme.shadows.none,
+      },
+      warning: {
+        backgroundColor: theme.colors.surface.navy,
+        borderColor: theme.colors.semantic.warningBorder,
+        shadow: theme.shadows.none,
+      },
+      danger: {
+        backgroundColor: theme.colors.surface.navy,
+        borderColor: theme.colors.semantic.dangerBorder,
+        shadow: theme.shadows.none,
+      },
+    }) as const satisfies Record<CardVariant, CardVariantConfig>,
+);
 
-export const cardPaddingStyles = StyleSheet.create({
+export const cardPaddingStyles = createThemedStyles((theme) => ({
   none: {
     padding: theme.spacing[0],
   },
@@ -62,9 +64,9 @@ export const cardPaddingStyles = StyleSheet.create({
   lg: {
     padding: theme.spacing[6],
   },
-}) satisfies Record<CardPadding, object>;
+})) satisfies Record<CardPadding, object>;
 
-export const styles = StyleSheet.create({
+export const styles = createThemedStyles((theme) => ({
   card: {
     alignSelf: "stretch",
     borderRadius: theme.radii.md,
@@ -114,4 +116,4 @@ export const styles = StyleSheet.create({
     marginTop: theme.spacing[2],
     marginBottom: theme.spacing[2],
   },
-});
+}));

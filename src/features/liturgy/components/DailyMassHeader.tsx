@@ -1,6 +1,7 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 interface DailyMassHeaderProps {
@@ -17,7 +18,9 @@ function formatDate(date: string) {
   }).format(new Date(`${date}T12:00:00`));
 }
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function DailyMassHeader({ date, onCalendarPress }: DailyMassHeaderProps) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <View accessibilityRole="header" style={styles.card}>
       <View style={styles.copy}>
@@ -38,7 +41,7 @@ export function DailyMassHeader({ date, onCalendarPress }: DailyMassHeaderProps)
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   calendarButton: {
     alignItems: "center",
     borderColor: theme.colors.border.subtle,
@@ -84,4 +87,4 @@ const styles = StyleSheet.create({
     ...theme.typography.heading3,
     color: theme.colors.text.primary,
   },
-});
+}));

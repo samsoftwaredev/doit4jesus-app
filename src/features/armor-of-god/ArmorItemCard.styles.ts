@@ -1,8 +1,6 @@
-import { StyleSheet } from "react-native";
+import { createThemedStyles } from "@/theme/createThemedStyles";
 
-import { theme } from "@/theme/tokens";
-
-export const styles = StyleSheet.create({
+export const styles = createThemedStyles((theme) => ({
   card: {
     alignItems: "flex-start",
     backgroundColor: theme.colors.surface.navyDeep,
@@ -48,4 +46,4 @@ export const styles = StyleSheet.create({
     ...theme.typography.bodySmall,
     color: theme.colors.text.secondary,
   },
-});
+}));

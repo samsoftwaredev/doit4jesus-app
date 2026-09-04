@@ -1,6 +1,6 @@
 import Feather from "@expo/vector-icons/Feather";
 import * as Haptics from "expo-haptics";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Animated, {
   useAnimatedStyle,
@@ -10,13 +10,16 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 interface PrayTodayButtonProps {
   onPress: () => void;
 }
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function PrayTodayButton({ onPress }: PrayTodayButtonProps) {
+  const styles = useThemedStyles(styleSheet);
   const reduceMotion = useReducedMotion();
   const scale = useSharedValue(1);
   const animatedStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
@@ -42,7 +45,7 @@ export function PrayTodayButton({ onPress }: PrayTodayButtonProps) {
         testID="pray-today-button"
       >
         <LinearGradient
-          colors={["#276EEA", "#154FAE"]}
+          colors={theme.colors.gradients.prayButton}
           end={{ x: 1, y: 1 }}
           start={{ x: 0, y: 0 }}
           style={styles.button}
@@ -64,7 +67,7 @@ export function PrayTodayButton({ onPress }: PrayTodayButtonProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   pressable: { borderRadius: theme.radii.lg, ...theme.shadows.focus },
   button: {
     alignItems: "center",
@@ -83,4 +86,4 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSizes.lg,
     letterSpacing: theme.letterSpacing.wider,
   },
-});
+}));

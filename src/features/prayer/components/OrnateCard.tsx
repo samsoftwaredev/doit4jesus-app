@@ -1,14 +1,16 @@
 import type { PropsWithChildren } from "react";
 import type { StyleProp, ViewStyle } from "react-native";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 
-import { theme } from "@/theme/tokens";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 
 type OrnateCardProps = PropsWithChildren<{
   style?: StyleProp<ViewStyle>;
 }>;
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function OrnateCard({ children, style }: OrnateCardProps) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <View style={[styles.card, style]}>
       <View pointerEvents="none" style={[styles.corner, styles.topLeft]} />
@@ -20,7 +22,7 @@ export function OrnateCard({ children, style }: OrnateCardProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   bottomLeft: { borderRightWidth: 0, borderTopWidth: 0, bottom: theme.spacing[2], left: theme.spacing[2] },
   bottomRight: { borderLeftWidth: 0, borderTopWidth: 0, bottom: theme.spacing[2], right: theme.spacing[2] },
   card: {
@@ -40,4 +42,4 @@ const styles = StyleSheet.create({
   },
   topLeft: { borderBottomWidth: 0, borderRightWidth: 0, left: theme.spacing[2], top: theme.spacing[2] },
   topRight: { borderBottomWidth: 0, borderLeftWidth: 0, right: theme.spacing[2], top: theme.spacing[2] },
-});
+}));

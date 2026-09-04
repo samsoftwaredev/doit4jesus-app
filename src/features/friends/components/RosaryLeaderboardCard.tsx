@@ -1,7 +1,8 @@
 import Feather from "@expo/vector-icons/Feather";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
 import { Button, Card } from "@/components/ui";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 import type { FriendsLeaderboard } from "../friends.types";
@@ -13,11 +14,13 @@ type RosaryLeaderboardCardProps = {
   onViewFullLeaderboard: () => void;
 };
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function RosaryLeaderboardCard({
   leaderboard,
   onPressFriend,
   onViewFullLeaderboard,
 }: RosaryLeaderboardCardProps) {
+  const styles = useThemedStyles(styleSheet);
   const topEntries = leaderboard.entries.slice(0, 7);
   const showCurrentUserEntry = Boolean(
     leaderboard.currentUserEntry &&
@@ -48,7 +51,7 @@ export function RosaryLeaderboardCard({
           rightIcon={<Feather color={theme.colors.text.link} name="arrow-right" size={theme.sizes.iconSmall} />}
           variant="ghost"
         >
-          View Full Leaderboard
+          View Leaderboard
         </Button>
       }
       padding="none"
@@ -67,7 +70,7 @@ export function RosaryLeaderboardCard({
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   content: {
     paddingHorizontal: theme.spacing[3],
     paddingVertical: theme.spacing[1],
@@ -102,4 +105,4 @@ const styles = StyleSheet.create({
     ...theme.typography.labelSmall,
     color: theme.colors.text.secondary,
   },
-});
+}));

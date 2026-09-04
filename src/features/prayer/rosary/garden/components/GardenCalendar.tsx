@@ -1,7 +1,8 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import Animated, { FadeIn, useReducedMotion } from "react-native-reanimated";
 
 import { GardenDayCell } from "@/features/prayer/rosary/garden/components/GardenDayCell";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 import type { RosaryGardenDay } from "@/features/prayer/rosary/garden/types";
 
@@ -27,7 +28,9 @@ export function buildCalendarRows(days: RosaryGardenDay[], month: number, year: 
   );
 }
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function GardenCalendar({ days, month, year }: GardenCalendarProps) {
+  const styles = useThemedStyles(styleSheet);
   const reduceMotion = useReducedMotion();
   const firstWeekday = new Date(Date.UTC(year, month - 1, 1)).getUTCDay();
   const calendarRows = buildCalendarRows(days, month, year);
@@ -83,7 +86,7 @@ export function GardenCalendar({ days, month, year }: GardenCalendarProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   card: {
     backgroundColor: "rgba(10, 38, 55, 0.92)",
     borderColor: "rgba(72, 129, 154, 0.74)",
@@ -107,4 +110,4 @@ const styles = StyleSheet.create({
   calendarRow: { flexDirection: "row", gap: gridGap, width: "100%" },
   dateCell: { aspectRatio: 1, overflow: "hidden" },
   emptyCell: { flex: 1 },
-});
+}));

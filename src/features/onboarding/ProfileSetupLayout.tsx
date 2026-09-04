@@ -2,10 +2,12 @@ import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { LinearGradient } from "expo-linear-gradient";
 import type { ComponentProps, ReactNode } from "react";
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } from "react-native";
 
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { Button, Confetti } from "@/components/ui";
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 import type { OnboardingStep } from "./onboarding.types";
@@ -42,8 +44,12 @@ export function ProfileSetupLayout({
   step,
   title,
 }: ProfileSetupLayoutProps) {
+  const styles = useThemedStyles(styleSheet);
+  const { gutter, isLandscape, isLargeText, isTablet } = useResponsiveLayout();
+  const useWideLayout = isTablet && isLandscape && !isLargeText;
+
   return (
-    <LinearGradient colors={["#071824", "#0A2A3A", "#071824"]} style={styles.background}>
+    <LinearGradient colors={theme.colors.gradients.onboarding} style={styles.background}>
       <AtmosphericSafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -57,7 +63,7 @@ export function ProfileSetupLayout({
             showsVerticalScrollIndicator={false}
           >
             <View pointerEvents="none" style={styles.decorativeGlow} />
-            <View style={styles.page}>
+            <View style={[styles.page, { paddingHorizontal: gutter }, isTablet && styles.pageTablet]}>
               <View style={styles.topBar}>
                 {onBack ? (
                   <Pressable
@@ -85,24 +91,26 @@ export function ProfileSetupLayout({
               </View>
 
               <View style={styles.content}>
-                <View style={styles.heading}>
-                  <View style={styles.iconHalo}>
-                    <View style={styles.iconCircle}>
-                      <MaterialCommunityIcons
-                        accessible={false}
-                        color={theme.rosary.colors.goldBright}
-                        name={icon}
-                        size={theme.sizes.iconLarge}
-                      />
+                <View style={[styles.setupBody, useWideLayout && styles.setupBodyWide]}>
+                  <View style={[styles.heading, useWideLayout && styles.headingWide]}>
+                    <View style={styles.iconHalo}>
+                      <View style={styles.iconCircle}>
+                        <MaterialCommunityIcons
+                          accessible={false}
+                          color={theme.rosary.colors.goldBright}
+                          name={icon}
+                          size={theme.sizes.iconLarge}
+                        />
+                      </View>
                     </View>
+                    <Text accessibilityRole="header" style={styles.title}>
+                      {title}
+                    </Text>
+                    <Text style={styles.description}>{description}</Text>
                   </View>
-                  <Text accessibilityRole="header" style={styles.title}>
-                    {title}
-                  </Text>
-                  <Text style={styles.description}>{description}</Text>
-                </View>
 
-                <View style={styles.form}>{children}</View>
+                  <View style={[styles.form, useWideLayout && styles.formWide]}>{children}</View>
+                </View>
 
                 <View style={styles.footer}>
                   {error ? (
@@ -141,7 +149,9 @@ export function ProfileSetupLayout({
   );
 }
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function ProfileSetupProgress({ step }: { step: OnboardingStep }) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <View accessibilityLabel={`Step ${step} of ${totalSteps}`} accessible style={styles.progress}>
       {Array.from({ length: totalSteps }, (_, index) => {
@@ -159,7 +169,7 @@ export function ProfileSetupProgress({ step }: { step: OnboardingStep }) {
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   activeDot: {
     backgroundColor: theme.rosary.colors.goldBright,
     borderColor: theme.rosary.colors.goldBright,
@@ -211,7 +221,9 @@ const styles = StyleSheet.create({
   },
   footer: { gap: theme.spacing[4], marginTop: "auto", paddingTop: theme.spacing[7] },
   form: { gap: theme.spacing[3], marginTop: theme.spacing[7], width: "100%" },
+  formWide: { flex: 1, marginTop: theme.spacing[3], minWidth: 0 },
   heading: { alignItems: "center", marginTop: theme.spacing[3] },
+  headingWide: { flex: 1, minWidth: 0 },
   iconCircle: {
     alignItems: "center",
     backgroundColor: theme.colors.surface.tertiary,
@@ -242,10 +254,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing[4],
     width: "100%",
   },
+  pageTablet: { maxWidth: 720 },
   pressed: { opacity: theme.opacity.pressed, transform: [{ scale: 0.97 }] },
   progress: { alignItems: "center", flexDirection: "row", gap: theme.spacing[2], justifyContent: "center" },
   safeArea: { flex: 1 },
   scrollContent: { flexGrow: 1 },
+  setupBody: { width: "100%" },
+  setupBodyWide: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: theme.spacing[8],
+  },
   title: {
     ...theme.typography.heading1,
     color: theme.colors.text.primary,
@@ -258,4 +277,4 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingTop: theme.spacing[2],
   },
-});
+}));

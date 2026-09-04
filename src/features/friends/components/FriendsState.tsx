@@ -1,7 +1,8 @@
 import Feather from "@expo/vector-icons/Feather";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 
 import { Button, Card } from "@/components/ui";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 type FriendsStateProps = {
@@ -12,7 +13,9 @@ type FriendsStateProps = {
   type: "empty" | "error" | "loading";
 };
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function FriendsState({ actionLabel, message, onAction, title, type }: FriendsStateProps) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <Card accessibilityLabel={title} fullWidth padding="lg" variant={type === "error" ? "danger" : "outlined"}>
       <View style={styles.content}>
@@ -37,7 +40,7 @@ export function FriendsState({ actionLabel, message, onAction, title, type }: Fr
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   content: {
     alignItems: "center",
     gap: theme.spacing[3],
@@ -51,4 +54,4 @@ const styles = StyleSheet.create({
     ...theme.typography.heading3,
     textAlign: "center",
   },
-});
+}));

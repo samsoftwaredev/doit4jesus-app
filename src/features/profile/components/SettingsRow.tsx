@@ -1,7 +1,8 @@
 import Feather from "@expo/vector-icons/Feather";
 import type { ComponentProps } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 type FeatherIconName = ComponentProps<typeof Feather>["name"];
@@ -17,6 +18,7 @@ type SettingsRowProps = {
   value?: string;
 };
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function SettingsRow({
   destructive = false,
   external = false,
@@ -27,6 +29,7 @@ export function SettingsRow({
   showChevron = Boolean(onPress),
   value,
 }: SettingsRowProps) {
+  const styles = useThemedStyles(styleSheet);
   const iconColor = destructive ? theme.colors.text.danger : theme.colors.gold.pale;
   const rightAccessory = external ? "external-link" : "chevron-right";
   const content = (
@@ -34,12 +37,10 @@ export function SettingsRow({
       <View style={[styles.iconCircle, destructive && styles.destructiveIcon]}>
         <Feather accessible={false} color={iconColor} name={icon} size={theme.sizes.iconSmall} />
       </View>
-      <Text style={[styles.label, destructive && styles.destructiveText]}>{label}</Text>
-      {value ? (
-        <Text ellipsizeMode="tail" numberOfLines={1} style={styles.value}>
-          {value}
-        </Text>
-      ) : null}
+      <View style={styles.copy}>
+        <Text style={[styles.label, destructive && styles.destructiveText]}>{label}</Text>
+        {value ? <Text style={styles.value}>{value}</Text> : null}
+      </View>
       {showChevron || external ? (
         <Feather
           accessible={false}
@@ -73,9 +74,13 @@ export function SettingsRow({
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   accessory: {
     marginLeft: theme.spacing[2],
+  },
+  copy: {
+    flex: 1,
+    minWidth: 0,
   },
   destructiveIcon: {
     backgroundColor: "rgba(197, 94, 101, 0.14)",
@@ -98,7 +103,6 @@ const styles = StyleSheet.create({
   label: {
     ...theme.typography.bodyMedium,
     color: theme.colors.text.primary,
-    flexShrink: 1,
   },
   lastRow: {
     borderBottomWidth: 0,
@@ -118,8 +122,6 @@ const styles = StyleSheet.create({
   value: {
     ...theme.typography.bodySmall,
     color: theme.colors.text.muted,
-    flex: 1,
-    marginLeft: theme.spacing[3],
-    textAlign: "right",
+    marginTop: theme.spacing[0.5],
   },
-});
+}));

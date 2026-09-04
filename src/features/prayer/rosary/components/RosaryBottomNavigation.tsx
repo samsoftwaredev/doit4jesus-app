@@ -1,6 +1,6 @@
 import Feather from "@expo/vector-icons/Feather";
 import { useEffect, useState } from "react";
-import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { Modal, Pressable, Text, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useReducedMotion,
@@ -10,6 +10,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 import type { PrayerProgress } from "@/features/prayer/rosary/types";
 
@@ -22,6 +23,7 @@ interface RosaryBottomNavigationProps {
   onRestart: () => void;
 }
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function RosaryBottomNavigation({
   progress,
   decadeCount = 5,
@@ -30,6 +32,7 @@ export function RosaryBottomNavigation({
   onAdvance,
   onRestart,
 }: RosaryBottomNavigationProps) {
+  const styles = useThemedStyles(styleSheet);
   const [settingsVisible, setSettingsVisible] = useState(false);
   const reduceMotion = useReducedMotion();
   const scale = useSharedValue(1);
@@ -151,7 +154,7 @@ export function RosaryBottomNavigation({
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   navigation: {
     paddingTop: theme.spacing[2],
   },
@@ -285,4 +288,4 @@ const styles = StyleSheet.create({
     ...theme.typography.bodyMedium,
     color: theme.colors.text.primary,
   },
-});
+}));

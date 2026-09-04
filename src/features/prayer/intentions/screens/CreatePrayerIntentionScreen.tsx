@@ -1,7 +1,7 @@
 import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
 
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { Button } from "@/components/ui";
@@ -14,10 +14,14 @@ import {
   getPrayerIntentionTheme,
 } from "@/features/prayer/intentions";
 import type { PrayerIntentionSymbol } from "@/features/prayer/intentions";
+import { useAppTheme } from "@/theme/AppThemeProvider";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 /** Renders the authenticated form for creating a prayer intention. */
 export function CreatePrayerIntentionScreen() {
+  const styles = useThemedStyles(styleSheet);
+  const { colorScheme } = useAppTheme();
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -48,6 +52,7 @@ export function CreatePrayerIntentionScreen() {
     <AtmosphericSafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
       <BackHeader onBack={() => router.back()} title="Share an Intention" />
       <ScrollView
+        automaticallyAdjustKeyboardInsets
         contentContainerStyle={styles.content}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
@@ -67,7 +72,7 @@ export function CreatePrayerIntentionScreen() {
         <Text style={styles.label}>SYMBOL</Text>
         <View style={styles.symbols}>
           {prayerIntentionSymbols.map((option) => {
-            const optionTheme = getPrayerIntentionTheme(option);
+            const optionTheme = getPrayerIntentionTheme(option, colorScheme);
             const selected = symbol === option;
             return (
               <Pressable
@@ -109,6 +114,7 @@ export function CreatePrayerIntentionScreen() {
   );
 }
 
+/** Renders Field with styles resolved from the active appearance. */
 function Field({
   label,
   maxLength,
@@ -124,6 +130,7 @@ function Field({
   placeholder: string;
   value: string;
 }) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <View>
       <View style={styles.fieldHeader}>
@@ -147,8 +154,15 @@ function Field({
   );
 }
 
-const styles = StyleSheet.create({
-  content: { gap: theme.spacing[4], padding: theme.spacing[4], paddingBottom: theme.spacing[7] },
+const styleSheet = createThemedStyles((theme) => ({
+  content: {
+    alignSelf: "center",
+    gap: theme.spacing[4],
+    maxWidth: 700,
+    padding: theme.spacing[4],
+    paddingBottom: theme.spacing[7],
+    width: "100%",
+  },
   count: { ...theme.typography.caption, color: theme.colors.text.subtle },
   error: { ...theme.typography.bodySmall, color: theme.colors.text.danger },
   fieldHeader: {
@@ -183,4 +197,4 @@ const styles = StyleSheet.create({
   symbolText: { ...theme.typography.caption, color: theme.colors.text.white, textTransform: "capitalize" },
   symbols: { flexDirection: "row", flexWrap: "wrap", gap: theme.spacing[2], justifyContent: "space-between" },
   textArea: { minHeight: 120, paddingTop: theme.spacing[3] },
-});
+}));

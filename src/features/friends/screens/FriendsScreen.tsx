@@ -1,21 +1,26 @@
 import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useRouter } from "expo-router";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
 
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { BackHeader } from "@/components/navigation";
 import { FriendsList, FriendsState, PendingRequestsCard, RosaryLeaderboardCard } from "@/features/friends/components";
 import { useFriendRequests, useFriends, useRosaryLeaderboard } from "@/features/friends/friends.hooks";
 import type { FriendRequest } from "@/features/friends/friends.types";
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 /** Renders the authenticated community dashboard within the shared atmosphere. */
 export function FriendsScreen() {
+  const styles = useThemedStyles(styleSheet);
   const router = useRouter();
   const friends = useFriends();
   const leaderboard = useRosaryLeaderboard();
   const requests = useFriendRequests("incoming");
+  const { contentWidth, gutter, isDesktop, isLargeText } = useResponsiveLayout();
+  const useColumns = isDesktop && contentWidth >= 900 && !isLargeText;
 
   const openFriend = (friendId: string) => {
     router.push(`/friends/${friendId}`);
@@ -58,7 +63,10 @@ export function FriendsScreen() {
         }
         title="Community"
       />
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        contentContainerStyle={[styles.content, { paddingHorizontal: gutter }]}
+        showsVerticalScrollIndicator={false}
+      >
         <Text style={styles.intro}>Compete with one another in prayer.</Text>
 
         {leaderboard.isLoading ? (
@@ -85,69 +93,71 @@ export function FriendsScreen() {
           )
         ) : null}
 
-        <View style={styles.section}>
-          {requests.isLoading ? (
-            <FriendsState message="Loading pending requests…" title="Pending requests" type="loading" />
-          ) : null}
-          {requests.error ? (
-            <FriendsState
-              actionLabel="Try again"
-              message={requests.error}
-              onAction={() => void requests.reload()}
-              title="Couldn't load pending requests"
-              type="error"
-            />
-          ) : null}
-          {!requests.isLoading && !requests.error ? (
-            <PendingRequestsCard
-              isMutatingId={requests.isMutatingId}
-              onAccept={(request) => resolveRequest(request, "accepted")}
-              onDecline={(request) => resolveRequest(request, "rejected")}
-              onSeeAll={() => router.push("/friends/requests")}
-              requests={requests.requests}
-            />
-          ) : null}
-        </View>
+        <View style={[styles.sections, useColumns && styles.sectionsWide]}>
+          <View style={[styles.section, useColumns && styles.sectionWide]}>
+            {requests.isLoading ? (
+              <FriendsState message="Loading pending requests…" title="Pending requests" type="loading" />
+            ) : null}
+            {requests.error ? (
+              <FriendsState
+                actionLabel="Try again"
+                message={requests.error}
+                onAction={() => void requests.reload()}
+                title="Couldn't load pending requests"
+                type="error"
+              />
+            ) : null}
+            {!requests.isLoading && !requests.error ? (
+              <PendingRequestsCard
+                isMutatingId={requests.isMutatingId}
+                onAccept={(request) => resolveRequest(request, "accepted")}
+                onDecline={(request) => resolveRequest(request, "rejected")}
+                onSeeAll={() => router.push("/friends/requests")}
+                requests={requests.requests}
+              />
+            ) : null}
+          </View>
 
-        <View style={styles.section}>
-          {friends.isLoading ? (
-            <FriendsState message="Loading your fellowship…" title="Your friends" type="loading" />
-          ) : null}
-          {friends.error ? (
-            <FriendsState
-              actionLabel="Try again"
-              message={friends.error}
-              onAction={() => void friends.reload()}
-              title="Couldn't load friends"
-              type="error"
-            />
-          ) : null}
-          {!friends.isLoading && !friends.error && friends.friends.length === 0 ? (
-            <FriendsState
-              actionLabel="Find Friends"
-              message="Add friends and encourage one another in prayer and virtue."
-              onAction={openAddFriend}
-              title="Your fellowship begins here"
-              type="empty"
-            />
-          ) : null}
-          {!friends.isLoading && !friends.error && friends.friends.length ? (
-            <FriendsList friends={friends.friends} onPressFriend={openFriend} />
-          ) : null}
-          {friends.hasMore ? (
-            <Pressable accessibilityRole="button" onPress={() => void friends.loadMore()} style={styles.moreFriends}>
-              <Text style={styles.moreFriendsText}>
-                {friends.isLoadingMore ? "Loading friends…" : "Load more friends"}
-              </Text>
-            </Pressable>
-          ) : null}
+          <View style={[styles.section, useColumns && styles.sectionWide]}>
+            {friends.isLoading ? (
+              <FriendsState message="Loading your fellowship…" title="Your friends" type="loading" />
+            ) : null}
+            {friends.error ? (
+              <FriendsState
+                actionLabel="Try again"
+                message={friends.error}
+                onAction={() => void friends.reload()}
+                title="Couldn't load friends"
+                type="error"
+              />
+            ) : null}
+            {!friends.isLoading && !friends.error && friends.friends.length === 0 ? (
+              <FriendsState
+                actionLabel="Find Friends"
+                message="Add friends and encourage one another in prayer and virtue."
+                onAction={openAddFriend}
+                title="Your fellowship begins here"
+                type="empty"
+              />
+            ) : null}
+            {!friends.isLoading && !friends.error && friends.friends.length ? (
+              <FriendsList friends={friends.friends} onPressFriend={openFriend} />
+            ) : null}
+            {friends.hasMore ? (
+              <Pressable accessibilityRole="button" onPress={() => void friends.loadMore()} style={styles.moreFriends}>
+                <Text style={styles.moreFriendsText}>
+                  {friends.isLoadingMore ? "Loading friends…" : "Load more friends"}
+                </Text>
+              </Pressable>
+            ) : null}
+          </View>
         </View>
       </ScrollView>
     </AtmosphericSafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   brand: {
     ...theme.typography.heading3,
     color: theme.colors.text.primary,
@@ -183,7 +193,6 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     maxWidth: theme.sizes.contentMaxWidth,
     paddingBottom: theme.spacing[10],
-    paddingHorizontal: theme.spacing[4],
     width: "100%",
   },
   intro: {
@@ -207,4 +216,14 @@ const styles = StyleSheet.create({
   section: {
     marginTop: theme.spacing[5],
   },
-});
+  sections: { width: "100%" },
+  sectionsWide: {
+    alignItems: "flex-start",
+    flexDirection: "row",
+    gap: theme.spacing[5],
+  },
+  sectionWide: {
+    flex: 1,
+    minWidth: theme.spacing[0],
+  },
+}));

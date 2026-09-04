@@ -1,11 +1,13 @@
+import { useThemedStyles } from "@/theme/createThemedStyles";
 import { View } from "react-native";
 
 import { MessageAction } from "./MessageAction";
 import { NotificationAction } from "./NotificationAction";
 import { SettingsAction } from "./SettingsAction";
-import { styles } from "./HeaderActionGroup.styles";
+import { styles as styleSheet } from "./HeaderActionGroup.styles";
 import type { HeaderActionGroupProps } from "./HeaderActionGroup.types";
 
+/** Renders HeaderActionGroup with styles resolved from the active appearance. */
 export function HeaderActionGroup({
   notificationUnreadCount = 0,
   messageUnreadCount = 0,
@@ -20,6 +22,7 @@ export function HeaderActionGroup({
   style,
   testID,
 }: HeaderActionGroupProps) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <View style={[styles.group, style]} testID={testID}>
       <NotificationAction

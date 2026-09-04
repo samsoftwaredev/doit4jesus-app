@@ -1,5 +1,7 @@
 import type { LiturgicalColor } from "./liturgy.types";
 
+import { createThemedValue } from "@/theme/createThemedStyles";
+
 export interface LiturgicalThemeTokens {
   accent: string;
   border: string;
@@ -7,7 +9,7 @@ export interface LiturgicalThemeTokens {
   label: string;
 }
 
-export const liturgicalTheme: Record<LiturgicalColor, LiturgicalThemeTokens> = {
+export const liturgicalTheme: Record<LiturgicalColor, LiturgicalThemeTokens> = createThemedValue({
   BLACK: {
     accent: "#B5C0C7",
     border: "#657783",
@@ -44,4 +46,4 @@ export const liturgicalTheme: Record<LiturgicalColor, LiturgicalThemeTokens> = {
     glow: "rgba(241, 196, 106, 0.16)",
     label: "#F6D891",
   },
-};
+});

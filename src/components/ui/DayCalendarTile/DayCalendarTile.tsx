@@ -6,9 +6,10 @@ import pinkRose from "../../../assets/flowers/pinkRose.png";
 import redRose from "../../../assets/flowers/redRose.png";
 import whiteLily from "../../../assets/flowers/whiteLily.png";
 
+import { useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
-import { dayCalendarTileStateConfig, styles } from "./DayCalendarTile.styles";
+import { dayCalendarTileStateConfig, styles as styleSheet } from "./DayCalendarTile.styles";
 import type { DayCalendarFlower, DayCalendarTileProps, DayCalendarTileState } from "./DayCalendarTile.types";
 
 const completedFlowers: DayCalendarFlower[] = ["redRose", "pinkRose", "whiteLily", "blueFlower", "mixed"];
@@ -30,6 +31,7 @@ const stateAccessibilityLabels: Record<DayCalendarTileState, (day: number) => st
   unavailable: (day) => `Day ${day}, unavailable`,
 };
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function DayCalendarTile({
   day,
   state = "incomplete",
@@ -38,6 +40,7 @@ export function DayCalendarTile({
   accessibilityLabel,
   testID,
 }: DayCalendarTileProps) {
+  const styles = useThemedStyles(styleSheet);
   const stateConfig = dayCalendarTileStateConfig[state];
   const isCompleted = state === "completed";
   const isUnavailable = state === "unavailable";

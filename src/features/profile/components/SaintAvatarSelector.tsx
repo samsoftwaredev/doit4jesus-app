@@ -5,6 +5,8 @@ import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, Text, View
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { saintAvatars } from "@/features/profile/saints";
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 type SaintAvatarSelectorProps = {
@@ -14,7 +16,10 @@ type SaintAvatarSelectorProps = {
   visible: boolean;
 };
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function SaintAvatarSelector({ onDismiss, onSelect, selectedSaintAvatarId, visible }: SaintAvatarSelectorProps) {
+  const styles = useThemedStyles(styleSheet);
+  const { isDesktop, isLargeText, isNarrowPhone, isTablet } = useResponsiveLayout();
   const [selectedId, setSelectedId] = useState(selectedSaintAvatarId);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -36,7 +41,11 @@ export function SaintAvatarSelector({ onDismiss, onSelect, selectedSaintAvatarId
     <Modal animationType="slide" onRequestClose={onDismiss} transparent visible={visible}>
       <SafeAreaView edges={["bottom"]} style={styles.backdrop}>
         <Pressable accessibilityLabel="Close avatar selector" onPress={onDismiss} style={StyleSheet.absoluteFill} />
-        <View accessibilityViewIsModal style={styles.sheet}>
+        <View
+          accessibilityLabel="Choose your saint"
+          accessibilityViewIsModal
+          style={[styles.sheet, isDesktop && styles.sheetDesktop]}
+        >
           <View style={styles.header}>
             <View>
               <Text accessibilityRole="header" style={styles.title}>
@@ -67,6 +76,9 @@ export function SaintAvatarSelector({ onDismiss, onSelect, selectedSaintAvatarId
                   onPress={() => void chooseSaint(saint.id)}
                   style={({ pressed }) => [
                     styles.option,
+                    (isLargeText || isNarrowPhone) && styles.optionLargeText,
+                    isTablet && !isLargeText && styles.optionTablet,
+                    isDesktop && !isLargeText && styles.optionDesktop,
                     isSelected && styles.selectedOption,
                     pressed && !isSaving && styles.pressed,
                   ]}
@@ -99,7 +111,7 @@ export function SaintAvatarSelector({ onDismiss, onSelect, selectedSaintAvatarId
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   backdrop: {
     backgroundColor: theme.colors.background.overlay,
     flex: 1,
@@ -144,6 +156,9 @@ const styles = StyleSheet.create({
     position: "relative",
     width: "30.5%",
   },
+  optionDesktop: { width: "18%" },
+  optionLargeText: { width: "47%" },
+  optionTablet: { width: "22%" },
   optionImage: {
     borderRadius: theme.radii.pill,
     height: 74,
@@ -172,6 +187,13 @@ const styles = StyleSheet.create({
     maxHeight: "86%",
     paddingHorizontal: theme.spacing[4],
     paddingTop: theme.spacing[5],
+    width: "100%",
+  },
+  sheetDesktop: {
+    alignSelf: "center",
+    borderRadius: theme.radii.xl,
+    marginBottom: theme.spacing[6],
+    maxWidth: 760,
   },
   subtitle: {
     ...theme.typography.bodySmall,
@@ -182,4 +204,4 @@ const styles = StyleSheet.create({
     ...theme.typography.heading2,
     color: theme.colors.text.primary,
   },
-});
+}));

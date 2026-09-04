@@ -6,6 +6,7 @@ export {
   fetchRosaryStats,
   fetchUserProgress,
 } from "./progress.api";
+export { EarnedBadgesSection } from "./EarnedBadgesSection";
 export type {
   DashboardProgress,
   EarnedBadge,
@@ -16,3 +17,4 @@ export type {
   UserRosaryStats,
 } from "./progress.types";
 export { UserProgressSection } from "./UserProgressSection";
+export { StreakCards } from "./StreakCards";

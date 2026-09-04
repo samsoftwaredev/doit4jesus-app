@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { StyleSheet } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useReducedMotion,
@@ -9,14 +8,16 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { DayCalendarTile } from "@/components/ui";
-import { theme } from "@/theme/tokens";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import type { RosaryGardenDay } from "@/features/prayer/rosary/garden/types";
 
 interface GardenDayCellProps {
   day: RosaryGardenDay;
 }
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function GardenDayCell({ day }: GardenDayCellProps) {
+  const styles = useThemedStyles(styleSheet);
   const reduceMotion = useReducedMotion();
   const bloom = useSharedValue(day.completed ? 1 : 0.96);
 
@@ -65,7 +66,7 @@ export function GardenDayCell({ day }: GardenDayCellProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   cell: { flex: 1, minHeight: 0, minWidth: 0, overflow: "hidden" },
   tile: { flex: 1, minHeight: 0, minWidth: 0, padding: theme.spacing[1] },
-});
+}));

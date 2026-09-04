@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { FlatList, Pressable, RefreshControl, StyleSheet, Text, View } from "react-native";
+import { FlatList, Pressable, RefreshControl, Text, View } from "react-native";
 
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { BackHeader } from "@/components/navigation";
@@ -8,9 +8,10 @@ import { FriendsState, LeaderboardEntries } from "@/features/friends/components"
 import { formatPoints } from "@/features/friends/components/LeaderboardEntries";
 import { useRosaryLeaderboard } from "@/features/friends/friends.hooks";
 import type { FriendsLeaderboardEntry, LeaderboardPeriodType } from "@/features/friends/friends.types";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
-const periodOptions: ReadonlyArray<{ label: string; value: LeaderboardPeriodType }> = [
+const periodOptions: readonly { label: string; value: LeaderboardPeriodType }[] = [
   { label: "Today", value: "daily" },
   { label: "This Week", value: "weekly" },
   { label: "This Month", value: "monthly" },
@@ -34,6 +35,7 @@ function getGoal(entries: FriendsLeaderboardEntry[], currentUser: FriendsLeaderb
 
 /** Renders the authenticated friends leaderboard within the shared atmosphere. */
 export function FriendsLeaderboardScreen() {
+  const styles = useThemedStyles(styleSheet);
   const router = useRouter();
   const leaderboard = useRosaryLeaderboard();
   const data = leaderboard.leaderboard;
@@ -129,6 +131,7 @@ export function FriendsLeaderboardScreen() {
   );
 }
 
+/** Renders LeaderboardFooter with styles resolved from the active appearance. */
 function LeaderboardFooter({
   currentUserEntry,
   entries,
@@ -142,6 +145,7 @@ function LeaderboardFooter({
   onLoadMore: () => void;
   total: number;
 }) {
+  const styles = useThemedStyles(styleSheet);
   const currentEntry = currentUserEntry ?? entries.find((entry) => entry.isCurrentUser) ?? null;
   const goal = getGoal(entries, currentEntry);
   const isCurrentUserInList = currentEntry
@@ -185,7 +189,7 @@ function LeaderboardFooter({
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   entryCard: {
     backgroundColor: theme.colors.surface.navy,
     borderBottomColor: theme.colors.border.subtle,
@@ -273,4 +277,4 @@ const styles = StyleSheet.create({
   yourRank: {
     ...theme.typography.heading3,
   },
-});
+}));

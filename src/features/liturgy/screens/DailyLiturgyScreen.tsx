@@ -1,8 +1,9 @@
 import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 
 import { Button } from "@/components/ui";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 import { CelebrationHeroCard, CompletionToast, DailyVerseCard, ScriptureReadingsCard } from "../components";
@@ -35,7 +36,9 @@ function hasCompletedAllReadings(progress: DailyReadingProgress, model: DailyLit
   );
 }
 
+/** Renders LiturgyLoadingState with styles resolved from the active appearance. */
 function LiturgyLoadingState() {
+  const styles = useThemedStyles(styleSheet);
   return (
     <View accessibilityLabel="Loading daily liturgy" style={styles.skeletons}>
       <View style={[styles.skeleton, styles.headerSkeleton]} />
@@ -51,6 +54,7 @@ function LiturgyLoadingState() {
  * owns scrolling so this component can live naturally alongside other cards.
  */
 export function DailyLiturgyDashboard({ country = "US", onCalendarPress }: DailyLiturgyDashboardProps) {
+  const styles = useThemedStyles(styleSheet);
   const rewardInFlight = useRef<string | null>(null);
   const toastPresentedFor = useRef<string | null>(null);
   const [completionToast, setCompletionToast] = useState<CompletionToastState | null>(null);
@@ -263,7 +267,7 @@ export function DailyLiturgyDashboard({ country = "US", onCalendarPress }: Daily
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   chipsSkeleton: { height: 44, width: "72%" },
   content: {
     alignSelf: "center",
@@ -328,4 +332,4 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   skeletons: { gap: theme.spacing[4], padding: theme.spacing[4] },
-});
+}));

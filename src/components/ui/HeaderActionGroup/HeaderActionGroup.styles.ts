@@ -1,8 +1,6 @@
-import { StyleSheet } from "react-native";
+import { createThemedStyles } from "@/theme/createThemedStyles";
 
-import { theme } from "@/theme/tokens";
-
-export const styles = StyleSheet.create({
+export const styles = createThemedStyles((theme) => ({
   group: {
     alignItems: "center",
     alignSelf: "flex-end",
@@ -61,4 +59,4 @@ export const styles = StyleSheet.create({
     color: theme.colors.text.white,
     textAlign: "center",
   },
-});
+}));

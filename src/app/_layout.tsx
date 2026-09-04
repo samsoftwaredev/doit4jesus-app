@@ -1,30 +1,64 @@
-import { Stack } from "expo-router";
+import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { Button } from "@/components/ui";
 import { AuthProvider, useAuth } from "@/features/auth";
 import { getProfileAccessState, ProfileProvider, useCurrentProfile } from "@/features/profile";
+import { AppThemeProvider, getStatusBarStyle, useAppTheme } from "@/theme/AppThemeProvider";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
+/** Installs the appearance provider before authentication so the preference applies app-wide. */
 export default function RootLayout() {
+  return (
+    <AppThemeProvider>
+      <ThemedRoot />
+    </AppThemeProvider>
+  );
+}
+
+/** Holds routed content behind the native splash until appearance hydration finishes. */
+function ThemedRoot() {
+  const { colorScheme, isHydrated, theme: appTheme } = useAppTheme();
+
+  if (!isHydrated) return null;
+
+  const baseNavigationTheme = colorScheme === "dark" ? DarkTheme : DefaultTheme;
+  const navigationTheme = {
+    ...baseNavigationTheme,
+    colors: {
+      ...baseNavigationTheme.colors,
+      background: appTheme.colors.background.primary,
+      border: appTheme.colors.border.default,
+      card: appTheme.colors.surface.navigation,
+      notification: appTheme.colors.semantic.danger,
+      primary: appTheme.colors.brand.primary,
+      text: appTheme.colors.text.primary,
+    },
+  };
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        <StatusBar style="light" />
-        <AuthProvider>
-          <ProfileProvider>
-            <RootNavigator />
-          </ProfileProvider>
-        </AuthProvider>
+        <ThemeProvider value={navigationTheme}>
+          <StatusBar style={getStatusBarStyle(colorScheme)} />
+          <AuthProvider>
+            <ProfileProvider>
+              <RootNavigator />
+            </ProfileProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );
 }
 
+/** Selects protected routes after authentication and profile access resolve. */
 function RootNavigator() {
+  const styles = useThemedStyles(styleSheet);
   const { isLoading, isPasswordRecovery, session } = useAuth();
   const profileState = useCurrentProfile();
 
@@ -50,7 +84,12 @@ function RootNavigator() {
   }
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
+    <Stack
+      screenOptions={{
+        contentStyle: { backgroundColor: theme.colors.background.primary },
+        headerShown: false,
+      }}
+    >
       <Stack.Protected guard={isSignedIn && !isPasswordRecovery && hasCompleteProfile}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="about" />
@@ -88,7 +127,9 @@ function RootNavigator() {
   );
 }
 
+/** Displays a theme-correct account loading surface beneath the native splash. */
 function AppLoadingScreen() {
+  const styles = useThemedStyles(styleSheet);
   return (
     <View accessibilityLabel="Loading your account" style={styles.loading}>
       <ActivityIndicator color={theme.colors.brand.primaryLight} />
@@ -96,7 +137,7 @@ function AppLoadingScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   loading: {
     alignItems: "center",
     backgroundColor: theme.colors.background.primary,
@@ -113,4 +154,4 @@ const styles = StyleSheet.create({
   },
   errorTitle: { ...theme.typography.heading3, color: theme.colors.text.primary, textAlign: "center" },
   errorCopy: { ...theme.typography.body, color: theme.colors.text.muted, maxWidth: 420, textAlign: "center" },
-});
+}));

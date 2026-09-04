@@ -1,9 +1,11 @@
 import Feather from "@expo/vector-icons/Feather";
 import { useMemo, useState } from "react";
-import { FlatList, Modal, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { FlatList, Modal, Pressable, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { CountryFlagBadge } from "@/components/ui";
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 import { filterCountriesWithFlags } from "./country-selector-data";
@@ -15,7 +17,10 @@ type CountrySelectorProps = {
   selectedName: string | null;
 };
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function CountrySelector({ onSelect, selectedCode, selectedName }: CountrySelectorProps) {
+  const styles = useThemedStyles(styleSheet);
+  const { isDesktop } = useResponsiveLayout();
   const [query, setQuery] = useState("");
   const [visible, setVisible] = useState(false);
   const countries = useMemo(() => filterCountriesWithFlags(query), [query]);
@@ -43,7 +48,7 @@ export function CountrySelector({ onSelect, selectedCode, selectedName }: Countr
         </View>
         <View style={styles.selectedCopy}>
           <Text style={styles.fieldLabel}>Country</Text>
-          <Text numberOfLines={1} style={[styles.selectedName, !selectedName && styles.placeholder]}>
+          <Text style={[styles.selectedName, !selectedName && styles.placeholder]}>
             {selectedName ?? "Select a country"}
           </Text>
         </View>
@@ -52,7 +57,7 @@ export function CountrySelector({ onSelect, selectedCode, selectedName }: Countr
 
       <Modal animationType="slide" onRequestClose={dismiss} transparent visible={visible}>
         <SafeAreaView edges={["top", "bottom"]} style={styles.modalBackdrop}>
-          <View accessibilityViewIsModal style={styles.sheet}>
+          <View accessibilityViewIsModal style={[styles.sheet, isDesktop && styles.sheetDesktop]}>
             <View style={styles.sheetHeader}>
               <Text accessibilityRole="header" style={styles.sheetTitle}>
                 Select your country
@@ -118,7 +123,7 @@ export function CountrySelector({ onSelect, selectedCode, selectedName }: Countr
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   closeButton: {
     alignItems: "center",
     height: theme.sizes.touchTarget,
@@ -191,6 +196,10 @@ const styles = StyleSheet.create({
     minHeight: "60%",
     width: "100%",
   },
+  sheetDesktop: {
+    borderRadius: theme.radii.xl,
+    marginBottom: theme.spacing[6],
+  },
   sheetHeader: {
     alignItems: "center",
     flexDirection: "row",
@@ -199,4 +208,4 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing[2],
   },
   sheetTitle: { ...theme.typography.heading3, color: theme.colors.text.primary },
-});
+}));

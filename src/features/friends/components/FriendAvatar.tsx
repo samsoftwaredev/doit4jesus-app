@@ -1,5 +1,6 @@
 import { AvatarWithCountryBadge } from "@/components/identity";
 
+import { useAppTheme } from "@/theme/AppThemeProvider";
 import { theme } from "@/theme/tokens";
 
 type FriendAvatarProps = {
@@ -17,7 +18,9 @@ const sizeByVariant = {
   xl: theme.sizes.iconHero + theme.spacing[8],
 } as const;
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function FriendAvatar({ accessibilityLabel, countryCode, name, size = "md", source }: FriendAvatarProps) {
+  useAppTheme();
   const avatarSize = sizeByVariant[size];
 
   return (

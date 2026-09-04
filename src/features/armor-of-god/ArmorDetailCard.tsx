@@ -2,11 +2,12 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Text, View } from "react-native";
 
 import { Button, Card } from "@/components/ui";
+import { useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 import { ArmorStatusBadge } from "./ArmorStatusBadge";
 import { ScriptureReference } from "./ScriptureReference";
-import { styles } from "./ArmorDetailCard.styles";
+import { styles as styleSheet } from "./ArmorDetailCard.styles";
 import type { ArmorItem } from "./armorOfGod.types";
 import { getArmorActionLabel } from "./armorOfGod.utils";
 
@@ -15,7 +16,9 @@ interface ArmorDetailCardProps {
   onAction: () => void;
 }
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function ArmorDetailCard({ item, onAction }: ArmorDetailCardProps) {
+  const styles = useThemedStyles(styleSheet);
   const isActionDisabled = item.status === "equipped" || item.status === "locked";
 
   return (

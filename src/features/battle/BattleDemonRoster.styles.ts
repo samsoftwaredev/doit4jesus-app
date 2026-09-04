@@ -1,13 +1,9 @@
-import { StyleSheet } from "react-native";
-
+import { createThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
-
-// Matches Card variant="outlined" background — used for gradient fade endpoints.
-export const CARD_BG = theme.colors.surface.tertiary;
 
 const FADE_WIDTH = theme.spacing[8];
 
-export const styles = StyleSheet.create({
+export const styles = createThemedStyles((theme) => ({
   container: {
     width: "100%",
   },
@@ -67,4 +63,4 @@ export const styles = StyleSheet.create({
     paddingVertical: theme.spacing[1.5],
     textAlign: "center",
   },
-});
+}));

@@ -1,15 +1,16 @@
-import { useWindowDimensions } from "react-native";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { useWindowDimensions, ScrollView, Text, View } from "react-native";
 import Animated, { FadeInUp, useReducedMotion } from "react-native-reanimated";
 
-import { theme } from "@/theme/tokens";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import type { RosaryPrayer } from "@/features/prayer/rosary/types";
 
 interface PrayerCardProps {
   prayer?: RosaryPrayer;
 }
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function PrayerCard({ prayer }: PrayerCardProps) {
+  const styles = useThemedStyles(styleSheet);
   const reduceMotion = useReducedMotion();
   const { fontScale } = useWindowDimensions();
   const hasText = Boolean(prayer?.text.trim());
@@ -38,7 +39,7 @@ export function PrayerCard({ prayer }: PrayerCardProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   card: {
     backgroundColor: theme.rosary.colors.card,
     borderColor: "rgba(230, 186, 100, 0.32)",
@@ -73,4 +74,4 @@ const styles = StyleSheet.create({
     ...theme.typography.bodySmall,
     color: theme.rosary.colors.scripture,
   },
-});
+}));

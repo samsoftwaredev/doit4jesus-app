@@ -1,17 +1,19 @@
 import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, Pressable, RefreshControl, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from "react-native";
 
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { BackHeader } from "@/components/navigation";
 import { PrayerIntentionCard } from "@/features/prayer/intentions/components";
 import { fetchApprovedPrayerIntentions, cacheApprovedPrayerIntentions } from "@/features/prayer/intentions";
 import type { ApprovedPrayerIntention } from "@/features/prayer/intentions";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 /** Renders approved prayer intentions within the shared atmosphere. */
 export function PrayerIntentionsScreen() {
+  const styles = useThemedStyles(styleSheet);
   const router = useRouter();
   const [intentions, setIntentions] = useState<ApprovedPrayerIntention[]>([]);
   const [error, setError] = useState<string>();
@@ -152,7 +154,7 @@ export function PrayerIntentionsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   column: { gap: theme.spacing[2], justifyContent: "space-around" },
   headerAction: {
     alignItems: "center",
@@ -160,7 +162,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: theme.sizes.touchTarget,
   },
-  list: { gap: theme.spacing[2], paddingBottom: theme.spacing[6], paddingHorizontal: theme.spacing[3] },
+  list: {
+    alignSelf: "center",
+    gap: theme.spacing[2],
+    maxWidth: 760,
+    paddingBottom: theme.spacing[6],
+    paddingHorizontal: theme.spacing[3],
+    width: "100%",
+  },
   loadMore: {
     alignItems: "center",
     borderColor: theme.rosary.colors.gold,
@@ -201,4 +210,4 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   stateTitle: { ...theme.typography.bodyMedium, color: theme.colors.text.white, textAlign: "center" },
-});
+}));

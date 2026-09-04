@@ -1,7 +1,7 @@
 import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, Pressable, RefreshControl, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from "react-native";
 
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { BackHeader } from "@/components/navigation";
@@ -11,9 +11,11 @@ import {
   subscribeToMyPrayerIntentionsInvalidation,
 } from "@/features/prayer/intentions";
 import type { MyPrayerIntention, MyPrayerIntentionsStatusFilter } from "@/features/prayer/intentions";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
+import { useAppTheme } from "@/theme/AppThemeProvider";
 import { theme } from "@/theme/tokens";
 
-const filters: ReadonlyArray<{ label: string; value: MyPrayerIntentionsStatusFilter }> = [
+const filters: readonly { label: string; value: MyPrayerIntentionsStatusFilter }[] = [
   { label: "All", value: "all" },
   { label: "Pending review", value: "pending" },
   { label: "Visible", value: "visible" },
@@ -24,6 +26,7 @@ const statusLabels = { pending: "Pending review", visible: "Approved / Visible",
 
 /** Renders the current user's submitted intentions within the shared atmosphere. */
 export function MyPrayerIntentionsScreen() {
+  const styles = useThemedStyles(styleSheet);
   const router = useRouter();
   const [status, setStatus] = useState<MyPrayerIntentionsStatusFilter>("all");
   const [intentions, setIntentions] = useState<MyPrayerIntention[]>([]);
@@ -163,6 +166,7 @@ export function MyPrayerIntentionsScreen() {
   );
 }
 
+/** Renders MyPrayerIntentionCard with styles resolved from the active appearance. */
 function MyPrayerIntentionCard({
   intention,
   onOpenActivity,
@@ -170,7 +174,9 @@ function MyPrayerIntentionCard({
   intention: MyPrayerIntention;
   onOpenActivity: () => void;
 }) {
-  const intentionTheme = getPrayerIntentionTheme(intention.symbol);
+  const styles = useThemedStyles(styleSheet);
+  const { colorScheme } = useAppTheme();
+  const intentionTheme = getPrayerIntentionTheme(intention.symbol, colorScheme);
   return (
     <View style={[styles.card, { borderColor: intentionTheme.surfaceLight }]}>
       <View style={styles.cardTop}>
@@ -208,7 +214,7 @@ function MyPrayerIntentionCard({
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   card: {
     backgroundColor: theme.colors.surface.tertiary,
     borderRadius: theme.radii.lg,
@@ -227,7 +233,14 @@ const styles = StyleSheet.create({
     minHeight: theme.sizes.touchTarget,
   },
   activityButtonText: { ...theme.typography.labelSmall, color: theme.rosary.colors.goldBright },
-  content: { gap: theme.spacing[3], padding: theme.spacing[4], paddingBottom: theme.spacing[7] },
+  content: {
+    alignSelf: "center",
+    gap: theme.spacing[3],
+    maxWidth: 760,
+    padding: theme.spacing[4],
+    paddingBottom: theme.spacing[7],
+    width: "100%",
+  },
   empty: { ...theme.typography.bodyMedium, color: theme.colors.text.secondary, textAlign: "center" },
   errorTitle: { ...theme.typography.bodyMedium, color: theme.colors.text.white, textAlign: "center" },
   filter: {
@@ -270,4 +283,4 @@ const styles = StyleSheet.create({
   safeArea: { backgroundColor: theme.colors.background.primary, flex: 1 },
   state: { alignItems: "center", justifyContent: "center", minHeight: 260, padding: theme.spacing[4] },
   status: { ...theme.typography.caption, textAlign: "right" },
-});
+}));

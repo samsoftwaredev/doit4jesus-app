@@ -1,12 +1,15 @@
 import { Image } from "expo-image";
 import { Text, View } from "react-native";
 
+import { useThemedStyles } from "@/theme/createThemedStyles";
 import { Card } from "@/components/ui";
 
-import { styles } from "./AvatarPanel.styles";
+import { styles as styleSheet } from "./AvatarPanel.styles";
 import type { AvatarPanelProps } from "./AvatarPanel.types";
 
+/** Renders AvatarPanel with styles resolved from the active appearance. */
 export function AvatarPanel({ style, testID }: AvatarPanelProps) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <Card
       accessibilityLabel="Avatar panel, Knight of Faith"

@@ -13,7 +13,7 @@ import { Platform, TextStyle, ViewStyle } from "react-native";
  * - High-contrast white headings
  * - Muted blue-gray secondary text
  */
-export const colors = {
+export const darkColors = {
   background: {
     /**
      * Main application canvas.
@@ -331,7 +331,222 @@ export const colors = {
     primary: "#745424",
     dark: "#47371F",
   },
+
+  atmosphere: {
+    beamEdge: "rgba(255, 223, 157, 0)",
+    beamPrimary: "rgba(255, 226, 169, 0.11)",
+    beamSecondary: "rgba(255, 226, 169, 0.08)",
+    dustCool: "#D6E7D8",
+    dustWarm: "#FFE6A6",
+    haze: "rgba(239, 224, 194, 0.035)",
+    sunInner: "rgba(255, 225, 169, 0.065)",
+    sunMiddle: "rgba(255, 225, 169, 0.04)",
+    sunOuter: "rgba(255, 225, 169, 0.025)",
+  },
+  gradients: {
+    onboarding: ["#071824", "#0A2A3A", "#071824"],
+    landing: ["rgba(3, 11, 18, 0.75)", "rgba(4, 17, 27, 0.88)", "#07131D"],
+    prayerHome: ["#071A2A", "#0B263A", "#071A2A"],
+    prayerImage: ["rgba(7, 26, 42, 0.24)", "rgba(7, 26, 42, 0.86)"],
+    celebrationHero: ["rgba(29, 62, 91, 0.88)", "rgba(10, 30, 48, 0.98)"],
+    intentionImage: ["rgba(7, 26, 42, 0.06)", "rgba(7, 26, 42, 0.78)"],
+    garden: ["#071B2A", "#0A2C3A", "#071B2A"],
+    holyProgress: ["rgba(23, 53, 73, 0.98)", "rgba(9, 25, 38, 0.98)"],
+    mysteryImage: ["rgba(3, 13, 24, 0.06)", "rgba(3, 13, 24, 0.42)", "rgba(3, 13, 24, 0.9)"],
+    prayButton: ["#276EEA", "#154FAE"],
+    gardenHero: ["#153F4C", "#0F3144", "#0A2338"],
+    gardenHeroImage: ["transparent", "rgba(10, 35, 56, 0.94)"],
+    leaderboard: ["#142B3E", "#091923"],
+    conscience: ["#1D203F", "#111B32", "#24213F"],
+    dailyRosary: ["#132C42", "#0B1A26"],
+    dailyRosaryComplete: ["#183D35", "#0D2530"],
+    dailyRosaryReset: ["#233044", "#111E2D"],
+    countdownFinal: ["#573129", "#25191C"],
+    countdownHour: ["#614321", "#261C16"],
+    countdownDefault: ["#4B3827", "#182331"],
+    gardenRays: ["rgba(230, 186, 100, 0.26)", "transparent"],
+  },
 } as const;
+
+type WidenThemeValues<T> = {
+  readonly [Key in keyof T]: T[Key] extends string ? string : WidenThemeValues<T[Key]>;
+};
+
+export type ThemeColors = WidenThemeValues<typeof darkColors>;
+
+/** Warm devotional palette used when light appearance is active. */
+export const lightColors = {
+  background: {
+    primary: "#F7F1E6",
+    secondary: "#F1E8D9",
+    elevated: "#FFFDF8",
+    deep: "#EDE2D1",
+    overlay: "rgba(19, 37, 54, 0.48)",
+  },
+  surface: {
+    primary: "#FFFDF8",
+    secondary: "#FFF9F0",
+    tertiary: "#EDE2D1",
+    sidebar: "#F1E8D9",
+    navigation: "#FFF9F0",
+    navy: "rgba(255, 253, 248, 0.94)",
+    navyDeep: "#EDE2D1",
+    green: "#DDECE3",
+    teal: "#DCECE8",
+    burgundy: "#F5E0E1",
+    purple: "#EAE4F2",
+    glass: "rgba(255, 253, 248, 0.92)",
+  },
+  brand: {
+    primary: "#2F7A59",
+    primaryLight: "#2F7A59",
+    primaryDark: "#20583F",
+    secondary: "#2D668C",
+    secondaryLight: "#3E7699",
+    secondaryDark: "#214E6B",
+  },
+  accent: {
+    green: "#2F7A59",
+    greenLight: "#3B8766",
+    greenDark: "#20583F",
+    teal: "#28746B",
+    tealLight: "#397F77",
+    tealDark: "#1D554F",
+    blue: "#2D668C",
+    blueLight: "#3E7699",
+    blueDark: "#214E6B",
+    cyan: "#2B6E86",
+    red: "#A43B46",
+    redLight: "#B44B55",
+    redDark: "#762A33",
+    amber: "#8A6425",
+    amberLight: "#9A732F",
+    amberDark: "#654817",
+    purple: "#66518B",
+    purpleLight: "#76639A",
+    purpleDark: "#493967",
+  },
+  semantic: {
+    success: "#2F7A59",
+    successSurface: "#DDECE3",
+    successBorder: "#2F7A59",
+    warning: "#8A6425",
+    warningSurface: "#F2E5C8",
+    warningBorder: "#8A6425",
+    danger: "#A43B46",
+    dangerSurface: "#F5E0E1",
+    dangerBorder: "#A43B46",
+    info: "#2D668C",
+    infoSurface: "#DDE9F0",
+    infoBorder: "#2D668C",
+    disabled: "#7D898F",
+  },
+  text: {
+    primary: "#132536",
+    secondary: "#405261",
+    muted: "#647482",
+    subtle: "#65737E",
+    inverse: "#FFFDF8",
+    white: "#FFFFFF",
+    disabled: "#737F86",
+    link: "#76531F",
+    success: "#205E43",
+    warning: "#684814",
+    danger: "#8B2F39",
+    info: "#235B7E",
+  },
+  border: {
+    subtle: "#E5D8C4",
+    default: "#D8C8AF",
+    strong: "#BFA986",
+    interactive: "#B69B72",
+    focus: "#2F7A59",
+    success: "#5D8C72",
+    danger: "#B65E66",
+    warning: "#A98449",
+    info: "#5A819B",
+  },
+  icon: {
+    primary: "#243847",
+    secondary: "#4F606C",
+    muted: "#6B7A84",
+    active: "#2F7A59",
+    inverse: "#FFFDF8",
+  },
+  chart: {
+    green: "#2F7A59",
+    amber: "#8A6425",
+    red: "#A43B46",
+    blue: "#2D668C",
+    grid: "#D8C8AF",
+    axis: "#647482",
+  },
+  badge: {
+    successBackground: "#DDECE3",
+    successText: "#205E43",
+    warningBackground: "#F2E5C8",
+    warningText: "#684814",
+    infoBackground: "#DDE9F0",
+    infoText: "#235B7E",
+    dangerBackground: "#F5E0E1",
+    dangerText: "#8B2F39",
+    neutralBackground: "#E8E0D4",
+    neutralText: "#405261",
+  },
+  transparent: "transparent",
+  black: "#000000",
+  white: "#FFFFFF",
+  gold: {
+    pale: "#76531F",
+    light: "#8A6425",
+    primary: "#8A6425",
+    strong: "#76531F",
+    dark: "#5F4319",
+    shadow: "#D8C8AF",
+  },
+  bronze: {
+    light: "#9A7847",
+    primary: "#765A31",
+    dark: "#594220",
+  },
+  atmosphere: {
+    beamEdge: "rgba(138, 100, 37, 0)",
+    beamPrimary: "rgba(138, 100, 37, 0.045)",
+    beamSecondary: "rgba(138, 100, 37, 0.03)",
+    dustCool: "rgba(19, 37, 54, 0.42)",
+    dustWarm: "rgba(118, 83, 31, 0.5)",
+    haze: "rgba(138, 100, 37, 0.025)",
+    sunInner: "rgba(230, 186, 100, 0.04)",
+    sunMiddle: "rgba(230, 186, 100, 0.025)",
+    sunOuter: "rgba(230, 186, 100, 0.015)",
+  },
+  gradients: {
+    onboarding: ["#F7F1E6", "#F1E8D9", "#F7F1E6"],
+    landing: ["rgba(247, 241, 230, 0.72)", "rgba(247, 241, 230, 0.9)", "#F7F1E6"],
+    prayerHome: ["#F7F1E6", "#EDE2D1", "#F7F1E6"],
+    prayerImage: ["rgba(255, 253, 248, 0.18)", "rgba(255, 253, 248, 0.9)"],
+    celebrationHero: ["rgba(255, 249, 240, 0.92)", "rgba(237, 226, 209, 0.98)"],
+    intentionImage: ["rgba(255, 253, 248, 0.12)", "rgba(255, 253, 248, 0.88)"],
+    garden: ["#F7F1E6", "#E8EDDF", "#F7F1E6"],
+    holyProgress: ["rgba(255, 253, 248, 0.98)", "rgba(237, 226, 209, 0.98)"],
+    mysteryImage: ["rgba(255, 253, 248, 0.04)", "rgba(255, 253, 248, 0.38)", "rgba(255, 253, 248, 0.92)"],
+    prayButton: ["#3B8766", "#20583F"],
+    gardenHero: ["#E3EEE6", "#DDECE3", "#CFE2D5"],
+    gardenHeroImage: ["transparent", "rgba(221, 236, 227, 0.96)"],
+    leaderboard: ["#FFFDF8", "#EDE2D1"],
+    conscience: ["#F1ECF6", "#FFFDF8", "#EAE4F2"],
+    dailyRosary: ["#FFFDF8", "#EDE2D1"],
+    dailyRosaryComplete: ["#E3EEE6", "#DDECE3"],
+    dailyRosaryReset: ["#F1E8D9", "#EDE2D1"],
+    countdownFinal: ["#F5E0E1", "#F7E9E9"],
+    countdownHour: ["#F2E5C8", "#F8EDD8"],
+    countdownDefault: ["#F1E8D9", "#E8E0D4"],
+    gardenRays: ["rgba(138, 100, 37, 0.12)", "transparent"],
+  },
+} as const satisfies ThemeColors;
+
+/** Backward-compatible name for the unchanged dark palette. */
+export const colors = darkColors;
 
 export const spacing = {
   0: 0,
@@ -379,20 +594,6 @@ export const borderWidths = {
   medium: 2,
   thick: 3,
 } as const;
-
-/**
- * React Native's StyleSheet.hairlineWidth cannot be accessed before importing
- * StyleSheet. A stable fractional value works predictably for tokens.
- */
-function getHairlineWidth(): number {
-  return Platform.select({
-    ios: 0.5,
-    android: 1,
-    default: 1,
-  });
-}
-
-const StyleSheetHairlineWidth = getHairlineWidth();
 
 export const fontFamilies = {
   devotional: Platform.select({
@@ -598,6 +799,23 @@ export const typography = {
   },
 } as const satisfies Record<string, TextStyle>;
 
+const lightTypography = {
+  displayLarge: { ...typography.displayLarge, color: lightColors.text.primary },
+  displayMedium: { ...typography.displayMedium, color: lightColors.text.primary },
+  heading1: { ...typography.heading1, color: lightColors.text.primary },
+  heading2: { ...typography.heading2, color: lightColors.text.primary },
+  heading3: { ...typography.heading3, color: lightColors.text.primary },
+  bodyLarge: { ...typography.bodyLarge, color: lightColors.text.primary },
+  body: { ...typography.body, color: lightColors.text.primary },
+  bodyMedium: { ...typography.bodyMedium, color: lightColors.text.primary },
+  bodySmall: { ...typography.bodySmall, color: lightColors.text.secondary },
+  label: { ...typography.label, color: lightColors.text.secondary },
+  labelSmall: { ...typography.labelSmall, color: lightColors.text.secondary },
+  button: { ...typography.button, color: lightColors.text.primary },
+  caption: { ...typography.caption, color: lightColors.text.muted },
+  metric: { ...typography.metric, color: lightColors.text.primary },
+} as const satisfies Record<string, TextStyle>;
+
 export const shadows = {
   none: {} satisfies ViewStyle,
 
@@ -670,6 +888,60 @@ export const shadows = {
   }),
 } as const;
 
+const lightShadows = {
+  none: {} satisfies ViewStyle,
+  small: Platform.select<ViewStyle>({
+    ios: {
+      shadowColor: "#594220",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+    },
+    android: { elevation: 2 },
+    default: {},
+  }),
+  medium: Platform.select<ViewStyle>({
+    ios: {
+      shadowColor: "#594220",
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.14,
+      shadowRadius: 8,
+    },
+    android: { elevation: 5 },
+    default: {},
+  }),
+  large: Platform.select<ViewStyle>({
+    ios: {
+      shadowColor: "#594220",
+      shadowOffset: { width: 0, height: 8 },
+      shadowOpacity: 0.18,
+      shadowRadius: 16,
+    },
+    android: { elevation: 10 },
+    default: {},
+  }),
+  focus: Platform.select<ViewStyle>({
+    ios: {
+      shadowColor: lightColors.brand.primary,
+      shadowOffset: { width: 0, height: 0 },
+      shadowOpacity: 0.2,
+      shadowRadius: 6,
+    },
+    android: { elevation: 4 },
+    default: {},
+  }),
+  goldGlow: Platform.select<ViewStyle>({
+    ios: {
+      shadowColor: lightColors.gold.primary,
+      shadowOffset: { width: 0, height: 0 },
+      shadowOpacity: 0.14,
+      shadowRadius: 6,
+    },
+    android: { elevation: 4 },
+    default: {},
+  }),
+} as const;
+
 export const opacity = {
   invisible: 0,
   disabled: 0.42,
@@ -701,7 +973,7 @@ export const sizes = {
   badge: 20,
 
   headerHeight: 72,
-  sidebarWidth: 260,
+  sidebarWidth: 240,
   sidebarCollapsedWidth: 72,
   bottomNavigationHeight: 68,
 
@@ -756,6 +1028,40 @@ export const rosaryTokens = {
   },
 } as const;
 
+const lightRosaryTokens = {
+  colors: {
+    canvas: "#F7F1E6",
+    canvasLight: "#FFFDF8",
+    card: "rgba(255, 253, 248, 0.96)",
+    cardInset: "#EDE2D1",
+    pearl: "#F5F0E5",
+    pearlShadow: "#A89D8B",
+    gold: "#8A6425",
+    goldBright: "#76531F",
+    goldMuted: "#9B8057",
+    chain: "#8A6425",
+    blueMuted: "#557083",
+    scripture: "#405261",
+  },
+  borderWidths: rosaryTokens.borderWidths,
+  glow: {
+    ...rosaryTokens.glow,
+    opacity: 0.2,
+  },
+  shadows: {
+    activeBead: Platform.select<ViewStyle>({
+      ios: {
+        shadowColor: "#8A6425",
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.3,
+        shadowRadius: 10,
+      },
+      android: { elevation: 7 },
+      default: {},
+    }),
+  },
+} as const;
+
 export const zIndex = {
   base: 0,
   card: 10,
@@ -768,8 +1074,7 @@ export const zIndex = {
   tooltip: 700,
 } as const;
 
-export const theme = {
-  colors,
+const structuralTheme = {
   spacing,
   radii,
   borderWidths,
@@ -778,14 +1083,50 @@ export const theme = {
   lineHeights,
   letterSpacing,
   fontWeights,
-  typography,
-  shadows,
   opacity,
   sizes,
   breakpoints,
-  rosary: rosaryTokens,
   zIndex,
 } as const;
 
-export type AppTheme = typeof theme;
-export type ThemeColors = typeof colors;
+/** The existing visual baseline, preserved byte-for-byte for dark appearance. */
+export const darkTheme = {
+  ...structuralTheme,
+  colors: darkColors,
+  rosary: rosaryTokens,
+  shadows,
+  typography,
+} as const;
+
+/** Warm ivory, navy, green, and gold palette for light appearance. */
+export const lightTheme = {
+  ...structuralTheme,
+  colors: lightColors,
+  rosary: lightRosaryTokens,
+  shadows: lightShadows,
+  typography: lightTypography,
+} as const;
+
+export type AppTheme = typeof darkTheme | typeof lightTheme;
+
+let activeTheme: AppTheme = darkTheme;
+
+/** Updates the compatibility palette used by legacy modules during their incremental migration. */
+export function setActiveAppTheme(nextTheme: AppTheme): void {
+  activeTheme = nextTheme;
+}
+
+/** Returns the currently resolved palette for cached theme-aware styles. */
+export function getActiveAppTheme(): AppTheme {
+  return activeTheme;
+}
+
+/**
+ * Backward-compatible live token view. New components should use useAppTheme.
+ * Structural values stay shared while color-dependent values follow the provider.
+ */
+export const theme = new Proxy(darkTheme, {
+  get(_target, property: keyof AppTheme) {
+    return activeTheme[property];
+  },
+}) as AppTheme;

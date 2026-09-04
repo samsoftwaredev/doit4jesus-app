@@ -1,9 +1,9 @@
 import type { ComponentProps, PropsWithChildren } from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { SacredAtmosphere } from "@/components/ui/SacredAtmosphere";
-import { theme } from "@/theme/tokens";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 
 type AtmosphericSafeAreaViewProps = PropsWithChildren<
   ComponentProps<typeof SafeAreaView> & {
@@ -25,6 +25,7 @@ export function AtmosphericSafeAreaView({
   style,
   ...safeAreaProps
 }: AtmosphericSafeAreaViewProps) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <SafeAreaView {...safeAreaProps} style={[style, styles.safeArea]}>
       {includeAtmosphere ? <SacredAtmosphere /> : null}
@@ -34,7 +35,7 @@ export function AtmosphericSafeAreaView({
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   safeArea: {
     position: "relative",
   },
@@ -42,4 +43,4 @@ const styles = StyleSheet.create({
     flex: 1,
     zIndex: theme.zIndex.card,
   },
-});
+}));

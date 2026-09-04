@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Image as ExpoImage } from "expo-image";
 import { useWindowDimensions } from "react-native";
 
+import { useAppTheme } from "@/theme/AppThemeProvider";
 import { theme } from "@/theme/tokens";
 
 import type { ResponsiveImageProps, ResponsiveImageSource } from "./ResponsiveImage.types";
@@ -28,6 +29,7 @@ function selectImageSource({
   return mobileSource;
 }
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function ResponsiveImage({
   mobileSource,
   tabletSource,
@@ -37,6 +39,7 @@ export function ResponsiveImage({
   onLoad,
   ...imageProps
 }: ResponsiveImageProps) {
+  useAppTheme();
   const { width } = useWindowDimensions();
   const source = selectImageSource({
     width,

@@ -2,10 +2,11 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Text, View } from "react-native";
 
 import { Card } from "@/components/ui";
+import { useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 import { VirtueProgressBar } from "./VirtueProgressBar";
-import { styles } from "./VirtuesPanel.styles";
+import { styles as styleSheet } from "./VirtuesPanel.styles";
 import type { VirtueScore, VirtuesPanelProps } from "./virtues.types";
 
 const defaultVirtues = [
@@ -21,8 +22,9 @@ const defaultVirtues = [
   { id: "wisdom", label: "Wisdom", value: 80, tone: "wisdom", icon: require("../../assets/virtues/bible.png") },
   { id: "charity", label: "Charity", value: 88, tone: "charity", icon: require("../../assets/virtues/heart.png") },
   { id: "purity", label: "Purity", value: 92, tone: "purity", icon: require("../../assets/virtues/peace.png") },
-] as const satisfies ReadonlyArray<VirtueScore>;
+] as const satisfies readonly VirtueScore[];
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function VirtuesPanel({
   virtues = defaultVirtues,
   maxValue = 100,
@@ -30,6 +32,7 @@ export function VirtuesPanel({
   style,
   testID,
 }: VirtuesPanelProps) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <Card
       accessibilityLabel="Virtues"

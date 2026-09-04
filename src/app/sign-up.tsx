@@ -12,8 +12,11 @@ import {
   useAuth,
 } from "@/features/auth";
 import { supabase } from "@/lib/supabase";
+import { useThemedStyles } from "@/theme/createThemedStyles";
 
+/** Renders account creation controls with appearance-aware shared authentication styles. */
 export default function SignUpScreen() {
+  const styles = useThemedStyles(authScreenStyles);
   const { configurationError } = useAuth();
   const [email, setEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState<string>();
@@ -70,7 +73,7 @@ export default function SignUpScreen() {
         <AuthMessage>{configurationError ?? errorMessage ?? ""}</AuthMessage>
       ) : null}
       {successMessage ? <AuthMessage tone="success">{successMessage}</AuthMessage> : null}
-      <View style={authScreenStyles.actions}>
+      <View style={styles.actions}>
         <Button
           disabled={!email.trim() || !password || Boolean(configurationError)}
           fullWidth
@@ -80,7 +83,7 @@ export default function SignUpScreen() {
           Create account
         </Button>
       </View>
-      <Link href="/sign-in" style={authScreenStyles.link}>
+      <Link href="/sign-in" style={styles.link}>
         Already have an account? Sign in
       </Link>
     </AuthScreen>

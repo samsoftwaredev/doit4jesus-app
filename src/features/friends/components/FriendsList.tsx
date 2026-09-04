@@ -1,7 +1,8 @@
 import Feather from "@expo/vector-icons/Feather";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
 import { Card } from "@/components/ui";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 import type { FriendSummary } from "../friends.types";
@@ -12,7 +13,9 @@ type FriendsListProps = {
   onPressFriend: (friendId: string) => void;
 };
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function FriendsList({ friends, onPressFriend }: FriendsListProps) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <Card padding="none" title="Your friends">
       <View style={styles.content}>
@@ -49,7 +52,7 @@ export function FriendsList({ friends, onPressFriend }: FriendsListProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   content: {
     paddingHorizontal: theme.spacing[4],
   },
@@ -89,4 +92,4 @@ const styles = StyleSheet.create({
     ...theme.typography.bodyMedium,
     color: theme.colors.text.warning,
   },
-});
+}));

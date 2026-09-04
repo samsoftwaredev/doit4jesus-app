@@ -1,15 +1,18 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Text, View } from "react-native";
 
+import { useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
-import { styles } from "./ScriptureReference.styles";
+import { styles as styleSheet } from "./ScriptureReference.styles";
 
 interface ScriptureReferenceProps {
   reference: string;
 }
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function ScriptureReference({ reference }: ScriptureReferenceProps) {
+  const styles = useThemedStyles(styleSheet);
   return (
     <View accessibilityLabel={`Scripture reference: ${reference}`} style={styles.container}>
       <MaterialCommunityIcons

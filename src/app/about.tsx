@@ -1,15 +1,19 @@
 import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
 import { ScreenShell } from "@/components/screen-shell";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export default function AboutScreen() {
+  const styles = useThemedStyles(styleSheet);
   const router = useRouter();
 
   return (
     <ScreenShell
+      contentContainerStyle={styles.content}
       subtitle="A companion for daily faithfulness."
       title="About Do It for Jesus"
       headerAccessory={
@@ -38,7 +42,8 @@ export default function AboutScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
+  content: { maxWidth: 700 },
   backButton: {
     alignItems: "center",
     height: theme.sizes.touchTarget,
@@ -57,4 +62,4 @@ const styles = StyleSheet.create({
     color: theme.colors.text.secondary,
     lineHeight: theme.lineHeights.lg,
   },
-});
+}));

@@ -1,9 +1,10 @@
 import Feather from "@expo/vector-icons/Feather";
 import { Image } from "expo-image";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import Animated, { FadeIn, useReducedMotion } from "react-native-reanimated";
 
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 import type { RosaryMystery } from "@/features/prayer/rosary/types";
 
@@ -15,7 +16,9 @@ interface MysteryCardProps {
 /** A bundled image avoids validating a remote or malformed BlurHash during initial render. */
 const devotionalPlaceholder = require("../../../../assets/flowers/whiteLily.png");
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function MysteryCard({ mystery, imageHeight }: MysteryCardProps) {
+  const styles = useThemedStyles(styleSheet);
   const reduceMotion = useReducedMotion();
   const [imageFailed, setImageFailed] = useState(false);
 
@@ -63,7 +66,7 @@ export function MysteryCard({ mystery, imageHeight }: MysteryCardProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   card: {
     backgroundColor: theme.rosary.colors.card,
     borderColor: "rgba(230, 186, 100, 0.48)",
@@ -122,4 +125,4 @@ const styles = StyleSheet.create({
     color: theme.rosary.colors.scripture,
     marginTop: theme.spacing[1],
   },
-});
+}));

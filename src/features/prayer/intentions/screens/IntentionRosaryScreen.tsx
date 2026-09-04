@@ -10,6 +10,8 @@ import { BackHeader } from "@/components/navigation";
 import { OrnateCard } from "@/features/prayer/components";
 import { PrayerIntentionAvatar } from "@/features/prayer/intentions/components";
 import { getPrayerIntentionTheme, getCachedApprovedPrayerIntention } from "@/features/prayer/intentions";
+import { useAppTheme } from "@/theme/AppThemeProvider";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 function firstString(value: string | string[] | undefined) {
@@ -18,11 +20,13 @@ function firstString(value: string | string[] | undefined) {
 
 /** Renders a rosary invitation for one prayer intention within the shared atmosphere. */
 export function IntentionRosaryScreen() {
+  const styles = useThemedStyles(styleSheet);
+  const { colorScheme } = useAppTheme();
   const router = useRouter();
   const { intentionId: rawIntentionId } = useLocalSearchParams<{ intentionId?: string | string[] }>();
   const intentionId = firstString(rawIntentionId);
   const intention = getCachedApprovedPrayerIntention(intentionId);
-  const intentionTheme = getPrayerIntentionTheme(intention?.symbol);
+  const intentionTheme = getPrayerIntentionTheme(intention?.symbol, colorScheme);
 
   if (!intention) {
     return (
@@ -74,10 +78,7 @@ export function IntentionRosaryScreen() {
                 source={require("../../../../assets/saints/blessed-virgin-mary.png")}
                 style={styles.art}
               />
-              <LinearGradient
-                colors={["rgba(7, 26, 42, 0.06)", "rgba(7, 26, 42, 0.78)"]}
-                style={StyleSheet.absoluteFill}
-              />
+              <LinearGradient colors={theme.colors.gradients.intentionImage} style={StyleSheet.absoluteFill} />
               <View style={styles.artSymbol}>
                 <Feather
                   accessible={false}
@@ -110,7 +111,7 @@ export function IntentionRosaryScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   action: {
     alignItems: "center",
     backgroundColor: theme.rosary.colors.gold,
@@ -191,4 +192,4 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   unavailableTitle: { ...theme.typography.heading3, color: theme.colors.text.white, textAlign: "center" },
-});
+}));

@@ -1,7 +1,8 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 import type { DailyLiturgyViewModel } from "../liturgy.types";
@@ -16,7 +17,9 @@ function displaySeason(value: string) {
   return value.replaceAll("_", " ");
 }
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function LiturgicalChipList({ metadata, season }: LiturgicalChipListProps) {
+  const styles = useThemedStyles(styleSheet);
   const [expanded, setExpanded] = useState(false);
   const chips = [
     { icon: "leaf" as const, label: "Season", value: displaySeason(season) },
@@ -58,10 +61,10 @@ export function LiturgicalChipList({ metadata, season }: LiturgicalChipListProps
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   chips: { flexDirection: "row", flexWrap: "wrap", gap: theme.spacing[2], marginTop: theme.spacing[2] },
   pressed: { opacity: theme.opacity.muted },
   section: { marginTop: theme.spacing[2] },
   title: { ...theme.typography.label, color: theme.colors.text.secondary },
   toggle: { alignItems: "center", flexDirection: "row", justifyContent: "space-between", minHeight: 44 },
-});
+}));

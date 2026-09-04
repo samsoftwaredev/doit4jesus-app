@@ -1,13 +1,16 @@
+import { useThemedStyles } from "@/theme/createThemedStyles";
 import { Text, View } from "react-native";
 
-import { styles } from "./ArmorProgress.styles";
+import { styles as styleSheet } from "./ArmorProgress.styles";
 
 interface ArmorProgressProps {
   equippedCount: number;
   totalCount: number;
 }
 
+/** Renders ArmorProgress with styles resolved from the active appearance. */
 export function ArmorProgress({ equippedCount, totalCount }: ArmorProgressProps) {
+  const styles = useThemedStyles(styleSheet);
   const safeTotal = Math.max(totalCount, 1);
   const progress = Math.min(Math.max(equippedCount / safeTotal, 0), 1);
   const label = `Armor Equipped: ${equippedCount} of ${totalCount}`;

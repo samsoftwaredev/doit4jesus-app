@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { BackHeader } from "@/components/navigation";
@@ -7,10 +7,11 @@ import { Card } from "@/components/ui";
 import { CompareStatsRow, FriendsState } from "@/features/friends/components";
 import { formatPoints } from "@/features/friends/components/LeaderboardEntries";
 import { useFriendsComparison } from "@/features/friends/friends.hooks";
-import { theme } from "@/theme/tokens";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 
 /** Renders a side-by-side comparison with a friend within the shared atmosphere. */
 export function CompareStatsScreen({ friendId }: { friendId: string | undefined }) {
+  const styles = useThemedStyles(styleSheet);
   const router = useRouter();
   const comparison = useFriendsComparison(friendId);
 
@@ -90,11 +91,11 @@ function getEncouragement(userPoints: number, friendPoints: number): string {
   return `${formatPoints(difference)} points to catch up. Every prayer moves you forward.`;
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   content: {
     alignSelf: "center",
     gap: theme.spacing[4],
-    maxWidth: theme.sizes.contentMaxWidth,
+    maxWidth: 760,
     paddingBottom: theme.spacing[8],
     paddingHorizontal: theme.spacing[4],
     width: "100%",
@@ -130,4 +131,4 @@ const styles = StyleSheet.create({
     color: theme.colors.text.muted,
     marginHorizontal: theme.spacing[2],
   },
-});
+}));

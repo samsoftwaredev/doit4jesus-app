@@ -1,9 +1,10 @@
 import Feather from "@expo/vector-icons/Feather";
 import { Image } from "expo-image";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
 import type { CurrentUserProfile } from "@/features/profile";
 import { findSaintAvatar, saintAvatars } from "@/features/profile/saints";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 type ProfileHeroCardProps = {
@@ -12,7 +13,9 @@ type ProfileHeroCardProps = {
   profile: CurrentUserProfile;
 };
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function ProfileHeroCard({ location, onAvatarPress, profile }: ProfileHeroCardProps) {
+  const styles = useThemedStyles(styleSheet);
   const selectedSaint = findSaintAvatar(profile.saintAvatarId);
   const avatarSource = selectedSaint?.image ?? profile.avatarUrl ?? saintAvatars[8].image;
 
@@ -39,9 +42,7 @@ export function ProfileHeroCard({ location, onAvatarPress, profile }: ProfileHer
       </Text>
       <View style={styles.locationRow}>
         <Feather accessible={false} color={theme.colors.gold.pale} name="map-pin" size={theme.sizes.iconXs} />
-        <Text numberOfLines={1} style={styles.location}>
-          {location}
-        </Text>
+        <Text style={styles.location}>{location}</Text>
       </View>
       <Pressable
         accessibilityLabel="Change profile avatar"
@@ -55,7 +56,7 @@ export function ProfileHeroCard({ location, onAvatarPress, profile }: ProfileHer
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   avatar: {
     height: "100%",
     width: "100%",
@@ -140,4 +141,4 @@ const styles = StyleSheet.create({
   pressed: {
     opacity: theme.opacity.pressed,
   },
-});
+}));

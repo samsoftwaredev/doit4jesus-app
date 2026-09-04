@@ -2,7 +2,7 @@ import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import { Pressable, ScrollView, Text, useWindowDimensions, View } from "react-native";
 
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { SacredAtmosphere } from "@/components/ui";
@@ -16,10 +16,12 @@ import {
   PrayTodayButton,
 } from "@/features/prayer/rosary/garden/components";
 import { useRosaryGarden } from "@/features/prayer/rosary/garden/useRosaryGarden";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 /** Renders the rosary garden and its progress within the shared atmosphere. */
 export function RosaryGardenScreen() {
+  const styles = useThemedStyles(styleSheet);
   const router = useRouter();
   const { width } = useWindowDimensions();
   const isTablet = width >= theme.breakpoints.tablet;
@@ -28,7 +30,7 @@ export function RosaryGardenScreen() {
   return (
     <AtmosphericSafeAreaView edges={["top", "bottom"]} includeAtmosphere={false} style={styles.safeArea}>
       <LinearGradient
-        colors={["#071B2A", "#0A2C3A", "#071B2A"]}
+        colors={theme.colors.gradients.garden}
         end={{ x: 1, y: 1 }}
         start={{ x: 0, y: 0 }}
         style={styles.background}
@@ -93,7 +95,7 @@ export function RosaryGardenScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   safeArea: { backgroundColor: "#071B2A", flex: 1 },
   background: { flex: 1, position: "relative" },
   atmosphereContent: { zIndex: theme.zIndex.card },
@@ -153,4 +155,4 @@ const styles = StyleSheet.create({
   calendarWrap: { flex: 1, minWidth: 0 },
   quoteWrap: { width: "100%" },
   tabletQuoteWrap: { flex: 0.38, minWidth: 220 },
-});
+}));

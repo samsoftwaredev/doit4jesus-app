@@ -1,7 +1,8 @@
 import Feather from "@expo/vector-icons/Feather";
 import { useEffect } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 type ProfileToastProps = {
@@ -9,7 +10,9 @@ type ProfileToastProps = {
   onDismiss: () => void;
 };
 
+/** Renders this feature with colors from the currently resolved app appearance. */
 export function ProfileToast({ message, onDismiss }: ProfileToastProps) {
+  const styles = useThemedStyles(styleSheet);
   useEffect(() => {
     if (!message) return;
 
@@ -41,7 +44,7 @@ export function ProfileToast({ message, onDismiss }: ProfileToastProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const styleSheet = createThemedStyles((theme) => ({
   dismiss: {
     alignItems: "center",
     height: theme.sizes.touchTarget,
@@ -65,4 +68,4 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing[4],
     paddingLeft: theme.spacing[3],
   },
-});
+}));
