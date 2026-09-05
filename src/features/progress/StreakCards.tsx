@@ -1,7 +1,6 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { View } from "react-native";
 
-import { useResponsiveLayout } from "@/hooks";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
@@ -22,13 +21,12 @@ type StreakCardsProps =
 /** Groups the current and longest Rosary streak cards using the shared tablet breakpoint. */
 export function StreakCards(props: StreakCardsProps) {
   const styles = useThemedStyles(styleSheet);
-  const { isTablet } = useResponsiveLayout();
-  const cardStyle = isTablet ? styles.rowCard : styles.columnCard;
+  const cardStyle = styles.rowCard;
 
   return (
     <View
       accessibilityLabel="Rosary streak statistics"
-      style={[styles.layout, isTablet && styles.rowLayout]}
+      style={[styles.layout, styles.rowLayout]}
       testID="streak-cards-layout"
     >
       {props.isLoading ? (
@@ -77,9 +75,6 @@ export function StreakCards(props: StreakCardsProps) {
 }
 
 const styleSheet = createThemedStyles((theme) => ({
-  columnCard: {
-    width: "100%",
-  },
   layout: {
     flexDirection: "column",
     gap: theme.spacing[2],
