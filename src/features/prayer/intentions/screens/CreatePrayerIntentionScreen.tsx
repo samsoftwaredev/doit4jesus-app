@@ -50,16 +50,17 @@ export function CreatePrayerIntentionScreen() {
 
   return (
     <AtmosphericSafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
-      <BackHeader onBack={() => router.back()} title="Share an Intention" />
+      <BackHeader
+        description="Share a prayer intention with the community. It will be reviewed before it becomes public."
+        onBack={() => router.back()}
+        title="Share an Intention"
+      />
       <ScrollView
         automaticallyAdjustKeyboardInsets
         contentContainerStyle={styles.content}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.intro}>
-          Share a prayer intention with the community. It will be reviewed before it becomes public.
-        </Text>
         <Field label="Title" value={title} onChangeText={setTitle} maxLength={120} placeholder="Praying for…" />
         <Field
           label="Description"

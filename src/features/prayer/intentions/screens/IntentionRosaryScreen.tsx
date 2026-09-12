@@ -31,7 +31,11 @@ export function IntentionRosaryScreen() {
   if (!intention) {
     return (
       <AtmosphericSafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
-        <BackHeader onBack={() => router.back()} title="Prayer Intention" />
+        <BackHeader
+          description="Offer a Rosary for this community intention."
+          onBack={() => router.back()}
+          title="Prayer Intention"
+        />
         <View style={styles.unavailable}>
           <Text style={styles.unavailableTitle}>This intention is no longer loaded.</Text>
           <Text style={styles.unavailableCopy}>Return to the public prayer intentions list and choose it again.</Text>
@@ -55,7 +59,11 @@ export function IntentionRosaryScreen() {
       >
         <SacredAtmosphere />
         <View style={styles.atmosphereContent}>
-          <BackHeader onBack={() => router.back()} title="Prayer Intention" />
+          <BackHeader
+            description="Offer a Rosary for this community intention."
+            onBack={() => router.back()}
+            title="Prayer Intention"
+          />
           <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
             <View style={styles.creatorBlock}>
               <PrayerIntentionAvatar

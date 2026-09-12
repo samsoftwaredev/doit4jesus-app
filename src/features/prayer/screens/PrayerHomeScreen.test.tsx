@@ -3,6 +3,8 @@ import { Pressable, Text, View } from "react-native";
 
 import { PrayerScreen } from "./PrayerHomeScreen";
 
+const mockPush = jest.fn();
+
 function MockPrayersByOthers({
   intentions,
   isLoadingMore,
@@ -28,6 +30,10 @@ function MockPrayersByOthers({
 jest.mock("@/features/prayer/intentions", () => ({
   cacheApprovedPrayerIntentions: jest.fn(),
   fetchApprovedPrayerIntentions: jest.fn(),
+}));
+
+jest.mock("expo-router", () => ({
+  useRouter: () => ({ push: mockPush }),
 }));
 
 jest.mock("@/features/prayer/components", () => ({
@@ -60,6 +66,20 @@ const secondIntention = {
 describe("PrayerScreen", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  it("renders the shared prayer heading and opens the Rosary Garden", async () => {
+    fetchApprovedPrayerIntentions.mockResolvedValue({
+      data: [],
+      meta: { hasMore: false, limit: 10, nextOffset: null, offset: 0 },
+    });
+
+    await render(<PrayerScreen />);
+
+    expect(screen.getByRole("header", { name: "Prayer" })).toBeTruthy();
+    expect(screen.getByText("Pray the Rosary and lift up the intentions of others.")).toBeTruthy();
+    await fireEvent.press(screen.getByLabelText("Open Rosary Garden"));
+    expect(mockPush).toHaveBeenCalledWith("/rosary-garden");
   });
 
   it("loads successive intention pages for the horizontal home carousel", async () => {

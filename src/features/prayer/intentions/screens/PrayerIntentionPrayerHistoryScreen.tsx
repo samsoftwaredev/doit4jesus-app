@@ -49,7 +49,11 @@ export function PrayerIntentionPrayerHistoryScreen() {
 
   return (
     <AtmosphericSafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
-      <BackHeader onBack={() => router.back()} title="Prayer Activity" />
+      <BackHeader
+        description="See how the community has prayed for this intention."
+        onBack={() => router.back()}
+        title="Prayer Activity"
+      />
       {isLoading ? (
         <View style={styles.state}>
           <ActivityIndicator color={theme.rosary.colors.gold} />

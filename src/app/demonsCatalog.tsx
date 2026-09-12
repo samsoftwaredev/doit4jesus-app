@@ -1,7 +1,6 @@
-import Feather from "@expo/vector-icons/Feather";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "expo-router";
-import { ActivityIndicator, Pressable, Text, useWindowDimensions, View } from "react-native";
+import { ActivityIndicator, Text, useWindowDimensions, View } from "react-native";
 import type { ViewStyle } from "react-native";
 
 import { ScreenShell } from "@/components/screen-shell";
@@ -53,24 +52,10 @@ export default function DemonsCatalogScreen() {
 
   return (
     <ScreenShell
+      description="Learn about spiritual obstacles and how to confront them."
+      headerVariant="compact"
+      onBack={() => router.back()}
       title="Demons Catalog"
-      subtitle="A comprehensive guide to various demons and their attributes."
-      headerAccessory={
-        <Pressable
-          accessibilityLabel="Go back"
-          accessibilityRole="button"
-          hitSlop={theme.spacing[2]}
-          onPress={() => router.back()}
-          style={styles.headerBackButton}
-        >
-          <Feather
-            accessible={false}
-            color={theme.colors.icon.primary}
-            name="chevron-left"
-            size={theme.sizes.iconMedium}
-          />
-        </Pressable>
-      }
     >
       {isLoading ? (
         <Card fullWidth title="Loading demons">
@@ -114,12 +99,6 @@ export default function DemonsCatalogScreen() {
 }
 
 const styleSheet = createThemedStyles((theme) => ({
-  headerBackButton: {
-    alignItems: "center",
-    height: theme.sizes.touchTarget,
-    justifyContent: "center",
-    width: theme.sizes.touchTarget,
-  },
   stateContainer: {
     alignItems: "center",
     gap: theme.spacing[3],

@@ -42,7 +42,11 @@ export function FriendsLeaderboardScreen() {
 
   return (
     <AtmosphericSafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
-      <BackHeader onBack={() => router.back()} title="Leaderboard" />
+      <BackHeader
+        description="Compare Rosary progress with your friends."
+        onBack={() => router.back()}
+        title="Leaderboard"
+      />
       {leaderboard.isLoading ? (
         <View style={styles.state}>
           <FriendsState message="Loading your friends' points…" title="Leaderboard" type="loading" />

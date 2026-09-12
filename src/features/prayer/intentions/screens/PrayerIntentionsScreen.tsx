@@ -1,10 +1,12 @@
 import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from "react-native";
+import { ActivityIndicator, FlatList, RefreshControl, Text, View } from "react-native";
 
+import { IconButton } from "@/components";
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { BackHeader } from "@/components/navigation";
+import { Button } from "@/components/ui";
 import { PrayerIntentionCard } from "@/features/prayer/intentions/components";
 import { fetchApprovedPrayerIntentions, cacheApprovedPrayerIntentions } from "@/features/prayer/intentions";
 import type { ApprovedPrayerIntention } from "@/features/prayer/intentions";
@@ -60,16 +62,16 @@ export function PrayerIntentionsScreen() {
   return (
     <AtmosphericSafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
       <BackHeader
+        description="Pray with the community or share an intention."
         onBack={() => router.back()}
         rightAction={
-          <Pressable
+          <IconButton
             accessibilityLabel="Share a prayer intention"
-            accessibilityRole="button"
             onPress={() => router.push("/create-prayer-intention")}
-            style={styles.headerAction}
+            tone="accent"
           >
             <Feather accessible={false} color={theme.rosary.colors.gold} name="plus" size={theme.sizes.iconMedium} />
-          </Pressable>
+          </IconButton>
         }
         title="Prayer Intentions"
       />
@@ -82,9 +84,9 @@ export function PrayerIntentionsScreen() {
       {!isLoading && error ? (
         <View accessibilityRole="alert" style={styles.state}>
           <Text style={styles.stateTitle}>Couldn&apos;t load prayer intentions.</Text>
-          <Pressable accessibilityRole="button" onPress={() => void load()} style={styles.retry}>
-            <Text style={styles.retryText}>Try Again</Text>
-          </Pressable>
+          <Button onPress={() => void load()} size="sm" style={styles.stateAction} variant="secondary">
+            Try again
+          </Button>
         </View>
       ) : null}
       {!isLoading && !error ? (
@@ -97,29 +99,26 @@ export function PrayerIntentionsScreen() {
             <View style={styles.state}>
               <Text style={styles.stateTitle}>No prayer intentions yet.</Text>
               <Text style={styles.stateCopy}>Be the first to share an intention.</Text>
-              <Pressable
-                accessibilityRole="button"
+              <Button
                 onPress={() => router.push("/create-prayer-intention")}
-                style={styles.retry}
+                style={styles.stateAction}
+                variant="warning"
               >
-                <Text style={styles.retryText}>Share a Prayer Intention</Text>
-              </Pressable>
+                Share an intention
+              </Button>
             </View>
           }
           ListFooterComponent={
             hasMore ? (
-              <Pressable
-                accessibilityRole="button"
-                disabled={isLoadingMore}
+              <Button
+                fullWidth
+                loading={isLoadingMore}
                 onPress={() => void loadMore()}
                 style={styles.loadMore}
+                variant="outline"
               >
-                {isLoadingMore ? (
-                  <ActivityIndicator color={theme.rosary.colors.gold} />
-                ) : (
-                  <Text style={styles.retryText}>Load more</Text>
-                )}
-              </Pressable>
+                Load more
+              </Button>
             ) : null
           }
           numColumns={2}
@@ -137,31 +136,28 @@ export function PrayerIntentionsScreen() {
           showsVerticalScrollIndicator={false}
         />
       ) : null}
-      <Pressable
-        accessibilityRole="button"
+      <Button
+        fullWidth
         onPress={() => router.push("/my-prayer-intentions")}
         style={styles.myButton}
+        variant="ghost"
+        rightIcon={
+          <Feather
+            accessible={false}
+            color={theme.rosary.colors.gold}
+            name="chevron-right"
+            size={theme.sizes.iconSmall}
+          />
+        }
       >
-        <Text style={styles.myText}>My Prayer Intentions</Text>
-        <Feather
-          accessible={false}
-          color={theme.rosary.colors.gold}
-          name="chevron-right"
-          size={theme.sizes.iconSmall}
-        />
-      </Pressable>
+        My prayer intentions
+      </Button>
     </AtmosphericSafeAreaView>
   );
 }
 
 const styleSheet = createThemedStyles((theme) => ({
   column: { gap: theme.spacing[2], justifyContent: "space-around" },
-  headerAction: {
-    alignItems: "center",
-    height: theme.sizes.touchTarget,
-    justifyContent: "center",
-    width: theme.sizes.touchTarget,
-  },
   list: {
     alignSelf: "center",
     gap: theme.spacing[2],
@@ -170,37 +166,15 @@ const styleSheet = createThemedStyles((theme) => ({
     paddingHorizontal: theme.spacing[3],
     width: "100%",
   },
-  loadMore: {
-    alignItems: "center",
-    borderColor: theme.rosary.colors.gold,
-    borderRadius: theme.radii.pill,
-    borderWidth: theme.rosary.borderWidths.goldHairline,
-    justifyContent: "center",
-    marginTop: theme.spacing[3],
-    minHeight: theme.sizes.touchTarget,
-  },
+  loadMore: { marginTop: theme.spacing[3] },
   loading: { alignItems: "center", flex: 1, gap: theme.spacing[3], justifyContent: "center" },
   loadingText: { ...theme.typography.bodySmall, color: theme.colors.text.secondary },
   myButton: {
-    alignItems: "center",
     borderTopColor: theme.colors.border.subtle,
     borderTopWidth: theme.borderWidths.hairline,
-    flexDirection: "row",
-    gap: theme.spacing[1],
-    justifyContent: "center",
-    minHeight: theme.sizes.touchTarget,
+    borderRadius: theme.radii.none,
   },
-  myText: { ...theme.typography.labelSmall, color: theme.rosary.colors.goldBright },
-  retry: {
-    borderColor: theme.rosary.colors.gold,
-    borderRadius: theme.radii.pill,
-    borderWidth: theme.rosary.borderWidths.goldHairline,
-    marginTop: theme.spacing[3],
-    minHeight: theme.sizes.touchTarget,
-    paddingHorizontal: theme.spacing[3],
-    justifyContent: "center",
-  },
-  retryText: { ...theme.typography.labelSmall, color: theme.rosary.colors.goldBright },
+  stateAction: { marginTop: theme.spacing[3] },
   safeArea: { backgroundColor: theme.colors.background.primary, flex: 1 },
   state: { alignItems: "center", padding: theme.spacing[5] },
   stateCopy: {

@@ -4,7 +4,7 @@ import { FlatList, Pressable, RefreshControl, Text, View } from "react-native";
 
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { BackHeader } from "@/components/navigation";
-import { Card } from "@/components/ui";
+import { Button, Card } from "@/components/ui";
 import { FriendRequestItem, FriendsState } from "@/features/friends/components";
 import { useFriendRequests } from "@/features/friends/friends.hooks";
 import type { FriendRequestDirection } from "@/features/friends/friends.types";
@@ -25,7 +25,11 @@ export function FriendRequestsScreen() {
 
   return (
     <AtmosphericSafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
-      <BackHeader onBack={() => router.back()} title="Friend Requests" />
+      <BackHeader
+        description="Review incoming and sent friend requests."
+        onBack={() => router.back()}
+        title="Friend Requests"
+      />
       <View style={styles.tabs}>
         {tabs.map((tab) => (
           <Pressable
@@ -69,9 +73,15 @@ export function FriendRequestsScreen() {
           }
           ListFooterComponent={
             requests.hasMore ? (
-              <Pressable accessibilityRole="button" onPress={() => void requests.loadMore()} style={styles.loadMore}>
-                <Text style={styles.loadMoreText}>{requests.isLoadingMore ? "Loading…" : "Load more"}</Text>
-              </Pressable>
+              <Button
+                fullWidth
+                loading={requests.isLoadingMore}
+                onPress={() => void requests.loadMore()}
+                style={styles.loadMore}
+                variant="outline"
+              >
+                Load more
+              </Button>
             ) : null
           }
           onEndReached={() => void requests.loadMore()}
@@ -119,15 +129,7 @@ const styleSheet = createThemedStyles((theme) => ({
     paddingTop: theme.spacing[4],
     width: "100%",
   },
-  loadMore: {
-    alignItems: "center",
-    minHeight: theme.sizes.touchTarget,
-    justifyContent: "center",
-  },
-  loadMoreText: {
-    ...theme.typography.button,
-    color: theme.colors.text.link,
-  },
+  loadMore: { marginTop: theme.spacing[2] },
   requestCard: {
     flexGrow: 0,
   },

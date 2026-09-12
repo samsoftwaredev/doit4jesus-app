@@ -108,17 +108,6 @@ export default function LandingScreen() {
 
       <SafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
         <View style={styles.topBar}>
-          <View accessible accessibilityLabel="Do It For Jesus" style={styles.brandRow}>
-            <View style={styles.brandIcon}>
-              <MaterialCommunityIcons
-                accessible={false}
-                color={theme.rosary.colors.goldBright}
-                name="shield-cross"
-                size={theme.sizes.iconSmall}
-              />
-            </View>
-            <Text style={styles.brand}>doit4Jesus</Text>
-          </View>
           <Pressable
             accessibilityLabel="Sign in"
             accessibilityRole="button"
@@ -383,23 +372,6 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   backgroundImage: { ...StyleSheet.absoluteFill, opacity: 0.68 },
   backgroundOverlay: { ...StyleSheet.absoluteFill },
-  brand: {
-    ...theme.typography.label,
-    color: theme.colors.text.white,
-    fontFamily: theme.fontFamilies.devotional,
-    fontSize: theme.fontSizes.lg,
-  },
-  brandIcon: {
-    alignItems: "center",
-    backgroundColor: "rgba(7, 19, 29, 0.78)",
-    borderColor: "rgba(241, 196, 106, 0.56)",
-    borderRadius: theme.radii.pill,
-    borderWidth: theme.borderWidths.thin,
-    height: theme.sizes.touchTarget,
-    justifyContent: "center",
-    width: theme.sizes.touchTarget,
-  },
-  brandRow: { alignItems: "center", flexDirection: "row", gap: theme.spacing[2] },
   calloutCopy: {
     ...theme.typography.body,
     color: theme.colors.text.secondary,
@@ -527,7 +499,7 @@ const styleSheet = createThemedStyles((theme) => ({
   topBar: {
     alignItems: "center",
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
     paddingHorizontal: theme.spacing[5],
     paddingTop: theme.spacing[2],
   },

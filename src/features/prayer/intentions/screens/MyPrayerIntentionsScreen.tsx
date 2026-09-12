@@ -3,8 +3,10 @@ import { useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from "react-native";
 
+import { IconButton } from "@/components";
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { BackHeader } from "@/components/navigation";
+import { Button } from "@/components/ui";
 import {
   getPrayerIntentionTheme,
   fetchMyPrayerIntentions,
@@ -79,16 +81,16 @@ export function MyPrayerIntentionsScreen() {
   return (
     <AtmosphericSafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
       <BackHeader
+        description="Track review status and prayer activity for your intentions."
         onBack={() => router.back()}
         rightAction={
-          <Pressable
+          <IconButton
             accessibilityLabel="Share a prayer intention"
-            accessibilityRole="button"
             onPress={() => router.push("/create-prayer-intention")}
-            style={styles.headerAction}
+            tone="accent"
           >
             <Feather accessible={false} color={theme.rosary.colors.gold} name="plus" size={theme.sizes.iconMedium} />
-          </Pressable>
+          </IconButton>
         }
         title="My Prayer Intentions"
       />
@@ -104,9 +106,9 @@ export function MyPrayerIntentionsScreen() {
           ) : error ? (
             <View accessibilityRole="alert" style={styles.state}>
               <Text style={styles.errorTitle}>Couldn&apos;t load your prayer intentions.</Text>
-              <Pressable accessibilityRole="button" onPress={() => void load()} style={styles.retry}>
-                <Text style={styles.retryText}>Try Again</Text>
-              </Pressable>
+              <Button onPress={() => void load()} size="sm" style={styles.stateAction} variant="secondary">
+                Try again
+              </Button>
             </View>
           ) : (
             <View style={styles.state}>
@@ -116,18 +118,15 @@ export function MyPrayerIntentionsScreen() {
         }
         ListFooterComponent={
           hasMore ? (
-            <Pressable
-              accessibilityRole="button"
-              disabled={isLoadingMore}
+            <Button
+              fullWidth
+              loading={isLoadingMore}
               onPress={() => void loadMore()}
-              style={styles.retry}
+              style={styles.stateAction}
+              variant="outline"
             >
-              {isLoadingMore ? (
-                <ActivityIndicator color={theme.rosary.colors.gold} />
-              ) : (
-                <Text style={styles.retryText}>Load more</Text>
-              )}
-            </Pressable>
+              Load more
+            </Button>
           ) : null
         }
         ListHeaderComponent={
@@ -195,20 +194,23 @@ function MyPrayerIntentionCard({
         {intention.description}
       </Text>
       {intention.status === "visible" ? (
-        <Pressable
+        <Button
           accessibilityLabel={`View prayer activity for ${intention.title}`}
-          accessibilityRole="button"
           onPress={onOpenActivity}
           style={styles.activityButton}
+          rightIcon={
+            <Feather
+              accessible={false}
+              color={theme.rosary.colors.gold}
+              name="chevron-right"
+              size={theme.sizes.iconSmall}
+            />
+          }
+          size="sm"
+          variant="outline"
         >
-          <Text style={styles.activityButtonText}>View Prayer Activity</Text>
-          <Feather
-            accessible={false}
-            color={theme.rosary.colors.gold}
-            name="chevron-right"
-            size={theme.sizes.iconSmall}
-          />
-        </Pressable>
+          View prayer activity
+        </Button>
       ) : null}
     </View>
   );
@@ -224,15 +226,7 @@ const styleSheet = createThemedStyles((theme) => ({
   cardDescription: { ...theme.typography.bodySmall, color: theme.colors.text.secondary, marginTop: theme.spacing[1] },
   cardTitle: { ...theme.typography.bodyMedium, color: theme.colors.text.white, marginTop: theme.spacing[2] },
   cardTop: { alignItems: "center", flexDirection: "row", justifyContent: "space-between" },
-  activityButton: {
-    alignItems: "center",
-    alignSelf: "flex-start",
-    flexDirection: "row",
-    gap: theme.spacing[0.5],
-    marginTop: theme.spacing[3],
-    minHeight: theme.sizes.touchTarget,
-  },
-  activityButtonText: { ...theme.typography.labelSmall, color: theme.rosary.colors.goldBright },
+  activityButton: { marginTop: theme.spacing[3] },
   content: {
     alignSelf: "center",
     gap: theme.spacing[3],
@@ -255,12 +249,6 @@ const styleSheet = createThemedStyles((theme) => ({
   filterText: { ...theme.typography.caption, color: theme.colors.text.secondary },
   filterTextSelected: { color: theme.colors.text.inverse },
   filters: { flexDirection: "row", flexWrap: "wrap", gap: theme.spacing[2] },
-  headerAction: {
-    alignItems: "center",
-    height: theme.sizes.touchTarget,
-    justifyContent: "center",
-    width: theme.sizes.touchTarget,
-  },
   icon: {
     alignItems: "center",
     borderRadius: theme.radii.pill,
@@ -268,18 +256,7 @@ const styleSheet = createThemedStyles((theme) => ({
     justifyContent: "center",
     width: theme.spacing[7],
   },
-  retry: {
-    alignItems: "center",
-    alignSelf: "center",
-    borderColor: theme.rosary.colors.gold,
-    borderRadius: theme.radii.pill,
-    borderWidth: theme.rosary.borderWidths.goldHairline,
-    justifyContent: "center",
-    marginTop: theme.spacing[2],
-    minHeight: theme.sizes.touchTarget,
-    paddingHorizontal: theme.spacing[3],
-  },
-  retryText: { ...theme.typography.labelSmall, color: theme.rosary.colors.goldBright },
+  stateAction: { alignSelf: "center", marginTop: theme.spacing[2] },
   safeArea: { backgroundColor: theme.colors.background.primary, flex: 1 },
   state: { alignItems: "center", justifyContent: "center", minHeight: 260, padding: theme.spacing[4] },
   status: { ...theme.typography.caption, textAlign: "right" },

@@ -40,25 +40,11 @@ export default function SettingsScreen() {
   return (
     <ScreenShell
       contentContainerStyle={styles.content}
+      description="Shape the app around your life of prayer."
+      headerVariant="compact"
+      onBack={() => router.back()}
       title="Settings"
-      subtitle="Shape the app around your life of prayer."
       testID="settings-screen"
-      headerAccessory={
-        <Pressable
-          accessibilityLabel="Go back"
-          accessibilityRole="button"
-          hitSlop={theme.spacing[2]}
-          onPress={() => router.back()}
-          style={styles.headerBackButton}
-        >
-          <Feather
-            accessible={false}
-            color={theme.colors.icon.primary}
-            name="chevron-left"
-            size={theme.sizes.iconMedium}
-          />
-        </Pressable>
-      }
     >
       <Card title="Appearance">
         <View accessibilityLabel="Appearance" accessibilityRole="radiogroup" style={styles.appearanceGroup}>
@@ -178,12 +164,6 @@ const styleSheet = createThemedStyles((theme) => ({
     justifyContent: "center",
     marginRight: theme.spacing[3],
     width: theme.spacing[6],
-  },
-  headerBackButton: {
-    alignItems: "center",
-    height: theme.sizes.touchTarget,
-    justifyContent: "center",
-    width: theme.sizes.touchTarget,
   },
   row: {
     alignItems: "flex-start",

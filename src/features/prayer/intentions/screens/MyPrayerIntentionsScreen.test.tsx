@@ -9,13 +9,22 @@ const mockSubscribeToMyPrayerIntentionsInvalidation = jest.fn();
 
 jest.mock("expo-router", () => ({ useRouter: () => ({ back: mockBack, push: mockPush }) }));
 jest.mock("@/components/navigation", () => ({
-  BackHeader: ({ title, rightAction }: { title: string; rightAction?: React.ReactNode }) => {
+  BackHeader: ({
+    description,
+    title,
+    rightAction,
+  }: {
+    description: string;
+    title: string;
+    rightAction?: React.ReactNode;
+  }) => {
     // The mocked module must load React Native within Jest's module factory.
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { Text, View } = require("react-native");
     return (
       <View>
         <Text>{title}</Text>
+        <Text>{description}</Text>
         {rightAction}
       </View>
     );
@@ -68,6 +77,7 @@ describe("MyPrayerIntentionsScreen", () => {
     const rendered = await render(<MyPrayerIntentionsScreen />);
 
     expect(await rendered.findByText("Healing for Maria")).toBeTruthy();
+    expect(rendered.getByText("Track review status and prayer activity for your intentions.")).toBeTruthy();
     expect(rendered.getByText("Approved / Visible")).toBeTruthy();
     expect(rendered.getAllByText("Pending review")).toHaveLength(2);
 
@@ -94,7 +104,7 @@ describe("MyPrayerIntentionsScreen", () => {
     const rendered = await render(<MyPrayerIntentionsScreen />);
 
     expect(await rendered.findByText("Couldn't load your prayer intentions.")).toBeTruthy();
-    await fireEvent.press(rendered.getByText("Try Again"));
+    await fireEvent.press(rendered.getByText("Try again"));
     expect(await rendered.findByText("You haven&apos;t submitted any prayer intentions.")).toBeTruthy();
 
     await fireEvent.press(rendered.getByRole("button", { name: "Share a prayer intention" }));

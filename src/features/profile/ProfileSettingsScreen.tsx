@@ -16,7 +16,9 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { PageHeader } from "@/components";
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
+import { Button } from "@/components/ui";
 import { APP_CONFIG } from "@/config/app-config";
 import { useAuth } from "@/features/auth";
 import {
@@ -198,9 +200,7 @@ export function ProfileSettingsScreen() {
         ]}
         showsVerticalScrollIndicator={false}
       >
-        <Text accessibilityRole="header" style={styles.pageTitle}>
-          Profile &amp; Settings
-        </Text>
+        <PageHeader description="Manage your profile, appearance, support, and account." title="Profile & Settings" />
 
         <ProfileToast message={toastMessage} onDismiss={() => setToastMessage(undefined)} />
 
@@ -210,9 +210,9 @@ export function ProfileSettingsScreen() {
           <View accessibilityRole="alert" style={styles.errorCard}>
             <Text style={styles.errorTitle}>We couldn't load your profile.</Text>
             <Text style={styles.errorCopy}>Your support and account settings are still available below.</Text>
-            <Pressable accessibilityRole="button" onPress={() => void loadProfile()} style={styles.retryButton}>
-              <Text style={styles.retryLabel}>Try Again</Text>
-            </Pressable>
+            <Button onPress={() => void loadProfile()} size="sm" style={styles.errorAction} variant="secondary">
+              Try again
+            </Button>
           </View>
         ) : null}
 
@@ -402,22 +402,19 @@ function EditNameSheet({
             value={displayName}
           />
           <View style={styles.dialogActions}>
-            <Pressable accessibilityRole="button" disabled={isSaving} onPress={onDismiss} style={styles.actionButton}>
-              <Text style={styles.cancelLabel}>Cancel</Text>
-            </Pressable>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityState={{ disabled: !canSave || isSaving }}
+            <Button disabled={isSaving} onPress={onDismiss} size="sm" variant="ghost">
+              Cancel
+            </Button>
+            <Button
               disabled={!canSave || isSaving}
+              loading={isSaving}
               onPress={() => void onSave(trimmedName)}
-              style={({ pressed }) => [
-                styles.saveButton,
-                (!canSave || isSaving) && styles.disabled,
-                pressed && canSave && !isSaving && styles.pressed,
-              ]}
+              size="sm"
+              style={styles.saveButton}
+              variant="warning"
             >
-              <Text style={styles.saveLabel}>{isSaving ? "Saving…" : "Save"}</Text>
-            </Pressable>
+              Save
+            </Button>
           </View>
         </View>
       </KeyboardAvoidingView>
@@ -474,9 +471,9 @@ function GenderSelector({
               );
             })}
           </View>
-          <Pressable accessibilityRole="button" disabled={isSaving} onPress={onDismiss} style={styles.closeSheetButton}>
-            <Text style={styles.cancelLabel}>Cancel</Text>
-          </Pressable>
+          <Button disabled={isSaving} fullWidth onPress={onDismiss} style={styles.closeSheetButton} variant="ghost">
+            Cancel
+          </Button>
         </View>
       </View>
     </Modal>
@@ -484,16 +481,6 @@ function GenderSelector({
 }
 
 const styleSheet = createThemedStyles((theme) => ({
-  actionButton: {
-    alignItems: "center",
-    justifyContent: "center",
-    minHeight: theme.sizes.touchTarget,
-    paddingHorizontal: theme.spacing[3],
-  },
-  cancelLabel: {
-    ...theme.typography.bodyMedium,
-    color: theme.colors.text.secondary,
-  },
   choice: {
     alignItems: "center",
     borderBottomColor: theme.colors.border.subtle,
@@ -516,11 +503,7 @@ const styleSheet = createThemedStyles((theme) => ({
     marginTop: theme.spacing[3],
     minHeight: theme.sizes.touchTarget,
   },
-  content: {
-    alignSelf: "center",
-    paddingTop: theme.spacing[5],
-    width: "100%",
-  },
+  content: { alignSelf: "center", width: "100%" },
   dialog: {
     backgroundColor: theme.colors.surface.tertiary,
     borderColor: theme.colors.border.strong,
@@ -533,6 +516,7 @@ const styleSheet = createThemedStyles((theme) => ({
   dialogActions: {
     alignItems: "center",
     flexDirection: "row",
+    gap: theme.spacing[2],
     justifyContent: "flex-end",
     marginTop: theme.spacing[4],
   },
@@ -544,9 +528,6 @@ const styleSheet = createThemedStyles((theme) => ({
   dialogTitle: {
     ...theme.typography.heading3,
     color: theme.colors.text.primary,
-  },
-  disabled: {
-    opacity: theme.opacity.disabled,
   },
   errorCard: {
     backgroundColor: theme.colors.semantic.warningSurface,
@@ -572,42 +553,16 @@ const styleSheet = createThemedStyles((theme) => ({
     justifyContent: "center",
     padding: theme.spacing[4],
   },
-  pageTitle: {
-    ...theme.typography.heading2,
-    color: theme.colors.text.primary,
-    fontFamily: theme.fontFamilies.devotional,
-    textAlign: "center",
-  },
   pressed: {
     opacity: theme.opacity.pressed,
   },
-  retryButton: {
-    alignSelf: "flex-start",
-    marginTop: theme.spacing[3],
-    minHeight: theme.sizes.touchTarget,
-    justifyContent: "center",
-  },
-  retryLabel: {
-    ...theme.typography.bodyMedium,
-    color: theme.colors.gold.pale,
-  },
+  errorAction: { marginTop: theme.spacing[3] },
   safeArea: {
     backgroundColor: theme.colors.background.primary,
     flex: 1,
   },
   saveButton: {
-    alignItems: "center",
-    backgroundColor: theme.colors.gold.pale,
-    borderRadius: theme.radii.pill,
-    justifyContent: "center",
-    marginLeft: theme.spacing[2],
-    minHeight: theme.sizes.touchTarget,
     minWidth: 84,
-    paddingHorizontal: theme.spacing[4],
-  },
-  saveLabel: {
-    ...theme.typography.bodyMedium,
-    color: theme.colors.text.inverse,
   },
   skeletonAvatar: {
     backgroundColor: theme.colors.surface.tertiary,

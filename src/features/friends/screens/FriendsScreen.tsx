@@ -1,10 +1,10 @@
 import Feather from "@expo/vector-icons/Feather";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useRouter } from "expo-router";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { ScrollView, View } from "react-native";
 
+import { IconButton, PageHeader } from "@/components";
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
-import { BackHeader } from "@/components/navigation";
+import { Button } from "@/components/ui";
 import { FriendsList, FriendsState, PendingRequestsCard, RosaryLeaderboardCard } from "@/features/friends/components";
 import { useFriendRequests, useFriends, useRosaryLeaderboard } from "@/features/friends/friends.hooks";
 import type { FriendRequest } from "@/features/friends/friends.types";
@@ -44,31 +44,26 @@ export function FriendsScreen() {
 
   return (
     <AtmosphericSafeAreaView edges={["top"]} style={styles.safeArea}>
-      <View style={styles.brandRow}>
-        <View style={styles.brandIcon}>
-          <MaterialCommunityIcons color={theme.colors.gold.pale} name="shield-cross" size={theme.sizes.iconMedium} />
-        </View>
-        <Text style={styles.brand}>doit4Jesus</Text>
+      <View style={[styles.header, { paddingHorizontal: gutter }]}>
+        <PageHeader
+          actions={
+            <IconButton accessibilityLabel="Add friend" onPress={openAddFriend} tone="accent">
+              <Feather
+                accessible={false}
+                color={theme.colors.icon.active}
+                name="user-plus"
+                size={theme.sizes.iconSmall}
+              />
+            </IconButton>
+          }
+          description="Compete with one another in prayer."
+          title="Community"
+        />
       </View>
-      <BackHeader
-        rightAction={
-          <Pressable
-            accessibilityLabel="Add friend"
-            accessibilityRole="button"
-            onPress={openAddFriend}
-            style={styles.addButton}
-          >
-            <Feather color={theme.colors.text.inverse} name="user-plus" size={theme.sizes.iconSmall} />
-          </Pressable>
-        }
-        title="Community"
-      />
       <ScrollView
         contentContainerStyle={[styles.content, { paddingHorizontal: gutter }]}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.intro}>Compete with one another in prayer.</Text>
-
         {leaderboard.isLoading ? (
           <FriendsState message="Loading your friends' points…" title="Leaderboard" type="loading" />
         ) : null}
@@ -144,11 +139,15 @@ export function FriendsScreen() {
               <FriendsList friends={friends.friends} onPressFriend={openFriend} />
             ) : null}
             {friends.hasMore ? (
-              <Pressable accessibilityRole="button" onPress={() => void friends.loadMore()} style={styles.moreFriends}>
-                <Text style={styles.moreFriendsText}>
-                  {friends.isLoadingMore ? "Loading friends…" : "Load more friends"}
-                </Text>
-              </Pressable>
+              <Button
+                fullWidth
+                loading={friends.isLoadingMore}
+                onPress={() => void friends.loadMore()}
+                style={styles.moreFriends}
+                variant="outline"
+              >
+                Load more friends
+              </Button>
             ) : null}
           </View>
         </View>
@@ -158,56 +157,15 @@ export function FriendsScreen() {
 }
 
 const styleSheet = createThemedStyles((theme) => ({
-  brand: {
-    ...theme.typography.heading3,
-    color: theme.colors.text.primary,
-  },
-  brandIcon: {
-    alignItems: "center",
-    backgroundColor: theme.colors.surface.tertiary,
-    borderColor: theme.colors.gold.strong,
-    borderRadius: theme.radii.pill,
-    borderWidth: theme.borderWidths.thin,
-    height: theme.sizes.touchTarget,
-    justifyContent: "center",
-    width: theme.sizes.touchTarget,
-  },
-  brandRow: {
-    alignItems: "center",
-    alignSelf: "flex-start",
-    flexDirection: "row",
-    gap: theme.spacing[2],
-    paddingHorizontal: theme.spacing[4],
-    paddingTop: theme.spacing[5],
-    marginBottom: theme.spacing[1],
-  },
-  addButton: {
-    alignItems: "center",
-    backgroundColor: theme.colors.gold.light,
-    borderRadius: theme.radii.pill,
-    height: theme.sizes.touchTarget,
-    justifyContent: "center",
-    width: theme.sizes.touchTarget,
-  },
   content: {
     alignSelf: "center",
     maxWidth: theme.sizes.contentMaxWidth,
     paddingBottom: theme.spacing[10],
     width: "100%",
   },
-  intro: {
-    ...theme.typography.body,
-    color: theme.colors.text.muted,
-    marginBottom: theme.spacing[5],
-  },
+  header: { alignSelf: "center", maxWidth: theme.sizes.contentMaxWidth, width: "100%" },
   moreFriends: {
-    alignItems: "center",
-    minHeight: theme.sizes.touchTarget,
-    paddingTop: theme.spacing[3],
-  },
-  moreFriendsText: {
-    ...theme.typography.button,
-    color: theme.colors.text.link,
+    marginTop: theme.spacing[3],
   },
   safeArea: {
     backgroundColor: theme.colors.background.primary,

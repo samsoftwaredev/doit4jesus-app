@@ -9,15 +9,16 @@ export default function HomeScreen() {
 
   return (
     <ScreenShell
-      title="Welcome home"
-      subtitle="Grow in faith, compete in holiness."
-      headerAccessory={
+      actions={
         <HeaderActionGroup
           onMessagesPress={() => router.push("/messages")}
           onNotificationsPress={() => router.push("/notifications")}
           onSettingsPress={() => router.push("/settings")}
         />
       }
+      description="Grow in faith, compete in holiness."
+      showLogo
+      title="Welcome home"
     >
       <HolyProgressDashboard />
     </ScreenShell>

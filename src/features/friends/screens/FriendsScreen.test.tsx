@@ -26,6 +26,7 @@ describe("FriendsScreen", () => {
     await render(<FriendsScreen />);
 
     expect(screen.getByText("Community")).toBeTruthy();
+    expect(screen.getByText("Compete with one another in prayer.")).toBeTruthy();
     expect(screen.getByText("LEADERBOARD")).toBeTruthy();
     expect(screen.getByText("240")).toBeTruthy();
     expect(screen.getByText("Samuel Ruiz (You)")).toBeTruthy();

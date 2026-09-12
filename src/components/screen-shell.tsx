@@ -1,22 +1,26 @@
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import type { PropsWithChildren, ReactNode } from "react";
 import type { StyleProp, ViewStyle } from "react-native";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { PageHeader } from "@/components";
+import type { PageHeaderVariant } from "@/components";
 import { SacredAtmosphere } from "@/components/ui/SacredAtmosphere";
 import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
-import { theme } from "@/theme/tokens";
 
 type ScreenShellProps = PropsWithChildren<{
-  eyebrow?: string;
-  title: string;
-  subtitle: string;
-  headerAccessory?: ReactNode;
+  actions?: ReactNode;
+  backAccessibilityLabel?: string;
   background?: ReactNode;
   contentContainerStyle?: StyleProp<ViewStyle>;
+  description: string;
+  eyebrow?: string;
+  headerVariant?: PageHeaderVariant;
+  onBack?: () => void;
+  showLogo?: boolean;
   testID?: string;
+  title: string;
 }>;
 
 /**
@@ -28,18 +32,21 @@ type ScreenShellProps = PropsWithChildren<{
  * @returns A safe-area screen shell with its content above the background.
  */
 export function ScreenShell({
-  eyebrow,
-  title,
-  subtitle,
-  headerAccessory,
+  actions,
+  backAccessibilityLabel,
   background,
   children,
   contentContainerStyle,
+  description,
+  eyebrow,
+  headerVariant,
+  onBack,
+  showLogo,
   testID,
+  title,
 }: ScreenShellProps) {
   const styles = useThemedStyles(styleSheet);
   const responsive = useResponsiveLayout();
-  const stackHeading = responsive.isNarrowPhone || responsive.isLargeText;
 
   return (
     <SafeAreaView edges={["top"]} style={styles.safeArea} testID={testID}>
@@ -50,35 +57,16 @@ export function ScreenShell({
             <SacredAtmosphere />
           </View>
           <View style={[styles.content, { paddingHorizontal: responsive.gutter }, contentContainerStyle]}>
-            <View style={styles.header}>
-              <View style={styles.brandRow}>
-                <View style={styles.brandIcon}>
-                  <MaterialCommunityIcons
-                    color={theme.colors.gold.pale}
-                    name="shield-cross"
-                    size={theme.sizes.iconMedium}
-                  />
-                </View>
-                <Text style={styles.brand}>doit4Jesus</Text>
-              </View>
-              <View
-                style={[styles.headingRow, stackHeading && styles.headingRowStacked]}
-                testID="screen-shell-heading-row"
-              >
-                <View style={[styles.heading, stackHeading && styles.headingStacked]}>
-                  {eyebrow ? <Text style={styles.eyebrow}>{eyebrow}</Text> : null}
-                  <Text accessibilityRole="header" style={styles.title}>
-                    {title}
-                  </Text>
-                  <Text style={styles.subtitle}>{subtitle}</Text>
-                </View>
-                {headerAccessory ? (
-                  <View style={[styles.headerAccessory, stackHeading && styles.headerAccessoryStacked]}>
-                    {headerAccessory}
-                  </View>
-                ) : null}
-              </View>
-            </View>
+            <PageHeader
+              actions={actions}
+              backAccessibilityLabel={backAccessibilityLabel}
+              description={description}
+              eyebrow={eyebrow}
+              onBack={onBack}
+              showLogo={showLogo}
+              title={title}
+              variant={headerVariant}
+            />
             {children}
           </View>
         </View>
@@ -112,67 +100,5 @@ const styleSheet = createThemedStyles((theme) => ({
     position: "relative",
     width: "100%",
     zIndex: theme.zIndex.card,
-  },
-  brand: {
-    ...theme.typography.heading3,
-    color: theme.colors.text.primary,
-  },
-  brandIcon: {
-    alignItems: "center",
-    backgroundColor: theme.colors.surface.tertiary,
-    borderColor: theme.colors.gold.strong,
-    borderRadius: theme.radii.pill,
-    borderWidth: theme.borderWidths.thin,
-    height: theme.sizes.touchTarget,
-    justifyContent: "center",
-    width: theme.sizes.touchTarget,
-  },
-  brandRow: {
-    alignItems: "center",
-    alignSelf: "flex-start",
-    flexDirection: "row",
-    gap: theme.spacing[2],
-    marginBottom: theme.spacing[4],
-  },
-  header: {
-    paddingBottom: theme.spacing[6],
-    paddingTop: theme.spacing[5],
-  },
-  headingRow: {
-    alignItems: "flex-start",
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  headingRowStacked: {
-    flexDirection: "column",
-  },
-  heading: {
-    flex: 1,
-    minWidth: theme.spacing[0],
-    paddingRight: theme.spacing[3],
-  },
-  headingStacked: {
-    paddingRight: theme.spacing[0],
-    width: "100%",
-  },
-  headerAccessory: {
-    flexShrink: 0,
-  },
-  headerAccessoryStacked: {
-    alignSelf: "flex-start",
-    marginTop: theme.spacing[3],
-  },
-  eyebrow: {
-    ...theme.typography.labelSmall,
-    color: theme.colors.text.link,
-    marginBottom: theme.spacing[1],
-  },
-  title: {
-    ...theme.typography.heading1,
-  },
-  subtitle: {
-    ...theme.typography.body,
-    color: theme.colors.text.muted,
-    marginTop: theme.spacing[1],
   },
 }));

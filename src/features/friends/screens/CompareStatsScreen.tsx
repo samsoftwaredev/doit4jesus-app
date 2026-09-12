@@ -17,7 +17,11 @@ export function CompareStatsScreen({ friendId }: { friendId: string | undefined 
 
   return (
     <AtmosphericSafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
-      <BackHeader onBack={() => router.back()} title="Compare Stats" />
+      <BackHeader
+        description="Compare your prayer progress side by side."
+        onBack={() => router.back()}
+        title="Compare Stats"
+      />
       {comparison.isLoading ? (
         <View style={styles.state}>
           <FriendsState message="Loading your comparison…" title="Compare progress" type="loading" />

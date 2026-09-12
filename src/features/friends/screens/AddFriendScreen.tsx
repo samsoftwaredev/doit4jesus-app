@@ -32,7 +32,11 @@ export function AddFriendScreen() {
 
   return (
     <AtmosphericSafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
-      <BackHeader onBack={() => router.back()} title="Add Friend" />
+      <BackHeader
+        description="Search by username to grow your fellowship."
+        onBack={() => router.back()}
+        title="Add Friend"
+      />
       <KeyboardAvoidingView
         behavior={Platform.select({ ios: "padding", default: undefined })}
         style={styles.keyboardAvoiding}

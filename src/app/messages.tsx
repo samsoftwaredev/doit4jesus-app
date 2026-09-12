@@ -1,6 +1,6 @@
 import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
 import { ScreenShell } from "@/components/screen-shell";
 import { Card } from "@/components/ui";
@@ -15,24 +15,10 @@ export default function MessagesScreen() {
   return (
     <ScreenShell
       contentContainerStyle={styles.content}
+      description="Conversations, invitations, and encouragement from your community."
+      headerVariant="compact"
+      onBack={() => router.back()}
       title="Messages"
-      subtitle="Conversations, invitations, and encouragement from your community."
-      headerAccessory={
-        <Pressable
-          accessibilityLabel="Go back"
-          accessibilityRole="button"
-          hitSlop={theme.spacing[2]}
-          onPress={() => router.back()}
-          style={styles.headerBackButton}
-        >
-          <Feather
-            accessible={false}
-            color={theme.colors.icon.primary}
-            name="chevron-left"
-            size={theme.sizes.iconMedium}
-          />
-        </Pressable>
-      }
     >
       <Card title="Your inbox">
         <View style={styles.emptyState}>
@@ -46,12 +32,6 @@ export default function MessagesScreen() {
 
 const styleSheet = createThemedStyles((theme) => ({
   content: { maxWidth: 700 },
-  headerBackButton: {
-    alignItems: "center",
-    height: theme.sizes.touchTarget,
-    justifyContent: "center",
-    width: theme.sizes.touchTarget,
-  },
   emptyState: {
     alignItems: "center",
     gap: theme.spacing[3],

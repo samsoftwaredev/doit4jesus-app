@@ -1,8 +1,10 @@
+import Feather from "@expo/vector-icons/Feather";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ScrollView } from "react-native";
 
+import { IconButton, PageHeader } from "@/components";
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { SacredAtmosphere } from "@/components/ui";
 import { AllMysteries, MomentForPrayer, PrayersByOthers } from "@/features/prayer/components";
@@ -153,12 +155,21 @@ export function PrayerScreen() {
           showsVerticalScrollIndicator={false}
           style={styles.atmosphereContent}
         >
-          <MomentForPrayer
-            mysteryTitle={todaySet.title}
-            onOpenGarden={openGarden}
-            onPrayToday={prayToday}
-            weekday={getWeekdayLabel()}
+          <PageHeader
+            actions={
+              <IconButton accessibilityLabel="Open Rosary Garden" onPress={openGarden} tone="accent">
+                <Feather
+                  accessible={false}
+                  color={theme.rosary.colors.goldBright}
+                  name="calendar"
+                  size={theme.sizes.iconMedium}
+                />
+              </IconButton>
+            }
+            description="Pray the Rosary and lift up the intentions of others."
+            title="Prayer"
           />
+          <MomentForPrayer mysteryTitle={todaySet.title} onPrayToday={prayToday} weekday={getWeekdayLabel()} />
           <AllMysteries cardWidth={mysteryCardWidth} gap={columnGap} onOpenMystery={openMystery} />
           <PrayersByOthers
             errorMessage={intentionsError}

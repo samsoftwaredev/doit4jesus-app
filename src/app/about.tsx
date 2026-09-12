@@ -1,10 +1,8 @@
-import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
 import { ScreenShell } from "@/components/screen-shell";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
-import { theme } from "@/theme/tokens";
 
 /** Renders this feature with colors from the currently resolved app appearance. */
 export default function AboutScreen() {
@@ -14,23 +12,10 @@ export default function AboutScreen() {
   return (
     <ScreenShell
       contentContainerStyle={styles.content}
-      subtitle="A companion for daily faithfulness."
+      description="A companion for daily faithfulness."
+      headerVariant="compact"
+      onBack={() => router.back()}
       title="About Do It for Jesus"
-      headerAccessory={
-        <Pressable
-          accessibilityLabel="Go back"
-          accessibilityRole="button"
-          onPress={() => router.back()}
-          style={styles.backButton}
-        >
-          <Feather
-            accessible={false}
-            color={theme.colors.gold.pale}
-            name="chevron-left"
-            size={theme.sizes.iconMedium}
-          />
-        </Pressable>
-      }
     >
       <View style={styles.card}>
         <Text style={styles.copy}>
@@ -44,12 +29,6 @@ export default function AboutScreen() {
 
 const styleSheet = createThemedStyles((theme) => ({
   content: { maxWidth: 700 },
-  backButton: {
-    alignItems: "center",
-    height: theme.sizes.touchTarget,
-    justifyContent: "center",
-    width: theme.sizes.touchTarget,
-  },
   card: {
     backgroundColor: theme.colors.surface.navy,
     borderColor: theme.colors.border.default,

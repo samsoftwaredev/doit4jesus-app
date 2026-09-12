@@ -1,5 +1,4 @@
 import Feather from "@expo/vector-icons/Feather";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { Pressable, ScrollView, Text, useWindowDimensions, View } from "react-native";
@@ -58,16 +57,6 @@ export function RosaryGardenScreen() {
                 </Text>
               ) : null}
             </View>
-            <View style={styles.brandRow}>
-              <View style={styles.brandIcon}>
-                <MaterialCommunityIcons
-                  color={theme.colors.gold.pale}
-                  name="shield-cross"
-                  size={theme.sizes.iconMedium}
-                />
-              </View>
-              <Text style={styles.brand}>doit4Jesus</Text>
-            </View>
             <GardenHero />
             <MonthNavigator
               canGoNext={garden.canGoNext}
@@ -123,23 +112,6 @@ const styleSheet = createThemedStyles((theme) => ({
     height: theme.sizes.touchTarget,
     justifyContent: "center",
     width: theme.sizes.touchTarget,
-  },
-  brand: { ...theme.typography.heading3, color: theme.colors.text.primary },
-  brandIcon: {
-    alignItems: "center",
-    backgroundColor: theme.colors.surface.tertiary,
-    borderColor: theme.colors.gold.strong,
-    borderRadius: theme.radii.pill,
-    borderWidth: theme.borderWidths.thin,
-    height: theme.sizes.touchTarget,
-    justifyContent: "center",
-    width: theme.sizes.touchTarget,
-  },
-  brandRow: {
-    alignItems: "center",
-    alignSelf: "flex-start",
-    flexDirection: "row",
-    gap: theme.spacing[2],
   },
   offlineLabel: {
     ...theme.typography.labelSmall,

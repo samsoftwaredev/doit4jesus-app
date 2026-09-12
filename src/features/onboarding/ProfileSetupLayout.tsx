@@ -78,15 +78,6 @@ export function ProfileSetupLayout({
                 ) : (
                   <View style={styles.backPlaceholder} />
                 )}
-                <View style={styles.brandRow}>
-                  <MaterialCommunityIcons
-                    accessible={false}
-                    color={theme.rosary.colors.gold}
-                    name="shield-cross"
-                    size={theme.sizes.iconSmall}
-                  />
-                  <Text style={styles.brand}>doit4Jesus</Text>
-                </View>
                 <View style={styles.backPlaceholder} />
               </View>
 
@@ -187,8 +178,6 @@ const styleSheet = createThemedStyles((theme) => ({
     width: theme.sizes.touchTarget,
   },
   backPlaceholder: { height: theme.sizes.touchTarget, width: theme.sizes.touchTarget },
-  brand: { ...theme.typography.label, color: theme.colors.text.secondary },
-  brandRow: { alignItems: "center", flexDirection: "row", gap: theme.spacing[1.5] },
   content: { flex: 1, width: "100%" },
   decorativeGlow: {
     backgroundColor: "rgba(230, 186, 100, 0.05)",

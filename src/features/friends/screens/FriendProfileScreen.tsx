@@ -1,8 +1,9 @@
 import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Alert, Modal, Pressable, ScrollView, Text, View } from "react-native";
+import { Alert, Modal, ScrollView, Text, View } from "react-native";
 
+import { IconButton } from "@/components";
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { BackHeader } from "@/components/navigation";
 import { Button, Card } from "@/components/ui";
@@ -53,16 +54,17 @@ export function FriendProfileScreen({ friendId }: { friendId: string | undefined
   return (
     <AtmosphericSafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
       <BackHeader
+        description="View prayer progress and friendship details."
         onBack={() => router.back()}
         rightAction={
-          <Pressable
-            accessibilityLabel="Friend options"
-            accessibilityRole="button"
-            onPress={() => setShowOptions(true)}
-            style={styles.optionsButton}
-          >
-            <Feather color={theme.colors.icon.primary} name="more-horizontal" size={theme.sizes.iconMedium} />
-          </Pressable>
+          <IconButton accessibilityLabel="Friend options" onPress={() => setShowOptions(true)}>
+            <Feather
+              accessible={false}
+              color={theme.colors.icon.primary}
+              name="more-horizontal"
+              size={theme.sizes.iconMedium}
+            />
+          </IconButton>
         }
         title="Friend Profile"
       />
@@ -248,12 +250,6 @@ const styleSheet = createThemedStyles((theme) => ({
     ...theme.typography.heading2,
     marginTop: theme.spacing[3],
     textAlign: "center",
-  },
-  optionsButton: {
-    alignItems: "center",
-    height: theme.sizes.touchTarget,
-    justifyContent: "center",
-    width: theme.sizes.touchTarget,
   },
   optionsCard: {
     display: "flex",

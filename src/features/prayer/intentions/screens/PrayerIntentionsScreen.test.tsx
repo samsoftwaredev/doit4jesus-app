@@ -9,11 +9,20 @@ jest.mock("@/features/prayer/intentions", () => ({
 }));
 
 jest.mock("@/components/navigation", () => ({
-  BackHeader: ({ title, rightAction }: { title: string; rightAction?: React.ReactNode }) => {
+  BackHeader: ({
+    description,
+    title,
+    rightAction,
+  }: {
+    description: string;
+    title: string;
+    rightAction?: React.ReactNode;
+  }) => {
     const { Text, View } = require("react-native");
     return (
       <View>
         <Text>{title}</Text>
+        <Text>{description}</Text>
         {rightAction}
       </View>
     );
@@ -54,13 +63,14 @@ describe("PrayerIntentionsScreen", () => {
     fetchApprovedPrayerIntentions.mockResolvedValue(emptyPage);
     await render(<PrayerIntentionsScreen />);
     await waitFor(() => expect(screen.getByText("Prayer Intentions")).toBeTruthy());
+    expect(screen.getByText("Pray with the community or share an intention.")).toBeTruthy();
   });
 
   it("shows an error message when the fetch fails", async () => {
     fetchApprovedPrayerIntentions.mockRejectedValue(new Error("Server error"));
     await render(<PrayerIntentionsScreen />);
     await waitFor(() => expect(screen.getByText("Couldn't load prayer intentions.")).toBeTruthy());
-    expect(screen.getByText("Try Again")).toBeTruthy();
+    expect(screen.getByText("Try again")).toBeTruthy();
   });
 
   it("renders intentions after loading", async () => {

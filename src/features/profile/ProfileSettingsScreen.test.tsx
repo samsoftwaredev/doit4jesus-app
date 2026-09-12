@@ -79,6 +79,7 @@ describe("Profile settings", () => {
     await renderProfile();
 
     expect(screen.getByText("Profile & Settings")).toBeTruthy();
+    expect(screen.getByText("Manage your profile, appearance, support, and account.")).toBeTruthy();
     expect(screen.getAllByText("USA")).toHaveLength(2);
     expect(screen.getByLabelText("Gender, Male")).toBeTruthy();
     expect(screen.getByText("Contact Support")).toBeTruthy();
@@ -206,6 +207,6 @@ describe("Profile settings", () => {
 
     expect(await screen.findByText("We couldn't load your profile.")).toBeTruthy();
     expect(screen.getByText("Contact Support")).toBeTruthy();
-    expect(screen.getByText("Try Again")).toBeTruthy();
+    expect(screen.getByText("Try again")).toBeTruthy();
   });
 });
