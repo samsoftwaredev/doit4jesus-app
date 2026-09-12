@@ -1,0 +1,7 @@
+interface:
+  display_name: "Organize Components"
+  short_description: "Standardize component folders and barrel exports"
+  default_prompt: "Use $organize-components to organize these components into the repository's standard folder and barrel structure."
+
+policy:
+  allow_implicit_invocation: true

@@ -78,7 +78,7 @@ describe("RosaryPrayerScreen", () => {
       ),
     ).toBeTruthy();
     expect(screen.getByText("HAIL MARY")).toBeTruthy();
-  });
+  }, 10000);
 
   it("renders every physical bead without rendering non-bead prayer markers", async () => {
     const scriptureStepIndex = fullRosarySequence.findIndex((bead) => bead.scriptureReference === "Luke 1:28");

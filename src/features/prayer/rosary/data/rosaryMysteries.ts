@@ -9,6 +9,8 @@ import type {
   RosaryMysteryType,
 } from "@/features/prayer/rosary/types";
 
+import * as mysteryCartoonImages from "../../../../../assets/images/mysteriesCartoon";
+
 import { rosaryPrayers } from "./rosaryPrayers";
 
 const mysteryTypeOrder: RosaryMysteryType[] = ["joyful", "sorrowful", "glorious", "luminous"];
@@ -21,26 +23,29 @@ const categoryByType: Record<RosaryMysteryType, RosaryMysteryCategory> = {
 };
 
 const mysteryImageSources: Record<string, ImageSourcePropType> = {
-  bible: require("../../../../assets/virtues/bible.png"),
-  blessed_virgin_mary: require("../../../../assets/saints/blessed-virgin-mary.png"),
-  cathedral_desktop: require("../../../../assets/backgrounds/cathedralDesktop.png"),
-  cathedral_tablet: require("../../../../assets/backgrounds/cathedralTablet.png"),
-  our_lady_queen_of_heaven: require("../../../../assets/saints/our-lady-queen-of-heaven.png"),
-  saint_francis_of_assisi: require("../../../../assets/saints/saint-francis-of-assisi.png"),
-  saint_francis_xavier: require("../../../../assets/saints/saint-francis-xavier.png"),
-  saint_joan_of_arc: require("../../../../assets/saints/saint-joan-of-arc.png"),
-  saint_john_the_evangelist: require("../../../../assets/saints/saint-john-the-evangelist.png"),
-  saint_joseph: require("../../../../assets/saints/saint-joseph.png"),
-  saint_michael_the_archangel: require("../../../../assets/saints/saint-michael-the-archangel.png"),
-  saint_monica: require("../../../../assets/saints/saint-monica.png"),
-  saint_padre_pio: require("../../../../assets/saints/saint-padre-pio.png"),
-  saint_paul: require("../../../../assets/saints/saint-paul.png"),
-  saint_peter: require("../../../../assets/saints/saint-peter.png"),
-  saint_sebastian: require("../../../../assets/saints/saint-sebastian.png"),
-  white_lily: require("../../../../assets/flowers/whiteLily.png"),
+  fifth_glorious: mysteryCartoonImages.fifthGlorious,
+  fifth_joyful: mysteryCartoonImages.fifthJoyful,
+  fifth_luminous: mysteryCartoonImages.fifthLuminous,
+  fifth_sorrowful: mysteryCartoonImages.fifthSorrowful,
+  first_glorious: mysteryCartoonImages.firstGlorious,
+  first_joyful: mysteryCartoonImages.firstJoyful,
+  first_luminous: mysteryCartoonImages.firstLuminous,
+  first_sorrowful: mysteryCartoonImages.firstSorrowful,
+  fourth_glorious: mysteryCartoonImages.fourthGlorious,
+  fourth_joyful: mysteryCartoonImages.fourthJoyful,
+  fourth_luminous: mysteryCartoonImages.fourthLuminous,
+  fourth_sorrowful: mysteryCartoonImages.fourthSorrowful,
+  second_glorious: mysteryCartoonImages.secondGlorious,
+  second_joyful: mysteryCartoonImages.secondJoyful,
+  second_luminous: mysteryCartoonImages.secondLuminous,
+  second_sorrowful: mysteryCartoonImages.secondSorrowful,
+  third_glorious: mysteryCartoonImages.thirdGlorious,
+  third_joyful: mysteryCartoonImages.thirdJoyful,
+  third_luminous: mysteryCartoonImages.thirdLuminous,
+  third_sorrowful: mysteryCartoonImages.thirdSorrowful,
 };
 
-const fallbackImageSource = mysteryImageSources.blessed_virgin_mary;
+const fallbackImageSource = mysteryCartoonImages.firstJoyful;
 
 function createMysterySet(content: RosaryContent, type: RosaryMysteryType): RosaryMysterySet | undefined {
   const contentSet = content.mystery_sets.find((set) => set.id === type);

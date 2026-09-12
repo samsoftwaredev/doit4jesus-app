@@ -4,6 +4,8 @@ import { getRosaryMysteriesFromContent, rosaryMysterySets } from "@/features/pra
 import { prayerById } from "@/features/prayer/rosary/data/rosaryPrayers";
 import { getFullRosarySequence } from "@/features/prayer/rosary/data/rosarySequence";
 
+import * as mysteryCartoonImages from "../../../../../assets/images/mysteriesCartoon";
+
 describe("English Rosary content", () => {
   it("builds the four app mystery sets from the JSON data while preserving their display order", () => {
     expect(rosaryMysterySets.map((set) => set.type)).toEqual(["joyful", "sorrowful", "glorious", "luminous"]);
@@ -41,6 +43,68 @@ describe("English Rosary content", () => {
           title: "The Nativity",
         }),
       ]),
+    );
+  });
+
+  it.each([
+    {
+      expectedImages: [
+        mysteryCartoonImages.firstJoyful,
+        mysteryCartoonImages.secondJoyful,
+        mysteryCartoonImages.thirdJoyful,
+        mysteryCartoonImages.fourthJoyful,
+        mysteryCartoonImages.fifthJoyful,
+      ],
+      expectedKeys: ["first_joyful", "second_joyful", "third_joyful", "fourth_joyful", "fifth_joyful"],
+      type: "joyful",
+    },
+    {
+      expectedImages: [
+        mysteryCartoonImages.firstLuminous,
+        mysteryCartoonImages.secondLuminous,
+        mysteryCartoonImages.thirdLuminous,
+        mysteryCartoonImages.fourthLuminous,
+        mysteryCartoonImages.fifthLuminous,
+      ],
+      expectedKeys: ["first_luminous", "second_luminous", "third_luminous", "fourth_luminous", "fifth_luminous"],
+      type: "luminous",
+    },
+    {
+      expectedImages: [
+        mysteryCartoonImages.firstSorrowful,
+        mysteryCartoonImages.secondSorrowful,
+        mysteryCartoonImages.thirdSorrowful,
+        mysteryCartoonImages.fourthSorrowful,
+        mysteryCartoonImages.fifthSorrowful,
+      ],
+      expectedKeys: ["first_sorrowful", "second_sorrowful", "third_sorrowful", "fourth_sorrowful", "fifth_sorrowful"],
+      type: "sorrowful",
+    },
+    {
+      expectedImages: [
+        mysteryCartoonImages.firstGlorious,
+        mysteryCartoonImages.secondGlorious,
+        mysteryCartoonImages.thirdGlorious,
+        mysteryCartoonImages.fourthGlorious,
+        mysteryCartoonImages.fifthGlorious,
+      ],
+      expectedKeys: ["first_glorious", "second_glorious", "third_glorious", "fourth_glorious", "fifth_glorious"],
+      type: "glorious",
+    },
+  ] as const)("maps every $type mystery to its bundled cartoon image", ({ expectedImages, expectedKeys, type }) => {
+    const jsonSet = englishRosaryJson.mystery_sets.find((set) => set.id === type);
+    const mysteries = getRosaryMysteriesFromContent(englishRosaryContent, type);
+    const typeName = `${type[0].toUpperCase()}${type.slice(1)}`;
+    const expectedPaths = expectedKeys.map((key) => {
+      const ordinal = key.split("_")[0];
+      return `/assets/images/mysteriesCartoon/${type}/${ordinal}${typeName}.svg`;
+    });
+
+    expect(jsonSet?.mysteries.map((mystery) => mystery.app_image_key)).toEqual(expectedKeys);
+    expect(jsonSet?.mysteries.map((mystery) => mystery.image)).toEqual(expectedPaths);
+    expect(mysteries.map((mystery) => mystery.imageSource)).toEqual(expectedImages);
+    expect(mysteries.map((mystery) => mystery.imageAlt)).toEqual(
+      mysteries.map((mystery) => `An illustration for the Rosary mystery "${mystery.title}".`),
     );
   });
 
