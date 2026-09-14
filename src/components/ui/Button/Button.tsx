@@ -5,7 +5,7 @@ import { useThemedStyles } from "@/theme/createThemedStyles";
 import { buttonSizeConfig, buttonVariantConfig, styles as styleSheet } from "./Button.styles";
 import type { ButtonProps } from "./Button.types";
 
-/** Renders an accessible, theme-aware button with consistent loading and disabled behavior. */
+/** Renders an accessible, theme-aware button whose centered content fills any assigned height. */
 export function Button({
   children,
   variant = "primary",
@@ -42,6 +42,7 @@ export function Button({
       onPress={isUnavailable ? undefined : onPress}
       style={({ pressed }) => [
         styles.button,
+        sizeConfig.buttonStyle,
         {
           backgroundColor: variantConfig.backgroundColor,
           borderColor: variantConfig.borderColor,

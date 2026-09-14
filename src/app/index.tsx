@@ -285,7 +285,7 @@ function ActionList({ items }: { items: readonly string[] }) {
   );
 }
 
-/** Explains the product distinction in a compact comparison block. */
+/** Explains the product distinction in a callout that preserves contrast in either appearance. */
 function DifferenceCopy() {
   const styles = useThemedStyles(styleSheet);
   return (
@@ -407,8 +407,8 @@ const styleSheet = createThemedStyles((theme) => ({
     textAlign: "center",
   },
   differenceCallout: {
-    backgroundColor: "rgba(7, 19, 29, 0.72)",
-    borderColor: "rgba(241, 196, 106, 0.42)",
+    backgroundColor: theme.colors.surface.navy,
+    borderColor: theme.colors.border.warning,
     borderRadius: theme.radii.lg,
     borderWidth: theme.borderWidths.thin,
     gap: theme.spacing[1],

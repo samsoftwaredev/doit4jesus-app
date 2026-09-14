@@ -23,7 +23,7 @@ interface RosaryBottomNavigationProps {
   onRestart: () => void;
 }
 
-/** Renders this feature with colors from the currently resolved app appearance. */
+/** Renders theme-aware bead progress, next-bead navigation, and Rosary settings. */
 export function RosaryBottomNavigation({
   progress,
   decadeCount = 5,
@@ -132,7 +132,7 @@ export function RosaryBottomNavigation({
                 onPress={() => setSettingsVisible(false)}
                 style={styles.closeButton}
               >
-                <Feather color={theme.colors.text.white} name="x" size={theme.sizes.iconMedium} />
+                <Feather color={theme.colors.icon.primary} name="x" size={theme.sizes.iconMedium} />
               </Pressable>
             </View>
             <Pressable
@@ -168,7 +168,7 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   progressButton: {
     alignItems: "center",
-    backgroundColor: "#193C52",
+    backgroundColor: theme.colors.surface.secondary,
     borderColor: theme.rosary.colors.gold,
     borderRadius: theme.radii.pill,
     borderWidth: theme.rosary.borderWidths.gold,
@@ -203,7 +203,7 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   prayerName: {
     ...theme.typography.bodyMedium,
-    color: theme.colors.text.white,
+    color: theme.colors.text.primary,
   },
   progressText: {
     ...theme.typography.caption,
@@ -212,8 +212,8 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   settingsButton: {
     alignItems: "center",
-    backgroundColor: "#193C52",
-    borderColor: "rgba(230, 186, 100, 0.68)",
+    backgroundColor: theme.colors.surface.secondary,
+    borderColor: theme.colors.border.warning,
     borderRadius: theme.radii.pill,
     borderWidth: theme.rosary.borderWidths.gold,
     height: theme.sizes.buttonHeightLarge,
@@ -258,7 +258,7 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   modalTitle: {
     ...theme.typography.heading3,
-    color: theme.colors.text.white,
+    color: theme.colors.text.primary,
   },
   modalCopy: {
     ...theme.typography.bodySmall,
@@ -275,7 +275,7 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   settingAction: {
     alignItems: "center",
-    borderColor: "rgba(230, 186, 100, 0.45)",
+    borderColor: theme.colors.border.warning,
     borderRadius: theme.radii.md,
     borderWidth: theme.rosary.borderWidths.goldHairline,
     flexDirection: "row",

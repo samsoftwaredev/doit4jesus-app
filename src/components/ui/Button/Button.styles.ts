@@ -65,24 +65,33 @@ export const buttonVariantConfig = createThemedValue(
     }) as const satisfies Record<ButtonVariant, ButtonVariantConfig>,
 );
 
-const buttonSizeStyles = createThemedStyles((theme) => ({
+const buttonContentSizeStyles = createThemedStyles((theme) => ({
   sm: {
     gap: theme.spacing[1.5],
-    minHeight: Math.max(theme.sizes.touchTarget, theme.sizes.buttonHeightSmall),
     paddingHorizontal: theme.spacing[3],
     paddingVertical: theme.spacing[2],
   },
   md: {
     gap: theme.spacing[2],
-    minHeight: Math.max(theme.sizes.touchTarget, theme.sizes.buttonHeight),
     paddingHorizontal: theme.spacing[4],
     paddingVertical: theme.spacing[2.5],
   },
   lg: {
     gap: theme.spacing[2],
-    minHeight: Math.max(theme.sizes.touchTarget, theme.sizes.buttonHeightLarge),
     paddingHorizontal: theme.spacing[6],
     paddingVertical: theme.spacing[3],
+  },
+})) satisfies Record<ButtonSize, ViewStyle>;
+
+const buttonSizeStyles = createThemedStyles((theme) => ({
+  sm: {
+    minHeight: Math.max(theme.sizes.touchTarget, theme.sizes.buttonHeightSmall),
+  },
+  md: {
+    minHeight: Math.max(theme.sizes.touchTarget, theme.sizes.buttonHeight),
+  },
+  lg: {
+    minHeight: Math.max(theme.sizes.touchTarget, theme.sizes.buttonHeightLarge),
   },
 })) satisfies Record<ButtonSize, ViewStyle>;
 
@@ -100,18 +109,21 @@ const buttonTextSizeStyles = createThemedStyles((theme) => ({
 
 export const buttonSizeConfig = {
   sm: {
-    contentStyle: buttonSizeStyles.sm,
+    buttonStyle: buttonSizeStyles.sm,
+    contentStyle: buttonContentSizeStyles.sm,
     textStyle: buttonTextSizeStyles.sm,
   },
   md: {
-    contentStyle: buttonSizeStyles.md,
+    buttonStyle: buttonSizeStyles.md,
+    contentStyle: buttonContentSizeStyles.md,
     textStyle: buttonTextSizeStyles.md,
   },
   lg: {
-    contentStyle: buttonSizeStyles.lg,
+    buttonStyle: buttonSizeStyles.lg,
+    contentStyle: buttonContentSizeStyles.lg,
     textStyle: buttonTextSizeStyles.lg,
   },
-} as const satisfies Record<ButtonSize, { contentStyle: ViewStyle; textStyle: object }>;
+} as const satisfies Record<ButtonSize, { buttonStyle: ViewStyle; contentStyle: ViewStyle; textStyle: object }>;
 
 export const styles = createThemedStyles((theme) => ({
   button: {
@@ -134,6 +146,7 @@ export const styles = createThemedStyles((theme) => ({
   content: {
     alignItems: "center",
     flexDirection: "row",
+    flexGrow: 1,
     flexWrap: "wrap",
     justifyContent: "center",
   },

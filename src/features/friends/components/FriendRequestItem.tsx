@@ -44,6 +44,17 @@ export function FriendRequestItem({
       {request.status === "pending" && isIncoming ? (
         <View style={styles.actions}>
           <Button
+            accessibilityLabel={`Accept friend request from ${request.user.displayName}`}
+            contentStyle={styles.buttonContent}
+            loading={isMutating}
+            onPress={onAccept}
+            style={styles.acceptButton}
+            size="sm"
+            variant="warning"
+          >
+            Accept
+          </Button>
+          <Button
             accessibilityLabel={`Decline friend request from ${request.user.displayName}`}
             contentStyle={styles.buttonContent}
             loading={isMutating}
@@ -54,16 +65,6 @@ export function FriendRequestItem({
             variant="secondary"
           >
             Decline
-          </Button>
-          <Button
-            accessibilityLabel={`Accept friend request from ${request.user.displayName}`}
-            contentStyle={styles.buttonContent}
-            loading={isMutating}
-            onPress={onAccept}
-            size="sm"
-            variant="warning"
-          >
-            Accept
           </Button>
         </View>
       ) : null}
@@ -85,6 +86,9 @@ export function FriendRequestItem({
 }
 
 const styleSheet = createThemedStyles((theme) => ({
+  acceptButton: {
+    flex: 1,
+  },
   actions: {
     flexDirection: "row",
     gap: theme.spacing[2],
@@ -107,7 +111,6 @@ const styleSheet = createThemedStyles((theme) => ({
   declineButton: {
     backgroundColor: theme.colors.transparent,
     borderColor: theme.colors.border.default,
-    flex: 1,
   },
   declineText: {
     color: theme.colors.text.secondary,

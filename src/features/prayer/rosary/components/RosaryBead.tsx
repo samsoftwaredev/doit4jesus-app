@@ -41,7 +41,7 @@ function beadDiameter(type: RosaryBeadModel["type"], compact: boolean) {
 }
 
 /**
- * Renders one selectable Rosary marker with prayer-specific sizing and current-position state.
+ * Renders one theme-aware selectable Rosary marker with prayer-specific sizing and current-position state.
  * The Apostles' Creed uses a crucifix marker, while physical beads use their Rosary bead number.
  */
 export function RosaryBead({
@@ -169,10 +169,10 @@ const styleSheet = createThemedStyles((theme) => ({
     justifyContent: "center",
   },
   completedBead: {
-    backgroundColor: "#E9ECE9",
+    backgroundColor: theme.rosary.colors.pearlShadow,
   },
   activeBead: {
-    backgroundColor: "#FFF9EA",
+    backgroundColor: theme.rosary.colors.pearl,
     borderWidth: theme.rosary.borderWidths.goldEmphasis,
   },
   activeCore: {
@@ -191,7 +191,7 @@ const styleSheet = createThemedStyles((theme) => ({
     width: theme.spacing[10],
   },
   activeCrucifix: {
-    backgroundColor: "rgba(230, 186, 100, 0.12)",
+    backgroundColor: theme.colors.semantic.warningSurface,
     borderColor: theme.rosary.colors.goldBright,
   },
   crossHorizontal: {

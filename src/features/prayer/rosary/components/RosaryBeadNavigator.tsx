@@ -57,7 +57,7 @@ function physicalBeadNumbers(beads: RosaryBeadModel[]) {
 }
 
 /**
- * Displays only physical Rosary markers while navigation continues through every prayer step.
+ * Displays theme-aware physical Rosary markers while navigation continues through every prayer step.
  * Non-bead prayers retain the preceding marker as the active selection.
  */
 export function RosaryBeadNavigator({
@@ -189,8 +189,8 @@ export function RosaryBeadNavigator({
 const styleSheet = createThemedStyles((theme) => ({
   container: {
     alignItems: "center",
-    backgroundColor: "rgba(8, 31, 47, 0.64)",
-    borderColor: "rgba(230, 186, 100, 0.38)",
+    backgroundColor: theme.colors.surface.glass,
+    borderColor: theme.colors.border.warning,
     borderRadius: theme.radii.xl,
     borderWidth: theme.rosary.borderWidths.goldHairline,
     flex: 1,

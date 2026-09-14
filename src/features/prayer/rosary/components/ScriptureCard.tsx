@@ -9,7 +9,7 @@ interface ScriptureCardProps {
   quotation?: string;
 }
 
-/** Renders this feature with colors from the currently resolved app appearance. */
+/** Renders Scripture in a devotional card with readable colors for the active appearance. */
 export function ScriptureCard({ reference, quotation }: ScriptureCardProps) {
   const styles = useThemedStyles(styleSheet);
   return (
@@ -27,8 +27,8 @@ export function ScriptureCard({ reference, quotation }: ScriptureCardProps) {
 
 const styleSheet = createThemedStyles((theme) => ({
   card: {
-    backgroundColor: "rgba(21, 49, 67, 0.9)",
-    borderColor: "rgba(230, 186, 100, 0.28)",
+    backgroundColor: theme.rosary.colors.card,
+    borderColor: theme.colors.border.warning,
     borderRadius: theme.radii.xl,
     borderWidth: theme.rosary.borderWidths.goldHairline,
     padding: theme.spacing[4],
@@ -45,7 +45,7 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   reference: {
     ...theme.typography.bodyMedium,
-    color: theme.colors.text.white,
+    color: theme.colors.text.primary,
     marginTop: theme.spacing[2],
   },
   divider: {
