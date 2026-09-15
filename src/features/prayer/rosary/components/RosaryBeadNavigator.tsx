@@ -1,6 +1,6 @@
 import Feather from "@expo/vector-icons/Feather";
-import { useEffect, useMemo, useRef } from "react";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { type LayoutChangeEvent, Pressable, ScrollView, Text, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { useAnimatedStyle, useReducedMotion, useSharedValue, withTiming } from "react-native-reanimated";
 
@@ -21,6 +21,7 @@ interface RosaryBeadNavigatorProps {
 }
 
 const SWIPE_THRESHOLD = 36;
+const ACTIVE_MARKER_BOTTOM_ROWS = 2.8;
 
 /** Returns whether a prayer step has a physical navigator marker. */
 function hasVisibleMarker(bead: RosaryBeadModel) {
@@ -56,9 +57,15 @@ function physicalBeadNumbers(beads: RosaryBeadModel[]) {
   return numbers;
 }
 
+/** Places the active marker near the lower edge while allowing the ScrollView to clamp at either end. */
+function bottomAnchoredScrollOffset(displayIndex: number, rowHeight: number, viewportHeight: number) {
+  if (displayIndex < 0 || viewportHeight <= 0) return 0;
+  return Math.max(0, displayIndex * rowHeight - viewportHeight + rowHeight * ACTIVE_MARKER_BOTTOM_ROWS);
+}
+
 /**
- * Displays theme-aware physical Rosary markers while navigation continues through every prayer step.
- * Non-bead prayers retain the preceding marker as the active selection.
+ * Displays a transparent, bottom-to-top Rosary rail with swipe and direct-marker navigation.
+ * Non-bead prayers retain the preceding marker, and optional swipe guidance stays collapsed until requested.
  */
 export function RosaryBeadNavigator({
   beads,
@@ -72,6 +79,8 @@ export function RosaryBeadNavigator({
 }: RosaryBeadNavigatorProps) {
   const styles = useThemedStyles(styleSheet);
   const scrollView = useRef<ScrollView>(null);
+  const [showsSwipeInstructions, setShowsSwipeInstructions] = useState(false);
+  const [viewportHeight, setViewportHeight] = useState(0);
   const reduceMotion = useReducedMotion();
   const chainOffset = useSharedValue(0);
   const rowHeight = compact ? 44 : 52;
@@ -81,15 +90,19 @@ export function RosaryBeadNavigator({
     [beads, currentBeadIndex, visibleBeads],
   );
   const beadNumbers = useMemo(() => physicalBeadNumbers(visibleBeads), [visibleBeads]);
+  const displayedBeads = useMemo(() => [...visibleBeads].reverse(), [visibleBeads]);
+  const activeMarkerId = visibleBeads[activeMarkerIndex]?.id;
+  const displayMarkerIndex = activeMarkerIndex < 0 ? -1 : visibleBeads.length - 1 - activeMarkerIndex;
   const sourceIndexById = useMemo(() => new Map(beads.map((bead, index) => [bead.id, index])), [beads]);
 
   useEffect(() => {
-    const targetOffset = Math.max(0, activeMarkerIndex * rowHeight - rowHeight * 1.8);
+    if (viewportHeight <= 0) return;
+    const targetOffset = bottomAnchoredScrollOffset(displayMarkerIndex, rowHeight, viewportHeight);
     scrollView.current?.scrollTo({ y: targetOffset, animated: !reduceMotion });
     chainOffset.value = withTiming(-Math.min(Math.max(0, activeMarkerIndex) * 2, 18), {
       duration: reduceMotion ? 0 : 260,
     });
-  }, [activeMarkerIndex, chainOffset, reduceMotion, rowHeight]);
+  }, [activeMarkerIndex, chainOffset, displayMarkerIndex, reduceMotion, rowHeight, viewportHeight]);
 
   const chainStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: chainOffset.value }],
@@ -98,6 +111,7 @@ export function RosaryBeadNavigator({
   const panGesture = useMemo(
     () =>
       Gesture.Pan()
+        .withTestId("rosary-swipe-gesture")
         .activeOffsetY([-12, 12])
         .failOffsetX([-36, 36])
         .runOnJS(true)
@@ -110,33 +124,46 @@ export function RosaryBeadNavigator({
   );
 
   /** Resolves marker state against the full prayer sequence rather than the filtered visual list. */
-  const beadState = (bead: RosaryBeadModel, index: number) => {
-    if (index === activeMarkerIndex) return "active" as const;
+  const beadState = (bead: RosaryBeadModel) => {
+    if (bead.id === activeMarkerId) return "active" as const;
     const sourceIndex = sourceIndexById.get(bead.id) ?? -1;
     if (completedBeadIds.includes(bead.id) || sourceIndex < currentBeadIndex) return "completed" as const;
     return "upcoming" as const;
   };
 
+  /** Keeps the gesture viewport measurement current for bottom-anchored automatic scrolling. */
+  function handleGestureAreaLayout(event: LayoutChangeEvent) {
+    setViewportHeight(event.nativeEvent.layout.height);
+  }
+
+  /** Shows or hides the optional swipe-navigation instructions. */
+  function toggleSwipeInstructions() {
+    setShowsSwipeInstructions((current) => !current);
+  }
+
   return (
-    <View accessibilityLabel="Rosary bead navigator" style={[styles.container, compact && styles.compactContainer]}>
-      <View style={styles.instructionRow}>
+    <View accessibilityLabel="Rosary bead navigator" style={styles.container}>
+      <View style={styles.infoArea}>
         <Pressable
-          accessibilityLabel="Previous bead"
+          accessibilityLabel={
+            showsSwipeInstructions ? "Hide rosary swipe instructions" : "Show rosary swipe instructions"
+          }
           accessibilityRole="button"
-          accessibilityState={{ disabled: currentBeadIndex === 0 || isTransitioning }}
-          disabled={currentBeadIndex === 0 || isTransitioning}
-          hitSlop={theme.spacing[2]}
-          onPress={onPrevious}
-          style={({ pressed }) => [styles.arrowButton, pressed && styles.pressed]}
-          testID="previous-bead-button"
+          accessibilityState={{ expanded: showsSwipeInstructions }}
+          onPress={toggleSwipeInstructions}
+          style={({ pressed }) => [styles.infoButton, pressed && styles.pressed]}
         >
-          <Feather color={theme.rosary.colors.goldBright} name="chevron-up" size={theme.sizes.iconMedium} />
+          <Feather accessible={false} color={theme.rosary.colors.goldBright} name="info" size={theme.sizes.iconSmall} />
         </Pressable>
-        {!compact ? <Text style={styles.instruction}>Previous{`\n`}bead</Text> : null}
+        {showsSwipeInstructions ? (
+          <Text accessibilityRole="text" style={[styles.swipeHint, compact && styles.compactHint]}>
+            Swipe up or down to move bead by bead
+          </Text>
+        ) : null}
       </View>
 
       <GestureDetector gesture={panGesture}>
-        <View style={styles.gestureArea}>
+        <View onLayout={handleGestureAreaLayout} style={styles.gestureArea}>
           <View pointerEvents="none" style={styles.guide} />
           <ScrollView
             contentContainerStyle={styles.beadList}
@@ -146,7 +173,7 @@ export function RosaryBeadNavigator({
             style={styles.scrollView}
           >
             <Animated.View style={chainStyle}>
-              {visibleBeads.map((bead, index) => (
+              {displayedBeads.map((bead, index) => (
                 <View key={bead.id} style={[styles.beadRow, { minHeight: rowHeight }]}>
                   <RosaryBead
                     bead={bead}
@@ -154,35 +181,15 @@ export function RosaryBeadNavigator({
                     disabled={isTransitioning}
                     displayNumber={beadNumbers.get(bead.id)}
                     onPress={onSelectBead}
-                    state={beadState(bead, index)}
+                    state={beadState(bead)}
                   />
-                  {index < visibleBeads.length - 1 ? <View style={styles.chainLink} /> : null}
+                  {index < displayedBeads.length - 1 ? <View style={styles.chainLink} /> : null}
                 </View>
               ))}
             </Animated.View>
           </ScrollView>
         </View>
       </GestureDetector>
-
-      <Text accessibilityRole="text" style={[styles.swipeHint, compact && styles.compactHint]}>
-        Swipe up or down{`\n`}to move bead by bead
-      </Text>
-
-      <View style={styles.instructionRow}>
-        <Pressable
-          accessibilityLabel="Next bead"
-          accessibilityRole="button"
-          accessibilityState={{ disabled: isTransitioning || beads.length === 0 }}
-          disabled={isTransitioning || beads.length === 0}
-          hitSlop={theme.spacing[2]}
-          onPress={onNext}
-          style={({ pressed }) => [styles.arrowButton, pressed && styles.pressed]}
-          testID="next-bead-button"
-        >
-          <Feather color={theme.rosary.colors.goldBright} name="chevron-down" size={theme.sizes.iconMedium} />
-        </Pressable>
-        {!compact ? <Text style={styles.instruction}>Next{`\n`}bead</Text> : null}
-      </View>
     </View>
   );
 }
@@ -190,27 +197,15 @@ export function RosaryBeadNavigator({
 const styleSheet = createThemedStyles((theme) => ({
   container: {
     alignItems: "center",
-    backgroundColor: theme.colors.surface.glass,
-    borderColor: theme.colors.border.warning,
-    borderRadius: theme.radii.xl,
-    borderWidth: theme.rosary.borderWidths.goldHairline,
     flex: 1,
     minHeight: 0,
     overflow: "hidden",
-    paddingBottom: theme.spacing[2],
-    paddingTop: theme.spacing[2],
   },
-  compactContainer: {
-    borderRadius: theme.radii.lg,
-    paddingHorizontal: theme.spacing[0.5],
-  },
-  instructionRow: {
+  infoArea: {
     alignItems: "center",
-    flexDirection: "row",
-    minHeight: theme.sizes.touchTarget,
     width: "100%",
   },
-  arrowButton: {
+  infoButton: {
     alignItems: "center",
     justifyContent: "center",
     minHeight: theme.sizes.touchTarget,
@@ -218,12 +213,6 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   pressed: {
     opacity: theme.opacity.pressed,
-  },
-  instruction: {
-    ...theme.typography.caption,
-    color: theme.rosary.colors.scripture,
-    fontSize: 9,
-    lineHeight: 12,
   },
   gestureArea: {
     alignSelf: "stretch",
@@ -245,6 +234,8 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   beadList: {
     alignItems: "center",
+    flexGrow: 1,
+    justifyContent: "flex-end",
     paddingBottom: theme.spacing[3],
     paddingTop: theme.spacing[1],
   },
@@ -266,7 +257,7 @@ const styleSheet = createThemedStyles((theme) => ({
     color: theme.rosary.colors.scripture,
     fontSize: 9,
     lineHeight: 12,
-    marginVertical: theme.spacing[1],
+    marginBottom: theme.spacing[1],
     paddingHorizontal: theme.spacing[1],
     textAlign: "center",
   },

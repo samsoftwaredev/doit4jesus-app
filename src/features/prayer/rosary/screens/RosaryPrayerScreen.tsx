@@ -2,7 +2,16 @@ import Feather from "@expo/vector-icons/Feather";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { AccessibilityInfo, Modal, Pressable, ScrollView, Text, useWindowDimensions, View } from "react-native";
+import {
+  AccessibilityInfo,
+  type LayoutChangeEvent,
+  Modal,
+  Pressable,
+  ScrollView,
+  Text,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import Animated, { FadeIn, useReducedMotion } from "react-native-reanimated";
 
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
@@ -54,7 +63,7 @@ function physicalBeadProgress(beads: RosaryBead[], currentBeadIndex: number) {
 
 /**
  * Renders the guided Rosary within the shared atmosphere using the selected set's localized prayer sequence.
- * Full sessions include opening, five decades, and closing prayers; focused sessions retain the ten-bead mode.
+ * Full sessions include opening, five decades, and closing prayers; the bead rail remains bounded to the visible viewport.
  */
 export function RosaryPrayerScreen({
   intentionId,
@@ -71,13 +80,15 @@ export function RosaryPrayerScreen({
 }) {
   const styles = useThemedStyles(styleSheet);
   const router = useRouter();
-  const { width, height, fontScale } = useWindowDimensions();
+  const { width, fontScale } = useWindowDimensions();
   const reduceMotion = useReducedMotion();
   const [completionVisible, setCompletionVisible] = useState(false);
   const [completionCelebration, setCompletionCelebration] = useState(0);
   const [completionError, setCompletionError] = useState<string>();
   const [intentionPrayerCount, setIntentionPrayerCount] = useState<number>();
   const [isRecordingCompletion, setIsRecordingCompletion] = useState(false);
+  const [pageViewportHeight, setPageViewportHeight] = useState(0);
+  const [headerHeight, setHeaderHeight] = useState(0);
   const [rosaryRecorded, setRosaryRecorded] = useState(false);
   const [rosarySettingsVisible, setRosarySettingsVisible] = useState(false);
   const {
@@ -99,8 +110,11 @@ export function RosaryPrayerScreen({
   const rosaryColumnWidth = isTablet
     ? Math.min(224, Math.max(176, width * 0.24))
     : Math.min(compact ? 104 : 142, Math.max(compact ? 88 : 108, width * (compact ? 0.28 : 0.3)));
-  const imageHeight = isTablet ? 290 : compact ? 132 : Math.min(210, Math.max(158, height * 0.23));
   const contentGap = isTablet ? theme.spacing[6] : theme.spacing[3];
+  const rosaryViewportHeight =
+    pageViewportHeight > 0 && headerHeight > 0
+      ? Math.max(0, pageViewportHeight - headerHeight - contentGap)
+      : undefined;
   const defaultMysteries = useMemo(() => getRosaryMysteries(mysteryType), [mysteryType]);
   const mysteries = providedMysteries ?? defaultMysteries;
   const activeMysteries = useMemo(() => (isDecade ? [mysteries[0]].filter(Boolean) : mysteries), [isDecade, mysteries]);
@@ -142,6 +156,16 @@ export function RosaryPrayerScreen({
 
   /** Opens the shared Rosary settings modal from the active-length badge. */
   const handleOpenRosarySettings = useCallback(() => setRosarySettingsVisible(true), []);
+
+  /** Records the visible scrolling region so the Rosary rail does not grow with the card stack. */
+  const handlePageViewportLayout = useCallback((event: LayoutChangeEvent) => {
+    setPageViewportHeight(event.nativeEvent.layout.height);
+  }, []);
+
+  /** Records the responsive header height used to calculate the remaining Rosary viewport. */
+  const handleHeaderLayout = useCallback((event: LayoutChangeEvent) => {
+    setHeaderHeight(event.nativeEvent.layout.height);
+  }, []);
 
   useEffect(() => {
     if (!session.isHydrated || !session.currentMystery || !session.currentBead || session.isTransitioning) return;
@@ -270,10 +294,15 @@ export function RosaryPrayerScreen({
             accessibilityLabel="Rosary prayer content"
             contentContainerStyle={[styles.pageScrollContent, { gap: contentGap }]}
             nestedScrollEnabled
+            onLayout={handlePageViewportLayout}
             showsVerticalScrollIndicator={false}
             style={styles.pageScroll}
           >
-            <View accessibilityLabel="Rosary controls header" style={[styles.topBar, { gap: compact ? 4 : 8 }]}>
+            <View
+              accessibilityLabel="Rosary controls header"
+              onLayout={handleHeaderLayout}
+              style={[styles.topBar, { gap: compact ? 4 : 8 }]}
+            >
               <Pressable
                 accessibilityLabel="Go back"
                 accessibilityRole="button"
@@ -312,7 +341,7 @@ export function RosaryPrayerScreen({
               <RosaryPresence />
             </View>
             <View style={[styles.main, { gap: contentGap }]}>
-              <View style={{ width: rosaryColumnWidth }}>
+              <View style={{ height: rosaryViewportHeight, width: rosaryColumnWidth }} testID="rosary-navigator-column">
                 <RosaryBeadNavigator
                   beads={activeBeads}
                   compact={compact}
@@ -325,8 +354,14 @@ export function RosaryPrayerScreen({
                 />
               </View>
 
-              <View style={[styles.contentColumn, { gap: contentGap }]}>
-                <MysteryCard imageHeight={imageHeight} mystery={session.currentMystery} />
+              <ScrollView
+                accessibilityLabel="Rosary prayer details"
+                contentContainerStyle={[styles.contentColumnContent, { gap: contentGap }]}
+                nestedScrollEnabled
+                showsVerticalScrollIndicator
+                style={[styles.contentColumn, { height: rosaryViewportHeight }]}
+              >
+                <MysteryCard mystery={session.currentMystery} />
                 <FruitOfMysteryCard
                   description={session.currentMystery?.fruitDescription}
                   fruit={session.currentMystery?.fruit}
@@ -348,7 +383,7 @@ export function RosaryPrayerScreen({
                       : "Your prayer is continuing, but the Rosary length could not be saved on this device."}
                   </Text>
                 ) : null}
-              </View>
+              </ScrollView>
             </View>
           </ScrollView>
 
@@ -503,6 +538,9 @@ const styleSheet = createThemedStyles((theme) => ({
   contentColumn: {
     flex: 1,
     minWidth: 0,
+  },
+  contentColumnContent: {
+    flexGrow: 1,
   },
   pageScroll: { flex: 1, minHeight: 0 },
   pageScrollContent: {

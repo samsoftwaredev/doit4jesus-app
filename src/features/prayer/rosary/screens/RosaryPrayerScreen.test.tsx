@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react-native";
+import { StyleSheet } from "react-native";
 
 import { rosaryMysteries } from "@/features/prayer/rosary/data/rosaryMysteries";
 import { prayerById } from "@/features/prayer/rosary/data/rosaryPrayers";
@@ -187,7 +188,7 @@ describe("RosaryPrayerScreen", () => {
 
     expect(screen.getByText("2 praying")).toBeTruthy();
     expect(screen.getByLabelText("2 people praying now")).toBeTruthy();
-    expect(screen.getByLabelText("Next bead")).toBeTruthy();
+    expect(screen.getByTestId("rosary-progress-button")).toBeTruthy();
   });
 
   it("orders the header controls inside the scrolling Rosary content", async () => {
@@ -239,13 +240,37 @@ describe("RosaryPrayerScreen", () => {
     expect(goToNextBead).toHaveBeenCalledTimes(1);
   });
 
-  it("should provide accessible previous, next, settings, and bead controls", async () => {
+  it("should provide accessible info, settings, progress, and bead controls", async () => {
     await render(<RosaryPrayerScreen />);
 
-    expect(screen.getByLabelText("Previous bead")).toBeTruthy();
-    expect(screen.getByLabelText("Next bead")).toBeTruthy();
+    expect(screen.getByLabelText("Show rosary swipe instructions")).toBeTruthy();
+    expect(screen.queryByLabelText("Previous bead")).toBeNull();
+    expect(screen.queryByLabelText("Next bead")).toBeNull();
     expect(screen.getByLabelText("Open Rosary settings")).toBeTruthy();
+    expect(screen.getByTestId("rosary-progress-button")).toBeTruthy();
     expect(screen.getByLabelText(/current bead 1/i)).toBeTruthy();
+  });
+
+  it("gives the rosary rail and prayer details the same viewport height", async () => {
+    await render(<RosaryPrayerScreen />);
+
+    await fireEvent(screen.getByLabelText("Rosary prayer content"), "layout", {
+      nativeEvent: { layout: { height: 700 } },
+    });
+    await fireEvent(screen.getByLabelText("Rosary controls header"), "layout", {
+      nativeEvent: { layout: { height: 44 } },
+    });
+
+    expect(StyleSheet.flatten(screen.getByTestId("rosary-navigator-column").props.style)).toMatchObject({
+      height: 644,
+    });
+    const prayerDetails = screen.getByLabelText("Rosary prayer details");
+    expect(StyleSheet.flatten(prayerDetails.props.style)).toMatchObject({ height: 644 });
+    expect(StyleSheet.flatten(prayerDetails.props.contentContainerStyle)).toMatchObject({ flexGrow: 1 });
+    expect(within(prayerDetails).getByText("CURRENT MYSTERY")).toBeTruthy();
+    expect(within(prayerDetails).getByText("FRUIT OF THE MYSTERY")).toBeTruthy();
+    expect(within(prayerDetails).getByText("HAIL MARY")).toBeTruthy();
+    expect(within(prayerDetails).getByText("SCRIPTURE")).toBeTruthy();
   });
 
   it("opens settings from the default-length badge and changes the active length", async () => {
@@ -265,15 +290,6 @@ describe("RosaryPrayerScreen", () => {
         }),
       ),
     );
-  });
-
-  it("should return to the previous bead when its equivalent button is pressed", async () => {
-    mockSession({ currentBeadIndex: 1, currentBead: rosarySequence[1] });
-    await render(<RosaryPrayerScreen />);
-
-    await fireEvent.press(screen.getByTestId("previous-bead-button"));
-
-    expect(goToPreviousBead).toHaveBeenCalledTimes(1);
   });
 
   it("should show a respectful completion state and allow another prayer", async () => {

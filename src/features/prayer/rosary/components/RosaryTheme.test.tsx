@@ -60,10 +60,10 @@ describe("Rosary prayer appearance", () => {
     expect(StyleSheet.flatten(screen.getByText("John 1:14").props.style)).toMatchObject({
       color: selectedTheme.colors.text.primary,
     });
-    expect(StyleSheet.flatten(screen.getByLabelText("Rosary bead navigator").props.style)).toMatchObject({
-      backgroundColor: selectedTheme.colors.surface.glass,
-      borderColor: selectedTheme.colors.border.warning,
-    });
+    const navigatorStyle = StyleSheet.flatten(screen.getByLabelText("Rosary bead navigator").props.style);
+    expect(navigatorStyle.backgroundColor).toBeUndefined();
+    expect(navigatorStyle.borderColor).toBeUndefined();
+    expect(navigatorStyle.borderWidth).toBeUndefined();
     expect(StyleSheet.flatten(screen.getByTestId("rosary-bead-shape-1").props.style)).toMatchObject({
       backgroundColor: selectedTheme.rosary.colors.pearlShadow,
     });

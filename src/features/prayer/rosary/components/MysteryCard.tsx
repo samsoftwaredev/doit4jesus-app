@@ -10,14 +10,14 @@ import type { RosaryMystery } from "@/features/prayer/rosary/types";
 
 interface MysteryCardProps {
   mystery?: RosaryMystery;
-  imageHeight: number;
 }
 
 /** A bundled image avoids validating a remote or malformed BlurHash during initial render. */
 const devotionalPlaceholder = require("../../../../assets/flowers/whiteLily.png");
+const MYSTERY_IMAGE_ASPECT_RATIO = 575 / 784;
 
-/** Renders this feature with colors from the currently resolved app appearance. */
-export function MysteryCard({ mystery, imageHeight }: MysteryCardProps) {
+/** Renders a mystery card whose devotional image scales from the available width at its portrait ratio. */
+export function MysteryCard({ mystery }: MysteryCardProps) {
   const styles = useThemedStyles(styleSheet);
   const reduceMotion = useReducedMotion();
   const [imageFailed, setImageFailed] = useState(false);
@@ -41,7 +41,7 @@ export function MysteryCard({ mystery, imageHeight }: MysteryCardProps) {
       </Text>
       <Text style={styles.category}>{mystery.category}</Text>
 
-      <View style={[styles.imageFrame, { height: imageHeight }]}>
+      <View style={styles.imageFrame} testID="mystery-image-frame">
         {imageFailed ? (
           <View accessibilityLabel="Devotional image unavailable" style={styles.imageFallback}>
             <Feather color={theme.rosary.colors.gold} name="image" size={theme.sizes.iconLarge} />
@@ -92,6 +92,7 @@ const styleSheet = createThemedStyles((theme) => ({
     marginTop: theme.spacing[0.5],
   },
   imageFrame: {
+    aspectRatio: MYSTERY_IMAGE_ASPECT_RATIO,
     backgroundColor: theme.rosary.colors.cardInset,
     borderColor: "rgba(230, 186, 100, 0.35)",
     borderRadius: theme.radii.lg,
