@@ -4,7 +4,7 @@ import type {
   RosaryContentPrayerId,
   RosaryContentPrayerStep,
 } from "@/features/prayer/rosary/data/rosaryContent";
-import type { RosaryBead, RosaryBeadType, RosaryMysteryType } from "@/features/prayer/rosary/types";
+import type { RosaryBead, RosaryBeadType, RosaryLength, RosaryMysteryType } from "@/features/prayer/rosary/types";
 
 const prayerIdByContentId: Record<RosaryContentPrayerId, string> = {
   apostles_creed: "apostles-creed",
@@ -14,6 +14,8 @@ const prayerIdByContentId: Record<RosaryContentPrayerId, string> = {
   hail_mary: "hail-mary",
   our_father: "our-father",
   sign_of_cross: "sign-of-cross",
+  saint_michael: "saint-michael",
+  litany_of_loreto: "litany-of-loreto",
 };
 
 const beadTypeByContentId: Record<RosaryContentPrayerId, RosaryBeadType> = {
@@ -24,7 +26,57 @@ const beadTypeByContentId: Record<RosaryContentPrayerId, RosaryBeadType> = {
   hail_mary: "hailMary",
   our_father: "ourFather",
   sign_of_cross: "signOfCross",
+  saint_michael: "closingPrayer",
+  litany_of_loreto: "closingPrayer",
 };
+
+interface ClosingPrayerDefinition {
+  beadType: RosaryBeadType;
+  contentId: RosaryContentPrayerId;
+  id: string;
+  prayerId: string;
+  title?: string;
+}
+
+const mediumClosingPrayers: readonly ClosingPrayerDefinition[] = [
+  {
+    beadType: "ourFather",
+    contentId: "our_father",
+    id: "pope-intentions-our-father",
+    prayerId: "our-father",
+    title: "Our Father for the Pope’s Intentions",
+  },
+  {
+    beadType: "hailMary",
+    contentId: "hail_mary",
+    id: "pope-intentions-hail-mary",
+    prayerId: "hail-mary",
+    title: "Hail Mary for the Pope’s Intentions",
+  },
+  {
+    beadType: "gloryBe",
+    contentId: "glory_be",
+    id: "pope-intentions-glory-be",
+    prayerId: "glory-be",
+    title: "Glory Be for the Pope’s Intentions",
+  },
+  {
+    beadType: "closingPrayer",
+    contentId: "saint_michael",
+    id: "saint-michael",
+    prayerId: "saint-michael",
+  },
+];
+
+const longClosingPrayers: readonly ClosingPrayerDefinition[] = [
+  ...mediumClosingPrayers,
+  {
+    beadType: "closingPrayer",
+    contentId: "litany_of_loreto",
+    id: "litany-of-loreto",
+    prayerId: "litany-of-loreto",
+  },
+];
 
 /** Converts one localized content step into the model consumed by the session and navigator. */
 function createRosaryBead(step: RosaryContentPrayerStep): RosaryBead {
@@ -85,6 +137,54 @@ export function getFullRosarySequence(content: RosaryContent, mysteryType: Rosar
   if (!mysterySet) return [];
 
   return mysterySet.prayer_sequence.map(createRosaryBead);
+}
+
+/** Creates one non-bead closing step from the localized prayer library. */
+function createClosingPrayer(
+  content: RosaryContent,
+  definition: ClosingPrayerDefinition,
+  sequence: number,
+): RosaryBead {
+  const prayer = content.prayer_library[definition.contentId];
+
+  return {
+    id: definition.id,
+    isPhysicalBead: false,
+    prayer: {
+      beadType: definition.beadType,
+      id: definition.prayerId,
+      name: definition.title ?? prayer.title,
+      text: prayer.text,
+    },
+    prayerId: definition.prayerId,
+    section: "closing",
+    sequence,
+    type: definition.beadType,
+  };
+}
+
+/**
+ * Composes a full Rosary with the selected cumulative set of non-bead closing prayers.
+ * The final Sign of the Cross always remains last and physical-bead numbering is unchanged.
+ */
+export function getRosarySequenceForLength(
+  content: RosaryContent,
+  mysteryType: RosaryMysteryType,
+  length: RosaryLength,
+): RosaryBead[] {
+  const baseSequence = getFullRosarySequence(content, mysteryType);
+  if (length === "short" || baseSequence.length === 0) return baseSequence;
+
+  const finalStep = baseSequence.at(-1);
+  if (!finalStep || finalStep.type !== "signOfCross" || finalStep.section !== "closing") return baseSequence;
+
+  const sharedSteps = baseSequence.slice(0, -1);
+  const definitions = length === "long" ? longClosingPrayers : mediumClosingPrayers;
+  const addedSteps = definitions.map((definition, index) =>
+    createClosingPrayer(content, definition, sharedSteps.length + index + 1),
+  );
+
+  return [...sharedSteps, ...addedSteps, { ...finalStep, sequence: sharedSteps.length + addedSteps.length + 1 }];
 }
 
 export const rosarySequence = createRosarySequence(1);

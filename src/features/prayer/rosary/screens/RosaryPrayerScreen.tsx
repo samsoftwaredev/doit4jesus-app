@@ -18,12 +18,14 @@ import {
 import { recordPrayerForIntention } from "@/features/prayer/intentions";
 import { recordRosaryActivity } from "@/features/prayer/rosary/api/activities.api";
 import { englishRosaryContent } from "@/features/prayer/rosary/data/rosaryContent";
+import { rosaryLengthLabel } from "@/features/prayer/rosary/data/rosaryLengths";
 import { getRosaryMysteries } from "@/features/prayer/rosary/data/rosaryMysteries";
-import { getFullRosarySequence, rosarySequence } from "@/features/prayer/rosary/data/rosarySequence";
+import { getRosarySequenceForLength, rosarySequence } from "@/features/prayer/rosary/data/rosarySequence";
+import { useRosaryLengthPreference } from "@/features/prayer/rosary/hooks/useRosaryLengthPreference";
 import { useRosarySession } from "@/features/prayer/rosary/hooks/useRosarySession";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
-import type { RosaryBead, RosaryMystery, RosaryMysteryType } from "@/features/prayer/rosary/types";
+import type { RosaryBead, RosaryLength, RosaryMystery, RosaryMysteryType } from "@/features/prayer/rosary/types";
 
 function completionDateLabel(date: string | null) {
   const value = date ? new Date(date) : new Date();
@@ -76,6 +78,13 @@ export function RosaryPrayerScreen({
   const [intentionPrayerCount, setIntentionPrayerCount] = useState<number>();
   const [isRecordingCompletion, setIsRecordingCompletion] = useState(false);
   const [rosaryRecorded, setRosaryRecorded] = useState(false);
+  const [rosarySettingsVisible, setRosarySettingsVisible] = useState(false);
+  const {
+    isHydrated: isLengthHydrated,
+    rosaryLength,
+    setRosaryLength,
+    storageError: lengthStorageError,
+  } = useRosaryLengthPreference();
   const lastAnnouncement = useRef<string | null>(null);
   const hadCompletion = useRef(false);
   const hydratedCompletionState = useRef(false);
@@ -94,11 +103,20 @@ export function RosaryPrayerScreen({
   const defaultMysteries = useMemo(() => getRosaryMysteries(mysteryType), [mysteryType]);
   const mysteries = providedMysteries ?? defaultMysteries;
   const activeMysteries = useMemo(() => (isDecade ? [mysteries[0]].filter(Boolean) : mysteries), [isDecade, mysteries]);
-  const fullRosaryBeads = useMemo(() => getFullRosarySequence(englishRosaryContent, mysteryType), [mysteryType]);
-  const activeBeads = isDecade ? rosarySequence : fullRosaryBeads;
+  const shortRosaryBeads = useMemo(
+    () => getRosarySequenceForLength(englishRosaryContent, mysteryType, "short"),
+    [mysteryType],
+  );
+  const selectedRosaryBeads = useMemo(
+    () => getRosarySequenceForLength(englishRosaryContent, mysteryType, rosaryLength),
+    [mysteryType, rosaryLength],
+  );
+  const activeBeads = isDecade ? rosarySequence : selectedRosaryBeads;
   const session = useRosarySession({
     beads: activeBeads,
+    enabled: isLengthHydrated,
     isFullRosary: !isDecade,
+    legacyBeads: isDecade ? rosarySequence : shortRosaryBeads,
     mysteries: activeMysteries,
     storageKey: `@doit4jesus/rosary-session/${isDecade ? "v3" : "v4"}/${mysteryType}/${isDecade ? "decade" : "full"}`,
   });
@@ -111,6 +129,18 @@ export function RosaryPrayerScreen({
     ...beadProgress,
     prayerName: session.currentPrayer?.name ?? "Prayer",
   };
+
+  /** Applies and announces a Rosary length selected from the settings modal. */
+  const handleRosaryLengthChange = useCallback(
+    (length: RosaryLength) => {
+      void setRosaryLength(length);
+      AccessibilityInfo.announceForAccessibility(`${rosaryLengthLabel(length)} Rosary selected.`);
+    },
+    [setRosaryLength],
+  );
+
+  /** Opens the shared Rosary settings modal from the active-length badge. */
+  const handleOpenRosarySettings = useCallback(() => setRosarySettingsVisible(true), []);
 
   useEffect(() => {
     if (!session.isHydrated || !session.currentMystery || !session.currentBead || session.isTransitioning) return;
@@ -250,6 +280,21 @@ export function RosaryPrayerScreen({
                 size={theme.sizes.iconMedium}
               />
             </Pressable>
+            <Pressable
+              accessibilityHint="Opens Rosary settings to change the prayer length."
+              accessibilityLabel={`Current Rosary length: ${rosaryLengthLabel(rosaryLength)}`}
+              accessibilityRole="button"
+              onPress={handleOpenRosarySettings}
+              style={({ pressed }) => [styles.lengthIndicator, pressed && styles.pressed]}
+            >
+              <Feather
+                accessible={false}
+                color={theme.rosary.colors.goldBright}
+                name="clock"
+                size={theme.sizes.iconSmall}
+              />
+              <Text style={styles.lengthIndicatorText}>{rosaryLengthLabel(rosaryLength)} Rosary</Text>
+            </Pressable>
           </View>
           <View style={[styles.main, { gap: contentGap }]}>
             <View style={{ width: rosaryColumnWidth }}>
@@ -287,9 +332,11 @@ export function RosaryPrayerScreen({
                   (isDecade ? session.currentMystery?.scriptureReference : undefined)
                 }
               />
-              {session.storageError ? (
+              {session.storageError || lengthStorageError ? (
                 <Text accessibilityRole="alert" style={styles.storageNote}>
-                  Your prayer is continuing, but progress could not be saved on this device.
+                  {session.storageError
+                    ? "Your prayer is continuing, but progress could not be saved on this device."
+                    : "Your prayer is continuing, but the Rosary length could not be saved on this device."}
                 </Text>
               ) : null}
             </ScrollView>
@@ -300,8 +347,12 @@ export function RosaryPrayerScreen({
             decadeCount={isDecade ? 1 : 5}
             disabled={session.isTransitioning || activeBeads.length === 0}
             onAdvance={session.goToNextBead}
+            onLengthChange={handleRosaryLengthChange}
             onRestart={session.restartMystery}
+            onSettingsVisibilityChange={setRosarySettingsVisible}
             progress={progress}
+            rosaryLength={rosaryLength}
+            settingsVisible={rosarySettingsVisible}
           />
         </View>
       </LinearGradient>
@@ -402,7 +453,12 @@ const styleSheet = createThemedStyles((theme) => ({
     width: "100%",
     zIndex: theme.zIndex.card,
   },
-  topBar: { alignItems: "flex-start", justifyContent: "center", minHeight: theme.sizes.touchTarget },
+  topBar: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    minHeight: theme.sizes.touchTarget,
+  },
   backButton: {
     alignItems: "center",
     backgroundColor: "rgba(230, 186, 100, 0.12)",
@@ -412,6 +468,21 @@ const styleSheet = createThemedStyles((theme) => ({
     height: theme.sizes.touchTarget,
     justifyContent: "center",
     width: theme.sizes.touchTarget,
+  },
+  lengthIndicator: {
+    alignItems: "center",
+    backgroundColor: "rgba(230, 186, 100, 0.12)",
+    borderColor: theme.rosary.colors.goldMuted,
+    borderRadius: theme.radii.pill,
+    borderWidth: theme.rosary.borderWidths.goldHairline,
+    flexDirection: "row",
+    gap: theme.spacing[1.5],
+    minHeight: theme.sizes.touchTarget,
+    paddingHorizontal: theme.spacing[3],
+  },
+  lengthIndicatorText: {
+    ...theme.typography.labelSmall,
+    color: theme.rosary.colors.goldBright,
   },
   main: {
     flex: 1,

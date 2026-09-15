@@ -2,7 +2,7 @@ import englishRosaryJson from "@/data/en.rosary.json";
 import { englishRosaryContent } from "@/features/prayer/rosary/data/rosaryContent";
 import { getRosaryMysteriesFromContent, rosaryMysterySets } from "@/features/prayer/rosary/data/rosaryMysteries";
 import { prayerById } from "@/features/prayer/rosary/data/rosaryPrayers";
-import { getFullRosarySequence } from "@/features/prayer/rosary/data/rosarySequence";
+import { getFullRosarySequence, getRosarySequenceForLength } from "@/features/prayer/rosary/data/rosarySequence";
 
 import * as mysteryCartoonImages from "../../../../../assets/images/mysteriesCartoon";
 
@@ -180,5 +180,34 @@ describe("English Rosary content", () => {
         scriptureText: "Hail, thou that art highly favoured, the Lord is with thee: blessed art thou among women.",
       }),
     );
+  });
+
+  it("adds the selected closing prayers without adding physical beads", () => {
+    const short = getRosarySequenceForLength(englishRosaryContent, "joyful", "short");
+    const medium = getRosarySequenceForLength(englishRosaryContent, "joyful", "medium");
+    const long = getRosarySequenceForLength(englishRosaryContent, "joyful", "long");
+
+    expect([short.length, medium.length, long.length]).toEqual([74, 78, 79]);
+    expect([short, medium, long].map((sequence) => sequence.filter((step) => step.isPhysicalBead).length)).toEqual([
+      59, 59, 59,
+    ]);
+    expect(short.at(-1)?.prayerId).toBe("sign-of-cross");
+    expect(medium.slice(-5).map((step) => step.id)).toEqual([
+      "pope-intentions-our-father",
+      "pope-intentions-hail-mary",
+      "pope-intentions-glory-be",
+      "saint-michael",
+      "joyful_sign_of_cross_closing",
+    ]);
+    expect(long.slice(-6).map((step) => step.id)).toEqual([
+      "pope-intentions-our-father",
+      "pope-intentions-hail-mary",
+      "pope-intentions-glory-be",
+      "saint-michael",
+      "litany-of-loreto",
+      "joyful_sign_of_cross_closing",
+    ]);
+    expect(long.slice(-6, -1).every((step) => step.isPhysicalBead === false)).toBe(true);
+    expect(long.at(-2)?.prayer?.text).toContain("Mother of Hope");
   });
 });

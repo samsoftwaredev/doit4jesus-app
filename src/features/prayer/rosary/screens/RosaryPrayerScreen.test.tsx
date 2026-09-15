@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react-native";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react-native";
 
 import { rosaryMysteries } from "@/features/prayer/rosary/data/rosaryMysteries";
 import { prayerById } from "@/features/prayer/rosary/data/rosaryPrayers";
@@ -165,6 +165,25 @@ describe("RosaryPrayerScreen", () => {
     expect(screen.getByLabelText("Next bead")).toBeTruthy();
     expect(screen.getByLabelText("Open Rosary settings")).toBeTruthy();
     expect(screen.getByLabelText(/current bead 1/i)).toBeTruthy();
+  });
+
+  it("opens settings from the Default badge and changes the active length", async () => {
+    await render(<RosaryPrayerScreen isDecade={false} />);
+
+    const lengthBadge = await screen.findByRole("button", { name: "Current Rosary length: Default" });
+    await fireEvent.press(lengthBadge);
+
+    expect(screen.getByRole("header", { name: "Rosary settings" })).toBeTruthy();
+    await fireEvent.press(screen.getByRole("radio", { name: "Long Rosary" }));
+
+    expect(screen.getByLabelText("Current Rosary length: Long")).toBeTruthy();
+    await waitFor(() =>
+      expect(useRosarySession).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          beads: expect.arrayContaining([expect.objectContaining({ id: "litany-of-loreto" })]),
+        }),
+      ),
+    );
   });
 
   it("should return to the previous bead when its equivalent button is pressed", async () => {

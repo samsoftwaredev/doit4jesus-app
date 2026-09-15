@@ -22,6 +22,8 @@ export interface RosaryStorageAdapter {
 interface UseRosarySessionOptions {
   mysteries?: RosaryMystery[];
   beads?: RosaryBead[];
+  enabled?: boolean;
+  legacyBeads?: RosaryBead[];
   isFullRosary?: boolean;
   storageKey?: string;
   storage?: RosaryStorageAdapter;
@@ -74,6 +76,33 @@ function uniqueIds(ids: string[]) {
   return [...new Set(ids)];
 }
 
+/** Resolves restored progress by stable step ID, with index-only legacy sessions as a fallback. */
+function restoredBeadIndex(restored: Partial<PersistedRosarySession>, beads: RosaryBead[], legacyBeads: RosaryBead[]) {
+  if (typeof restored.currentBeadId === "string") {
+    const savedIdIndex = beads.findIndex((bead) => bead.id === restored.currentBeadId);
+    if (savedIdIndex >= 0) return savedIdIndex;
+  }
+
+  const savedIndex = Number.isFinite(restored.currentBeadIndex) ? Number(restored.currentBeadIndex) : 0;
+  const legacyStep = legacyBeads[clamp(savedIndex, legacyBeads.length)];
+  const migratedIndex = legacyStep ? beads.findIndex((bead) => bead.id === legacyStep.id) : -1;
+  return migratedIndex >= 0 ? migratedIndex : clamp(savedIndex, beads.length);
+}
+
+/** Finds the shared final Sign of the Cross used when a removed closing prayer was active. */
+function finalSignOfCrossIndex(beads: RosaryBead[]) {
+  for (let index = beads.length - 1; index >= 0; index -= 1) {
+    const bead = beads[index];
+    if (bead.type === "signOfCross" && bead.section === "closing") return index;
+  }
+  return Math.max(0, beads.length - 1);
+}
+
+/** Compares stable step IDs so equivalent arrays do not trigger session reconciliation. */
+function sameBeadSequence(first: RosaryBead[], second: RosaryBead[]) {
+  return first.length === second.length && first.every((bead, index) => bead.id === second[index]?.id);
+}
+
 /**
  * Coordinates the visible decade, prayer selection, haptics and local recovery.
  * The optional dependencies make the persistence behavior straightforward to test.
@@ -81,6 +110,8 @@ function uniqueIds(ids: string[]) {
 export function useRosarySession(options: UseRosarySessionOptions = {}) {
   const mysteries = options.mysteries ?? rosaryMysteries;
   const beads = options.beads ?? rosarySequence;
+  const enabled = options.enabled ?? true;
+  const legacyBeads = options.legacyBeads ?? beads;
   const isFullRosary = options.isFullRosary ?? false;
   const storageKey = options.storageKey ?? STORAGE_KEY;
   const storage = options.storage ?? AsyncStorage;
@@ -92,6 +123,13 @@ export function useRosarySession(options: UseRosarySessionOptions = {}) {
   const [lastPrayedOn, setLastPrayedOn] = useState<string | null>(null);
   const transitionLock = useRef(false);
   const transitionTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const beadsRef = useRef(beads);
+  const legacyBeadsRef = useRef(legacyBeads);
+  const mysteriesRef = useRef(mysteries);
+  const previousBeadsRef = useRef(beads);
+  beadsRef.current = beads;
+  legacyBeadsRef.current = legacyBeads;
+  mysteriesRef.current = mysteries;
 
   const currentBead = beads[clamp(session.currentBeadIndex, beads.length)];
   const calculatedMysteryIndex = isFullRosary
@@ -106,6 +144,7 @@ export function useRosarySession(options: UseRosarySessionOptions = {}) {
       const value: PersistedRosarySession = {
         currentMysteryIndex: nextSession.currentMysteryIndex,
         currentBeadIndex: nextSession.currentBeadIndex,
+        currentBeadId: beads[nextSession.currentBeadIndex]?.id,
         completedBeadIds: nextSession.completedBeadIds,
         dateLastPrayed: prayedOn,
         isRosaryCompleted: nextCompleted,
@@ -118,39 +157,45 @@ export function useRosarySession(options: UseRosarySessionOptions = {}) {
         setStorageError(true);
       }
     },
-    [storage, storageKey],
+    [beads, storage, storageKey],
   );
 
   useEffect(() => {
+    if (!enabled) {
+      setIsHydrated(false);
+      return;
+    }
+
     let active = true;
 
+    /** Restores compatible progress against the currently active prayer sequence. */
     async function restore() {
       try {
         const storedValue = await storage.getItem(storageKey);
         if (!storedValue || !active) return;
 
         const restored = JSON.parse(storedValue) as Partial<PersistedRosarySession>;
+        const activeBeads = beadsRef.current;
+        const activeLegacyBeads = legacyBeadsRef.current;
+        const activeMysteries = mysteriesRef.current;
         const restoredMysteryIndex = clamp(
           Number.isFinite(restored.currentMysteryIndex) ? Number(restored.currentMysteryIndex) : 0,
-          mysteries.length,
+          activeMysteries.length,
         );
-        const restoredBeadIndex = clamp(
-          Number.isFinite(restored.currentBeadIndex) ? Number(restored.currentBeadIndex) : 0,
-          beads.length,
-        );
-        const validIds = new Set(beads.map((bead) => bead.id));
+        const restoredIndex = restoredBeadIndex(restored, activeBeads, activeLegacyBeads);
+        const validIds = new Set(activeBeads.map((bead) => bead.id));
         const completedBeadIds = Array.isArray(restored.completedBeadIds)
           ? restored.completedBeadIds.filter((id): id is string => typeof id === "string" && validIds.has(id))
           : [];
-        const restoredBead = beads[restoredBeadIndex];
+        const restoredBead = activeBeads[restoredIndex];
         const resolvedMysteryIndex = isFullRosary
-          ? mysteryIndexForBead(restoredBead, mysteries, restoredMysteryIndex)
+          ? mysteryIndexForBead(restoredBead, activeMysteries, restoredMysteryIndex)
           : restoredMysteryIndex;
-        const restoredMystery = mysteries[resolvedMysteryIndex];
+        const restoredMystery = activeMysteries[resolvedMysteryIndex];
 
         setSession({
           currentMysteryIndex: resolvedMysteryIndex,
-          currentBeadIndex: restoredBeadIndex,
+          currentBeadIndex: restoredIndex,
           currentPrayerIndex: prayerIndexForBead(restoredBead, restoredMystery),
           completedBeadIds: uniqueIds(completedBeadIds),
           isTransitioning: false,
@@ -168,13 +213,39 @@ export function useRosarySession(options: UseRosarySessionOptions = {}) {
     return () => {
       active = false;
     };
-  }, [beads, isFullRosary, mysteries, storage, storageKey]);
+  }, [enabled, isFullRosary, storage, storageKey]);
 
   useEffect(() => {
     return () => {
       if (transitionTimer.current) clearTimeout(transitionTimer.current);
     };
   }, []);
+
+  useEffect(() => {
+    const previousBeads = previousBeadsRef.current;
+    previousBeadsRef.current = beads;
+    if (previousBeads === beads || sameBeadSequence(previousBeads, beads) || !isHydrated) return;
+
+    setSession((current) => {
+      const previousStep = previousBeads[clamp(current.currentBeadIndex, previousBeads.length)];
+      const sharedIndex = previousStep ? beads.findIndex((bead) => bead.id === previousStep.id) : -1;
+      const nextIndex = sharedIndex >= 0 ? sharedIndex : finalSignOfCrossIndex(beads);
+      const nextMysteryIndex = isFullRosary
+        ? mysteryIndexForBead(beads[nextIndex], mysteries, current.currentMysteryIndex)
+        : clamp(current.currentMysteryIndex, mysteries.length);
+      const validIds = new Set(beads.map((bead) => bead.id));
+
+      return {
+        ...current,
+        completedBeadIds: current.completedBeadIds.filter((id) => validIds.has(id)),
+        currentBeadIndex: nextIndex,
+        currentMysteryIndex: nextMysteryIndex,
+        currentPrayerIndex: prayerIndexForBead(beads[nextIndex], mysteries[nextMysteryIndex]),
+        isTransitioning: false,
+      };
+    });
+    setIsRosaryCompleted(false);
+  }, [beads, isFullRosary, isHydrated, mysteries]);
 
   const finishTransition = useCallback(() => {
     transitionTimer.current = setTimeout(() => {

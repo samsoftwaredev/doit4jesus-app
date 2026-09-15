@@ -1,6 +1,6 @@
 import Feather from "@expo/vector-icons/Feather";
 import { useEffect, useState } from "react";
-import { Modal, Pressable, Text, View } from "react-native";
+import { Modal, Pressable, ScrollView, Text, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useReducedMotion,
@@ -12,7 +12,8 @@ import Animated, {
 
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
-import type { PrayerProgress } from "@/features/prayer/rosary/types";
+import { ROSARY_LENGTH_OPTIONS } from "@/features/prayer/rosary/data/rosaryLengths";
+import type { PrayerProgress, RosaryLength } from "@/features/prayer/rosary/types";
 
 interface RosaryBottomNavigationProps {
   progress: PrayerProgress;
@@ -20,20 +21,37 @@ interface RosaryBottomNavigationProps {
   activeDecadeIndex?: number;
   disabled?: boolean;
   onAdvance: () => void;
+  onLengthChange: (length: RosaryLength) => void;
   onRestart: () => void;
+  onSettingsVisibilityChange?: (visible: boolean) => void;
+  rosaryLength: RosaryLength;
+  settingsVisible?: boolean;
 }
 
-/** Renders theme-aware bead progress, next-bead navigation, and Rosary settings. */
+/** Creates a press handler that selects one length without forwarding the native press event. */
+function createLengthPressHandler(onLengthChange: (length: RosaryLength) => void, length: RosaryLength) {
+  /** Applies the length represented by this settings option. */
+  return function handleLengthPress() {
+    onLengthChange(length);
+  };
+}
+
+/** Renders bead progress and the only controls that can change or restart the active Rosary. */
 export function RosaryBottomNavigation({
   progress,
   decadeCount = 5,
   activeDecadeIndex = 0,
   disabled = false,
   onAdvance,
+  onLengthChange,
   onRestart,
+  onSettingsVisibilityChange,
+  rosaryLength,
+  settingsVisible,
 }: RosaryBottomNavigationProps) {
   const styles = useThemedStyles(styleSheet);
-  const [settingsVisible, setSettingsVisible] = useState(false);
+  const [internalSettingsVisible, setInternalSettingsVisible] = useState(false);
+  const isSettingsVisible = settingsVisible ?? internalSettingsVisible;
   const reduceMotion = useReducedMotion();
   const scale = useSharedValue(1);
 
@@ -45,6 +63,24 @@ export function RosaryBottomNavigation({
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
   }));
+
+  /** Updates controlled or local modal state so every settings trigger shares one dialog. */
+  const updateSettingsVisibility = (visible: boolean) => {
+    if (settingsVisible === undefined) setInternalSettingsVisible(visible);
+    onSettingsVisibilityChange?.(visible);
+  };
+
+  /** Opens the shared Rosary settings modal. */
+  const handleOpenSettings = () => updateSettingsVisibility(true);
+
+  /** Closes the shared Rosary settings modal. */
+  const handleCloseSettings = () => updateSettingsVisibility(false);
+
+  /** Closes settings before restarting the active Rosary from its first prayer. */
+  const handleRestart = () => {
+    handleCloseSettings();
+    onRestart();
+  };
 
   return (
     <View style={styles.navigation}>
@@ -90,7 +126,7 @@ export function RosaryBottomNavigation({
           accessibilityHint="Opens options for this Rosary mystery."
           accessibilityLabel="Open Rosary settings"
           accessibilityRole="button"
-          onPress={() => setSettingsVisible(true)}
+          onPress={handleOpenSettings}
           style={({ pressed }) => [styles.settingsButton, pressed && styles.pressed]}
           testID="open-rosary-settings"
         >
@@ -111,15 +147,15 @@ export function RosaryBottomNavigation({
 
       <Modal
         animationType={reduceMotion ? "none" : "fade"}
-        onRequestClose={() => setSettingsVisible(false)}
+        onRequestClose={handleCloseSettings}
         presentationStyle="overFullScreen"
         transparent
-        visible={settingsVisible}
+        visible={isSettingsVisible}
       >
         <View style={styles.modalOverlay}>
           <View accessibilityViewIsModal style={styles.settingsModal}>
             <View style={styles.modalHeading}>
-              <View>
+              <View style={styles.modalHeadingCopy}>
                 <Text accessibilityRole="header" style={styles.modalTitle}>
                   Rosary settings
                 </Text>
@@ -129,24 +165,69 @@ export function RosaryBottomNavigation({
                 accessibilityLabel="Close Rosary settings"
                 accessibilityRole="button"
                 hitSlop={theme.spacing[2]}
-                onPress={() => setSettingsVisible(false)}
+                onPress={handleCloseSettings}
                 style={styles.closeButton}
               >
-                <Feather color={theme.colors.icon.primary} name="x" size={theme.sizes.iconMedium} />
+                <Feather accessible={false} color={theme.colors.icon.primary} name="x" size={theme.sizes.iconMedium} />
               </Pressable>
             </View>
-            <Pressable
-              accessibilityLabel="Restart current mystery"
-              accessibilityRole="button"
-              onPress={() => {
-                setSettingsVisible(false);
-                onRestart();
-              }}
-              style={({ pressed }) => [styles.settingAction, pressed && styles.pressed]}
+            <ScrollView
+              contentContainerStyle={styles.settingsScrollContent}
+              nestedScrollEnabled
+              showsVerticalScrollIndicator
+              style={styles.settingsScroll}
             >
-              <Feather color={theme.rosary.colors.gold} name="rotate-ccw" size={theme.sizes.iconSmall} />
-              <Text style={styles.settingActionText}>Restart this mystery</Text>
-            </Pressable>
+              <Text accessibilityRole="header" style={styles.sectionTitle}>
+                Rosary length
+              </Text>
+              <View accessibilityRole="radiogroup" style={styles.lengthOptions}>
+                {ROSARY_LENGTH_OPTIONS.map((option) => {
+                  const selected = option.id === rosaryLength;
+                  return (
+                    <Pressable
+                      accessibilityHint={`Uses ${option.introduction.toLowerCase()} ${option.prayers.join(", ")}.`}
+                      accessibilityLabel={`${option.label} Rosary`}
+                      accessibilityRole="radio"
+                      accessibilityState={{ selected }}
+                      key={option.id}
+                      onPress={createLengthPressHandler(onLengthChange, option.id)}
+                      style={({ pressed }) => [
+                        styles.lengthOption,
+                        selected && styles.selectedLengthOption,
+                        pressed && styles.pressed,
+                      ]}
+                    >
+                      <View accessible={false} style={[styles.radio, selected && styles.selectedRadio]}>
+                        {selected ? <View style={styles.radioCore} /> : null}
+                      </View>
+                      <View style={styles.lengthCopy}>
+                        <Text style={[styles.lengthTitle, selected && styles.selectedLengthTitle]}>{option.label}</Text>
+                        <Text style={styles.lengthIntroduction}>{option.introduction}</Text>
+                        {option.prayers.map((prayer) => (
+                          <Text key={prayer} style={styles.lengthPrayer}>
+                            • {prayer}
+                          </Text>
+                        ))}
+                      </View>
+                    </Pressable>
+                  );
+                })}
+              </View>
+              <Pressable
+                accessibilityLabel="Restart current mystery"
+                accessibilityRole="button"
+                onPress={handleRestart}
+                style={({ pressed }) => [styles.settingAction, pressed && styles.pressed]}
+              >
+                <Feather
+                  accessible={false}
+                  color={theme.rosary.colors.gold}
+                  name="rotate-ccw"
+                  size={theme.sizes.iconSmall}
+                />
+                <Text style={styles.settingActionText}>Restart this mystery</Text>
+              </Pressable>
+            </ScrollView>
           </View>
         </View>
       </Modal>
@@ -249,12 +330,18 @@ const styleSheet = createThemedStyles((theme) => ({
     borderRadius: theme.radii.xl,
     borderWidth: theme.rosary.borderWidths.gold,
     maxWidth: 420,
+    maxHeight: "90%",
     padding: theme.spacing[5],
     width: "100%",
   },
   modalHeading: {
+    alignItems: "flex-start",
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  modalHeadingCopy: {
+    flex: 1,
+    minWidth: 0,
   },
   modalTitle: {
     ...theme.typography.heading3,
@@ -273,6 +360,78 @@ const styleSheet = createThemedStyles((theme) => ({
     minHeight: theme.sizes.touchTarget,
     minWidth: theme.sizes.touchTarget,
   },
+  settingsScroll: {
+    flexShrink: 1,
+    minHeight: 0,
+  },
+  settingsScrollContent: {
+    paddingBottom: theme.spacing[1],
+  },
+  sectionTitle: {
+    ...theme.typography.labelSmall,
+    color: theme.rosary.colors.gold,
+    letterSpacing: theme.letterSpacing.widest,
+    marginTop: theme.spacing[4],
+    textTransform: "uppercase",
+  },
+  lengthOptions: {
+    gap: theme.spacing[2],
+    marginTop: theme.spacing[2],
+  },
+  lengthOption: {
+    alignItems: "flex-start",
+    borderColor: theme.colors.border.warning,
+    borderRadius: theme.radii.lg,
+    borderWidth: theme.rosary.borderWidths.goldHairline,
+    flexDirection: "row",
+    gap: theme.spacing[3],
+    minHeight: theme.sizes.touchTarget,
+    padding: theme.spacing[3],
+  },
+  selectedLengthOption: {
+    backgroundColor: theme.colors.semantic.warningSurface,
+    borderColor: theme.rosary.colors.goldBright,
+  },
+  radio: {
+    alignItems: "center",
+    borderColor: theme.rosary.colors.goldMuted,
+    borderRadius: theme.radii.pill,
+    borderWidth: theme.rosary.borderWidths.gold,
+    height: theme.spacing[5],
+    justifyContent: "center",
+    marginTop: theme.spacing[0.5],
+    width: theme.spacing[5],
+  },
+  selectedRadio: {
+    borderColor: theme.rosary.colors.goldBright,
+  },
+  radioCore: {
+    backgroundColor: theme.rosary.colors.goldBright,
+    borderRadius: theme.radii.pill,
+    height: theme.spacing[2.5],
+    width: theme.spacing[2.5],
+  },
+  lengthCopy: {
+    flex: 1,
+    minWidth: 0,
+  },
+  lengthTitle: {
+    ...theme.typography.bodyMedium,
+    color: theme.colors.text.primary,
+  },
+  selectedLengthTitle: {
+    color: theme.rosary.colors.goldBright,
+  },
+  lengthIntroduction: {
+    ...theme.typography.bodySmall,
+    color: theme.rosary.colors.scripture,
+    marginTop: theme.spacing[1],
+  },
+  lengthPrayer: {
+    ...theme.typography.caption,
+    color: theme.colors.text.primary,
+    marginTop: theme.spacing[1],
+  },
   settingAction: {
     alignItems: "center",
     borderColor: theme.colors.border.warning,
@@ -280,7 +439,7 @@ const styleSheet = createThemedStyles((theme) => ({
     borderWidth: theme.rosary.borderWidths.goldHairline,
     flexDirection: "row",
     gap: theme.spacing[2],
-    marginTop: theme.spacing[5],
+    marginTop: theme.spacing[4],
     minHeight: theme.sizes.touchTarget,
     paddingHorizontal: theme.spacing[3],
   },

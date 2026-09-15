@@ -5,8 +5,10 @@ export type RosaryMysteryCategory =
 
 export type RosaryMysteryType = "joyful" | "luminous" | "sorrowful" | "glorious";
 
+export type RosaryLength = "short" | "medium" | "long";
+
 export type RosaryBeadType =
-  "ourFather" | "hailMary" | "gloryBe" | "fatimaPrayer" | "creed" | "hailHolyQueen" | "signOfCross";
+  "ourFather" | "hailMary" | "gloryBe" | "fatimaPrayer" | "creed" | "hailHolyQueen" | "signOfCross" | "closingPrayer";
 
 export type RosarySection = "opening" | "decade" | "closing";
 
@@ -73,6 +75,7 @@ export interface RosarySessionState {
 export interface PersistedRosarySession {
   currentMysteryIndex: number;
   currentBeadIndex: number;
+  currentBeadId?: string;
   completedBeadIds: string[];
   dateLastPrayed: string | null;
   isRosaryCompleted: boolean;

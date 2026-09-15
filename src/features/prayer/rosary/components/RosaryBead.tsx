@@ -24,6 +24,7 @@ interface RosaryBeadProps {
 }
 
 const prayerNameByBeadType: Record<RosaryBeadModel["type"], string> = {
+  closingPrayer: "Closing Prayer",
   creed: "Apostles' Creed",
   fatimaPrayer: "Fatima Prayer",
   gloryBe: "Glory Be",

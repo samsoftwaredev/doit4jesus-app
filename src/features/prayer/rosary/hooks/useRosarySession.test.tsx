@@ -1,7 +1,12 @@
 import { act, renderHook, waitFor } from "@testing-library/react-native";
 
 import { rosaryMysteries } from "@/features/prayer/rosary/data/rosaryMysteries";
-import { fullRosarySequence, rosarySequence } from "@/features/prayer/rosary/data/rosarySequence";
+import {
+  fullRosarySequence,
+  getRosarySequenceForLength,
+  rosarySequence,
+} from "@/features/prayer/rosary/data/rosarySequence";
+import { englishRosaryContent } from "@/features/prayer/rosary/data/rosaryContent";
 import { ROSARY_SESSION_STORAGE_KEY, useRosarySession } from "@/features/prayer/rosary/hooks/useRosarySession";
 import type { RosaryStorageAdapter } from "@/features/prayer/rosary/hooks/useRosarySession";
 
@@ -219,5 +224,68 @@ describe("useRosarySession", () => {
 
     await act(async () => result.current.goToMystery(-20));
     expect(result.current.currentMysteryIndex).toBe(0);
+  });
+
+  it("restores a legacy closing step by stable prayer identity when Default adds prayers before it", async () => {
+    const medium = getRosarySequenceForLength(englishRosaryContent, "joyful", "medium");
+    const short = getRosarySequenceForLength(englishRosaryContent, "joyful", "short");
+    const storage = createStorage(
+      JSON.stringify({ currentBeadIndex: 73, completedBeadIds: [], currentMysteryIndex: 4 }),
+    );
+    const { result } = await renderHook(() =>
+      useRosarySession({
+        beads: medium,
+        isFullRosary: true,
+        legacyBeads: short,
+        mysteries: rosaryMysteries,
+        storage,
+      }),
+    );
+
+    await waitFor(() => expect(result.current.isHydrated).toBe(true));
+
+    expect(result.current.currentBead?.id).toBe("joyful_sign_of_cross_closing");
+    expect(result.current.currentBeadIndex).toBe(medium.length - 1);
+  });
+
+  it("preserves a shared current step and falls back to the final Sign of the Cross when shortening", async () => {
+    const medium = getRosarySequenceForLength(englishRosaryContent, "joyful", "medium");
+    const short = getRosarySequenceForLength(englishRosaryContent, "joyful", "short");
+    const saintMichaelIndex = medium.findIndex((step) => step.id === "saint-michael");
+    const storage = createStorage(
+      JSON.stringify({
+        currentBeadId: "saint-michael",
+        currentBeadIndex: saintMichaelIndex,
+        completedBeadIds: [],
+        currentMysteryIndex: 4,
+      }),
+    );
+    let selectedBeads = medium;
+    const { result, rerender } = await renderHook(() =>
+      useRosarySession({ beads: selectedBeads, isFullRosary: true, mysteries: rosaryMysteries, storage }),
+    );
+
+    await waitFor(() => expect(result.current.currentBead?.id).toBe("saint-michael"));
+    selectedBeads = short;
+    await rerender(undefined);
+
+    await waitFor(() => expect(result.current.currentBead?.id).toBe("joyful_sign_of_cross_closing"));
+    expect(result.current.isRosaryCompleted).toBe(false);
+  });
+
+  it("waits for the Rosary length preference before restoring saved progress", async () => {
+    const storage = createStorage(JSON.stringify({ currentBeadIndex: 4, completedBeadIds: [] }));
+    let enabled = false;
+    const { result, rerender } = await renderHook(() => useRosarySession({ enabled, storage }));
+
+    expect(result.current.isHydrated).toBe(false);
+    expect(storage.getItem).not.toHaveBeenCalled();
+
+    enabled = true;
+    await rerender(undefined);
+    await waitFor(() => expect(result.current.isHydrated).toBe(true));
+
+    expect(result.current.currentBeadIndex).toBe(4);
+    expect(storage.getItem).toHaveBeenCalledTimes(1);
   });
 });

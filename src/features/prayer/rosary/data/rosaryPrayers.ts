@@ -10,6 +10,8 @@ const prayerDefinitions = [
   { contentId: "apostles_creed", id: "apostles-creed", beadType: "creed" },
   { contentId: "hail_holy_queen", id: "hail-holy-queen", beadType: "hailHolyQueen" },
   { contentId: "sign_of_cross", id: "sign-of-cross", beadType: "signOfCross" },
+  { contentId: "saint_michael", id: "saint-michael", beadType: "closingPrayer" },
+  { contentId: "litany_of_loreto", id: "litany-of-loreto", beadType: "closingPrayer" },
 ] as const;
 
 export const rosaryPrayers: RosaryPrayer[] = prayerDefinitions.map(({ beadType, contentId, id }) => {
