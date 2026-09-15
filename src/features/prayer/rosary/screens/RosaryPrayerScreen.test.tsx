@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react-native";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react-native";
 
 import { rosaryMysteries } from "@/features/prayer/rosary/data/rosaryMysteries";
 import { prayerById } from "@/features/prayer/rosary/data/rosaryPrayers";
@@ -12,10 +12,14 @@ const selectBead = jest.fn();
 const mockBack = jest.fn();
 const mockRecordRosaryActivity = jest.fn();
 const mockRecordPrayerForIntention = jest.fn();
+const mockUseRosaryPresence = jest.fn();
 
 jest.mock("expo-router", () => ({ useRouter: () => ({ back: mockBack, replace: jest.fn() }) }));
 jest.mock("@/features/prayer/rosary/hooks/useRosarySession", () => ({
   useRosarySession: jest.fn(),
+}));
+jest.mock("@/features/prayer/rosary/hooks/useRosaryPresence", () => ({
+  useRosaryPresence: () => mockUseRosaryPresence(),
 }));
 jest.mock("@/features/prayer/rosary/api/activities.api", () => ({
   recordRosaryActivity: (...args: unknown[]) => mockRecordRosaryActivity(...args),
@@ -61,6 +65,7 @@ describe("RosaryPrayerScreen", () => {
     useReducedMotion.mockReturnValue(true);
     mockRecordRosaryActivity.mockResolvedValue({ points: 25 });
     mockRecordPrayerForIntention.mockResolvedValue({ prayerCount: 4 });
+    mockUseRosaryPresence.mockReturnValue({ connectionState: "idle", currentUserId: "user-me", users: [] });
     mockSession();
   });
 
@@ -150,6 +155,82 @@ describe("RosaryPrayerScreen", () => {
     expect(mockBack).toHaveBeenCalledTimes(1);
   });
 
+  it("shows the live Rosary Presence summary without replacing prayer controls", async () => {
+    mockUseRosaryPresence.mockReturnValue({
+      connectionState: "connected",
+      currentUserId: "user-me",
+      users: [
+        {
+          avatarUrl: null,
+          countryCode: "US",
+          displayName: "Samuel",
+          joinedAt: "2026-09-15T10:00:00.000Z",
+          saintAvatarId: null,
+          title: null,
+          userId: "user-me",
+          username: "samuel",
+        },
+        {
+          avatarUrl: null,
+          countryCode: "MX",
+          displayName: "Maria",
+          joinedAt: "2026-09-15T10:01:00.000Z",
+          saintAvatarId: null,
+          title: null,
+          userId: "user-maria",
+          username: "maria",
+        },
+      ],
+    });
+
+    await render(<RosaryPrayerScreen />);
+
+    expect(screen.getByText("2 praying")).toBeTruthy();
+    expect(screen.getByLabelText("2 people praying now")).toBeTruthy();
+    expect(screen.getByLabelText("Next bead")).toBeTruthy();
+  });
+
+  it("orders the header controls inside the scrolling Rosary content", async () => {
+    mockUseRosaryPresence.mockReturnValue({
+      connectionState: "connected",
+      currentUserId: "user-me",
+      users: [
+        {
+          avatarUrl: null,
+          countryCode: "US",
+          displayName: "Samuel",
+          joinedAt: "2026-09-15T10:00:00.000Z",
+          saintAvatarId: null,
+          title: null,
+          userId: "user-me",
+          username: "samuel",
+        },
+        {
+          avatarUrl: null,
+          countryCode: "MX",
+          displayName: "Maria",
+          joinedAt: "2026-09-15T10:01:00.000Z",
+          saintAvatarId: null,
+          title: null,
+          userId: "user-maria",
+          username: "maria",
+        },
+      ],
+    });
+
+    await render(<RosaryPrayerScreen />);
+
+    const scrollingContent = screen.getByLabelText("Rosary prayer content");
+    const header = within(scrollingContent).getByLabelText("Rosary controls header");
+    const controls = within(header).getAllByRole("button");
+    expect(controls.map((control) => control.props.accessibilityLabel)).toEqual([
+      "Go back",
+      "Current Rosary length: Default (20 min)",
+      "View Maria's prayer profile, online and praying",
+      "View all 2 people praying now",
+    ]);
+  });
+
   it("should advance to the next bead when the progress button is pressed", async () => {
     await render(<RosaryPrayerScreen />);
 
@@ -167,16 +248,16 @@ describe("RosaryPrayerScreen", () => {
     expect(screen.getByLabelText(/current bead 1/i)).toBeTruthy();
   });
 
-  it("opens settings from the Default badge and changes the active length", async () => {
+  it("opens settings from the default-length badge and changes the active length", async () => {
     await render(<RosaryPrayerScreen isDecade={false} />);
 
-    const lengthBadge = await screen.findByRole("button", { name: "Current Rosary length: Default" });
+    const lengthBadge = await screen.findByRole("button", { name: "Current Rosary length: Default (20 min)" });
     await fireEvent.press(lengthBadge);
 
     expect(screen.getByRole("header", { name: "Rosary settings" })).toBeTruthy();
-    await fireEvent.press(screen.getByRole("radio", { name: "Long Rosary" }));
+    await fireEvent.press(screen.getByRole("radio", { name: "Long (30 min) Rosary" }));
 
-    expect(screen.getByLabelText("Current Rosary length: Long")).toBeTruthy();
+    expect(screen.getByLabelText("Current Rosary length: Long (30 min)")).toBeTruthy();
     await waitFor(() =>
       expect(useRosarySession).toHaveBeenLastCalledWith(
         expect.objectContaining({

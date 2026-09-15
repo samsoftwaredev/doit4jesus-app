@@ -1,0 +1,1 @@
+export { RosaryPresence } from "./RosaryPresence";

@@ -13,6 +13,7 @@ import {
   PrayerCard,
   RosaryBeadNavigator,
   RosaryBottomNavigation,
+  RosaryPresence,
   ScriptureCard,
 } from "@/features/prayer/rosary/components";
 import { recordPrayerForIntention } from "@/features/prayer/intentions";
@@ -265,82 +266,91 @@ export function RosaryPrayerScreen({
             },
           ]}
         >
-          <View style={styles.topBar}>
-            <Pressable
-              accessibilityLabel="Go back"
-              accessibilityRole="button"
-              hitSlop={theme.spacing[2]}
-              onPress={() => router.back()}
-              style={styles.backButton}
-            >
-              <Feather
-                accessible={false}
-                color={theme.rosary.colors.goldBright}
-                name="chevron-left"
-                size={theme.sizes.iconMedium}
-              />
-            </Pressable>
-            <Pressable
-              accessibilityHint="Opens Rosary settings to change the prayer length."
-              accessibilityLabel={`Current Rosary length: ${rosaryLengthLabel(rosaryLength)}`}
-              accessibilityRole="button"
-              onPress={handleOpenRosarySettings}
-              style={({ pressed }) => [styles.lengthIndicator, pressed && styles.pressed]}
-            >
-              <Feather
-                accessible={false}
-                color={theme.rosary.colors.goldBright}
-                name="clock"
-                size={theme.sizes.iconSmall}
-              />
-              <Text style={styles.lengthIndicatorText}>{rosaryLengthLabel(rosaryLength)} Rosary</Text>
-            </Pressable>
-          </View>
-          <View style={[styles.main, { gap: contentGap }]}>
-            <View style={{ width: rosaryColumnWidth }}>
-              <RosaryBeadNavigator
-                beads={activeBeads}
-                compact={compact}
-                completedBeadIds={session.completedBeadIds}
-                currentBeadIndex={session.currentBeadIndex}
-                isTransitioning={session.isTransitioning}
-                onNext={session.goToNextBead}
-                onPrevious={session.goToPreviousBead}
-                onSelectBead={session.selectBead}
-              />
-            </View>
-
-            <ScrollView
-              accessibilityLabel="Rosary prayer content"
-              contentContainerStyle={[styles.contentScrollContent, { gap: contentGap }]}
-              nestedScrollEnabled
-              showsVerticalScrollIndicator={false}
-              style={styles.contentScroll}
-            >
-              <MysteryCard imageHeight={imageHeight} mystery={session.currentMystery} />
-              <FruitOfMysteryCard
-                description={session.currentMystery?.fruitDescription}
-                fruit={session.currentMystery?.fruit}
-              />
-              <PrayerCard prayer={session.currentPrayer} />
-              <ScriptureCard
-                quotation={
-                  session.currentBead?.scriptureText ?? (isDecade ? session.currentMystery?.scriptureText : undefined)
-                }
-                reference={
-                  session.currentBead?.scriptureReference ??
-                  (isDecade ? session.currentMystery?.scriptureReference : undefined)
-                }
-              />
-              {session.storageError || lengthStorageError ? (
-                <Text accessibilityRole="alert" style={styles.storageNote}>
-                  {session.storageError
-                    ? "Your prayer is continuing, but progress could not be saved on this device."
-                    : "Your prayer is continuing, but the Rosary length could not be saved on this device."}
+          <ScrollView
+            accessibilityLabel="Rosary prayer content"
+            contentContainerStyle={[styles.pageScrollContent, { gap: contentGap }]}
+            nestedScrollEnabled
+            showsVerticalScrollIndicator={false}
+            style={styles.pageScroll}
+          >
+            <View accessibilityLabel="Rosary controls header" style={[styles.topBar, { gap: compact ? 4 : 8 }]}>
+              <Pressable
+                accessibilityLabel="Go back"
+                accessibilityRole="button"
+                hitSlop={theme.spacing[2]}
+                onPress={() => router.back()}
+                style={styles.backButton}
+              >
+                <Feather
+                  accessible={false}
+                  color={theme.rosary.colors.goldBright}
+                  name="chevron-left"
+                  size={theme.sizes.iconMedium}
+                />
+              </Pressable>
+              <Pressable
+                accessibilityHint="Opens Rosary settings to change the prayer length."
+                accessibilityLabel={`Current Rosary length: ${rosaryLengthLabel(rosaryLength)}`}
+                accessibilityRole="button"
+                onPress={handleOpenRosarySettings}
+                style={({ pressed }) => [
+                  styles.lengthIndicator,
+                  compact && styles.compactLengthIndicator,
+                  pressed && styles.pressed,
+                ]}
+              >
+                <Feather
+                  accessible={false}
+                  color={theme.rosary.colors.goldBright}
+                  name="clock"
+                  size={theme.sizes.iconSmall}
+                />
+                <Text numberOfLines={1} style={styles.lengthIndicatorText}>
+                  {rosaryLengthLabel(rosaryLength)}
                 </Text>
-              ) : null}
-            </ScrollView>
-          </View>
+              </Pressable>
+              <RosaryPresence />
+            </View>
+            <View style={[styles.main, { gap: contentGap }]}>
+              <View style={{ width: rosaryColumnWidth }}>
+                <RosaryBeadNavigator
+                  beads={activeBeads}
+                  compact={compact}
+                  completedBeadIds={session.completedBeadIds}
+                  currentBeadIndex={session.currentBeadIndex}
+                  isTransitioning={session.isTransitioning}
+                  onNext={session.goToNextBead}
+                  onPrevious={session.goToPreviousBead}
+                  onSelectBead={session.selectBead}
+                />
+              </View>
+
+              <View style={[styles.contentColumn, { gap: contentGap }]}>
+                <MysteryCard imageHeight={imageHeight} mystery={session.currentMystery} />
+                <FruitOfMysteryCard
+                  description={session.currentMystery?.fruitDescription}
+                  fruit={session.currentMystery?.fruit}
+                />
+                <PrayerCard prayer={session.currentPrayer} />
+                <ScriptureCard
+                  quotation={
+                    session.currentBead?.scriptureText ?? (isDecade ? session.currentMystery?.scriptureText : undefined)
+                  }
+                  reference={
+                    session.currentBead?.scriptureReference ??
+                    (isDecade ? session.currentMystery?.scriptureReference : undefined)
+                  }
+                />
+                {session.storageError || lengthStorageError ? (
+                  <Text accessibilityRole="alert" style={styles.storageNote}>
+                    {session.storageError
+                      ? "Your prayer is continuing, but progress could not be saved on this device."
+                      : "Your prayer is continuing, but the Rosary length could not be saved on this device."}
+                  </Text>
+                ) : null}
+              </View>
+            </View>
+          </ScrollView>
 
           <RosaryBottomNavigation
             activeDecadeIndex={isDecade ? 0 : session.currentMysteryIndex}
@@ -456,8 +466,8 @@ const styleSheet = createThemedStyles((theme) => ({
   topBar: {
     alignItems: "center",
     flexDirection: "row",
-    justifyContent: "space-between",
     minHeight: theme.sizes.touchTarget,
+    minWidth: 0,
   },
   backButton: {
     alignItems: "center",
@@ -480,6 +490,7 @@ const styleSheet = createThemedStyles((theme) => ({
     minHeight: theme.sizes.touchTarget,
     paddingHorizontal: theme.spacing[3],
   },
+  compactLengthIndicator: { gap: theme.spacing[1], paddingHorizontal: theme.spacing[2] },
   lengthIndicatorText: {
     ...theme.typography.labelSmall,
     color: theme.rosary.colors.goldBright,
@@ -489,11 +500,13 @@ const styleSheet = createThemedStyles((theme) => ({
     flexDirection: "row",
     minHeight: 0,
   },
-  contentScroll: {
+  contentColumn: {
     flex: 1,
     minWidth: 0,
   },
-  contentScrollContent: {
+  pageScroll: { flex: 1, minHeight: 0 },
+  pageScrollContent: {
+    flexGrow: 1,
     paddingBottom: theme.spacing[2],
   },
   storageNote: {

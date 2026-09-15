@@ -140,6 +140,7 @@ export function RosaryBeadNavigator({
           <View pointerEvents="none" style={styles.guide} />
           <ScrollView
             contentContainerStyle={styles.beadList}
+            nestedScrollEnabled
             ref={scrollView}
             showsVerticalScrollIndicator={false}
             style={styles.scrollView}

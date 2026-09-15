@@ -57,14 +57,14 @@ describe("RosaryBottomNavigation", () => {
 
     await fireEvent.press(screen.getByLabelText("Open Rosary settings"));
 
-    expect(screen.getByRole("radio", { name: "Default Rosary" }).props.accessibilityState).toEqual({ selected: true });
+    expect(screen.getByRole("radio", { name: /Default/i }).props.accessibilityState).toEqual({ selected: true });
     expect(screen.getByText("Everything in Short, plus:")).toBeTruthy();
     expect(screen.getByText("Everything in Default, plus:")).toBeTruthy();
     expect(screen.getByText(/Our Father, Hail Mary, and Glory Be for the Pope’s intentions/)).toBeTruthy();
     expect(screen.getByText(/Litany of Loreto/)).toBeTruthy();
 
-    await fireEvent.press(screen.getByRole("radio", { name: "Long Rosary" }));
+    await fireEvent.press(screen.getByRole("radio", { name: /Long/i }));
     expect(onLengthChange).toHaveBeenCalledWith("long");
-    expect(screen.getByRole("radio", { name: "Long Rosary" })).toBeTruthy();
+    expect(screen.getByRole("radio", { name: /Long/i })).toBeTruthy();
   });
 });

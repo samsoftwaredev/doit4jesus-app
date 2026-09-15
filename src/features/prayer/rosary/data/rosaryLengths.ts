@@ -13,7 +13,7 @@ export const ROSARY_LENGTH_OPTIONS: readonly RosaryLengthOption[] = [
   {
     id: "short",
     introduction: "The standard five-decade Rosary:",
-    label: "Short",
+    label: "Short (15 min)",
     prayers: [
       "Sign of the Cross and Apostles’ Creed",
       "Our Father, Hail Mary, and Glory Be",
@@ -24,13 +24,13 @@ export const ROSARY_LENGTH_OPTIONS: readonly RosaryLengthOption[] = [
   {
     id: "medium",
     introduction: "Everything in Short, plus:",
-    label: "Default",
+    label: "Default (20 min)",
     prayers: ["Our Father, Hail Mary, and Glory Be for the Pope’s intentions", "St. Michael Prayer"],
   },
   {
     id: "long",
     introduction: "Everything in Default, plus:",
-    label: "Long",
+    label: "Long (30 min)",
     prayers: ["Litany of Loreto"],
   },
 ] as const;
