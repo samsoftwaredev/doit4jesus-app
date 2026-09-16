@@ -1,6 +1,7 @@
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { AppState, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { DailyLiturgyDashboard } from "@/features/liturgy/screens";
 import { subscribeToRosaryCompletion } from "@/features/prayer/rosary/rosary-completion-events";
@@ -29,6 +30,7 @@ import type {
 
 /** Composes the Home dashboard's API-backed cards, streak progress, and earned badges. */
 export function HolyProgressDashboard() {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   const router = useRouter();
   const { contentWidth, isLargeText, isTablet } = useResponsiveLayout();
@@ -174,7 +176,7 @@ export function HolyProgressDashboard() {
   const useCardColumns = isTablet && contentWidth >= 700 && !isLargeText;
 
   return (
-    <View accessibilityLabel="Holy Progress Dashboard" style={styles.dashboard}>
+    <View accessibilityLabel={t("dashboard.accessibilityLabel")} style={styles.dashboard}>
       <UserProgressSection />
       <DailyLiturgyDashboard />
       <View style={[styles.primaryGrid, useCardColumns && styles.primaryGridColumns]} testID="dashboard-primary-grid">

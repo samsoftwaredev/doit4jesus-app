@@ -7,9 +7,20 @@ import { ArmorSelector } from "./ArmorSelector";
 import { KnightDisplay } from "./KnightDisplay";
 import { ScriptureReference } from "./ScriptureReference";
 import { StickyActionBar } from "./StickyActionBar";
-import { armorItems } from "./armorOfGod.data";
+import { armorItems, getArmorItems } from "./armorOfGod.data";
 
 describe("Armor of God components", () => {
+  it("provides localized bundled armor content without changing stable item identifiers", () => {
+    const spanishItems = getArmorItems("es");
+
+    expect(spanishItems.map((item) => item.id)).toEqual(armorItems.map((item) => item.id));
+    expect(spanishItems[0]).toMatchObject({
+      name: "YELMO DE LA SALVACIÓN",
+      scriptureReference: "Efesios 6:17",
+      shortName: "Yelmo",
+    });
+  });
+
   it("renders armor choices and selects the pressed item", async () => {
     const onSelect = jest.fn();
     await render(<ArmorSelector items={armorItems} onSelect={onSelect} selectedId="helmet" />);

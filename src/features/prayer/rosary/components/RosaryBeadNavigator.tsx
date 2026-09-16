@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { type LayoutChangeEvent, Pressable, ScrollView, Text, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { useAnimatedStyle, useReducedMotion, useSharedValue, withTiming } from "react-native-reanimated";
+import { useTranslation } from "react-i18next";
 
 import { RosaryBead } from "@/features/prayer/rosary/components/RosaryBead";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
@@ -78,6 +79,7 @@ export function RosaryBeadNavigator({
   onSelectBead,
 }: RosaryBeadNavigatorProps) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const scrollView = useRef<ScrollView>(null);
   const [showsSwipeInstructions, setShowsSwipeInstructions] = useState(false);
   const [viewportHeight, setViewportHeight] = useState(0);
@@ -142,12 +144,10 @@ export function RosaryBeadNavigator({
   }
 
   return (
-    <View accessibilityLabel="Rosary bead navigator" style={styles.container}>
+    <View accessibilityLabel={t("rosary.controls.navigator")} style={styles.container}>
       <View style={styles.infoArea}>
         <Pressable
-          accessibilityLabel={
-            showsSwipeInstructions ? "Hide rosary swipe instructions" : "Show rosary swipe instructions"
-          }
+          accessibilityLabel={t(showsSwipeInstructions ? "rosary.controls.hideSwipe" : "rosary.controls.showSwipe")}
           accessibilityRole="button"
           accessibilityState={{ expanded: showsSwipeInstructions }}
           onPress={toggleSwipeInstructions}
@@ -157,7 +157,7 @@ export function RosaryBeadNavigator({
         </Pressable>
         {showsSwipeInstructions ? (
           <Text accessibilityRole="text" style={[styles.swipeHint, compact && styles.compactHint]}>
-            Swipe up or down to move bead by bead
+            {t("rosary.controls.swipeHint")}
           </Text>
         ) : null}
       </View>

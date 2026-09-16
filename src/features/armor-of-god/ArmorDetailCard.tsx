@@ -1,5 +1,6 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Button, Card } from "@/components/ui";
 import { useThemedStyles } from "@/theme/createThemedStyles";
@@ -9,7 +10,6 @@ import { ArmorStatusBadge } from "./ArmorStatusBadge";
 import { ScriptureReference } from "./ScriptureReference";
 import { styles as styleSheet } from "./ArmorDetailCard.styles";
 import type { ArmorItem } from "./armorOfGod.types";
-import { getArmorActionLabel } from "./armorOfGod.utils";
 
 interface ArmorDetailCardProps {
   item: ArmorItem;
@@ -18,8 +18,17 @@ interface ArmorDetailCardProps {
 
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function ArmorDetailCard({ item, onAction }: ArmorDetailCardProps) {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   const isActionDisabled = item.status === "equipped" || item.status === "locked";
+  const actionLabel =
+    item.status === "available"
+      ? t("armor.action.equip", { item: item.shortName.toUpperCase() })
+      : item.status === "completed"
+        ? t("armor.action.viewChallenge")
+        : item.status === "equipped"
+          ? t("armor.action.equipped")
+          : t("armor.action.locked");
 
   return (
     <Card
@@ -30,7 +39,7 @@ export function ArmorDetailCard({ item, onAction }: ArmorDetailCardProps) {
           onPress={onAction}
           variant={item.status === "available" ? "warning" : "secondary"}
         >
-          {getArmorActionLabel(item.status, item.shortName)}
+          {actionLabel}
         </Button>
       }
       fullWidth
@@ -58,7 +67,7 @@ export function ArmorDetailCard({ item, onAction }: ArmorDetailCardProps) {
       <ScriptureReference reference={item.scriptureReference} />
       {item.challenge ? (
         <View style={styles.challenge}>
-          <Text style={styles.challengeLabel}>Today&apos;s challenge</Text>
+          <Text style={styles.challengeLabel}>{t("armor.challenge")}</Text>
           <Text style={styles.challengeText}>{item.challenge}</Text>
           {item.xpReward ? <Text style={styles.xp}>{`+${item.xpReward} XP`}</Text> : null}
         </View>

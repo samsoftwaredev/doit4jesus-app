@@ -1,6 +1,7 @@
 import Feather from "@expo/vector-icons/Feather";
 import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { Pressable, Text, View } from "react-native";
 
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
@@ -25,11 +26,12 @@ function twoDigits(value: number) {
 
 /** Renders StreakCopy with styles resolved from the active appearance. */
 function StreakCopy({ reminder }: { reminder: RosaryReminderViewModel }) {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   if (reminder.streak.status === "none" || reminder.streak.current <= 0) {
-    return <Text style={styles.streak}>Begin a prayerful rhythm today.</Text>;
+    return <Text style={styles.streak}>{t("dashboard.dailyRosary.beginRhythm")}</Text>;
   }
-  return <Text style={styles.streak}>{`${reminder.streak.current} Day Streak`}</Text>;
+  return <Text style={styles.streak}>{t("dashboard.dailyRosary.dayStreak", { count: reminder.streak.current })}</Text>;
 }
 
 /** Renders this feature with colors from the currently resolved app appearance. */
@@ -82,15 +84,16 @@ export function DailyRosaryCard({
 
 /** Renders CardAction with styles resolved from the active appearance. */
 function CardAction({ onPress }: { onPress: () => void }) {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   return (
     <Pressable
-      accessibilityLabel="Pray Rosary"
+      accessibilityLabel={t("dashboard.dailyRosary.prayLabel")}
       accessibilityRole="button"
       onPress={onPress}
       style={({ pressed }) => [styles.action, pressed && styles.pressed]}
     >
-      <Text style={styles.actionText}>PRAY ROSARY</Text>
+      <Text style={styles.actionText}>{t("dashboard.dailyRosary.pray")}</Text>
       <Feather accessible={false} color={theme.colors.text.inverse} name="chevron-right" size={theme.sizes.iconSmall} />
     </Pressable>
   );
@@ -104,6 +107,7 @@ function CompactRosaryState({
   onPrayRosary: () => void;
   reminder: RosaryReminderViewModel;
 }) {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   return (
     <LinearGradient
@@ -116,11 +120,11 @@ function CompactRosaryState({
         <View style={styles.titleRow}>
           <Feather accessible={false} color={theme.colors.gold.pale} name="circle" size={theme.sizes.iconSmall} />
           <Text accessibilityRole="header" style={styles.title}>
-            Daily Rosary
+            {t("dashboard.dailyRosary.title")}
           </Text>
         </View>
         <StreakCopy reminder={reminder} />
-        <Text style={styles.supporting}>Today’s Rosary is waiting for you.</Text>
+        <Text style={styles.supporting}>{t("dashboard.dailyRosary.waiting")}</Text>
       </View>
       <CardAction onPress={onPrayRosary} />
     </LinearGradient>
@@ -139,6 +143,7 @@ function CountdownRosaryState({
   reminder: RosaryReminderViewModel;
   state: Exclude<RosaryReminderState, "completed" | "expired" | "normal">;
 }) {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   const colors =
     state === "final-fifteen"
@@ -155,7 +160,7 @@ function CountdownRosaryState({
       style={[styles.card, styles.countdownCard]}
     >
       <Text accessibilityRole="header" style={styles.countdownTitle}>
-        Daily Rosary
+        {t("dashboard.dailyRosary.title")}
       </Text>
       <Feather
         accessible={false}
@@ -165,17 +170,21 @@ function CountdownRosaryState({
         style={styles.countdownIcon}
       />
       <Text
-        accessibilityLabel={`Rosary countdown: ${countdown.hours} hours, ${countdown.minutes} minutes, ${countdown.seconds} seconds`}
+        accessibilityLabel={t("dashboard.dailyRosary.countdown", {
+          hours: countdown.hours,
+          minutes: countdown.minutes,
+          seconds: countdown.seconds,
+        })}
         style={styles.timer}
       >
         {`${twoDigits(countdown.hours)} : ${twoDigits(countdown.minutes)} : ${twoDigits(countdown.seconds)}`}
       </Text>
       <View style={styles.timerLabels}>
-        <Text style={styles.timerLabel}>HOURS</Text>
-        <Text style={styles.timerLabel}>MINUTES</Text>
-        <Text style={styles.timerLabel}>SECONDS</Text>
+        <Text style={styles.timerLabel}>{t("dashboard.dailyRosary.hours")}</Text>
+        <Text style={styles.timerLabel}>{t("dashboard.dailyRosary.minutes")}</Text>
+        <Text style={styles.timerLabel}>{t("dashboard.dailyRosary.seconds")}</Text>
       </View>
-      <Text style={styles.countdownCopy}>Complete your Rosary to keep your streak.</Text>
+      <Text style={styles.countdownCopy}>{t("dashboard.dailyRosary.countdownCopy")}</Text>
       <StreakCopy reminder={reminder} />
       <CardAction onPress={onPrayRosary} />
     </LinearGradient>
@@ -184,6 +193,7 @@ function CountdownRosaryState({
 
 /** Renders CompletedRosaryState with styles resolved from the active appearance. */
 function CompletedRosaryState({ reminder }: { reminder: RosaryReminderViewModel }) {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   return (
     <LinearGradient
@@ -197,7 +207,7 @@ function CompletedRosaryState({ reminder }: { reminder: RosaryReminderViewModel 
       </View>
       <View style={styles.completedCopy}>
         <Text accessibilityRole="header" style={styles.completedTitle}>
-          Today’s Rosary Complete
+          {t("dashboard.dailyRosary.complete")}
         </Text>
         <StreakCopy reminder={reminder} />
       </View>
@@ -207,19 +217,21 @@ function CompletedRosaryState({ reminder }: { reminder: RosaryReminderViewModel 
 
 /** Renders ExpiredRosaryState with styles resolved from the active appearance. */
 function ExpiredRosaryState() {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   return (
-    <View accessibilityLabel="Updating today's Rosary status" style={[styles.card, styles.transitionCard]}>
+    <View accessibilityLabel={t("dashboard.dailyRosary.updatingLabel")} style={[styles.card, styles.transitionCard]}>
       <Text accessibilityRole="header" style={styles.title}>
-        Daily Rosary
+        {t("dashboard.dailyRosary.title")}
       </Text>
-      <Text style={styles.supporting}>Updating today’s Rosary status…</Text>
+      <Text style={styles.supporting}>{t("dashboard.dailyRosary.updating")}</Text>
     </View>
   );
 }
 
 /** Renders ResetRosaryState with styles resolved from the active appearance. */
 function ResetRosaryState({ onPrayRosary }: { onPrayRosary: () => void }) {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   return (
     <LinearGradient
@@ -230,9 +242,9 @@ function ResetRosaryState({ onPrayRosary }: { onPrayRosary: () => void }) {
     >
       <View style={styles.compactCopy}>
         <Text accessibilityRole="header" style={styles.title}>
-          Streak Reset
+          {t("dashboard.dailyRosary.reset")}
         </Text>
-        <Text style={styles.supporting}>Start again today.</Text>
+        <Text style={styles.supporting}>{t("dashboard.dailyRosary.startAgain")}</Text>
       </View>
       <CardAction onPress={onPrayRosary} />
     </LinearGradient>
@@ -249,24 +261,25 @@ function RosaryUnavailable({
   onPrayRosary: () => void;
   onRetry: () => void;
 }) {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   return (
     <View style={styles.card}>
       <View style={styles.compactCopy}>
         <Text accessibilityRole="header" style={styles.title}>
-          Daily Rosary
+          {t("dashboard.dailyRosary.title")}
         </Text>
         <Text accessibilityRole={error ? "alert" : undefined} style={styles.supporting}>
-          {error ? "Reminder unavailable." : "Today’s Rosary is waiting for you."}
+          {error ? t("dashboard.dailyRosary.reminderUnavailable") : t("dashboard.dailyRosary.waiting")}
         </Text>
         {error ? (
           <Pressable
-            accessibilityLabel="Retry Rosary reminder"
+            accessibilityLabel={t("dashboard.dailyRosary.retryLabel")}
             accessibilityRole="button"
             onPress={onRetry}
             style={styles.retry}
           >
-            <Text style={styles.retryText}>Try Again</Text>
+            <Text style={styles.retryText}>{t("common.retry")}</Text>
           </Pressable>
         ) : null}
       </View>
@@ -277,9 +290,10 @@ function RosaryUnavailable({
 
 /** Renders RosarySkeleton with styles resolved from the active appearance. */
 function RosarySkeleton() {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   return (
-    <View accessibilityLabel="Loading Daily Rosary" style={[styles.card, styles.skeletonCard]}>
+    <View accessibilityLabel={t("dashboard.dailyRosary.loading")} style={[styles.card, styles.skeletonCard]}>
       <View style={styles.skeletonTitle} />
       <View style={styles.skeletonLine} />
     </View>

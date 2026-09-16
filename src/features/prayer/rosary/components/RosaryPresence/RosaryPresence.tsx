@@ -1,10 +1,12 @@
 import { useMemo, useState } from "react";
 import { Pressable, Text, useWindowDimensions, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { AvatarWithCountryBadge } from "@/components/identity";
 import { findSaintAvatar } from "@/features/profile/saints";
 import { useRosaryPresence } from "@/features/prayer/rosary/hooks/useRosaryPresence";
 import type { RosaryPresenceUser } from "@/features/prayer/rosary/presence.types";
+import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
@@ -19,6 +21,8 @@ type SelectedUser = {
 /** Coordinates the compact Rosary Presence preview with its participant and quick-profile dialogs. */
 export function RosaryPresence() {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
+  const { locale } = useAppLanguage();
   const { fontScale, width } = useWindowDimensions();
   const { connectionState, currentUserId, users } = useRosaryPresence();
   const [listVisible, setListVisible] = useState(false);
@@ -34,12 +38,15 @@ export function RosaryPresence() {
 
   if (connectionState !== "connected" || !currentUserId || users.length === 0) return null;
 
+  const formattedCount = users.length.toLocaleString(locale);
   const countCopy =
-    users.length === 1 ? "You’re praying now" : `${users.length.toLocaleString("en-US")} people praying now`;
+    users.length === 1
+      ? t("rosary.presence.youPraying")
+      : t("rosary.presence.count", { count: users.length, formattedCount });
   const visibleCountCopy = compact
     ? users.length === 1
       ? countCopy
-      : `${users.length.toLocaleString("en-US")} praying`
+      : t("rosary.presence.countCompact", { formattedCount })
     : countCopy;
 
   /** Opens the complete live participant list. */
@@ -66,8 +73,8 @@ export function RosaryPresence() {
             <Pressable
               accessibilityLabel={
                 user.userId === currentUserId
-                  ? "View your prayer profile, online and praying"
-                  : `View ${user.displayName}'s prayer profile, online and praying`
+                  ? t("rosary.presence.viewYourProfile")
+                  : t("rosary.presence.viewProfile", { name: user.displayName })
               }
               accessibilityRole="button"
               key={user.userId}
@@ -75,7 +82,7 @@ export function RosaryPresence() {
               style={({ pressed }) => [styles.avatarButton, pressed && styles.pressed]}
             >
               <AvatarWithCountryBadge
-                accessibilityLabel={`${user.displayName}'s profile image`}
+                accessibilityLabel={t("friends.avatarLabel", { name: user.displayName })}
                 borderColor={theme.rosary.colors.gold}
                 borderWidth={theme.rosary.borderWidths.goldHairline}
                 fallbackBackgroundColor={theme.rosary.colors.canvasLight}
@@ -97,7 +104,10 @@ export function RosaryPresence() {
           ))}
         </View>
         <Pressable
-          accessibilityLabel={`View all ${users.length.toLocaleString("en-US")} ${users.length === 1 ? "person" : "people"} praying now`}
+          accessibilityLabel={t("rosary.presence.viewAll", {
+            count: users.length,
+            formattedCount,
+          })}
           accessibilityRole="button"
           onPress={openList}
           style={({ pressed }) => [styles.countButton, pressed && styles.pressed]}

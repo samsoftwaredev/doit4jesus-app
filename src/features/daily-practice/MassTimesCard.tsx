@@ -1,5 +1,6 @@
 import { Image } from "expo-image";
 import { Text } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { useThemedStyles } from "@/theme/createThemedStyles";
 import { Button, Card } from "@/components/ui";
@@ -9,18 +10,19 @@ import type { DailyPracticeCardProps } from "./DailyPracticeCard.types";
 
 /** Renders MassTimesCard with styles resolved from the active appearance. */
 export function MassTimesCard({ onPress, style, testID }: DailyPracticeCardProps) {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   return (
     <Card
       footer={
         <Button fullWidth onPress={onPress} variant="info">
-          View
+          {t("formation.dailyPractice.mass.action")}
         </Button>
       }
       style={style}
-      subtitle="Worship near you"
+      subtitle={t("formation.dailyPractice.mass.subtitle")}
       testID={testID}
-      title="Mass Times"
+      title={t("formation.dailyPractice.mass.title")}
       variant="default"
     >
       <Image
@@ -29,7 +31,7 @@ export function MassTimesCard({ onPress, style, testID }: DailyPracticeCardProps
         source={require("../../assets/icons/church.png")}
         style={styles.image}
       />
-      <Text style={styles.description}>Find a nearby Mass and make room to encounter Christ.</Text>
+      <Text style={styles.description}>{t("formation.dailyPractice.mass.description")}</Text>
     </Card>
   );
 }

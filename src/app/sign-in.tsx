@@ -1,6 +1,7 @@
 import { Link } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { AuthMessage, AuthScreen, AuthTextInput, authScreenStyles, useAuth } from "@/features/auth";
 import { Button } from "@/components/ui";
@@ -10,6 +11,7 @@ import { useThemedStyles } from "@/theme/createThemedStyles";
 /** Renders sign-in controls with appearance-aware shared authentication styles. */
 export default function SignInScreen() {
   const styles = useThemedStyles(authScreenStyles);
+  const { t } = useTranslation();
   const { configurationError } = useAuth();
   const [email, setEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState<string>();
@@ -30,25 +32,25 @@ export default function SignInScreen() {
   };
 
   return (
-    <AuthScreen title="Sign in" subtitle="Continue your life of prayer.">
+    <AuthScreen title={t("auth.signIn")} subtitle={t("auth.signInDescription")}>
       <AuthTextInput
-        accessibilityLabel="Email"
+        accessibilityLabel={t("auth.email")}
         autoCapitalize="none"
         autoComplete="email"
         keyboardType="email-address"
-        label="Email"
+        label={t("auth.email")}
         onChangeText={setEmail}
-        placeholder="you@example.com"
+        placeholder={t("auth.emailPlaceholder")}
         textContentType="emailAddress"
         value={email}
       />
       <AuthTextInput
-        accessibilityLabel="Password"
+        accessibilityLabel={t("auth.password")}
         autoCapitalize="none"
         autoComplete="current-password"
-        label="Password"
+        label={t("auth.password")}
         onChangeText={setPassword}
-        placeholder="Password"
+        placeholder={t("auth.password")}
         secureTextEntry
         textContentType="password"
         value={password}
@@ -63,14 +65,14 @@ export default function SignInScreen() {
           loading={isSubmitting}
           onPress={() => void signIn()}
         >
-          Sign in
+          {t("auth.signIn")}
         </Button>
       </View>
       <Link href="/forgot-password" style={styles.link}>
-        Forgot password?
+        {t("auth.forgotPassword")}
       </Link>
       <Link href="/sign-up" style={styles.link}>
-        Create an account
+        {t("auth.createAccount")}
       </Link>
     </AuthScreen>
   );

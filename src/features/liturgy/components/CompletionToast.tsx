@@ -1,7 +1,9 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useEffect, useRef } from "react";
 import { Animated, Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
+import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
@@ -16,6 +18,8 @@ interface CompletionToastProps {
 
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function CompletionToast({ count, currentLevel, points, totalXp, visible, onDismiss }: CompletionToastProps) {
+  const { t } = useTranslation();
+  const { locale } = useAppLanguage();
   const styles = useThemedStyles(styleSheet);
   const opacity = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(-8)).current;
@@ -39,18 +43,22 @@ export function CompletionToast({ count, currentLevel, points, totalXp, visible,
         <MaterialCommunityIcons color={theme.colors.text.white} name="check" size={18} />
       </View>
       <View style={styles.copy}>
-        <Text style={styles.title}>All {count} scriptures completed</Text>
-        <Text style={styles.message}>Well done — keep the Word in your heart.</Text>
-        {typeof points === "number" ? <Text style={styles.points}>Points +{points}</Text> : null}
+        <Text style={styles.title}>{t("liturgy.toast.title", { count })}</Text>
+        <Text style={styles.message}>{t("liturgy.toast.message")}</Text>
+        {typeof points === "number" ? (
+          <Text style={styles.points}>
+            {t("liturgy.toast.points", { points: new Intl.NumberFormat(locale).format(points) })}
+          </Text>
+        ) : null}
         {typeof totalXp === "number" ? (
           <Text style={styles.total}>
-            Total XP {totalXp}
-            {currentLevel ? ` · Level ${currentLevel}` : ""}
+            {t("liturgy.toast.totalXp", { totalXp: new Intl.NumberFormat(locale).format(totalXp) })}
+            {currentLevel ? ` · ${t("liturgy.toast.level", { level: currentLevel })}` : ""}
           </Text>
         ) : null}
       </View>
       <Pressable
-        accessibilityLabel="Dismiss completion message"
+        accessibilityLabel={t("liturgy.toast.dismiss")}
         accessibilityRole="button"
         hitSlop={8}
         onPress={onDismiss}

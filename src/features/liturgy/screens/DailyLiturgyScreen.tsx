@@ -1,6 +1,7 @@
 import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
@@ -38,9 +39,10 @@ function hasCompletedAllReadings(progress: DailyReadingProgress, model: DailyLit
 
 /** Renders LiturgyLoadingState with styles resolved from the active appearance. */
 function LiturgyLoadingState() {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   return (
-    <View accessibilityLabel="Loading daily liturgy" style={styles.skeletons}>
+    <View accessibilityLabel={t("liturgy.loading")} style={styles.skeletons}>
       <View style={[styles.skeleton, styles.headerSkeleton]} />
       <View style={[styles.skeleton, styles.heroSkeleton]} />
       <View style={[styles.skeleton, styles.chipsSkeleton]} />
@@ -54,6 +56,7 @@ function LiturgyLoadingState() {
  * owns scrolling so this component can live naturally alongside other cards.
  */
 export function DailyLiturgyDashboard({ country = "US", onCalendarPress }: DailyLiturgyDashboardProps) {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   const rewardInFlight = useRef<string | null>(null);
   const toastPresentedFor = useRef<string | null>(null);
@@ -116,13 +119,13 @@ export function DailyLiturgyDashboard({ country = "US", onCalendarPress }: Daily
         setProgress(updated);
         await presentCompletionToast(updated, readingCount);
       } catch {
-        setRewardError("Your readings are saved. Points could not be recorded yet.");
+        setRewardError(t("liturgy.rewardError"));
       } finally {
         rewardInFlight.current = null;
         setIsRetryingReward(false);
       }
     },
-    [presentCompletionToast],
+    [presentCompletionToast, t],
   );
 
   const syncProgress = useCallback(
@@ -150,12 +153,12 @@ export function DailyLiturgyDashboard({ country = "US", onCalendarPress }: Daily
         setLiturgy(model);
         await syncProgress(model);
       } catch {
-        setError("Unable to load this day’s liturgy.");
+        setError(t("liturgy.loadError"));
       } finally {
         setIsLoading(false);
       }
     },
-    [country, selectedDate, syncProgress],
+    [country, selectedDate, syncProgress, t],
   );
 
   useEffect(() => {
@@ -211,11 +214,11 @@ export function DailyLiturgyDashboard({ country = "US", onCalendarPress }: Daily
       {error && !liturgy ? (
         <View style={styles.errorCard}>
           <Text accessibilityRole="header" style={styles.errorTitle}>
-            Unable to load this day&apos;s liturgy.
+            {t("liturgy.loadError")}
           </Text>
-          <Text style={styles.errorCopy}>Please try again when you&apos;re ready.</Text>
+          <Text style={styles.errorCopy}>{t("liturgy.tryAgain")}</Text>
           <Button onPress={() => void reload()} style={styles.retryButton} variant="warning">
-            Retry
+            {t("liturgy.retry")}
           </Button>
         </View>
       ) : null}
@@ -251,7 +254,7 @@ export function DailyLiturgyDashboard({ country = "US", onCalendarPress }: Daily
             <View accessibilityRole="alert" style={styles.rewardError}>
               <Text style={styles.rewardErrorCopy}>{rewardError}</Text>
               <Button loading={isRetryingReward} onPress={retryReward} size="sm" variant="outline">
-                Retry points
+                {t("liturgy.retryPoints")}
               </Button>
             </View>
           ) : null}

@@ -1,6 +1,7 @@
 import { useRouter } from "expo-router";
 import type { ComponentProps } from "react";
 import { Text, TextInput, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { ScreenShell } from "@/components/screen-shell";
 import { Card } from "@/components/ui";
@@ -20,13 +21,14 @@ type AuthTextInputProps = ComponentProps<typeof TextInput> & {
 /** Renders the shared themed frame used by sign-in and account recovery screens. */
 export function AuthScreen({ children, subtitle, title }: AuthScreenProps) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const router = useRouter();
 
   return (
     <ScreenShell
       contentContainerStyle={styles.content}
       description={subtitle}
-      eyebrow="WELCOME"
+      eyebrow={t("auth.eyebrow")}
       onBack={() => router.back()}
       title={title}
     >

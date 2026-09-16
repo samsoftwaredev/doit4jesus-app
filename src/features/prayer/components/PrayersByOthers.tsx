@@ -1,5 +1,6 @@
 import Feather from "@expo/vector-icons/Feather";
 import { ActivityIndicator, FlatList, type ListRenderItemInfo, Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import type { ApprovedPrayerIntention } from "@/features/prayer/intentions";
 import { PrayerIntentionCard } from "@/features/prayer/intentions/components";
@@ -39,6 +40,7 @@ export function PrayersByOthers({
   onSeeAll,
 }: PrayersByOthersProps) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const { isLargeText } = useResponsiveLayout();
   const cardWidth = isLargeText ? largeTextIntentionCardWidth : intentionCardWidth;
   const snapInterval = cardWidth + theme.spacing[2];
@@ -52,16 +54,20 @@ export function PrayersByOthers({
   return (
     <View style={styles.section}>
       <View style={styles.intentionsHeader}>
-        <Text accessibilityLabel="Prayers by Others" accessibilityRole="header" style={styles.sectionLabel}>
-          PRAYERS BY OTHERS
+        <Text
+          accessibilityLabel={t("intentions.prayersByOthers")}
+          accessibilityRole="header"
+          style={styles.sectionLabel}
+        >
+          {t("intentions.prayersByOthersUpper")}
         </Text>
         <Pressable
-          accessibilityLabel="See all prayer intentions"
+          accessibilityLabel={t("intentions.seeAllLabel")}
           accessibilityRole="button"
           onPress={onSeeAll}
           style={styles.seeAllButton}
         >
-          <Text style={styles.seeAll}>See All</Text>
+          <Text style={styles.seeAll}>{t("intentions.seeAll")}</Text>
           <Feather
             accessible={false}
             color={theme.rosary.colors.goldBright}
@@ -74,7 +80,7 @@ export function PrayersByOthers({
       {isLoading ? <PrayerIntentionSkeletons /> : null}
       {!isLoading && !hasInitialError ? (
         <FlatList
-          accessibilityLabel="Prayer intentions carousel"
+          accessibilityLabel={t("intentions.carousel")}
           contentContainerStyle={styles.intentionsList}
           data={intentions}
           decelerationRate="fast"
@@ -95,28 +101,28 @@ export function PrayersByOthers({
       {errorMessage ? (
         <View style={styles.intentionState}>
           <Text accessibilityRole="alert" style={styles.stateText}>
-            {intentions.length > 0 ? "Couldn't load more prayer intentions." : "Couldn't load prayer intentions."}
+            {t(intentions.length > 0 ? "intentions.loadMoreError" : "intentions.loadError")}
           </Text>
           <Pressable accessibilityRole="button" onPress={onRetry} style={styles.retryButton}>
-            <Text style={styles.retryText}>Try Again</Text>
+            <Text style={styles.retryText}>{t("common.retry")}</Text>
           </Pressable>
         </View>
       ) : null}
       {!isLoading && !errorMessage && intentions.length === 0 ? (
         <View style={styles.intentionState}>
-          <Text style={styles.stateText}>No prayer intentions yet.</Text>
-          <Text style={styles.stateCopy}>Be the first to share an intention.</Text>
+          <Text style={styles.stateText}>{t("intentions.empty")}</Text>
+          <Text style={styles.stateCopy}>{t("intentions.emptyCopy")}</Text>
         </View>
       ) : null}
       <View style={styles.managementRow}>
         <Pressable
-          accessibilityLabel="View my prayer intentions"
+          accessibilityLabel={t("intentions.myViewLabel")}
           accessibilityRole="button"
           onPress={onOpenMyIntentions}
           style={styles.managementButton}
         >
           <Feather accessible={false} color={theme.rosary.colors.gold} name="list" size={theme.sizes.iconSmall} />
-          <Text style={styles.managementText}>My intentions</Text>
+          <Text style={styles.managementText}>{t("intentions.myShort")}</Text>
         </Pressable>
       </View>
     </View>
@@ -147,10 +153,11 @@ function PrayerIntentionPreview({
 /** Renders the leading call-to-action card for sharing a new prayer intention. */
 function ShareIntentionCard({ isLargeText, onPress }: { isLargeText: boolean; onPress: () => void }) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
 
   return (
     <Pressable
-      accessibilityLabel="Share an intention"
+      accessibilityLabel={t("intentions.share")}
       accessibilityRole="button"
       onPress={onPress}
       style={[styles.shareCard, isLargeText && styles.shareCardLargeText]}
@@ -160,8 +167,8 @@ function ShareIntentionCard({ isLargeText, onPress }: { isLargeText: boolean; on
           +
         </Text>
       </View>
-      <Text style={styles.shareTitle}>Share an intention</Text>
-      <Text style={styles.shareCopy}>Invite others to pray with you.</Text>
+      <Text style={styles.shareTitle}>{t("intentions.share")}</Text>
+      <Text style={styles.shareCopy}>{t("intentions.shareCopy")}</Text>
     </Pressable>
   );
 }
@@ -169,10 +176,11 @@ function ShareIntentionCard({ isLargeText, onPress }: { isLargeText: boolean; on
 /** Shows that another page of intentions is being appended to the carousel. */
 function LoadingMoreCard({ isLargeText }: { isLargeText: boolean }) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
 
   return (
     <View
-      accessibilityLabel="Loading more prayer intentions"
+      accessibilityLabel={t("intentions.loadingMoreLabel")}
       style={[styles.loadingMoreCard, isLargeText && styles.shareCardLargeText]}
     >
       <ActivityIndicator color={theme.rosary.colors.gold} />
@@ -183,9 +191,10 @@ function LoadingMoreCard({ isLargeText }: { isLargeText: boolean }) {
 /** Renders lightweight placeholders while public intentions are loading. */
 function PrayerIntentionSkeletons() {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
 
   return (
-    <View accessibilityLabel="Loading prayer intentions" style={styles.skeletonRow}>
+    <View accessibilityLabel={t("intentions.loadingLabel")} style={styles.skeletonRow}>
       {[0, 1, 2].map((item) => (
         <View key={item} style={styles.skeletonCard}>
           <ActivityIndicator color={theme.rosary.colors.gold} />

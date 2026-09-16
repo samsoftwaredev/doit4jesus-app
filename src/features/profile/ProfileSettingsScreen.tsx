@@ -2,6 +2,7 @@ import Feather from "@expo/vector-icons/Feather";
 import Constants from "expo-constants";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -30,7 +31,7 @@ import {
 } from "@/features/profile";
 import { supabase } from "@/lib/supabase";
 import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
-import { formatAppearancePreference, useAppTheme } from "@/theme/AppThemeProvider";
+import { useAppTheme } from "@/theme/AppThemeProvider";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
@@ -53,6 +54,7 @@ export function formatProfileLocation(profile: CurrentUserProfile): string {
 /** Renders profile management and settings within the shared atmosphere. */
 export function ProfileSettingsScreen() {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { configurationError } = useAuth();
@@ -78,11 +80,11 @@ export function ProfileSettingsScreen() {
     try {
       setProfile(await fetchCurrentUserProfile());
     } catch (error) {
-      setProfileError(error instanceof Error ? error.message : "We couldn't load your profile.");
+      setProfileError(error instanceof Error ? error.message : t("profile.errors.load"));
     } finally {
       setIsLoadingProfile(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void loadProfile();
@@ -101,7 +103,7 @@ export function ProfileSettingsScreen() {
       setToastMessage(successMessage);
       return true;
     } catch {
-      setToastMessage("Something went wrong. Please try again.");
+      setToastMessage(t("profile.errors.generic"));
       return false;
     } finally {
       setIsUpdating(false);
@@ -112,7 +114,7 @@ export function ProfileSettingsScreen() {
     try {
       await Linking.openURL(url);
     } catch {
-      setToastMessage("We couldn't open that link. Please try again.");
+      setToastMessage(t("profile.errors.link"));
     }
   };
 
@@ -134,7 +136,7 @@ export function ProfileSettingsScreen() {
       setIsSigningOut(false);
     } catch {
       signOutInFlightRef.current = false;
-      setToastMessage("Something went wrong. Please try again.");
+      setToastMessage(t("profile.errors.generic"));
       setIsSigningOut(false);
     }
   };
@@ -142,11 +144,11 @@ export function ProfileSettingsScreen() {
   const showDeleteProfileConfirmation = () => {
     if (isDeletingProfile || isSigningOut) return;
 
-    Alert.alert("Delete account?", "This permanently deletes your Do It for Jesus profile and cannot be undone.", [
-      { style: "cancel", text: "Cancel" },
+    Alert.alert(t("profile.deleteConfirmation.title"), t("profile.deleteConfirmation.description"), [
+      { style: "cancel", text: t("common.cancel") },
       {
         style: "destructive",
-        text: "Delete Account",
+        text: t("profile.deleteAccount"),
         onPress: () => void deleteProfile(),
       },
     ]);
@@ -166,7 +168,7 @@ export function ProfileSettingsScreen() {
     } catch {
       deleteProfileInFlightRef.current = false;
       setIsDeletingProfile(false);
-      setToastMessage("We couldn't delete your account. Please try again.");
+      setToastMessage(t("profile.errors.delete"));
       return;
     }
 
@@ -174,18 +176,24 @@ export function ProfileSettingsScreen() {
       const { error } = await supabase.auth.signOut();
       if (!error) return;
 
-      setToastMessage("Your account was deleted, but we couldn't sign you out. Please use Sign Out to finish.");
+      setToastMessage(t("profile.errors.signedOutAfterDelete"));
     } catch {
-      setToastMessage("Your account was deleted, but we couldn't sign you out. Please use Sign Out to finish.");
+      setToastMessage(t("profile.errors.signedOutAfterDelete"));
     } finally {
       deleteProfileInFlightRef.current = false;
       setIsDeletingProfile(false);
     }
   };
 
-  const location = profile ? formatProfileLocation(profile) : "Country unavailable";
+  const rawLocation = profile ? formatProfileLocation(profile) : "";
+  const location =
+    rawLocation === "Country unavailable" || !rawLocation ? t("profile.countryUnavailable") : rawLocation;
   const appVersion = Constants.expoConfig?.version ?? Constants.nativeAppVersion ?? "—";
-  const appearanceSummary = formatAppearancePreference(preference, colorScheme);
+  const resolvedScheme = t(`profile.appearanceValue.${colorScheme}`);
+  const appearanceSummary =
+    preference === "system"
+      ? t("profile.appearanceValue.system", { scheme: resolvedScheme })
+      : t(`profile.appearanceValue.${preference}`);
 
   return (
     <AtmosphericSafeAreaView edges={["top"]} style={styles.safeArea}>
@@ -200,7 +208,7 @@ export function ProfileSettingsScreen() {
         ]}
         showsVerticalScrollIndicator={false}
       >
-        <PageHeader description="Manage your profile, appearance, support, and account." title="Profile & Settings" />
+        <PageHeader description={t("profile.description")} title={t("profile.title")} />
 
         <ProfileToast message={toastMessage} onDismiss={() => setToastMessage(undefined)} />
 
@@ -208,10 +216,10 @@ export function ProfileSettingsScreen() {
 
         {profileError && !isLoadingProfile ? (
           <View accessibilityRole="alert" style={styles.errorCard}>
-            <Text style={styles.errorTitle}>We couldn't load your profile.</Text>
-            <Text style={styles.errorCopy}>Your support and account settings are still available below.</Text>
+            <Text style={styles.errorTitle}>{t("profile.errors.load")}</Text>
+            <Text style={styles.errorCopy}>{t("profile.errors.loadCopy")}</Text>
             <Button onPress={() => void loadProfile()} size="sm" style={styles.errorAction} variant="secondary">
-              Try again
+              {t("profile.tryAgain")}
             </Button>
           </View>
         ) : null}
@@ -224,39 +232,39 @@ export function ProfileSettingsScreen() {
               profile={profile}
             />
 
-            <SettingsSection title="PROFILE">
+            <SettingsSection title={t("profile.profile")}>
               <SettingsRow
                 icon="user"
-                label="Name"
+                label={t("profile.name")}
                 onPress={() => setNameEditorVisible(true)}
-                value={profile.displayName ?? "Not set"}
+                value={profile.displayName ?? t("profile.notSet")}
               />
               <SettingsRow
                 icon="users"
-                label="Gender"
+                label={t("profile.gender")}
                 onPress={() => setGenderSelectorVisible(true)}
-                value={profile.gender === "male" ? "Male" : "Female"}
+                value={profile.gender === "male" ? t("profile.male") : t("profile.female")}
               />
-              <SettingsRow icon="map-pin" isLast label="Country" value={location} />
+              <SettingsRow icon="map-pin" isLast label={t("profile.country")} value={location} />
             </SettingsSection>
           </>
         ) : null}
 
-        <SettingsSection title="APPEARANCE">
+        <SettingsSection title={t("profile.appearanceSection")}>
           <SettingsRow
             icon="sun"
             isLast
-            label="Appearance"
+            label={t("profile.appearance")}
             onPress={() => router.push("/settings")}
             value={appearanceSummary}
           />
         </SettingsSection>
 
-        <SettingsSection title="SUPPORT">
+        <SettingsSection title={t("profile.support")}>
           <SettingsRow
             icon="headphones"
             isLast
-            label="Contact Support"
+            label={t("profile.contactSupport")}
             onPress={() =>
               void openExternalUrl(
                 `mailto:${APP_CONFIG.supportEmail}?subject=${encodeURIComponent("Do It for Jesus Support")}`,
@@ -265,40 +273,40 @@ export function ProfileSettingsScreen() {
           />
         </SettingsSection>
 
-        <SettingsSection title="ABOUT">
-          <SettingsRow icon="info" label="About Us" onPress={() => router.push("/about")} />
+        <SettingsSection title={t("profile.about")}>
+          <SettingsRow icon="info" label={t("profile.aboutUs")} onPress={() => router.push("/about")} />
           <SettingsRow
             external
             icon="shield"
-            label="Privacy Policy"
+            label={t("profile.privacyPolicy")}
             onPress={() => void openExternalUrl(APP_CONFIG.privacyPolicyUrl)}
           />
           <SettingsRow
             external
             icon="file-text"
-            label="Terms of Service"
+            label={t("profile.terms")}
             onPress={() => void openExternalUrl(APP_CONFIG.termsOfServiceUrl)}
           />
-          <SettingsRow icon="info" isLast label="App Version" value={appVersion} />
+          <SettingsRow icon="info" isLast label={t("profile.appVersion")} value={appVersion} />
         </SettingsSection>
 
-        <SettingsSection title="ACCOUNT">
+        <SettingsSection title={t("profile.account")}>
           <SettingsRow
             destructive
             icon="trash-2"
-            label="Delete Account"
+            label={t("profile.deleteAccount")}
             onPress={showDeleteProfileConfirmation}
             showChevron={!isDeletingProfile}
-            value={isDeletingProfile ? "Deleting…" : undefined}
+            value={isDeletingProfile ? t("profile.deleting") : undefined}
           />
           <SettingsRow
             destructive
             icon="log-out"
             isLast
-            label="Sign Out"
+            label={t("profile.signOut")}
             onPress={signOut}
             showChevron={!isSigningOut}
-            value={isSigningOut ? "Signing out…" : undefined}
+            value={isSigningOut ? t("profile.signingOut") : undefined}
           />
         </SettingsSection>
       </ScrollView>
@@ -309,7 +317,7 @@ export function ProfileSettingsScreen() {
             isSaving={isUpdating}
             onDismiss={() => setNameEditorVisible(false)}
             onSave={async (displayName) => {
-              const saved = await updateProfile({ displayName }, "Name updated");
+              const saved = await updateProfile({ displayName }, t("profile.success.name"));
               if (saved) setNameEditorVisible(false);
             }}
             value={profile.displayName ?? ""}
@@ -319,7 +327,7 @@ export function ProfileSettingsScreen() {
             isSaving={isUpdating}
             onDismiss={() => setGenderSelectorVisible(false)}
             onSelect={async (gender) => {
-              const saved = await updateProfile({ gender }, "Gender updated");
+              const saved = await updateProfile({ gender }, t("profile.success.gender"));
               if (saved) setGenderSelectorVisible(false);
             }}
             selectedGender={profile.gender ?? "male"}
@@ -327,7 +335,7 @@ export function ProfileSettingsScreen() {
           />
           <SaintAvatarSelector
             onDismiss={() => setSaintSelectorVisible(false)}
-            onSelect={(saintAvatarId) => updateProfile({ saintAvatarId }, "Profile picture updated")}
+            onSelect={(saintAvatarId) => updateProfile({ saintAvatarId }, t("profile.success.avatar"))}
             selectedSaintAvatarId={profile.saintAvatarId}
             visible={saintSelectorVisible}
           />
@@ -340,9 +348,10 @@ export function ProfileSettingsScreen() {
 /** Renders ProfileSkeleton with styles resolved from the active appearance. */
 function ProfileSkeleton() {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   return (
     <>
-      <View accessibilityLabel="Loading profile" style={styles.skeletonHero}>
+      <View accessibilityLabel={t("profile.loading")} style={styles.skeletonHero}>
         <View style={styles.skeletonAvatar} />
         <View style={styles.skeletonName} />
         <View style={styles.skeletonLocation} />
@@ -374,6 +383,7 @@ function EditNameSheet({
   visible: boolean;
 }) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const [displayName, setDisplayName] = useState(value);
   const trimmedName = displayName.trim();
   const canSave = trimmedName.length >= 2 && trimmedName.length <= 80 && trimmedName !== value;
@@ -387,23 +397,23 @@ function EditNameSheet({
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={styles.modalBackdrop}>
         <View accessibilityViewIsModal style={styles.dialog}>
           <Text accessibilityRole="header" style={styles.dialogTitle}>
-            Edit Name
+            {t("profile.editName.title")}
           </Text>
-          <Text style={styles.dialogCopy}>Choose the name your friends see in Do It for Jesus.</Text>
+          <Text style={styles.dialogCopy}>{t("profile.editName.description")}</Text>
           <TextInput
-            accessibilityLabel="Display name"
+            accessibilityLabel={t("profile.editName.displayName")}
             autoCapitalize="words"
             autoFocus
             maxLength={80}
             onChangeText={setDisplayName}
-            placeholder="Your name"
+            placeholder={t("profile.editName.placeholder")}
             placeholderTextColor={theme.colors.text.subtle}
             style={styles.textInput}
             value={displayName}
           />
           <View style={styles.dialogActions}>
             <Button disabled={isSaving} onPress={onDismiss} size="sm" variant="ghost">
-              Cancel
+              {t("common.cancel")}
             </Button>
             <Button
               disabled={!canSave || isSaving}
@@ -413,7 +423,7 @@ function EditNameSheet({
               style={styles.saveButton}
               variant="warning"
             >
-              Save
+              {t("common.save")}
             </Button>
           </View>
         </View>
@@ -437,17 +447,18 @@ function GenderSelector({
   visible: boolean;
 }) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   return (
     <Modal animationType="fade" onRequestClose={onDismiss} transparent visible={visible}>
       <View style={styles.modalBackdrop}>
         <View accessibilityViewIsModal style={styles.dialog}>
           <Text accessibilityRole="header" style={styles.dialogTitle}>
-            Gender
+            {t("profile.gender")}
           </Text>
           <View style={styles.choiceList}>
             {(["male", "female"] as const).map((gender) => {
               const selected = selectedGender === gender;
-              const label = gender === "male" ? "Male" : "Female";
+              const label = gender === "male" ? t("profile.male") : t("profile.female");
               return (
                 <Pressable
                   accessibilityLabel={label}
@@ -472,7 +483,7 @@ function GenderSelector({
             })}
           </View>
           <Button disabled={isSaving} fullWidth onPress={onDismiss} style={styles.closeSheetButton} variant="ghost">
-            Cancel
+            {t("common.cancel")}
           </Button>
         </View>
       </View>

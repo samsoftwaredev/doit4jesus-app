@@ -1,9 +1,15 @@
 import "react-native-gesture-handler/jestSetup";
+import "@/localization/i18n";
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
 jest.mock("expo-haptics", () => ({
   selectionAsync: jest.fn(() => Promise.resolve()),
+}));
+
+jest.mock("expo-localization", () => ({
+  getLocales: jest.fn(() => [{ languageCode: "en", languageTag: "en-US", textDirection: "ltr" }]),
+  useLocales: jest.fn(() => [{ languageCode: "en", languageTag: "en-US", textDirection: "ltr" }]),
 }));
 
 jest.mock("expo-splash-screen", () => ({

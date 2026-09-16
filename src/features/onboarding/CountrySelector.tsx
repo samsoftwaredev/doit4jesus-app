@@ -2,6 +2,7 @@ import Feather from "@expo/vector-icons/Feather";
 import { useMemo, useState } from "react";
 import { FlatList, Modal, Pressable, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useTranslation } from "react-i18next";
 
 import { CountryFlagBadge } from "@/components/ui";
 import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
@@ -20,6 +21,7 @@ type CountrySelectorProps = {
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function CountrySelector({ onSelect, selectedCode, selectedName }: CountrySelectorProps) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const { isDesktop } = useResponsiveLayout();
   const [query, setQuery] = useState("");
   const [visible, setVisible] = useState(false);
@@ -33,7 +35,9 @@ export function CountrySelector({ onSelect, selectedCode, selectedName }: Countr
   return (
     <>
       <Pressable
-        accessibilityLabel={`Country, ${selectedName ?? "not selected"}`}
+        accessibilityLabel={t("onboarding.country.accessibilityLabel", {
+          country: selectedName ?? t("onboarding.country.notSelected"),
+        })}
         accessibilityRole="button"
         accessibilityState={{ expanded: visible }}
         onPress={() => setVisible(true)}
@@ -47,9 +51,9 @@ export function CountrySelector({ onSelect, selectedCode, selectedName }: Countr
           )}
         </View>
         <View style={styles.selectedCopy}>
-          <Text style={styles.fieldLabel}>Country</Text>
+          <Text style={styles.fieldLabel}>{t("onboarding.country.fieldLabel")}</Text>
           <Text style={[styles.selectedName, !selectedName && styles.placeholder]}>
-            {selectedName ?? "Select a country"}
+            {selectedName ?? t("onboarding.country.select")}
           </Text>
         </View>
         <Feather color={theme.colors.icon.secondary} name="chevron-down" size={theme.sizes.iconMedium} />
@@ -60,10 +64,10 @@ export function CountrySelector({ onSelect, selectedCode, selectedName }: Countr
           <View accessibilityViewIsModal style={[styles.sheet, isDesktop && styles.sheetDesktop]}>
             <View style={styles.sheetHeader}>
               <Text accessibilityRole="header" style={styles.sheetTitle}>
-                Select your country
+                {t("onboarding.country.sheetTitle")}
               </Text>
               <Pressable
-                accessibilityLabel="Close country selector"
+                accessibilityLabel={t("onboarding.country.close")}
                 accessibilityRole="button"
                 onPress={dismiss}
                 style={styles.closeButton}
@@ -74,10 +78,10 @@ export function CountrySelector({ onSelect, selectedCode, selectedName }: Countr
             <View style={styles.searchWrap}>
               <Feather color={theme.colors.icon.muted} name="search" size={theme.sizes.iconSmall} />
               <TextInput
-                accessibilityLabel="Search countries"
+                accessibilityLabel={t("onboarding.country.searchLabel")}
                 autoCapitalize="words"
                 onChangeText={setQuery}
-                placeholder="Search by country or code"
+                placeholder={t("onboarding.country.searchPlaceholder")}
                 placeholderTextColor={theme.colors.text.subtle}
                 style={styles.searchInput}
                 value={query}
@@ -88,7 +92,7 @@ export function CountrySelector({ onSelect, selectedCode, selectedName }: Countr
               data={countries}
               keyboardShouldPersistTaps="handled"
               keyExtractor={(country) => country.code}
-              ListEmptyComponent={<Text style={styles.empty}>No countries found.</Text>}
+              ListEmptyComponent={<Text style={styles.empty}>{t("onboarding.country.empty")}</Text>}
               renderItem={({ item }) => {
                 const selected = item.code === selectedCode;
                 return (

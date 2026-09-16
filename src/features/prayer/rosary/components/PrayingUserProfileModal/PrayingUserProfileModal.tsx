@@ -3,6 +3,7 @@ import { useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AccessibilityInfo, ActivityIndicator, Modal, Pressable, Text, useWindowDimensions, View } from "react-native";
 import { useReducedMotion } from "react-native-reanimated";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui";
 import { AvatarWithCountryBadge } from "@/components/identity";
@@ -32,6 +33,7 @@ export function PrayingUserProfileModal({
   visible,
 }: PrayingUserProfileModalProps) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const reduceMotion = useReducedMotion();
   const router = useRouter();
   const { width } = useWindowDimensions();
@@ -83,9 +85,9 @@ export function PrayingUserProfileModal({
     try {
       await sendFriendRequest(selectedUser.username);
       setRelationshipState("outgoingPending");
-      AccessibilityInfo.announceForAccessibility(`Friend request sent to ${selectedUser.displayName}.`);
+      AccessibilityInfo.announceForAccessibility(t("rosary.presence.requestSent", { name: selectedUser.displayName }));
     } catch (error) {
-      setActionError(error instanceof Error ? error.message : "Unable to send this friend request.");
+      setActionError(error instanceof Error ? error.message : t("rosary.presence.requestError"));
     } finally {
       setIsSending(false);
     }
@@ -113,12 +115,12 @@ export function PrayingUserProfileModal({
     >
       <View style={styles.overlay}>
         <View
-          accessibilityLabel={`${user.displayName}'s prayer profile`}
+          accessibilityLabel={t("rosary.presence.profileLabel", { name: user.displayName })}
           accessibilityViewIsModal
           style={[styles.dialog, { maxWidth: width >= theme.breakpoints.tablet ? 460 : 410 }]}
         >
           <Pressable
-            accessibilityLabel="Close prayer profile"
+            accessibilityLabel={t("rosary.presence.closeProfile")}
             accessibilityRole="button"
             hitSlop={theme.spacing[2]}
             onPress={onClose}
@@ -128,7 +130,7 @@ export function PrayingUserProfileModal({
           </Pressable>
           <View style={styles.avatarWrap}>
             <AvatarWithCountryBadge
-              accessibilityLabel={`${user.displayName}'s profile image, online and praying`}
+              accessibilityLabel={t("rosary.presence.avatarLabel", { name: user.displayName })}
               countryCode={user.countryCode}
               name={user.displayName}
               size={theme.sizes.iconHero + theme.spacing[8]}
@@ -143,63 +145,69 @@ export function PrayingUserProfileModal({
           {user.title ? <Text style={styles.userTitle}>{user.title}</Text> : null}
           <View style={styles.liveBadge}>
             <View style={styles.liveDot} />
-            <Text style={styles.liveText}>PRAYING NOW</Text>
+            <Text style={styles.liveText}>{t("rosary.presence.prayingNow")}</Text>
           </View>
 
           <View style={styles.actionArea}>
             {relationshipState === "loading" ? (
-              <View accessibilityLabel="Checking friendship" accessibilityRole="progressbar" style={styles.loading}>
+              <View
+                accessibilityLabel={t("rosary.presence.checkingLabel")}
+                accessibilityRole="progressbar"
+                style={styles.loading}
+              >
                 <ActivityIndicator color={theme.rosary.colors.gold} />
-                <Text style={styles.loadingText}>Checking friendship…</Text>
+                <Text style={styles.loadingText}>{t("rosary.presence.checking")}</Text>
               </View>
             ) : null}
-            {relationshipState === "self" ? <Text style={styles.selfText}>This is you</Text> : null}
+            {relationshipState === "self" ? (
+              <Text style={styles.selfText}>{t("rosary.presence.thisIsYou")}</Text>
+            ) : null}
             {relationshipState === "friends" ? (
               <Button
-                accessibilityLabel={`View ${user.displayName}'s friend profile`}
+                accessibilityLabel={t("rosary.presence.viewFriendLabel", { name: user.displayName })}
                 fullWidth
                 onPress={viewFriendProfile}
               >
-                View Friend Profile
+                {t("rosary.presence.viewFriend")}
               </Button>
             ) : null}
             {relationshipState === "none" ? (
               <Button
-                accessibilityLabel={`Add ${user.displayName} as a friend`}
+                accessibilityLabel={t("rosary.presence.addFriendLabel", { name: user.displayName })}
                 fullWidth
                 loading={isSending}
                 onPress={() => void addFriend()}
                 variant="warning"
               >
-                Add Friend
+                {t("rosary.presence.addFriend")}
               </Button>
             ) : null}
             {relationshipState === "outgoingPending" ? (
               <Button
-                accessibilityLabel={`Friend request sent to ${user.displayName}`}
+                accessibilityLabel={t("rosary.presence.requestSent", { name: user.displayName })}
                 disabled
                 fullWidth
                 variant="outline"
               >
-                Requested
+                {t("friends.requested")}
               </Button>
             ) : null}
             {relationshipState === "incomingPending" ? (
               <Button fullWidth onPress={reviewIncomingRequest} variant="secondary">
-                Review Request
+                {t("rosary.presence.reviewRequest")}
               </Button>
             ) : null}
             {relationshipState === "error" ? (
               <View style={styles.relationshipError}>
                 <Text accessibilityRole="alert" style={styles.errorText}>
-                  Friendship status could not be loaded.
+                  {t("rosary.presence.statusError")}
                 </Text>
                 <Button
-                  accessibilityLabel="Retry friendship status"
+                  accessibilityLabel={t("rosary.presence.retryStatus")}
                   onPress={() => void resolveRelationship()}
                   variant="outline"
                 >
-                  Try Again
+                  {t("common.retry")}
                 </Button>
               </View>
             ) : null}

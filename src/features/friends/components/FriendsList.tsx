@@ -1,5 +1,6 @@
 import Feather from "@expo/vector-icons/Feather";
 import { Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Card } from "@/components/ui";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
@@ -16,18 +17,19 @@ type FriendsListProps = {
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function FriendsList({ friends, onPressFriend }: FriendsListProps) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   return (
-    <Card padding="none" title="Your friends">
+    <Card padding="none" title={t("friends.title")}>
       <View style={styles.content}>
         {friends.map((friend) => (
           <Pressable
-            accessibilityLabel={`View ${friend.displayName}'s profile`}
+            accessibilityLabel={t("friends.viewProfileLabel", { name: friend.displayName })}
             key={friend.id}
             onPress={() => onPressFriend(friend.id)}
             style={({ pressed }) => [styles.item, pressed && styles.pressed]}
           >
             <FriendAvatar
-              accessibilityLabel={`${friend.displayName}'s profile image`}
+              accessibilityLabel={t("friends.avatarLabel", { name: friend.displayName })}
               countryCode={friend.countryCode}
               name={friend.displayName}
               source={friend.avatarUrl}
@@ -37,12 +39,15 @@ export function FriendsList({ friends, onPressFriend }: FriendsListProps) {
                 {friend.displayName}
               </Text>
               <Text numberOfLines={1} style={styles.metadata}>
-                {`Level ${friend.currentLevel.levelNumber}${friend.title ? ` • ${friend.title}` : ""}`}
+                {`${t("friends.level", { level: friend.currentLevel.levelNumber })}${friend.title ? ` • ${friend.title}` : ""}`}
               </Text>
             </View>
-            <View style={styles.rosaryCount} accessibilityLabel={`${friend.rosaryTotal} total Rosaries`}>
+            <View
+              style={styles.rosaryCount}
+              accessibilityLabel={t("friends.totalRosariesLabel", { count: friend.rosaryTotal })}
+            >
               <Text style={styles.rosaryValue}>{friend.rosaryTotal}</Text>
-              <Text style={styles.rosaryLabel}>ROSARIES</Text>
+              <Text style={styles.rosaryLabel}>{t("friends.rosaries")}</Text>
             </View>
             <Feather color={theme.colors.icon.muted} name="chevron-right" size={theme.sizes.iconMedium} />
           </Pressable>

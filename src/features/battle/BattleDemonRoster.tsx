@@ -3,6 +3,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
 import type { LayoutChangeEvent, NativeScrollEvent, NativeSyntheticEvent } from "react-native";
 import { Pressable, ScrollView, Text, useWindowDimensions, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import type { DemonCatalogItem } from "@/features/demons";
 import { getDemonArtwork } from "@/features/demons";
@@ -19,6 +20,7 @@ interface BattleDemonRosterProps {
 
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function BattleDemonRoster({ demons, onSelect, selectedCode }: BattleDemonRosterProps) {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   const { width: screenWidth } = useWindowDimensions();
   const [containerWidth, setContainerWidth] = useState(0);
@@ -59,7 +61,7 @@ export function BattleDemonRoster({ demons, onSelect, selectedCode }: BattleDemo
 
             return (
               <Pressable
-                accessibilityLabel={`Select ${demon.name}`}
+                accessibilityLabel={t("formation.battle.select", { name: demon.name })}
                 accessibilityRole="button"
                 accessibilityState={{ selected: isSelected }}
                 key={demon.id}

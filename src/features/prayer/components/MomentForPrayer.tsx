@@ -2,6 +2,7 @@ import Feather from "@expo/vector-icons/Feather";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { StyleSheet, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
@@ -35,6 +36,7 @@ function TodayRosaryCard({
   onPress: () => void;
 }) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
 
   return (
     <OrnateCard style={styles.todayCard}>
@@ -48,12 +50,12 @@ function TodayRosaryCard({
       <View style={styles.todayContent}>
         <View style={styles.todayLabel}>
           <Feather accessible={false} color={theme.rosary.colors.gold} name="calendar" size={theme.sizes.iconSmall} />
-          <Text style={styles.sectionLabel}>TODAY&apos;S ROSARY</Text>
+          <Text style={styles.sectionLabel}>{t("prayer.todaysRosary")}</Text>
         </View>
         <Text style={styles.todayTitle}>{mysteryTitle}</Text>
         <Text style={styles.weekday}>{weekday}</Text>
         <Button
-          accessibilityLabel={`Pray today's ${mysteryTitle}`}
+          accessibilityLabel={t("prayer.prayTodayLabel", { mystery: mysteryTitle })}
           onPress={onPress}
           rightIcon={
             <Feather
@@ -66,7 +68,7 @@ function TodayRosaryCard({
           style={styles.todayAction}
           variant="warning"
         >
-          Pray today&apos;s Rosary
+          {t("prayer.prayToday")}
         </Button>
       </View>
     </OrnateCard>

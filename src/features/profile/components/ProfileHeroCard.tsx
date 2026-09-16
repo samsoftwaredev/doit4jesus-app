@@ -1,6 +1,7 @@
 import Feather from "@expo/vector-icons/Feather";
 import { Image } from "expo-image";
 import { Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import type { CurrentUserProfile } from "@/features/profile";
 import { findSaintAvatar, saintAvatars } from "@/features/profile/saints";
@@ -16,6 +17,7 @@ type ProfileHeroCardProps = {
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function ProfileHeroCard({ location, onAvatarPress, profile }: ProfileHeroCardProps) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const selectedSaint = findSaintAvatar(profile.saintAvatarId);
   const avatarSource = selectedSaint?.image ?? profile.avatarUrl ?? saintAvatars[8].image;
 
@@ -23,7 +25,7 @@ export function ProfileHeroCard({ location, onAvatarPress, profile }: ProfileHer
     <View style={styles.card}>
       <View pointerEvents="none" style={styles.glow} />
       <Pressable
-        accessibilityLabel="Change profile avatar"
+        accessibilityLabel={t("profile.avatar.changeLabel")}
         accessibilityRole="button"
         hitSlop={theme.spacing[1]}
         onPress={onAvatarPress}
@@ -45,12 +47,12 @@ export function ProfileHeroCard({ location, onAvatarPress, profile }: ProfileHer
         <Text style={styles.location}>{location}</Text>
       </View>
       <Pressable
-        accessibilityLabel="Change profile avatar"
+        accessibilityLabel={t("profile.avatar.changeLabel")}
         accessibilityRole="button"
         onPress={onAvatarPress}
         style={({ pressed }) => [styles.changeAvatar, pressed && styles.pressed]}
       >
-        <Text style={styles.changeAvatarText}>Change Avatar</Text>
+        <Text style={styles.changeAvatarText}>{t("profile.avatar.change")}</Text>
       </Pressable>
     </View>
   );

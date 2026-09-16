@@ -1,5 +1,6 @@
 import { Image } from "expo-image";
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { useThemedStyles } from "@/theme/createThemedStyles";
 import { Card } from "@/components/ui";
@@ -34,13 +35,16 @@ function AttackListItem({ attack }: { attack: DemonAttack }) {
 
 /** Renders DefenseListItem with styles resolved from the active appearance. */
 function DefenseListItem({ defense }: { defense: DemonDefense }) {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   return (
     <View style={styles.listItem}>
       <Text style={styles.itemTitle}>{defense.name}</Text>
       <Text style={styles.itemDescription}>{defense.challenge}</Text>
       <Text style={styles.itemMeta}>
-        {`${formatLabel(defense.rewardVirtueCode)} +${defense.virtueIncrease} · ${defense.demonDamage} damage`}
+        {`${formatLabel(defense.rewardVirtueCode)} +${defense.virtueIncrease} · ${t("formation.battle.damage", {
+          count: defense.demonDamage,
+        })}`}
       </Text>
     </View>
   );
@@ -48,6 +52,7 @@ function DefenseListItem({ defense }: { defense: DemonDefense }) {
 
 /** Renders BattleDemonDetails with styles resolved from the active appearance. */
 export function BattleDemonDetails({ details }: BattleDemonDetailsProps) {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   const { demon, attacks, defenses, defeatReward } = details;
   const artwork = getDemonArtwork(demon);
@@ -64,7 +69,7 @@ export function BattleDemonDetails({ details }: BattleDemonDetailsProps) {
           <Text style={styles.badgeText}>{formatLabel(demon.category)}</Text>
         </View>
         <View style={[styles.categoryBadge, styles.healthBadge]}>
-          <Text style={styles.badgeText}>{`Max HP ${demon.maxHp}`}</Text>
+          <Text style={styles.badgeText}>{t("formation.battle.maxHp", { count: demon.maxHp })}</Text>
         </View>
       </View>
 
@@ -73,7 +78,7 @@ export function BattleDemonDetails({ details }: BattleDemonDetailsProps) {
 
       <View style={styles.section}>
         <Text accessibilityRole="header" style={styles.sectionTitle}>
-          Attacks
+          {t("formation.battle.attacks")}
         </Text>
         {attacks.map((attack) => (
           <AttackListItem attack={attack} key={attack.code} />
@@ -82,7 +87,7 @@ export function BattleDemonDetails({ details }: BattleDemonDetailsProps) {
 
       <View style={styles.section}>
         <Text accessibilityRole="header" style={styles.sectionTitle}>
-          Defenses
+          {t("formation.battle.defenses")}
         </Text>
         {defenses.map((defense) => (
           <DefenseListItem defense={defense} key={defense.code} />
@@ -91,7 +96,7 @@ export function BattleDemonDetails({ details }: BattleDemonDetailsProps) {
 
       <View style={styles.reward}>
         <Text accessibilityRole="header" style={styles.rewardTitle}>
-          Defeat reward
+          {t("formation.battle.defeatReward")}
         </Text>
         <Text style={styles.rewardText}>
           {`${formatLabel(defeatReward.virtueCode)} +${defeatReward.virtueIncrease}`}

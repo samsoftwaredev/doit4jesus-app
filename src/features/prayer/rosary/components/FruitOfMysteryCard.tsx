@@ -1,5 +1,6 @@
 import Feather from "@expo/vector-icons/Feather";
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
@@ -12,14 +13,15 @@ interface FruitOfMysteryCardProps {
 /** Presents the active mystery's spiritual fruit and a short reflection before the vocal prayer. */
 export function FruitOfMysteryCard({ description, fruit }: FruitOfMysteryCardProps) {
   const styles = useThemedStyles(styleSheet);
-  const visibleFruit = fruit?.trim() || "Fruit unavailable";
-  const visibleDescription = description?.trim() || "A reflection for this mystery is not available.";
+  const { t } = useTranslation();
+  const visibleFruit = fruit?.trim() || t("rosary.cards.fruitUnavailable");
+  const visibleDescription = description?.trim() || t("rosary.cards.reflectionUnavailable");
 
   return (
     <View accessibilityLabel={`Fruit of the mystery. ${visibleFruit}. ${visibleDescription}`} style={styles.card}>
       <View style={styles.labelRow}>
         <Feather accessible={false} color={theme.rosary.colors.gold} name="heart" size={theme.sizes.iconSmall} />
-        <Text style={styles.label}>FRUIT OF THE MYSTERY</Text>
+        <Text style={styles.label}>{t("rosary.cards.fruitLabel")}</Text>
       </View>
       <Text accessibilityRole="header" style={styles.fruit}>
         {visibleFruit}

@@ -1,5 +1,6 @@
 import { Image } from "expo-image";
 import { Pressable, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { useThemedStyles } from "@/theme/createThemedStyles";
 import type { DemonCatalogItem } from "@/features/demons";
@@ -10,7 +11,7 @@ import { theme } from "@/theme/tokens";
 import { styles as styleSheet } from "./ArenaDemonSelector.styles";
 
 interface ArenaDemonSelectorProps {
-  demons: ReadonlyArray<DemonCatalogItem>;
+  demons: readonly DemonCatalogItem[];
   onSelect: (demon: DemonCatalogItem) => void;
   selectedCode?: string;
 }
@@ -44,13 +45,14 @@ function getOrbitPosition(index: number, count: number): OrbitPosition {
 
 /** Renders a fluid square arena whose selectable artwork scales with the available phone or desktop width. */
 export function ArenaDemonSelector({ demons, onSelect, selectedCode }: ArenaDemonSelectorProps) {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   const { isLargeText, width } = useResponsiveLayout();
   const arenaWidth = Math.min(Math.max(width - theme.spacing[8], 0), theme.spacing[24] * 5);
   const demonButtonSize = Math.max(theme.sizes.touchTarget * 2, Math.min(isLargeText ? 128 : 180, arenaWidth * 0.36));
 
   return (
-    <View accessibilityLabel="Demon arena. Select a demon to begin." style={styles.arena}>
+    <View accessibilityLabel={t("formation.battle.arenaLabel")} style={styles.arena}>
       <Image
         accessible={false}
         contentFit="cover"
@@ -64,7 +66,7 @@ export function ArenaDemonSelector({ demons, onSelect, selectedCode }: ArenaDemo
 
         return (
           <Pressable
-            accessibilityLabel={`Select ${demon.name}`}
+            accessibilityLabel={t("formation.battle.select", { name: demon.name })}
             accessibilityRole="button"
             accessibilityState={{ selected: isSelected }}
             key={demon.id}

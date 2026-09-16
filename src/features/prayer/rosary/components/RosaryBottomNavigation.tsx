@@ -9,6 +9,7 @@ import Animated, {
   withSpring,
   withTiming,
 } from "react-native-reanimated";
+import { useTranslation } from "react-i18next";
 
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
@@ -27,6 +28,12 @@ interface RosaryBottomNavigationProps {
   rosaryLength: RosaryLength;
   settingsVisible?: boolean;
 }
+
+const prayerKeysByLength: Record<RosaryLength, readonly string[]> = {
+  short: ["one", "two", "three", "four"],
+  medium: ["one", "two"],
+  long: ["one"],
+};
 
 /** Creates a press handler that selects one length without forwarding the native press event. */
 function createLengthPressHandler(onLengthChange: (length: RosaryLength) => void, length: RosaryLength) {
@@ -50,6 +57,7 @@ export function RosaryBottomNavigation({
   settingsVisible,
 }: RosaryBottomNavigationProps) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const [internalSettingsVisible, setInternalSettingsVisible] = useState(false);
   const isSettingsVisible = settingsVisible ?? internalSettingsVisible;
   const reduceMotion = useReducedMotion();
@@ -87,8 +95,12 @@ export function RosaryBottomNavigation({
       <View style={styles.buttonRow}>
         <Animated.View style={[styles.progressWrap, animatedStyle]}>
           <Pressable
-            accessibilityHint="Advances to the next rosary bead."
-            accessibilityLabel={`${progress.prayerName}, ${progress.currentIndex} of ${progress.total}. Next bead.`}
+            accessibilityHint={t("rosary.settings.advanceHint")}
+            accessibilityLabel={t("rosary.settings.nextLabel", {
+              current: progress.currentIndex,
+              prayer: progress.prayerName,
+              total: progress.total,
+            })}
             accessibilityRole="button"
             accessibilityState={{ disabled }}
             disabled={disabled}
@@ -110,7 +122,7 @@ export function RosaryBottomNavigation({
                 {progress.prayerName}
               </Text>
               <Text style={styles.progressText}>
-                {progress.currentIndex} of {progress.total}
+                {t("rosary.settings.progress", { current: progress.currentIndex, total: progress.total })}
               </Text>
             </View>
             <Feather
@@ -123,8 +135,8 @@ export function RosaryBottomNavigation({
         </Animated.View>
 
         <Pressable
-          accessibilityHint="Opens options for this Rosary mystery."
-          accessibilityLabel="Open Rosary settings"
+          accessibilityHint={t("rosary.settings.openHint")}
+          accessibilityLabel={t("rosary.settings.open")}
           accessibilityRole="button"
           onPress={handleOpenSettings}
           style={({ pressed }) => [styles.settingsButton, pressed && styles.pressed]}
@@ -157,12 +169,12 @@ export function RosaryBottomNavigation({
             <View style={styles.modalHeading}>
               <View style={styles.modalHeadingCopy}>
                 <Text accessibilityRole="header" style={styles.modalTitle}>
-                  Rosary settings
+                  {t("rosary.settings.title")}
                 </Text>
-                <Text style={styles.modalCopy}>Choose how you would like to continue.</Text>
+                <Text style={styles.modalCopy}>{t("rosary.settings.copy")}</Text>
               </View>
               <Pressable
-                accessibilityLabel="Close Rosary settings"
+                accessibilityLabel={t("rosary.settings.close")}
                 accessibilityRole="button"
                 hitSlop={theme.spacing[2]}
                 onPress={handleCloseSettings}
@@ -178,15 +190,20 @@ export function RosaryBottomNavigation({
               style={styles.settingsScroll}
             >
               <Text accessibilityRole="header" style={styles.sectionTitle}>
-                Rosary length
+                {t("rosary.settings.lengthTitle")}
               </Text>
               <View accessibilityRole="radiogroup" style={styles.lengthOptions}>
                 {ROSARY_LENGTH_OPTIONS.map((option) => {
                   const selected = option.id === rosaryLength;
+                  const label = t(`rosary.length.${option.id}.label`);
+                  const introduction = t(`rosary.length.${option.id}.introduction`);
+                  const prayers = prayerKeysByLength[option.id].map((key) =>
+                    t(`rosary.length.${option.id}.prayers.${key}`),
+                  );
                   return (
                     <Pressable
-                      accessibilityHint={`Uses ${option.introduction.toLowerCase()} ${option.prayers.join(", ")}.`}
-                      accessibilityLabel={`${option.label} Rosary`}
+                      accessibilityHint={`${introduction} ${prayers.join(", ")}.`}
+                      accessibilityLabel={`${label} ${t("rosary.name")}`}
                       accessibilityRole="radio"
                       accessibilityState={{ selected }}
                       key={option.id}
@@ -201,9 +218,9 @@ export function RosaryBottomNavigation({
                         {selected ? <View style={styles.radioCore} /> : null}
                       </View>
                       <View style={styles.lengthCopy}>
-                        <Text style={[styles.lengthTitle, selected && styles.selectedLengthTitle]}>{option.label}</Text>
-                        <Text style={styles.lengthIntroduction}>{option.introduction}</Text>
-                        {option.prayers.map((prayer) => (
+                        <Text style={[styles.lengthTitle, selected && styles.selectedLengthTitle]}>{label}</Text>
+                        <Text style={styles.lengthIntroduction}>{introduction}</Text>
+                        {prayers.map((prayer) => (
                           <Text key={prayer} style={styles.lengthPrayer}>
                             • {prayer}
                           </Text>
@@ -214,7 +231,7 @@ export function RosaryBottomNavigation({
                 })}
               </View>
               <Pressable
-                accessibilityLabel="Restart current mystery"
+                accessibilityLabel={t("rosary.settings.restartLabel")}
                 accessibilityRole="button"
                 onPress={handleRestart}
                 style={({ pressed }) => [styles.settingAction, pressed && styles.pressed]}
@@ -225,7 +242,7 @@ export function RosaryBottomNavigation({
                   name="rotate-ccw"
                   size={theme.sizes.iconSmall}
                 />
-                <Text style={styles.settingActionText}>Restart this mystery</Text>
+                <Text style={styles.settingActionText}>{t("rosary.settings.restart")}</Text>
               </Pressable>
             </ScrollView>
           </View>

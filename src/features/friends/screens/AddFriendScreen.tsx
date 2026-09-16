@@ -2,6 +2,7 @@ import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
 import { FlatList, KeyboardAvoidingView, Platform, Text, TextInput, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { BackHeader } from "@/components/navigation";
@@ -12,18 +13,19 @@ import type { UserSearchResult } from "@/features/friends/friends.types";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
-function statusLabel(result: UserSearchResult, requestedUsernames: string[]): string | undefined {
+function statusKey(result: UserSearchResult, requestedUsernames: string[]): string | undefined {
   if (requestedUsernames.includes(result.username.toLowerCase()) || result.relationshipState === "outgoingPending") {
-    return "Requested";
+    return "friends.requested";
   }
-  if (result.relationshipState === "incomingPending") return "Request received";
-  if (result.relationshipState === "friends") return "Friends";
+  if (result.relationshipState === "incomingPending") return "friends.requestReceived";
+  if (result.relationshipState === "friends") return "friends.title";
   return undefined;
 }
 
 /** Renders the friend search and invitation flow within the shared atmosphere. */
 export function AddFriendScreen() {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const router = useRouter();
   const [query, setQuery] = useState("");
   const search = useFriendSearch(query);
@@ -33,9 +35,9 @@ export function AddFriendScreen() {
   return (
     <AtmosphericSafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
       <BackHeader
-        description="Search by username to grow your fellowship."
+        description={t("friends.addDescription")}
         onBack={() => router.back()}
-        title="Add Friend"
+        title={t("friends.addFriend")}
       />
       <KeyboardAvoidingView
         behavior={Platform.select({ ios: "padding", default: undefined })}
@@ -48,17 +50,21 @@ export function AddFriendScreen() {
           keyExtractor={(item) => item.username}
           ListEmptyComponent={
             search.isLoading ? (
-              <FriendsState message="Searching active usernames…" title="Finding people" type="loading" />
-            ) : search.error ? (
-              <FriendsState message={search.error} title="Search by username" type="empty" />
-            ) : searchHint ? (
               <FriendsState
-                message="Enter at least four characters to find someone by username."
-                title="Find a friend"
+                message={t("friends.search.loading")}
+                title={t("friends.search.loadingTitle")}
+                type="loading"
+              />
+            ) : search.error ? (
+              <FriendsState message={search.error} title={t("friends.search.label")} type="empty" />
+            ) : searchHint ? (
+              <FriendsState message={t("friends.search.hint")} title={t("friends.search.hintTitle")} type="empty" />
+            ) : (
+              <FriendsState
+                message={t("friends.search.emptyDescription")}
+                title={t("friends.search.emptyTitle")}
                 type="empty"
               />
-            ) : (
-              <FriendsState message="Try a different username." title="No people found" type="empty" />
             )
           }
           ListHeaderComponent={
@@ -66,12 +72,12 @@ export function AddFriendScreen() {
               <View style={styles.searchInputWrap}>
                 <Feather color={theme.colors.icon.muted} name="search" size={theme.sizes.iconSmall} />
                 <TextInput
-                  accessibilityLabel="Search by username"
+                  accessibilityLabel={t("friends.search.label")}
                   autoCapitalize="none"
                   autoCorrect={false}
                   maxLength={30}
                   onChangeText={setQuery}
-                  placeholder="Search by username..."
+                  placeholder={t("friends.search.placeholder")}
                   placeholderTextColor={theme.colors.text.subtle}
                   returnKeyType="search"
                   style={styles.searchInput}
@@ -80,7 +86,7 @@ export function AddFriendScreen() {
               </View>
               {request.error ? <Text style={styles.requestError}>{request.error}</Text> : null}
               {!searchHint && !search.error && !search.isLoading ? (
-                <Text style={styles.resultsLabel}>SEARCH RESULTS</Text>
+                <Text style={styles.resultsLabel}>{t("friends.search.results")}</Text>
               ) : null}
             </View>
           }
@@ -112,13 +118,15 @@ function SearchResultItem({
   result: UserSearchResult;
 }) {
   const styles = useThemedStyles(styleSheet);
-  const status = statusLabel(result, requestedUsernames);
+  const { t } = useTranslation();
+  const relationshipKey = statusKey(result, requestedUsernames);
+  const status = relationshipKey ? t(relationshipKey) : undefined;
 
   return (
     <Card padding="sm" style={styles.resultCard}>
       <View style={styles.resultRow}>
         <FriendAvatar
-          accessibilityLabel={`@${result.username}'s profile image`}
+          accessibilityLabel={t("friends.avatarLabel", { name: `@${result.username}` })}
           name={result.username}
           source={result.avatarUrl}
         />
@@ -132,13 +140,13 @@ function SearchResultItem({
           </Text>
         ) : (
           <Button
-            accessibilityLabel={`Add @${result.username} as a friend`}
+            accessibilityLabel={t("friends.addFriendLabel", { username: result.username })}
             loading={isSending}
             onPress={onAdd}
             size="sm"
             variant="warning"
           >
-            Add
+            {t("friends.add")}
           </Button>
         )}
       </View>

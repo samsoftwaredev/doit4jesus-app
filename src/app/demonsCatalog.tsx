@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import { ActivityIndicator, Text, useWindowDimensions, View } from "react-native";
 import type { ViewStyle } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { ScreenShell } from "@/components/screen-shell";
 import { Button, Card } from "@/components/ui";
@@ -19,6 +20,7 @@ const catalogCardBaseStyle = {
 
 /** Renders this feature with colors from the currently resolved app appearance. */
 export default function DemonsCatalogScreen() {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   const router = useRouter();
   const { width } = useWindowDimensions();
@@ -32,12 +34,12 @@ export default function DemonsCatalogScreen() {
 
     try {
       setDemons(await fetchDemonCatalog());
-    } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Unable to load the demons catalog.");
+    } catch {
+      setErrorMessage(t("formation.battle.catalogLoadError"));
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void loadDemons();
@@ -52,16 +54,16 @@ export default function DemonsCatalogScreen() {
 
   return (
     <ScreenShell
-      description="Learn about spiritual obstacles and how to confront them."
+      description={t("formation.battle.catalogDescription")}
       headerVariant="compact"
       onBack={() => router.back()}
-      title="Demons Catalog"
+      title={t("formation.battle.catalogTitle")}
     >
       {isLoading ? (
-        <Card fullWidth title="Loading demons">
+        <Card fullWidth title={t("formation.battle.loading")}>
           <View style={styles.stateContainer}>
             <ActivityIndicator color={theme.colors.semantic.danger} size="large" />
-            <Text style={styles.description}>Gathering the catalog of spiritual obstacles.</Text>
+            <Text style={styles.description}>{t("formation.battle.catalogGathering")}</Text>
           </View>
         </Card>
       ) : null}
@@ -70,11 +72,11 @@ export default function DemonsCatalogScreen() {
         <Card
           footer={
             <Button fullWidth onPress={() => void loadDemons()} variant="danger">
-              Retry
+              {t("common.retry")}
             </Button>
           }
           fullWidth
-          title="Catalog unavailable"
+          title={t("formation.battle.catalogUnavailable")}
           variant="danger"
         >
           <Text style={styles.description}>{errorMessage}</Text>
@@ -82,8 +84,8 @@ export default function DemonsCatalogScreen() {
       ) : null}
 
       {!isLoading && !errorMessage && demons.length === 0 ? (
-        <Card fullWidth title="No demons found">
-          <Text style={styles.description}>There are no active demon records to display.</Text>
+        <Card fullWidth title={t("formation.battle.catalogEmptyTitle")}>
+          <Text style={styles.description}>{t("formation.battle.catalogEmpty")}</Text>
         </Card>
       ) : null}
 

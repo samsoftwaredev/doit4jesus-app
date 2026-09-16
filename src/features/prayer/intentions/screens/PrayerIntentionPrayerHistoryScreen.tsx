@@ -2,6 +2,7 @@ import Feather from "@expo/vector-icons/Feather";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, ScrollView, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { BackHeader } from "@/components/navigation";
@@ -19,6 +20,7 @@ function firstString(value: string | string[] | undefined) {
 /** Renders the prayer history for one intention within the shared atmosphere. */
 export function PrayerIntentionPrayerHistoryScreen() {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const { colorScheme } = useAppTheme();
   const router = useRouter();
   const { intentionId: rawIntentionId } = useLocalSearchParams<{ intentionId?: string | string[] }>();
@@ -28,7 +30,7 @@ export function PrayerIntentionPrayerHistoryScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const load = useCallback(async () => {
     if (!intentionId) {
-      setError("A prayer intention could not be found.");
+      setError(t("intentions.activity.notFound"));
       setIsLoading(false);
       return;
     }
@@ -37,11 +39,11 @@ export function PrayerIntentionPrayerHistoryScreen() {
     try {
       setSummary(await fetchPrayerIntentionPrayerSummary(intentionId));
     } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : "Couldn’t load prayer activity.");
+      setError(requestError instanceof Error ? requestError.message : t("intentions.activity.loadError"));
     } finally {
       setIsLoading(false);
     }
-  }, [intentionId]);
+  }, [intentionId, t]);
   useEffect(() => {
     void load();
   }, [load]);
@@ -50,9 +52,9 @@ export function PrayerIntentionPrayerHistoryScreen() {
   return (
     <AtmosphericSafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
       <BackHeader
-        description="See how the community has prayed for this intention."
+        description={t("intentions.activity.description")}
         onBack={() => router.back()}
-        title="Prayer Activity"
+        title={t("intentions.activity.title")}
       />
       {isLoading ? (
         <View style={styles.state}>
@@ -63,7 +65,7 @@ export function PrayerIntentionPrayerHistoryScreen() {
         <View accessibilityRole="alert" style={styles.state}>
           <Text style={styles.error}>{error}</Text>
           <Pressable accessibilityRole="button" onPress={() => void load()} style={styles.retry}>
-            <Text style={styles.retryText}>Try Again</Text>
+            <Text style={styles.retryText}>{t("common.retry")}</Text>
           </Pressable>
         </View>
       ) : null}
@@ -75,7 +77,7 @@ export function PrayerIntentionPrayerHistoryScreen() {
             size={68}
             source={summary.creator.avatarUrl}
           />
-          <Text style={styles.createdBy}>PRAYER ACTIVITY</Text>
+          <Text style={styles.createdBy}>{t("intentions.activity.heading")}</Text>
           <Text style={styles.creator}>{summary.creator.displayName}</Text>
           <View style={[styles.icon, { backgroundColor: intentionTheme.surface }]}>
             <Feather
@@ -89,10 +91,8 @@ export function PrayerIntentionPrayerHistoryScreen() {
             {summary.title}
           </Text>
           <Text style={styles.description}>{summary.description}</Text>
-          <Text style={styles.count}>
-            {summary.prayerCount} {summary.prayerCount === 1 ? "prayer offered" : "prayers offered"}
-          </Text>
-          <Text style={styles.note}>Prayer records are only shown when the protected endpoint provides them.</Text>
+          <Text style={styles.count}>{t("intentions.activity.offered", { count: summary.prayerCount })}</Text>
+          <Text style={styles.note}>{t("intentions.activity.note")}</Text>
         </ScrollView>
       ) : null}
     </AtmosphericSafeAreaView>

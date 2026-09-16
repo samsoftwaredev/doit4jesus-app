@@ -1,10 +1,12 @@
 import { Text, View } from "react-native";
 import Animated, { FadeIn, useReducedMotion } from "react-native-reanimated";
+import { useTranslation } from "react-i18next";
 
 import { GardenDayCell } from "@/features/prayer/rosary/garden/components/GardenDayCell";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 import type { RosaryGardenDay } from "@/features/prayer/rosary/garden/types";
+import { useAppLanguage } from "@/localization";
 
 interface GardenCalendarProps {
   days: RosaryGardenDay[];
@@ -12,8 +14,7 @@ interface GardenCalendarProps {
   year: number;
 }
 
-const weekDays = ["S", "M", "T", "W", "T", "F", "S"];
-const daysInWeek = weekDays.length;
+const daysInWeek = 7;
 const gridGap = theme.spacing[1];
 
 export function buildCalendarRows(days: RosaryGardenDay[], month: number, year: number) {
@@ -31,16 +32,23 @@ export function buildCalendarRows(days: RosaryGardenDay[], month: number, year: 
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function GardenCalendar({ days, month, year }: GardenCalendarProps) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
+  const { locale } = useAppLanguage();
   const reduceMotion = useReducedMotion();
   const firstWeekday = new Date(Date.UTC(year, month - 1, 1)).getUTCDay();
   const calendarRows = buildCalendarRows(days, month, year);
   const isFullBloom =
     days.filter((day) => day.isEligible).length > 0 &&
     days.filter((day) => day.isEligible).every((day) => day.completed);
+  const weekDays = Array.from({ length: daysInWeek }, (_, dayIndex) =>
+    new Intl.DateTimeFormat(locale, { weekday: "narrow", timeZone: "UTC" }).format(
+      new Date(Date.UTC(2026, 7, 2 + dayIndex)),
+    ),
+  );
 
   return (
-    <View accessibilityLabel="Monthly Rosary Garden calendar" style={[styles.card, isFullBloom && styles.fullBloom]}>
-      {isFullBloom ? <Text style={styles.fullBloomLabel}>Garden in Full Bloom</Text> : null}
+    <View accessibilityLabel={t("rosary.garden.calendarLabel")} style={[styles.card, isFullBloom && styles.fullBloom]}>
+      {isFullBloom ? <Text style={styles.fullBloomLabel}>{t("rosary.garden.fullBloom")}</Text> : null}
       <View accessible={false} style={styles.weekHeader}>
         {weekDays.map((day, index) => (
           <View key={`${day}-${index}`} style={styles.column} testID={`garden-weekday-${index}`}>

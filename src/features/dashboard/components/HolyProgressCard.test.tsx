@@ -38,7 +38,7 @@ describe("HolyProgressCard", () => {
 
     expect(screen.getByLabelText("Rosaries, 86")).toBeTruthy();
     expect(screen.getByLabelText("Level, 3")).toBeTruthy();
-    expect(screen.getByLabelText("Points, 4320")).toBeTruthy();
+    expect(screen.getByLabelText("Points, 4,320")).toBeTruthy();
     expect(screen.getAllByText("4,320")).toHaveLength(2);
     expect(screen.getByText("Devoted")).toBeTruthy();
     expect(screen.getByText("1,320 / 3,000 XP")).toBeTruthy();

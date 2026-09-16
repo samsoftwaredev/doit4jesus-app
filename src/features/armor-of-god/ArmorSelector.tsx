@@ -1,6 +1,7 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useRef } from "react";
 import { Pressable, ScrollView, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
@@ -19,6 +20,7 @@ const selectorStep = selectorItemSize + theme.spacing[2];
 
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function ArmorSelector({ items, onSelect, selectedId }: ArmorSelectorProps) {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   const scrollViewRef = useRef<ScrollView>(null);
 
@@ -43,7 +45,18 @@ export function ArmorSelector({ items, onSelect, selectedId }: ArmorSelectorProp
 
         return (
           <Pressable
-            accessibilityLabel={`${item.order}. ${item.name}. ${item.status}.`}
+            accessibilityLabel={t("armor.itemLabel", {
+              name: item.name,
+              order: item.order,
+              status: t(
+                {
+                  available: "armor.status.available",
+                  completed: "armor.status.completed",
+                  equipped: "armor.status.equipped",
+                  locked: "armor.status.locked",
+                }[item.status],
+              ),
+            })}
             accessibilityRole="button"
             accessibilityState={{ selected }}
             key={item.id}

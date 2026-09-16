@@ -1,5 +1,6 @@
 import { Image } from "expo-image";
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { useThemedStyles } from "@/theme/createThemedStyles";
 import { Card } from "@/components/ui";
@@ -9,15 +10,16 @@ import type { AvatarPanelProps } from "./AvatarPanel.types";
 
 /** Renders AvatarPanel with styles resolved from the active appearance. */
 export function AvatarPanel({ style, testID }: AvatarPanelProps) {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   return (
     <Card
-      accessibilityLabel="Avatar panel, Knight of Faith"
+      accessibilityLabel={t("formation.avatar.label")}
       padding="lg"
       style={style}
-      subtitle="Your spiritual companion"
+      subtitle={t("formation.avatar.subtitle")}
       testID={testID}
-      title="Knight of Faith"
+      title={t("formation.avatar.title")}
       variant="elevated"
     >
       <View style={styles.portraitFrame}>
@@ -28,7 +30,7 @@ export function AvatarPanel({ style, testID }: AvatarPanelProps) {
           style={styles.portrait}
         />
       </View>
-      <Text style={styles.description}>A faithful companion on your pilgrimage toward holiness.</Text>
+      <Text style={styles.description}>{t("formation.avatar.description")}</Text>
     </Card>
   );
 }

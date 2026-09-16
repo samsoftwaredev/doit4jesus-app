@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 
 import { useAuth } from "@/features/auth";
 import type { NotificationPreferences } from "@/features/onboarding/onboarding.types";
+import { i18n } from "@/localization";
 
 import { fetchCurrentUserProfile } from "./profile.api";
 import type { CurrentUserProfile } from "./profile.types";
@@ -42,7 +43,7 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
       setLoadedUserId(userId);
     } catch (requestError) {
       if (requestId !== requestIdRef.current) return;
-      setError(requestError instanceof Error ? requestError.message : "We couldn't load your profile.");
+      setError(requestError instanceof Error ? requestError.message : i18n.t("profile.errors.load"));
       setLoadedUserId(userId);
       setProfile(null);
     } finally {

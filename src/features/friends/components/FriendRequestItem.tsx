@@ -1,4 +1,5 @@
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
@@ -23,14 +24,15 @@ export function FriendRequestItem({
   request,
 }: FriendRequestItemProps) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const isIncoming = request.direction === "incoming";
-  const levelText = request.user.title ?? "Fellow pilgrim";
+  const levelText = request.user.title ?? t("friends.fellowPilgrim");
 
   return (
     <View style={styles.item}>
       <View style={styles.profileRow}>
         <FriendAvatar
-          accessibilityLabel={`${request.user.displayName}'s profile image`}
+          accessibilityLabel={t("friends.avatarLabel", { name: request.user.displayName })}
           countryCode={request.user.countryCode}
           name={request.user.displayName}
           source={request.user.avatarUrl}
@@ -38,13 +40,13 @@ export function FriendRequestItem({
         <View style={styles.copy}>
           <Text style={styles.name}>{request.user.displayName}</Text>
           <Text style={styles.metadata}>{levelText}</Text>
-          {!isIncoming ? <Text style={styles.status}>Request sent</Text> : null}
+          {!isIncoming ? <Text style={styles.status}>{t("friends.requestSent")}</Text> : null}
         </View>
       </View>
       {request.status === "pending" && isIncoming ? (
         <View style={styles.actions}>
           <Button
-            accessibilityLabel={`Accept friend request from ${request.user.displayName}`}
+            accessibilityLabel={t("friends.acceptLabel", { name: request.user.displayName })}
             contentStyle={styles.buttonContent}
             loading={isMutating}
             onPress={onAccept}
@@ -52,10 +54,10 @@ export function FriendRequestItem({
             size="sm"
             variant="warning"
           >
-            Accept
+            {t("friends.accept")}
           </Button>
           <Button
-            accessibilityLabel={`Decline friend request from ${request.user.displayName}`}
+            accessibilityLabel={t("friends.declineLabel", { name: request.user.displayName })}
             contentStyle={styles.buttonContent}
             loading={isMutating}
             onPress={onDecline}
@@ -64,13 +66,13 @@ export function FriendRequestItem({
             textStyle={styles.declineText}
             variant="secondary"
           >
-            Decline
+            {t("friends.decline")}
           </Button>
         </View>
       ) : null}
       {request.status === "pending" && !isIncoming ? (
         <Button
-          accessibilityLabel={`Cancel friend request to ${request.user.displayName}`}
+          accessibilityLabel={t("friends.cancelRequestLabel", { name: request.user.displayName })}
           loading={isMutating}
           onPress={onCancel}
           size="sm"
@@ -78,7 +80,7 @@ export function FriendRequestItem({
           textStyle={styles.declineText}
           variant="secondary"
         >
-          Cancel request
+          {t("friends.cancelRequest")}
         </Button>
       ) : null}
     </View>

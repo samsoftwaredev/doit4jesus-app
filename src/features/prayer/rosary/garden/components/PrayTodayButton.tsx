@@ -9,6 +9,7 @@ import Animated, {
   withSpring,
   withTiming,
 } from "react-native-reanimated";
+import { useTranslation } from "react-i18next";
 
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
@@ -20,6 +21,7 @@ interface PrayTodayButtonProps {
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function PrayTodayButton({ onPress }: PrayTodayButtonProps) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const reduceMotion = useReducedMotion();
   const scale = useSharedValue(1);
   const animatedStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
@@ -31,8 +33,8 @@ export function PrayTodayButton({ onPress }: PrayTodayButtonProps) {
   return (
     <Animated.View style={animatedStyle}>
       <Pressable
-        accessibilityHint="Opens today’s Rosary prayer."
-        accessibilityLabel="Pray today's rosary"
+        accessibilityHint={t("rosary.garden.prayHint")}
+        accessibilityLabel={t("rosary.garden.prayLabel")}
         accessibilityRole="button"
         onPress={handlePress}
         onPressIn={() => {
@@ -54,7 +56,7 @@ export function PrayTodayButton({ onPress }: PrayTodayButtonProps) {
             <Feather accessible={false} color={theme.colors.text.white} name="circle" size={theme.sizes.iconSmall} />
             <Feather accessible={false} color={theme.colors.text.white} name="plus" size={theme.sizes.iconXs} />
           </View>
-          <Text style={styles.label}>PRAY TODAY</Text>
+          <Text style={styles.label}>{t("rosary.garden.prayToday")}</Text>
           <Feather
             accessible={false}
             color={theme.colors.text.white}

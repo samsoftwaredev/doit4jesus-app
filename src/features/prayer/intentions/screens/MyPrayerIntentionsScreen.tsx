@@ -2,6 +2,7 @@ import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { IconButton } from "@/components";
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
@@ -17,18 +18,25 @@ import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles"
 import { useAppTheme } from "@/theme/AppThemeProvider";
 import { theme } from "@/theme/tokens";
 
-const filters: readonly { label: string; value: MyPrayerIntentionsStatusFilter }[] = [
-  { label: "All", value: "all" },
-  { label: "Pending review", value: "pending" },
-  { label: "Visible", value: "visible" },
-  { label: "Not approved", value: "rejected" },
-];
+const filters: readonly MyPrayerIntentionsStatusFilter[] = ["all", "pending", "visible", "rejected"];
 
-const statusLabels = { pending: "Pending review", visible: "Approved / Visible", rejected: "Not approved" } as const;
+const statusTranslationKeys = {
+  pending: "intentions.my.pending",
+  rejected: "intentions.my.notApproved",
+  visible: "intentions.my.approvedVisible",
+} as const;
+
+const filterTranslationKeys = {
+  all: "intentions.my.all",
+  pending: "intentions.my.pending",
+  rejected: "intentions.my.notApproved",
+  visible: "intentions.my.visible",
+} as const;
 
 /** Renders the current user's submitted intentions within the shared atmosphere. */
 export function MyPrayerIntentionsScreen() {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const router = useRouter();
   const [status, setStatus] = useState<MyPrayerIntentionsStatusFilter>("all");
   const [intentions, setIntentions] = useState<MyPrayerIntention[]>([]);
@@ -46,11 +54,11 @@ export function MyPrayerIntentionsScreen() {
       setHasMore(page.meta.hasMore);
       setNextOffset(page.meta.nextOffset);
     } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : "Couldn’t load your prayer intentions.");
+      setError(requestError instanceof Error ? requestError.message : t("intentions.my.loadError"));
     } finally {
       setIsLoading(false);
     }
-  }, [status]);
+  }, [status, t]);
   useEffect(() => {
     void load();
   }, [load]);
@@ -70,29 +78,31 @@ export function MyPrayerIntentionsScreen() {
       setHasMore(page.meta.hasMore);
       setNextOffset(page.meta.nextOffset);
     } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : "Couldn’t load more prayer intentions.");
+      setError(requestError instanceof Error ? requestError.message : t("intentions.my.loadMoreError"));
     } finally {
       setIsLoadingMore(false);
     }
-  }, [hasMore, isLoadingMore, nextOffset, status]);
+  }, [hasMore, isLoadingMore, nextOffset, status, t]);
   const emptyCopy =
-    status === "all" ? "You haven&apos;t submitted any prayer intentions." : `No ${statusLabels[status]} intentions.`;
+    status === "all"
+      ? t("intentions.my.emptyAll")
+      : t("intentions.my.emptyStatus", { status: t(statusTranslationKeys[status]) });
 
   return (
     <AtmosphericSafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
       <BackHeader
-        description="Track review status and prayer activity for your intentions."
+        description={t("intentions.my.description")}
         onBack={() => router.back()}
         rightAction={
           <IconButton
-            accessibilityLabel="Share a prayer intention"
+            accessibilityLabel={t("intentions.shareLabel")}
             onPress={() => router.push("/create-prayer-intention")}
             tone="accent"
           >
             <Feather accessible={false} color={theme.rosary.colors.gold} name="plus" size={theme.sizes.iconMedium} />
           </IconButton>
         }
-        title="My Prayer Intentions"
+        title={t("intentions.my.title")}
       />
       <FlatList
         contentContainerStyle={styles.content}
@@ -105,9 +115,9 @@ export function MyPrayerIntentionsScreen() {
             </View>
           ) : error ? (
             <View accessibilityRole="alert" style={styles.state}>
-              <Text style={styles.errorTitle}>Couldn&apos;t load your prayer intentions.</Text>
+              <Text style={styles.errorTitle}>{t("intentions.my.loadError")}</Text>
               <Button onPress={() => void load()} size="sm" style={styles.stateAction} variant="secondary">
-                Try again
+                {t("profile.tryAgain")}
               </Button>
             </View>
           ) : (
@@ -125,7 +135,7 @@ export function MyPrayerIntentionsScreen() {
               style={styles.stateAction}
               variant="outline"
             >
-              Load more
+              {t("intentions.loadMore")}
             </Button>
           ) : null
         }
@@ -134,13 +144,13 @@ export function MyPrayerIntentionsScreen() {
             {filters.map((filter) => (
               <Pressable
                 accessibilityRole="button"
-                accessibilityState={{ selected: filter.value === status }}
-                key={filter.value}
-                onPress={() => setStatus(filter.value)}
-                style={[styles.filter, filter.value === status && styles.filterSelected]}
+                accessibilityState={{ selected: filter === status }}
+                key={filter}
+                onPress={() => setStatus(filter)}
+                style={[styles.filter, filter === status && styles.filterSelected]}
               >
-                <Text style={[styles.filterText, filter.value === status && styles.filterTextSelected]}>
-                  {filter.label}
+                <Text style={[styles.filterText, filter === status && styles.filterTextSelected]}>
+                  {t(filterTranslationKeys[filter])}
                 </Text>
               </Pressable>
             ))}
@@ -174,6 +184,7 @@ function MyPrayerIntentionCard({
   onOpenActivity: () => void;
 }) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const { colorScheme } = useAppTheme();
   const intentionTheme = getPrayerIntentionTheme(intention.symbol, colorScheme);
   return (
@@ -187,7 +198,9 @@ function MyPrayerIntentionCard({
             size={theme.sizes.iconSmall}
           />
         </View>
-        <Text style={[styles.status, { color: intentionTheme.surfaceLight }]}>{statusLabels[intention.status]}</Text>
+        <Text style={[styles.status, { color: intentionTheme.surfaceLight }]}>
+          {t(statusTranslationKeys[intention.status])}
+        </Text>
       </View>
       <Text style={styles.cardTitle}>{intention.title}</Text>
       <Text numberOfLines={3} style={styles.cardDescription}>
@@ -195,7 +208,7 @@ function MyPrayerIntentionCard({
       </Text>
       {intention.status === "visible" ? (
         <Button
-          accessibilityLabel={`View prayer activity for ${intention.title}`}
+          accessibilityLabel={t("intentions.activity.viewLabel", { title: intention.title })}
           onPress={onOpenActivity}
           style={styles.activityButton}
           rightIcon={
@@ -209,7 +222,7 @@ function MyPrayerIntentionCard({
           size="sm"
           variant="outline"
         >
-          View prayer activity
+          {t("intentions.activity.view")}
         </Button>
       ) : null}
     </View>

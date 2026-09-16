@@ -1,4 +1,5 @@
 import { useRouter } from "expo-router";
+import { useTranslation } from "react-i18next";
 
 import { ScreenShell } from "@/components/screen-shell";
 import { HeaderActionGroup } from "@/components/ui";
@@ -6,6 +7,7 @@ import { HolyProgressDashboard } from "@/features/dashboard";
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   return (
     <ScreenShell
@@ -16,9 +18,9 @@ export default function HomeScreen() {
           onSettingsPress={() => router.push("/settings")}
         />
       }
-      description="Grow in faith, compete in holiness."
+      description={t("home.description")}
       showLogo
-      title="Welcome home"
+      title={t("home.title")}
     >
       <HolyProgressDashboard />
     </ScreenShell>

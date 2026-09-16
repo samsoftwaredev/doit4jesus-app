@@ -1,12 +1,12 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 import { styles as styleSheet, statusStyle } from "./ArmorStatusBadge.styles";
 import type { ArmorStatus } from "./armorOfGod.types";
-import { getArmorStatusLabel } from "./armorOfGod.utils";
 
 interface ArmorStatusBadgeProps {
   status: ArmorStatus;
@@ -21,6 +21,7 @@ const statusIcon = {
 
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function ArmorStatusBadge({ status }: ArmorStatusBadgeProps) {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   const visualStyle = statusStyle[status];
 
@@ -32,7 +33,16 @@ export function ArmorStatusBadge({ status }: ArmorStatusBadgeProps) {
         name={statusIcon[status]}
         size={theme.sizes.iconXs}
       />
-      <Text style={[styles.label, visualStyle.label]}>{getArmorStatusLabel(status)}</Text>
+      <Text style={[styles.label, visualStyle.label]}>
+        {t(
+          {
+            available: "armor.status.available",
+            completed: "armor.status.completed",
+            equipped: "armor.status.equipped",
+            locked: "armor.status.locked",
+          }[status],
+        )}
+      </Text>
     </View>
   );
 }

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "expo-router";
 import { FlatList, Pressable, RefreshControl, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { BackHeader } from "@/components/navigation";
@@ -11,14 +12,12 @@ import type { FriendRequestDirection } from "@/features/friends/friends.types";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
-const tabs: readonly { label: string; value: FriendRequestDirection }[] = [
-  { label: "Received", value: "incoming" },
-  { label: "Sent", value: "outgoing" },
-];
+const directions: readonly FriendRequestDirection[] = ["incoming", "outgoing"];
 
 /** Renders incoming and outgoing friend requests within the shared atmosphere. */
 export function FriendRequestsScreen() {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const router = useRouter();
   const [direction, setDirection] = useState<FriendRequestDirection>("incoming");
   const requests = useFriendRequests(direction);
@@ -26,35 +25,37 @@ export function FriendRequestsScreen() {
   return (
     <AtmosphericSafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
       <BackHeader
-        description="Review incoming and sent friend requests."
+        description={t("friends.requests.description")}
         onBack={() => router.back()}
-        title="Friend Requests"
+        title={t("friends.requests.title")}
       />
       <View style={styles.tabs}>
-        {tabs.map((tab) => (
+        {directions.map((tab) => (
           <Pressable
             accessibilityRole="tab"
-            accessibilityState={{ selected: tab.value === direction }}
-            key={tab.value}
-            onPress={() => setDirection(tab.value)}
-            style={[styles.tab, direction === tab.value && styles.activeTab]}
+            accessibilityState={{ selected: tab === direction }}
+            key={tab}
+            onPress={() => setDirection(tab)}
+            style={[styles.tab, direction === tab && styles.activeTab]}
           >
-            <Text style={[styles.tabText, direction === tab.value && styles.activeTabText]}>{tab.label}</Text>
+            <Text style={[styles.tabText, direction === tab && styles.activeTabText]}>
+              {t(tab === "incoming" ? "friends.received" : "friends.sent")}
+            </Text>
           </Pressable>
         ))}
       </View>
       {requests.isLoading ? (
         <View style={styles.state}>
-          <FriendsState message="Loading friend requests…" title="Friend requests" type="loading" />
+          <FriendsState message={t("friends.requests.loading")} title={t("friends.requests.title")} type="loading" />
         </View>
       ) : null}
       {requests.error ? (
         <View style={styles.state}>
           <FriendsState
-            actionLabel="Try again"
+            actionLabel={t("profile.tryAgain")}
             message={requests.error}
             onAction={() => void requests.reload()}
-            title="Couldn't load friend requests"
+            title={t("friends.requests.loadError")}
             type="error"
           />
         </View>
@@ -66,8 +67,8 @@ export function FriendRequestsScreen() {
           keyExtractor={(request) => request.id}
           ListEmptyComponent={
             <FriendsState
-              message={direction === "incoming" ? "No pending requests" : "You have no sent requests"}
-              title={direction === "incoming" ? "Nothing waiting" : "No requests sent"}
+              message={t(direction === "incoming" ? "friends.noPending" : "friends.noSent")}
+              title={t(direction === "incoming" ? "friends.requests.nothingWaiting" : "friends.noSentTitle")}
               type="empty"
             />
           }
@@ -80,7 +81,7 @@ export function FriendRequestsScreen() {
                 style={styles.loadMore}
                 variant="outline"
               >
-                Load more
+                {t("friends.loadMore")}
               </Button>
             ) : null
           }

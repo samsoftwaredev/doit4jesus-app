@@ -1,7 +1,12 @@
 import englishRosaryJson from "@/data/en.rosary.json";
 import { englishRosaryContent } from "@/features/prayer/rosary/data/rosaryContent";
-import { getRosaryMysteriesFromContent, rosaryMysterySets } from "@/features/prayer/rosary/data/rosaryMysteries";
-import { prayerById } from "@/features/prayer/rosary/data/rosaryPrayers";
+import { getRosaryContent } from "@/features/prayer/rosary/data/localizedRosaryContent";
+import {
+  getRosaryMysteriesFromContent,
+  getRosaryMysterySetsFromContent,
+  rosaryMysterySets,
+} from "@/features/prayer/rosary/data/rosaryMysteries";
+import { getRosaryPrayers, prayerById } from "@/features/prayer/rosary/data/rosaryPrayers";
 import { getFullRosarySequence, getRosarySequenceForLength } from "@/features/prayer/rosary/data/rosarySequence";
 
 import * as mysteryCartoonImages from "../../../../../assets/images/mysteriesCartoon";
@@ -209,5 +214,46 @@ describe("English Rosary content", () => {
     ]);
     expect(long.slice(-6, -1).every((step) => step.isPhysicalBead === false)).toBe(true);
     expect(long.at(-2)?.prayer?.text).toContain("Mother of Hope");
+  });
+});
+
+describe("Spanish Rosary content", () => {
+  const content = getRosaryContent("es");
+
+  it("keeps the complete structure and stable identifiers while translating all four sets", () => {
+    expect(content.language).toBe("es");
+    expect(content.mystery_sets.map((set) => set.id)).toEqual(englishRosaryContent.mystery_sets.map((set) => set.id));
+    expect(getRosaryMysterySetsFromContent(content).map((set) => set.title)).toEqual([
+      "Misterios Gozosos",
+      "Misterios Dolorosos",
+      "Misterios Gloriosos",
+      "Misterios Luminosos",
+    ]);
+  });
+
+  it("uses Spanish prayers, mystery reflections, and Scripture at every displayed Scripture step", () => {
+    expect(getRosaryPrayers(content).find((prayer) => prayer.id === "hail-mary")).toEqual(
+      expect.objectContaining({ name: "Ave María", text: expect.stringContaining("Dios te salve, María") }),
+    );
+    expect(getRosaryMysteriesFromContent(content, "joyful")[0]).toEqual(
+      expect.objectContaining({ fruit: "Humildad", title: "La Anunciación" }),
+    );
+
+    const sequence = getFullRosarySequence(content, "joyful");
+    expect(sequence).toHaveLength(74);
+    expect(sequence.filter((step) => step.scriptureText).every((step) => !step.scriptureText?.includes("The "))).toBe(
+      true,
+    );
+    expect(sequence.find((step) => step.scriptureReference === "Luke 1:28")?.scriptureText).toContain(
+      "El ángel Gabriel",
+    );
+  });
+
+  it("localizes the additional closing prayers for medium and long sessions", () => {
+    const sequence = getRosarySequenceForLength(content, "joyful", "long");
+    expect(sequence.find((step) => step.id === "pope-intentions-our-father")?.prayer?.name).toBe(
+      "Padre Nuestro por las intenciones del Papa",
+    );
+    expect(sequence.find((step) => step.id === "litany-of-loreto")?.prayer?.text).toContain("Reina de la paz");
   });
 });

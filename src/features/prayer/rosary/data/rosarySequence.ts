@@ -36,6 +36,7 @@ interface ClosingPrayerDefinition {
   id: string;
   prayerId: string;
   title?: string;
+  spanishTitle?: string;
 }
 
 const mediumClosingPrayers: readonly ClosingPrayerDefinition[] = [
@@ -45,6 +46,7 @@ const mediumClosingPrayers: readonly ClosingPrayerDefinition[] = [
     id: "pope-intentions-our-father",
     prayerId: "our-father",
     title: "Our Father for the Pope’s Intentions",
+    spanishTitle: "Padre Nuestro por las intenciones del Papa",
   },
   {
     beadType: "hailMary",
@@ -52,6 +54,7 @@ const mediumClosingPrayers: readonly ClosingPrayerDefinition[] = [
     id: "pope-intentions-hail-mary",
     prayerId: "hail-mary",
     title: "Hail Mary for the Pope’s Intentions",
+    spanishTitle: "Ave María por las intenciones del Papa",
   },
   {
     beadType: "gloryBe",
@@ -59,6 +62,7 @@ const mediumClosingPrayers: readonly ClosingPrayerDefinition[] = [
     id: "pope-intentions-glory-be",
     prayerId: "glory-be",
     title: "Glory Be for the Pope’s Intentions",
+    spanishTitle: "Gloria por las intenciones del Papa",
   },
   {
     beadType: "closingPrayer",
@@ -153,7 +157,7 @@ function createClosingPrayer(
     prayer: {
       beadType: definition.beadType,
       id: definition.prayerId,
-      name: definition.title ?? prayer.title,
+      name: content.language === "es" ? (definition.spanishTitle ?? prayer.title) : (definition.title ?? prayer.title),
       text: prayer.text,
     },
     prayerId: definition.prayerId,

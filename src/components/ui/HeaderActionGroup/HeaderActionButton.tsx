@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ActivityIndicator, Image, Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
@@ -40,11 +41,14 @@ export function HeaderActionButton({
   testID,
 }: HeaderActionButtonProps) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const [focused, setFocused] = useState(false);
   const normalizedUnreadCount = Math.max(0, Math.floor(unreadCount));
   const badgeText = getUnreadBadgeText(normalizedUnreadCount);
   const unavailable = disabled || loading;
-  const accessibilityLabel = badgeText ? `${label}, ${normalizedUnreadCount} unread` : label;
+  const accessibilityLabel = badgeText
+    ? `${label}, ${t("headerActions.unread", { count: normalizedUnreadCount })}`
+    : label;
 
   return (
     <Pressable

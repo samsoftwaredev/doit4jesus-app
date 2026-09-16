@@ -3,14 +3,13 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { LinearGradient } from "expo-linear-gradient";
 import type { ComponentProps, ReactNode } from "react";
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { Button, Confetti } from "@/components/ui";
 import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
-
-import type { OnboardingStep } from "./onboarding.types";
 
 type ProfileSetupLayoutProps = {
   children?: ReactNode;
@@ -23,11 +22,11 @@ type ProfileSetupLayoutProps = {
   onBack?: () => void;
   onNext: () => void;
   showConfetti?: boolean;
-  step: OnboardingStep;
+  step: number;
   title: string;
 };
 
-const totalSteps = 6;
+const totalSteps = 7;
 
 /** Renders a profile-setup step over the shared atmosphere and optional confetti. */
 export function ProfileSetupLayout({
@@ -36,7 +35,7 @@ export function ProfileSetupLayout({
   error,
   icon,
   nextDisabled,
-  nextLabel = "Next",
+  nextLabel,
   nextLoading,
   onBack,
   onNext,
@@ -45,6 +44,7 @@ export function ProfileSetupLayout({
   title,
 }: ProfileSetupLayoutProps) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const { gutter, isLandscape, isLargeText, isTablet } = useResponsiveLayout();
   const useWideLayout = isTablet && isLandscape && !isLargeText;
 
@@ -67,7 +67,7 @@ export function ProfileSetupLayout({
               <View style={styles.topBar}>
                 {onBack ? (
                   <Pressable
-                    accessibilityLabel="Previous setup step"
+                    accessibilityLabel={t("onboarding.back")}
                     accessibilityRole="button"
                     hitSlop={theme.spacing[2]}
                     onPress={onBack}
@@ -127,7 +127,7 @@ export function ProfileSetupLayout({
                     style={styles.nextButton}
                     testID="profile-setup-next"
                   >
-                    {nextLabel}
+                    {nextLabel ?? t("common.next")}
                   </Button>
                 </View>
               </View>
@@ -140,11 +140,12 @@ export function ProfileSetupLayout({
   );
 }
 
-/** Renders this feature with colors from the currently resolved app appearance. */
-export function ProfileSetupProgress({ step }: { step: OnboardingStep }) {
+/** Announces and renders the current position across language and profile setup. */
+export function ProfileSetupProgress({ step }: { step: number }) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   return (
-    <View accessibilityLabel={`Step ${step} of ${totalSteps}`} accessible style={styles.progress}>
+    <View accessibilityLabel={t("common.stepProgress", { step, total: totalSteps })} accessible style={styles.progress}>
       {Array.from({ length: totalSteps }, (_, index) => {
         const selected = index + 1 === step;
         return (

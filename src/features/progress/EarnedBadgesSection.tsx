@@ -1,6 +1,7 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useCallback, useEffect, useState } from "react";
 import { Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Card } from "@/components/ui";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
@@ -12,6 +13,7 @@ import type { EarnedBadge } from "./progress.types";
 
 /** Loads and displays the complete earned-badge area as a dashboard-level section. */
 export function EarnedBadgesSection() {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   const [badges, setBadges] = useState<EarnedBadge[]>([]);
   const [hasError, setHasError] = useState(false);
@@ -37,7 +39,7 @@ export function EarnedBadgesSection() {
   }, [loadBadges]);
 
   return (
-    <View accessibilityLabel="All badges earned" style={styles.section}>
+    <View accessibilityLabel={t("progress.badges.accessibilityLabel")} style={styles.section}>
       <View style={styles.heading}>
         <MaterialCommunityIcons
           accessible={false}
@@ -46,7 +48,7 @@ export function EarnedBadgesSection() {
           size={theme.sizes.iconSmall}
         />
         <Text accessibilityRole="header" style={styles.title}>
-          ALL BADGES EARNED
+          {t("progress.badges.heading")}
         </Text>
       </View>
 
@@ -63,10 +65,8 @@ export function EarnedBadgesSection() {
             size={theme.sizes.iconLarge}
           />
           <View style={styles.emptyCopy}>
-            <Text style={styles.emptyTitle}>No badges earned yet.</Text>
-            <Text style={styles.emptyDescription}>
-              Complete Rosaries and build your streak to earn your first badge.
-            </Text>
+            <Text style={styles.emptyTitle}>{t("progress.badges.noBadges")}</Text>
+            <Text style={styles.emptyDescription}>{t("progress.badges.description")}</Text>
           </View>
         </Card>
       ) : (
@@ -82,17 +82,18 @@ export function EarnedBadgesSection() {
 
 /** Preserves the final badge-list footprint while its dashboard request is pending. */
 function BadgeRowsSkeleton() {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   return (
     <Card
-      accessibilityLabel="Loading earned badges"
+      accessibilityLabel={t("progress.badges.loading")}
       contentStyle={styles.badgesContent}
       padding="none"
       variant="outlined"
     >
       {Array.from({ length: 3 }, (_, index) => (
         <View
-          accessibilityLabel="Loading badge"
+          accessibilityLabel={t("progress.badges.loadingBadge")}
           key={index}
           style={[styles.badgeSkeleton, index < 2 && styles.rowDivider]}
         >
@@ -109,19 +110,20 @@ function BadgeRowsSkeleton() {
 
 /** Shows an accessible retry action when the dashboard cannot load earned badges. */
 function BadgeLoadError({ onRetry }: { onRetry: () => Promise<void> }) {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   return (
     <Card contentStyle={styles.errorContent} padding="md" variant="outlined">
       <Text accessibilityRole="alert" style={styles.errorText}>
-        We couldn't load your badges.
+        {t("progress.badges.loadError")}
       </Text>
       <Pressable
-        accessibilityLabel="Try again loading badges"
+        accessibilityLabel={t("progress.badges.retryLabel")}
         accessibilityRole="button"
         onPress={onRetry}
         style={styles.retryButton}
       >
-        <Text style={styles.retryText}>Try Again</Text>
+        <Text style={styles.retryText}>{t("common.retry")}</Text>
       </Pressable>
     </Card>
   );

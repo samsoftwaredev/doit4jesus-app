@@ -1,6 +1,7 @@
 import { Image } from "expo-image";
 import type { StyleProp, ViewStyle } from "react-native";
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { useThemedStyles } from "@/theme/createThemedStyles";
 import { Card } from "@/components/ui";
@@ -24,6 +25,7 @@ function formatLabel(value: string): string {
 
 /** Renders DemonCatalogItemCard with styles resolved from the active appearance. */
 export function DemonCatalogItemCard({ demon, style }: DemonCatalogItemCardProps) {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   const artwork = getDemonArtwork(demon);
 
@@ -44,14 +46,14 @@ export function DemonCatalogItemCard({ demon, style }: DemonCatalogItemCardProps
               <Text style={styles.badgeText}>{formatLabel(demon.category)}</Text>
             </View>
             <View style={[styles.metadataBadge, styles.hpBadge]}>
-              <Text style={styles.badgeText}>{`Max HP ${demon.maxHp}`}</Text>
+              <Text style={styles.badgeText}>{t("formation.battle.maxHp", { count: demon.maxHp })}</Text>
             </View>
           </View>
 
           <Text style={styles.description}>{demon.description}</Text>
 
           <View style={styles.affinitySection}>
-            <Text style={styles.affinityHeading}>Virtue affinities</Text>
+            <Text style={styles.affinityHeading}>{t("formation.battle.virtueAffinities")}</Text>
             <View style={styles.affinityList}>
               {demon.virtueAffinities.map((affinity) => {
                 const isPrimary = affinity.affinityType.toLowerCase() === "primary";

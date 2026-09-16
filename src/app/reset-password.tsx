@@ -1,6 +1,7 @@
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui";
 import { AuthMessage, AuthScreen, AuthTextInput, authScreenStyles, useAuth } from "@/features/auth";
@@ -10,6 +11,7 @@ import { useThemedStyles } from "@/theme/createThemedStyles";
 /** Renders password-reset controls with appearance-aware shared authentication styles. */
 export default function ResetPasswordScreen() {
   const styles = useThemedStyles(authScreenStyles);
+  const { t } = useTranslation();
   const router = useRouter();
   const { configurationError, finishPasswordRecovery } = useAuth();
   const [errorMessage, setErrorMessage] = useState<string>();
@@ -32,14 +34,14 @@ export default function ResetPasswordScreen() {
   };
 
   return (
-    <AuthScreen title="Choose a new password" subtitle="Your reset link has been verified.">
+    <AuthScreen title={t("auth.chooseNewPassword")} subtitle={t("auth.verifiedDescription")}>
       <AuthTextInput
-        accessibilityLabel="New password"
+        accessibilityLabel={t("auth.newPassword")}
         autoCapitalize="none"
         autoComplete="new-password"
-        label="New password"
+        label={t("auth.newPassword")}
         onChangeText={setPassword}
-        placeholder="New password"
+        placeholder={t("auth.newPassword")}
         secureTextEntry
         textContentType="newPassword"
         value={password}
@@ -54,7 +56,7 @@ export default function ResetPasswordScreen() {
           loading={isSubmitting}
           onPress={() => void updatePassword()}
         >
-          Save new password
+          {t("auth.saveNewPassword")}
         </Button>
       </View>
     </AuthScreen>

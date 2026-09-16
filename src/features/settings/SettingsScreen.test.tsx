@@ -4,8 +4,10 @@ import * as ReactNative from "react-native";
 import { StyleSheet } from "react-native";
 
 import SettingsScreen from "@/app/settings";
+import { APP_LANGUAGE_PREFERENCE_STORAGE_KEY, AppLanguageProvider } from "@/localization";
 import { AppThemeProvider } from "@/theme/AppThemeProvider";
 
+const mockGetItem = AsyncStorage.getItem as jest.MockedFunction<typeof AsyncStorage.getItem>;
 const mockSetItem = AsyncStorage.setItem as jest.MockedFunction<typeof AsyncStorage.setItem>;
 
 jest.mock("@/features/auth", () => ({
@@ -19,14 +21,17 @@ describe("appearance settings", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetItem.mockResolvedValue(null);
     jest.spyOn(ReactNative, "useColorScheme").mockReturnValue("dark");
   });
 
   it("exposes one accessible radio group and applies the selected appearance immediately", async () => {
     await render(
-      <AppThemeProvider>
-        <SettingsScreen />
-      </AppThemeProvider>,
+      <AppLanguageProvider>
+        <AppThemeProvider>
+          <SettingsScreen />
+        </AppThemeProvider>
+      </AppLanguageProvider>,
     );
 
     const system = await screen.findByRole("radio", { name: "System" });
@@ -50,5 +55,21 @@ describe("appearance settings", () => {
       color: "#132536",
     });
     expect(mockSetItem).toHaveBeenCalledWith(expect.stringContaining("theme-preference"), "light");
+  });
+
+  it("switches the whole screen to Spanish and stores the explicit language", async () => {
+    await render(
+      <AppLanguageProvider>
+        <AppThemeProvider>
+          <SettingsScreen />
+        </AppThemeProvider>
+      </AppLanguageProvider>,
+    );
+
+    await fireEvent.press(await screen.findByRole("radio", { name: "Español" }));
+
+    expect(await screen.findByRole("header", { name: "Configuración" })).toBeTruthy();
+    expect(screen.getByText("Idioma")).toBeTruthy();
+    expect(mockSetItem).toHaveBeenCalledWith(APP_LANGUAGE_PREFERENCE_STORAGE_KEY, "es");
   });
 });

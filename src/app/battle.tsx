@@ -2,6 +2,7 @@ import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { ScreenShell } from "@/components/screen-shell";
 import { Button, Card, SpriteSheetAnimation } from "@/components/ui";
@@ -13,6 +14,7 @@ import { theme } from "@/theme/tokens";
 
 /** Renders this feature with colors from the currently resolved app appearance. */
 export default function BattleScreen() {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   const router = useRouter();
   const [demons, setDemons] = useState<readonly DemonCatalogItem[]>([]);
@@ -30,38 +32,41 @@ export default function BattleScreen() {
 
     try {
       setDemons(await fetchDemonCatalog());
-    } catch (error) {
-      setCatalogError(error instanceof Error ? error.message : "Unable to load demons.");
+    } catch {
+      setCatalogError(t("formation.battle.catalogLoadError"));
     } finally {
       setIsLoadingCatalog(false);
     }
-  }, []);
+  }, [t]);
 
-  const selectDemon = useCallback(async (demon: DemonCatalogItem) => {
-    const requestId = selectionRequestId.current + 1;
+  const selectDemon = useCallback(
+    async (demon: DemonCatalogItem) => {
+      const requestId = selectionRequestId.current + 1;
 
-    selectionRequestId.current = requestId;
-    setSelectedDemonCode(demon.code);
-    setDetails(undefined);
-    setDetailsError(undefined);
-    setIsLoadingDetails(true);
+      selectionRequestId.current = requestId;
+      setSelectedDemonCode(demon.code);
+      setDetails(undefined);
+      setDetailsError(undefined);
+      setIsLoadingDetails(true);
 
-    try {
-      const battleDetails = await fetchDemonBattleDetails(demon.code);
+      try {
+        const battleDetails = await fetchDemonBattleDetails(demon.code);
 
-      if (selectionRequestId.current === requestId) {
-        setDetails(battleDetails);
+        if (selectionRequestId.current === requestId) {
+          setDetails(battleDetails);
+        }
+      } catch {
+        if (selectionRequestId.current === requestId) {
+          setDetailsError(t("formation.battle.detailsLoadError"));
+        }
+      } finally {
+        if (selectionRequestId.current === requestId) {
+          setIsLoadingDetails(false);
+        }
       }
-    } catch (error) {
-      if (selectionRequestId.current === requestId) {
-        setDetailsError(error instanceof Error ? error.message : "Unable to load the selected demon.");
-      }
-    } finally {
-      if (selectionRequestId.current === requestId) {
-        setIsLoadingDetails(false);
-      }
-    }
-  }, []);
+    },
+    [t],
+  );
 
   useEffect(() => {
     void loadCatalog();
@@ -73,20 +78,20 @@ export default function BattleScreen() {
     <ScreenShell
       actions={
         <Button onPress={() => router.push("/demonsCatalog")} size="sm" variant="ghost">
-          Catalog
+          {t("formation.battle.catalog")}
         </Button>
       }
       background={<BattleBackground />}
-      description="Choose a spiritual obstacle to understand its tactics and prepare a response."
+      description={t("formation.battle.arenaDescription")}
       headerVariant="compact"
       onBack={() => router.back()}
-      title="Arena"
+      title={t("formation.battle.arena")}
     >
       {isLoadingCatalog ? (
-        <Card fullWidth title="Loading demons">
+        <Card fullWidth title={t("formation.battle.loading")}>
           <View style={styles.stateContainer}>
             <ActivityIndicator color={theme.colors.semantic.danger} size="large" />
-            <Text style={styles.stateText}>Gathering opponents for the arena.</Text>
+            <Text style={styles.stateText}>{t("formation.battle.gathering")}</Text>
           </View>
         </Card>
       ) : null}
@@ -95,11 +100,11 @@ export default function BattleScreen() {
         <Card
           footer={
             <Button fullWidth onPress={() => void loadCatalog()} variant="danger">
-              Retry
+              {t("common.retry")}
             </Button>
           }
           fullWidth
-          title="Arena unavailable"
+          title={t("formation.battle.arenaUnavailable")}
           variant="danger"
         >
           <Text style={styles.stateText}>{catalogError}</Text>
@@ -126,10 +131,10 @@ export default function BattleScreen() {
           />
 
           {isLoadingDetails ? (
-            <Card fullWidth title="Preparing the encounter">
+            <Card fullWidth title={t("formation.battle.preparing")}>
               <View style={styles.stateContainer}>
                 <ActivityIndicator color={theme.colors.semantic.danger} />
-                <Text style={styles.stateText}>Reviewing this demon&apos;s tactics.</Text>
+                <Text style={styles.stateText}>{t("formation.battle.reviewing")}</Text>
               </View>
             </Card>
           ) : null}
@@ -139,12 +144,12 @@ export default function BattleScreen() {
               footer={
                 selectedDemon ? (
                   <Button fullWidth onPress={() => void selectDemon(selectedDemon)} variant="danger">
-                    Retry
+                    {t("common.retry")}
                   </Button>
                 ) : undefined
               }
               fullWidth
-              title="Demon details unavailable"
+              title={t("formation.battle.detailsUnavailable")}
               variant="danger"
             >
               <Text style={styles.stateText}>{detailsError}</Text>
@@ -154,10 +159,8 @@ export default function BattleScreen() {
           {details ? <BattleDemonDetails details={details} /> : null}
 
           {!selectedDemonCode && !isLoadingDetails ? (
-            <Card fullWidth title="Select an opponent" variant="info">
-              <Text style={styles.stateText}>
-                Select a demon in the arena to view its attacks, defenses, and reward.
-              </Text>
+            <Card fullWidth title={t("formation.battle.selectTitle")} variant="info">
+              <Text style={styles.stateText}>{t("formation.battle.selectCopy")}</Text>
             </Card>
           ) : null}
         </>

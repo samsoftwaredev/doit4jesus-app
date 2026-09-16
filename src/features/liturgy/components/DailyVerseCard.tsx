@@ -1,5 +1,6 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
@@ -11,9 +12,10 @@ interface DailyVerseCardProps {
 
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function DailyVerseCard({ citation, text }: DailyVerseCardProps) {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   return (
-    <View accessibilityLabel={`Gospel excerpt, ${citation}`} style={styles.card}>
+    <View accessibilityLabel={t("liturgy.verseLabel", { citation })} style={styles.card}>
       <MaterialCommunityIcons
         accessible={false}
         color={theme.colors.gold.pale}

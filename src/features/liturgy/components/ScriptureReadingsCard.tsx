@@ -1,8 +1,10 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Button, Card } from "@/components/ui";
+import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
@@ -24,9 +26,10 @@ interface ScriptureReadingsCardProps {
   onPreviousDay?: () => void;
 }
 
-function formatNavDate(isoDate: string) {
+/** Formats an ISO liturgy date without allowing timezone conversion to change the day. */
+function formatNavDate(isoDate: string, locale: string) {
   const [year, month, day] = isoDate.split("-").map(Number);
-  return new Date(Date.UTC(year, month - 1, day)).toLocaleDateString("en-US", {
+  return new Date(Date.UTC(year, month - 1, day)).toLocaleDateString(locale, {
     month: "short",
     day: "numeric",
     timeZone: "UTC",
@@ -47,6 +50,8 @@ export function ScriptureReadingsCard({
   onNextDay,
   onPreviousDay,
 }: ScriptureReadingsCardProps) {
+  const { t } = useTranslation();
+  const { locale } = useAppLanguage();
   const styles = useThemedStyles(styleSheet);
   const completedCount = readings.filter((reading) => completedReadingIds.includes(reading.id)).length;
   const completionPercentage = readings.length === 0 ? 0 : (completedCount / readings.length) * 100;
@@ -58,19 +63,28 @@ export function ScriptureReadingsCard({
         <View style={styles.heading}>
           <MaterialCommunityIcons color={theme.colors.gold.pale} name="book-open-page-variant-outline" size={21} />
           <Text accessibilityRole="header" style={styles.title}>
-            Today&apos;s Scripture Readings
+            {t("liturgy.readings.title")}
           </Text>
         </View>
-        <Text accessibilityLabel={`${completedCount} of ${readings.length} readings completed`} style={styles.count}>
-          {completedCount} of {readings.length} completed
+        <Text
+          accessibilityLabel={t("liturgy.readings.completedCountLabel", {
+            completed: completedCount,
+            total: readings.length,
+          })}
+          style={styles.count}
+        >
+          {t("liturgy.readings.completedCount", { completed: completedCount, total: readings.length })}
         </Text>
       </View>
       <LiturgicalChipList metadata={metadata} season={season} />
-      <View accessibilityLabel={`${Math.round(completionPercentage)} percent complete`} style={styles.progressTrack}>
+      <View
+        accessibilityLabel={t("liturgy.readings.progressLabel", { percent: Math.round(completionPercentage) })}
+        style={styles.progressTrack}
+      >
         <View style={[styles.progressValue, { width: `${completionPercentage}%` }]} />
       </View>
       {readings.length === 0 ? (
-        <Text style={styles.empty}>Today&apos;s Scripture readings are not available yet.</Text>
+        <Text style={styles.empty}>{t("liturgy.readings.empty")}</Text>
       ) : (
         <View>
           {readings.map((reading) => (
@@ -80,7 +94,6 @@ export function ScriptureReadingsCard({
               key={reading.id}
               onComplete={onReadingComplete}
               onToggle={() => {
-                console.log("Toggling reading", reading.id, "expandedReadingId:", expandedReadingId);
                 setExpandedReadingId((current) => (current === reading.id ? null : reading.id));
               }}
               reading={reading}
@@ -90,7 +103,7 @@ export function ScriptureReadingsCard({
       )}
       <View style={styles.navigation}>
         <Button
-          accessibilityLabel="Show the previous day's liturgy"
+          accessibilityLabel={t("liturgy.readings.previousLabel")}
           disabled={isNavigating || !onPreviousDay}
           leftIcon={<MaterialCommunityIcons color={theme.colors.semantic.success} name="chevron-left" size={18} />}
           onPress={onPreviousDay}
@@ -98,11 +111,11 @@ export function ScriptureReadingsCard({
           style={styles.navigationButton}
           variant="outline"
         >
-          {previousDate ? formatNavDate(previousDate) : "Previous"}
+          {previousDate ? formatNavDate(previousDate, locale) : t("liturgy.readings.previous")}
         </Button>
         <Button
-          accessibilityHint={nextDayDisabled ? "Tomorrow is the latest available liturgy." : undefined}
-          accessibilityLabel="Show the next day's liturgy"
+          accessibilityHint={nextDayDisabled ? t("liturgy.readings.nextHint") : undefined}
+          accessibilityLabel={t("liturgy.readings.nextLabel")}
           disabled={isNavigating || nextDayDisabled || !onNextDay}
           onPress={onNextDay}
           rightIcon={<MaterialCommunityIcons color={theme.colors.semantic.success} name="chevron-right" size={18} />}
@@ -110,7 +123,7 @@ export function ScriptureReadingsCard({
           style={styles.navigationButton}
           variant="outline"
         >
-          {nextDate ? formatNavDate(nextDate) : "Next"}
+          {nextDate ? formatNavDate(nextDate, locale) : t("liturgy.readings.next")}
         </Button>
       </View>
     </Card>

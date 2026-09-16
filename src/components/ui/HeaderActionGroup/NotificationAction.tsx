@@ -1,6 +1,9 @@
+import { useTranslation } from "react-i18next";
+
 import { HeaderActionButton } from "./HeaderActionButton";
 import type { UnreadHeaderActionProps } from "./HeaderActionGroup.types";
 
 export function NotificationAction(props: UnreadHeaderActionProps) {
-  return <HeaderActionButton {...props} iconName="bell" label="Notifications" />;
+  const { t } = useTranslation();
+  return <HeaderActionButton {...props} iconName="bell" label={t("headerActions.notifications")} />;
 }

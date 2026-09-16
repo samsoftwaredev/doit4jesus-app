@@ -2,25 +2,13 @@ import type { ImageSourcePropType } from "react-native";
 
 import type { RosaryContent } from "@/features/prayer/rosary/data/rosaryContent";
 import { englishRosaryContent } from "@/features/prayer/rosary/data/rosaryContent";
-import type {
-  RosaryMystery,
-  RosaryMysteryCategory,
-  RosaryMysterySet,
-  RosaryMysteryType,
-} from "@/features/prayer/rosary/types";
+import type { RosaryMystery, RosaryMysterySet, RosaryMysteryType } from "@/features/prayer/rosary/types";
 
 import * as mysteryCartoonImages from "../../../../../assets/images/mysteriesCartoon";
 
-import { rosaryPrayers } from "./rosaryPrayers";
+import { getRosaryPrayers } from "./rosaryPrayers";
 
 const mysteryTypeOrder: RosaryMysteryType[] = ["joyful", "sorrowful", "glorious", "luminous"];
-
-const categoryByType: Record<RosaryMysteryType, RosaryMysteryCategory> = {
-  joyful: "Joyful Mysteries",
-  luminous: "Luminous Mysteries",
-  sorrowful: "Sorrowful Mysteries",
-  glorious: "Glorious Mysteries",
-};
 
 const mysteryImageSources: Record<string, ImageSourcePropType> = {
   fifth_glorious: mysteryCartoonImages.fifthGlorious,
@@ -51,7 +39,8 @@ function createMysterySet(content: RosaryContent, type: RosaryMysteryType): Rosa
   const contentSet = content.mystery_sets.find((set) => set.id === type);
   if (!contentSet) return undefined;
 
-  const category = categoryByType[type];
+  const category = contentSet.title;
+  const prayers = getRosaryPrayers(content);
   const mysteries: RosaryMystery[] = contentSet.mysteries.map((mystery) => ({
     id: mystery.id,
     title: mystery.title,
@@ -62,7 +51,7 @@ function createMysterySet(content: RosaryContent, type: RosaryMysteryType): Rosa
     imageAlt: mystery.image_alt,
     scriptureReference: mystery.primary_scripture,
     scriptureText: mystery.scripture_text,
-    prayers: rosaryPrayers,
+    prayers,
   }));
 
   return {
@@ -79,15 +68,26 @@ export function getRosaryMysteriesFromContent(content: RosaryContent, type: Rosa
   return createMysterySet(content, type)?.mysteries ?? [];
 }
 
-export const rosaryMysterySets: RosaryMysterySet[] = mysteryTypeOrder.flatMap((type) => {
-  const mysterySet = createMysterySet(englishRosaryContent, type);
-  return mysterySet ? [mysterySet] : [];
-});
+/** Builds all four localized mystery sets while retaining their stable ordering. */
+export function getRosaryMysterySetsFromContent(content: RosaryContent): RosaryMysterySet[] {
+  return mysteryTypeOrder.flatMap((type) => {
+    const mysterySet = createMysterySet(content, type);
+    return mysterySet ? [mysterySet] : [];
+  });
+}
+
+export const rosaryMysterySets: RosaryMysterySet[] = getRosaryMysterySetsFromContent(englishRosaryContent);
 
 export const rosaryMysteries = getRosaryMysteriesFromContent(englishRosaryContent, "joyful");
 
 export function getRosaryMysterySet(type: RosaryMysteryType) {
   return rosaryMysterySets.find((set) => set.type === type) ?? rosaryMysterySets[0];
+}
+
+/** Returns one mystery set from a localized bundle, falling back to its first available set. */
+export function getRosaryMysterySetFromContent(content: RosaryContent, type: RosaryMysteryType) {
+  const sets = getRosaryMysterySetsFromContent(content);
+  return sets.find((set) => set.type === type) ?? sets[0];
 }
 
 export function getRosaryMysteries(type: RosaryMysteryType) {

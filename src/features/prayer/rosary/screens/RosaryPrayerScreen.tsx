@@ -13,6 +13,7 @@ import {
   View,
 } from "react-native";
 import Animated, { FadeIn, useReducedMotion } from "react-native-reanimated";
+import { useTranslation } from "react-i18next";
 
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { Confetti, SacredAtmosphere } from "@/components/ui";
@@ -27,20 +28,20 @@ import {
 } from "@/features/prayer/rosary/components";
 import { recordPrayerForIntention } from "@/features/prayer/intentions";
 import { recordRosaryActivity } from "@/features/prayer/rosary/api/activities.api";
-import { englishRosaryContent } from "@/features/prayer/rosary/data/rosaryContent";
-import { rosaryLengthLabel } from "@/features/prayer/rosary/data/rosaryLengths";
-import { getRosaryMysteries } from "@/features/prayer/rosary/data/rosaryMysteries";
+import { getRosaryContent } from "@/features/prayer/rosary/data/localizedRosaryContent";
+import { getRosaryMysteriesFromContent } from "@/features/prayer/rosary/data/rosaryMysteries";
 import { getRosarySequenceForLength, rosarySequence } from "@/features/prayer/rosary/data/rosarySequence";
 import { useRosaryLengthPreference } from "@/features/prayer/rosary/hooks/useRosaryLengthPreference";
 import { useRosarySession } from "@/features/prayer/rosary/hooks/useRosarySession";
+import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 import type { RosaryBead, RosaryLength, RosaryMystery, RosaryMysteryType } from "@/features/prayer/rosary/types";
 
-function completionDateLabel(date: string | null) {
+function completionDateLabel(date: string | null, locale: string, today: string) {
   const value = date ? new Date(date) : new Date();
-  if (Number.isNaN(value.getTime())) return "Today";
-  return value.toLocaleDateString(undefined, {
+  if (Number.isNaN(value.getTime())) return today;
+  return value.toLocaleDateString(locale, {
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -79,6 +80,8 @@ export function RosaryPrayerScreen({
   source?: string;
 }) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
+  const { language, locale } = useAppLanguage();
   const router = useRouter();
   const { width, fontScale } = useWindowDimensions();
   const reduceMotion = useReducedMotion();
@@ -115,16 +118,20 @@ export function RosaryPrayerScreen({
     pageViewportHeight > 0 && headerHeight > 0
       ? Math.max(0, pageViewportHeight - headerHeight - contentGap)
       : undefined;
-  const defaultMysteries = useMemo(() => getRosaryMysteries(mysteryType), [mysteryType]);
+  const rosaryContent = useMemo(() => getRosaryContent(language), [language]);
+  const defaultMysteries = useMemo(
+    () => getRosaryMysteriesFromContent(rosaryContent, mysteryType),
+    [mysteryType, rosaryContent],
+  );
   const mysteries = providedMysteries ?? defaultMysteries;
   const activeMysteries = useMemo(() => (isDecade ? [mysteries[0]].filter(Boolean) : mysteries), [isDecade, mysteries]);
   const shortRosaryBeads = useMemo(
-    () => getRosarySequenceForLength(englishRosaryContent, mysteryType, "short"),
-    [mysteryType],
+    () => getRosarySequenceForLength(rosaryContent, mysteryType, "short"),
+    [mysteryType, rosaryContent],
   );
   const selectedRosaryBeads = useMemo(
-    () => getRosarySequenceForLength(englishRosaryContent, mysteryType, rosaryLength),
-    [mysteryType, rosaryLength],
+    () => getRosarySequenceForLength(rosaryContent, mysteryType, rosaryLength),
+    [mysteryType, rosaryContent, rosaryLength],
   );
   const activeBeads = isDecade ? rosarySequence : selectedRosaryBeads;
   const session = useRosarySession({
@@ -142,16 +149,18 @@ export function RosaryPrayerScreen({
   );
   const progress = {
     ...beadProgress,
-    prayerName: session.currentPrayer?.name ?? "Prayer",
+    prayerName: session.currentPrayer?.name ?? t("rosary.cards.prayer"),
   };
 
   /** Applies and announces a Rosary length selected from the settings modal. */
   const handleRosaryLengthChange = useCallback(
     (length: RosaryLength) => {
       void setRosaryLength(length);
-      AccessibilityInfo.announceForAccessibility(`${rosaryLengthLabel(length)} Rosary selected.`);
+      AccessibilityInfo.announceForAccessibility(
+        t("rosary.length.selected", { length: t(`rosary.length.${length}.label`) }),
+      );
     },
-    [setRosaryLength],
+    [setRosaryLength, t],
   );
 
   /** Opens the shared Rosary settings modal from the active-length badge. */
@@ -173,9 +182,9 @@ export function RosaryPrayerScreen({
       session.currentBead.type === "creed" ||
       (session.currentBead.type === "signOfCross" && session.currentBead.section === "opening");
     const markerPosition = isAtCrucifix
-      ? `at the crucifix before bead 1 of ${progress.total}`
-      : `at bead ${progress.currentIndex} of ${progress.total}`;
-    const announcement = `${session.currentPrayer?.name ?? "Prayer"}, ${markerPosition}. ${session.currentMystery.title}.`;
+      ? t("rosary.controls.atCrucifix", { total: progress.total })
+      : t("rosary.controls.atBead", { current: progress.currentIndex, total: progress.total });
+    const announcement = `${session.currentPrayer?.name ?? t("rosary.cards.prayer")}, ${markerPosition}. ${session.currentMystery.title}.`;
     if (lastAnnouncement.current === announcement) return;
     lastAnnouncement.current = announcement;
     const timeout = setTimeout(() => AccessibilityInfo.announceForAccessibility(announcement), 220);
@@ -189,6 +198,7 @@ export function RosaryPrayerScreen({
     session.isTransitioning,
     progress.currentIndex,
     progress.total,
+    t,
   ]);
 
   const recordCompletedPrayer = useCallback(async () => {
@@ -212,7 +222,9 @@ export function RosaryPrayerScreen({
         activityRecorded.current = true;
         setRosaryRecorded(true);
         if (result.points > 0) {
-          AccessibilityInfo.announceForAccessibility(`Rosary recorded. ${result.points} experience points earned.`);
+          AccessibilityInfo.announceForAccessibility(
+            t("rosary.completion.activityRecorded", { points: result.points }),
+          );
         }
       }
 
@@ -222,22 +234,16 @@ export function RosaryPrayerScreen({
           intentionPrayerRecorded.current = true;
           setIntentionPrayerCount(intentionResult.prayerCount);
         } catch {
-          setCompletionError(
-            "Your Rosary was saved, but we couldn’t record the prayer for this intention. Try again when you’re ready.",
-          );
+          setCompletionError(t("rosary.completion.intentionError"));
         }
       }
     } catch (error) {
-      setCompletionError(
-        error instanceof Error
-          ? error.message
-          : "Your Rosary was completed, but couldn’t be saved. Try again to record it.",
-      );
+      setCompletionError(error instanceof Error ? error.message : t("rosary.completion.saveError"));
     } finally {
       completionRequestInFlight.current = false;
       setIsRecordingCompletion(false);
     }
-  }, [intentionId]);
+  }, [intentionId, t]);
 
   useEffect(() => {
     if (!session.isHydrated) return;
@@ -253,12 +259,14 @@ export function RosaryPrayerScreen({
       setCompletionVisible(true);
       setCompletionCelebration((current) => current + 1);
       AccessibilityInfo.announceForAccessibility(
-        `Rosary completed. ${session.currentMystery?.title ?? "Current mystery"} is complete.`,
+        t("rosary.completion.completeAnnouncement", {
+          mystery: session.currentMystery?.title ?? t("rosary.completion.currentMystery"),
+        }),
       );
       void recordCompletedPrayer();
     }
     if (!session.isRosaryCompleted) hadCompletion.current = false;
-  }, [recordCompletedPrayer, session.currentMystery?.title, session.isHydrated, session.isRosaryCompleted]);
+  }, [recordCompletedPrayer, session.currentMystery?.title, session.isHydrated, session.isRosaryCompleted, t]);
 
   const restart = () => {
     setCompletionVisible(false);
@@ -291,7 +299,7 @@ export function RosaryPrayerScreen({
           ]}
         >
           <ScrollView
-            accessibilityLabel="Rosary prayer content"
+            accessibilityLabel={t("rosary.controls.content")}
             contentContainerStyle={[styles.pageScrollContent, { gap: contentGap }]}
             nestedScrollEnabled
             onLayout={handlePageViewportLayout}
@@ -299,12 +307,12 @@ export function RosaryPrayerScreen({
             style={styles.pageScroll}
           >
             <View
-              accessibilityLabel="Rosary controls header"
+              accessibilityLabel={t("rosary.controls.header")}
               onLayout={handleHeaderLayout}
               style={[styles.topBar, { gap: compact ? 4 : 8 }]}
             >
               <Pressable
-                accessibilityLabel="Go back"
+                accessibilityLabel={t("rosary.controls.goBack")}
                 accessibilityRole="button"
                 hitSlop={theme.spacing[2]}
                 onPress={() => router.back()}
@@ -318,8 +326,10 @@ export function RosaryPrayerScreen({
                 />
               </Pressable>
               <Pressable
-                accessibilityHint="Opens Rosary settings to change the prayer length."
-                accessibilityLabel={`Current Rosary length: ${rosaryLengthLabel(rosaryLength)}`}
+                accessibilityHint={t("rosary.length.hint")}
+                accessibilityLabel={t("rosary.length.current", {
+                  length: t(`rosary.length.${rosaryLength}.label`),
+                })}
                 accessibilityRole="button"
                 onPress={handleOpenRosarySettings}
                 style={({ pressed }) => [
@@ -335,7 +345,7 @@ export function RosaryPrayerScreen({
                   size={theme.sizes.iconSmall}
                 />
                 <Text numberOfLines={1} style={styles.lengthIndicatorText}>
-                  {rosaryLengthLabel(rosaryLength)}
+                  {t(`rosary.length.${rosaryLength}.label`)}
                 </Text>
               </Pressable>
               <RosaryPresence />
@@ -355,7 +365,7 @@ export function RosaryPrayerScreen({
               </View>
 
               <ScrollView
-                accessibilityLabel="Rosary prayer details"
+                accessibilityLabel={t("rosary.controls.details")}
                 contentContainerStyle={[styles.contentColumnContent, { gap: contentGap }]}
                 nestedScrollEnabled
                 showsVerticalScrollIndicator
@@ -378,9 +388,7 @@ export function RosaryPrayerScreen({
                 />
                 {session.storageError || lengthStorageError ? (
                   <Text accessibilityRole="alert" style={styles.storageNote}>
-                    {session.storageError
-                      ? "Your prayer is continuing, but progress could not be saved on this device."
-                      : "Your prayer is continuing, but the Rosary length could not be saved on this device."}
+                    {session.storageError ? t("rosary.storage.progress") : t("rosary.storage.length")}
                   </Text>
                 ) : null}
               </ScrollView>
@@ -429,14 +437,16 @@ export function RosaryPrayerScreen({
               />
             </View>
             <Text accessibilityRole="header" style={styles.completionTitle}>
-              Rosary Completed
+              {t("rosary.completion.title")}
             </Text>
-            <Text style={styles.completionDate}>{completionDateLabel(session.lastPrayedOn)}</Text>
-            <Text style={styles.completionCopy}>May this time of prayer remain with you in peace.</Text>
-            {rosaryRecorded ? <Text style={styles.completionSuccess}>Rosary recorded</Text> : null}
+            <Text style={styles.completionDate}>
+              {completionDateLabel(session.lastPrayedOn, locale, t("rosary.completion.today"))}
+            </Text>
+            <Text style={styles.completionCopy}>{t("rosary.completion.copy")}</Text>
+            {rosaryRecorded ? <Text style={styles.completionSuccess}>{t("rosary.completion.recorded")}</Text> : null}
             {intentionPrayerCount !== undefined ? (
               <Text style={styles.completionSuccess}>
-                Prayer offered. {intentionPrayerCount} prayers have been offered for this intention.
+                {t("rosary.completion.prayerOffered", { count: intentionPrayerCount })}
               </Text>
             ) : null}
             {completionError ? (
@@ -446,25 +456,27 @@ export function RosaryPrayerScreen({
             ) : null}
             {completionError ? (
               <Pressable
-                accessibilityLabel="Retry recording this completed Rosary"
+                accessibilityLabel={t("rosary.completion.retryLabel")}
                 accessibilityRole="button"
                 disabled={isRecordingCompletion}
                 onPress={() => void recordCompletedPrayer()}
                 style={({ pressed }) => [styles.retryAction, pressed && styles.pressed]}
               >
-                <Text style={styles.retryActionText}>{isRecordingCompletion ? "Recording…" : "Try Again"}</Text>
+                <Text style={styles.retryActionText}>
+                  {isRecordingCompletion ? t("rosary.completion.recording") : t("common.retry")}
+                </Text>
               </Pressable>
             ) : null}
             <Pressable
-              accessibilityLabel="Pray this mystery again"
+              accessibilityLabel={t("rosary.completion.prayAgainLabel")}
               accessibilityRole="button"
               onPress={restart}
               style={({ pressed }) => [styles.primaryAction, pressed && styles.pressed]}
             >
-              <Text style={styles.primaryActionText}>Pray Again</Text>
+              <Text style={styles.primaryActionText}>{t("rosary.completion.prayAgain")}</Text>
             </Pressable>
             <Pressable
-              accessibilityLabel="Return home"
+              accessibilityLabel={t("rosary.completion.returnHomeLabel")}
               accessibilityRole="button"
               onPress={() => {
                 setCompletionVisible(false);
@@ -472,7 +484,7 @@ export function RosaryPrayerScreen({
               }}
               style={({ pressed }) => [styles.secondaryAction, pressed && styles.pressed]}
             >
-              <Text style={styles.secondaryActionText}>Return Home</Text>
+              <Text style={styles.secondaryActionText}>{t("rosary.completion.returnHome")}</Text>
             </Pressable>
           </Animated.View>
         </View>

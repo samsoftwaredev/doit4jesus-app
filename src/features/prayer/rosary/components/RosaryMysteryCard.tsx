@@ -2,6 +2,7 @@ import Feather from "@expo/vector-icons/Feather";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { OrnateCard } from "@/features/prayer/components";
 import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
@@ -18,10 +19,11 @@ type RosaryMysteryCardProps = {
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function RosaryMysteryCard({ mysterySet, onPress, width }: RosaryMysteryCardProps) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const { isLargeText } = useResponsiveLayout();
   return (
     <Pressable
-      accessibilityLabel={`Open ${mysterySet.title}`}
+      accessibilityLabel={t("rosary.openMystery", { mystery: mysterySet.title })}
       accessibilityRole="button"
       onPress={onPress}
       style={({ pressed }) => [styles.pressable, { width }, pressed && styles.pressed]}

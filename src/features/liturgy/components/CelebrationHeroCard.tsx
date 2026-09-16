@@ -2,6 +2,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { StyleSheet, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
@@ -27,6 +28,7 @@ function displayGrade(grade: string) {
 
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function CelebrationHeroCard({ celebration, date, onCalendarPress }: CelebrationHeroCardProps) {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   const { isLargeText, isNarrowPhone } = useResponsiveLayout();
   const reduceArtwork = isLargeText || isNarrowPhone;
@@ -34,7 +36,10 @@ export function CelebrationHeroCard({ celebration, date, onCalendarPress }: Cele
 
   return (
     <View
-      accessibilityLabel={`Celebration: ${celebration.name}. Liturgical color ${celebration.liturgicalColor.toLowerCase()}.`}
+      accessibilityLabel={t("liturgy.celebration.label", {
+        color: celebration.liturgicalColor.toLowerCase(),
+        name: celebration.name,
+      })}
       style={[styles.card, { borderColor: colors.border, shadowColor: colors.accent }]}
     >
       <LinearGradient
@@ -58,7 +63,7 @@ export function CelebrationHeroCard({ celebration, date, onCalendarPress }: Cele
           <MaterialCommunityIcons color={colors.accent} name="church-outline" size={16} />
           <Text style={styles.grade}>{displayGrade(celebration.grade)}</Text>
         </View>
-        <Text style={styles.devotion}>Receive today&apos;s Word with a quiet and faithful heart.</Text>
+        <Text style={styles.devotion}>{t("liturgy.celebration.devotion")}</Text>
       </View>
       <Image
         accessible={false}

@@ -1,17 +1,22 @@
 import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useRouter } from "expo-router";
+import type { TFunction } from "i18next";
 import { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, BackHandler, Pressable, Switch, Text, TextInput, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
+import { LanguageSelector } from "@/components";
 import { useCurrentProfile } from "@/features/profile";
 import { ProfileApiError, updateCurrentUserProfile } from "@/features/profile/profile.api";
 import type { CurrentUserProfile, UpdateCurrentUserProfile } from "@/features/profile/profile.types";
+import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 import { CountrySelector } from "./CountrySelector";
 import { validateFullName } from "./name-validation";
+import { completeLanguageOnboarding, hasCompletedLanguageOnboarding } from "./onboarding-language";
 import {
   completeOnboarding,
   getNotificationPreferences,
@@ -29,6 +34,7 @@ import { getResumeStep } from "./onboarding.types";
 import { ProfileSetupLayout } from "./ProfileSetupLayout";
 
 type UsernameStatus = "available" | "checking" | "idle" | "invalid" | "unavailable" | "error";
+type OnboardingFlowStep = "language" | OnboardingStep;
 
 function stateFromProfile(
   profile: CurrentUserProfile,
@@ -52,25 +58,46 @@ function samePreferences(a: NotificationPreferences, b: NotificationPreferences)
   );
 }
 
-function usernameReasonMessage(reason: string | null) {
+/** Converts backend username validation reasons into localized guidance. */
+function usernameReasonMessage(t: TFunction, reason: string | null) {
   switch (reason) {
     case "INVALID_LENGTH":
-      return "Choose a username with a valid length.";
+      return t("onboarding.username.invalidLength");
     case "INVALID_CHARACTERS":
-      return "Use only the characters allowed for usernames.";
+      return t("onboarding.username.invalidCharacters");
     case "PROHIBITED_TERM":
-      return "Choose a different username.";
+      return t("onboarding.username.prohibited");
     case "USERNAME_TAKEN":
-      return "That username is already taken.";
+      return t("onboarding.username.taken");
     default:
-      return "That username isn't valid.";
+      return t("onboarding.username.invalidDefault");
+  }
+}
+
+/** Localizes the stable English validation messages returned by the name validator. */
+function translatedNameValidationMessage(t: TFunction, message: string): string {
+  switch (message) {
+    case "Enter your first and last name.":
+      return t("onboarding.name.validation.empty");
+    case "Your name must be 80 characters or fewer.":
+      return t("onboarding.name.validation.length");
+    case "Your name cannot contain numbers.":
+      return t("onboarding.name.validation.numbers");
+    case "Enter both your first and last name, separated by a space.":
+      return t("onboarding.name.validation.space");
+    case "Enter one first name and one last name, separated by a space.":
+      return t("onboarding.name.validation.parts");
+    default:
+      return t("onboarding.name.validation.characters");
   }
 }
 
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function ProfileSetupScreen() {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const router = useRouter();
+  const { language, setLanguage } = useAppLanguage();
   const {
     notificationPreferences: cachedPreferences,
     profile,
@@ -78,15 +105,17 @@ export function ProfileSetupScreen() {
     replaceProfile,
   } = useCurrentProfile();
   const completionInFlightRef = useRef(false);
+  const languageHydratedUserRef = useRef<string | null>(null);
   const preferenceRequestInFlightRef = useRef(false);
   const savedPreferencesRef = useRef<NotificationPreferences | null>(cachedPreferences);
   const [error, setError] = useState<string | null>(null);
   const [isCompleting, setIsCompleting] = useState(false);
   const [isLoadingPreferences, setIsLoadingPreferences] = useState(false);
+  const [isLoadingLanguageStep, setIsLoadingLanguageStep] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [preferenceLoadAttempt, setPreferenceLoadAttempt] = useState(0);
   const [preferencesError, setPreferencesError] = useState<string | null>(null);
-  const [step, setStep] = useState<OnboardingStep>(() => (profile ? getResumeStep(profile.profileSetup) : 1));
+  const [step, setStep] = useState<OnboardingFlowStep>("language");
   const [usernameResult, setUsernameResult] = useState<UsernameValidation | null>(null);
   const [usernameStatus, setUsernameStatus] = useState<UsernameStatus>("idle");
   const [usernameValidationAttempt, setUsernameValidationAttempt] = useState(0);
@@ -104,10 +133,32 @@ export function ProfileSetupScreen() {
   );
 
   useEffect(() => {
+    if (!profile || languageHydratedUserRef.current === profile.userId) return;
+    let active = true;
+    const userId = profile.userId;
+    const resumeStep = getResumeStep(profile.profileSetup);
+    setIsLoadingLanguageStep(true);
+
+    void hasCompletedLanguageOnboarding(userId).then((completed) => {
+      if (!active) return;
+      languageHydratedUserRef.current = userId;
+      setStep(completed ? resumeStep : "language");
+      setIsLoadingLanguageStep(false);
+    });
+
+    return () => {
+      active = false;
+    };
+  }, [profile]);
+
+  useEffect(() => {
     const subscription = BackHandler.addEventListener("hardwareBackPress", () => {
-      if (step > 1) {
+      if (step !== "language" && step > 1) {
         setError(null);
-        setStep((current) => Math.max(1, current - 1) as OnboardingStep);
+        setStep((current) => (current === "language" ? current : (Math.max(1, current - 1) as OnboardingStep)));
+      } else if (step === 1) {
+        setError(null);
+        setStep("language");
       }
       return true;
     });
@@ -115,7 +166,14 @@ export function ProfileSetupScreen() {
   }, [step]);
 
   useEffect(() => {
-    if (!profile || step < 5 || form.notificationPreferences || preferenceRequestInFlightRef.current) return;
+    if (
+      !profile ||
+      step === "language" ||
+      step < 5 ||
+      form.notificationPreferences ||
+      preferenceRequestInFlightRef.current
+    )
+      return;
     let active = true;
     preferenceRequestInFlightRef.current = true;
     setIsLoadingPreferences(true);
@@ -129,7 +187,7 @@ export function ProfileSetupScreen() {
         setForm((current) => ({ ...current, notificationPreferences: preferences }));
       })
       .catch(() => {
-        if (active) setPreferencesError("We couldn't load your notification preferences. Try again.");
+        if (active) setPreferencesError(t("onboarding.errors.preferencesLoad"));
       })
       .finally(() => {
         preferenceRequestInFlightRef.current = false;
@@ -139,7 +197,7 @@ export function ProfileSetupScreen() {
     return () => {
       active = false;
     };
-  }, [form.notificationPreferences, preferenceLoadAttempt, profile, replaceNotificationPreferences, step]);
+  }, [form.notificationPreferences, preferenceLoadAttempt, profile, replaceNotificationPreferences, step, t]);
 
   useEffect(() => {
     if (step !== 2 || !profile) return;
@@ -192,10 +250,13 @@ export function ProfileSetupScreen() {
     };
   }, [form.username, profile, step, usernameValidationAttempt]);
 
-  if (!profile) return null;
+  if (!profile || isLoadingLanguageStep) return null;
 
   const nameValidation = validateFullName(form.displayName);
   const showNameValidation = Boolean(form.displayName.trim()) && !nameValidation.valid;
+  const nameValidationMessage = nameValidation.valid
+    ? undefined
+    : translatedNameValidationMessage(t, nameValidation.message);
 
   const syncProfile = (updatedProfile: CurrentUserProfile) => {
     replaceProfile(updatedProfile);
@@ -227,7 +288,7 @@ export function ProfileSetupScreen() {
       advance(nextStep);
     } catch (requestError) {
       if (options.username && requestError instanceof ProfileApiError && requestError.status === 409) {
-        setError("That username was just taken. Choose another suggestion and try again.");
+        setError(t("onboarding.errors.usernameConflict"));
         setUsernameStatus("unavailable");
         if (requestError.suggestions.length > 0) {
           setUsernameResult({
@@ -241,9 +302,9 @@ export function ProfileSetupScreen() {
         }
         setUsernameValidationAttempt((attempt) => attempt + 1);
       } else if (options.username && requestError instanceof ProfileApiError && requestError.status === 422) {
-        setError("That username was rejected. Choose another username and try again.");
+        setError(t("onboarding.errors.usernameRejected"));
       } else {
-        setError("We couldn't save your information. Please try again.");
+        setError(t("onboarding.errors.profileSave"));
       }
     } finally {
       setIsSaving(false);
@@ -254,9 +315,13 @@ export function ProfileSetupScreen() {
     if (isSaving || isCompleting) return;
 
     switch (step) {
+      case "language":
+        await completeLanguageOnboarding(profile.userId);
+        advance(getResumeStep(profile.profileSetup));
+        return;
       case 1: {
         if (!nameValidation.valid) {
-          setError(nameValidation.message);
+          setError(translatedNameValidationMessage(t, nameValidation.message));
           return;
         }
         const displayName = nameValidation.normalizedName;
@@ -270,7 +335,7 @@ export function ProfileSetupScreen() {
       case 2: {
         const username = form.username.trim();
         if (!username || (username !== profile.username && usernameStatus !== "available")) {
-          setError("Choose an available username.");
+          setError(t("onboarding.username.required"));
           return;
         }
         if (username === profile.username) {
@@ -282,7 +347,7 @@ export function ProfileSetupScreen() {
       }
       case 3:
         if (!form.gender) {
-          setError("Select Knight or Princess.");
+          setError(t("onboarding.gender.required"));
           return;
         }
         if (form.gender === profile.gender) {
@@ -293,7 +358,7 @@ export function ProfileSetupScreen() {
         return;
       case 4: {
         if (!form.countryCode) {
-          setError("Select a country.");
+          setError(t("onboarding.country.required"));
           return;
         }
         if (form.countryCode === profile.countryCode) {
@@ -306,7 +371,7 @@ export function ProfileSetupScreen() {
       case 5: {
         const preferences = form.notificationPreferences;
         if (!preferences) {
-          setError("Load your notification preferences before continuing.");
+          setError(t("onboarding.errors.preferencesRequired"));
           return;
         }
         if (savedPreferencesRef.current && samePreferences(preferences, savedPreferencesRef.current)) {
@@ -322,7 +387,7 @@ export function ProfileSetupScreen() {
           setForm((current) => ({ ...current, notificationPreferences: saved }));
           advance(6);
         } catch {
-          setError("We couldn't save your notification preferences. Please try again.");
+          setError(t("onboarding.errors.preferencesSave"));
         } finally {
           setIsSaving(false);
         }
@@ -340,12 +405,12 @@ export function ProfileSetupScreen() {
     const finalNameValidation = validateFullName(form.displayName);
     const username = form.username.trim();
     if (!finalNameValidation.valid) {
-      setError(finalNameValidation.message);
+      setError(translatedNameValidationMessage(t, finalNameValidation.message));
       return;
     }
     const displayName = finalNameValidation.normalizedName;
     if (!username || !form.gender || !form.countryCode || !preferences) {
-      setError("Review your setup answers before entering the mission.");
+      setError(t("onboarding.errors.review"));
       return;
     }
 
@@ -365,12 +430,12 @@ export function ProfileSetupScreen() {
       setForm(stateFromProfile(result.profile, result.notificationPreferences));
 
       if (!result.profile.profileSetup.complete) {
-        setError("Your setup is still incomplete. Review your answers and try again.");
+        setError(t("onboarding.errors.incomplete"));
         return;
       }
       router.replace("/");
     } catch {
-      setError("We couldn't complete your setup. Your previous answers are still saved. Please try again.");
+      setError(t("onboarding.errors.completion"));
     } finally {
       completionInFlightRef.current = false;
       setIsCompleting(false);
@@ -379,40 +444,56 @@ export function ProfileSetupScreen() {
 
   const goBack = () => {
     setError(null);
-    setStep((current) => Math.max(1, current - 1) as OnboardingStep);
+    setStep((current) => {
+      if (current === "language") return current;
+      if (current === 1) return "language";
+      return (current - 1) as OnboardingStep;
+    });
   };
 
   const shared = {
     error,
     nextLoading: isSaving || isCompleting,
-    onBack: step > 1 ? goBack : undefined,
+    onBack: step === "language" ? undefined : goBack,
     onNext: () => void next(),
-    step,
+    step: step === "language" ? 1 : step + 1,
   };
 
   switch (step) {
+    case "language":
+      return (
+        <ProfileSetupLayout
+          {...shared}
+          description={t("language.description")}
+          icon="translate"
+          nextLabel={t("common.continue")}
+          title={t("language.title")}
+        >
+          <LanguageSelector language={language} onChange={(nextLanguage) => void setLanguage(nextLanguage)} />
+        </ProfileSetupLayout>
+      );
     case 1:
       return (
         <ProfileSetupLayout
           {...shared}
-          description="We’ll use this for formal communications."
+          description={t("onboarding.name.description")}
           icon="account-outline"
           nextDisabled={!nameValidation.valid}
-          title="What’s your first and last name?"
+          title={t("onboarding.name.title")}
         >
           <ProfileSetupTextField
-            accessibilityLabel="Display Name"
+            accessibilityLabel={t("onboarding.name.accessibilityLabel")}
             autoCapitalize="words"
-            helper="Enter your first and last name, separated by a space. No numbers."
+            helper={t("onboarding.name.helper")}
             invalid={showNameValidation}
-            label="First and last name"
+            label={t("onboarding.name.label")}
             maxLength={80}
             onChangeText={(displayName) => {
               setError(null);
               setForm((current) => ({ ...current, displayName }));
             }}
-            placeholder="e.g. John Bosco"
-            validationMessage={showNameValidation ? nameValidation.message : undefined}
+            placeholder={t("onboarding.name.placeholder")}
+            validationMessage={showNameValidation ? nameValidationMessage : undefined}
             value={form.displayName}
           />
         </ProfileSetupLayout>
@@ -421,30 +502,30 @@ export function ProfileSetupScreen() {
       return (
         <ProfileSetupLayout
           {...shared}
-          description="This is how your friends will find you."
+          description={t("onboarding.username.description")}
           icon="account-search-outline"
           nextDisabled={form.username.trim() !== profile.username && usernameStatus !== "available"}
-          title="Choose your username"
+          title={t("onboarding.username.title")}
         >
           <ProfileSetupTextField
-            accessibilityLabel="Username"
+            accessibilityLabel={t("onboarding.username.accessibilityLabel")}
             autoCapitalize="none"
             autoCorrect={false}
-            helper="e.g. WarriorForChrist"
-            label="Username"
+            helper={t("onboarding.username.helper")}
+            label={t("onboarding.username.label")}
             onChangeText={(username) => {
               setError(null);
               setUsernameResult(null);
               setUsernameStatus("idle");
               setForm((current) => ({ ...current, username }));
             }}
-            placeholder="Username"
+            placeholder={t("onboarding.username.label")}
             value={form.username}
           />
           <UsernameFeedback result={usernameResult} status={usernameStatus} />
           {usernameResult?.suggestions.length ? (
             <View style={styles.suggestions}>
-              <Text style={styles.suggestionsTitle}>Suggestions</Text>
+              <Text style={styles.suggestionsTitle}>{t("onboarding.username.suggestions")}</Text>
               <View style={styles.chips}>
                 {usernameResult.suggestions.map((suggestion) => (
                   <Pressable
@@ -470,15 +551,15 @@ export function ProfileSetupScreen() {
       return (
         <ProfileSetupLayout
           {...shared}
-          description="This will personalize your experience and challenges."
+          description={t("onboarding.gender.description")}
           icon="shield-crown-outline"
           nextDisabled={!form.gender}
-          title="Who do you identify as?"
+          title={t("onboarding.gender.title")}
         >
           <View accessibilityRole="radiogroup" style={styles.genderOptions}>
             <GenderOption
               icon="shield-sword-outline"
-              label="Knight"
+              label={t("onboarding.gender.knight")}
               onPress={() => {
                 setError(null);
                 setForm((current) => ({ ...current, gender: "male" }));
@@ -487,7 +568,7 @@ export function ProfileSetupScreen() {
             />
             <GenderOption
               icon="crown-outline"
-              label="Princess"
+              label={t("onboarding.gender.princess")}
               onPress={() => {
                 setError(null);
                 setForm((current) => ({ ...current, gender: "female" }));
@@ -501,10 +582,10 @@ export function ProfileSetupScreen() {
       return (
         <ProfileSetupLayout
           {...shared}
-          description="Compete for your country."
+          description={t("onboarding.country.description")}
           icon="earth"
           nextDisabled={!form.countryCode}
-          title="Which country will you represent?"
+          title={t("onboarding.country.title")}
         >
           <CountrySelector
             onSelect={(country) => {
@@ -524,16 +605,16 @@ export function ProfileSetupScreen() {
       return (
         <ProfileSetupLayout
           {...shared}
-          description="We’ll remind you of what matters most."
+          description={t("onboarding.notifications.description")}
           error={error ?? preferencesError}
           icon="bell-outline"
           nextDisabled={!form.notificationPreferences || Boolean(preferencesError)}
-          title="Stay close to Jesus"
+          title={t("onboarding.notifications.title")}
         >
           {isLoadingPreferences ? (
-            <View accessibilityLabel="Loading notification preferences" style={styles.loadingPreferences}>
+            <View accessibilityLabel={t("onboarding.notifications.loadingLabel")} style={styles.loadingPreferences}>
               <ActivityIndicator color={theme.colors.brand.primaryLight} />
-              <Text style={styles.loadingCopy}>Loading your preferences…</Text>
+              <Text style={styles.loadingCopy}>{t("onboarding.notifications.loading")}</Text>
             </View>
           ) : null}
           {preferencesError && !isLoadingPreferences ? (
@@ -542,26 +623,26 @@ export function ProfileSetupScreen() {
               onPress={() => setPreferenceLoadAttempt((attempt) => attempt + 1)}
               style={styles.retryButton}
             >
-              <Text style={styles.retryLabel}>Try Again</Text>
+              <Text style={styles.retryLabel}>{t("common.retry")}</Text>
             </Pressable>
           ) : null}
           {form.notificationPreferences ? (
             <View style={styles.preferenceList}>
               <NotificationPreferenceRow
-                copy="Daily Rosary"
-                label="Daily Rosary Reminder"
+                copy={t("onboarding.notifications.rosaryCopy")}
+                label={t("onboarding.notifications.rosaryLabel")}
                 onValueChange={(value) => updatePreference(setForm, "dailyRosaryReminder", value)}
                 value={form.notificationPreferences.dailyRosaryReminder}
               />
               <NotificationPreferenceRow
-                copy="Examination of conscience"
-                label="Confession Reminder"
+                copy={t("onboarding.notifications.confessionCopy")}
+                label={t("onboarding.notifications.confessionLabel")}
                 onValueChange={(value) => updatePreference(setForm, "confessionReminder", value)}
                 value={form.notificationPreferences.confessionReminder}
               />
               <NotificationPreferenceRow
-                copy="Find time with Jesus"
-                label="Eucharistic Adoration"
+                copy={t("onboarding.notifications.adorationCopy")}
+                label={t("onboarding.notifications.adorationLabel")}
                 onValueChange={(value) => updatePreference(setForm, "eucharisticAdoration", value)}
                 value={form.notificationPreferences.eucharisticAdoration}
               />
@@ -573,17 +654,17 @@ export function ProfileSetupScreen() {
       return (
         <ProfileSetupLayout
           {...shared}
-          description="Let’s grow in faith, compete in holiness, and change the world for Jesus!"
+          description={t("onboarding.complete.description")}
           error={error ?? preferencesError}
           icon="shield-cross"
           nextDisabled={!form.notificationPreferences || Boolean(preferencesError)}
-          nextLabel="Enter the Mission"
+          nextLabel={t("onboarding.complete.next")}
           showConfetti
-          title="You’re all set!"
+          title={t("onboarding.complete.title")}
         >
           <View style={styles.missionCard}>
             <MaterialCommunityIcons color={theme.rosary.colors.goldBright} name="earth" size={theme.sizes.iconHero} />
-            <Text style={styles.missionCopy}>Your profile is ready for the mission.</Text>
+            <Text style={styles.missionCopy}>{t("onboarding.complete.missionCopy")}</Text>
             {isLoadingPreferences ? <ActivityIndicator color={theme.colors.brand.primaryLight} /> : null}
             {preferencesError && !isLoadingPreferences ? (
               <Pressable
@@ -591,7 +672,7 @@ export function ProfileSetupScreen() {
                 onPress={() => setPreferenceLoadAttempt((attempt) => attempt + 1)}
                 style={styles.retryButton}
               >
-                <Text style={styles.retryLabel}>Try Again</Text>
+                <Text style={styles.retryLabel}>{t("common.retry")}</Text>
               </Pressable>
             ) : null}
           </View>
@@ -635,17 +716,18 @@ function ProfileSetupTextField({
 /** Renders UsernameFeedback with styles resolved from the active appearance. */
 function UsernameFeedback({ result, status }: { result: UsernameValidation | null; status: UsernameStatus }) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const message =
     status === "checking"
-      ? "Checking username…"
+      ? t("onboarding.username.checking")
       : status === "available"
-        ? "Username is available."
+        ? t("onboarding.username.available")
         : status === "unavailable"
-          ? "Username is already taken."
+          ? t("onboarding.username.taken")
           : status === "invalid"
-            ? usernameReasonMessage(result?.reason ?? null)
+            ? usernameReasonMessage(t, result?.reason ?? null)
             : status === "error"
-              ? "We couldn't check this username. Try again."
+              ? t("onboarding.username.error")
               : null;
   if (!message) return null;
   const success = status === "available";

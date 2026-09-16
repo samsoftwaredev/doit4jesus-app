@@ -1,30 +1,43 @@
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
+import { useEffect } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { Button } from "@/components/ui";
 import { AuthProvider, useAuth } from "@/features/auth";
 import { getProfileAccessState, ProfileProvider, useCurrentProfile } from "@/features/profile";
+import { AppLanguageProvider, useAppLanguage } from "@/localization";
 import { AppThemeProvider, getStatusBarStyle, useAppTheme } from "@/theme/AppThemeProvider";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
-/** Installs the appearance provider before authentication so the preference applies app-wide. */
+void SplashScreen.preventAutoHideAsync().catch(() => undefined);
+
+/** Installs language and appearance providers before authentication so both preferences apply app-wide. */
 export default function RootLayout() {
   return (
-    <AppThemeProvider>
-      <ThemedRoot />
-    </AppThemeProvider>
+    <AppLanguageProvider>
+      <AppThemeProvider>
+        <ThemedRoot />
+      </AppThemeProvider>
+    </AppLanguageProvider>
   );
 }
 
-/** Holds routed content behind the native splash until appearance hydration finishes. */
+/** Holds routed content behind the native splash until appearance and language hydration finish. */
 function ThemedRoot() {
-  const { colorScheme, isHydrated, theme: appTheme } = useAppTheme();
+  const { isHydrated: isLanguageHydrated } = useAppLanguage();
+  const { colorScheme, isHydrated: isThemeHydrated, theme: appTheme } = useAppTheme();
 
-  if (!isHydrated) return null;
+  useEffect(() => {
+    if (isLanguageHydrated && isThemeHydrated) void SplashScreen.hideAsync().catch(() => undefined);
+  }, [isLanguageHydrated, isThemeHydrated]);
+
+  if (!isLanguageHydrated || !isThemeHydrated) return null;
 
   const baseNavigationTheme = colorScheme === "dark" ? DarkTheme : DefaultTheme;
   const navigationTheme = {
@@ -59,6 +72,7 @@ function ThemedRoot() {
 /** Selects protected routes after authentication and profile access resolve. */
 function RootNavigator() {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const { isLoading, isPasswordRecovery, session } = useAuth();
   const profileState = useCurrentProfile();
 
@@ -73,11 +87,11 @@ function RootNavigator() {
     return (
       <View style={styles.profileError}>
         <Text accessibilityRole="header" style={styles.errorTitle}>
-          We couldn't load your profile.
+          {t("profile.errors.load")}
         </Text>
-        <Text style={styles.errorCopy}>Check your connection and try again. Your dashboard remains protected.</Text>
+        <Text style={styles.errorCopy}>{t("app.profileErrorCopy")}</Text>
         <Button loading={profileState.isLoading} onPress={() => void profileState.refreshProfile()}>
-          Try Again
+          {t("common.retry")}
         </Button>
       </View>
     );
@@ -130,8 +144,9 @@ function RootNavigator() {
 /** Displays a theme-correct account loading surface beneath the native splash. */
 function AppLoadingScreen() {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   return (
-    <View accessibilityLabel="Loading your account" style={styles.loading}>
+    <View accessibilityLabel={t("app.loadingAccount")} style={styles.loading}>
       <ActivityIndicator color={theme.colors.brand.primaryLight} />
     </View>
   );

@@ -1,6 +1,7 @@
 import { Link } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui";
 import {
@@ -17,6 +18,7 @@ import { useThemedStyles } from "@/theme/createThemedStyles";
 /** Renders account creation controls with appearance-aware shared authentication styles. */
 export default function SignUpScreen() {
   const styles = useThemedStyles(authScreenStyles);
+  const { t } = useTranslation();
   const { configurationError } = useAuth();
   const [email, setEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState<string>();
@@ -40,31 +42,31 @@ export default function SignUpScreen() {
     if (error) {
       setErrorMessage(error.message);
     } else if (!data.session) {
-      setSuccessMessage("Check your email to confirm your account.");
+      setSuccessMessage(t("auth.checkEmail"));
     }
     setIsSubmitting(false);
   };
 
   return (
-    <AuthScreen title="Create account" subtitle="Begin your prayer journey.">
+    <AuthScreen title={t("auth.createAccount")} subtitle={t("auth.createAccountDescription")}>
       <AuthTextInput
-        accessibilityLabel="Email"
+        accessibilityLabel={t("auth.email")}
         autoCapitalize="none"
         autoComplete="email"
         keyboardType="email-address"
-        label="Email"
+        label={t("auth.email")}
         onChangeText={setEmail}
-        placeholder="you@example.com"
+        placeholder={t("auth.emailPlaceholder")}
         textContentType="emailAddress"
         value={email}
       />
       <AuthTextInput
-        accessibilityLabel="Password"
+        accessibilityLabel={t("auth.password")}
         autoCapitalize="none"
         autoComplete="new-password"
-        label="Password"
+        label={t("auth.password")}
         onChangeText={setPassword}
-        placeholder="Password"
+        placeholder={t("auth.password")}
         secureTextEntry
         textContentType="newPassword"
         value={password}
@@ -80,11 +82,11 @@ export default function SignUpScreen() {
           loading={isSubmitting}
           onPress={() => void signUp()}
         >
-          Create account
+          {t("auth.createAccount")}
         </Button>
       </View>
       <Link href="/sign-in" style={styles.link}>
-        Already have an account? Sign in
+        {t("auth.alreadyHaveAccount")}
       </Link>
     </AuthScreen>
   );

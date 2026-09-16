@@ -1,5 +1,4 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as SplashScreen from "expo-splash-screen";
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useColorScheme } from "react-native";
 
@@ -17,8 +16,6 @@ export type AppThemeContextValue = {
   setPreference: (preference: ThemePreference) => Promise<void>;
   theme: AppTheme;
 };
-
-void SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
 /** Resolves a persisted value to a supported preference without trusting storage contents. */
 export function parseThemePreference(value: string | null): ThemePreference {
@@ -86,10 +83,6 @@ export function AppThemeProvider({ children }: PropsWithChildren) {
       isMounted = false;
     };
   }, []);
-
-  useEffect(() => {
-    if (isHydrated) void SplashScreen.hideAsync().catch(() => undefined);
-  }, [isHydrated]);
 
   /** Applies a preference synchronously in memory, then attempts best-effort persistence. */
   const setPreference = useCallback(async (nextPreference: ThemePreference) => {

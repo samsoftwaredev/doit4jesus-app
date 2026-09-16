@@ -1,4 +1,5 @@
 import { AvatarWithCountryBadge } from "@/components/identity";
+import { useTranslation } from "react-i18next";
 
 import { useAppTheme } from "@/theme/AppThemeProvider";
 import { theme } from "@/theme/tokens";
@@ -15,9 +16,10 @@ const defaultAvatar = require("../../../../assets/avatar/knight.png");
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function PrayerIntentionAvatar({ countryCode, displayName, size = 38, source }: PrayerIntentionAvatarProps) {
   useAppTheme();
+  const { t } = useTranslation();
   return (
     <AvatarWithCountryBadge
-      accessibilityLabel={`${displayName}'s avatar`}
+      accessibilityLabel={t("intentions.avatarLabel", { name: displayName })}
       borderColor={theme.rosary.colors.gold}
       borderWidth={theme.rosary.borderWidths.gold}
       countryCode={countryCode}

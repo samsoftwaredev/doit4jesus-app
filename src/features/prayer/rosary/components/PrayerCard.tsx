@@ -1,5 +1,6 @@
 import { useWindowDimensions, ScrollView, Text, View } from "react-native";
 import Animated, { FadeInUp, useReducedMotion } from "react-native-reanimated";
+import { useTranslation } from "react-i18next";
 
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import type { RosaryPrayer } from "@/features/prayer/rosary/types";
@@ -11,6 +12,7 @@ interface PrayerCardProps {
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function PrayerCard({ prayer }: PrayerCardProps) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const reduceMotion = useReducedMotion();
   const { fontScale } = useWindowDimensions();
   const hasText = Boolean(prayer?.text.trim());
@@ -18,10 +20,10 @@ export function PrayerCard({ prayer }: PrayerCardProps) {
 
   return (
     <Animated.View entering={reduceMotion ? undefined : FadeInUp.duration(210)} key={prayer?.id} style={styles.card}>
-      <Text style={styles.label}>{prayer?.name?.toUpperCase() ?? "PRAYER"}</Text>
+      <Text style={styles.label}>{prayer?.name?.toUpperCase() ?? t("rosary.cards.prayer").toUpperCase()}</Text>
       {hasText ? (
         <ScrollView
-          accessibilityLabel={`${prayer?.name ?? "Prayer"} text`}
+          accessibilityLabel={t("rosary.cards.prayerText", { prayer: prayer?.name ?? t("rosary.cards.prayer") })}
           contentContainerStyle={styles.prayerScrollContent}
           nestedScrollEnabled
           scrollEnabled={shouldScroll}
@@ -31,8 +33,8 @@ export function PrayerCard({ prayer }: PrayerCardProps) {
           <Text style={styles.prayerText}>{prayer?.text}</Text>
         </ScrollView>
       ) : (
-        <View accessibilityLabel="Prayer text unavailable" style={styles.emptyPrayer}>
-          <Text style={styles.emptyPrayerText}>Prayer text will appear here when it is available.</Text>
+        <View accessibilityLabel={t("rosary.cards.prayerTextUnavailable")} style={styles.emptyPrayer}>
+          <Text style={styles.emptyPrayerText}>{t("rosary.cards.prayerTextUnavailableCopy")}</Text>
         </View>
       )}
     </Animated.View>

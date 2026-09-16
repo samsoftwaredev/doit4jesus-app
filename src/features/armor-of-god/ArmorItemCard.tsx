@@ -1,6 +1,7 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import type { StyleProp, ViewStyle } from "react-native";
 import { Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
@@ -18,10 +19,22 @@ interface ArmorItemCardProps {
 
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function ArmorItemCard({ item, onPress, selected, style }: ArmorItemCardProps) {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   return (
     <Pressable
-      accessibilityLabel={`${item.order}. ${item.name}. ${item.status}.`}
+      accessibilityLabel={t("armor.itemLabel", {
+        name: item.name,
+        order: item.order,
+        status: t(
+          {
+            available: "armor.status.available",
+            completed: "armor.status.completed",
+            equipped: "armor.status.equipped",
+            locked: "armor.status.locked",
+          }[item.status],
+        ),
+      })}
       accessibilityRole="button"
       accessibilityState={{ selected }}
       onPress={onPress}

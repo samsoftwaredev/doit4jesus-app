@@ -1,5 +1,6 @@
 import Feather from "@expo/vector-icons/Feather";
 import { Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Button, Card } from "@/components/ui";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
@@ -21,6 +22,7 @@ export function RosaryLeaderboardCard({
   onViewFullLeaderboard,
 }: RosaryLeaderboardCardProps) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const topEntries = leaderboard.entries.slice(0, 7);
   const showCurrentUserEntry = Boolean(
     leaderboard.currentUserEntry &&
@@ -32,10 +34,10 @@ export function RosaryLeaderboardCard({
       header={
         <View style={styles.header}>
           <Text accessibilityRole="header" style={styles.heading}>
-            LEADERBOARD
+            {t("friends.leaderboard.title").toUpperCase()}
           </Text>
           <Pressable
-            accessibilityLabel={`Leaderboard period: ${leaderboard.period.name}`}
+            accessibilityLabel={t("friends.leaderboard.periodLabel", { period: leaderboard.period.name })}
             onPress={onViewFullLeaderboard}
             style={styles.period}
           >
@@ -51,7 +53,7 @@ export function RosaryLeaderboardCard({
           rightIcon={<Feather color={theme.colors.text.link} name="arrow-right" size={theme.sizes.iconSmall} />}
           variant="ghost"
         >
-          View Leaderboard
+          {t("friends.leaderboard.view")}
         </Button>
       }
       padding="none"
@@ -61,7 +63,9 @@ export function RosaryLeaderboardCard({
         <LeaderboardEntries entries={topEntries} onPressFriend={onPressFriend} />
         {showCurrentUserEntry && leaderboard.currentUserEntry ? (
           <View style={styles.currentUserSection}>
-            <Text style={styles.currentUserLabel}>{`YOU — #${leaderboard.currentUserEntry.rank} AMONG FRIENDS`}</Text>
+            <Text style={styles.currentUserLabel}>
+              {t("friends.leaderboard.youAmong", { rank: leaderboard.currentUserEntry.rank })}
+            </Text>
             <LeaderboardEntries entries={[leaderboard.currentUserEntry]} showHeader={false} />
           </View>
         ) : null}

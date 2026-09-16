@@ -1,5 +1,6 @@
 import Feather from "@expo/vector-icons/Feather";
 import { Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Card } from "@/components/ui";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
@@ -25,22 +26,23 @@ export function PendingRequestsCard({
   requests,
 }: PendingRequestsCardProps) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   return (
     <Card
       header={
         <View style={styles.header}>
           <View style={styles.titleRow}>
             <Text accessibilityRole="header" style={styles.heading}>
-              PENDING REQUESTS
+              {t("friends.pendingRequests")}
             </Text>
             {requests.length ? (
-              <View accessibilityLabel={`${requests.length} pending friend requests`} style={styles.badge}>
+              <View accessibilityLabel={t("friends.pendingCount", { count: requests.length })} style={styles.badge}>
                 <Text style={styles.badgeText}>{requests.length}</Text>
               </View>
             ) : null}
           </View>
-          <Pressable accessibilityLabel="See all friend requests" onPress={onSeeAll} style={styles.seeAll}>
-            <Text style={styles.seeAllText}>See all</Text>
+          <Pressable accessibilityLabel={t("friends.seeAllLabel")} onPress={onSeeAll} style={styles.seeAll}>
+            <Text style={styles.seeAllText}>{t("friends.seeAll")}</Text>
             <Feather color={theme.colors.icon.active} name="chevron-right" size={theme.sizes.iconSmall} />
           </Pressable>
         </View>
@@ -62,7 +64,7 @@ export function PendingRequestsCard({
             ))
         ) : (
           <View style={styles.empty}>
-            <Text style={styles.emptyText}>No pending requests</Text>
+            <Text style={styles.emptyText}>{t("friends.noPending")}</Text>
           </View>
         )}
       </View>

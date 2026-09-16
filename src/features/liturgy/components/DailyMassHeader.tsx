@@ -1,6 +1,8 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
+import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
@@ -9,8 +11,8 @@ interface DailyMassHeaderProps {
   onCalendarPress?: () => void;
 }
 
-function formatDate(date: string) {
-  return new Intl.DateTimeFormat("en-US", {
+function formatDate(date: string, locale: string) {
+  return new Intl.DateTimeFormat(locale, {
     day: "numeric",
     month: "long",
     weekday: "long",
@@ -20,16 +22,18 @@ function formatDate(date: string) {
 
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function DailyMassHeader({ date, onCalendarPress }: DailyMassHeaderProps) {
+  const { t } = useTranslation();
+  const { locale } = useAppLanguage();
   const styles = useThemedStyles(styleSheet);
   return (
     <View accessibilityRole="header" style={styles.card}>
       <View style={styles.copy}>
-        <Text style={styles.title}>Daily Mass</Text>
-        <Text style={styles.date}>{formatDate(date)}</Text>
+        <Text style={styles.title}>{t("liturgy.mass.title")}</Text>
+        <Text style={styles.date}>{formatDate(date, locale)}</Text>
       </View>
       <Pressable
-        accessibilityHint="Opens a date selector when one is available."
-        accessibilityLabel="Select a Mass date"
+        accessibilityHint={t("liturgy.mass.calendarHint")}
+        accessibilityLabel={t("liturgy.mass.calendarLabel")}
         accessibilityRole="button"
         disabled={!onCalendarPress}
         onPress={onCalendarPress}

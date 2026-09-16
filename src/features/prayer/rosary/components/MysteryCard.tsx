@@ -3,6 +3,7 @@ import { Image } from "expo-image";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import Animated, { FadeIn, useReducedMotion } from "react-native-reanimated";
+import { useTranslation } from "react-i18next";
 
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
@@ -22,6 +23,7 @@ const MYSTERY_IMAGE_ASPECT_RATIO = 575 / 784;
  */
 export function MysteryCard({ maxImageHeight, mystery }: MysteryCardProps) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const reduceMotion = useReducedMotion();
   const [imageFailed, setImageFailed] = useState(false);
 
@@ -29,16 +31,16 @@ export function MysteryCard({ maxImageHeight, mystery }: MysteryCardProps) {
 
   if (!mystery) {
     return (
-      <View accessibilityLabel="No Rosary mystery available" style={styles.card}>
-        <Text style={styles.emptyTitle}>No mystery available</Text>
-        <Text style={styles.emptyCopy}>Please choose a Rosary mystery to begin praying.</Text>
+      <View accessibilityLabel={t("rosary.cards.noMysteryLabel")} style={styles.card}>
+        <Text style={styles.emptyTitle}>{t("rosary.cards.noMystery")}</Text>
+        <Text style={styles.emptyCopy}>{t("rosary.cards.noMysteryCopy")}</Text>
       </View>
     );
   }
 
   return (
     <Animated.View entering={reduceMotion ? undefined : FadeIn.duration(220)} key={mystery.id} style={styles.card}>
-      <Text style={styles.label}>CURRENT MYSTERY</Text>
+      <Text style={styles.label}>{t("rosary.cards.currentMystery")}</Text>
       <Text accessibilityRole="header" style={styles.title}>
         {mystery.title}
       </Text>
@@ -52,9 +54,9 @@ export function MysteryCard({ maxImageHeight, mystery }: MysteryCardProps) {
         testID="mystery-image-frame"
       >
         {imageFailed ? (
-          <View accessibilityLabel="Devotional image unavailable" style={styles.imageFallback}>
+          <View accessibilityLabel={t("rosary.cards.devotionalImageUnavailable")} style={styles.imageFallback}>
             <Feather color={theme.rosary.colors.gold} name="image" size={theme.sizes.iconLarge} />
-            <Text style={styles.fallbackText}>Devotional image unavailable</Text>
+            <Text style={styles.fallbackText}>{t("rosary.cards.devotionalImageUnavailable")}</Text>
           </View>
         ) : (
           <Image

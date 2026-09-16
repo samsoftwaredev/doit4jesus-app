@@ -1,10 +1,13 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Image } from "expo-image";
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
-import type { EarnedBadge } from "./progress.types";
+import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
+
+import type { EarnedBadge } from "./progress.types";
 
 type EarnedBadgeRowProps = {
   badge: EarnedBadge;
@@ -17,11 +20,11 @@ const badgeIcons: Record<string, keyof typeof MaterialCommunityIcons.glyphMap> =
   ROSARY_STREAK_30: "crown",
 };
 
-function formatEarnedDate(earnedAt: string) {
+function formatEarnedDate(earnedAt: string, locale: string, unavailable: string) {
   const date = new Date(earnedAt);
-  if (Number.isNaN(date.getTime())) return "Date unavailable";
+  if (Number.isNaN(date.getTime())) return unavailable;
 
-  return new Intl.DateTimeFormat(undefined, {
+  return new Intl.DateTimeFormat(locale, {
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -46,10 +49,16 @@ function resolveBadgeIconUrl(iconUrl: string | null) {
 
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function EarnedBadgeRow({ badge, isLast }: EarnedBadgeRowProps) {
+  const { t } = useTranslation();
+  const { locale } = useAppLanguage();
   const styles = useThemedStyles(styleSheet);
-  const earnedDate = formatEarnedDate(badge.earnedAt);
+  const earnedDate = formatEarnedDate(badge.earnedAt, locale, t("progress.dateUnavailable"));
   const iconUrl = resolveBadgeIconUrl(badge.iconUrl);
-  const accessibilityLabel = `Badge earned: ${badge.name}. ${badge.description} Earned ${earnedDate}.`;
+  const accessibilityLabel = t("progress.badges.earnedLabel", {
+    date: earnedDate,
+    description: badge.description,
+    name: badge.name,
+  });
 
   return (
     <View accessibilityLabel={accessibilityLabel} style={[styles.row, !isLast && styles.rowDivider]}>

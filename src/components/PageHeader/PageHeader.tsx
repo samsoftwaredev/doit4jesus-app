@@ -3,6 +3,7 @@ import { Image } from "expo-image";
 import type { ReactNode } from "react";
 import { Text, View } from "react-native";
 import type { StyleProp, ViewStyle } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { IconButton } from "@/components/IconButton";
 import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
@@ -32,7 +33,7 @@ const companyLogoSources = {
 /** Renders the shared hero or compact page heading with optional navigation, actions, and Home branding. */
 export function PageHeader({
   actions,
-  backAccessibilityLabel = "Go back",
+  backAccessibilityLabel,
   description,
   eyebrow,
   onBack,
@@ -42,17 +43,19 @@ export function PageHeader({
   variant = "hero",
 }: PageHeaderProps) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const { colorScheme } = useAppTheme();
   const { gutter, isLargeText, isNarrowPhone } = useResponsiveLayout();
   const stackHero = isLargeText || isNarrowPhone;
   const isCompact = variant === "compact";
+  const resolvedBackAccessibilityLabel = backAccessibilityLabel ?? t("common.goBack");
 
   if (isCompact) {
     return (
       <View style={[styles.container, styles.compactContainer, { paddingHorizontal: gutter }, style]}>
         <View style={styles.compactSide}>
           {onBack ? (
-            <IconButton accessibilityLabel={backAccessibilityLabel} onPress={onBack}>
+            <IconButton accessibilityLabel={resolvedBackAccessibilityLabel} onPress={onBack}>
               <Feather
                 accessible={false}
                 color={theme.colors.icon.primary}
@@ -77,7 +80,7 @@ export function PageHeader({
     <View style={[styles.container, styles.heroContainer, style]}>
       {onBack ? (
         <View style={styles.heroBackRow}>
-          <IconButton accessibilityLabel={backAccessibilityLabel} onPress={onBack}>
+          <IconButton accessibilityLabel={resolvedBackAccessibilityLabel} onPress={onBack}>
             <Feather
               accessible={false}
               color={theme.colors.icon.primary}

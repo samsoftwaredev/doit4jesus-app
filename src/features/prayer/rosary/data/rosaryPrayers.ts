@@ -14,16 +14,21 @@ const prayerDefinitions = [
   { contentId: "litany_of_loreto", id: "litany-of-loreto", beadType: "closingPrayer" },
 ] as const;
 
-export const rosaryPrayers: RosaryPrayer[] = prayerDefinitions.map(({ beadType, contentId, id }) => {
-  const content = englishRosaryContent.prayer_library[contentId];
+/** Maps one localized prayer library to the prayer model used by cards and mysteries. */
+export function getRosaryPrayers(contentBundle = englishRosaryContent): RosaryPrayer[] {
+  return prayerDefinitions.map(({ beadType, contentId, id }) => {
+    const content = contentBundle.prayer_library[contentId];
 
-  return {
-    id,
-    name: content.title,
-    beadType,
-    text: content.text,
-  };
-});
+    return {
+      id,
+      name: content.title,
+      beadType,
+      text: content.text,
+    };
+  });
+}
+
+export const rosaryPrayers: RosaryPrayer[] = getRosaryPrayers();
 
 export const prayerById = Object.fromEntries(rosaryPrayers.map((prayer) => [prayer.id, prayer])) as Record<
   string,

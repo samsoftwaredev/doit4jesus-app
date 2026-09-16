@@ -1,6 +1,8 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 
+import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
@@ -20,18 +22,20 @@ type StreakCardsProps =
 
 /** Groups the current and longest Rosary streak cards using the shared tablet breakpoint. */
 export function StreakCards(props: StreakCardsProps) {
+  const { t } = useTranslation();
+  const { locale } = useAppLanguage();
   const styles = useThemedStyles(styleSheet);
   const cardStyle = styles.rowCard;
 
   return (
     <View
-      accessibilityLabel="Rosary streak statistics"
+      accessibilityLabel={t("progress.streakLabel")}
       style={[styles.layout, styles.rowLayout]}
       testID="streak-cards-layout"
     >
       {props.isLoading ? (
         Array.from({ length: 2 }, (_, index) => (
-          <View accessibilityLabel="Loading streak statistic" key={index} style={[styles.skeleton, cardStyle]}>
+          <View accessibilityLabel={t("progress.loadingStreak")} key={index} style={[styles.skeleton, cardStyle]}>
             <View style={styles.skeletonIcon} />
             <View style={styles.skeletonLabel} />
             <View style={styles.skeletonValue} />
@@ -49,10 +53,10 @@ export function StreakCards(props: StreakCardsProps) {
                 size={theme.sizes.iconLarge}
               />
             }
-            label="STREAK"
+            label={t("progress.streak")}
             style={cardStyle}
-            suffix="days"
-            value={new Intl.NumberFormat().format(props.currentStreak)}
+            suffix={t("progress.days")}
+            value={new Intl.NumberFormat(locale).format(props.currentStreak)}
           />
           <ProgressStatCard
             icon={
@@ -63,10 +67,10 @@ export function StreakCards(props: StreakCardsProps) {
                 size={theme.sizes.iconLarge}
               />
             }
-            label="LONGEST STREAK"
+            label={t("progress.longestStreak")}
             style={cardStyle}
-            suffix="days"
-            value={new Intl.NumberFormat().format(props.longestStreak)}
+            suffix={t("progress.days")}
+            value={new Intl.NumberFormat(locale).format(props.longestStreak)}
           />
         </>
       )}

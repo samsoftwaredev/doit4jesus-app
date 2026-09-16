@@ -1,5 +1,6 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Card } from "@/components/ui";
 import { useThemedStyles } from "@/theme/createThemedStyles";
@@ -9,33 +10,59 @@ import { VirtueProgressBar } from "./VirtueProgressBar";
 import { styles as styleSheet } from "./VirtuesPanel.styles";
 import type { VirtueScore, VirtuesPanelProps } from "./virtues.types";
 
-const defaultVirtues = [
-  { id: "faith", label: "Faith", value: 85, tone: "faith", icon: require("../../assets/virtues/cross.png") },
-  {
-    id: "discipline",
-    label: "Discipline",
-    value: 90,
-    tone: "discipline",
-    icon: require("../../assets/virtues/candel.png"),
-  },
-  { id: "courage", label: "Courage", value: 75, tone: "courage", icon: require("../../assets/virtues/sword.png") },
-  { id: "wisdom", label: "Wisdom", value: 80, tone: "wisdom", icon: require("../../assets/virtues/bible.png") },
-  { id: "charity", label: "Charity", value: 88, tone: "charity", icon: require("../../assets/virtues/heart.png") },
-  { id: "purity", label: "Purity", value: 92, tone: "purity", icon: require("../../assets/virtues/peace.png") },
-] as const satisfies readonly VirtueScore[];
-
 /** Renders this feature with colors from the currently resolved app appearance. */
-export function VirtuesPanel({
-  virtues = defaultVirtues,
-  maxValue = 100,
-  fullWidth = true,
-  style,
-  testID,
-}: VirtuesPanelProps) {
+export function VirtuesPanel({ virtues, maxValue = 100, fullWidth = true, style, testID }: VirtuesPanelProps) {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
+  const resolvedVirtues =
+    virtues ??
+    ([
+      {
+        id: "faith",
+        label: t("formation.virtues.faith"),
+        value: 85,
+        tone: "faith",
+        icon: require("../../assets/virtues/cross.png"),
+      },
+      {
+        id: "discipline",
+        label: t("formation.virtues.discipline"),
+        value: 90,
+        tone: "discipline",
+        icon: require("../../assets/virtues/candel.png"),
+      },
+      {
+        id: "courage",
+        label: t("formation.virtues.courage"),
+        value: 75,
+        tone: "courage",
+        icon: require("../../assets/virtues/sword.png"),
+      },
+      {
+        id: "wisdom",
+        label: t("formation.virtues.wisdom"),
+        value: 80,
+        tone: "wisdom",
+        icon: require("../../assets/virtues/bible.png"),
+      },
+      {
+        id: "charity",
+        label: t("formation.virtues.charity"),
+        value: 88,
+        tone: "charity",
+        icon: require("../../assets/virtues/heart.png"),
+      },
+      {
+        id: "purity",
+        label: t("formation.virtues.purity"),
+        value: 92,
+        tone: "purity",
+        icon: require("../../assets/virtues/peace.png"),
+      },
+    ] satisfies readonly VirtueScore[]);
   return (
     <Card
-      accessibilityLabel="Virtues"
+      accessibilityLabel={t("formation.virtues.title")}
       fullWidth={fullWidth}
       padding="lg"
       style={style}
@@ -44,7 +71,7 @@ export function VirtuesPanel({
     >
       <View style={styles.header}>
         <Text accessibilityRole="header" style={styles.title}>
-          Virtues
+          {t("formation.virtues.title")}
         </Text>
         <View style={styles.divider}>
           <View style={styles.dividerLine} />
@@ -57,12 +84,10 @@ export function VirtuesPanel({
         </View>
       </View>
 
-      <Text style={styles.introduction}>
-        A living portrait of the virtues formed through prayer, sacrifice, charity, and faithful living.
-      </Text>
+      <Text style={styles.introduction}>{t("formation.virtues.introduction")}</Text>
 
       <View style={styles.virtueList}>
-        {virtues.map((virtue) => (
+        {resolvedVirtues.map((virtue) => (
           <VirtueProgressBar key={virtue.id} {...virtue} maxValue={maxValue} />
         ))}
       </View>
@@ -74,9 +99,7 @@ export function VirtuesPanel({
           size={theme.sizes.iconMedium}
           style={styles.encouragementIcon}
         />
-        <Text style={styles.encouragementText}>
-          Every faithful act strengthens the soul. Continue in grace, one day at a time.
-        </Text>
+        <Text style={styles.encouragementText}>{t("formation.virtues.encouragement")}</Text>
       </View>
     </Card>
   );

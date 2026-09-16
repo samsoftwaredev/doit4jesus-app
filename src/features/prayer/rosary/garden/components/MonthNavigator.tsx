@@ -2,9 +2,11 @@ import { useState } from "react";
 import Feather from "@expo/vector-icons/Feather";
 import { Pressable, View } from "react-native";
 import Animated, { FadeIn, useReducedMotion } from "react-native-reanimated";
+import { useTranslation } from "react-i18next";
 
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
+import { useAppLanguage } from "@/localization";
 
 interface MonthNavigatorProps {
   month: number;
@@ -14,8 +16,6 @@ interface MonthNavigatorProps {
   onPrevious: () => void;
   onNext: () => void;
 }
-
-const monthFormatter = new Intl.DateTimeFormat(undefined, { month: "long", year: "numeric", timeZone: "UTC" });
 
 /** Renders MonthButton with styles resolved from the active appearance. */
 function MonthButton({
@@ -63,12 +63,16 @@ function MonthButton({
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function MonthNavigator({ month, year, canGoPrevious, canGoNext, onPrevious, onNext }: MonthNavigatorProps) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
+  const { locale } = useAppLanguage();
   const reduceMotion = useReducedMotion();
-  const monthLabel = monthFormatter.format(new Date(Date.UTC(year, month - 1, 1)));
+  const monthLabel = new Intl.DateTimeFormat(locale, { month: "long", year: "numeric", timeZone: "UTC" }).format(
+    new Date(Date.UTC(year, month - 1, 1)),
+  );
   return (
     <View style={styles.container}>
       <MonthButton
-        accessibilityLabel="Previous month"
+        accessibilityLabel={t("rosary.garden.previousMonth")}
         canNavigate={canGoPrevious}
         direction="left"
         onPress={onPrevious}
@@ -82,7 +86,7 @@ export function MonthNavigator({ month, year, canGoPrevious, canGoNext, onPrevio
         {monthLabel}
       </Animated.Text>
       <MonthButton
-        accessibilityLabel="Next month"
+        accessibilityLabel={t("rosary.garden.nextMonth")}
         canNavigate={canGoNext}
         direction="right"
         onPress={onNext}

@@ -12,6 +12,7 @@ export function getRosaryReminderState(
   return "three-hour";
 }
 
-export function formatPoints(points: number): string {
-  return new Intl.NumberFormat().format(points);
+/** Formats dashboard point values in the active app locale. */
+export function formatPoints(points: number, locale?: string): string {
+  return new Intl.NumberFormat(locale).format(points);
 }

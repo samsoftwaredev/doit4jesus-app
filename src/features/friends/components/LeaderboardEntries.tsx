@@ -1,8 +1,10 @@
 import { Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 
 import type { FriendsLeaderboardEntry } from "../friends.types";
+import { useAppLanguage } from "@/localization";
 import { FriendAvatar } from "./FriendAvatar";
 
 type LeaderboardEntriesProps = {
@@ -18,25 +20,33 @@ function medalForRank(rank: number): string | undefined {
   return undefined;
 }
 
-export function formatPoints(points: number): string {
-  return new Intl.NumberFormat("en-US").format(points);
+export function formatPoints(points: number, locale = "en-US"): string {
+  return new Intl.NumberFormat(locale).format(points);
 }
 
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function LeaderboardEntries({ entries, onPressFriend, showHeader = true }: LeaderboardEntriesProps) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
+  const { locale } = useAppLanguage();
   return (
     <View>
       {showHeader ? (
         <View style={[styles.row, styles.columnLabels]}>
-          <Text style={[styles.columnLabel, styles.position]}>POSITION</Text>
-          <Text style={[styles.columnLabel, styles.user]}>USER</Text>
-          <Text style={[styles.columnLabel, styles.points]}>POINTS</Text>
+          <Text style={[styles.columnLabel, styles.position]}>{t("friends.table.position")}</Text>
+          <Text style={[styles.columnLabel, styles.user]}>{t("friends.table.user")}</Text>
+          <Text style={[styles.columnLabel, styles.points]}>{t("friends.table.points")}</Text>
         </View>
       ) : null}
       {entries.map((entry) => {
         const medal = medalForRank(entry.rank);
-        const rowLabel = `Rank ${entry.rank}. ${entry.friend.displayName}. ${formatPoints(entry.points)} points${entry.isCurrentUser ? ". You" : ""}.`;
+        const formattedPoints = formatPoints(entry.points, locale);
+        const rowLabel = t("friends.table.rankLabel", {
+          currentUser: entry.isCurrentUser ? `. ${t("friends.table.currentUser")}` : "",
+          name: entry.friend.displayName,
+          points: formattedPoints,
+          rank: entry.rank,
+        });
         return (
           <Pressable
             accessibilityLabel={rowLabel}
@@ -58,7 +68,7 @@ export function LeaderboardEntries({ entries, onPressFriend, showHeader = true }
             </View>
             <View style={styles.user}>
               <FriendAvatar
-                accessibilityLabel={`${entry.friend.displayName}'s profile image`}
+                accessibilityLabel={t("friends.avatarLabel", { name: entry.friend.displayName })}
                 countryCode={entry.friend.countryCode}
                 name={entry.friend.displayName}
                 size="sm"
@@ -67,7 +77,7 @@ export function LeaderboardEntries({ entries, onPressFriend, showHeader = true }
               <View style={styles.nameCopy}>
                 <Text numberOfLines={1} style={styles.name}>
                   {entry.friend.displayName}
-                  {entry.isCurrentUser ? " (You)" : ""}
+                  {entry.isCurrentUser ? ` (${t("friends.table.currentUser")})` : ""}
                 </Text>
                 {entry.friend.title ? (
                   <Text numberOfLines={1} style={styles.title}>
@@ -76,8 +86,14 @@ export function LeaderboardEntries({ entries, onPressFriend, showHeader = true }
                 ) : null}
               </View>
             </View>
-            <Text accessibilityLabel={`${formatPoints(entry.points)} points`} style={styles.points}>
-              {formatPoints(entry.points)}
+            <Text
+              accessibilityLabel={t("friends.table.pointsLabel", {
+                count: entry.points,
+                formattedCount: formattedPoints,
+              })}
+              style={styles.points}
+            >
+              {formattedPoints}
             </Text>
           </Pressable>
         );

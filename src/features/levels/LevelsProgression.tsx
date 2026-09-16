@@ -1,6 +1,7 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Image } from "expo-image";
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Card } from "@/components/ui";
 import { useThemedStyles } from "@/theme/createThemedStyles";
@@ -42,6 +43,7 @@ export function LevelsProgression({
   style,
   testID,
 }: LevelsProgressionProps) {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   const safeCheckpointCount = Math.max(2, Math.floor(checkpointCount));
   const safeCompletedCheckpoints = Math.min(Math.max(0, Math.floor(completedCheckpoints)), safeCheckpointCount);
@@ -50,11 +52,18 @@ export function LevelsProgression({
     ((safeCompletedCheckpoints - 1) / (safeCheckpointCount - 1)) * 100,
   )}%` as `${number}%`;
   const checkpoints = Array.from({ length: safeCheckpointCount }, (_, index) => index < safeCompletedCheckpoints);
-  const progressSummary = `${safeCompletedCheckpoints} of ${safeCheckpointCount} checkpoints completed`;
+  const progressSummary = t("formation.levels.summary", {
+    completed: safeCompletedCheckpoints,
+    total: safeCheckpointCount,
+  });
 
   return (
     <Card
-      accessibilityLabel={`Levels. Current level ${currentLevel}. Next level ${nextLevel}. ${progressSummary}.`}
+      accessibilityLabel={t("formation.levels.label", {
+        current: currentLevel,
+        next: nextLevel,
+        summary: progressSummary,
+      })}
       fullWidth
       padding="lg"
       style={style}
@@ -64,12 +73,12 @@ export function LevelsProgression({
       <View style={styles.titleRow}>
         <MaterialCommunityIcons color={theme.colors.gold.pale} name="flag-variant" size={theme.sizes.iconSmall} />
         <Text accessibilityRole="header" style={styles.title}>
-          Levels
+          {t("formation.levels.title")}
         </Text>
       </View>
 
       <View style={styles.progression}>
-        <LevelBadge label="Current Level" level={currentLevel} />
+        <LevelBadge label={t("formation.levels.current")} level={currentLevel} />
 
         <View style={styles.progressArea}>
           <View style={styles.guardianMarker}>
@@ -83,7 +92,7 @@ export function LevelsProgression({
             </View>
             <View style={styles.guardianIdentity}>
               <MaterialCommunityIcons color={theme.colors.gold.pale} name="shield-outline" size={theme.sizes.iconXs} />
-              <Text style={styles.guardianLabel}>Guardian Level</Text>
+              <Text style={styles.guardianLabel}>{t("formation.levels.guardian")}</Text>
             </View>
           </View>
 
@@ -103,7 +112,9 @@ export function LevelsProgression({
               {checkpoints.map((isCompleted, index) => (
                 <View
                   key={index}
-                  accessibilityLabel={isCompleted ? "Completed checkpoint" : "Upcoming checkpoint"}
+                  accessibilityLabel={
+                    isCompleted ? t("formation.levels.completedCheckpoint") : t("formation.levels.upcomingCheckpoint")
+                  }
                   style={[styles.checkpoint, isCompleted && styles.checkpointCompleted]}
                 >
                   <MaterialCommunityIcons
@@ -118,7 +129,7 @@ export function LevelsProgression({
           <Text style={styles.pathSummary}>{progressSummary}</Text>
         </View>
 
-        <LevelBadge label="Next Level" level={nextLevel} />
+        <LevelBadge label={t("formation.levels.next")} level={nextLevel} />
       </View>
     </Card>
   );

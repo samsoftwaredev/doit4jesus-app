@@ -1,6 +1,7 @@
 import { Link } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui";
 import {
@@ -17,6 +18,7 @@ import { useThemedStyles } from "@/theme/createThemedStyles";
 /** Renders password-recovery controls with appearance-aware shared authentication styles. */
 export default function ForgotPasswordScreen() {
   const styles = useThemedStyles(authScreenStyles);
+  const { t } = useTranslation();
   const { configurationError } = useAuth();
   const [email, setEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState<string>();
@@ -36,21 +38,21 @@ export default function ForgotPasswordScreen() {
       setErrorMessage(error.message);
     } else {
       // This wording intentionally does not reveal whether an account exists.
-      setSuccessMessage("If an account uses this email, check your inbox for a reset link.");
+      setSuccessMessage(t("auth.resetNeutralSuccess"));
     }
     setIsSubmitting(false);
   };
 
   return (
-    <AuthScreen title="Reset password" subtitle="We will email you a secure reset link.">
+    <AuthScreen title={t("auth.resetPassword")} subtitle={t("auth.resetDescription")}>
       <AuthTextInput
-        accessibilityLabel="Email"
+        accessibilityLabel={t("auth.email")}
         autoCapitalize="none"
         autoComplete="email"
         keyboardType="email-address"
-        label="Email"
+        label={t("auth.email")}
         onChangeText={setEmail}
-        placeholder="you@example.com"
+        placeholder={t("auth.emailPlaceholder")}
         textContentType="emailAddress"
         value={email}
       />
@@ -65,11 +67,11 @@ export default function ForgotPasswordScreen() {
           loading={isSubmitting}
           onPress={() => void requestPasswordReset()}
         >
-          Email reset link
+          {t("auth.emailResetLink")}
         </Button>
       </View>
       <Link href="/sign-in" style={styles.link}>
-        Back to sign in
+        {t("auth.backToSignIn")}
       </Link>
     </AuthScreen>
   );

@@ -3,15 +3,16 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import type { DashboardProgress, LevelCatalogEntry, RecentRosaryActivity, UserRosaryStats } from "@/features/progress";
+import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 import { formatPoints } from "../rosary-reminder";
 
 const rosaryIcon = require("../../../assets/icons/rosary.png");
-const DEFAULT_LEVEL_NAME = "Awakened";
 const DEFAULT_LEVEL_NUMBER = 1;
 const DEFAULT_PROGRESS_VALUE = 0;
 
@@ -30,17 +31,18 @@ type HolyProgressCardProps = {
 
 /** Renders MetricValue with styles resolved from the active appearance. */
 function MetricValue({ error, isLoading, value }: { error: boolean; isLoading: boolean; value: string | null }) {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
-  if (isLoading) return <View accessibilityLabel="Loading holy progress" style={styles.metricSkeleton} />;
+  if (isLoading) return <View accessibilityLabel={t("dashboard.holyProgress.loading")} style={styles.metricSkeleton} />;
   if (error || value === null) return <Text style={styles.unavailable}>—</Text>;
   return <Text style={styles.metricValue}>{value}</Text>;
 }
 
-function formatActivityDate(value: string): string | null {
+function formatActivityDate(value: string, locale: string): string | null {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return null;
 
-  return new Intl.DateTimeFormat(undefined, { day: "numeric", month: "short" }).format(date);
+  return new Intl.DateTimeFormat(locale, { day: "numeric", month: "short" }).format(date);
 }
 
 /** A single ornamental panel; its metrics are intentionally not separate generic cards. */
@@ -56,9 +58,11 @@ export function HolyProgressCard({
   rosaryStats,
   statsError,
 }: HolyProgressCardProps) {
+  const { t } = useTranslation();
+  const { locale } = useAppLanguage();
   const styles = useThemedStyles(styleSheet);
   const level = progress?.currentLevel?.levelNumber ?? DEFAULT_LEVEL_NUMBER;
-  const levelName = progress?.currentLevel?.name ?? DEFAULT_LEVEL_NAME;
+  const levelName = progress?.currentLevel?.name ?? t("dashboard.holyProgress.defaultLevel");
   const points = progress?.lifetimePoints ?? DEFAULT_PROGRESS_VALUE;
   const rosaries = rosaryStats?.rosariesPrayed ?? null;
   const latestRosary = recentRosaryActivities?.[0] ?? null;
@@ -72,12 +76,13 @@ export function HolyProgressCard({
   const hasXpProgress =
     xpIntoCurrentLevel !== null && xpRequiredForNextLevel !== null && xpRequiredForNextLevel > 0 && !progressError;
   const latestRosaryDate = latestRosary
-    ? formatActivityDate(latestRosary.completedAt ?? latestRosary.occurredAt)
+    ? formatActivityDate(latestRosary.completedAt ?? latestRosary.occurredAt, locale)
     : null;
   const latestRosaryText = latestRosary
-    ? `${formatPoints(latestRosary.quantity)} ${latestRosary.quantity === 1 ? "Rosary" : "Rosaries"}${
-        latestRosaryDate ? ` · ${latestRosaryDate}` : ""
-      }`
+    ? `${t("dashboard.holyProgress.rosary", {
+        count: latestRosary.quantity,
+        formattedCount: formatPoints(latestRosary.quantity, locale),
+      })}${latestRosaryDate ? ` · ${latestRosaryDate}` : ""}`
     : null;
 
   return (
@@ -90,21 +95,31 @@ export function HolyProgressCard({
       <View pointerEvents="none" style={styles.innerHighlight} />
       <View accessibilityRole="header" style={styles.headingFrame}>
         <Feather accessible={false} color={theme.colors.gold.pale} name="plus" size={theme.sizes.iconSmall} />
-        <Text style={styles.heading}>HOLY PROGRESS</Text>
+        <Text style={styles.heading}>{t("dashboard.holyProgress.title")}</Text>
       </View>
 
       <View style={styles.metrics}>
-        <View accessibilityLabel={`Rosaries, ${rosaries ?? "unavailable"}`} style={styles.sideMetric}>
+        <View
+          accessibilityLabel={t("dashboard.holyProgress.rosariesLabel", {
+            value: rosaries ?? t("dashboard.holyProgress.unavailable"),
+          })}
+          style={styles.sideMetric}
+        >
           <Image accessible={false} contentFit="contain" source={rosaryIcon} style={styles.rosaryIcon} />
-          <Text style={styles.metricLabel}>ROSARIES</Text>
+          <Text style={styles.metricLabel}>{t("dashboard.holyProgress.rosaries")}</Text>
           <MetricValue
             error={statsError}
             isLoading={isLoadingStats}
-            value={rosaries === null ? null : formatPoints(rosaries)}
+            value={rosaries === null ? null : formatPoints(rosaries, locale)}
           />
         </View>
 
-        <View accessibilityLabel={`Level, ${progressError ? "unavailable" : level}`} style={styles.levelMetric}>
+        <View
+          accessibilityLabel={t("dashboard.holyProgress.levelLabel", {
+            value: progressError ? t("dashboard.holyProgress.unavailable") : level,
+          })}
+          style={styles.levelMetric}
+        >
           <View style={styles.levelBadge}>
             <MaterialCommunityIcons
               accessible={false}
@@ -112,39 +127,46 @@ export function HolyProgressCard({
               name="shield-cross"
               size={theme.sizes.iconMedium}
             />
-            <Text style={styles.metricLabel}>LEVEL</Text>
+            <Text style={styles.metricLabel}>{t("dashboard.holyProgress.level")}</Text>
             <MetricValue error={progressError} isLoading={isLoadingProgress} value={String(level)} />
           </View>
           {!isLoadingProgress && !progressError && levelName ? <Text style={styles.levelName}>{levelName}</Text> : null}
         </View>
 
-        <View accessibilityLabel={`Points, ${progressError ? "unavailable" : points}`} style={styles.sideMetric}>
+        <View
+          accessibilityLabel={t("dashboard.holyProgress.pointsLabel", {
+            value: progressError ? t("dashboard.holyProgress.unavailable") : formatPoints(points, locale),
+          })}
+          style={styles.sideMetric}
+        >
           <MaterialCommunityIcons
             accessible={false}
             color={theme.colors.gold.pale}
             name="trophy-outline"
             size={theme.sizes.iconLarge}
           />
-          <Text style={styles.metricLabel}>POINTS</Text>
-          <MetricValue error={progressError} isLoading={isLoadingProgress} value={formatPoints(points)} />
+          <Text style={styles.metricLabel}>{t("dashboard.holyProgress.points")}</Text>
+          <MetricValue error={progressError} isLoading={isLoadingProgress} value={formatPoints(points, locale)} />
         </View>
       </View>
 
       <View style={styles.detailBand}>
         <View style={styles.xpSection}>
-          <Text style={styles.detailLabel}>PATH TO NEXT LEVEL</Text>
+          <Text style={styles.detailLabel}>{t("dashboard.holyProgress.path")}</Text>
           {isLoadingProgress ? (
-            <View accessibilityLabel="Loading level progress" style={styles.detailSkeleton} />
+            <View accessibilityLabel={t("dashboard.holyProgress.loadingLevel")} style={styles.detailSkeleton} />
           ) : null}
           {!isLoadingProgress && hasXpProgress ? (
             <>
               <Text style={styles.xpValue}>
-                {formatPoints(xpIntoCurrentLevel)} / {formatPoints(xpRequiredForNextLevel)} XP
+                {formatPoints(xpIntoCurrentLevel, locale)} / {formatPoints(xpRequiredForNextLevel, locale)} XP
               </Text>
               <View
-                accessibilityLabel={`Level progress: ${formatPoints(xpIntoCurrentLevel)} of ${formatPoints(
-                  xpRequiredForNextLevel,
-                )} XP${nextLevelName ? `. Next: ${nextLevelName}.` : "."}`}
+                accessibilityLabel={t("dashboard.holyProgress.progressLabel", {
+                  current: formatPoints(xpIntoCurrentLevel, locale),
+                  next: nextLevelName ? t("dashboard.holyProgress.nextLevel", { level: nextLevelName }) : "",
+                  required: formatPoints(xpRequiredForNextLevel, locale),
+                })}
                 accessibilityRole="progressbar"
                 accessibilityValue={{
                   max: xpRequiredForNextLevel,
@@ -162,13 +184,16 @@ export function HolyProgressCard({
               </View>
               {levelProgressPercentage !== null ? (
                 <Text style={styles.progressCaption}>
-                  {Math.round(levelProgressPercentage)}% toward {nextLevelName ?? "the next level"}
+                  {t("dashboard.holyProgress.progress", {
+                    level: nextLevelName ?? t("dashboard.holyProgress.nextLevelGeneric"),
+                    percent: Math.round(levelProgressPercentage),
+                  })}
                 </Text>
               ) : null}
             </>
           ) : null}
           {!isLoadingProgress && !hasXpProgress ? (
-            <Text style={styles.detailUnavailable}>Progress unavailable</Text>
+            <Text style={styles.detailUnavailable}>{t("dashboard.holyProgress.progressUnavailable")}</Text>
           ) : null}
         </View>
 
@@ -176,29 +201,31 @@ export function HolyProgressCard({
 
         <View style={styles.secondaryDetails}>
           <View style={styles.secondaryMetric}>
-            <Text style={styles.detailLabel}>TOTAL XP</Text>
-            {isLoadingProgress ? <View accessibilityLabel="Loading total XP" style={styles.compactSkeleton} /> : null}
-            {!isLoadingProgress ? (
-              <Text style={styles.secondaryValue}>{progressError ? "—" : formatPoints(totalXp)}</Text>
-            ) : null}
-          </View>
-          <View style={styles.secondaryMetric}>
-            <Text style={styles.detailLabel}>THIS WEEK</Text>
+            <Text style={styles.detailLabel}>{t("dashboard.holyProgress.totalXp")}</Text>
             {isLoadingProgress ? (
-              <View accessibilityLabel="Loading weekly points" style={styles.compactSkeleton} />
+              <View accessibilityLabel={t("dashboard.holyProgress.loadingTotalXp")} style={styles.compactSkeleton} />
             ) : null}
             {!isLoadingProgress ? (
-              <Text style={styles.secondaryValue}>{progressError ? "—" : formatPoints(weeklyPoints)}</Text>
+              <Text style={styles.secondaryValue}>{progressError ? "—" : formatPoints(totalXp, locale)}</Text>
             ) : null}
           </View>
           <View style={styles.secondaryMetric}>
-            <Text style={styles.detailLabel}>RECENT ROSARY</Text>
+            <Text style={styles.detailLabel}>{t("dashboard.holyProgress.thisWeek")}</Text>
+            {isLoadingProgress ? (
+              <View accessibilityLabel={t("dashboard.holyProgress.loadingWeekly")} style={styles.compactSkeleton} />
+            ) : null}
+            {!isLoadingProgress ? (
+              <Text style={styles.secondaryValue}>{progressError ? "—" : formatPoints(weeklyPoints, locale)}</Text>
+            ) : null}
+          </View>
+          <View style={styles.secondaryMetric}>
+            <Text style={styles.detailLabel}>{t("dashboard.holyProgress.recentRosary")}</Text>
             {isLoadingDetails ? (
-              <View accessibilityLabel="Loading recent Rosary" style={styles.compactSkeleton} />
+              <View accessibilityLabel={t("dashboard.holyProgress.loadingRecent")} style={styles.compactSkeleton} />
             ) : null}
             {!isLoadingDetails ? (
               <Text numberOfLines={1} style={styles.latestRosaryValue}>
-                {latestRosaryText ?? (detailsError ? "—" : "None yet")}
+                {latestRosaryText ?? (detailsError ? "—" : t("dashboard.holyProgress.noneYet"))}
               </Text>
             ) : null}
           </View>

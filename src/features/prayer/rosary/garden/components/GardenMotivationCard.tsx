@@ -2,6 +2,7 @@ import Feather from "@expo/vector-icons/Feather";
 import { Image } from "expo-image";
 import { StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { useTranslation } from "react-i18next";
 
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
@@ -11,6 +12,7 @@ const lilyArtwork = require("../../../../../assets/flowers/whiteLily.png");
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function GardenMotivationCard() {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const { width } = useWindowDimensions();
   const compact = width < theme.breakpoints.largePhone;
   return (
@@ -20,8 +22,8 @@ export function GardenMotivationCard() {
         <Image accessible={false} contentFit="contain" source={lilyArtwork} style={styles.lily} />
       </View>
       <View style={styles.copy}>
-        <Text style={styles.title}>Plant Today’s Flower</Text>
-        <Text style={styles.subtitle}>Pray your rosary and help{"\n"}Our Lady’s garden grow.</Text>
+        <Text style={styles.title}>{t("rosary.garden.motivation")}</Text>
+        <Text style={styles.subtitle}>{t("rosary.garden.motivationCopy")}</Text>
       </View>
       {!compact ? (
         <View style={styles.virtueCard}>
@@ -31,7 +33,7 @@ export function GardenMotivationCard() {
             name="feather"
             size={theme.sizes.iconSmall}
           />
-          <Text style={styles.virtueText}>Grow in faith.{"\n"}Bloom in virtue.</Text>
+          <Text style={styles.virtueText}>{t("rosary.garden.virtue")}</Text>
         </View>
       ) : null}
     </View>

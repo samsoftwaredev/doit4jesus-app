@@ -2,6 +2,7 @@ import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, RefreshControl, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { IconButton } from "@/components";
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
@@ -16,6 +17,7 @@ import { theme } from "@/theme/tokens";
 /** Renders approved prayer intentions within the shared atmosphere. */
 export function PrayerIntentionsScreen() {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const router = useRouter();
   const [intentions, setIntentions] = useState<ApprovedPrayerIntention[]>([]);
   const [error, setError] = useState<string>();
@@ -34,11 +36,11 @@ export function PrayerIntentionsScreen() {
       setHasMore(page.meta.hasMore);
       setNextOffset(page.meta.nextOffset);
     } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : "Couldn't load prayer intentions.");
+      setError(requestError instanceof Error ? requestError.message : t("intentions.loadError"));
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void load();
@@ -53,39 +55,39 @@ export function PrayerIntentionsScreen() {
       setHasMore(page.meta.hasMore);
       setNextOffset(page.meta.nextOffset);
     } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : "Couldn't load more prayer intentions.");
+      setError(requestError instanceof Error ? requestError.message : t("intentions.loadMoreError"));
     } finally {
       setIsLoadingMore(false);
     }
-  }, [hasMore, isLoadingMore, nextOffset]);
+  }, [hasMore, isLoadingMore, nextOffset, t]);
 
   return (
     <AtmosphericSafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
       <BackHeader
-        description="Pray with the community or share an intention."
+        description={t("intentions.description")}
         onBack={() => router.back()}
         rightAction={
           <IconButton
-            accessibilityLabel="Share a prayer intention"
+            accessibilityLabel={t("intentions.shareLabel")}
             onPress={() => router.push("/create-prayer-intention")}
             tone="accent"
           >
             <Feather accessible={false} color={theme.rosary.colors.gold} name="plus" size={theme.sizes.iconMedium} />
           </IconButton>
         }
-        title="Prayer Intentions"
+        title={t("intentions.title")}
       />
       {isLoading ? (
         <View style={styles.loading}>
           <ActivityIndicator color={theme.rosary.colors.gold} />
-          <Text style={styles.loadingText}>Loading prayer intentions…</Text>
+          <Text style={styles.loadingText}>{t("intentions.loading")}</Text>
         </View>
       ) : null}
       {!isLoading && error ? (
         <View accessibilityRole="alert" style={styles.state}>
-          <Text style={styles.stateTitle}>Couldn&apos;t load prayer intentions.</Text>
+          <Text style={styles.stateTitle}>{t("intentions.loadError")}</Text>
           <Button onPress={() => void load()} size="sm" style={styles.stateAction} variant="secondary">
-            Try again
+            {t("profile.tryAgain")}
           </Button>
         </View>
       ) : null}
@@ -97,14 +99,14 @@ export function PrayerIntentionsScreen() {
           keyExtractor={(item) => item.id}
           ListEmptyComponent={
             <View style={styles.state}>
-              <Text style={styles.stateTitle}>No prayer intentions yet.</Text>
-              <Text style={styles.stateCopy}>Be the first to share an intention.</Text>
+              <Text style={styles.stateTitle}>{t("intentions.empty")}</Text>
+              <Text style={styles.stateCopy}>{t("intentions.emptyCopy")}</Text>
               <Button
                 onPress={() => router.push("/create-prayer-intention")}
                 style={styles.stateAction}
                 variant="warning"
               >
-                Share an intention
+                {t("intentions.share")}
               </Button>
             </View>
           }
@@ -117,7 +119,7 @@ export function PrayerIntentionsScreen() {
                 style={styles.loadMore}
                 variant="outline"
               >
-                Load more
+                {t("intentions.loadMore")}
               </Button>
             ) : null
           }
@@ -150,7 +152,7 @@ export function PrayerIntentionsScreen() {
           />
         }
       >
-        My prayer intentions
+        {t("intentions.my.title")}
       </Button>
     </AtmosphericSafeAreaView>
   );

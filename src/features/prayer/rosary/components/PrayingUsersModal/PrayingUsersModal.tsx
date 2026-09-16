@@ -2,12 +2,14 @@ import Feather from "@expo/vector-icons/Feather";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ActivityIndicator, FlatList, Modal, Pressable, Text, useWindowDimensions, View } from "react-native";
 import { useReducedMotion } from "react-native-reanimated";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui";
 import { AvatarWithCountryBadge } from "@/components/identity";
 import { getFriends } from "@/features/friends/friends.api";
 import { findSaintAvatar } from "@/features/profile/saints";
 import type { RosaryPresenceUser } from "@/features/prayer/rosary/presence.types";
+import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
@@ -58,6 +60,8 @@ function orderPrayingUsers(
  */
 export function PrayingUsersModal({ currentUserId, onClose, onSelectUser, users, visible }: PrayingUsersModalProps) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
+  const { locale } = useAppLanguage();
   const reduceMotion = useReducedMotion();
   const { height, width } = useWindowDimensions();
   const [friendIds, setFriendIds] = useState<Set<string>>(new Set());
@@ -120,8 +124,8 @@ export function PrayingUsersModal({ currentUserId, onClose, onSelectUser, users,
         <Pressable
           accessibilityLabel={
             isCurrentUser
-              ? "View your prayer profile, online and praying"
-              : `View ${item.displayName}'s prayer profile, online and praying`
+              ? t("rosary.presence.viewYourProfile")
+              : t("rosary.presence.viewProfile", { name: item.displayName })
           }
           accessibilityRole="button"
           onPress={openProfile}
@@ -129,7 +133,7 @@ export function PrayingUsersModal({ currentUserId, onClose, onSelectUser, users,
         >
           <View style={styles.avatarWrap}>
             <AvatarWithCountryBadge
-              accessibilityLabel={`${item.displayName}'s profile image, online and praying`}
+              accessibilityLabel={t("rosary.presence.avatarLabel", { name: item.displayName })}
               countryCode={item.countryCode}
               name={item.displayName}
               size={theme.sizes.iconMedium + theme.spacing[2]}
@@ -140,9 +144,9 @@ export function PrayingUsersModal({ currentUserId, onClose, onSelectUser, users,
           <View style={styles.userCopy}>
             <View style={styles.nameRow}>
               <Text numberOfLines={1} style={styles.userName}>
-                {isCurrentUser ? "You" : item.displayName}
+                {isCurrentUser ? t("rosary.presence.you") : item.displayName}
               </Text>
-              {isFriend ? <Text style={styles.friendBadge}>Friend</Text> : null}
+              {isFriend ? <Text style={styles.friendBadge}>{t("rosary.presence.friend")}</Text> : null}
             </View>
             <Text numberOfLines={1} style={styles.userMeta}>
               {`@${item.username}${item.title ? ` • ${item.title}` : ""}`}
@@ -152,7 +156,7 @@ export function PrayingUsersModal({ currentUserId, onClose, onSelectUser, users,
         </Pressable>
       );
     },
-    [currentUserId, friendIds, onSelectUser, styles],
+    [currentUserId, friendIds, onSelectUser, styles, t],
   );
 
   return (
@@ -165,7 +169,7 @@ export function PrayingUsersModal({ currentUserId, onClose, onSelectUser, users,
     >
       <View style={styles.overlay}>
         <View
-          accessibilityLabel="People praying now"
+          accessibilityLabel={t("rosary.presence.listLabel")}
           accessibilityViewIsModal
           style={[
             styles.dialog,
@@ -178,14 +182,17 @@ export function PrayingUsersModal({ currentUserId, onClose, onSelectUser, users,
           <View style={styles.header}>
             <View style={styles.headerCopy}>
               <Text accessibilityRole="header" style={styles.title}>
-                Praying Together
+                {t("rosary.presence.title")}
               </Text>
               <Text style={styles.subtitle}>
-                {`${users.length.toLocaleString("en-US")} ${users.length === 1 ? "person" : "people"} praying now`}
+                {t("rosary.presence.count", {
+                  count: users.length,
+                  formattedCount: users.length.toLocaleString(locale),
+                })}
               </Text>
             </View>
             <Pressable
-              accessibilityLabel="Close praying users"
+              accessibilityLabel={t("rosary.presence.closeList")}
               accessibilityRole="button"
               hitSlop={theme.spacing[2]}
               onPress={onClose}
@@ -196,29 +203,33 @@ export function PrayingUsersModal({ currentUserId, onClose, onSelectUser, users,
           </View>
 
           {isLoadingFriends ? (
-            <View accessibilityLabel="Ordering friends first" accessibilityRole="progressbar" style={styles.loading}>
+            <View
+              accessibilityLabel={t("rosary.presence.orderingLabel")}
+              accessibilityRole="progressbar"
+              style={styles.loading}
+            >
               <ActivityIndicator color={theme.rosary.colors.gold} />
-              <Text style={styles.loadingText}>Ordering friends first…</Text>
+              <Text style={styles.loadingText}>{t("rosary.presence.ordering")}</Text>
             </View>
           ) : (
             <>
               {friendLoadError ? (
                 <View style={styles.errorRow}>
                   <Text accessibilityRole="alert" style={styles.errorText}>
-                    Friends could not be identified. Everyone is shown alphabetically.
+                    {t("rosary.presence.friendError")}
                   </Text>
                   <Button
-                    accessibilityLabel="Retry friend ordering"
+                    accessibilityLabel={t("rosary.presence.retryOrdering")}
                     onPress={() => void loadFriends()}
                     size="sm"
                     variant="ghost"
                   >
-                    Retry
+                    {t("common.retry")}
                   </Button>
                 </View>
               ) : null}
               <FlatList
-                accessibilityLabel="People currently praying the Rosary"
+                accessibilityLabel={t("rosary.presence.list")}
                 data={visibleUsers}
                 initialNumToRender={PAGE_SIZE}
                 keyExtractor={(item) => item.userId}

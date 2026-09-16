@@ -1,6 +1,8 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react-native";
 import { Pressable, Text, View } from "react-native";
 
+import { i18n } from "@/localization";
+
 import { PrayerScreen } from "./PrayerHomeScreen";
 
 const mockPush = jest.fn();
@@ -64,8 +66,9 @@ const secondIntention = {
 };
 
 describe("PrayerScreen", () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.clearAllMocks();
+    await i18n.changeLanguage("en");
   });
 
   it("renders the shared prayer heading and opens the Rosary Garden", async () => {
@@ -102,5 +105,19 @@ describe("PrayerScreen", () => {
       expect(fetchApprovedPrayerIntentions).toHaveBeenNthCalledWith(2, { limit: 10, offset: 10 });
       expect(screen.getByText(secondIntention.title)).toBeTruthy();
     });
+  });
+
+  it("localizes the prayer heading and Rosary Garden action", async () => {
+    await i18n.changeLanguage("es");
+    fetchApprovedPrayerIntentions.mockResolvedValue({
+      data: [],
+      meta: { hasMore: false, limit: 10, nextOffset: null, offset: 0 },
+    });
+
+    await render(<PrayerScreen />);
+
+    expect(screen.getByRole("header", { name: "Oración" })).toBeTruthy();
+    expect(screen.getByText("Reza el Rosario y eleva las intenciones de los demás.")).toBeTruthy();
+    expect(screen.getByLabelText("Abrir el Jardín del Rosario")).toBeTruthy();
   });
 });

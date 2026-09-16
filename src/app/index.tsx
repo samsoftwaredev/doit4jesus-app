@@ -7,6 +7,7 @@ import type { ComponentProps } from "react";
 import { useCallback, useRef, useState } from "react";
 import { FlatList, type ListRenderItemInfo, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useTranslation } from "react-i18next";
 
 import { SacredAtmosphere } from "@/components/ui";
 import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
@@ -14,53 +15,54 @@ import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles"
 import { theme } from "@/theme/tokens";
 
 type LandingSlide = {
-  description?: string;
+  descriptionKey?: string;
   icon: ComponentProps<typeof MaterialCommunityIcons>["name"];
   id: "mission" | "difference" | "competition" | "sainthood";
-  label?: string;
-  title: string;
+  labelKey?: string;
+  titleKey: string;
 };
 
 const slides: readonly LandingSlide[] = [
   {
     id: "mission",
     icon: "shield-cross",
-    label: "DOIT4JESUS",
-    title: "FIGHT FOR SOMETHING GREATER",
-    description: "Turn your Catholic life into a daily spiritual mission.",
+    labelKey: "landing.brand",
+    titleKey: "landing.missionTitle",
+    descriptionKey: "landing.missionDescription",
   },
   {
     id: "difference",
     icon: "sword-cross",
-    title: "THIS ISN'T ANOTHER PRAYER APP.",
+    titleKey: "landing.differenceTitle",
   },
   {
     id: "competition",
     icon: "account-group",
-    label: "HOLY COMPETITION",
-    title: "GROW TOGETHER",
+    labelKey: "landing.competitionLabel",
+    titleKey: "landing.competitionTitle",
   },
   {
     id: "sainthood",
     icon: "crown-outline",
-    label: "THE ULTIMATE GOAL?",
-    title: "SAINTHOOD.",
+    labelKey: "landing.sainthoodLabel",
+    titleKey: "landing.sainthoodTitle",
   },
 ];
 
-const missionActions = ["Pray.", "Fight temptation.", "Build virtue."];
+const missionActions = ["landing.mission1", "landing.mission2", "landing.mission3"];
 const competitionActions = [
-  "Challenge friends.",
-  "Track progress.",
-  "Encourage each other.",
-  "Compete in becoming better Catholics.",
+  "landing.competition1",
+  "landing.competition2",
+  "landing.competition3",
+  "landing.competition4",
 ];
-const appComparisons = ["Prayer apps help you listen.", "Bible apps help you read.", "Habit apps help you track."];
-const sainthoodActions = ["Build discipline.", "Grow in virtue.", "Get closer to Christ."];
+const appComparisons = ["landing.comparisonPrayer", "landing.comparisonBible", "landing.comparisonHabit"];
+const sainthoodActions = ["landing.sainthood1", "landing.sainthood2", "landing.sainthood3"];
 
 /** Renders the public landing carousel with shared light and foreground dust. */
 export default function LandingScreen() {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const listRef = useRef<FlatList<LandingSlide>>(null);
   const router = useRouter();
   const { isDesktop, isLandscape, isLargeText, isTablet, width } = useResponsiveLayout();
@@ -109,13 +111,13 @@ export default function LandingScreen() {
       <SafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
         <View style={styles.topBar}>
           <Pressable
-            accessibilityLabel="Sign in"
+            accessibilityLabel={t("landing.signIn")}
             accessibilityRole="button"
             hitSlop={theme.spacing[2]}
             onPress={() => router.push("/sign-in")}
             style={({ pressed }) => [styles.signInButton, pressed && styles.pressed]}
           >
-            <Text style={styles.signIn}>Sign in</Text>
+            <Text style={styles.signIn}>{t("landing.signIn")}</Text>
           </Pressable>
         </View>
 
@@ -139,7 +141,7 @@ export default function LandingScreen() {
 
         <View style={styles.controls}>
           <Pressable
-            accessibilityLabel="Previous landing screen"
+            accessibilityLabel={t("landing.previous")}
             accessibilityRole="button"
             accessibilityState={{ disabled: activeSlide === 0 }}
             disabled={activeSlide === 0}
@@ -160,7 +162,7 @@ export default function LandingScreen() {
           </Pressable>
 
           <View
-            accessibilityLabel={`Screen ${activeSlide + 1} of ${slides.length}`}
+            accessibilityLabel={t("landing.screenProgress", { screen: activeSlide + 1, total: slides.length })}
             accessible
             style={styles.pagination}
           >
@@ -174,7 +176,7 @@ export default function LandingScreen() {
           </View>
 
           <Pressable
-            accessibilityLabel="Next landing screen"
+            accessibilityLabel={t("landing.next")}
             accessibilityRole="button"
             accessibilityState={{ disabled: activeSlide === slides.length - 1 }}
             disabled={activeSlide === slides.length - 1}
@@ -215,6 +217,7 @@ function LandingSlideContent({
   width: number;
 }) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   return (
     <ScrollView
       contentContainerStyle={[styles.slideContent, useWideLayout && styles.slideContentWide]}
@@ -239,12 +242,14 @@ function LandingSlideContent({
       </View>
 
       <View style={[styles.copy, useWideLayout && styles.copyWide]}>
-        {slide.label ? <Text style={[styles.eyebrow, useWideLayout && styles.textWide]}>{slide.label}</Text> : null}
+        {slide.labelKey ? (
+          <Text style={[styles.eyebrow, useWideLayout && styles.textWide]}>{t(slide.labelKey)}</Text>
+        ) : null}
         <Text accessibilityRole="header" style={[styles.title, useWideLayout && styles.textWide]}>
-          {slide.title}
+          {t(slide.titleKey)}
         </Text>
-        {slide.description ? (
-          <Text style={[styles.description, useWideLayout && styles.textWide]}>{slide.description}</Text>
+        {slide.descriptionKey ? (
+          <Text style={[styles.description, useWideLayout && styles.textWide]}>{t(slide.descriptionKey)}</Text>
         ) : null}
 
         {slide.id === "mission" ? <ActionList items={missionActions} /> : null}
@@ -254,14 +259,14 @@ function LandingSlideContent({
           <View style={styles.finalContent}>
             <ActionList items={sainthoodActions} />
             <Pressable
-              accessibilityLabel="Start your journey"
+              accessibilityLabel={t("landing.startAction")}
               accessibilityRole="button"
               onPress={onStartJourney}
               style={({ pressed }) => [styles.startButton, pressed && styles.startButtonPressed]}
             >
-              <Text style={styles.startButtonText}>DO IT FOR JESUS</Text>
+              <Text style={styles.startButtonText}>{t("landing.brand")}</Text>
               <View style={styles.startButtonDivider} />
-              <Text style={styles.startButtonLabel}>START YOUR JOURNEY</Text>
+              <Text style={styles.startButtonLabel}>{t("landing.start")}</Text>
             </Pressable>
           </View>
         ) : null}
@@ -273,12 +278,13 @@ function LandingSlideContent({
 /** Displays short landing actions as readable, wrapping bullet rows. */
 function ActionList({ items }: { items: readonly string[] }) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   return (
     <View style={styles.actionList}>
       {items.map((item) => (
         <View key={item} style={styles.actionRow}>
           <View style={styles.actionMarker} />
-          <Text style={styles.actionText}>{item}</Text>
+          <Text style={styles.actionText}>{t(item)}</Text>
         </View>
       ))}
     </View>
@@ -288,21 +294,19 @@ function ActionList({ items }: { items: readonly string[] }) {
 /** Explains the product distinction in a callout that preserves contrast in either appearance. */
 function DifferenceCopy() {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   return (
     <View style={styles.differenceContent}>
       <View style={styles.comparisonList}>
         {appComparisons.map((comparison) => (
           <Text key={comparison} style={styles.comparisonText}>
-            {comparison}
+            {t(comparison)}
           </Text>
         ))}
       </View>
       <View style={styles.differenceCallout}>
-        <Text style={styles.calloutIntro}>DoIt4Jesus helps you fight.</Text>
-        <Text style={styles.calloutCopy}>
-          Your Catholic life becomes an adventure where what you do in the real world determines what happens in the
-          game.
-        </Text>
+        <Text style={styles.calloutIntro}>{t("landing.differenceIntro")}</Text>
+        <Text style={styles.calloutCopy}>{t("landing.differenceCopy")}</Text>
       </View>
     </View>
   );

@@ -1,6 +1,7 @@
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui";
 import {
@@ -17,6 +18,7 @@ import { useThemedStyles } from "@/theme/createThemedStyles";
 /** Renders email-change controls with appearance-aware shared authentication styles. */
 export default function ChangeEmailScreen() {
   const styles = useThemedStyles(authScreenStyles);
+  const { t } = useTranslation();
   const router = useRouter();
   const { configurationError } = useAuth();
   const [email, setEmail] = useState("");
@@ -36,21 +38,21 @@ export default function ChangeEmailScreen() {
     if (error) {
       setErrorMessage(error.message);
     } else {
-      setSuccessMessage("Check your email to confirm this change.");
+      setSuccessMessage(t("auth.changeEmailSuccess"));
     }
     setIsSubmitting(false);
   };
 
   return (
-    <AuthScreen title="Change email" subtitle="Use the email address you want for your account.">
+    <AuthScreen title={t("auth.changeEmail")} subtitle={t("auth.changeEmailDescription")}>
       <AuthTextInput
-        accessibilityLabel="New email"
+        accessibilityLabel={t("auth.newEmail")}
         autoCapitalize="none"
         autoComplete="email"
         keyboardType="email-address"
-        label="New email"
+        label={t("auth.newEmail")}
         onChangeText={setEmail}
-        placeholder="you@example.com"
+        placeholder={t("auth.emailPlaceholder")}
         textContentType="emailAddress"
         value={email}
       />
@@ -65,10 +67,10 @@ export default function ChangeEmailScreen() {
           loading={isSubmitting}
           onPress={() => void changeEmail()}
         >
-          Change email
+          {t("auth.changeEmail")}
         </Button>
         <Button fullWidth onPress={() => router.back()} variant="ghost">
-          Cancel
+          {t("common.cancel")}
         </Button>
       </View>
     </AuthScreen>

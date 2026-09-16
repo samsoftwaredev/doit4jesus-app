@@ -1,8 +1,11 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import type { CurrentUserProfile } from "@/features/profile/profile.types";
+import { AppLanguageProvider } from "@/localization";
 
+import { languageOnboardingStorageKey } from "./onboarding-language";
 import { ProfileSetupScreen } from "./ProfileSetupScreen";
 
 const mockCompleteOnboarding = jest.fn();
@@ -14,6 +17,8 @@ const mockRouterReplace = jest.fn();
 const mockUpdateNotificationPreferences = jest.fn();
 const mockUpdateProfile = jest.fn();
 const mockValidateUsername = jest.fn();
+const mockGetItem = AsyncStorage.getItem as jest.MockedFunction<typeof AsyncStorage.getItem>;
+const mockSetItem = AsyncStorage.setItem as jest.MockedFunction<typeof AsyncStorage.setItem>;
 
 let mockCurrentProfile: CurrentUserProfile;
 let mockCurrentPreferences: {
@@ -97,15 +102,19 @@ async function renderSetup(
   mockCurrentProfile = profile;
   mockCurrentPreferences = notificationPreferences;
   return render(
-    <SafeAreaProvider initialMetrics={safeAreaMetrics}>
-      <ProfileSetupScreen />
-    </SafeAreaProvider>,
+    <AppLanguageProvider>
+      <SafeAreaProvider initialMetrics={safeAreaMetrics}>
+        <ProfileSetupScreen />
+      </SafeAreaProvider>
+    </AppLanguageProvider>,
   );
 }
 
 describe("required profile setup", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetItem.mockImplementation(async (key) => (String(key).includes("onboarding-language") ? "complete" : null));
+    mockSetItem.mockResolvedValue();
     mockCurrentProfile = baseProfile;
     mockCurrentPreferences = null;
     mockGetCountries.mockResolvedValue({
@@ -126,6 +135,34 @@ describe("required profile setup", () => {
 
   afterEach(() => {
     jest.useRealTimers();
+  });
+
+  it("asks for language first, translates immediately, and resumes the server step after confirmation", async () => {
+    mockGetItem.mockResolvedValue(null);
+    const incomplete = {
+      ...baseProfile,
+      displayName: null,
+      profileSetup: {
+        complete: false,
+        completedAt: null,
+        missingFields: ["displayName"],
+        nextStep: "displayName",
+      },
+    } satisfies CurrentUserProfile;
+
+    await renderSetup(incomplete);
+
+    expect(await screen.findByRole("header", { name: "Choose your language" })).toBeTruthy();
+    expect(screen.getByLabelText("Step 1 of 7")).toBeTruthy();
+
+    await fireEvent.press(screen.getByRole("radio", { name: "Español" }));
+    expect(await screen.findByRole("header", { name: "Elige tu idioma" })).toBeTruthy();
+
+    await fireEvent.press(screen.getByText("Continuar"));
+
+    expect(await screen.findByRole("header", { name: "¿Cuál es tu nombre y apellido?" })).toBeTruthy();
+    expect(mockSetItem).toHaveBeenCalledWith(languageOnboardingStorageKey(baseProfile.userId), "complete");
+    expect(screen.getByLabelText("Paso 2 de 7")).toBeTruthy();
   });
 
   it("resumes at the server-provided country step and preserves earlier values when going back", async () => {

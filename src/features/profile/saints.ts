@@ -1,5 +1,7 @@
 import type { ImageSourcePropType } from "react-native";
 
+import type { SupportedLanguage } from "@/localization";
+
 export type SaintAvatar = {
   id: string;
   image: ImageSourcePropType;
@@ -163,6 +165,45 @@ export const saintAvatars: readonly SaintAvatar[] = [
     image: require("../../assets/saints/saint-thomas-aquinas.png"),
   },
 ] as const;
+
+const spanishSaintNames: Readonly<Record<string, string>> = {
+  "a1000000-0000-4000-8000-000000000001": "San Ignacio de Loyola",
+  "a1000000-0000-4000-8000-000000000002": "San José",
+  "a1000000-0000-4000-8000-000000000004": "Santa Teresa de Lisieux",
+  "a1000000-0000-4000-8000-000000000005": "San Benito de Nursia",
+  "a1000000-0000-4000-8000-000000000006": "San Francisco de Asís",
+  "a1000000-0000-4000-8000-000000000007": "Santa Juana de Arco",
+  "a1000000-0000-4000-8000-000000000008": "San Pedro",
+  "a1000000-0000-4000-8000-000000000010": "San Lorenzo",
+  "a1000000-0000-4000-8000-000000000012": "Santísima Virgen María",
+  "a1000000-0000-4000-8000-000000000013": "Nuestra Señora, Reina del Cielo",
+  "a1000000-0000-4000-8000-000000000014": "San Antonio de Padua",
+  "a1000000-0000-4000-8000-000000000015": "San Agustín de Hipona",
+  "a1000000-0000-4000-8000-000000000016": "Santa Catalina de Siena",
+  "a1000000-0000-4000-8000-000000000017": "Santa Cecilia",
+  "a1000000-0000-4000-8000-000000000018": "Santo Domingo",
+  "a1000000-0000-4000-8000-000000000019": "Santa Dimpna",
+  "a1000000-0000-4000-8000-000000000020": "San Francisco Javier",
+  "a1000000-0000-4000-8000-000000000021": "San Juan Pablo II",
+  "a1000000-0000-4000-8000-000000000022": "San Juan Evangelista",
+  "a1000000-0000-4000-8000-000000000023": "San Juan Diego",
+  "a1000000-0000-4000-8000-000000000024": "San Maximiliano Kolbe",
+  "a1000000-0000-4000-8000-000000000025": "San Miguel Arcángel",
+  "a1000000-0000-4000-8000-000000000026": "Santa Mónica",
+  "a1000000-0000-4000-8000-000000000027": "San Nicolás",
+  "a1000000-0000-4000-8000-000000000028": "San Pío de Pietrelcina",
+  "a1000000-0000-4000-8000-000000000029": "San Patricio",
+  "a1000000-0000-4000-8000-000000000030": "San Pablo",
+  "a1000000-0000-4000-8000-000000000031": "San Sebastián",
+  "a1000000-0000-4000-8000-000000000032": "Santa Teresa de Ávila",
+  "a1000000-0000-4000-8000-000000000033": "Santa Teresa de Calcuta",
+  "a1000000-0000-4000-8000-000000000034": "Santo Tomás de Aquino",
+};
+
+/** Returns the bundled saint name in the selected app language. */
+export function getSaintDisplayName(saint: SaintAvatar, language: SupportedLanguage): string {
+  return language === "es" ? (spanishSaintNames[saint.id] ?? saint.name) : saint.name;
+}
 
 export function findSaintAvatar(id: string | null | undefined): SaintAvatar | undefined {
   return saintAvatars.find((saint) => saint.id === id);

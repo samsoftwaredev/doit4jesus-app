@@ -1,6 +1,7 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Image } from "expo-image";
 import { useWindowDimensions, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
@@ -23,6 +24,7 @@ const focusPositionByArmorId = {
 
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function KnightDisplay({ selectedItem }: KnightDisplayProps) {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   const { height: windowHeight } = useWindowDimensions();
   const stageHeight = Math.min(windowHeight * 0.44, theme.spacing[24] * 6);
@@ -30,7 +32,7 @@ export function KnightDisplay({ selectedItem }: KnightDisplayProps) {
 
   return (
     <View
-      accessibilityLabel={`Guardian knight. ${selectedItem.name} is selected.`}
+      accessibilityLabel={t("armor.guardianLabel", { item: selectedItem.name })}
       style={[styles.stage, { height: stageHeight }]}
     >
       <View pointerEvents="none" style={styles.platform} />

@@ -2,6 +2,7 @@ import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert, Modal, ScrollView, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { IconButton } from "@/components";
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
@@ -10,25 +11,27 @@ import { Button, Card } from "@/components/ui";
 import { FriendAvatar, FriendsState } from "@/features/friends/components";
 import { removeFriend } from "@/features/friends/friends.api";
 import { useFriendProfile } from "@/features/friends/friends.hooks";
+import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 /** Renders a selected friend's profile within the shared atmosphere. */
 export function FriendProfileScreen({ friendId }: { friendId: string | undefined }) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
+  const { locale } = useAppLanguage();
   const router = useRouter();
   const profile = useFriendProfile(friendId);
   const [isRemoving, setIsRemoving] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
 
   const confirmRemove = () => {
-    console.log("confirmRemove", friendId, profile.friend);
     if (!friendId || !profile.friend) return;
     Alert.alert(
-      "Remove friend?",
-      `Remove ${profile.friend.friend.displayName} from your friends? You can send a new request later.`,
+      t("friends.profile.removeTitle"),
+      t("friends.profile.removeDescription", { name: profile.friend.friend.displayName }),
       [
-        { style: "cancel", text: "Cancel" },
+        { style: "cancel", text: t("common.cancel") },
         {
           onPress: () => {
             void (async () => {
@@ -38,14 +41,14 @@ export function FriendProfileScreen({ friendId }: { friendId: string | undefined
                 setShowOptions(false);
                 router.replace("/community");
               } catch {
-                Alert.alert("Couldn't remove friend", "Please try again.");
+                Alert.alert(t("friends.profile.removeError"), t("profile.tryAgain"));
               } finally {
                 setIsRemoving(false);
               }
             })();
           },
           style: "destructive",
-          text: "Remove Friend",
+          text: t("friends.profile.remove"),
         },
       ],
     );
@@ -54,10 +57,10 @@ export function FriendProfileScreen({ friendId }: { friendId: string | undefined
   return (
     <AtmosphericSafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
       <BackHeader
-        description="View prayer progress and friendship details."
+        description={t("friends.profile.description")}
         onBack={() => router.back()}
         rightAction={
-          <IconButton accessibilityLabel="Friend options" onPress={() => setShowOptions(true)}>
+          <IconButton accessibilityLabel={t("friends.profile.optionsLabel")} onPress={() => setShowOptions(true)}>
             <Feather
               accessible={false}
               color={theme.colors.icon.primary}
@@ -66,20 +69,20 @@ export function FriendProfileScreen({ friendId }: { friendId: string | undefined
             />
           </IconButton>
         }
-        title="Friend Profile"
+        title={t("friends.profile.title")}
       />
       {profile.isLoading ? (
         <View style={styles.state}>
-          <FriendsState message="Loading this friend's profile…" title="Friend Profile" type="loading" />
+          <FriendsState message={t("friends.profile.loading")} title={t("friends.profile.title")} type="loading" />
         </View>
       ) : null}
       {profile.error ? (
         <View style={styles.state}>
           <FriendsState
-            actionLabel="Try again"
+            actionLabel={t("profile.tryAgain")}
             message={profile.error}
             onAction={() => void profile.reload()}
-            title="Couldn't load friend profile"
+            title={t("friends.profile.loadError")}
             type="error"
           />
         </View>
@@ -89,7 +92,7 @@ export function FriendProfileScreen({ friendId }: { friendId: string | undefined
           <Card padding="lg" variant="elevated">
             <View style={styles.hero}>
               <FriendAvatar
-                accessibilityLabel={`${profile.friend.friend.displayName}'s profile image`}
+                accessibilityLabel={t("friends.avatarLabel", { name: profile.friend.friend.displayName })}
                 countryCode={profile.friend.friend.countryCode}
                 name={profile.friend.friend.displayName}
                 size="xl"
@@ -97,38 +100,42 @@ export function FriendProfileScreen({ friendId }: { friendId: string | undefined
               />
               <Text style={styles.name}>{profile.friend.friend.displayName}</Text>
               {profile.friend.friend.title ? <Text style={styles.title}>{profile.friend.friend.title}</Text> : null}
-              <Text style={styles.level}>{`Level ${profile.friend.progress.currentLevel.levelNumber}`}</Text>
-              <Text style={styles.xp}>{`${profile.friend.progress.totalXp.toLocaleString("en-US")} XP`}</Text>
+              <Text style={styles.level}>
+                {t("friends.level", { level: profile.friend.progress.currentLevel.levelNumber })}
+              </Text>
+              <Text style={styles.xp}>{`${profile.friend.progress.totalXp.toLocaleString(locale)} XP`}</Text>
             </View>
           </Card>
 
           <View style={styles.stats}>
-            <ProfileStat label="TOTAL ROSARIES" value={profile.friend.rosaryTotal.toLocaleString("en-US")} />
+            <ProfileStat label={t("friends.totalRosaries")} value={profile.friend.rosaryTotal.toLocaleString(locale)} />
             {profile.friend.rosaryStreak ? (
               <ProfileStat
-                label="DAY STREAK"
-                value={profile.friend.rosaryStreak.currentStreak.toLocaleString("en-US")}
+                label={t("friends.dayStreak")}
+                value={profile.friend.rosaryStreak.currentStreak.toLocaleString(locale)}
               />
             ) : null}
-            <ProfileStat label="BADGES" value={profile.friend.badges.length.toLocaleString("en-US")} />
+            <ProfileStat label={t("friends.badges")} value={profile.friend.badges.length.toLocaleString(locale)} />
           </View>
 
-          <Card padding="md" title="Progress">
+          <Card padding="md" title={t("friends.profile.progress")}>
             <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>Current level</Text>
+              <Text style={styles.detailLabel}>{t("friends.currentLevel")}</Text>
               <Text style={styles.detailValue}>
                 {profile.friend.progress.currentLevel.name ??
-                  `Level ${profile.friend.progress.currentLevel.levelNumber}`}
+                  t("friends.level", { level: profile.friend.progress.currentLevel.levelNumber })}
               </Text>
             </View>
             <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>Total XP</Text>
-              <Text style={styles.detailValue}>{profile.friend.progress.totalXp.toLocaleString("en-US")}</Text>
+              <Text style={styles.detailLabel}>{t("friends.profile.totalXp")}</Text>
+              <Text style={styles.detailValue}>{profile.friend.progress.totalXp.toLocaleString(locale)}</Text>
             </View>
             {profile.friend.rosaryStreak ? (
               <View style={styles.detailRow}>
-                <Text style={styles.detailLabel}>Longest Rosary streak</Text>
-                <Text style={styles.detailValue}>{`${profile.friend.rosaryStreak.longestStreak} days`}</Text>
+                <Text style={styles.detailLabel}>{t("friends.profile.longestStreak")}</Text>
+                <Text style={styles.detailValue}>
+                  {t("friends.profile.days", { count: profile.friend.rosaryStreak.longestStreak })}
+                </Text>
               </View>
             ) : null}
           </Card>
@@ -174,18 +181,19 @@ function FriendOptionsModal({
   visible: boolean;
 }) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   return (
     <Modal animationType="fade" onRequestClose={onClose} transparent visible={visible}>
       <View style={styles.modalOverlay}>
         <Card padding="md" style={styles.optionsCard} variant="elevated">
           <Text accessibilityRole="header" style={[styles.optionsTitle, { marginBottom: theme.spacing[3] }]}>
-            Friend options
+            {t("friends.profile.friendOptions")}
           </Text>
           <Button fullWidth onPress={onClose} variant="secondary" style={{ marginBottom: theme.spacing[3] }}>
-            View Profile
+            {t("friends.profile.view")}
           </Button>
           <Button fullWidth onPress={onCompare} variant="outline" style={{ marginBottom: theme.spacing[3] }}>
-            Compare Stats
+            {t("friends.compare.title")}
           </Button>
           <Button
             fullWidth
@@ -194,10 +202,10 @@ function FriendOptionsModal({
             variant="danger"
             style={{ marginBottom: theme.spacing[3] }}
           >
-            Remove Friend
+            {t("friends.profile.remove")}
           </Button>
           <Button fullWidth onPress={onClose} variant="ghost">
-            Cancel
+            {t("common.cancel")}
           </Button>
         </Card>
       </View>

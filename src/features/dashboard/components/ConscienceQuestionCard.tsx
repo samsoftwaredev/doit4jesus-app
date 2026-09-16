@@ -2,6 +2,7 @@ import Feather from "@expo/vector-icons/Feather";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
@@ -20,6 +21,7 @@ type ConscienceQuestionCardProps = {
 
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function ConscienceQuestionCard({ error, isLoading, onRetry, question }: ConscienceQuestionCardProps) {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   const { isLargeText, isNarrowPhone } = useResponsiveLayout();
   const stackContent = isLargeText || isNarrowPhone;
@@ -43,19 +45,19 @@ export function ConscienceQuestionCard({ error, isLoading, onRetry, question }: 
       </View>
       <View style={[styles.copy, stackContent && styles.copyStacked]}>
         <Text accessibilityRole="header" style={styles.heading}>
-          QUESTION OF CONSCIENCE
+          {t("dashboard.conscience.heading")}
         </Text>
         {isLoading ? <QuestionSkeleton /> : null}
         {!isLoading && error ? (
           <View accessibilityRole="alert">
-            <Text style={styles.error}>Reflection unavailable.</Text>
+            <Text style={styles.error}>{t("dashboard.conscience.unavailable")}</Text>
             <Pressable
-              accessibilityLabel="Retry conscience question"
+              accessibilityLabel={t("dashboard.conscience.retryLabel")}
               accessibilityRole="button"
               onPress={onRetry}
               style={styles.retry}
             >
-              <Text style={styles.retryText}>Try Again</Text>
+              <Text style={styles.retryText}>{t("common.retry")}</Text>
             </Pressable>
           </View>
         ) : null}
@@ -72,9 +74,10 @@ export function ConscienceQuestionCard({ error, isLoading, onRetry, question }: 
 
 /** Renders QuestionSkeleton with styles resolved from the active appearance. */
 function QuestionSkeleton() {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   return (
-    <View accessibilityLabel="Loading conscience question" style={styles.skeletons}>
+    <View accessibilityLabel={t("dashboard.conscience.loading")} style={styles.skeletons}>
       <View style={styles.questionSkeleton} />
       <View style={styles.questionSkeletonShort} />
       <View style={styles.reflectionSkeleton} />

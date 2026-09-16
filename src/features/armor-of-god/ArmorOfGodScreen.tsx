@@ -1,6 +1,8 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Alert, useWindowDimensions, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
+import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
@@ -11,20 +13,31 @@ import { ArmorProgress } from "./ArmorProgress";
 import { ArmorSelector } from "./ArmorSelector";
 import { KnightDisplay } from "./KnightDisplay";
 import { StickyActionBar } from "./StickyActionBar";
-import { armorItems } from "./armorOfGod.data";
+import { getArmorItems } from "./armorOfGod.data";
 import type { ArmorItem } from "./armorOfGod.types";
-import { getArmorActionLabel, isArmorEquipped } from "./armorOfGod.utils";
+import { isArmorEquipped } from "./armorOfGod.utils";
 
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function ArmorOfGodScreen() {
+  const { t } = useTranslation();
+  const { language } = useAppLanguage();
   const styles = useThemedStyles(styleSheet);
   const { width } = useWindowDimensions();
-  const [items, setItems] = useState<readonly ArmorItem[]>(armorItems);
-  const [selectedId, setSelectedId] = useState(armorItems[0].id);
+  const [items, setItems] = useState<readonly ArmorItem[]>(() => getArmorItems(language));
+  const [selectedId, setSelectedId] = useState(() => getArmorItems(language)[0].id);
   const selectedItem = items.find((item) => item.id === selectedId) ?? items[0];
   const equippedCount = items.filter((item) => isArmorEquipped(item.status)).length;
   const isDesktop = width >= theme.breakpoints.desktop;
   const isTablet = width >= theme.breakpoints.tablet;
+
+  useEffect(() => {
+    setItems((currentItems) =>
+      getArmorItems(language).map((localizedItem) => ({
+        ...localizedItem,
+        status: currentItems.find((item) => item.id === localizedItem.id)?.status ?? localizedItem.status,
+      })),
+    );
+  }, [language]);
 
   const handleArmorAction = useCallback(() => {
     if (selectedItem.status === "available") {
@@ -40,14 +53,22 @@ export function ArmorOfGodScreen() {
   }, [selectedItem]);
 
   const handleReadScripture = useCallback(() => {
-    Alert.alert("Ephesians 6", "Read Ephesians 6:10–18 to reflect on the full armor of God.");
-  }, []);
+    Alert.alert(t("armor.readTitle"), t("armor.readAlert"));
+  }, [t]);
 
   if (!selectedItem) {
     return null;
   }
 
   const actionDisabled = selectedItem.status === "equipped" || selectedItem.status === "locked";
+  const actionLabel =
+    selectedItem.status === "available"
+      ? t("armor.action.equip", { item: selectedItem.shortName.toUpperCase() })
+      : selectedItem.status === "completed"
+        ? t("armor.action.viewChallenge")
+        : selectedItem.status === "equipped"
+          ? t("armor.action.equipped")
+          : t("armor.action.locked");
 
   return (
     <View style={styles.section}>
@@ -114,7 +135,7 @@ export function ArmorOfGodScreen() {
           <ArmorDetailCard item={selectedItem} onAction={handleArmorAction} />
           <StickyActionBar
             actionDisabled={actionDisabled}
-            actionLabel={getArmorActionLabel(selectedItem.status, selectedItem.shortName)}
+            actionLabel={actionLabel}
             onAction={handleArmorAction}
             onReadScripture={handleReadScripture}
           />

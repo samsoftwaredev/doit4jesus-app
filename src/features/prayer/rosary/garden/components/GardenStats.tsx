@@ -1,6 +1,7 @@
 import Feather from "@expo/vector-icons/Feather";
 import { Text, View } from "react-native";
 import Animated, { FadeIn, useReducedMotion } from "react-native-reanimated";
+import { useTranslation } from "react-i18next";
 
 import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
@@ -14,33 +15,34 @@ interface GardenStatsProps {
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function GardenStats({ stats }: GardenStatsProps) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const { isLargeText, isNarrowPhone } = useResponsiveLayout();
   const reduceMotion = useReducedMotion();
   const compact = isNarrowPhone;
   const stackStats = isLargeText || compact;
   const values = [
     {
-      accessibility: `${stats.completedDays} rosaries completed this month`,
+      accessibility: t("rosary.garden.completedLabel", { count: stats.completedDays }),
       color: theme.colors.semantic.success,
       icon: "check",
-      label: "COMPLETED",
-      sublabel: `OF ${stats.eligibleDays} DAYS`,
+      label: t("rosary.garden.completed"),
+      sublabel: t("rosary.garden.ofDays", { count: stats.eligibleDays }),
       value: stats.completedDays,
     },
     {
-      accessibility: `Current streak ${stats.currentStreak} days`,
+      accessibility: t("rosary.garden.currentStreakLabel", { count: stats.currentStreak }),
       color: theme.rosary.colors.gold,
       icon: "zap",
-      label: "CURRENT STREAK",
-      sublabel: "DAYS",
+      label: t("rosary.garden.currentStreak"),
+      sublabel: t("rosary.garden.days"),
       value: stats.currentStreak,
     },
     {
-      accessibility: `Longest streak ${stats.longestStreak} days`,
+      accessibility: t("rosary.garden.longestStreakLabel", { count: stats.longestStreak }),
       color: theme.colors.accent.blueLight,
       icon: "award",
-      label: "LONGEST STREAK",
-      sublabel: "DAYS",
+      label: t("rosary.garden.longestStreak"),
+      sublabel: t("rosary.garden.days"),
       value: stats.longestStreak,
     },
   ] as const;

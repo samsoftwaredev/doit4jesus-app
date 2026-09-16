@@ -1,5 +1,6 @@
 import { Image } from "expo-image";
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 
@@ -8,13 +9,12 @@ const rosaryArtwork = require("../../../../../assets/icons/rosary.png");
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function GardenQuoteCard() {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   return (
-    <View accessibilityLabel="Devotional quote from Our Lady of Fatima" style={styles.card}>
+    <View accessibilityLabel={t("rosary.garden.quoteLabel")} style={styles.card}>
       <Image accessible={false} contentFit="contain" source={rosaryArtwork} style={styles.rosary} />
-      <Text style={styles.quote}>
-        “Say the Rosary every day,{"\n"}to bring peace to the world{"\n"}and to your heart.”
-      </Text>
-      <Text style={styles.attribution}>– Our Lady of Fatima</Text>
+      <Text style={styles.quote}>{t("rosary.garden.quote")}</Text>
+      <Text style={styles.attribution}>{t("rosary.garden.quoteAttribution")}</Text>
     </View>
   );
 }

@@ -2,6 +2,7 @@ import Feather from "@expo/vector-icons/Feather";
 import { Image } from "expo-image";
 import { StyleSheet, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { useTranslation } from "react-i18next";
 
 import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
@@ -13,6 +14,7 @@ const flowersArtwork = require("../../../../../assets/flowers/whiteFlowerVase.pn
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function GardenHero() {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const { isLargeText, isNarrowPhone } = useResponsiveLayout();
   const compact = isNarrowPhone;
 
@@ -30,15 +32,13 @@ export function GardenHero() {
             <Feather color={theme.rosary.colors.goldBright} name="plus" size={theme.sizes.iconSmall} />
           </View>
           <Text accessibilityRole="header" style={[styles.title, compact && styles.compactTitle]}>
-            Rosary Garden
+            {t("rosary.garden.title")}
           </Text>
         </View>
-        <Text style={[styles.subtitle, compact && styles.compactSubtitle]}>
-          Complete a rosary each day{"\n"}to make the garden bloom.
-        </Text>
+        <Text style={[styles.subtitle, compact && styles.compactSubtitle]}>{t("rosary.garden.subtitle")}</Text>
       </View>
       <View
-        accessibilityLabel="Devotional artwork of the Blessed Virgin Mary surrounded by flowers"
+        accessibilityLabel={t("rosary.garden.artworkLabel")}
         style={[styles.artworkArea, isLargeText && styles.artworkAreaLargeText]}
       >
         <Image accessible={false} contentFit="contain" source={flowersArtwork} style={styles.flowerArtwork} />

@@ -3,9 +3,11 @@ import { Image } from "expo-image";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useTranslation } from "react-i18next";
 
-import { saintAvatars } from "@/features/profile/saints";
+import { getSaintDisplayName, saintAvatars } from "@/features/profile/saints";
 import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
+import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
@@ -19,6 +21,8 @@ type SaintAvatarSelectorProps = {
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function SaintAvatarSelector({ onDismiss, onSelect, selectedSaintAvatarId, visible }: SaintAvatarSelectorProps) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
+  const { language } = useAppLanguage();
   const { isDesktop, isLargeText, isNarrowPhone, isTablet } = useResponsiveLayout();
   const [selectedId, setSelectedId] = useState(selectedSaintAvatarId);
   const [isSaving, setIsSaving] = useState(false);
@@ -40,21 +44,21 @@ export function SaintAvatarSelector({ onDismiss, onSelect, selectedSaintAvatarId
   return (
     <Modal animationType="slide" onRequestClose={onDismiss} transparent visible={visible}>
       <SafeAreaView edges={["bottom"]} style={styles.backdrop}>
-        <Pressable accessibilityLabel="Close avatar selector" onPress={onDismiss} style={StyleSheet.absoluteFill} />
+        <Pressable accessibilityLabel={t("profile.avatar.close")} onPress={onDismiss} style={StyleSheet.absoluteFill} />
         <View
-          accessibilityLabel="Choose your saint"
+          accessibilityLabel={t("profile.avatar.chooseLabel")}
           accessibilityViewIsModal
           style={[styles.sheet, isDesktop && styles.sheetDesktop]}
         >
           <View style={styles.header}>
             <View>
               <Text accessibilityRole="header" style={styles.title}>
-                Choose Your Saint
+                {t("profile.avatar.choose")}
               </Text>
-              <Text style={styles.subtitle}>Select a saint to accompany your journey.</Text>
+              <Text style={styles.subtitle}>{t("profile.avatar.description")}</Text>
             </View>
             <Pressable
-              accessibilityLabel="Close avatar selector"
+              accessibilityLabel={t("profile.avatar.close")}
               accessibilityRole="button"
               hitSlop={theme.spacing[2]}
               onPress={onDismiss}
@@ -66,9 +70,11 @@ export function SaintAvatarSelector({ onDismiss, onSelect, selectedSaintAvatarId
           <ScrollView contentContainerStyle={styles.grid} showsVerticalScrollIndicator={false}>
             {saintAvatars.map((saint) => {
               const isSelected = saint.id === selectedId;
+              const saintName = getSaintDisplayName(saint, language);
+              const shortSaintName = saintName.replace(/^(?:St\. |San |Santa |Santo )/, "");
               return (
                 <Pressable
-                  accessibilityLabel={`${saint.name}${isSelected ? ", selected" : ""}`}
+                  accessibilityLabel={`${saintName}${isSelected ? `, ${t("common.selected")}` : ""}`}
                   accessibilityRole="button"
                   accessibilityState={{ disabled: isSaving, selected: isSelected }}
                   disabled={isSaving}
@@ -85,7 +91,7 @@ export function SaintAvatarSelector({ onDismiss, onSelect, selectedSaintAvatarId
                 >
                   <Image accessible={false} contentFit="cover" source={saint.image} style={styles.optionImage} />
                   <Text numberOfLines={2} style={styles.optionName}>
-                    {saint.name.replace("St. ", "")}
+                    {shortSaintName}
                   </Text>
                   {isSelected ? (
                     <View style={styles.checkBadge}>

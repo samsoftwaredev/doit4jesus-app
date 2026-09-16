@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { i18n } from "@/localization";
+
 import {
   acceptFriendRequest,
   cancelFriendRequest,
@@ -16,7 +18,6 @@ import type {
   FriendDetails,
   FriendRequest,
   FriendRequestDirection,
-  FriendRequestStatus,
   FriendSummary,
   FriendsComparison,
   FriendsLeaderboard,
@@ -46,7 +47,7 @@ export function useFriends() {
       setHasMore(page.meta.hasMore);
       setNextOffset(page.meta.nextOffset);
     } catch (requestError) {
-      setError(messageFrom(requestError, "Unable to load your friends."));
+      setError(messageFrom(requestError, i18n.t("friends.errors.loadFriends")));
     } finally {
       setIsLoading(false);
     }
@@ -66,7 +67,7 @@ export function useFriends() {
       setHasMore(page.meta.hasMore);
       setNextOffset(page.meta.nextOffset);
     } catch (requestError) {
-      setError(messageFrom(requestError, "Unable to load more friends."));
+      setError(messageFrom(requestError, i18n.t("friends.errors.loadMoreFriends")));
     } finally {
       setIsLoadingMore(false);
     }
@@ -94,7 +95,7 @@ export function useFriendRequests(direction: FriendRequestDirection) {
       setHasMore(page.meta.hasMore);
       setNextOffset(page.meta.nextOffset);
     } catch (requestError) {
-      setError(messageFrom(requestError, "Unable to load friend requests."));
+      setError(messageFrom(requestError, i18n.t("friends.errors.loadRequests")));
     } finally {
       setIsLoading(false);
     }
@@ -114,7 +115,7 @@ export function useFriendRequests(direction: FriendRequestDirection) {
       setHasMore(page.meta.hasMore);
       setNextOffset(page.meta.nextOffset);
     } catch (requestError) {
-      setError(messageFrom(requestError, "Unable to load more requests."));
+      setError(messageFrom(requestError, i18n.t("friends.errors.loadMoreRequests")));
     } finally {
       setIsLoadingMore(false);
     }
@@ -132,7 +133,7 @@ export function useFriendRequests(direction: FriendRequestDirection) {
       }
       setRequests((current) => current.filter((item) => item.id !== request.id));
     } catch (requestError) {
-      const message = messageFrom(requestError, "Unable to update this friend request.");
+      const message = messageFrom(requestError, i18n.t("friends.errors.updateRequest"));
       setError(message);
       throw new Error(message);
     } finally {
@@ -148,7 +149,7 @@ export function useFriendRequests(direction: FriendRequestDirection) {
       await cancelFriendRequest(request.id);
       setRequests((current) => current.filter((item) => item.id !== request.id));
     } catch (requestError) {
-      const message = messageFrom(requestError, "Unable to cancel this friend request.");
+      const message = messageFrom(requestError, i18n.t("friends.errors.cancelRequest"));
       setError(message);
       throw new Error(message);
     } finally {
@@ -184,7 +185,7 @@ export function useRosaryLeaderboard(initialPeriod: LeaderboardPeriodType = "wee
     try {
       setLeaderboard(await getRosaryLeaderboard({ periodType }));
     } catch (requestError) {
-      setError(messageFrom(requestError, "Unable to load the leaderboard."));
+      setError(messageFrom(requestError, i18n.t("friends.errors.loadLeaderboard")));
     } finally {
       setIsLoading(false);
     }
@@ -211,7 +212,7 @@ export function useRosaryLeaderboard(initialPeriod: LeaderboardPeriodType = "wee
         return { ...next, entries };
       });
     } catch (requestError) {
-      setError(messageFrom(requestError, "Unable to load more rankings."));
+      setError(messageFrom(requestError, i18n.t("friends.errors.loadMoreRankings")));
     } finally {
       setIsLoadingMore(false);
     }
@@ -236,7 +237,7 @@ export function useFriendProfile(friendId: string | undefined) {
 
   const load = useCallback(async () => {
     if (!friendId) {
-      setError("A friend profile could not be found.");
+      setError(i18n.t("friends.errors.friendNotFound"));
       setIsLoading(false);
       return;
     }
@@ -246,7 +247,7 @@ export function useFriendProfile(friendId: string | undefined) {
     try {
       setFriend(await getFriendProfile(friendId));
     } catch (requestError) {
-      setError(messageFrom(requestError, "Unable to load this friend profile."));
+      setError(messageFrom(requestError, i18n.t("friends.errors.friendProfile")));
     } finally {
       setIsLoading(false);
     }
@@ -274,7 +275,7 @@ export function useFriendSearch(query: string) {
     }
 
     if (!/^[a-zA-Z0-9_]{4,30}$/.test(normalizedQuery)) {
-      setError("Enter at least 4 letters, numbers, or underscores.");
+      setError(i18n.t("friends.errors.searchValidation"));
       setResults([]);
       setIsLoading(false);
       return;
@@ -292,7 +293,7 @@ export function useFriendSearch(query: string) {
         .catch((requestError: unknown) => {
           if (!active) return;
           setResults([]);
-          setError(messageFrom(requestError, "Unable to search users."));
+          setError(messageFrom(requestError, i18n.t("friends.errors.search")));
         })
         .finally(() => {
           if (active) setIsLoading(false);
@@ -321,7 +322,7 @@ export function useSendFriendRequest() {
       await sendFriendRequest(username);
       setRequestedUsernames((current) => [...current, username.toLowerCase()]);
     } catch (requestError) {
-      const message = messageFrom(requestError, "Unable to send this friend request.");
+      const message = messageFrom(requestError, i18n.t("friends.errors.sendRequest"));
       setError(message);
       throw new Error(message);
     } finally {
@@ -343,7 +344,7 @@ export function useFriendsComparison(friendId: string | undefined) {
     try {
       setComparison(await getFriendsComparison());
     } catch (requestError) {
-      setError(messageFrom(requestError, "Unable to compare progress."));
+      setError(messageFrom(requestError, i18n.t("friends.errors.compare")));
     } finally {
       setIsLoading(false);
     }
@@ -351,14 +352,14 @@ export function useFriendsComparison(friendId: string | undefined) {
 
   useEffect(() => {
     if (!friendId) {
-      setError("A friend profile could not be found.");
+      setError(i18n.t("friends.errors.friendNotFound"));
       setIsLoading(false);
       return;
     }
     void load();
   }, [friendId, load]);
 
-  const entries = comparison?.entries ?? [];
+  const entries = useMemo(() => comparison?.entries ?? [], [comparison?.entries]);
   const currentUser = useMemo(() => entries.find((entry) => entry.isCurrentUser), [entries]);
   const friend = useMemo(() => entries.find((entry) => entry.profile.id === friendId), [entries, friendId]);
 

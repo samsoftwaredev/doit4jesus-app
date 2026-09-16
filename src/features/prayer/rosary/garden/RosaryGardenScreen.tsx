@@ -2,6 +2,7 @@ import Feather from "@expo/vector-icons/Feather";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { Pressable, ScrollView, Text, useWindowDimensions, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { SacredAtmosphere } from "@/components/ui";
@@ -21,6 +22,7 @@ import { theme } from "@/theme/tokens";
 /** Renders the rosary garden and its progress within the shared atmosphere. */
 export function RosaryGardenScreen() {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const router = useRouter();
   const { width } = useWindowDimensions();
   const isTablet = width >= theme.breakpoints.tablet;
@@ -43,7 +45,7 @@ export function RosaryGardenScreen() {
           <View style={[styles.page, isTablet && styles.tabletPage]}>
             <View style={styles.topBar}>
               <Pressable
-                accessibilityLabel="Return to Rosary prayer"
+                accessibilityLabel={t("rosary.garden.return")}
                 accessibilityRole="button"
                 hitSlop={theme.spacing[2]}
                 onPress={() => router.back()}
@@ -52,8 +54,8 @@ export function RosaryGardenScreen() {
                 <Feather color={theme.colors.text.white} name="chevron-left" size={theme.sizes.iconMedium} />
               </Pressable>
               {garden.isUsingMockData ? (
-                <Text accessibilityLabel="Garden preview data" style={styles.offlineLabel}>
-                  Garden preview
+                <Text accessibilityLabel={t("rosary.garden.previewLabel")} style={styles.offlineLabel}>
+                  {t("rosary.garden.preview")}
                 </Text>
               ) : null}
             </View>

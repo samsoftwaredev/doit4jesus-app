@@ -1,8 +1,9 @@
 import Feather from "@expo/vector-icons/Feather";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ScrollView } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { IconButton, PageHeader } from "@/components";
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
@@ -10,10 +11,12 @@ import { SacredAtmosphere } from "@/components/ui";
 import { AllMysteries, MomentForPrayer, PrayersByOthers } from "@/features/prayer/components";
 import type { ApprovedPrayerIntention } from "@/features/prayer/intentions";
 import { cacheApprovedPrayerIntentions, fetchApprovedPrayerIntentions } from "@/features/prayer/intentions";
-import { getRosaryMysterySet } from "@/features/prayer/rosary/data/rosaryMysteries";
+import { getRosaryContent } from "@/features/prayer/rosary/data/localizedRosaryContent";
+import { getRosaryMysterySetFromContent } from "@/features/prayer/rosary/data/rosaryMysteries";
 import { getTodayRosaryMysteryType, getWeekdayLabel } from "@/features/prayer/rosary/data/schedule";
 import type { RosaryMysteryType } from "@/features/prayer/rosary/types/rosary";
 import { useResponsiveLayout } from "@/hooks";
+import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
@@ -31,6 +34,8 @@ function appendUniqueIntentions(
 /** Renders the daily prayer dashboard within the shared atmosphere. */
 export function PrayerScreen() {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
+  const { language, locale } = useAppLanguage();
   const router = useRouter();
   const { contentWidth, gutter, isDesktop, isLargeText, isNarrowPhone, isTablet, width } = useResponsiveLayout();
   const [intentions, setIntentions] = useState<ApprovedPrayerIntention[]>([]);
@@ -41,7 +46,8 @@ export function PrayerScreen() {
   const [nextIntentionsOffset, setNextIntentionsOffset] = useState<number | null>(null);
   const isLoadingMoreIntentionsRef = useRef(false);
   const todayMysteryType = getTodayRosaryMysteryType();
-  const todaySet = getRosaryMysterySet(todayMysteryType);
+  const rosaryContent = useMemo(() => getRosaryContent(language), [language]);
+  const todaySet = getRosaryMysterySetFromContent(rosaryContent, todayMysteryType);
   const columnGap = theme.spacing[2];
   const containerMaxWidth = isDesktop ? 960 : isTablet ? 760 : width;
   const usableWidth = Math.max(0, Math.min(contentWidth, containerMaxWidth) - gutter * 2);
@@ -64,11 +70,11 @@ export function PrayerScreen() {
       setHasMoreIntentions(page.meta.hasMore);
       setNextIntentionsOffset(page.meta.nextOffset);
     } catch (error) {
-      setIntentionsError(error instanceof Error ? error.message : "Couldn't load prayer intentions.");
+      setIntentionsError(error instanceof Error ? error.message : t("prayerHome.intentionsLoadError"));
     } finally {
       setIsLoadingIntentions(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void loadIntentions();
@@ -88,12 +94,12 @@ export function PrayerScreen() {
       setHasMoreIntentions(page.meta.hasMore);
       setNextIntentionsOffset(page.meta.nextOffset);
     } catch (error) {
-      setIntentionsError(error instanceof Error ? error.message : "Couldn't load more prayer intentions.");
+      setIntentionsError(error instanceof Error ? error.message : t("prayerHome.intentionsMoreError"));
     } finally {
       isLoadingMoreIntentionsRef.current = false;
       setIsLoadingMoreIntentions(false);
     }
-  }, [hasMoreIntentions, nextIntentionsOffset]);
+  }, [hasMoreIntentions, nextIntentionsOffset, t]);
 
   /** Opens a full Rosary for the selected mystery set and records its launch source. */
   const openRosary = (mysteryType: RosaryMysteryType, source: "today" | "manual") => {
@@ -157,7 +163,7 @@ export function PrayerScreen() {
         >
           <PageHeader
             actions={
-              <IconButton accessibilityLabel="Open Rosary Garden" onPress={openGarden} tone="accent">
+              <IconButton accessibilityLabel={t("prayerHome.gardenAction")} onPress={openGarden} tone="accent">
                 <Feather
                   accessible={false}
                   color={theme.rosary.colors.goldBright}
@@ -166,10 +172,14 @@ export function PrayerScreen() {
                 />
               </IconButton>
             }
-            description="Pray the Rosary and lift up the intentions of others."
-            title="Prayer"
+            description={t("prayerHome.description")}
+            title={t("prayerHome.title")}
           />
-          <MomentForPrayer mysteryTitle={todaySet.title} onPrayToday={prayToday} weekday={getWeekdayLabel()} />
+          <MomentForPrayer
+            mysteryTitle={todaySet.title}
+            onPrayToday={prayToday}
+            weekday={getWeekdayLabel(undefined, locale)}
+          />
           <AllMysteries cardWidth={mysteryCardWidth} gap={columnGap} onOpenMystery={openMystery} />
           <PrayersByOthers
             errorMessage={intentionsError}

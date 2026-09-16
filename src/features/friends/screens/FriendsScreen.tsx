@@ -1,6 +1,7 @@
 import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
 import { ScrollView, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { IconButton, PageHeader } from "@/components";
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
@@ -15,6 +16,7 @@ import { theme } from "@/theme/tokens";
 /** Renders the authenticated community dashboard within the shared atmosphere. */
 export function FriendsScreen() {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const router = useRouter();
   const friends = useFriends();
   const leaderboard = useRosaryLeaderboard();
@@ -47,7 +49,7 @@ export function FriendsScreen() {
       <View style={[styles.header, { paddingHorizontal: gutter }]}>
         <PageHeader
           actions={
-            <IconButton accessibilityLabel="Add friend" onPress={openAddFriend} tone="accent">
+            <IconButton accessibilityLabel={t("friends.addFriendShort")} onPress={openAddFriend} tone="accent">
               <Feather
                 accessible={false}
                 color={theme.colors.icon.active}
@@ -56,8 +58,8 @@ export function FriendsScreen() {
               />
             </IconButton>
           }
-          description="Compete with one another in prayer."
-          title="Community"
+          description={t("friends.communityDescription")}
+          title={t("friends.community")}
         />
       </View>
       <ScrollView
@@ -65,14 +67,18 @@ export function FriendsScreen() {
         showsVerticalScrollIndicator={false}
       >
         {leaderboard.isLoading ? (
-          <FriendsState message="Loading your friends' points…" title="Leaderboard" type="loading" />
+          <FriendsState
+            message={t("friends.loadingLeaderboard")}
+            title={t("friends.leaderboard.title")}
+            type="loading"
+          />
         ) : null}
         {leaderboard.error ? (
           <FriendsState
-            actionLabel="Try again"
+            actionLabel={t("profile.tryAgain")}
             message={leaderboard.error}
             onAction={() => void leaderboard.reload()}
-            title="Couldn't load the leaderboard"
+            title={t("friends.leaderboard.loadError")}
             type="error"
           />
         ) : null}
@@ -84,21 +90,21 @@ export function FriendsScreen() {
               onViewFullLeaderboard={() => router.push("/friends/leaderboard")}
             />
           ) : (
-            <FriendsState message="No Rosaries recorded yet" title="Leaderboard" type="empty" />
+            <FriendsState message={t("friends.noRosaries")} title={t("friends.leaderboard.title")} type="empty" />
           )
         ) : null}
 
         <View style={[styles.sections, useColumns && styles.sectionsWide]}>
           <View style={[styles.section, useColumns && styles.sectionWide]}>
             {requests.isLoading ? (
-              <FriendsState message="Loading pending requests…" title="Pending requests" type="loading" />
+              <FriendsState message={t("friends.loadingPending")} title={t("friends.pendingRequests")} type="loading" />
             ) : null}
             {requests.error ? (
               <FriendsState
-                actionLabel="Try again"
+                actionLabel={t("profile.tryAgain")}
                 message={requests.error}
                 onAction={() => void requests.reload()}
-                title="Couldn't load pending requests"
+                title={t("friends.loadFriendsError")}
                 type="error"
               />
             ) : null}
@@ -115,23 +121,23 @@ export function FriendsScreen() {
 
           <View style={[styles.section, useColumns && styles.sectionWide]}>
             {friends.isLoading ? (
-              <FriendsState message="Loading your fellowship…" title="Your friends" type="loading" />
+              <FriendsState message={t("friends.loadingFellowship")} title={t("friends.title")} type="loading" />
             ) : null}
             {friends.error ? (
               <FriendsState
-                actionLabel="Try again"
+                actionLabel={t("profile.tryAgain")}
                 message={friends.error}
                 onAction={() => void friends.reload()}
-                title="Couldn't load friends"
+                title={t("friends.requests.loadError")}
                 type="error"
               />
             ) : null}
             {!friends.isLoading && !friends.error && friends.friends.length === 0 ? (
               <FriendsState
-                actionLabel="Find Friends"
-                message="Add friends and encourage one another in prayer and virtue."
+                actionLabel={t("friends.find")}
+                message={t("friends.findDescription")}
                 onAction={openAddFriend}
-                title="Your fellowship begins here"
+                title={t("friends.findTitle")}
                 type="empty"
               />
             ) : null}
@@ -146,7 +152,7 @@ export function FriendsScreen() {
                 style={styles.moreFriends}
                 variant="outline"
               >
-                Load more friends
+                {t("friends.loadMoreFriends")}
               </Button>
             ) : null}
           </View>

@@ -2,6 +2,7 @@ import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { Button } from "@/components/ui";
@@ -21,6 +22,7 @@ import { theme } from "@/theme/tokens";
 /** Renders the authenticated form for creating a prayer intention. */
 export function CreatePrayerIntentionScreen() {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const { colorScheme } = useAppTheme();
   const router = useRouter();
   const [title, setTitle] = useState("");
@@ -40,9 +42,9 @@ export function CreatePrayerIntentionScreen() {
       setTitle("");
       setDescription("");
       setSymbol("candle");
-      setSuccess("Prayer intention submitted for review. It will be public after approval.");
+      setSuccess(t("intentions.create.success"));
     } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : "Couldn’t submit your prayer intention.");
+      setError(requestError instanceof Error ? requestError.message : t("intentions.create.submitError"));
     } finally {
       setIsSubmitting(false);
     }
@@ -51,9 +53,9 @@ export function CreatePrayerIntentionScreen() {
   return (
     <AtmosphericSafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
       <BackHeader
-        description="Share a prayer intention with the community. It will be reviewed before it becomes public."
+        description={t("intentions.create.description")}
         onBack={() => router.back()}
-        title="Share an Intention"
+        title={t("intentions.create.title")}
       />
       <ScrollView
         automaticallyAdjustKeyboardInsets
@@ -61,23 +63,31 @@ export function CreatePrayerIntentionScreen() {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        <Field label="Title" value={title} onChangeText={setTitle} maxLength={120} placeholder="Praying for…" />
         <Field
-          label="Description"
+          label={t("intentions.create.titleField")}
+          value={title}
+          onChangeText={setTitle}
+          maxLength={120}
+          placeholder={t("intentions.create.titlePlaceholder")}
+        />
+        <Field
+          label={t("intentions.create.descriptionField")}
           value={description}
           onChangeText={setDescription}
           maxLength={250}
           multiline
-          placeholder="How can the community pray with you?"
+          placeholder={t("intentions.create.descriptionPlaceholder")}
         />
-        <Text style={styles.label}>SYMBOL</Text>
+        <Text style={styles.label}>{t("intentions.create.symbol")}</Text>
         <View style={styles.symbols}>
           {prayerIntentionSymbols.map((option) => {
             const optionTheme = getPrayerIntentionTheme(option, colorScheme);
             const selected = symbol === option;
             return (
               <Pressable
-                accessibilityLabel={`Use ${option.replace("_", " ")} symbol`}
+                accessibilityLabel={t("intentions.create.symbolLabel", {
+                  symbol: t(`intentions.create.symbols.${option}`),
+                })}
                 accessibilityRole="button"
                 accessibilityState={{ selected }}
                 key={option}
@@ -96,7 +106,7 @@ export function CreatePrayerIntentionScreen() {
                   name={optionTheme.icon}
                   size={theme.sizes.iconMedium}
                 />
-                <Text style={styles.symbolText}>{option.replace("_", " ")}</Text>
+                <Text style={styles.symbolText}>{t(`intentions.create.symbols.${option}`)}</Text>
               </Pressable>
             );
           })}
@@ -107,7 +117,7 @@ export function CreatePrayerIntentionScreen() {
           </Text>
         ) : null}
         <Button fullWidth loading={isSubmitting} onPress={() => void submit()} variant="warning">
-          Submit for Review
+          {t("intentions.create.submit")}
         </Button>
         <ProfileToast message={success} onDismiss={() => setSuccess(undefined)} />
       </ScrollView>

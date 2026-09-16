@@ -3,6 +3,7 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { SacredAtmosphere } from "@/components/ui";
@@ -21,6 +22,7 @@ function firstString(value: string | string[] | undefined) {
 /** Renders a rosary invitation for one prayer intention within the shared atmosphere. */
 export function IntentionRosaryScreen() {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const { colorScheme } = useAppTheme();
   const router = useRouter();
   const { intentionId: rawIntentionId } = useLocalSearchParams<{ intentionId?: string | string[] }>();
@@ -32,19 +34,19 @@ export function IntentionRosaryScreen() {
     return (
       <AtmosphericSafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
         <BackHeader
-          description="Offer a Rosary for this community intention."
+          description={t("intentions.offer.description")}
           onBack={() => router.back()}
-          title="Prayer Intention"
+          title={t("intentions.offer.title")}
         />
         <View style={styles.unavailable}>
-          <Text style={styles.unavailableTitle}>This intention is no longer loaded.</Text>
-          <Text style={styles.unavailableCopy}>Return to the public prayer intentions list and choose it again.</Text>
+          <Text style={styles.unavailableTitle}>{t("intentions.offer.unavailable")}</Text>
+          <Text style={styles.unavailableCopy}>{t("intentions.offer.unavailableCopy")}</Text>
           <Pressable
             accessibilityRole="button"
             onPress={() => router.replace("/prayer-intentions")}
             style={styles.action}
           >
-            <Text style={styles.actionText}>View Prayer Intentions</Text>
+            <Text style={styles.actionText}>{t("intentions.offer.view")}</Text>
           </Pressable>
         </View>
       </AtmosphericSafeAreaView>
@@ -60,9 +62,9 @@ export function IntentionRosaryScreen() {
         <SacredAtmosphere />
         <View style={styles.atmosphereContent}>
           <BackHeader
-            description="Offer a Rosary for this community intention."
+            description={t("intentions.offer.description")}
             onBack={() => router.back()}
-            title="Prayer Intention"
+            title={t("intentions.offer.title")}
           />
           <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
             <View style={styles.creatorBlock}>
@@ -72,7 +74,7 @@ export function IntentionRosaryScreen() {
                 size={68}
                 source={intention.creator.avatarUrl}
               />
-              <Text style={styles.createdBy}>CREATED BY</Text>
+              <Text style={styles.createdBy}>{t("intentions.offer.createdBy")}</Text>
               <Text style={styles.creatorName}>{intention.creator.displayName}</Text>
             </View>
             <Text accessibilityRole="header" numberOfLines={3} style={styles.title}>
@@ -98,11 +100,11 @@ export function IntentionRosaryScreen() {
             </View>
             <OrnateCard style={styles.prayerCard}>
               <Feather accessible={false} color={theme.rosary.colors.gold} name="plus" size={theme.sizes.iconMedium} />
-              <Text style={styles.prayerLabel}>PRAYER INTENTION</Text>
-              <Text style={styles.prayerCopy}>We unite this Rosary for this intention and its creator.</Text>
+              <Text style={styles.prayerLabel}>{t("intentions.offer.label")}</Text>
+              <Text style={styles.prayerCopy}>{t("intentions.offer.copy")}</Text>
             </OrnateCard>
             <Pressable
-              accessibilityLabel="Pray this Rosary"
+              accessibilityLabel={t("intentions.offer.actionLabel")}
               accessibilityRole="button"
               onPress={() =>
                 router.push({ pathname: "/rosary", params: { intentionId: intention.id, source: "prayer-intention" } })
@@ -110,7 +112,7 @@ export function IntentionRosaryScreen() {
               style={styles.action}
             >
               <Feather accessible={false} color={theme.colors.text.inverse} name="plus" size={theme.sizes.iconSmall} />
-              <Text style={styles.actionText}>Pray This Rosary</Text>
+              <Text style={styles.actionText}>{t("intentions.offer.action")}</Text>
             </Pressable>
           </ScrollView>
         </View>

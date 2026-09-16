@@ -6,10 +6,12 @@ import Animated, {
   withSequence,
   withTiming,
 } from "react-native-reanimated";
+import { useTranslation } from "react-i18next";
 
 import { DayCalendarTile } from "@/components/ui";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import type { RosaryGardenDay } from "@/features/prayer/rosary/garden/types";
+import { useAppLanguage } from "@/localization";
 
 interface GardenDayCellProps {
   day: RosaryGardenDay;
@@ -18,6 +20,8 @@ interface GardenDayCellProps {
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function GardenDayCell({ day }: GardenDayCellProps) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
+  const { locale } = useAppLanguage();
   const reduceMotion = useReducedMotion();
   const bloom = useSharedValue(day.completed ? 1 : 0.96);
 
@@ -38,14 +42,15 @@ export function GardenDayCell({ day }: GardenDayCellProps) {
         : day.isEligible
           ? "incomplete"
           : "unavailable";
-  const status = day.completed
+  const statusKey = day.completed
     ? "completed"
     : day.isFuture
-      ? "future date"
+      ? "future"
       : day.isEligible
-        ? "not completed"
-        : "not yet eligible";
-  const dateLabel = new Intl.DateTimeFormat(undefined, {
+        ? "incomplete"
+        : "unavailable";
+  const status = t(`rosary.garden.status.${statusKey}`);
+  const dateLabel = new Intl.DateTimeFormat(locale, {
     day: "numeric",
     month: "long",
     timeZone: "UTC",

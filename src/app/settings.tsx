@@ -2,29 +2,45 @@ import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
+import { LanguageSelector } from "@/components";
 import { ScreenShell } from "@/components/screen-shell";
 import { Button, Card } from "@/components/ui";
 import { useAuth } from "@/features/auth";
 import { supabase } from "@/lib/supabase";
+import { useAppLanguage } from "@/localization";
 import { type ThemePreference, useAppTheme } from "@/theme/AppThemeProvider";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
-const appearanceOptions: readonly { description: string; label: string; value: ThemePreference }[] = [
-  { description: "Match this device and update automatically.", label: "System", value: "system" },
-  { description: "Use the warm ivory devotional palette.", label: "Light", value: "light" },
-  { description: "Use the original deep navy palette.", label: "Dark", value: "dark" },
-];
-
-/** Renders account controls and the device-local appearance preference. */
+/** Renders account controls plus device-local language and appearance preferences. */
 export default function SettingsScreen() {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const router = useRouter();
   const { configurationError } = useAuth();
+  const { language, setLanguage } = useAppLanguage();
   const { preference, setPreference, theme: appTheme } = useAppTheme();
   const [signOutError, setSignOutError] = useState<string>();
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const appearanceOptions: readonly { description: string; label: string; value: ThemePreference }[] = [
+    {
+      description: t("settings.appearanceSystemDescription"),
+      label: t("settings.appearanceSystem"),
+      value: "system",
+    },
+    {
+      description: t("settings.appearanceLightDescription"),
+      label: t("settings.appearanceLight"),
+      value: "light",
+    },
+    {
+      description: t("settings.appearanceDarkDescription"),
+      label: t("settings.appearanceDark"),
+      value: "dark",
+    },
+  ];
 
   /** Signs out the current account while exposing any recoverable error. */
   const signOut = async () => {
@@ -40,14 +56,22 @@ export default function SettingsScreen() {
   return (
     <ScreenShell
       contentContainerStyle={styles.content}
-      description="Shape the app around your life of prayer."
+      description={t("settings.description")}
       headerVariant="compact"
       onBack={() => router.back()}
-      title="Settings"
+      title={t("settings.title")}
       testID="settings-screen"
     >
-      <Card title="Appearance">
-        <View accessibilityLabel="Appearance" accessibilityRole="radiogroup" style={styles.appearanceGroup}>
+      <Card title={t("common.language")}>
+        <Text style={styles.languageDescription}>{t("settings.languageDescription")}</Text>
+        <LanguageSelector language={language} onChange={(nextLanguage) => void setLanguage(nextLanguage)} />
+      </Card>
+      <Card title={t("settings.appearance")}>
+        <View
+          accessibilityLabel={t("settings.appearance")}
+          accessibilityRole="radiogroup"
+          style={styles.appearanceGroup}
+        >
           {appearanceOptions.map((option) => {
             const isSelected = preference === option.value;
             return (
@@ -85,24 +109,20 @@ export default function SettingsScreen() {
           })}
         </View>
       </Card>
-      <Card title="Prayer and reminders">
+      <Card title={t("settings.prayerTitle")}>
         <View style={styles.row}>
           <Feather color={theme.colors.icon.active} name="bell" size={theme.sizes.iconMedium} />
-          <Text style={styles.description}>
-            Choose when you would like prayer reminders and spiritual encouragement.
-          </Text>
+          <Text style={styles.description}>{t("settings.prayerCopy")}</Text>
         </View>
       </Card>
-      <Card title="Account and privacy">
+      <Card title={t("settings.accountTitle")}>
         <View style={styles.row}>
           <Feather color={theme.colors.icon.secondary} name="shield" size={theme.sizes.iconMedium} />
-          <Text style={styles.description}>
-            Manage your profile, privacy choices, accessibility, and display preferences.
-          </Text>
+          <Text style={styles.description}>{t("settings.accountCopy")}</Text>
         </View>
         <View style={styles.accountActions}>
           <Button fullWidth onPress={() => router.push("/change-email")} variant="secondary">
-            Change email
+            {t("settings.changeEmail")}
           </Button>
           <Button
             disabled={Boolean(configurationError)}
@@ -111,7 +131,7 @@ export default function SettingsScreen() {
             onPress={() => void signOut()}
             variant="ghost"
           >
-            Sign out
+            {t("settings.signOut")}
           </Button>
           {signOutError ? <Text style={styles.error}>{signOutError}</Text> : null}
         </View>
@@ -174,6 +194,11 @@ const styleSheet = createThemedStyles((theme) => ({
     ...theme.typography.body,
     color: theme.colors.text.secondary,
     flex: 1,
+  },
+  languageDescription: {
+    ...theme.typography.bodySmall,
+    color: theme.colors.text.muted,
+    marginBottom: theme.spacing[3],
   },
   accountActions: {
     gap: theme.spacing[2],

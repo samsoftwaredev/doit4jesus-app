@@ -1,5 +1,6 @@
 import { useRouter } from "expo-router";
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { ScreenShell } from "@/components/screen-shell";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
@@ -7,21 +8,19 @@ import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles"
 /** Renders this feature with colors from the currently resolved app appearance. */
 export default function AboutScreen() {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const router = useRouter();
 
   return (
     <ScreenShell
       contentContainerStyle={styles.content}
-      description="A companion for daily faithfulness."
+      description={t("pages.about.description")}
       headerVariant="compact"
       onBack={() => router.back()}
-      title="About Do It for Jesus"
+      title={t("pages.about.title")}
     >
       <View style={styles.card}>
-        <Text style={styles.copy}>
-          Do It for Jesus helps Catholics build consistent spiritual habits, grow in virtue, and encourage one another
-          on their journey toward Christ.
-        </Text>
+        <Text style={styles.copy}>{t("pages.about.copy")}</Text>
       </View>
     </ScreenShell>
   );

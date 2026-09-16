@@ -1,6 +1,7 @@
 import Feather from "@expo/vector-icons/Feather";
 import { useEffect } from "react";
 import { Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
@@ -13,6 +14,7 @@ type ProfileToastProps = {
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function ProfileToast({ message, onDismiss }: ProfileToastProps) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   useEffect(() => {
     if (!message) return;
 
@@ -32,7 +34,7 @@ export function ProfileToast({ message, onDismiss }: ProfileToastProps) {
       />
       <Text style={styles.message}>{message}</Text>
       <Pressable
-        accessibilityLabel="Dismiss message"
+        accessibilityLabel={t("common.dismissMessage")}
         accessibilityRole="button"
         hitSlop={theme.spacing[2]}
         onPress={onDismiss}

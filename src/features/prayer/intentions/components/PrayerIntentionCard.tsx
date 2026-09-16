@@ -1,5 +1,6 @@
 import Feather from "@expo/vector-icons/Feather";
 import { Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { getPrayerIntentionTheme } from "@/features/prayer/intentions/data/prayerIntentionTheme";
 import type { ApprovedPrayerIntention } from "@/features/prayer/intentions/data/prayerIntentions.types";
@@ -18,12 +19,16 @@ type PrayerIntentionCardProps = {
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function PrayerIntentionCard({ intention, onPress }: PrayerIntentionCardProps) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const { colorScheme } = useAppTheme();
   const { isLargeText } = useResponsiveLayout();
   const intentionTheme = getPrayerIntentionTheme(intention.symbol, colorScheme);
   return (
     <Pressable
-      accessibilityLabel={`Open prayer intention from ${intention.creator.displayName}: ${intention.title}`}
+      accessibilityLabel={t("intentions.openLabel", {
+        name: intention.creator.displayName,
+        title: intention.title,
+      })}
       accessibilityRole="button"
       onPress={onPress}
       style={({ pressed }) => [

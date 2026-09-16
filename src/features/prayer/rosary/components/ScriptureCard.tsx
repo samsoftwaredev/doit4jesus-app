@@ -1,5 +1,6 @@
 import Feather from "@expo/vector-icons/Feather";
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
@@ -12,15 +13,17 @@ interface ScriptureCardProps {
 /** Renders Scripture in a devotional card with readable colors for the active appearance. */
 export function ScriptureCard({ reference, quotation }: ScriptureCardProps) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
+  const visibleReference = reference || t("rosary.cards.scriptureReferenceUnavailable");
   return (
-    <View accessibilityLabel={`Scripture. ${reference ?? "Reference unavailable"}`} style={styles.card}>
+    <View accessibilityLabel={t("rosary.cards.scriptureLabel", { reference: visibleReference })} style={styles.card}>
       <View style={styles.labelRow}>
         <Feather accessible={false} color={theme.rosary.colors.gold} name="book-open" size={theme.sizes.iconSmall} />
-        <Text style={styles.label}>SCRIPTURE</Text>
+        <Text style={styles.label}>{t("rosary.cards.scripture")}</Text>
       </View>
-      <Text style={styles.reference}>{reference || "Scripture reference unavailable"}</Text>
+      <Text style={styles.reference}>{visibleReference}</Text>
       <View style={styles.divider} />
-      <Text style={styles.quotation}>{quotation || "Scripture quotation unavailable."}</Text>
+      <Text style={styles.quotation}>{quotation || t("rosary.cards.scriptureQuotationUnavailable")}</Text>
     </View>
   );
 }

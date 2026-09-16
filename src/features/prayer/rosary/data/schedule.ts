@@ -14,6 +14,6 @@ export function getTodayRosaryMysteryType(date = new Date()): RosaryMysteryType 
   return mysteryByWeekday[date.getDay()] ?? "joyful";
 }
 
-export function getWeekdayLabel(date = new Date()) {
-  return date.toLocaleDateString(undefined, { weekday: "long" });
+export function getWeekdayLabel(date = new Date(), locale?: string) {
+  return date.toLocaleDateString(locale, { weekday: "long" });
 }

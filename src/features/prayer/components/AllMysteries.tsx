@@ -1,9 +1,12 @@
 import { Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { RosaryMysteryCard } from "@/features/prayer/rosary/components";
-import { rosaryMysterySets } from "@/features/prayer/rosary/data/rosaryMysteries";
+import { getRosaryContent } from "@/features/prayer/rosary/data/localizedRosaryContent";
+import { getRosaryMysterySetsFromContent } from "@/features/prayer/rosary/data/rosaryMysteries";
 import type { RosaryMysteryType } from "@/features/prayer/rosary/types/rosary";
 import { useResponsiveLayout } from "@/hooks";
+import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 
 type AllMysteriesProps = {
@@ -15,12 +18,15 @@ type AllMysteriesProps = {
 /** Renders the complete grid of Rosary mystery sets. */
 export function AllMysteries({ cardWidth, gap, onOpenMystery }: AllMysteriesProps) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
+  const { language } = useAppLanguage();
   const { isDesktop } = useResponsiveLayout();
+  const rosaryMysterySets = getRosaryMysterySetsFromContent(getRosaryContent(language));
 
   return (
     <View style={styles.section}>
-      <Text accessibilityLabel="All Mysteries" accessibilityRole="header" style={styles.sectionLabel}>
-        ALL MYSTERIES
+      <Text accessibilityLabel={t("prayer.allMysteries")} accessibilityRole="header" style={styles.sectionLabel}>
+        {t("prayer.allMysteriesUpper")}
       </Text>
       <View
         style={[styles.mysteryGrid, isDesktop && styles.mysteryGridDesktop, { columnGap: gap, rowGap: gap }]}

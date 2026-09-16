@@ -1,5 +1,7 @@
 import { render, screen } from "@testing-library/react-native";
 
+import { i18n } from "@/localization";
+
 import { ResponsiveTabs } from "./ResponsiveTabs";
 
 const mockWindowDimensions = jest.fn();
@@ -51,8 +53,9 @@ function setViewport(width: number, height = 844, fontScale = 1) {
 }
 
 describe("ResponsiveTabs", () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.clearAllMocks();
+    await i18n.changeLanguage("en");
   });
 
   it.each([320, 390, 768])("keeps bottom navigation at %ipx", async (width) => {
@@ -79,5 +82,18 @@ describe("ResponsiveTabs", () => {
     expect(screen.getByLabelText("Community tab")).toBeTruthy();
     expect(screen.getByLabelText("Profile tab")).toBeTruthy();
     expect(options.tabBarActiveTintColor).not.toBe(options.tabBarInactiveTintColor);
+  });
+
+  it("localizes tab names and accessible labels in Spanish", async () => {
+    await i18n.changeLanguage("es");
+    setViewport(390);
+
+    await render(<ResponsiveTabs />);
+
+    expect(screen.getByText("home:Inicio")).toBeTruthy();
+    expect(screen.getByText("prayer:Oración")).toBeTruthy();
+    expect(screen.getByText("community:Comunidad")).toBeTruthy();
+    expect(screen.getByText("profile:Perfil")).toBeTruthy();
+    expect(screen.getByLabelText("Pestaña de inicio")).toBeTruthy();
   });
 });

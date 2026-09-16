@@ -9,6 +9,7 @@ import Animated, {
   withSequence,
   withTiming,
 } from "react-native-reanimated";
+import { useTranslation } from "react-i18next";
 
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
@@ -22,17 +23,6 @@ interface RosaryBeadProps {
   disabled?: boolean;
   onPress: (beadId: string) => void;
 }
-
-const prayerNameByBeadType: Record<RosaryBeadModel["type"], string> = {
-  closingPrayer: "Closing Prayer",
-  creed: "Apostles' Creed",
-  fatimaPrayer: "Fatima Prayer",
-  gloryBe: "Glory Be",
-  hailHolyQueen: "Hail, Holy Queen",
-  hailMary: "Hail Mary",
-  ourFather: "Our Father",
-  signOfCross: "Sign of the Cross",
-};
 
 /** Returns a visually distinct bead diameter while preserving the separate minimum touch target. */
 function beadDiameter(type: RosaryBeadModel["type"], compact: boolean) {
@@ -54,6 +44,7 @@ export function RosaryBead({
   onPress,
 }: RosaryBeadProps) {
   const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
   const reduceMotion = useReducedMotion();
   const scale = useSharedValue(1);
   const opacity = useSharedValue(1);
@@ -83,14 +74,22 @@ export function RosaryBead({
     transform: [{ scale: scale.value }],
   }));
 
-  const stateLabel = state === "active" ? "current" : state;
+  const stateLabel = t(`rosary.bead.${state === "active" ? "current" : state}`);
+  const prayerName = bead.prayer?.name ?? t(`rosary.bead.${bead.type}`);
   const markerLabel = isCrucifix
-    ? `${stateLabel} crucifix, ${prayerNameByBeadType[bead.type]}`
-    : `${stateLabel} bead ${visibleNumber}, ${prayerNameByBeadType[bead.type]}`;
+    ? t("rosary.bead.markerLabelCrucifix", { prayer: prayerName, state: stateLabel })
+    : t("rosary.bead.markerLabel", {
+        marker: t("rosary.bead.bead"),
+        number: visibleNumber,
+        prayer: prayerName,
+        state: stateLabel,
+      });
 
   return (
     <Pressable
-      accessibilityHint={`Double tap to move directly to this ${isCrucifix ? "crucifix" : "bead"}.`}
+      accessibilityHint={t("rosary.bead.directHint", {
+        marker: t(isCrucifix ? "rosary.bead.crucifix" : "rosary.bead.bead"),
+      })}
       accessibilityLabel={markerLabel}
       accessibilityRole="button"
       accessibilityState={{ disabled, selected: isActive }}

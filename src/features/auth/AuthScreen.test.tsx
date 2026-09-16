@@ -1,6 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react-native";
 import { Text } from "react-native";
 
+import { i18n } from "@/localization";
+
 import { AuthMessage, AuthScreen, AuthTextInput } from "./AuthScreen";
 
 const mockBack = jest.fn();
@@ -8,6 +10,10 @@ const mockBack = jest.fn();
 jest.mock("expo-router", () => ({ useRouter: () => ({ back: mockBack }) }));
 
 describe("AuthScreen", () => {
+  beforeEach(async () => {
+    await i18n.changeLanguage("en");
+  });
+
   it("renders an accessible chevron back button on authentication pages", async () => {
     await render(
       <AuthScreen subtitle="Continue your journey." title="Sign in">
@@ -34,5 +40,18 @@ describe("AuthScreen", () => {
 
     await rendered.rerender(<AuthMessage tone="success">Welcome back.</AuthMessage>);
     expect(screen.getByText("Welcome back.")).toBeTruthy();
+  });
+
+  it("localizes the shared authentication eyebrow and back action", async () => {
+    await i18n.changeLanguage("es");
+
+    await render(
+      <AuthScreen subtitle="Continúa tu camino." title="Iniciar sesión">
+        <Text>Formulario</Text>
+      </AuthScreen>,
+    );
+
+    expect(screen.getByText("BIENVENIDO")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Volver" })).toBeTruthy();
   });
 });

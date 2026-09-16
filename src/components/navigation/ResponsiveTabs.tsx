@@ -1,6 +1,7 @@
 import { Image } from "expo-image";
 import { Tabs } from "expo-router";
 import { Platform, useWindowDimensions } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { useAppTheme } from "@/theme/AppThemeProvider";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
@@ -41,6 +42,7 @@ function TabArtworkIcon({ focused, size, source }: TabArtworkIconProps) {
 
 /** Keeps bottom tabs through tablet widths and presents an expanded side rail on desktop. */
 export function ResponsiveTabs() {
+  const { t } = useTranslation();
   const { theme: appTheme } = useAppTheme();
   const { fontScale, width } = useWindowDimensions();
   const isDesktop = width >= theme.breakpoints.desktop;
@@ -56,7 +58,7 @@ export function ResponsiveTabs() {
         sceneStyle: {
           backgroundColor: appTheme.colors.background.primary,
         },
-        tabBarAccessibilityLabel: "Primary navigation",
+        tabBarAccessibilityLabel: t("navigation.primary"),
         tabBarActiveTintColor: appTheme.colors.icon.active,
         tabBarHideOnKeyboard: true,
         tabBarInactiveTintColor: appTheme.colors.icon.muted,
@@ -102,41 +104,41 @@ export function ResponsiveTabs() {
       <Tabs.Screen
         name="home"
         options={{
-          tabBarAccessibilityLabel: "Home tab",
+          tabBarAccessibilityLabel: t("navigation.homeTab"),
           tabBarIcon: ({ focused, size }) => (
             <TabArtworkIcon focused={focused} size={size} source={tabArtworkSources.home} />
           ),
-          title: "Home",
+          title: t("navigation.home"),
         }}
       />
       <Tabs.Screen
         name="prayer"
         options={{
-          tabBarAccessibilityLabel: "Prayer tab",
+          tabBarAccessibilityLabel: t("navigation.prayerTab"),
           tabBarIcon: ({ focused, size }) => (
             <TabArtworkIcon focused={focused} size={size} source={tabArtworkSources.prayer} />
           ),
-          title: "Prayer",
+          title: t("navigation.prayer"),
         }}
       />
       <Tabs.Screen
         name="community"
         options={{
-          tabBarAccessibilityLabel: "Community tab",
+          tabBarAccessibilityLabel: t("navigation.communityTab"),
           tabBarIcon: ({ focused, size }) => (
             <TabArtworkIcon focused={focused} size={size} source={tabArtworkSources.community} />
           ),
-          title: "Community",
+          title: t("navigation.community"),
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          tabBarAccessibilityLabel: "Profile tab",
+          tabBarAccessibilityLabel: t("navigation.profileTab"),
           tabBarIcon: ({ focused, size }) => (
             <TabArtworkIcon focused={focused} size={size} source={tabArtworkSources.profile} />
           ),
-          title: "Profile",
+          title: t("navigation.profile"),
         }}
       />
     </Tabs>

@@ -3,6 +3,7 @@ import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Pressable, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Card } from "@/components/ui";
 import { fetchRosaryStreak } from "@/features/prayer/rosary/garden/api";
@@ -23,6 +24,7 @@ type UserProgressStats = {
 
 /** Loads the user's Rosary streak and presents it with the dashboard Rosary action. */
 export function UserProgressSection() {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   const router = useRouter();
   const [isLoadingStats, setIsLoadingStats] = useState(true);
@@ -60,25 +62,25 @@ export function UserProgressSection() {
   };
 
   return (
-    <View accessibilityLabel="User progress" style={styles.section}>
+    <View accessibilityLabel={t("progress.sectionLabel")} style={styles.section}>
       {isLoadingStats ? (
         <StreakCards isLoading />
       ) : stats ? (
         <StreakCards currentStreak={stats.currentStreak} longestStreak={stats.longestStreak} />
       ) : (
-        <ProgressLoadError message="We couldn't load your progress." onRetry={loadProgress} />
+        <ProgressLoadError message={t("progress.loadError")} onRetry={loadProgress} />
       )}
 
       <View style={styles.divider} />
 
       <Pressable
-        accessibilityLabel="Create a Rosary today"
+        accessibilityLabel={t("progress.createRosaryLabel")}
         accessibilityRole="button"
         onPress={handleCreateRosary}
         style={({ pressed }) => [styles.createRosaryButton, pressed && styles.createRosaryButtonPressed]}
       >
         <Image accessible={false} contentFit="contain" source={rosaryIcon} style={styles.rosaryButtonIcon} />
-        <Text style={styles.createRosaryLabel}>Pray Today's Rosary</Text>
+        <Text style={styles.createRosaryLabel}>{t("progress.createRosary")}</Text>
         <MaterialCommunityIcons
           accessible={false}
           color={theme.colors.text.inverse}
@@ -92,12 +94,18 @@ export function UserProgressSection() {
 
 /** Renders ProgressLoadError with styles resolved from the active appearance. */
 function ProgressLoadError({ message, onRetry }: { message: string; onRetry: () => void }) {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   return (
     <Card contentStyle={styles.errorContent} padding="md" variant="outlined">
       <Text style={styles.errorText}>{message}</Text>
-      <Pressable accessibilityLabel="Try again" accessibilityRole="button" onPress={onRetry} style={styles.retryButton}>
-        <Text style={styles.retryText}>Try Again</Text>
+      <Pressable
+        accessibilityLabel={t("progress.retryLabel")}
+        accessibilityRole="button"
+        onPress={onRetry}
+        style={styles.retryButton}
+      >
+        <Text style={styles.retryText}>{t("common.retry")}</Text>
       </Pressable>
     </Card>
   );

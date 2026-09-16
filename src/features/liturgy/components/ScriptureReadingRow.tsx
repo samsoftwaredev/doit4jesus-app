@@ -1,6 +1,7 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useCallback, useRef, useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
@@ -16,19 +17,24 @@ interface ScriptureReadingRowProps {
   onToggle: () => void;
 }
 
-function titleCaseReadingType(type: DailyReading["type"]) {
-  return type.replaceAll("_", " ");
-}
-
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function ScriptureReadingRow({ completed, expanded, reading, onComplete, onToggle }: ScriptureReadingRowProps) {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   const contentHeight = useRef(0);
   const viewportHeight = useRef(0);
   const [hasReachedEnd, setHasReachedEnd] = useState(false);
   const [isCompleting, setIsCompleting] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
-  const readingType = titleCaseReadingType(reading.type);
+  const readingType = t(
+    {
+      FIRST_READING: "liturgy.reading.types.firstReading",
+      GOSPEL: "liturgy.reading.types.gospel",
+      GOSPEL_ACCLAMATION: "liturgy.reading.types.gospelAcclamation",
+      RESPONSORIAL_PSALM: "liturgy.reading.types.responsorialPsalm",
+      SECOND_READING: "liturgy.reading.types.secondReading",
+    }[reading.type],
+  );
 
   const updateEndState = useCallback((offsetY: number) => {
     if (contentHeight.current <= 0 || viewportHeight.current <= 0) return;
@@ -47,17 +53,20 @@ export function ScriptureReadingRow({ completed, expanded, reading, onComplete, 
     try {
       await onComplete(reading.id);
     } catch {
-      setSaveError("Your reading could not be saved. Please try again.");
+      setSaveError(t("liturgy.reading.saveError"));
     } finally {
       setIsCompleting(false);
     }
-  }, [completed, hasReachedEnd, onComplete, reading.id]);
+  }, [completed, hasReachedEnd, onComplete, reading.id, t]);
 
   return (
     <View style={[styles.row, expanded && styles.rowExpanded]}>
       <Pressable
-        accessibilityHint={expanded ? "Collapses this Scripture reading." : "Expands this Scripture reading."}
-        accessibilityLabel={`${expanded ? "Collapse" : "Expand"} ${readingType}, ${reading.citation}`}
+        accessibilityHint={expanded ? t("liturgy.reading.collapseHint") : t("liturgy.reading.expandHint")}
+        accessibilityLabel={t(expanded ? "liturgy.reading.collapseLabel" : "liturgy.reading.expandLabel", {
+          citation: reading.citation,
+          type: readingType,
+        })}
         accessibilityRole="button"
         accessibilityState={{ expanded }}
         onPress={toggle}
@@ -75,7 +84,7 @@ export function ScriptureReadingRow({ completed, expanded, reading, onComplete, 
           <Text style={styles.citation}>{reading.citation}</Text>
         </View>
         <View style={styles.disclosure}>
-          <Text style={[styles.read, completed && styles.completedText]}>{completed ? "Read" : "Read"}</Text>
+          <Text style={[styles.read, completed && styles.completedText]}>{t("liturgy.reading.read")}</Text>
           {completed ? (
             <MaterialCommunityIcons color={theme.colors.semantic.success} name="check-circle" size={19} />
           ) : (
@@ -90,7 +99,10 @@ export function ScriptureReadingRow({ completed, expanded, reading, onComplete, 
       {expanded ? (
         <View style={styles.expandedContent}>
           <ScrollView
-            accessibilityLabel={`${readingType}, ${reading.citation}, Scripture text`}
+            accessibilityLabel={t("liturgy.reading.scriptureLabel", {
+              citation: reading.citation,
+              type: readingType,
+            })}
             nestedScrollEnabled
             onContentSizeChange={(_, height) => {
               contentHeight.current = height;
@@ -107,9 +119,9 @@ export function ScriptureReadingRow({ completed, expanded, reading, onComplete, 
             <Text selectable style={styles.scripture}>
               {reading.text}
             </Text>
-            <View accessibilityLabel="End of reading" style={styles.endMarker}>
+            <View accessibilityLabel={t("liturgy.reading.endLabel")} style={styles.endMarker}>
               <MaterialCommunityIcons color={theme.colors.semantic.success} name="check-circle-outline" size={18} />
-              <Text style={styles.endCopy}>You&apos;ve reached the end of this reading.</Text>
+              <Text style={styles.endCopy}>{t("liturgy.reading.endCopy")}</Text>
             </View>
           </ScrollView>
           {saveError ? (
@@ -118,9 +130,7 @@ export function ScriptureReadingRow({ completed, expanded, reading, onComplete, 
             </Text>
           ) : null}
           <Button
-            accessibilityHint={
-              hasReachedEnd || completed ? undefined : "Scroll to the end of the reading before marking it complete."
-            }
+            accessibilityHint={hasReachedEnd || completed ? undefined : t("liturgy.reading.scrollHint")}
             disabled={!hasReachedEnd || completed}
             fullWidth
             loading={isCompleting}
@@ -128,7 +138,11 @@ export function ScriptureReadingRow({ completed, expanded, reading, onComplete, 
             size="sm"
             variant={completed ? "outline" : "primary"}
           >
-            {completed ? "Completed" : hasReachedEnd ? "Mark as Read" : "Read to the End"}
+            {completed
+              ? t("liturgy.reading.completed")
+              : hasReachedEnd
+                ? t("liturgy.reading.markRead")
+                : t("liturgy.reading.readToEnd")}
           </Button>
         </View>
       ) : null}

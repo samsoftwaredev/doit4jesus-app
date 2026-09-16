@@ -1,7 +1,6 @@
 import type { ImageSourcePropType } from "react-native";
 
-export type RosaryMysteryCategory =
-  "Joyful Mysteries" | "Luminous Mysteries" | "Sorrowful Mysteries" | "Glorious Mysteries";
+export type RosaryMysteryCategory = string;
 
 export type RosaryMysteryType = "joyful" | "luminous" | "sorrowful" | "glorious";
 

@@ -1,5 +1,6 @@
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useTranslation } from "react-i18next";
 
 import { useThemedStyles } from "@/theme/createThemedStyles";
 import { Button } from "@/components/ui";
@@ -15,6 +16,7 @@ interface StickyActionBarProps {
 
 /** Renders StickyActionBar with styles resolved from the active appearance. */
 export function StickyActionBar({ actionDisabled, actionLabel, onAction, onReadScripture }: StickyActionBarProps) {
+  const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   return (
     <SafeAreaView edges={["bottom"]} style={styles.safeArea}>
@@ -23,7 +25,7 @@ export function StickyActionBar({ actionDisabled, actionLabel, onAction, onReadS
           {actionLabel}
         </Button>
         <Button fullWidth onPress={onReadScripture} variant="ghost">
-          READ EPHESIANS 6
+          {t("armor.readScripture")}
         </Button>
       </View>
     </SafeAreaView>
