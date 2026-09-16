@@ -4,6 +4,7 @@ import type {
   RosaryContentPrayerId,
   RosaryContentPrayerStep,
 } from "@/features/prayer/rosary/data/rosaryContent";
+import { getMysteryAudioPaths, getPrayerAudioPath } from "@/features/prayer/rosary/data/rosaryAudio";
 import type { RosaryBead, RosaryBeadType, RosaryLength, RosaryMysteryType } from "@/features/prayer/rosary/types";
 
 const prayerIdByContentId: Record<RosaryContentPrayerId, string> = {
@@ -83,11 +84,16 @@ const longClosingPrayers: readonly ClosingPrayerDefinition[] = [
 ];
 
 /** Converts one localized content step into the model consumed by the session and navigator. */
-function createRosaryBead(step: RosaryContentPrayerStep): RosaryBead {
+function createRosaryBead(step: RosaryContentPrayerStep, content: RosaryContent): RosaryBead {
   const prayerId = prayerIdByContentId[step.prayer_type];
   const type = beadTypeByContentId[step.prayer_type];
 
+  const prayerAudio = getPrayerAudioPath(content, step.prayer_type);
+  const mysteryAudio =
+    step.mystery_id && step.bead_in_decade === 0 ? getMysteryAudioPaths(content, step.mystery_id) : [];
+
   return {
+    audioQueue: [...mysteryAudio, ...(prayerAudio ? [prayerAudio] : [])],
     beadInDecade: step.bead_in_decade ?? undefined,
     decade: step.decade ?? undefined,
     id: step.id,
@@ -114,9 +120,11 @@ function createRosaryBead(step: RosaryContentPrayerStep): RosaryBead {
  * @param decades Number of ten-bead decades to create; values below one resolve to one decade.
  * @returns Sequential physical Hail Mary beads independent of a particular mystery set.
  */
-export function createRosarySequence(decades = 1): RosaryBead[] {
+export function createRosarySequence(decades = 1, content: RosaryContent = englishRosaryContent): RosaryBead[] {
   const beadCount = Math.max(1, Math.floor(decades)) * 10;
+  const hailMaryAudio = getPrayerAudioPath(content, "hail_mary");
   return Array.from({ length: beadCount }, (_, index) => ({
+    audioQueue: hailMaryAudio ? [hailMaryAudio] : [],
     beadInDecade: (index % 10) + 1,
     decade: Math.floor(index / 10) + 1,
     id: `hail-mary-${index + 1}`,
@@ -140,7 +148,7 @@ export function getFullRosarySequence(content: RosaryContent, mysteryType: Rosar
   const mysterySet = content.mystery_sets.find((set) => set.id === mysteryType);
   if (!mysterySet) return [];
 
-  return mysterySet.prayer_sequence.map(createRosaryBead);
+  return mysterySet.prayer_sequence.map((step) => createRosaryBead(step, content));
 }
 
 /** Creates one non-bead closing step from the localized prayer library. */
@@ -152,6 +160,10 @@ function createClosingPrayer(
   const prayer = content.prayer_library[definition.contentId];
 
   return {
+    audioQueue: (() => {
+      const audio = getPrayerAudioPath(content, definition.contentId);
+      return audio ? [audio] : [];
+    })(),
     id: definition.id,
     isPhysicalBead: false,
     prayer: {

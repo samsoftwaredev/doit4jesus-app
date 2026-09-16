@@ -33,6 +33,7 @@ export interface RosaryBead {
   scriptureText?: string;
   isPhysicalBead?: boolean;
   prayer?: RosaryPrayer;
+  audioQueue?: string[];
 }
 
 export interface RosaryMystery {

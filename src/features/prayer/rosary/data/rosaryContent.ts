@@ -17,6 +17,28 @@ export interface RosaryContentPrayer {
   text: string;
 }
 
+export type RosaryAudioLanguage = "en" | "es";
+
+export interface RosaryAudioAsset {
+  language: RosaryAudioLanguage;
+  path: string;
+  variant: "primary" | "alternate" | "fragment";
+}
+
+export interface RosaryMysteryAudioReferences {
+  description?: string;
+  fruit?: string;
+  title?: string;
+}
+
+export interface RosaryAudioCatalog {
+  assets: Record<string, RosaryAudioAsset>;
+  prayer_primary: Partial<Record<RosaryContentPrayerId, Partial<Record<RosaryAudioLanguage, string>>>>;
+  mystery_primary: Partial<
+    Record<RosaryMysteryType, Record<string, Partial<Record<RosaryAudioLanguage, RosaryMysteryAudioReferences>>>>
+  >;
+}
+
 export interface RosaryContentMystery {
   id: string;
   title: string;
@@ -54,6 +76,7 @@ export interface RosaryContentPrayerStep {
 export interface RosaryContent {
   schema_version: string;
   language: string;
+  audio_catalog: RosaryAudioCatalog;
   prayer_library: Record<RosaryContentPrayerId, RosaryContentPrayer>;
   mystery_sets: RosaryContentMysterySet[];
 }

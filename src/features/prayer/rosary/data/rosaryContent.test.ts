@@ -10,8 +10,29 @@ import { getRosaryPrayers, prayerById } from "@/features/prayer/rosary/data/rosa
 import { getFullRosarySequence, getRosarySequenceForLength } from "@/features/prayer/rosary/data/rosarySequence";
 
 import * as mysteryCartoonImages from "../../../../../assets/images/mysteriesCartoon";
+import { ROSARY_AUDIO_SOURCES } from "../../../../../assets/audios";
 
 describe("English Rosary content", () => {
+  it("catalogs every canonical M4A asset exactly once under its matching language", () => {
+    const files = Object.keys(ROSARY_AUDIO_SOURCES).sort();
+    const catalogPaths = Object.values(englishRosaryContent.audio_catalog.assets)
+      .map((asset) => asset.path)
+      .sort();
+
+    expect(files).toHaveLength(120);
+    expect(catalogPaths).toEqual(files);
+    expect(new Set(catalogPaths).size).toBe(120);
+    expect(
+      Object.values(englishRosaryContent.audio_catalog.assets).every(
+        (asset) =>
+          asset.path.startsWith(`/assets/audios/${asset.language}/`) &&
+          asset.path.endsWith(".m4a") &&
+          Boolean(ROSARY_AUDIO_SOURCES[asset.path]),
+      ),
+    ).toBe(true);
+    expect(JSON.stringify(englishRosaryContent)).not.toContain("/assets/rosary/audio/");
+  });
+
   it("builds the four app mystery sets from the JSON data while preserving their display order", () => {
     expect(rosaryMysterySets.map((set) => set.type)).toEqual(["joyful", "sorrowful", "glorious", "luminous"]);
     expect(rosaryMysterySets.every((set) => set.mysteries.length === 5)).toBe(true);
@@ -187,6 +208,17 @@ describe("English Rosary content", () => {
     );
   });
 
+  it("resolves English mystery introductions before the current prayer", () => {
+    const sequence = getFullRosarySequence(englishRosaryContent, "joyful");
+    const firstMystery = sequence.find((bead) => bead.mysteryId === "the_annunciation" && bead.beadInDecade === 0);
+
+    expect(firstMystery?.audioQueue).toEqual([
+      "/assets/audios/en/mysteries/joyful/firstJoyfulMysteryTitle.m4a",
+      "/assets/audios/en/mysteries/joyful/firstJoyfulMysteryDescription.m4a",
+      "/assets/audios/en/prayers/ourFather.m4a",
+    ]);
+  });
+
   it("adds the selected closing prayers without adding physical beads", () => {
     const short = getRosarySequenceForLength(englishRosaryContent, "joyful", "short");
     const medium = getRosarySequenceForLength(englishRosaryContent, "joyful", "medium");
@@ -247,6 +279,26 @@ describe("Spanish Rosary content", () => {
     expect(sequence.find((step) => step.scriptureReference === "Luke 1:28")?.scriptureText).toContain(
       "El ángel Gabriel",
     );
+  });
+
+  it("uses only Spanish audio and tolerates the missing first Sorrowful description", () => {
+    const sequence = getFullRosarySequence(content, "sorrowful");
+    const firstMystery = sequence.find((bead) => bead.mysteryId === "agony_in_the_garden" && bead.beadInDecade === 0);
+
+    expect(firstMystery?.audioQueue).toEqual([
+      "/assets/audios/es/mysteries/sorrowful/firstSorrowfulMysteryFruit.m4a",
+      "/assets/audios/es/prayers/ourFather.m4a",
+    ]);
+    expect(sequence.flatMap((bead) => bead.audioQueue ?? []).every((path) => path.includes("/audios/es/"))).toBe(true);
+  });
+
+  it("leaves Saint Michael without audio while retaining audio for the remaining closing prayers", () => {
+    const sequence = getRosarySequenceForLength(content, "joyful", "long");
+
+    expect(sequence.find((bead) => bead.id === "saint-michael")?.audioQueue).toEqual([]);
+    expect(sequence.find((bead) => bead.id === "litany-of-loreto")?.audioQueue).toEqual([
+      "/assets/audios/es/prayers/litanyOfLoreto.m4a",
+    ]);
   });
 
   it("localizes the additional closing prayers for medium and long sessions", () => {

@@ -17,11 +17,18 @@ import { ROSARY_LENGTH_OPTIONS } from "@/features/prayer/rosary/data/rosaryLengt
 import type { PrayerProgress, RosaryLength } from "@/features/prayer/rosary/types";
 
 interface RosaryBottomNavigationProps {
+  audioAvailable?: boolean;
+  audioError?: boolean;
+  audioLoading?: boolean;
+  audioMuted?: boolean;
+  audioPlaying?: boolean;
   progress: PrayerProgress;
   decadeCount?: number;
   activeDecadeIndex?: number;
   disabled?: boolean;
   onAdvance: () => void;
+  onAudioMutedChange?: (muted: boolean) => void;
+  onAudioToggle?: () => void;
   onLengthChange: (length: RosaryLength) => void;
   onRestart: () => void;
   onSettingsVisibilityChange?: (visible: boolean) => void;
@@ -45,11 +52,18 @@ function createLengthPressHandler(onLengthChange: (length: RosaryLength) => void
 
 /** Renders bead progress and the only controls that can change or restart the active Rosary. */
 export function RosaryBottomNavigation({
+  audioAvailable = false,
+  audioError = false,
+  audioLoading = false,
+  audioMuted = false,
+  audioPlaying = false,
   progress,
   decadeCount = 5,
   activeDecadeIndex = 0,
   disabled = false,
   onAdvance,
+  onAudioMutedChange,
+  onAudioToggle,
   onLengthChange,
   onRestart,
   onSettingsVisibilityChange,
@@ -89,6 +103,19 @@ export function RosaryBottomNavigation({
     handleCloseSettings();
     onRestart();
   };
+
+  /** Toggles the persisted mute preference from the settings switch. */
+  const handleAudioMutedChange = () => onAudioMutedChange?.(!audioMuted);
+
+  const audioLabel = !audioAvailable
+    ? t("rosary.audio.unavailable")
+    : audioError
+      ? t("rosary.audio.error")
+      : audioLoading
+        ? t("rosary.audio.loading")
+        : audioPlaying
+          ? t("rosary.audio.pause")
+          : t("rosary.audio.play");
 
   return (
     <View style={styles.navigation}>
@@ -133,6 +160,22 @@ export function RosaryBottomNavigation({
             />
           </Pressable>
         </Animated.View>
+
+        <Pressable
+          accessibilityLabel={audioLabel}
+          accessibilityRole="button"
+          accessibilityState={{ disabled: !audioAvailable, ...(audioLoading ? { busy: true } : {}) }}
+          disabled={!audioAvailable}
+          onPress={onAudioToggle}
+          style={({ pressed }) => [styles.audioButton, pressed && audioAvailable && styles.pressed]}
+        >
+          <Feather
+            accessible={false}
+            color={audioAvailable ? theme.rosary.colors.goldBright : theme.colors.icon.muted}
+            name={audioPlaying ? "pause" : "play"}
+            size={theme.sizes.iconMedium}
+          />
+        </Pressable>
 
         <Pressable
           accessibilityHint={t("rosary.settings.openHint")}
@@ -192,6 +235,23 @@ export function RosaryBottomNavigation({
               <Text accessibilityRole="header" style={styles.sectionTitle}>
                 {t("rosary.settings.lengthTitle")}
               </Text>
+              <Pressable
+                accessibilityLabel={t("rosary.audio.settingLabel")}
+                accessibilityRole="switch"
+                accessibilityState={{ checked: !audioMuted }}
+                onPress={handleAudioMutedChange}
+                style={({ pressed }) => [styles.audioSetting, pressed && styles.pressed]}
+              >
+                <View style={styles.audioSettingCopy}>
+                  <Text style={styles.lengthTitle}>{t("rosary.audio.settingLabel")}</Text>
+                  <Text style={styles.lengthIntroduction}>
+                    {audioMuted ? t("rosary.audio.muted") : t("rosary.audio.unmuted")}
+                  </Text>
+                </View>
+                <View accessible={false} style={[styles.switchTrack, !audioMuted && styles.switchTrackEnabled]}>
+                  <View style={[styles.switchThumb, !audioMuted && styles.switchThumbEnabled]} />
+                </View>
+              </Pressable>
               <View accessibilityRole="radiogroup" style={styles.lengthOptions}>
                 {ROSARY_LENGTH_OPTIONS.map((option) => {
                   const selected = option.id === rosaryLength;
@@ -318,6 +378,17 @@ const styleSheet = createThemedStyles((theme) => ({
     justifyContent: "center",
     width: theme.sizes.buttonHeightLarge,
   },
+  audioButton: {
+    alignItems: "center",
+    backgroundColor: theme.colors.surface.secondary,
+    borderColor: theme.colors.border.warning,
+    borderRadius: theme.radii.pill,
+    borderWidth: theme.rosary.borderWidths.gold,
+    height: theme.sizes.touchTarget,
+    justifyContent: "center",
+    opacity: 1,
+    width: theme.sizes.touchTarget,
+  },
   indicators: {
     alignItems: "center",
     flexDirection: "row",
@@ -394,6 +465,42 @@ const styleSheet = createThemedStyles((theme) => ({
   lengthOptions: {
     gap: theme.spacing[2],
     marginTop: theme.spacing[2],
+  },
+  audioSetting: {
+    alignItems: "center",
+    borderColor: theme.colors.border.warning,
+    borderRadius: theme.radii.lg,
+    borderWidth: theme.rosary.borderWidths.goldHairline,
+    flexDirection: "row",
+    gap: theme.spacing[3],
+    justifyContent: "space-between",
+    marginTop: theme.spacing[2],
+    minHeight: theme.sizes.touchTarget,
+    padding: theme.spacing[3],
+  },
+  audioSettingCopy: {
+    flex: 1,
+    minWidth: 0,
+  },
+  switchTrack: {
+    backgroundColor: theme.colors.surface.tertiary,
+    borderRadius: theme.radii.pill,
+    height: theme.spacing[6],
+    justifyContent: "center",
+    paddingHorizontal: theme.spacing[0.5],
+    width: theme.spacing[12],
+  },
+  switchTrackEnabled: {
+    backgroundColor: theme.rosary.colors.gold,
+  },
+  switchThumb: {
+    backgroundColor: theme.colors.surface.primary,
+    borderRadius: theme.radii.pill,
+    height: theme.spacing[5],
+    width: theme.spacing[5],
+  },
+  switchThumbEnabled: {
+    alignSelf: "flex-end",
   },
   lengthOption: {
     alignItems: "flex-start",

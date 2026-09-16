@@ -31,6 +31,7 @@ export default function RosaryRoute() {
 
   return (
     <RosaryPrayerScreen
+      content={content}
       intentionId={firstString(params.intentionId)}
       isDecade={false}
       mysteries={mysteries}

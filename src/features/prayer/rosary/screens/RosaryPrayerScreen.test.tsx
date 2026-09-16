@@ -14,6 +14,9 @@ const mockBack = jest.fn();
 const mockRecordRosaryActivity = jest.fn();
 const mockRecordPrayerForIntention = jest.fn();
 const mockUseRosaryPresence = jest.fn();
+const mockToggleAudioPlayback = jest.fn();
+const mockSetAudioMuted = jest.fn();
+const mockUseRosaryAudioPlayback = jest.fn();
 
 jest.mock("expo-router", () => ({ useRouter: () => ({ back: mockBack, replace: jest.fn() }) }));
 jest.mock("@/features/prayer/rosary/hooks/useRosarySession", () => ({
@@ -21,6 +24,17 @@ jest.mock("@/features/prayer/rosary/hooks/useRosarySession", () => ({
 }));
 jest.mock("@/features/prayer/rosary/hooks/useRosaryPresence", () => ({
   useRosaryPresence: () => mockUseRosaryPresence(),
+}));
+jest.mock("@/features/prayer/rosary/hooks/useRosaryAudioPlayback", () => ({
+  useRosaryAudioPlayback: (options: unknown) => mockUseRosaryAudioPlayback(options),
+}));
+jest.mock("@/features/prayer/rosary/hooks/useRosaryAudioPreference", () => ({
+  useRosaryAudioPreference: () => ({
+    isHydrated: true,
+    isMuted: false,
+    setIsMuted: mockSetAudioMuted,
+    storageError: false,
+  }),
 }));
 jest.mock("@/features/prayer/rosary/api/activities.api", () => ({
   recordRosaryActivity: (...args: unknown[]) => mockRecordRosaryActivity(...args),
@@ -67,6 +81,13 @@ describe("RosaryPrayerScreen", () => {
     mockRecordRosaryActivity.mockResolvedValue({ points: 25 });
     mockRecordPrayerForIntention.mockResolvedValue({ prayerCount: 4 });
     mockUseRosaryPresence.mockReturnValue({ connectionState: "idle", currentUserId: "user-me", users: [] });
+    mockUseRosaryAudioPlayback.mockReturnValue({
+      isAvailable: true,
+      isLoading: false,
+      isPlaying: false,
+      playbackError: null,
+      togglePlayback: mockToggleAudioPlayback,
+    });
     mockSession();
   });
 
@@ -238,6 +259,29 @@ describe("RosaryPrayerScreen", () => {
     await fireEvent.press(screen.getByTestId("rosary-progress-button"));
 
     expect(goToNextBead).toHaveBeenCalledTimes(1);
+  });
+
+  it("connects the current localized prayer queue to play and mute controls", async () => {
+    await render(<RosaryPrayerScreen />);
+
+    expect(mockUseRosaryAudioPlayback).toHaveBeenCalledWith(
+      expect.objectContaining({
+        audioQueue: rosarySequence[0].audioQueue,
+        isMuted: false,
+        onQueueComplete: goToNextBead,
+      }),
+    );
+    const playbackOptions = mockUseRosaryAudioPlayback.mock.lastCall?.[0] as
+      { onQueueComplete?: () => void } | undefined;
+    playbackOptions?.onQueueComplete?.();
+    expect(goToNextBead).toHaveBeenCalledTimes(1);
+
+    await fireEvent.press(screen.getByRole("button", { name: "Play prayer audio" }));
+    expect(mockToggleAudioPlayback).toHaveBeenCalledTimes(1);
+
+    await fireEvent.press(screen.getByLabelText("Open Rosary settings"));
+    await fireEvent.press(screen.getByRole("switch", { name: "Rosary audio" }));
+    expect(mockSetAudioMuted).toHaveBeenCalledWith(true);
   });
 
   it("should provide accessible info, settings, progress, and bead controls", async () => {

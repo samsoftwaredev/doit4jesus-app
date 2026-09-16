@@ -610,6 +610,16 @@ export const resources = {
       rosary: {
         name: "Rosary",
         openMystery: "Open {{mystery}}",
+        audio: {
+          error: "Prayer audio could not be played.",
+          loading: "Loading prayer audio",
+          muted: "Muted",
+          pause: "Pause prayer audio",
+          play: "Play prayer audio",
+          settingLabel: "Rosary audio",
+          unavailable: "Prayer audio unavailable",
+          unmuted: "On",
+        },
         bead: {
           bead: "bead",
           closingPrayer: "Closing Prayer",
@@ -720,6 +730,7 @@ export const resources = {
           lengthTitle: "Rosary length",
         },
         storage: {
+          audio: "Your prayer is continuing, but the Rosary audio preference could not be saved on this device.",
           length: "Your prayer is continuing, but the Rosary length could not be saved on this device.",
           progress: "Your prayer is continuing, but progress could not be saved on this device.",
         },
@@ -1659,6 +1670,16 @@ export const resources = {
       rosary: {
         name: "Rosario",
         openMystery: "Abrir {{mystery}}",
+        audio: {
+          error: "No se pudo reproducir el audio de la oración.",
+          loading: "Cargando audio de oración",
+          muted: "Silenciado",
+          pause: "Pausar audio de oración",
+          play: "Reproducir audio de oración",
+          settingLabel: "Audio del Rosario",
+          unavailable: "Audio de oración no disponible",
+          unmuted: "Activado",
+        },
         bead: {
           bead: "cuenta",
           closingPrayer: "Oración final",
@@ -1769,6 +1790,8 @@ export const resources = {
           lengthTitle: "Duración del Rosario",
         },
         storage: {
+          audio:
+            "Tu oración continúa, pero no se pudo guardar la preferencia de audio del Rosario en este dispositivo.",
           length: "Tu oración continúa, pero no se pudo guardar la duración del Rosario en este dispositivo.",
           progress: "Tu oración continúa, pero no se pudo guardar el progreso en este dispositivo.",
         },

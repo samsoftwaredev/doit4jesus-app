@@ -29,8 +29,11 @@ import {
 import { recordPrayerForIntention } from "@/features/prayer/intentions";
 import { recordRosaryActivity } from "@/features/prayer/rosary/api/activities.api";
 import { getRosaryContent } from "@/features/prayer/rosary/data/localizedRosaryContent";
+import type { RosaryContent } from "@/features/prayer/rosary/data/rosaryContent";
 import { getRosaryMysteriesFromContent } from "@/features/prayer/rosary/data/rosaryMysteries";
-import { getRosarySequenceForLength, rosarySequence } from "@/features/prayer/rosary/data/rosarySequence";
+import { createRosarySequence, getRosarySequenceForLength } from "@/features/prayer/rosary/data/rosarySequence";
+import { useRosaryAudioPlayback } from "@/features/prayer/rosary/hooks/useRosaryAudioPlayback";
+import { useRosaryAudioPreference } from "@/features/prayer/rosary/hooks/useRosaryAudioPreference";
 import { useRosaryLengthPreference } from "@/features/prayer/rosary/hooks/useRosaryLengthPreference";
 import { useRosarySession } from "@/features/prayer/rosary/hooks/useRosarySession";
 import { useAppLanguage } from "@/localization";
@@ -67,12 +70,14 @@ function physicalBeadProgress(beads: RosaryBead[], currentBeadIndex: number) {
  * Full sessions include opening, five decades, and closing prayers; the bead rail remains bounded to the visible viewport.
  */
 export function RosaryPrayerScreen({
+  content: providedContent,
   intentionId,
   isDecade = true,
   mysteries: providedMysteries,
   mysteryType = "joyful",
   source: _source = "manual",
 }: {
+  content?: RosaryContent;
   intentionId?: string;
   isDecade?: boolean;
   mysteries?: RosaryMystery[];
@@ -100,6 +105,12 @@ export function RosaryPrayerScreen({
     setRosaryLength,
     storageError: lengthStorageError,
   } = useRosaryLengthPreference();
+  const {
+    isHydrated: isAudioPreferenceHydrated,
+    isMuted: isAudioMuted,
+    setIsMuted: setAudioMuted,
+    storageError: audioStorageError,
+  } = useRosaryAudioPreference();
   const lastAnnouncement = useRef<string | null>(null);
   const hadCompletion = useRef(false);
   const hydratedCompletionState = useRef(false);
@@ -118,7 +129,8 @@ export function RosaryPrayerScreen({
     pageViewportHeight > 0 && headerHeight > 0
       ? Math.max(0, pageViewportHeight - headerHeight - contentGap)
       : undefined;
-  const rosaryContent = useMemo(() => getRosaryContent(language), [language]);
+  const defaultRosaryContent = useMemo(() => getRosaryContent(language), [language]);
+  const rosaryContent = providedContent ?? defaultRosaryContent;
   const defaultMysteries = useMemo(
     () => getRosaryMysteriesFromContent(rosaryContent, mysteryType),
     [mysteryType, rosaryContent],
@@ -133,14 +145,25 @@ export function RosaryPrayerScreen({
     () => getRosarySequenceForLength(rosaryContent, mysteryType, rosaryLength),
     [mysteryType, rosaryContent, rosaryLength],
   );
-  const activeBeads = isDecade ? rosarySequence : selectedRosaryBeads;
+  const decadeRosaryBeads = useMemo(() => createRosarySequence(1, rosaryContent), [rosaryContent]);
+  const activeBeads = isDecade ? decadeRosaryBeads : selectedRosaryBeads;
+  /** Unmutes persisted Rosary audio before an explicit Play action. */
+  const handleRequestAudioUnmute = useCallback(() => setAudioMuted(false), [setAudioMuted]);
   const session = useRosarySession({
     beads: activeBeads,
     enabled: isLengthHydrated,
     isFullRosary: !isDecade,
-    legacyBeads: isDecade ? rosarySequence : shortRosaryBeads,
+    legacyBeads: isDecade ? decadeRosaryBeads : shortRosaryBeads,
     mysteries: activeMysteries,
     storageKey: `@doit4jesus/rosary-session/${isDecade ? "v3" : "v4"}/${mysteryType}/${isDecade ? "decade" : "full"}`,
+  });
+  const audioPlayback = useRosaryAudioPlayback({
+    audioQueue: session.currentBead?.audioQueue,
+    isMuted: isAudioMuted,
+    isPreferenceHydrated: isAudioPreferenceHydrated && session.isHydrated,
+    onQueueComplete: session.goToNextBead,
+    onRequestUnmute: handleRequestAudioUnmute,
+    playbackKey: session.currentBead?.id,
   });
 
   const beadProgress = useMemo(
@@ -165,6 +188,19 @@ export function RosaryPrayerScreen({
 
   /** Opens the shared Rosary settings modal from the active-length badge. */
   const handleOpenRosarySettings = useCallback(() => setRosarySettingsVisible(true), []);
+
+  /** Persists a settings change and lets the playback hook pause immediately when muted. */
+  const handleAudioMutedChange = useCallback(
+    (muted: boolean) => {
+      void setAudioMuted(muted);
+    },
+    [setAudioMuted],
+  );
+
+  /** Toggles the active prayer queue without forwarding the native press event. */
+  const handleAudioToggle = useCallback(() => {
+    void audioPlayback.togglePlayback();
+  }, [audioPlayback]);
 
   /** Records the visible scrolling region so the Rosary rail does not grow with the card stack. */
   const handlePageViewportLayout = useCallback((event: LayoutChangeEvent) => {
@@ -386,9 +422,18 @@ export function RosaryPrayerScreen({
                     (isDecade ? session.currentMystery?.scriptureReference : undefined)
                   }
                 />
-                {session.storageError || lengthStorageError ? (
+                {audioPlayback.playbackError ? (
                   <Text accessibilityRole="alert" style={styles.storageNote}>
-                    {session.storageError ? t("rosary.storage.progress") : t("rosary.storage.length")}
+                    {t("rosary.audio.error")}
+                  </Text>
+                ) : null}
+                {session.storageError || lengthStorageError || audioStorageError ? (
+                  <Text accessibilityRole="alert" style={styles.storageNote}>
+                    {session.storageError
+                      ? t("rosary.storage.progress")
+                      : lengthStorageError
+                        ? t("rosary.storage.length")
+                        : t("rosary.storage.audio")}
                   </Text>
                 ) : null}
               </ScrollView>
@@ -397,9 +442,16 @@ export function RosaryPrayerScreen({
 
           <RosaryBottomNavigation
             activeDecadeIndex={isDecade ? 0 : session.currentMysteryIndex}
+            audioAvailable={audioPlayback.isAvailable}
+            audioError={Boolean(audioPlayback.playbackError)}
+            audioLoading={audioPlayback.isLoading}
+            audioMuted={isAudioMuted}
+            audioPlaying={audioPlayback.isPlaying}
             decadeCount={isDecade ? 1 : 5}
             disabled={session.isTransitioning || activeBeads.length === 0}
             onAdvance={session.goToNextBead}
+            onAudioMutedChange={handleAudioMutedChange}
+            onAudioToggle={handleAudioToggle}
             onLengthChange={handleRosaryLengthChange}
             onRestart={session.restartMystery}
             onSettingsVisibilityChange={setRosarySettingsVisible}

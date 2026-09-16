@@ -1,4 +1,5 @@
-import { fireEvent, render, screen } from "@testing-library/react-native";
+import { act, fireEvent, render, screen } from "@testing-library/react-native";
+import { StyleSheet } from "react-native";
 
 import { i18n } from "@/localization";
 
@@ -75,7 +76,7 @@ describe("RosaryBottomNavigation", () => {
   });
 
   it("shows the Classic Rosary name in Spanish", async () => {
-    await i18n.changeLanguage("es");
+    await act(async () => i18n.changeLanguage("es"));
     await render(
       <RosaryBottomNavigation
         onAdvance={jest.fn()}
@@ -92,5 +93,75 @@ describe("RosaryBottomNavigation", () => {
       selected: true,
     });
     expect(screen.getByText("Todo lo incluido en Clásico, más:")).toBeTruthy();
+  });
+
+  it("plays and pauses available prayer audio with an accessible 44 pixel control", async () => {
+    const onAudioToggle = jest.fn();
+    const { rerender } = await render(
+      <RosaryBottomNavigation
+        audioAvailable
+        audioPlaying={false}
+        audioMuted={false}
+        onAudioToggle={onAudioToggle}
+        onAudioMutedChange={jest.fn()}
+        onAdvance={jest.fn()}
+        onLengthChange={jest.fn()}
+        onRestart={jest.fn()}
+        progress={{ currentIndex: 1, prayerName: "Hail Mary", total: 10 }}
+        rosaryLength="medium"
+      />,
+    );
+
+    const playButton = screen.getByRole("button", { name: "Play prayer audio" });
+    expect(StyleSheet.flatten(playButton.props.style)).toEqual(expect.objectContaining({ height: 44, width: 44 }));
+    await fireEvent.press(playButton);
+    expect(onAudioToggle).toHaveBeenCalledTimes(1);
+
+    await rerender(
+      <RosaryBottomNavigation
+        audioAvailable
+        audioPlaying
+        audioMuted={false}
+        onAudioToggle={onAudioToggle}
+        onAudioMutedChange={jest.fn()}
+        onAdvance={jest.fn()}
+        onLengthChange={jest.fn()}
+        onRestart={jest.fn()}
+        progress={{ currentIndex: 1, prayerName: "Hail Mary", total: 10 }}
+        rosaryLength="medium"
+      />,
+    );
+    expect(screen.getByRole("button", { name: "Pause prayer audio" })).toBeTruthy();
+  });
+
+  it("disables unavailable audio and exposes the persisted mute switch in both languages", async () => {
+    const onAudioMutedChange = jest.fn();
+    await render(
+      <RosaryBottomNavigation
+        audioAvailable={false}
+        audioPlaying={false}
+        audioMuted
+        onAudioToggle={jest.fn()}
+        onAudioMutedChange={onAudioMutedChange}
+        onAdvance={jest.fn()}
+        onLengthChange={jest.fn()}
+        onRestart={jest.fn()}
+        progress={{ currentIndex: 1, prayerName: "Saint Michael Prayer", total: 10 }}
+        rosaryLength="medium"
+      />,
+    );
+
+    expect(screen.getByRole("button", { name: "Prayer audio unavailable" }).props.accessibilityState).toEqual({
+      disabled: true,
+    });
+    await fireEvent.press(screen.getByLabelText("Open Rosary settings"));
+    const switchControl = screen.getByRole("switch", { name: "Rosary audio" });
+    expect(switchControl.props.accessibilityState).toEqual({ checked: false });
+    await fireEvent.press(switchControl);
+    expect(onAudioMutedChange).toHaveBeenCalledWith(false);
+
+    await act(async () => i18n.changeLanguage("es"));
+    expect(screen.getByRole("button", { name: "Audio de oración no disponible" })).toBeTruthy();
+    expect(screen.getByRole("switch", { name: "Audio del Rosario" })).toBeTruthy();
   });
 });
