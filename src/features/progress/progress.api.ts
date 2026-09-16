@@ -106,6 +106,7 @@ function parseDashboardProgressLevel(value: unknown): DashboardProgress["current
 function parseLevelCatalogEntry(value: unknown): LevelCatalogEntry {
   const level = readRecord(value, "level");
   return {
+    code: readString(level.code, "level code"),
     levelNumber: readNumber(level.level_number, "level number"),
     minimumTotalXp: readNumber(level.minimum_total_xp, "level minimum XP"),
     name: readString(level.name, "level name"),

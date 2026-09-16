@@ -17,10 +17,13 @@ import { useResponsiveLayout } from "@/hooks";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 
 import type { LevelCatalogEntry, RecentRosaryActivity } from "@/features/progress";
-import { ConscienceQuestionCard } from "./components/ConscienceQuestionCard";
-import { DailyRosaryCard } from "./components/DailyRosaryCard";
-import { HolyProgressCard } from "./components/HolyProgressCard";
-import { LeaderboardCard } from "./components/LeaderboardCard";
+import {
+  ConscienceQuestionCard,
+  DailyRosaryCard,
+  HolyProgressCard,
+  LeaderboardCard,
+  LevelProgressCard,
+} from "./components";
 import { getConscienceQuestion, getRosaryReminder, getWeeklyGlobalLeaderboard } from "./dashboard.api";
 import type {
   ConscienceQuestionViewModel,
@@ -180,7 +183,10 @@ export function HolyProgressDashboard() {
       <UserProgressSection />
       <DailyLiturgyDashboard />
       <View style={[styles.primaryGrid, useCardColumns && styles.primaryGridColumns]} testID="dashboard-primary-grid">
-        <View style={[styles.primaryCard, useCardColumns && styles.primaryCardColumn]}>
+        <View
+          style={[styles.primaryCard, useCardColumns && styles.primaryCardColumn]}
+          testID="holy-progress-card-container"
+        >
           <HolyProgressCard
             detailsError={holyDetailsError}
             isLoadingDetails={isLoadingHolyDetails}
@@ -192,6 +198,17 @@ export function HolyProgressDashboard() {
             recentRosaryActivities={recentRosaryActivities}
             rosaryStats={rosaryStats}
             statsError={statsError}
+          />
+        </View>
+        <View
+          style={[styles.primaryCard, useCardColumns && styles.primaryCardColumn]}
+          testID="level-progress-card-container"
+        >
+          <LevelProgressCard
+            isLoading={isLoadingProgress}
+            levelCatalog={levelCatalog}
+            progress={progress}
+            progressError={progressError}
           />
         </View>
         <View style={[styles.primaryCard, useCardColumns && styles.primaryCardColumn]}>

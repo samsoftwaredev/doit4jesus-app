@@ -90,7 +90,7 @@ describe("HolyProgressDashboard", () => {
       xpRequiredForNextLevel: 3000,
       yearlyPoints: 4320,
     });
-    mockFetchLevels.mockResolvedValue([{ levelNumber: 4, minimumTotalXp: 6000, name: "Faithful" }]);
+    mockFetchLevels.mockResolvedValue([{ code: "faithful", levelNumber: 4, minimumTotalXp: 6000, name: "Faithful" }]);
     mockFetchRecentRosaryActivities.mockResolvedValue([
       {
         completedAt: "2026-08-29T15:25:00.000Z",
@@ -120,6 +120,7 @@ describe("HolyProgressDashboard", () => {
     const rendered = await render(<HolyProgressDashboard />);
 
     expect(await screen.findByLabelText("Rosaries, 86")).toBeTruthy();
+    expect(screen.getByRole("header", { name: "LEVEL PROGRESS" })).toBeTruthy();
     expect(screen.getByText("Did I show mercy?")).toBeTruthy();
     expect(screen.getByText("28 Day Streak")).toBeTruthy();
     expect(screen.getByLabelText("Rank 1, St. Michael, 245 Rosaries")).toBeTruthy();
@@ -137,6 +138,15 @@ describe("HolyProgressDashboard", () => {
     });
     expect(mockGetWeeklyGlobalLeaderboard).toHaveBeenCalledTimes(1);
     await rendered.unmount();
+  });
+
+  it("places level progress directly after holy progress", async () => {
+    await render(<HolyProgressDashboard />);
+    await screen.findByRole("header", { name: "LEVEL PROGRESS" });
+
+    const cards = screen.getByTestId("dashboard-primary-grid").props.children;
+    expect(cards[0].props.testID).toBe("holy-progress-card-container");
+    expect(cards[1].props.testID).toBe("level-progress-card-container");
   });
 
   it("uses the existing Rosary route and full leaderboard route", async () => {

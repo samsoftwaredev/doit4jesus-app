@@ -10,7 +10,7 @@ describe("HolyProgressCard", () => {
         isLoadingStats={false}
         detailsError={false}
         isLoadingDetails={false}
-        levelCatalog={[{ levelNumber: 4, minimumTotalXp: 6000, name: "Faithful" }]}
+        levelCatalog={[{ code: "faithful", levelNumber: 4, minimumTotalXp: 6000, name: "Faithful" }]}
         progress={{
           currentLevel: { code: "devoted", levelNumber: 3, minimumTotalXp: 3000, name: "Devoted" },
           levelProgressPercentage: 44,

@@ -27,6 +27,7 @@ export interface DashboardProgress {
 
 /** Display fields from the authenticated level catalogue. */
 export interface LevelCatalogEntry {
+  code: string;
   levelNumber: number;
   minimumTotalXp: number;
   name: string;

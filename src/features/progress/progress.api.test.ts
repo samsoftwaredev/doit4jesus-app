@@ -109,7 +109,9 @@ describe("progress API", () => {
     }));
     globalThis.fetch = fetchMock as unknown as typeof fetch;
 
-    await expect(fetchLevels()).resolves.toEqual([{ levelNumber: 4, minimumTotalXp: 6000, name: "Faithful" }]);
+    await expect(fetchLevels()).resolves.toEqual([
+      { code: "faithful", levelNumber: 4, minimumTotalXp: 6000, name: "Faithful" },
+    ]);
     expect(fetchMock).toHaveBeenCalledWith("https://api.example.test/api/v1/levels", {
       headers: { Accept: "application/json", Authorization: "Bearer test-token" },
       method: "GET",
