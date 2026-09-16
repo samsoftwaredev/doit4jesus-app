@@ -42,7 +42,6 @@ export function Button({
       onPress={isUnavailable ? undefined : onPress}
       style={({ pressed }) => [
         styles.button,
-        sizeConfig.buttonStyle,
         {
           backgroundColor: variantConfig.backgroundColor,
           borderColor: variantConfig.borderColor,
@@ -58,9 +57,7 @@ export function Button({
         {loading ? <ActivityIndicator color={variantConfig.activityIndicatorColor} size="small" /> : null}
         {!loading ? leftIcon : null}
         {isTextLabel ? (
-          <Text style={[styles.label, sizeConfig.textStyle, { color: variantConfig.textColor }, textStyle]}>
-            {children}
-          </Text>
+          <Text style={[styles.label, { color: variantConfig.textColor }, textStyle]}>{children}</Text>
         ) : (
           children
         )}

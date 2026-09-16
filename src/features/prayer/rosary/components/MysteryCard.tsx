@@ -9,6 +9,7 @@ import { theme } from "@/theme/tokens";
 import type { RosaryMystery } from "@/features/prayer/rosary/types";
 
 interface MysteryCardProps {
+  maxImageHeight?: number;
   mystery?: RosaryMystery;
 }
 
@@ -16,8 +17,10 @@ interface MysteryCardProps {
 const devotionalPlaceholder = require("../../../../assets/flowers/whiteLily.png");
 const MYSTERY_IMAGE_ASPECT_RATIO = 575 / 784;
 
-/** Renders a mystery card whose devotional image scales from the available width at its portrait ratio. */
-export function MysteryCard({ mystery }: MysteryCardProps) {
+/**
+ * Renders a mystery card whose devotional image scales at its portrait ratio without exceeding the available height.
+ */
+export function MysteryCard({ maxImageHeight, mystery }: MysteryCardProps) {
   const styles = useThemedStyles(styleSheet);
   const reduceMotion = useReducedMotion();
   const [imageFailed, setImageFailed] = useState(false);
@@ -41,7 +44,13 @@ export function MysteryCard({ mystery }: MysteryCardProps) {
       </Text>
       <Text style={styles.category}>{mystery.category}</Text>
 
-      <View style={styles.imageFrame} testID="mystery-image-frame">
+      <View
+        style={[
+          styles.imageFrame,
+          maxImageHeight === undefined ? undefined : { maxWidth: maxImageHeight * MYSTERY_IMAGE_ASPECT_RATIO },
+        ]}
+        testID="mystery-image-frame"
+      >
         {imageFailed ? (
           <View accessibilityLabel="Devotional image unavailable" style={styles.imageFallback}>
             <Feather color={theme.rosary.colors.gold} name="image" size={theme.sizes.iconLarge} />
@@ -92,6 +101,7 @@ const styleSheet = createThemedStyles((theme) => ({
     marginTop: theme.spacing[0.5],
   },
   imageFrame: {
+    alignSelf: "center",
     aspectRatio: MYSTERY_IMAGE_ASPECT_RATIO,
     backgroundColor: theme.rosary.colors.cardInset,
     borderColor: "rgba(230, 186, 100, 0.35)",

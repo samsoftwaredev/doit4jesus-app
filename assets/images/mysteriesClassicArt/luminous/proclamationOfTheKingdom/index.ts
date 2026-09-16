@@ -1,0 +1,17 @@
+export const thirdLuminous = [
+  require("./thirdLuminous01.jpeg"),
+  require("./thirdLuminous02.jpg"),
+  require("./thirdLuminous03.jpg"),
+  require("./thirdLuminous04.jpg"),
+  require("./thirdLuminous05.jpg"),
+  require("./thirdLuminous06.jpg"),
+  require("./thirdLuminous07.jpg"),
+  require("./thirdLuminous08.jpg"),
+  require("./thirdLuminous09.jpg"),
+  require("./thirdLuminous10.jpg"),
+  require("./thirdLuminous11.jpg"),
+  require("./thirdLuminous12.jpg"),
+  require("./thirdLuminous13.jpg"),
+  require("./thirdLuminous14.jpg"),
+  require("./thirdLuminous15.jpg"),
+] as const;

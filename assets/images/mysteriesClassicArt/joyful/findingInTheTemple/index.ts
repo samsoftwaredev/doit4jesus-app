@@ -1,0 +1,16 @@
+export const fifthJoyful = [
+  require("./fifthJoyful01.jpg"),
+  require("./fifthJoyful02.jpg"),
+  require("./fifthJoyful03.jpg"),
+  require("./fifthJoyful04.jpg"),
+  require("./fifthJoyful05.jpg"),
+  require("./fifthJoyful06.jpg"),
+  require("./fifthJoyful07.jpg"),
+  require("./fifthJoyful08.jpg"),
+  require("./fifthJoyful09.jpg"),
+  require("./fifthJoyful10.jpg"),
+  require("./fifthJoyful11.jpg"),
+  require("./fifthJoyful12.jpg"),
+  require("./fifthJoyful13.jpg"),
+  require("./fifthJoyful14.jpg"),
+] as const;

@@ -267,6 +267,9 @@ describe("RosaryPrayerScreen", () => {
     const prayerDetails = screen.getByLabelText("Rosary prayer details");
     expect(StyleSheet.flatten(prayerDetails.props.style)).toMatchObject({ height: 644 });
     expect(StyleSheet.flatten(prayerDetails.props.contentContainerStyle)).toMatchObject({ flexGrow: 1 });
+    expect(StyleSheet.flatten(within(prayerDetails).getByTestId("mystery-image-frame").props.style)).toMatchObject({
+      maxWidth: 644 * (575 / 784),
+    });
     expect(within(prayerDetails).getByText("CURRENT MYSTERY")).toBeTruthy();
     expect(within(prayerDetails).getByText("FRUIT OF THE MYSTERY")).toBeTruthy();
     expect(within(prayerDetails).getByText("HAIL MARY")).toBeTruthy();

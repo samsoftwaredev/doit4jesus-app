@@ -1,0 +1,18 @@
+export const fifthSorrowful = [
+  require("./fifthSorrowful01.jpg"),
+  require("./fifthSorrowful02.jpg"),
+  require("./fifthSorrowful03.jpg"),
+  require("./fifthSorrowful04.jpg"),
+  require("./fifthSorrowful05.jpg"),
+  require("./fifthSorrowful06.jpg"),
+  require("./fifthSorrowful07.jpg"),
+  require("./fifthSorrowful08.jpg"),
+  require("./fifthSorrowful09.jpg"),
+  require("./fifthSorrowful10.jpg"),
+  require("./fifthSorrowful11.jpg"),
+  require("./fifthSorrowful12.jpg"),
+  require("./fifthSorrowful13.jpg"),
+  require("./fifthSorrowful14.jpg"),
+  require("./fifthSorrowful15.jpg"),
+  require("./fifthSorrowful16.jpg"),
+] as const;

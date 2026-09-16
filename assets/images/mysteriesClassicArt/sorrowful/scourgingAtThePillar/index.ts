@@ -1,0 +1,17 @@
+export const secondSorrowful = [
+  require("./secondSorrowful01.jpg"),
+  require("./secondSorrowful02.jpg"),
+  require("./secondSorrowful03.jpg"),
+  require("./secondSorrowful04.jpg"),
+  require("./secondSorrowful05.webp"),
+  require("./secondSorrowful06.jpg"),
+  require("./secondSorrowful07.jpg"),
+  require("./secondSorrowful08.jpg"),
+  require("./secondSorrowful09.jpg"),
+  require("./secondSorrowful10.jpg"),
+  require("./secondSorrowful11.jpg"),
+  require("./secondSorrowful12.jpg"),
+  require("./secondSorrowful13.jpg"),
+  require("./secondSorrowful14.jpg"),
+  require("./secondSorrowful15.jpg"),
+] as const;

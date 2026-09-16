@@ -83,47 +83,17 @@ const buttonContentSizeStyles = createThemedStyles((theme) => ({
   },
 })) satisfies Record<ButtonSize, ViewStyle>;
 
-const buttonSizeStyles = createThemedStyles((theme) => ({
-  sm: {
-    minHeight: Math.max(theme.sizes.touchTarget, theme.sizes.buttonHeightSmall),
-  },
-  md: {
-    minHeight: Math.max(theme.sizes.touchTarget, theme.sizes.buttonHeight),
-  },
-  lg: {
-    minHeight: Math.max(theme.sizes.touchTarget, theme.sizes.buttonHeightLarge),
-  },
-})) satisfies Record<ButtonSize, ViewStyle>;
-
-const buttonTextSizeStyles = createThemedStyles((theme) => ({
-  sm: {
-    ...theme.typography.labelSmall,
-  },
-  md: {
-    ...theme.typography.button,
-  },
-  lg: {
-    ...theme.typography.bodyMedium,
-  },
-})) satisfies Record<ButtonSize, object>;
-
 export const buttonSizeConfig = {
   sm: {
-    buttonStyle: buttonSizeStyles.sm,
     contentStyle: buttonContentSizeStyles.sm,
-    textStyle: buttonTextSizeStyles.sm,
   },
   md: {
-    buttonStyle: buttonSizeStyles.md,
     contentStyle: buttonContentSizeStyles.md,
-    textStyle: buttonTextSizeStyles.md,
   },
   lg: {
-    buttonStyle: buttonSizeStyles.lg,
     contentStyle: buttonContentSizeStyles.lg,
-    textStyle: buttonTextSizeStyles.lg,
   },
-} as const satisfies Record<ButtonSize, { buttonStyle: ViewStyle; contentStyle: ViewStyle; textStyle: object }>;
+} as const satisfies Record<ButtonSize, { contentStyle: ViewStyle }>;
 
 export const styles = createThemedStyles((theme) => ({
   button: {

@@ -361,7 +361,7 @@ export function RosaryPrayerScreen({
                 showsVerticalScrollIndicator
                 style={[styles.contentColumn, { height: rosaryViewportHeight }]}
               >
-                <MysteryCard mystery={session.currentMystery} />
+                <MysteryCard maxImageHeight={rosaryViewportHeight} mystery={session.currentMystery} />
                 <FruitOfMysteryCard
                   description={session.currentMystery?.fruitDescription}
                   fruit={session.currentMystery?.fruit}

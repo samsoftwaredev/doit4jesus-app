@@ -22,4 +22,14 @@ describe("MysteryCard", () => {
     expect(imageFrameStyle.height).toBeUndefined();
     expect(imageFrameStyle.width).toBe("100%");
   });
+
+  it("caps the responsive image frame at the available prayer viewport height", async () => {
+    await render(<MysteryCard maxImageHeight={644} mystery={rosaryMysteries[0]} />);
+
+    const imageFrameStyle = StyleSheet.flatten(screen.getByTestId("mystery-image-frame").props.style);
+    expect(imageFrameStyle.aspectRatio).toBeCloseTo(575 / 784);
+    expect(imageFrameStyle.alignSelf).toBe("center");
+    expect(imageFrameStyle.maxWidth).toBeCloseTo(644 * (575 / 784));
+    expect(imageFrameStyle.height).toBeUndefined();
+  });
 });
