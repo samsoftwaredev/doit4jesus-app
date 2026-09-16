@@ -226,7 +226,7 @@ describe("RosaryPrayerScreen", () => {
     const controls = within(header).getAllByRole("button");
     expect(controls.map((control) => control.props.accessibilityLabel)).toEqual([
       "Go back",
-      "Current Rosary length: Default (20 min)",
+      "Current Rosary length: Classic (20 min)",
       "View Maria's prayer profile, online and praying",
       "View all 2 people praying now",
     ]);
@@ -276,10 +276,10 @@ describe("RosaryPrayerScreen", () => {
     expect(within(prayerDetails).getByText("SCRIPTURE")).toBeTruthy();
   });
 
-  it("opens settings from the default-length badge and changes the active length", async () => {
+  it("opens settings from the Classic-length badge and changes the active length", async () => {
     await render(<RosaryPrayerScreen isDecade={false} />);
 
-    const lengthBadge = await screen.findByRole("button", { name: "Current Rosary length: Default (20 min)" });
+    const lengthBadge = await screen.findByRole("button", { name: "Current Rosary length: Classic (20 min)" });
     await fireEvent.press(lengthBadge);
 
     expect(screen.getByRole("header", { name: "Rosary settings" })).toBeTruthy();

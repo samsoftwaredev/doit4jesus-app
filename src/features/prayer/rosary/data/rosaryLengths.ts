@@ -24,12 +24,12 @@ export const ROSARY_LENGTH_OPTIONS: readonly RosaryLengthOption[] = [
   {
     id: "medium",
     introduction: "Everything in Short, plus:",
-    label: "Default (20 min)",
+    label: "Classic (20 min)",
     prayers: ["Our Father, Hail Mary, and Glory Be for the Pope’s intentions", "St. Michael Prayer"],
   },
   {
     id: "long",
-    introduction: "Everything in Default, plus:",
+    introduction: "Everything in Classic, plus:",
     label: "Long (30 min)",
     prayers: ["Litany of Loreto"],
   },
@@ -42,5 +42,5 @@ export function isRosaryLength(value: unknown): value is RosaryLength {
 
 /** Returns the user-facing label for a supported Rosary length. */
 export function rosaryLengthLabel(length: RosaryLength) {
-  return ROSARY_LENGTH_OPTIONS.find((option) => option.id === length)?.label ?? "Default";
+  return ROSARY_LENGTH_OPTIONS.find((option) => option.id === length)?.label ?? "Classic";
 }

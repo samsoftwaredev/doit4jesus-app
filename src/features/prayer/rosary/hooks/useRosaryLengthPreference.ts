@@ -9,7 +9,7 @@ const STORAGE_KEY = "@doit4jesus/rosary-length/v1";
 
 /**
  * Restores and updates the device-local Rosary length preference.
- * Storage failures fall back to the in-memory Default selection without blocking prayer.
+ * Storage failures fall back to the in-memory Classic selection without blocking prayer.
  */
 export function useRosaryLengthPreference(storage: RosaryStorageAdapter = AsyncStorage) {
   const [rosaryLength, setLength] = useState<RosaryLength>(DEFAULT_ROSARY_LENGTH);
@@ -19,7 +19,7 @@ export function useRosaryLengthPreference(storage: RosaryStorageAdapter = AsyncS
   useEffect(() => {
     let active = true;
 
-    /** Restores a valid saved length while retaining Default for missing or invalid values. */
+    /** Restores a valid saved length while retaining Classic for missing or invalid values. */
     async function restorePreference() {
       try {
         const savedLength = await storage.getItem(STORAGE_KEY);

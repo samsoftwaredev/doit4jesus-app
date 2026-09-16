@@ -679,16 +679,16 @@ export const resources = {
         },
         length: {
           current: "Current Rosary length: {{length}}",
-          default: "Default",
+          default: "Classic",
           hint: "Opens Rosary settings to change the prayer length.",
           long: {
-            introduction: "Everything in Default, plus:",
+            introduction: "Everything in Classic, plus:",
             label: "Long (30 min)",
             prayers: { one: "Litany of Loreto" },
           },
           medium: {
             introduction: "Everything in Short, plus:",
-            label: "Default (20 min)",
+            label: "Classic (20 min)",
             prayers: {
               one: "Our Father, Hail Mary, and Glory Be for the Pope’s intentions",
               two: "St. Michael Prayer",
@@ -970,7 +970,7 @@ export const resources = {
         country: {
           accessibilityLabel: "Country, {{country}}",
           close: "Close country selector",
-          description: "Compete for your country.",
+          description: "Represent your country and compete with other countries for holiness.",
           empty: "No countries found.",
           fieldLabel: "Country",
           notSelected: "not selected",
@@ -1728,16 +1728,16 @@ export const resources = {
         },
         length: {
           current: "Duración actual del Rosario: {{length}}",
-          default: "Predeterminado",
+          default: "Clásico",
           hint: "Abre la configuración del Rosario para cambiar su duración.",
           long: {
-            introduction: "Todo lo incluido en Predeterminado, más:",
+            introduction: "Todo lo incluido en Clásico, más:",
             label: "Largo (30 min)",
             prayers: { one: "Letanías Lauretanas" },
           },
           medium: {
             introduction: "Todo lo incluido en Corto, más:",
-            label: "Predeterminado (20 min)",
+            label: "Clásico (20 min)",
             prayers: {
               one: "Padre Nuestro, Ave María y Gloria por las intenciones del Papa",
               two: "Oración a san Miguel",
@@ -2019,7 +2019,7 @@ export const resources = {
         country: {
           accessibilityLabel: "País, {{country}}",
           close: "Cerrar selector de país",
-          description: "Compite por tu país.",
+          description: "Representa a tu país y compite con otros países por la santidad.",
           empty: "No se encontraron países.",
           fieldLabel: "País",
           notSelected: "sin seleccionar",

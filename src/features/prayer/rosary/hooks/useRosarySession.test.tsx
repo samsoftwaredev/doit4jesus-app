@@ -226,7 +226,7 @@ describe("useRosarySession", () => {
     expect(result.current.currentMysteryIndex).toBe(0);
   });
 
-  it("restores a legacy closing step by stable prayer identity when Default adds prayers before it", async () => {
+  it("restores a legacy closing step by stable prayer identity when Classic adds prayers before it", async () => {
     const medium = getRosarySequenceForLength(englishRosaryContent, "joyful", "medium");
     const short = getRosarySequenceForLength(englishRosaryContent, "joyful", "short");
     const storage = createStorage(

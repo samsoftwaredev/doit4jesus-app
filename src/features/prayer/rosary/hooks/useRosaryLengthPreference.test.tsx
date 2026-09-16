@@ -14,7 +14,7 @@ function createStorage(initialValue: string | null = null): jest.Mocked<RosarySt
 }
 
 describe("useRosaryLengthPreference", () => {
-  it("defaults to the Default Rosary value and remembers a changed length on the device", async () => {
+  it("defaults to the Classic Rosary value and remembers a changed length on the device", async () => {
     const storage = createStorage();
     const { result } = await renderHook(() => useRosaryLengthPreference(storage));
 

@@ -1,6 +1,6 @@
 ---
 name: expo-quality-workflow
-description: Build or modify Expo and React Native application code in this repository with mobile-first responsive design, strict red-green-refactor TDD, JSDoc for production functions, and accessibility built into implementation and tests. Use for features, UI changes, refactors, and bug fixes; skip read-only analysis and content-only edits.
+description: Build or modify Expo and React Native application code in this repository with mobile-first responsive design, strict red-green-refactor TDD, JSDoc for production functions, accessibility, and English-Spanish localization parity built into implementation and tests. Use for features, UI changes, refactors, and bug fixes; skip read-only analysis and content-only edits.
 ---
 
 # Expo Quality Workflow
@@ -54,6 +54,13 @@ If a change has no executable behavior, such as documentation-only work, state w
 - Honor reduced-motion preferences for non-essential animation.
 - Use `hitSlop` when a control's visual treatment is smaller than the required touch target.
 - Test important interactions by role, accessible name, and state with React Native Testing Library. Add regression tests for accessibility behavior that can be automated.
+
+## Keep English and Spanish in Parity
+
+- For every new or changed client-owned user-facing string, update both English (`en`) and neutral Latin American Spanish (`es`) resources in the same change.
+- Include visible copy, accessibility labels and hints, validation and error messages, and bundled devotional content. Do not translate backend-provided strings unless the backend contract explicitly requires it.
+- Preserve translation-key and interpolation-variable parity between both languages.
+- Add or update tests that exercise both English and Spanish whenever localized behavior or meaning changes.
 
 ## Completion Gate
 
