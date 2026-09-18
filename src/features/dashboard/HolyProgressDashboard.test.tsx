@@ -122,6 +122,7 @@ describe("HolyProgressDashboard", () => {
     expect(await screen.findByLabelText("Rosaries, 86")).toBeTruthy();
     expect(screen.getByRole("header", { name: "LEVEL PROGRESS" })).toBeTruthy();
     expect(screen.getByText("Did I show mercy?")).toBeTruthy();
+    expect(screen.getByText("Plant Today’s Flower")).toBeTruthy();
     expect(screen.getByText("28 Day Streak")).toBeTruthy();
     expect(screen.getByLabelText("Rank 1, St. Michael, 245 Rosaries")).toBeTruthy();
 

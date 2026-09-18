@@ -6,7 +6,7 @@ import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles"
 
 const rosaryArtwork = require("../../../../assets/icons/rosary.png");
 
-/** Presents the localized Fatima quotation as devotional encouragement. */
+/** Presents the localized Fatima quotation as a borderless devotional footer. */
 export function GardenQuoteCard() {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
@@ -28,13 +28,10 @@ export function GardenQuoteCard() {
 
 const styleSheet = createThemedStyles((theme) => ({
   card: {
-    backgroundColor: "rgba(20, 57, 70, 0.8)",
-    borderColor: "rgba(230, 186, 100, 0.35)",
-    borderRadius: theme.radii.xl,
-    borderWidth: theme.rosary.borderWidths.goldHairline,
-    flex: 1,
+    backgroundColor: theme.colors.transparent,
+    borderWidth: 0,
     justifyContent: "center",
-    minHeight: 150,
+    minHeight: 130,
     minWidth: theme.spacing[0],
     overflow: "hidden",
     padding: theme.spacing[4],

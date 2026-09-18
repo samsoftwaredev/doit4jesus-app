@@ -7,9 +7,11 @@ import { Pressable, Text, View } from "react-native";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
-import type { RosaryReminderState, RosaryReminderViewModel } from "../dashboard.types";
+import type { RosaryReminderViewModel } from "../dashboard.types";
 import { getRosaryReminderState } from "../rosary-reminder";
 import { useServerSynchronizedCountdown } from "../useServerSynchronizedCountdown";
+import { GardenMotivationCard } from "./GardenMotivationCard";
+import { GardenQuoteCard } from "./GardenQuoteCard";
 
 type DailyRosaryCardProps = {
   error: boolean;
@@ -20,11 +22,12 @@ type DailyRosaryCardProps = {
   reminder: RosaryReminderViewModel | null;
 };
 
-function twoDigits(value: number) {
-  return String(value).padStart(2, "0");
+/** Formats one countdown segment without allowing negative output. */
+function twoDigits(value: number): string {
+  return String(Math.max(0, value)).padStart(2, "0");
 }
 
-/** Renders StreakCopy with styles resolved from the active appearance. */
+/** Shows the current streak or welcoming first-prayer guidance. */
 function StreakCopy({ reminder }: { reminder: RosaryReminderViewModel }) {
   const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
@@ -34,7 +37,7 @@ function StreakCopy({ reminder }: { reminder: RosaryReminderViewModel }) {
   return <Text style={styles.streak}>{t("dashboard.dailyRosary.dayStreak", { count: reminder.streak.current })}</Text>;
 }
 
-/** Renders this feature with colors from the currently resolved app appearance. */
+/** Renders the unified daily habit card and its synchronized reminder state. */
 export function DailyRosaryCard({
   error,
   isLoading,
@@ -43,6 +46,8 @@ export function DailyRosaryCard({
   onRetry,
   reminder,
 }: DailyRosaryCardProps) {
+  const { t } = useTranslation();
+  const styles = useThemedStyles(styleSheet);
   const countdown = useServerSynchronizedCountdown({
     deadlineAt: reminder?.deadlineAt ?? null,
     serverNow: reminder?.serverNow ?? "",
@@ -61,28 +66,73 @@ export function DailyRosaryCard({
     if (state !== "expired") expiredRequestRef.current = null;
   }, [state]);
 
-  if (isLoading && !reminder) return <RosarySkeleton />;
-  if (!reminder) return <RosaryUnavailable error={error} onPrayRosary={onPrayRosary} onRetry={onRetry} />;
-  if (reminder.completed) return <CompletedRosaryState reminder={reminder} />;
-  if (reminder.streak.status === "reset") return <ResetRosaryState onPrayRosary={onPrayRosary} />;
-  if (reminder.streak.status === "none") return <CompactRosaryState onPrayRosary={onPrayRosary} reminder={reminder} />;
-  if (state === "expired") return <ExpiredRosaryState />;
-  if (state === "normal") return <CompactRosaryState onPrayRosary={onPrayRosary} reminder={reminder} />;
+  const colors = reminder?.completed
+    ? theme.colors.gradients.dailyRosaryComplete
+    : reminder?.streak.status === "reset"
+      ? theme.colors.gradients.dailyRosaryReset
+      : state === "urgent" || state === "expired"
+        ? theme.colors.gradients.countdownHour
+        : theme.colors.gradients.dailyRosary;
 
-  const countdownState =
-    state === "final-fifteen" || state === "one-hour" || state === "three-hour" ? state : "three-hour";
+  let timingText: string | null = null;
+  if (reminder?.completed) timingText = t("dashboard.dailyRosary.completedTime");
+  else if (isLoading) timingText = t("dashboard.dailyRosary.loadingTime");
+  else if (!reminder || countdown.totalSeconds === null) timingText = t("dashboard.dailyRosary.timeUnavailable");
+  else if (state === "expired") timingText = t("dashboard.dailyRosary.updatingTime");
 
   return (
-    <CountdownRosaryState
-      countdown={countdown}
-      onPrayRosary={onPrayRosary}
-      reminder={reminder}
-      state={countdownState}
-    />
+    <LinearGradient
+      colors={colors}
+      end={{ x: 1, y: 1 }}
+      start={{ x: 0, y: 0 }}
+      style={styles.card}
+      testID="daily-rosary-habit-card"
+    >
+      <GardenMotivationCard />
+      <View style={styles.divider} />
+      <View style={styles.statusRegion}>
+        {isLoading && !reminder ? (
+          <RosarySkeleton />
+        ) : !reminder ? (
+          <RosaryUnavailable error={error} onRetry={onRetry} />
+        ) : reminder.completed ? (
+          <CompletedRosaryState reminder={reminder} />
+        ) : reminder.streak.status === "reset" ? (
+          <ResetRosaryState />
+        ) : state === "expired" ? (
+          <ExpiredRosaryState />
+        ) : (
+          <ActiveRosaryState reminder={reminder} urgent={state === "urgent"} />
+        )}
+
+        {timingText ? (
+          <Text accessibilityLiveRegion="polite" style={styles.timingStatus} testID="rosary-timing-status">
+            {timingText}
+          </Text>
+        ) : (
+          <Text
+            accessibilityLabel={t("dashboard.dailyRosary.countdown", {
+              hours: countdown.hours,
+              minutes: countdown.minutes,
+              seconds: countdown.seconds,
+            })}
+            accessibilityLiveRegion={state === "urgent" ? "polite" : "none"}
+            style={[styles.timer, state === "urgent" && styles.timerUrgent]}
+            testID="rosary-countdown"
+          >
+            {`${twoDigits(countdown.hours)} : ${twoDigits(countdown.minutes)} : ${twoDigits(countdown.seconds)}`}
+          </Text>
+        )}
+
+        <CardAction onPress={onPrayRosary} />
+      </View>
+      <View style={styles.divider} />
+      <GardenQuoteCard />
+    </LinearGradient>
   );
 }
 
-/** Renders CardAction with styles resolved from the active appearance. */
+/** Opens the Rosary flow from every reminder state. */
 function CardAction({ onPress }: { onPress: () => void }) {
   const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
@@ -99,128 +149,51 @@ function CardAction({ onPress }: { onPress: () => void }) {
   );
 }
 
-/** Renders CompactRosaryState with styles resolved from the active appearance. */
-function CompactRosaryState({
-  onPrayRosary,
-  reminder,
-}: {
-  onPrayRosary: () => void;
-  reminder: RosaryReminderViewModel;
-}) {
+/** Displays the normal or urgent active Rosary status. */
+function ActiveRosaryState({ reminder, urgent }: { reminder: RosaryReminderViewModel; urgent: boolean }) {
   const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   return (
-    <LinearGradient
-      colors={theme.colors.gradients.dailyRosary}
-      end={{ x: 1, y: 1 }}
-      start={{ x: 0, y: 0 }}
-      style={styles.card}
-    >
-      <View style={styles.compactCopy}>
-        <View style={styles.titleRow}>
-          <Feather accessible={false} color={theme.colors.gold.pale} name="circle" size={theme.sizes.iconSmall} />
-          <Text accessibilityRole="header" style={styles.title}>
-            {t("dashboard.dailyRosary.title")}
-          </Text>
-        </View>
-        <StreakCopy reminder={reminder} />
-        <Text style={styles.supporting}>{t("dashboard.dailyRosary.waiting")}</Text>
+    <View style={styles.statusCopy}>
+      <View style={styles.titleRow}>
+        <Feather accessible={false} color={theme.colors.gold.pale} name="circle" size={theme.sizes.iconSmall} />
+        <Text accessibilityRole="header" style={styles.title}>
+          {t("dashboard.dailyRosary.title")}
+        </Text>
       </View>
-      <CardAction onPress={onPrayRosary} />
-    </LinearGradient>
-  );
-}
-
-/** Renders CountdownRosaryState with styles resolved from the active appearance. */
-function CountdownRosaryState({
-  countdown,
-  onPrayRosary,
-  reminder,
-  state,
-}: {
-  countdown: ReturnType<typeof useServerSynchronizedCountdown>;
-  onPrayRosary: () => void;
-  reminder: RosaryReminderViewModel;
-  state: Exclude<RosaryReminderState, "completed" | "expired" | "normal">;
-}) {
-  const { t } = useTranslation();
-  const styles = useThemedStyles(styleSheet);
-  const colors =
-    state === "final-fifteen"
-      ? theme.colors.gradients.countdownFinal
-      : state === "one-hour"
-        ? theme.colors.gradients.countdownHour
-        : theme.colors.gradients.countdownDefault;
-
-  return (
-    <LinearGradient
-      colors={colors}
-      end={{ x: 1, y: 1 }}
-      start={{ x: 0, y: 0 }}
-      style={[styles.card, styles.countdownCard]}
-    >
-      <Text accessibilityRole="header" style={styles.countdownTitle}>
-        {t("dashboard.dailyRosary.title")}
-      </Text>
-      <Feather
-        accessible={false}
-        color={theme.colors.gold.light}
-        name="circle"
-        size={theme.sizes.iconLarge}
-        style={styles.countdownIcon}
-      />
-      <Text
-        accessibilityLabel={t("dashboard.dailyRosary.countdown", {
-          hours: countdown.hours,
-          minutes: countdown.minutes,
-          seconds: countdown.seconds,
-        })}
-        style={styles.timer}
-      >
-        {`${twoDigits(countdown.hours)} : ${twoDigits(countdown.minutes)} : ${twoDigits(countdown.seconds)}`}
-      </Text>
-      <View style={styles.timerLabels}>
-        <Text style={styles.timerLabel}>{t("dashboard.dailyRosary.hours")}</Text>
-        <Text style={styles.timerLabel}>{t("dashboard.dailyRosary.minutes")}</Text>
-        <Text style={styles.timerLabel}>{t("dashboard.dailyRosary.seconds")}</Text>
-      </View>
-      <Text style={styles.countdownCopy}>{t("dashboard.dailyRosary.countdownCopy")}</Text>
       <StreakCopy reminder={reminder} />
-      <CardAction onPress={onPrayRosary} />
-    </LinearGradient>
+      <Text style={styles.supporting}>
+        {urgent ? t("dashboard.dailyRosary.countdownCopy") : t("dashboard.dailyRosary.waiting")}
+      </Text>
+    </View>
   );
 }
 
-/** Renders CompletedRosaryState with styles resolved from the active appearance. */
+/** Displays today's completed Rosary and retained streak. */
 function CompletedRosaryState({ reminder }: { reminder: RosaryReminderViewModel }) {
   const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   return (
-    <LinearGradient
-      colors={theme.colors.gradients.dailyRosaryComplete}
-      end={{ x: 1, y: 1 }}
-      start={{ x: 0, y: 0 }}
-      style={styles.card}
-    >
+    <View style={styles.completedRow}>
       <View style={styles.completedIcon}>
         <Feather accessible={false} color={theme.colors.gold.pale} name="check" size={theme.sizes.iconMedium} />
       </View>
       <View style={styles.completedCopy}>
-        <Text accessibilityRole="header" style={styles.completedTitle}>
+        <Text accessibilityRole="header" style={styles.title}>
           {t("dashboard.dailyRosary.complete")}
         </Text>
         <StreakCopy reminder={reminder} />
       </View>
-    </LinearGradient>
+    </View>
   );
 }
 
-/** Renders ExpiredRosaryState with styles resolved from the active appearance. */
+/** Announces that the expired reminder is being refreshed. */
 function ExpiredRosaryState() {
   const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   return (
-    <View accessibilityLabel={t("dashboard.dailyRosary.updatingLabel")} style={[styles.card, styles.transitionCard]}>
+    <View accessibilityLabel={t("dashboard.dailyRosary.updatingLabel")} style={styles.statusCopy}>
       <Text accessibilityRole="header" style={styles.title}>
         {t("dashboard.dailyRosary.title")}
       </Text>
@@ -229,71 +202,52 @@ function ExpiredRosaryState() {
   );
 }
 
-/** Renders ResetRosaryState with styles resolved from the active appearance. */
-function ResetRosaryState({ onPrayRosary }: { onPrayRosary: () => void }) {
+/** Displays backend-confirmed streak reset guidance. */
+function ResetRosaryState() {
   const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   return (
-    <LinearGradient
-      colors={theme.colors.gradients.dailyRosaryReset}
-      end={{ x: 1, y: 1 }}
-      start={{ x: 0, y: 0 }}
-      style={styles.card}
-    >
-      <View style={styles.compactCopy}>
-        <Text accessibilityRole="header" style={styles.title}>
-          {t("dashboard.dailyRosary.reset")}
-        </Text>
-        <Text style={styles.supporting}>{t("dashboard.dailyRosary.startAgain")}</Text>
-      </View>
-      <CardAction onPress={onPrayRosary} />
-    </LinearGradient>
-  );
-}
-
-/** Renders RosaryUnavailable with styles resolved from the active appearance. */
-function RosaryUnavailable({
-  error,
-  onPrayRosary,
-  onRetry,
-}: {
-  error: boolean;
-  onPrayRosary: () => void;
-  onRetry: () => void;
-}) {
-  const { t } = useTranslation();
-  const styles = useThemedStyles(styleSheet);
-  return (
-    <View style={styles.card}>
-      <View style={styles.compactCopy}>
-        <Text accessibilityRole="header" style={styles.title}>
-          {t("dashboard.dailyRosary.title")}
-        </Text>
-        <Text accessibilityRole={error ? "alert" : undefined} style={styles.supporting}>
-          {error ? t("dashboard.dailyRosary.reminderUnavailable") : t("dashboard.dailyRosary.waiting")}
-        </Text>
-        {error ? (
-          <Pressable
-            accessibilityLabel={t("dashboard.dailyRosary.retryLabel")}
-            accessibilityRole="button"
-            onPress={onRetry}
-            style={styles.retry}
-          >
-            <Text style={styles.retryText}>{t("common.retry")}</Text>
-          </Pressable>
-        ) : null}
-      </View>
-      <CardAction onPress={onPrayRosary} />
+    <View style={styles.statusCopy}>
+      <Text accessibilityRole="header" style={styles.title}>
+        {t("dashboard.dailyRosary.reset")}
+      </Text>
+      <Text style={styles.supporting}>{t("dashboard.dailyRosary.startAgain")}</Text>
     </View>
   );
 }
 
-/** Renders RosarySkeleton with styles resolved from the active appearance. */
+/** Displays an unavailable reminder with a retry action when the request failed. */
+function RosaryUnavailable({ error, onRetry }: { error: boolean; onRetry: () => void }) {
+  const { t } = useTranslation();
+  const styles = useThemedStyles(styleSheet);
+  return (
+    <View style={styles.statusCopy}>
+      <Text accessibilityRole="header" style={styles.title}>
+        {t("dashboard.dailyRosary.title")}
+      </Text>
+      <Text accessibilityRole={error ? "alert" : undefined} style={styles.supporting}>
+        {error ? t("dashboard.dailyRosary.reminderUnavailable") : t("dashboard.dailyRosary.waiting")}
+      </Text>
+      {error ? (
+        <Pressable
+          accessibilityLabel={t("dashboard.dailyRosary.retryLabel")}
+          accessibilityRole="button"
+          onPress={onRetry}
+          style={styles.retry}
+        >
+          <Text style={styles.retryText}>{t("common.retry")}</Text>
+        </Pressable>
+      ) : null}
+    </View>
+  );
+}
+
+/** Displays a lightweight status placeholder while reminder data loads. */
 function RosarySkeleton() {
   const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   return (
-    <View accessibilityLabel={t("dashboard.dailyRosary.loading")} style={[styles.card, styles.skeletonCard]}>
+    <View accessibilityLabel={t("dashboard.dailyRosary.loading")} style={styles.skeleton}>
       <View style={styles.skeletonTitle} />
       <View style={styles.skeletonLine} />
     </View>
@@ -301,8 +255,32 @@ function RosarySkeleton() {
 }
 
 const styleSheet = createThemedStyles((theme) => ({
+  card: {
+    ...theme.shadows.large,
+    borderColor: theme.colors.gold.strong,
+    borderRadius: theme.radii.xl,
+    borderWidth: theme.borderWidths.thin,
+    overflow: "hidden",
+  },
+  divider: { backgroundColor: theme.colors.border.subtle, height: theme.borderWidths.hairline },
+  statusRegion: { gap: theme.spacing[3], padding: theme.spacing[4] },
+  statusCopy: { minWidth: 0 },
+  titleRow: { alignItems: "center", flexDirection: "row", gap: theme.spacing[2] },
+  title: { ...theme.typography.heading3, color: theme.colors.text.primary, fontFamily: theme.fontFamilies.display },
+  streak: { ...theme.typography.bodyMedium, color: theme.colors.gold.pale, marginTop: theme.spacing[1] },
+  supporting: { ...theme.typography.bodySmall, color: theme.colors.text.secondary, marginTop: theme.spacing[1] },
+  timer: {
+    ...theme.typography.caption,
+    color: theme.colors.text.muted,
+    fontFamily: theme.fontFamilies.devotional,
+    letterSpacing: theme.letterSpacing.wide,
+    textAlign: "center",
+  },
+  timerUrgent: { color: theme.colors.gold.light, fontSize: 30, lineHeight: 38 },
+  timingStatus: { ...theme.typography.caption, color: theme.colors.text.muted, textAlign: "center" },
   action: {
     alignItems: "center",
+    alignSelf: "stretch",
     backgroundColor: theme.colors.gold.pale,
     borderRadius: theme.radii.pill,
     flexDirection: "row",
@@ -312,48 +290,20 @@ const styleSheet = createThemedStyles((theme) => ({
     paddingHorizontal: theme.spacing[3],
   },
   actionText: { ...theme.typography.button, color: theme.colors.text.inverse, letterSpacing: theme.letterSpacing.wide },
-  card: {
-    borderColor: theme.colors.gold.strong,
-    borderRadius: theme.radii.xl,
-    borderWidth: theme.borderWidths.thin,
-    minHeight: 142,
-    overflow: "hidden",
-    padding: theme.spacing[4],
-  },
-  compactCopy: { flex: 1, paddingRight: theme.spacing[3] },
+  pressed: { opacity: theme.opacity.pressed },
+  completedRow: { alignItems: "center", flexDirection: "row" },
   completedCopy: { flex: 1, marginLeft: theme.spacing[3] },
   completedIcon: {
     alignItems: "center",
     backgroundColor: "rgba(230, 186, 100, 0.14)",
-    borderColor: theme.colors.gold.strong,
     borderRadius: theme.radii.pill,
-    borderWidth: theme.borderWidths.hairline,
     height: theme.sizes.touchTarget,
     justifyContent: "center",
     width: theme.sizes.touchTarget,
   },
-  completedTitle: {
-    ...theme.typography.heading3,
-    color: theme.colors.text.primary,
-    fontFamily: theme.fontFamilies.display,
-  },
-  countdownCard: { alignItems: "center", minHeight: 340 },
-  countdownCopy: {
-    ...theme.typography.body,
-    color: theme.colors.text.secondary,
-    marginTop: theme.spacing[3],
-    textAlign: "center",
-  },
-  countdownIcon: { marginTop: theme.spacing[2] },
-  countdownTitle: {
-    ...theme.typography.heading3,
-    color: theme.colors.gold.light,
-    fontFamily: theme.fontFamilies.display,
-  },
-  pressed: { opacity: theme.opacity.pressed },
   retry: { alignSelf: "flex-start", justifyContent: "center", minHeight: theme.sizes.touchTarget },
   retryText: { ...theme.typography.button, color: theme.colors.gold.pale },
-  skeletonCard: { backgroundColor: theme.colors.surface.navy, justifyContent: "center" },
+  skeleton: { justifyContent: "center", minHeight: theme.spacing[12] },
   skeletonLine: {
     backgroundColor: theme.colors.surface.tertiary,
     borderRadius: theme.radii.xs,
@@ -367,26 +317,4 @@ const styleSheet = createThemedStyles((theme) => ({
     height: theme.spacing[5],
     width: "40%",
   },
-  streak: { ...theme.typography.bodyMedium, color: theme.colors.gold.pale, marginTop: theme.spacing[1] },
-  supporting: { ...theme.typography.bodySmall, color: theme.colors.text.secondary, marginTop: theme.spacing[1] },
-  timer: {
-    color: theme.colors.gold.light,
-    flexShrink: 1,
-    fontFamily: theme.fontFamilies.devotional,
-    fontSize: 33,
-    lineHeight: 42,
-    marginTop: theme.spacing[2],
-    maxWidth: "100%",
-    textAlign: "center",
-  },
-  timerLabel: {
-    ...theme.typography.labelSmall,
-    color: theme.colors.text.secondary,
-    fontSize: 9,
-    letterSpacing: theme.letterSpacing.wide,
-  },
-  timerLabels: { flexDirection: "row", gap: theme.spacing[4], marginTop: theme.spacing[0.5] },
-  title: { ...theme.typography.heading3, color: theme.colors.text.primary, fontFamily: theme.fontFamilies.display },
-  titleRow: { alignItems: "center", flexDirection: "row", gap: theme.spacing[2] },
-  transitionCard: { backgroundColor: theme.colors.surface.navy, justifyContent: "center" },
 }));

@@ -1,8 +1,30 @@
-import { act, render, screen, waitFor } from "@testing-library/react-native";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react-native";
+import { StyleSheet } from "react-native";
+
+import type { ResponsiveLayout } from "@/hooks/useResponsiveLayout";
+import { i18n } from "@/localization";
 
 import { DailyRosaryCard } from "./DailyRosaryCard";
 
 const serverNow = "2026-08-29T18:00:00.000Z";
+const phoneLayout: ResponsiveLayout = {
+  contentWidth: 390,
+  fontScale: 1,
+  gutter: 16,
+  height: 844,
+  isDesktop: false,
+  isLandscape: false,
+  isLargeText: false,
+  isNarrowPhone: false,
+  isTablet: false,
+  size: "phone",
+  width: 390,
+};
+const mockResponsiveLayout = jest.fn(() => phoneLayout);
+
+jest.mock("@/hooks/useResponsiveLayout", () => ({
+  useResponsiveLayout: () => mockResponsiveLayout(),
+}));
 
 function reminder({
   completed = false,
@@ -36,53 +58,83 @@ function renderCard(overrides: Partial<React.ComponentProps<typeof DailyRosaryCa
 }
 
 describe("DailyRosaryCard", () => {
+  beforeEach(async () => {
+    jest.clearAllMocks();
+    mockResponsiveLayout.mockReturnValue(phoneLayout);
+    await i18n.changeLanguage("en");
+  });
+
   afterEach(() => {
     jest.useRealTimers();
   });
 
-  it("shows the completed state before any countdown urgency", async () => {
-    await renderCard({ reminder: reminder({ completed: true, seconds: 60 }) });
-    expect(screen.getByText("Today’s Rosary Complete")).toBeTruthy();
-    expect(screen.queryByText("00 : 01 : 00")).toBeNull();
+  afterAll(async () => {
+    await i18n.changeLanguage("en");
   });
 
-  it("keeps the card compact when more than three hours remain", async () => {
-    await renderCard({ reminder: reminder({ seconds: 3 * 60 * 60 + 1 }) });
-    expect(screen.getByText("Today’s Rosary is waiting for you.")).toBeTruthy();
-    expect(screen.queryByText("03 : 00 : 01")).toBeNull();
+  it("teaches a new user the daily prayer cycle in one card", async () => {
+    await renderCard({ reminder: reminder({ seconds: 4 * 60 * 60, status: "none" }) });
+
+    expect(screen.getByText("Plant Today’s Flower")).toBeTruthy();
+    expect(screen.getByText("Pray today")).toBeTruthy();
+    expect(screen.getByText("Plant a flower")).toBeTruthy();
+    expect(screen.getByText("Grow your streak")).toBeTruthy();
+    expect(screen.getByText("Miss a day and your streak starts again. You can always begin again.")).toBeTruthy();
+    expect(screen.getByText("Begin a prayerful rhythm today.")).toBeTruthy();
+    expect(screen.getByText("04 : 00 : 00")).toBeTruthy();
+    expect(screen.getByLabelText("Devotional quote from Our Lady of Fatima")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Pray Rosary" })).toBeEnabled();
+
+    expect(StyleSheet.flatten(screen.getByTestId("daily-rosary-habit-card").props.style).borderWidth).toBeGreaterThan(
+      0,
+    );
+    expect(StyleSheet.flatten(screen.getByTestId("garden-motivation-card").props.style)).toMatchObject({
+      backgroundColor: "transparent",
+      borderWidth: 0,
+    });
+    expect(StyleSheet.flatten(screen.getByTestId("garden-quote-card").props.style)).toMatchObject({
+      backgroundColor: "transparent",
+      borderWidth: 0,
+    });
   });
 
-  it("shows an expanded countdown at the three-hour, one-hour, and final-fifteen thresholds", async () => {
-    const onExpired = jest.fn();
-    const rendered = await renderCard({ onExpired, reminder: reminder({ seconds: 3 * 60 * 60 }) });
-    expect(screen.getByText("03 : 00 : 00")).toBeTruthy();
+  it("promotes the countdown once at three hours and keeps one urgent treatment", async () => {
+    const rendered = await renderCard({ reminder: reminder({ seconds: 3 * 60 * 60 + 1 }) });
+    const subtleStyle = StyleSheet.flatten(screen.getByTestId("rosary-countdown").props.style);
+    expect(screen.getByText("03 : 00 : 01")).toBeTruthy();
 
     await rendered.rerender(
       <DailyRosaryCard
         error={false}
         isLoading={false}
-        onExpired={onExpired}
+        onExpired={jest.fn()}
         onPrayRosary={jest.fn()}
         onRetry={jest.fn()}
-        reminder={reminder({ seconds: 60 * 60 })}
+        reminder={reminder({ seconds: 3 * 60 * 60 })}
       />,
     );
-    expect(screen.getByText("01 : 00 : 00")).toBeTruthy();
+    const urgentStyle = StyleSheet.flatten(screen.getByTestId("rosary-countdown").props.style);
+    expect(urgentStyle.fontSize).toBeGreaterThan(subtleStyle.fontSize);
 
-    await rendered.rerender(
-      <DailyRosaryCard
-        error={false}
-        isLoading={false}
-        onExpired={onExpired}
-        onPrayRosary={jest.fn()}
-        onRetry={jest.fn()}
-        reminder={reminder({ seconds: 15 * 60 })}
-      />,
-    );
-    expect(screen.getByText("00 : 15 : 00")).toBeTruthy();
+    for (const seconds of [60 * 60, 15 * 60]) {
+      await rendered.rerender(
+        <DailyRosaryCard
+          error={false}
+          isLoading={false}
+          onExpired={jest.fn()}
+          onPrayRosary={jest.fn()}
+          onRetry={jest.fn()}
+          reminder={reminder({ seconds })}
+        />,
+      );
+      expect(StyleSheet.flatten(screen.getByTestId("rosary-countdown").props.style)).toMatchObject({
+        color: urgentStyle.color,
+        fontSize: urgentStyle.fontSize,
+      });
+    }
   });
 
-  it("uses the server baseline, never displays a negative timer, and refreshes on expiry", async () => {
+  it("refreshes once at expiry without hiding the Rosary action", async () => {
     jest.useFakeTimers();
     const onExpired = jest.fn();
     await renderCard({ onExpired, reminder: reminder({ seconds: 1, status: "at-risk" }) });
@@ -92,32 +144,67 @@ describe("DailyRosaryCard", () => {
     });
 
     await waitFor(() => expect(onExpired).toHaveBeenCalledTimes(1));
-    expect(screen.getByText("Updating today’s Rosary status…")).toBeTruthy();
+    expect(screen.getByText("Updating time")).toBeTruthy();
     expect(screen.queryByText(/-/)).toBeNull();
+    expect(screen.getByRole("button", { name: "Pray Rosary" })).toBeEnabled();
   });
 
-  it("uses the backend reset status and avoids fabricating a timer without a deadline", async () => {
-    const rendered = await renderCard({ reminder: reminder({ status: "reset" }) });
-    expect(screen.getByText("Streak Reset")).toBeTruthy();
+  it("keeps honest timing and the Rosary action in completed, loading, error, reset, and missing-deadline states", async () => {
+    const onPrayRosary = jest.fn();
+    const rendered = await renderCard({ onPrayRosary, reminder: reminder({ completed: true }) });
+    expect(screen.getByText("Completed today")).toBeTruthy();
+    await fireEvent.press(screen.getByRole("button", { name: "Pray Rosary" }));
+    expect(onPrayRosary).toHaveBeenCalledTimes(1);
+
+    await rendered.rerender(
+      <DailyRosaryCard
+        error={false}
+        isLoading
+        onExpired={jest.fn()}
+        onPrayRosary={onPrayRosary}
+        onRetry={jest.fn()}
+        reminder={null}
+      />,
+    );
+    expect(screen.getByText("Loading time")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Pray Rosary" })).toBeEnabled();
+
+    await rendered.rerender(
+      <DailyRosaryCard
+        error
+        isLoading={false}
+        onExpired={jest.fn()}
+        onPrayRosary={onPrayRosary}
+        onRetry={jest.fn()}
+        reminder={null}
+      />,
+    );
+    expect(screen.getByText("Time unavailable")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Pray Rosary" })).toBeEnabled();
 
     await rendered.rerender(
       <DailyRosaryCard
         error={false}
         isLoading={false}
         onExpired={jest.fn()}
-        onPrayRosary={jest.fn()}
+        onPrayRosary={onPrayRosary}
         onRetry={jest.fn()}
-        reminder={{ ...reminder(), deadlineAt: null }}
+        reminder={{ ...reminder({ status: "reset" }), deadlineAt: null }}
       />,
     );
-    expect(screen.getByText("Today’s Rosary is waiting for you.")).toBeTruthy();
-    expect(screen.queryByText(/00 :/)).toBeNull();
+    expect(screen.getByText("Streak Reset")).toBeTruthy();
+    expect(screen.getByText("Time unavailable")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Pray Rosary" })).toBeEnabled();
   });
 
-  it("keeps a backend no-streak state neutral even near the deadline", async () => {
-    await renderCard({ reminder: reminder({ seconds: 60, status: "none" }) });
-    expect(screen.getByText("Begin a prayerful rhythm today.")).toBeTruthy();
-    expect(screen.queryByText("00 : 01 : 00")).toBeNull();
+  it("localizes the combined teaching and timing status in Spanish", async () => {
+    await i18n.changeLanguage("es");
+    await renderCard({ reminder: reminder({ status: "none" }) });
+
+    expect(screen.getByText("Reza hoy")).toBeTruthy();
+    expect(screen.getByText("Planta una flor")).toBeTruthy();
+    expect(screen.getByText("Aumenta tu racha")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Rezar el Rosario" })).toBeEnabled();
   });
 
   it("cleans up the synchronized timer on unmount", async () => {

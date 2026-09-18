@@ -32,9 +32,7 @@ export type LeaderboardEntryViewModel = {
 };
 
 export const ROSARY_REMINDER_THRESHOLDS = {
-  FINAL_FIFTEEN: 15 * 60,
-  ONE_HOUR: 60 * 60,
-  THREE_HOURS: 3 * 60 * 60,
+  URGENT: 3 * 60 * 60,
 } as const;
 
-export type RosaryReminderState = "completed" | "expired" | "final-fifteen" | "normal" | "one-hour" | "three-hour";
+export type RosaryReminderState = "completed" | "expired" | "normal" | "urgent";
