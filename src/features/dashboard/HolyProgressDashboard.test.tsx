@@ -149,6 +149,14 @@ describe("HolyProgressDashboard", () => {
     expect(cards[1].props.testID).toBe("level-progress-card-container");
   });
 
+  it("places the daily Rosary card directly after the streak progress", async () => {
+    await render(<HolyProgressDashboard />);
+    await screen.findByLabelText("Pray Rosary");
+
+    const sections = screen.getByLabelText("Holy Progress Dashboard").props.children;
+    expect(sections[1].props.testID).toBe("daily-rosary-card-container");
+  });
+
   it("uses the existing Rosary route and full leaderboard route", async () => {
     await render(<HolyProgressDashboard />);
     await screen.findByLabelText("Pray Rosary");

@@ -39,36 +39,6 @@ describe("UserProgressSection", () => {
     expect(screen.getByLabelText("LONGEST STREAK, 27 days")).toBeTruthy();
   });
 
-  it("navigates to the Rosary creation flow from the whole CTA", async () => {
-    await render(<UserProgressSection />);
-
-    await fireEvent.press(screen.getByRole("button", { name: "Create a Rosary today" }));
-
-    expect(mockPush).toHaveBeenCalledWith({ pathname: "/rosary", params: { source: "home-progress" } });
-  });
-
-  it("keeps the CTA available while streak statistics are loading", async () => {
-    const unresolved = new Promise<never>(() => undefined);
-    mockFetchRosaryStreak.mockReturnValue(unresolved);
-    mockFetchRosaryStats.mockReturnValue(unresolved);
-    mockFetchUserProgress.mockReturnValue(unresolved);
-
-    await render(<UserProgressSection />);
-
-    expect(screen.getAllByLabelText("Loading streak statistic")).toHaveLength(2);
-    expect(screen.getByRole("button", { name: "Create a Rosary today" })).toBeTruthy();
-  });
-
-  it("shows a recoverable progress error without disabling Rosary creation", async () => {
-    mockFetchRosaryStreak.mockRejectedValue(new Error("offline"));
-
-    await render(<UserProgressSection />);
-
-    expect(await screen.findByText("We couldn't load your progress.")).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Create a Rosary today" })).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Try again" })).toBeTruthy();
-  });
-
   it("retries failed progress requests", async () => {
     mockFetchRosaryStreak.mockRejectedValueOnce(new Error("offline"));
 

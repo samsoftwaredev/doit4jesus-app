@@ -38,11 +38,26 @@ jest.mock("expo-router", () => ({
   useRouter: () => ({ push: mockPush }),
 }));
 
-jest.mock("@/features/prayer/components", () => ({
-  AllMysteries: () => null,
-  MomentForPrayer: () => null,
-  PrayersByOthers: MockPrayersByOthers,
-}));
+jest.mock("@/features/prayer/components", () => {
+  const { Text: MockText } = jest.requireActual<typeof import("react-native")>("react-native");
+  return {
+    AllMysteries: () => <MockText>All Mysteries Section</MockText>,
+    MomentForPrayer: () => <MockText>Today&apos;s Rosary Section</MockText>,
+    PrayersByOthers: MockPrayersByOthers,
+  };
+});
+
+jest.mock("@/features/prayer/rosary/garden/components", () => {
+  const { Pressable: MockPressable, Text: MockText } =
+    jest.requireActual<typeof import("react-native")>("react-native");
+  return {
+    RosaryGardenSection: ({ onPrayToday }: { onPrayToday: () => void }) => (
+      <MockPressable accessibilityLabel="Pray from the embedded garden" onPress={onPrayToday}>
+        <MockText>Rosary Garden Section</MockText>
+      </MockPressable>
+    ),
+  };
+});
 
 const { fetchApprovedPrayerIntentions } = jest.requireMock("@/features/prayer/intentions") as {
   fetchApprovedPrayerIntentions: jest.Mock;
@@ -71,7 +86,7 @@ describe("PrayerScreen", () => {
     await i18n.changeLanguage("en");
   });
 
-  it("renders the shared prayer heading and opens the Rosary Garden", async () => {
+  it("renders Prayer and Rosary Garden content in one ordered page", async () => {
     fetchApprovedPrayerIntentions.mockResolvedValue({
       data: [],
       meta: { hasMore: false, limit: 10, nextOffset: null, offset: 0 },
@@ -81,8 +96,21 @@ describe("PrayerScreen", () => {
 
     expect(screen.getByRole("header", { name: "Prayer" })).toBeTruthy();
     expect(screen.getByText("Pray the Rosary and lift up the intentions of others.")).toBeTruthy();
-    await fireEvent.press(screen.getByLabelText("Open Rosary Garden"));
-    expect(mockPush).toHaveBeenCalledWith("/rosary-garden");
+    expect(screen.queryByLabelText("Open Rosary Garden")).toBeNull();
+
+    const sections = screen.getAllByTestId(/^prayer-section-/);
+    expect(sections.map((section) => section.props.testID)).toEqual([
+      "prayer-section-today",
+      "prayer-section-garden",
+      "prayer-section-mysteries",
+      "prayer-section-intentions",
+    ]);
+
+    await fireEvent.press(screen.getByLabelText("Pray from the embedded garden"));
+    expect(mockPush).toHaveBeenCalledWith({
+      pathname: "/rosary",
+      params: { isDecade: "false", mysteryType: expect.any(String), source: "today" },
+    });
   });
 
   it("loads successive intention pages for the horizontal home carousel", async () => {
@@ -107,7 +135,7 @@ describe("PrayerScreen", () => {
     });
   });
 
-  it("localizes the prayer heading and Rosary Garden action", async () => {
+  it("localizes the consolidated Prayer page", async () => {
     await i18n.changeLanguage("es");
     fetchApprovedPrayerIntentions.mockResolvedValue({
       data: [],
@@ -118,6 +146,6 @@ describe("PrayerScreen", () => {
 
     expect(screen.getByRole("header", { name: "Oración" })).toBeTruthy();
     expect(screen.getByText("Reza el Rosario y eleva las intenciones de los demás.")).toBeTruthy();
-    expect(screen.getByLabelText("Abrir el Jardín del Rosario")).toBeTruthy();
+    expect(screen.getByText("Rosary Garden Section")).toBeTruthy();
   });
 });

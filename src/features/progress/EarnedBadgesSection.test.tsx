@@ -13,7 +13,7 @@ const earnedBadges = [
     code: "FIRST_ROSARY",
     description: "Prayed your first rosary.",
     earnedAt: "2026-01-10T12:00:00.000Z",
-    iconUrl: null,
+    iconUrl: "https://cdn.example.test/badges/first-rosary.png",
     id: "earned-1",
     name: "First Rosary",
   },
@@ -43,6 +43,7 @@ describe("EarnedBadgesSection", () => {
     expect(screen.getByText("Prayed 25 rosaries.")).toBeTruthy();
     expect(screen.getByLabelText(/Badge earned: First Rosary/)).toBeTruthy();
     expect(screen.getByLabelText(/Badge earned: Devoted/)).toBeTruthy();
+    expect(screen.getByTestId("badge-artwork-earned-1")).toBeTruthy();
   });
 
   it("shows three accessible placeholders while badges load", async () => {

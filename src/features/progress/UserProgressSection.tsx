@@ -1,19 +1,13 @@
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { Image } from "expo-image";
-import { useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { Pressable, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
+import { Pressable, Text, View } from "react-native";
 
 import { Card } from "@/components/ui";
 import { fetchRosaryStreak } from "@/features/prayer/rosary/garden/api";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
-import { theme } from "@/theme/tokens";
 
 import { fetchRosaryStats, fetchUserProgress } from "./progress.api";
 import { StreakCards } from "./StreakCards";
-
-const rosaryIcon = require("../../assets/icons/rosary.png");
 
 type UserProgressStats = {
   currentStreak: number;
@@ -26,7 +20,6 @@ type UserProgressStats = {
 export function UserProgressSection() {
   const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
-  const router = useRouter();
   const [isLoadingStats, setIsLoadingStats] = useState(true);
   const [stats, setStats] = useState<UserProgressStats | null>(null);
 
@@ -57,10 +50,6 @@ export function UserProgressSection() {
     void loadProgress();
   }, [loadProgress]);
 
-  const handleCreateRosary = () => {
-    router.push({ pathname: "/rosary", params: { source: "home-progress" } });
-  };
-
   return (
     <View accessibilityLabel={t("progress.sectionLabel")} style={styles.section}>
       {isLoadingStats ? (
@@ -72,22 +61,6 @@ export function UserProgressSection() {
       )}
 
       <View style={styles.divider} />
-
-      <Pressable
-        accessibilityLabel={t("progress.createRosaryLabel")}
-        accessibilityRole="button"
-        onPress={handleCreateRosary}
-        style={({ pressed }) => [styles.createRosaryButton, pressed && styles.createRosaryButtonPressed]}
-      >
-        <Image accessible={false} contentFit="contain" source={rosaryIcon} style={styles.rosaryButtonIcon} />
-        <Text style={styles.createRosaryLabel}>{t("progress.createRosary")}</Text>
-        <MaterialCommunityIcons
-          accessible={false}
-          color={theme.colors.text.inverse}
-          name="chevron-right"
-          size={theme.sizes.iconMedium}
-        />
-      </Pressable>
     </View>
   );
 }

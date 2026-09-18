@@ -1,7 +1,9 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Image } from "expo-image";
+import { useCallback, useState } from "react";
 import { Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
+import { useReducedMotion } from "react-native-reanimated";
 
 import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
@@ -19,6 +21,8 @@ const badgeIcons: Record<string, keyof typeof MaterialCommunityIcons.glyphMap> =
   ROSARY_STREAK_7: "fire",
   ROSARY_STREAK_30: "crown",
 };
+
+const loopbackHosts = new Set(["127.0.0.1", "localhost", "[::1]", "::1"]);
 
 function formatEarnedDate(earnedAt: string, locale: string, unavailable: string) {
   const date = new Date(earnedAt);
@@ -38,39 +42,74 @@ function getBadgeIcon(code: string): keyof typeof MaterialCommunityIcons.glyphMa
   return "shield-cross";
 }
 
-function resolveBadgeIconUrl(iconUrl: string | null) {
-  if (!iconUrl || /^https?:\/\//i.test(iconUrl)) return iconUrl;
+/** Resolves storage artwork and replaces development loopback origins when possible. */
+function resolveBadgeIconUrl(iconUrl: string | null): string | null {
+  if (!iconUrl) return null;
 
-  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
-  if (!apiUrl) return null;
+  const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
+  try {
+    const absoluteUrl = new URL(iconUrl);
+    if (!/^https?:$/.test(absoluteUrl.protocol)) return null;
 
-  return new URL(iconUrl, `${apiUrl.replace(/\/$/, "")}/`).toString();
+    if (loopbackHosts.has(absoluteUrl.hostname.toLowerCase()) && supabaseUrl) {
+      return new URL(`${absoluteUrl.pathname}${absoluteUrl.search}${absoluteUrl.hash}`, supabaseUrl).toString();
+    }
+
+    return iconUrl;
+  } catch {
+    const assetBaseUrl = supabaseUrl ?? process.env.EXPO_PUBLIC_API_URL;
+    if (!assetBaseUrl) return null;
+
+    try {
+      return new URL(iconUrl, `${assetBaseUrl.replace(/\/$/, "")}/`).toString();
+    } catch {
+      return null;
+    }
+  }
 }
 
-/** Renders this feature with colors from the currently resolved app appearance. */
+/** Renders an earned badge with remote artwork and a code-based icon fallback. */
 export function EarnedBadgeRow({ badge, isLast }: EarnedBadgeRowProps) {
   const { t } = useTranslation();
   const { locale } = useAppLanguage();
+  const reduceMotion = useReducedMotion();
   const styles = useThemedStyles(styleSheet);
+  const [failedImageUrl, setFailedImageUrl] = useState<string | null>(null);
   const earnedDate = formatEarnedDate(badge.earnedAt, locale, t("progress.dateUnavailable"));
   const iconUrl = resolveBadgeIconUrl(badge.iconUrl);
+  const shouldShowArtwork = Boolean(iconUrl && failedImageUrl !== iconUrl);
   const accessibilityLabel = t("progress.badges.earnedLabel", {
     date: earnedDate,
     description: badge.description,
     name: badge.name,
   });
 
+  /** Marks only the currently resolved artwork URL as failed so later URLs can retry. */
+  const handleArtworkError = useCallback(() => {
+    setFailedImageUrl(iconUrl);
+  }, [iconUrl]);
+
   return (
     <View accessibilityLabel={accessibilityLabel} style={[styles.row, !isLast && styles.rowDivider]}>
       <View accessible={false} style={styles.iconContainer}>
-        {iconUrl ? (
-          <Image accessible={false} contentFit="contain" source={{ uri: iconUrl }} style={styles.badgeImage} />
+        {shouldShowArtwork && iconUrl ? (
+          <Image
+            accessible={false}
+            cachePolicy="memory-disk"
+            contentFit="contain"
+            onError={handleArtworkError}
+            source={{ uri: iconUrl }}
+            style={styles.badgeImage}
+            testID={`badge-artwork-${badge.id}`}
+            transition={reduceMotion ? 0 : 150}
+          />
         ) : (
           <MaterialCommunityIcons
             accessible={false}
             color={theme.rosary.colors.gold}
             name={getBadgeIcon(badge.code)}
             size={theme.sizes.iconMedium}
+            testID={`badge-icon-fallback-${badge.id}`}
           />
         )}
       </View>
@@ -85,8 +124,8 @@ export function EarnedBadgeRow({ badge, isLast }: EarnedBadgeRowProps) {
 
 const styleSheet = createThemedStyles((theme) => ({
   badgeImage: {
-    height: theme.sizes.iconMedium,
-    width: theme.sizes.iconMedium,
+    height: "100%",
+    width: "100%",
   },
   copy: {
     flex: 1,
@@ -113,6 +152,7 @@ const styleSheet = createThemedStyles((theme) => ({
     height: 48,
     justifyContent: "center",
     marginRight: theme.spacing[3],
+    overflow: "hidden",
     width: 48,
   },
   name: {

@@ -5,3 +5,5 @@ export { GardenQuoteCard } from "./GardenQuoteCard";
 export { GardenStats } from "./GardenStats";
 export { MonthNavigator } from "./MonthNavigator";
 export { PrayTodayButton } from "./PrayTodayButton";
+export { RosaryGardenSection } from "./RosaryGardenSection";
+export type { RosaryGardenSectionProps } from "./RosaryGardenSection";

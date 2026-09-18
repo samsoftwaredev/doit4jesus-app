@@ -618,7 +618,6 @@ export const resources = {
       },
       prayerHome: {
         description: "Pray the Rosary and lift up the intentions of others.",
-        gardenAction: "Open Rosary Garden",
         intentionsLoadError: "Couldn't load prayer intentions.",
         intentionsMoreError: "Couldn't load more prayer intentions.",
         title: "Prayer",
@@ -817,7 +816,6 @@ export const resources = {
           quote: "“Say the Rosary every day,\nto bring peace to the world\nand to your heart.”",
           quoteAttribution: "– Our Lady of Fatima",
           quoteLabel: "Devotional quote from Our Lady of Fatima",
-          return: "Return to Rosary prayer",
           status: {
             completed: "completed",
             future: "future date",
@@ -1701,7 +1699,6 @@ export const resources = {
       },
       prayerHome: {
         description: "Reza el Rosario y eleva las intenciones de los demás.",
-        gardenAction: "Abrir el Jardín del Rosario",
         intentionsLoadError: "No se pudieron cargar las intenciones de oración.",
         intentionsMoreError: "No se pudieron cargar más intenciones de oración.",
         title: "Oración",
@@ -1901,7 +1898,6 @@ export const resources = {
           quote: "“Reza el Rosario todos los días\npara traer la paz al mundo\ny a tu corazón.”",
           quoteAttribution: "– Nuestra Señora de Fátima",
           quoteLabel: "Cita devocional de Nuestra Señora de Fátima",
-          return: "Volver a la oración del Rosario",
           status: {
             completed: "completado",
             future: "fecha futura",

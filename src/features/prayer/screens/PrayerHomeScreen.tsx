@@ -1,11 +1,10 @@
-import Feather from "@expo/vector-icons/Feather";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ScrollView } from "react-native";
+import { ScrollView, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
-import { IconButton, PageHeader } from "@/components";
+import { PageHeader } from "@/components";
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { SacredAtmosphere } from "@/components/ui";
 import { AllMysteries, MomentForPrayer, PrayersByOthers } from "@/features/prayer/components";
@@ -14,6 +13,7 @@ import { cacheApprovedPrayerIntentions, fetchApprovedPrayerIntentions } from "@/
 import { getRosaryContent } from "@/features/prayer/rosary/data/localizedRosaryContent";
 import { getRosaryMysterySetFromContent } from "@/features/prayer/rosary/data/rosaryMysteries";
 import { getTodayRosaryMysteryType, getWeekdayLabel } from "@/features/prayer/rosary/data/schedule";
+import { RosaryGardenSection } from "@/features/prayer/rosary/garden/components";
 import type { RosaryMysteryType } from "@/features/prayer/rosary/types/rosary";
 import { useResponsiveLayout } from "@/hooks";
 import { useAppLanguage } from "@/localization";
@@ -109,11 +109,6 @@ export function PrayerScreen() {
     });
   };
 
-  /** Opens the Rosary Garden calendar. */
-  const openGarden = () => {
-    router.push("/rosary-garden");
-  };
-
   /** Starts today's scheduled Rosary. */
   const prayToday = () => {
     openRosary(todayMysteryType, "today");
@@ -161,39 +156,35 @@ export function PrayerScreen() {
           showsVerticalScrollIndicator={false}
           style={styles.atmosphereContent}
         >
-          <PageHeader
-            actions={
-              <IconButton accessibilityLabel={t("prayerHome.gardenAction")} onPress={openGarden} tone="accent">
-                <Feather
-                  accessible={false}
-                  color={theme.rosary.colors.goldBright}
-                  name="calendar"
-                  size={theme.sizes.iconMedium}
-                />
-              </IconButton>
-            }
-            description={t("prayerHome.description")}
-            title={t("prayerHome.title")}
-          />
-          <MomentForPrayer
-            mysteryTitle={todaySet.title}
-            onPrayToday={prayToday}
-            weekday={getWeekdayLabel(undefined, locale)}
-          />
-          <AllMysteries cardWidth={mysteryCardWidth} gap={columnGap} onOpenMystery={openMystery} />
-          <PrayersByOthers
-            errorMessage={intentionsError}
-            hasMore={hasMoreIntentions}
-            intentions={intentions}
-            isLoading={isLoadingIntentions}
-            isLoadingMore={isLoadingMoreIntentions}
-            onCreateIntention={createIntention}
-            onLoadMore={loadMoreIntentions}
-            onOpenIntention={openIntention}
-            onOpenMyIntentions={openMyIntentions}
-            onRetry={retryIntentions}
-            onSeeAll={seeAllIntentions}
-          />
+          <PageHeader description={t("prayerHome.description")} title={t("prayerHome.title")} />
+          <View testID="prayer-section-today">
+            <MomentForPrayer
+              mysteryTitle={todaySet.title}
+              onPrayToday={prayToday}
+              weekday={getWeekdayLabel(undefined, locale)}
+            />
+          </View>
+          <View testID="prayer-section-garden">
+            <RosaryGardenSection onPrayToday={prayToday} />
+          </View>
+          <View testID="prayer-section-mysteries">
+            <AllMysteries cardWidth={mysteryCardWidth} gap={columnGap} onOpenMystery={openMystery} />
+          </View>
+          <View testID="prayer-section-intentions">
+            <PrayersByOthers
+              errorMessage={intentionsError}
+              hasMore={hasMoreIntentions}
+              intentions={intentions}
+              isLoading={isLoadingIntentions}
+              isLoadingMore={isLoadingMoreIntentions}
+              onCreateIntention={createIntention}
+              onLoadMore={loadMoreIntentions}
+              onOpenIntention={openIntention}
+              onOpenMyIntentions={openMyIntentions}
+              onRetry={retryIntentions}
+              onSeeAll={seeAllIntentions}
+            />
+          </View>
         </ScrollView>
       </LinearGradient>
     </AtmosphericSafeAreaView>

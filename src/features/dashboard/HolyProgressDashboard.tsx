@@ -181,6 +181,16 @@ export function HolyProgressDashboard() {
   return (
     <View accessibilityLabel={t("dashboard.accessibilityLabel")} style={styles.dashboard}>
       <UserProgressSection />
+      <View style={styles.primaryCard} testID="daily-rosary-card-container">
+        <DailyRosaryCard
+          error={reminderError}
+          isLoading={isLoadingReminder}
+          onExpired={() => void loadReminder()}
+          onPrayRosary={() => router.push({ pathname: "/rosary", params: { source: "home-dashboard" } })}
+          onRetry={() => void loadReminder()}
+          reminder={reminder}
+        />
+      </View>
       <DailyLiturgyDashboard />
       <View style={[styles.primaryGrid, useCardColumns && styles.primaryGridColumns]} testID="dashboard-primary-grid">
         <View
@@ -218,16 +228,6 @@ export function HolyProgressDashboard() {
             isLoading={isLoadingLeaderboard}
             onRetry={() => void loadLeaderboard()}
             onViewFull={() => router.push("/friends/leaderboard")}
-          />
-        </View>
-        <View style={[styles.primaryCard, useCardColumns && styles.primaryCardColumn]}>
-          <DailyRosaryCard
-            error={reminderError}
-            isLoading={isLoadingReminder}
-            onExpired={() => void loadReminder()}
-            onPrayRosary={() => router.push({ pathname: "/rosary", params: { source: "home-dashboard" } })}
-            onRetry={() => void loadReminder()}
-            reminder={reminder}
           />
         </View>
         <View style={[styles.primaryCard, useCardColumns && styles.primaryCardColumn]}>

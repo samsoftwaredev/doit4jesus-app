@@ -175,8 +175,9 @@ describe("progress API", () => {
             definition: {
               code: "FIRST_ROSARY",
               description: "Prayed your first rosary.",
-              icon_url: "/badges/first-rosary.png",
+              icon_url: "http://127.0.0.1:54321/storage/v1/object/public/images/badges/first-rosary.png",
               id: "definition-1",
+              locked_icon_url: "http://127.0.0.1:54321/storage/v1/object/public/images/badges/locked.png",
               name: "First Rosary",
             },
             earned: [
@@ -204,7 +205,7 @@ describe("progress API", () => {
         code: "FIRST_ROSARY",
         description: "Prayed your first rosary.",
         earnedAt: "2026-02-10T12:00:00.000Z",
-        iconUrl: "/badges/first-rosary.png",
+        iconUrl: "http://127.0.0.1:54321/storage/v1/object/public/images/badges/first-rosary.png",
         id: "earned-2",
         name: "First Rosary",
       },
@@ -212,7 +213,7 @@ describe("progress API", () => {
         code: "FIRST_ROSARY",
         description: "Prayed your first rosary.",
         earnedAt: "2026-01-10T12:00:00.000Z",
-        iconUrl: "/badges/first-rosary.png",
+        iconUrl: "http://127.0.0.1:54321/storage/v1/object/public/images/badges/first-rosary.png",
         id: "earned-1",
         name: "First Rosary",
       },

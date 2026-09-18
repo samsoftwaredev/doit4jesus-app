@@ -119,7 +119,6 @@ function RootNavigator() {
         <Stack.Screen name="create-prayer-intention" />
         <Stack.Screen name="my-prayer-intentions" />
         <Stack.Screen name="rosary" />
-        <Stack.Screen name="rosary-garden" />
         <Stack.Screen name="settings" />
       </Stack.Protected>
 
