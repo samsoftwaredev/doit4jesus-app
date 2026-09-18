@@ -17,7 +17,6 @@ type LeaderboardCardProps = {
   error: boolean;
   isLoading: boolean;
   onRetry: () => void;
-  onViewFull: () => void;
 };
 
 function rankColor(rank: number) {
@@ -34,8 +33,8 @@ function medal(rank: number): string | null {
   return null;
 }
 
-/** Renders this feature with colors from the currently resolved app appearance. */
-export function LeaderboardCard({ entries, error, isLoading, onRetry, onViewFull }: LeaderboardCardProps) {
+/** Presents the weekly global Rosary leaders without linking into the friends-only leaderboard. */
+export function LeaderboardCard({ entries, error, isLoading, onRetry }: LeaderboardCardProps) {
   const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   return (
@@ -69,17 +68,6 @@ export function LeaderboardCard({ entries, error, isLoading, onRetry, onViewFull
         </View>
       ) : null}
       {!isLoading && !error && entries ? <LeaderboardRows entries={entries.slice(0, 5)} /> : null}
-      <Pressable
-        accessibilityLabel={t("dashboard.leaderboard.viewLabel")}
-        accessibilityRole="button"
-        onPress={onViewFull}
-        style={styles.viewAll}
-      >
-        <Text numberOfLines={1} style={styles.viewAllText}>
-          {t("dashboard.leaderboard.view")}
-        </Text>
-        <Feather accessible={false} color={theme.colors.gold.pale} name="chevron-right" size={theme.sizes.iconSmall} />
-      </Pressable>
     </LinearGradient>
   );
 }
@@ -228,11 +216,5 @@ const styleSheet = createThemedStyles((theme) => ({
   titleRow: { alignItems: "center", flexDirection: "row", gap: theme.spacing[2] },
   unavailable: { paddingVertical: theme.spacing[4] },
   unavailableText: { ...theme.typography.body, color: theme.colors.text.secondary },
-  viewAll: { alignItems: "center", flexDirection: "row", minHeight: theme.sizes.touchTarget },
-  viewAllText: {
-    ...theme.typography.labelSmall,
-    color: theme.colors.gold.pale,
-    letterSpacing: theme.letterSpacing.wide,
-  },
   warriorColumn: { alignItems: "center", flex: 1, flexDirection: "row", minWidth: 0 },
 }));

@@ -17,19 +17,9 @@ import { useResponsiveLayout } from "@/hooks";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 
 import type { LevelCatalogEntry, RecentRosaryActivity } from "@/features/progress";
-import {
-  ConscienceQuestionCard,
-  DailyRosaryCard,
-  HolyProgressCard,
-  LeaderboardCard,
-  LevelProgressCard,
-} from "./components";
-import { getConscienceQuestion, getRosaryReminder, getWeeklyGlobalLeaderboard } from "./dashboard.api";
-import type {
-  ConscienceQuestionViewModel,
-  LeaderboardEntryViewModel,
-  RosaryReminderViewModel,
-} from "./dashboard.types";
+import { ConscienceQuestionCard, DailyRosaryCard, HolyProgressCard, LevelProgressCard } from "./components";
+import { getConscienceQuestion, getRosaryReminder } from "./dashboard.api";
+import type { ConscienceQuestionViewModel, RosaryReminderViewModel } from "./dashboard.types";
 
 /** Composes the Home dashboard's API-backed cards, streak progress, and earned badges. */
 export function HolyProgressDashboard() {
@@ -41,12 +31,9 @@ export function HolyProgressDashboard() {
   const [conscienceError, setConscienceError] = useState(false);
   const [isLoadingConscience, setIsLoadingConscience] = useState(true);
   const [isLoadingHolyDetails, setIsLoadingHolyDetails] = useState(true);
-  const [isLoadingLeaderboard, setIsLoadingLeaderboard] = useState(true);
   const [isLoadingProgress, setIsLoadingProgress] = useState(true);
   const [isLoadingReminder, setIsLoadingReminder] = useState(true);
   const [isLoadingStats, setIsLoadingStats] = useState(true);
-  const [leaderboard, setLeaderboard] = useState<LeaderboardEntryViewModel[] | null>(null);
-  const [leaderboardError, setLeaderboardError] = useState(false);
   const [levelCatalog, setLevelCatalog] = useState<LevelCatalogEntry[] | null>(null);
   const [progress, setProgress] = useState<Awaited<ReturnType<typeof fetchDashboardProgress>> | null>(null);
   const [progressError, setProgressError] = useState(false);
@@ -132,27 +119,14 @@ export function HolyProgressDashboard() {
     }
   }, []);
 
-  const loadLeaderboard = useCallback(async () => {
-    setIsLoadingLeaderboard(true);
-    setLeaderboardError(false);
-    try {
-      setLeaderboard(await getWeeklyGlobalLeaderboard());
-    } catch {
-      setLeaderboard(null);
-      setLeaderboardError(true);
-    } finally {
-      setIsLoadingLeaderboard(false);
-    }
-  }, []);
-
+  /** Refreshes every API-backed card that remains on the Home dashboard. */
   const refreshAll = useCallback(() => {
     void loadProgress();
     void loadStats();
     void loadHolyDetails();
     void loadConscience();
     void loadReminder();
-    void loadLeaderboard();
-  }, [loadConscience, loadHolyDetails, loadLeaderboard, loadProgress, loadReminder, loadStats]);
+  }, [loadConscience, loadHolyDetails, loadProgress, loadReminder, loadStats]);
 
   useFocusEffect(
     useCallback(() => {
@@ -219,15 +193,6 @@ export function HolyProgressDashboard() {
             levelCatalog={levelCatalog}
             progress={progress}
             progressError={progressError}
-          />
-        </View>
-        <View style={[styles.primaryCard, useCardColumns && styles.primaryCardColumn]}>
-          <LeaderboardCard
-            entries={leaderboard}
-            error={leaderboardError}
-            isLoading={isLoadingLeaderboard}
-            onRetry={() => void loadLeaderboard()}
-            onViewFull={() => router.push("/friends/leaderboard")}
           />
         </View>
         <View style={[styles.primaryCard, useCardColumns && styles.primaryCardColumn]}>

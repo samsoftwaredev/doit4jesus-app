@@ -124,7 +124,8 @@ describe("HolyProgressDashboard", () => {
     expect(screen.getByText("Did I show mercy?")).toBeTruthy();
     expect(screen.getByText("Plant Today’s Flower")).toBeTruthy();
     expect(screen.getByText("28 Day Streak")).toBeTruthy();
-    expect(screen.getByLabelText("Rank 1, St. Michael, 245 Rosaries")).toBeTruthy();
+    expect(screen.queryByRole("header", { name: "LEADERBOARD" })).toBeNull();
+    expect(mockGetWeeklyGlobalLeaderboard).not.toHaveBeenCalled();
 
     await act(async () => {
       notifyRosaryCompletionRecorded();
@@ -137,7 +138,7 @@ describe("HolyProgressDashboard", () => {
       expect(mockFetchRosaryStats).toHaveBeenCalledTimes(2);
       expect(mockGetRosaryReminder).toHaveBeenCalledTimes(2);
     });
-    expect(mockGetWeeklyGlobalLeaderboard).toHaveBeenCalledTimes(1);
+    expect(mockGetWeeklyGlobalLeaderboard).not.toHaveBeenCalled();
     await rendered.unmount();
   });
 
@@ -158,15 +159,14 @@ describe("HolyProgressDashboard", () => {
     expect(sections[1].props.testID).toBe("daily-rosary-card-container");
   });
 
-  it("uses the existing Rosary route and full leaderboard route", async () => {
+  it("uses the existing Rosary route without presenting a global leaderboard action", async () => {
     await render(<HolyProgressDashboard />);
     await screen.findByLabelText("Pray Rosary");
 
     await fireEvent.press(screen.getByLabelText("Pray Rosary"));
-    await fireEvent.press(screen.getByLabelText("View leaderboard"));
 
     expect(mockPush).toHaveBeenCalledWith({ pathname: "/rosary", params: { source: "home-dashboard" } });
-    expect(mockPush).toHaveBeenCalledWith("/friends/leaderboard");
+    expect(screen.queryByLabelText("View leaderboard")).toBeNull();
   });
 
   it("renders progress, earned badges, and daily liturgy directly in the dashboard composition", async () => {

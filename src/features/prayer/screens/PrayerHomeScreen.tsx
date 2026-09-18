@@ -1,5 +1,5 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ScrollView, View } from "react-native";
 import { useTranslation } from "react-i18next";
@@ -7,6 +7,9 @@ import { useTranslation } from "react-i18next";
 import { PageHeader } from "@/components";
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { SacredAtmosphere } from "@/components/ui";
+import { LeaderboardCard } from "@/features/dashboard/components";
+import { getWeeklyGlobalLeaderboard } from "@/features/dashboard/dashboard.api";
+import type { LeaderboardEntryViewModel } from "@/features/dashboard/dashboard.types";
 import { AllMysteries, MomentForPrayer, PrayersByOthers } from "@/features/prayer/components";
 import type { ApprovedPrayerIntention } from "@/features/prayer/intentions";
 import { cacheApprovedPrayerIntentions, fetchApprovedPrayerIntentions } from "@/features/prayer/intentions";
@@ -31,7 +34,7 @@ function appendUniqueIntentions(
   return [...currentIntentions, ...incomingIntentions.filter((intention) => !currentIds.has(intention.id))];
 }
 
-/** Renders the daily prayer dashboard within the shared atmosphere. */
+/** Renders the daily Prayer page with its Rosary Garden, global leaders, mysteries, and intentions. */
 export function PrayerScreen() {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
@@ -42,7 +45,10 @@ export function PrayerScreen() {
   const [isLoadingIntentions, setIsLoadingIntentions] = useState(true);
   const [isLoadingMoreIntentions, setIsLoadingMoreIntentions] = useState(false);
   const [intentionsError, setIntentionsError] = useState<string>();
+  const [isLoadingLeaderboard, setIsLoadingLeaderboard] = useState(true);
   const [hasMoreIntentions, setHasMoreIntentions] = useState(false);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntryViewModel[] | null>(null);
+  const [leaderboardError, setLeaderboardError] = useState(false);
   const [nextIntentionsOffset, setNextIntentionsOffset] = useState<number | null>(null);
   const isLoadingMoreIntentionsRef = useRef(false);
   const todayMysteryType = getTodayRosaryMysteryType();
@@ -79,6 +85,26 @@ export function PrayerScreen() {
   useEffect(() => {
     void loadIntentions();
   }, [loadIntentions]);
+
+  /** Loads the weekly global Rosary leaders whenever the Prayer tab receives focus. */
+  const loadLeaderboard = useCallback(async () => {
+    setIsLoadingLeaderboard(true);
+    setLeaderboardError(false);
+    try {
+      setLeaderboard(await getWeeklyGlobalLeaderboard());
+    } catch {
+      setLeaderboard(null);
+      setLeaderboardError(true);
+    } finally {
+      setIsLoadingLeaderboard(false);
+    }
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      void loadLeaderboard();
+    }, [loadLeaderboard]),
+  );
 
   /** Loads and appends the next intention page when the horizontal carousel approaches its end. */
   const loadMoreIntentions = useCallback(async () => {
@@ -166,6 +192,14 @@ export function PrayerScreen() {
           </View>
           <View testID="prayer-section-garden">
             <RosaryGardenSection onPrayToday={prayToday} />
+          </View>
+          <View testID="prayer-section-global-leaderboard">
+            <LeaderboardCard
+              entries={leaderboard}
+              error={leaderboardError}
+              isLoading={isLoadingLeaderboard}
+              onRetry={() => void loadLeaderboard()}
+            />
           </View>
           <View testID="prayer-section-mysteries">
             <AllMysteries cardWidth={mysteryCardWidth} gap={columnGap} onOpenMystery={openMystery} />
