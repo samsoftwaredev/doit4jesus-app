@@ -1,25 +1,33 @@
 import Feather from "@expo/vector-icons/Feather";
 import { Image } from "expo-image";
-import { StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { StyleSheet, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
-const lilyArtwork = require("../../../../../assets/flowers/whiteLily.png");
+const lilyArtwork = require("../../../../assets/flowers/whiteLily.png");
 
-/** Renders this feature with colors from the currently resolved app appearance. */
+/** Encourages continued Rosary prayer with garden artwork and responsive virtue details. */
 export function GardenMotivationCard() {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
-  const { width } = useWindowDimensions();
+  const { width } = useResponsiveLayout();
   const compact = width < theme.breakpoints.largePhone;
+
   return (
-    <View style={styles.card}>
+    <View style={styles.card} testID="garden-motivation-card">
       <LinearGradient accessible={false} colors={theme.colors.gradients.gardenRays} style={styles.rays} />
       <View style={styles.flowerPot}>
-        <Image accessible={false} contentFit="contain" source={lilyArtwork} style={styles.lily} />
+        <Image
+          accessible={false}
+          contentFit="contain"
+          source={lilyArtwork}
+          style={styles.lily}
+          testID="garden-motivation-artwork"
+        />
       </View>
       <View style={styles.copy}>
         <Text style={styles.title}>{t("rosary.garden.motivation")}</Text>
@@ -47,8 +55,10 @@ const styleSheet = createThemedStyles((theme) => ({
     borderColor: "rgba(230, 186, 100, 0.36)",
     borderRadius: theme.radii.xl,
     borderWidth: theme.rosary.borderWidths.goldHairline,
+    flex: 1,
     flexDirection: "row",
     minHeight: 120,
+    minWidth: theme.spacing[0],
     overflow: "hidden",
     padding: theme.spacing[3],
   },

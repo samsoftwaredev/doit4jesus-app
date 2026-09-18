@@ -29,7 +29,7 @@ export function buildCalendarRows(days: RosaryGardenDay[], month: number, year: 
   );
 }
 
-/** Renders this feature with colors from the currently resolved app appearance. */
+/** Renders the monthly Garden grid without introducing a nested card surface. */
 export function GardenCalendar({ days, month, year }: GardenCalendarProps) {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
@@ -47,7 +47,7 @@ export function GardenCalendar({ days, month, year }: GardenCalendarProps) {
   );
 
   return (
-    <View accessibilityLabel={t("rosary.garden.calendarLabel")} style={[styles.card, isFullBloom && styles.fullBloom]}>
+    <View accessibilityLabel={t("rosary.garden.calendarLabel")} style={styles.card} testID="garden-calendar">
       {isFullBloom ? <Text style={styles.fullBloomLabel}>{t("rosary.garden.fullBloom")}</Text> : null}
       <View accessible={false} style={styles.weekHeader}>
         {weekDays.map((day, index) => (
@@ -96,14 +96,10 @@ export function GardenCalendar({ days, month, year }: GardenCalendarProps) {
 
 const styleSheet = createThemedStyles((theme) => ({
   card: {
-    backgroundColor: "rgba(10, 38, 55, 0.92)",
-    borderColor: "rgba(72, 129, 154, 0.74)",
-    borderRadius: theme.radii.xl,
-    borderWidth: theme.borderWidths.thin,
-    padding: theme.spacing[2],
-    ...theme.shadows.medium,
+    backgroundColor: theme.colors.transparent,
+    borderRadius: theme.spacing[0],
+    borderWidth: theme.spacing[0],
   },
-  fullBloom: { borderColor: theme.rosary.colors.gold, ...theme.rosary.shadows.activeBead },
   fullBloomLabel: {
     ...theme.typography.labelSmall,
     color: theme.rosary.colors.goldBright,

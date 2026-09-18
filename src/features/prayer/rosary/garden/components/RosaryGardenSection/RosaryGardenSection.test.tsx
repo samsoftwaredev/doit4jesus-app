@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react-native";
+import { fireEvent, render, screen, within } from "@testing-library/react-native";
 import { StyleSheet } from "react-native";
 
 import { i18n } from "@/localization";
@@ -79,15 +79,43 @@ describe("RosaryGardenSection", () => {
     await i18n.changeLanguage("en");
   });
 
-  it("renders every garden area and supports month navigation", async () => {
+  it("renders the remaining garden areas without the relocated inspiration cards", async () => {
     await render(<RosaryGardenSection onPrayToday={jest.fn()} />);
 
-    expect(screen.getByRole("header", { name: "Rosary Garden" })).toBeTruthy();
-    expect(screen.getByText("August 2026")).toBeTruthy();
-    expect(screen.getByLabelText("Monthly Rosary Garden calendar")).toBeTruthy();
-    expect(screen.getByLabelText("Devotional quote from Our Lady of Fatima")).toBeTruthy();
-    expect(screen.getByText("Plant Today’s Flower")).toBeTruthy();
-    expect(screen.getByText("CURRENT STREAK")).toBeTruthy();
+    const gardenCard = screen.getByTestId("rosary-garden-card");
+    expect(within(gardenCard).getByRole("header", { name: "Rosary Garden" })).toBeTruthy();
+    expect(within(gardenCard).getByText("August 2026")).toBeTruthy();
+    expect(within(gardenCard).getByLabelText("Monthly Rosary Garden calendar")).toBeTruthy();
+    expect(within(gardenCard).getByText("CURRENT STREAK")).toBeTruthy();
+    expect(within(gardenCard).getByRole("button", { name: "Pray today's rosary" })).toBeTruthy();
+    expect(screen.queryByLabelText("Devotional quote from Our Lady of Fatima")).toBeNull();
+    expect(screen.queryByText("Plant Today’s Flower")).toBeNull();
+
+    const outerStyle = StyleSheet.flatten(gardenCard.props.style);
+    expect(outerStyle.borderWidth).toBeGreaterThan(0);
+    expect(outerStyle).toMatchObject({ overflow: "hidden" });
+
+    expect(StyleSheet.flatten(screen.getByTestId("garden-hero").props.style)).toMatchObject({
+      borderRadius: 0,
+      borderWidth: 0,
+    });
+    expect(StyleSheet.flatten(screen.getByTestId("garden-calendar-area").props.style)).toMatchObject({
+      width: "100%",
+    });
+    expect(StyleSheet.flatten(screen.getByTestId("garden-calendar").props.style)).toMatchObject({
+      backgroundColor: "transparent",
+      borderRadius: 0,
+      borderWidth: 0,
+    });
+    expect(StyleSheet.flatten(screen.getByTestId("garden-stats").props.style)).toMatchObject({
+      backgroundColor: "transparent",
+      borderRadius: 0,
+      borderWidth: 0,
+    });
+
+    expect(
+      StyleSheet.flatten(screen.getByLabelText("Current streak 1 days").props.style).borderLeftWidth,
+    ).toBeGreaterThan(0);
 
     await fireEvent.press(screen.getByTestId("garden-previous-month"));
     expect(goToPreviousMonth).toHaveBeenCalledTimes(1);
@@ -99,14 +127,22 @@ describe("RosaryGardenSection", () => {
 
     await render(<RosaryGardenSection onPrayToday={onPrayToday} />);
 
-    expect(screen.getByLabelText("Garden preview data")).toBeTruthy();
+    expect(within(screen.getByTestId("rosary-garden-card")).getByLabelText("Garden preview data")).toBeTruthy();
     await fireEvent.press(screen.getByRole("button", { name: "Pray today's rosary" }));
     expect(onPrayToday).toHaveBeenCalledTimes(1);
   });
 
-  it("uses a single column on phones and a calendar-and-quote row on tablets", async () => {
+  it("keeps garden content responsive on narrow phones, tablets, and large text", async () => {
     const rendered = await render(<RosaryGardenSection onPrayToday={jest.fn()} />);
-    expect(StyleSheet.flatten(screen.getByTestId("garden-calendar-area").props.style).flexDirection).not.toBe("row");
+
+    mockResponsiveLayout.mockReturnValue({
+      ...phoneLayout,
+      contentWidth: 320,
+      isNarrowPhone: true,
+      width: 320,
+    });
+    await rendered.rerender(<RosaryGardenSection onPrayToday={jest.fn()} />);
+    expect(StyleSheet.flatten(screen.getByTestId("garden-stats").props.style).flexDirection).toBe("column");
 
     mockResponsiveLayout.mockReturnValue({
       ...phoneLayout,
@@ -117,10 +153,7 @@ describe("RosaryGardenSection", () => {
       width: 768,
     });
     await rendered.rerender(<RosaryGardenSection onPrayToday={jest.fn()} />);
-
-    expect(StyleSheet.flatten(screen.getByTestId("garden-calendar-area").props.style)).toMatchObject({
-      flexDirection: "row",
-    });
+    expect(StyleSheet.flatten(screen.getByTestId("garden-stats").props.style).flexDirection).toBe("row");
 
     mockResponsiveLayout.mockReturnValue({
       ...phoneLayout,
@@ -133,8 +166,7 @@ describe("RosaryGardenSection", () => {
       width: 768,
     });
     await rendered.rerender(<RosaryGardenSection onPrayToday={jest.fn()} />);
-
-    expect(StyleSheet.flatten(screen.getByTestId("garden-calendar-area").props.style).flexDirection).not.toBe("row");
+    expect(StyleSheet.flatten(screen.getByTestId("garden-stats").props.style).flexDirection).toBe("column");
   });
 
   it("retains Spanish garden content", async () => {

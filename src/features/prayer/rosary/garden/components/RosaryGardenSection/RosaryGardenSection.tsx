@@ -1,14 +1,11 @@
 import { Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
-import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
 import { useRosaryGarden } from "@/features/prayer/rosary/garden/useRosaryGarden";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 
 import { GardenCalendar } from "../GardenCalendar";
 import { GardenHero } from "../GardenHero";
-import { GardenMotivationCard } from "../GardenMotivationCard";
-import { GardenQuoteCard } from "../GardenQuoteCard";
 import { GardenStats } from "../GardenStats";
 import { MonthNavigator } from "../MonthNavigator";
 import { PrayTodayButton } from "../PrayTodayButton";
@@ -17,55 +14,57 @@ export type RosaryGardenSectionProps = {
   onPrayToday: () => void;
 };
 
-/** Embeds the complete Rosary Garden experience inside a parent prayer page. */
+/** Embeds the complete Rosary Garden experience within one continuous bordered surface. */
 export function RosaryGardenSection({ onPrayToday }: RosaryGardenSectionProps) {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
-  const { isLargeText, isTablet } = useResponsiveLayout();
   const garden = useRosaryGarden();
-  const useCalendarColumns = isTablet && !isLargeText;
 
   return (
     <View style={styles.section}>
-      {garden.isUsingMockData ? (
-        <Text accessibilityLabel={t("rosary.garden.previewLabel")} style={styles.offlineLabel}>
-          {t("rosary.garden.preview")}
-        </Text>
-      ) : null}
-      <GardenHero />
-      <MonthNavigator
-        canGoNext={garden.canGoNext}
-        canGoPrevious={garden.canGoPrevious}
-        month={garden.selectedMonthNumber}
-        onNext={garden.goToNextMonth}
-        onPrevious={garden.goToPreviousMonth}
-        year={garden.selectedYear}
-      />
-      <View
-        style={[styles.calendarArea, useCalendarColumns && styles.tabletCalendarArea]}
-        testID="garden-calendar-area"
-      >
-        <View style={styles.calendarWrap}>
-          <GardenCalendar days={garden.days} month={garden.selectedMonthNumber} year={garden.selectedYear} />
-        </View>
-        <View style={[styles.quoteWrap, useCalendarColumns && styles.tabletQuoteWrap]}>
-          <GardenQuoteCard />
+      <View style={styles.card} testID="rosary-garden-card">
+        <GardenHero />
+        <View style={styles.body}>
+          {garden.isUsingMockData ? (
+            <Text accessibilityLabel={t("rosary.garden.previewLabel")} style={styles.offlineLabel}>
+              {t("rosary.garden.preview")}
+            </Text>
+          ) : null}
+          <MonthNavigator
+            canGoNext={garden.canGoNext}
+            canGoPrevious={garden.canGoPrevious}
+            month={garden.selectedMonthNumber}
+            onNext={garden.goToNextMonth}
+            onPrevious={garden.goToPreviousMonth}
+            year={garden.selectedYear}
+          />
+          <View style={styles.calendarArea} testID="garden-calendar-area">
+            <GardenCalendar days={garden.days} month={garden.selectedMonthNumber} year={garden.selectedYear} />
+          </View>
+          <GardenStats stats={garden.stats} />
+          <PrayTodayButton onPress={onPrayToday} />
         </View>
       </View>
-      <GardenStats stats={garden.stats} />
-      <GardenMotivationCard />
-      <PrayTodayButton onPress={onPrayToday} />
     </View>
   );
 }
 
 const styleSheet = createThemedStyles((theme) => ({
-  calendarArea: {
-    gap: theme.spacing[3],
+  body: {
+    gap: theme.spacing[4],
+    padding: theme.spacing[3],
   },
-  calendarWrap: {
-    flex: 1,
+  card: {
+    backgroundColor: theme.rosary.colors.card,
+    borderColor: theme.rosary.colors.gold,
+    borderRadius: theme.radii["2xl"],
+    borderWidth: theme.rosary.borderWidths.goldHairline,
+    overflow: "hidden",
+    width: "100%",
+  },
+  calendarArea: {
     minWidth: theme.spacing[0],
+    width: "100%",
   },
   offlineLabel: {
     ...theme.typography.labelSmall,
@@ -73,21 +72,9 @@ const styleSheet = createThemedStyles((theme) => ({
     color: theme.rosary.colors.gold,
     letterSpacing: theme.letterSpacing.wider,
   },
-  quoteWrap: {
-    width: "100%",
-  },
   section: {
-    gap: theme.spacing[4],
     minWidth: theme.spacing[0],
     width: "100%",
-  },
-  tabletCalendarArea: {
-    alignItems: "stretch",
-    flexDirection: "row",
-    gap: theme.spacing[4],
-  },
-  tabletQuoteWrap: {
-    flex: 0.38,
-    minWidth: 220,
+    ...theme.shadows.large,
   },
 }));

@@ -11,7 +11,7 @@ import { theme } from "@/theme/tokens";
 const maryArtwork = require("../../../../../assets/saints/blessed-virgin-mary.png");
 const flowersArtwork = require("../../../../../assets/flowers/whiteFlowerVase.png");
 
-/** Renders this feature with colors from the currently resolved app appearance. */
+/** Renders the illustrated, borderless header for the unified Rosary Garden card. */
 export function GardenHero() {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
@@ -24,6 +24,7 @@ export function GardenHero() {
       end={{ x: 1, y: 1 }}
       start={{ x: 0, y: 0 }}
       style={[styles.card, compact && styles.compactCard]}
+      testID="garden-hero"
     >
       <View style={[styles.copyArea, isLargeText && styles.copyAreaLargeText]}>
         <View style={styles.titleRow}>
@@ -57,14 +58,12 @@ export function GardenHero() {
 
 const styleSheet = createThemedStyles((theme) => ({
   card: {
-    borderColor: "rgba(230, 186, 100, 0.5)",
-    borderRadius: theme.radii["2xl"],
-    borderWidth: theme.rosary.borderWidths.goldHairline,
+    borderRadius: theme.spacing[0],
+    borderWidth: theme.spacing[0],
     flexDirection: "row",
     minHeight: 158,
     overflow: "hidden",
     paddingLeft: theme.spacing[5],
-    ...theme.shadows.large,
   },
   compactCard: {
     minHeight: 138,

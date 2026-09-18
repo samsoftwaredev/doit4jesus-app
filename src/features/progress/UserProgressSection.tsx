@@ -4,8 +4,10 @@ import { Pressable, Text, View } from "react-native";
 
 import { Card } from "@/components/ui";
 import { fetchRosaryStreak } from "@/features/prayer/rosary/garden/api";
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 
+import { GardenMotivationCard, GardenQuoteCard } from "./components";
 import { fetchRosaryStats, fetchUserProgress } from "./progress.api";
 import { StreakCards } from "./StreakCards";
 
@@ -20,8 +22,10 @@ type UserProgressStats = {
 export function UserProgressSection() {
   const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
+  const { isLargeText, isTablet } = useResponsiveLayout();
   const [isLoadingStats, setIsLoadingStats] = useState(true);
   const [stats, setStats] = useState<UserProgressStats | null>(null);
+  const useInspirationColumns = isTablet && !isLargeText;
 
   /** Refreshes the statistics used by the extracted streak-card group. */
   const loadProgress = useCallback(async () => {
@@ -52,13 +56,27 @@ export function UserProgressSection() {
 
   return (
     <View accessibilityLabel={t("progress.sectionLabel")} style={styles.section}>
-      {isLoadingStats ? (
-        <StreakCards isLoading />
-      ) : stats ? (
-        <StreakCards currentStreak={stats.currentStreak} longestStreak={stats.longestStreak} />
-      ) : (
-        <ProgressLoadError message={t("progress.loadError")} onRetry={loadProgress} />
-      )}
+      <View testID="progress-streak-area">
+        {isLoadingStats ? (
+          <StreakCards isLoading />
+        ) : stats ? (
+          <StreakCards currentStreak={stats.currentStreak} longestStreak={stats.longestStreak} />
+        ) : (
+          <ProgressLoadError message={t("progress.loadError")} onRetry={loadProgress} />
+        )}
+      </View>
+
+      <View
+        style={[styles.inspirationCards, useInspirationColumns && styles.inspirationCardsColumns]}
+        testID="progress-inspiration-cards"
+      >
+        <View style={styles.inspirationCard} testID="garden-motivation-card-container">
+          <GardenMotivationCard />
+        </View>
+        <View style={styles.inspirationCard} testID="garden-quote-card-container">
+          <GardenQuoteCard />
+        </View>
+      </View>
 
       <View style={styles.divider} />
     </View>
@@ -116,6 +134,19 @@ const styleSheet = createThemedStyles((theme) => ({
     ...theme.typography.body,
     color: theme.colors.text.muted,
     textAlign: "center",
+  },
+  inspirationCards: {
+    gap: theme.spacing[3],
+    minWidth: theme.spacing[0],
+    width: "100%",
+  },
+  inspirationCardsColumns: {
+    alignItems: "stretch",
+    flexDirection: "row",
+  },
+  inspirationCard: {
+    flex: 1,
+    minWidth: theme.spacing[0],
   },
   retryButton: {
     marginTop: theme.spacing[3],

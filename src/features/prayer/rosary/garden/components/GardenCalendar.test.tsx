@@ -124,4 +124,16 @@ describe("GardenCalendar", () => {
     expect(screen.getByLabelText("August 27, 2026, completed")).toBeTruthy();
     expect(screen.getByLabelText("August 28, 2026, not completed")).toBeTruthy();
   });
+
+  it("announces a full bloom without creating another bordered card", async () => {
+    const completedDays = makeDays(2026, 8).map((day) => ({ ...day, completed: true }));
+    await render(<GardenCalendar days={completedDays} month={8} year={2026} />);
+
+    expect(screen.getByText("Garden in Full Bloom")).toBeTruthy();
+    expect(StyleSheet.flatten(screen.getByTestId("garden-calendar").props.style)).toMatchObject({
+      backgroundColor: "transparent",
+      borderRadius: 0,
+      borderWidth: 0,
+    });
+  });
 });

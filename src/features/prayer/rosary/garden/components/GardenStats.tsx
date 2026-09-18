@@ -12,7 +12,7 @@ interface GardenStatsProps {
   stats: RosaryGardenStats;
 }
 
-/** Renders this feature with colors from the currently resolved app appearance. */
+/** Renders Garden statistics as a borderless region within the unified Garden card. */
 export function GardenStats({ stats }: GardenStatsProps) {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
@@ -48,7 +48,7 @@ export function GardenStats({ stats }: GardenStatsProps) {
   ] as const;
 
   return (
-    <View style={[styles.card, stackStats && styles.cardStacked]}>
+    <View style={[styles.card, stackStats && styles.cardStacked]} testID="garden-stats">
       {values.map((item, index) => (
         <Animated.View
           accessibilityLabel={item.accessibility}
@@ -79,10 +79,9 @@ export function GardenStats({ stats }: GardenStatsProps) {
 
 const styleSheet = createThemedStyles((theme) => ({
   card: {
-    backgroundColor: "rgba(14, 44, 60, 0.92)",
-    borderColor: theme.colors.border.default,
-    borderRadius: theme.radii.xl,
-    borderWidth: theme.borderWidths.thin,
+    backgroundColor: theme.colors.transparent,
+    borderRadius: theme.spacing[0],
+    borderWidth: theme.spacing[0],
     flexDirection: "row",
     paddingVertical: theme.spacing[3],
   },

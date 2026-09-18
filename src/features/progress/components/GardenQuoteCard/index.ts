@@ -1,0 +1,1 @@
+export { GardenQuoteCard } from "./GardenQuoteCard";
