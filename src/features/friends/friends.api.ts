@@ -1,3 +1,4 @@
+import { getSupabaseAccessToken } from "@/lib/supabase";
 import type {
   CurrentLevel,
   EarnedFriendBadge,
@@ -12,13 +13,13 @@ import type {
   FriendsLeaderboard,
   FriendsLeaderboardEntry,
   FriendsPage,
+  LeaderboardFriendProfile,
   LeaderboardPeriod,
   LeaderboardPeriodType,
   OffsetPageMeta,
   RosaryStreak,
   UserSearchPage,
 } from "./friends.types";
-import { getSupabaseAccessToken } from "@/lib/supabase";
 
 type RequestOptions = {
   body?: Record<string, string>;
@@ -73,6 +74,10 @@ function readNullableString(value: unknown, field: string): string | null {
   return value === null ? null : readString(value, field);
 }
 
+function readOptionalNullableString(value: unknown, field: string): string | null {
+  return value === undefined || value === null ? null : readString(value, field);
+}
+
 function parseOffsetPageMeta(value: unknown): OffsetPageMeta {
   const meta = readRecord(value, "pagination metadata");
   const nextOffset = meta.nextOffset;
@@ -119,6 +124,20 @@ function parseFriendProfile(value: unknown): FriendProfileSummary {
   };
 }
 
+/** Parses the smaller profile projection returned by leaderboard endpoints. */
+function parseLeaderboardFriendProfile(value: unknown): LeaderboardFriendProfile {
+  const profile = readRecord(value, "leaderboard friend profile");
+
+  return {
+    avatarUrl: readOptionalNullableString(profile.avatarUrl, "leaderboard friend avatar URL"),
+    countryCode: readOptionalNullableString(profile.countryCode, "leaderboard friend country code"),
+    displayName: readString(profile.displayName, "leaderboard friend display name"),
+    id: readString(profile.id, "leaderboard friend ID"),
+    title: readOptionalNullableString(profile.title, "leaderboard friend title"),
+    username: readOptionalNullableString(profile.username, "leaderboard friend username"),
+  };
+}
+
 function parseFriendSummary(value: unknown) {
   const friend = readRecord(value, "friend summary");
   const rosaryStreak = friend.rosaryStreak;
@@ -158,12 +177,18 @@ function parseFriendRequest(value: unknown): FriendRequest {
   };
 }
 
+/** Parses supported periods and normalizes legacy client periods to weekly metadata. */
 function parseLeaderboardPeriod(value: unknown): LeaderboardPeriod {
   const period = readRecord(value, "leaderboard period");
-  const periodType = readString(period.periodType, "period type") as LeaderboardPeriodType;
+  const rawPeriodType = readString(period.periodType, "period type");
   const status = readString(period.status, "period status") as LeaderboardPeriod["status"];
+  let periodType: LeaderboardPeriodType;
 
-  if (!["daily", "weekly", "monthly", "yearly", "season"].includes(periodType)) {
+  if (rawPeriodType === "weekly" || rawPeriodType === "yearly") {
+    periodType = rawPeriodType;
+  } else if (["daily", "monthly", "season"].includes(rawPeriodType)) {
+    periodType = "weekly";
+  } else {
     throw new Error("The Friends API returned an unknown leaderboard period.");
   }
 
@@ -186,7 +211,7 @@ function parseLeaderboardEntry(value: unknown): FriendsLeaderboardEntry {
   const entry = readRecord(value, "leaderboard entry");
 
   return {
-    friend: parseFriendProfile(entry.friend),
+    friend: parseLeaderboardFriendProfile(entry.friend),
     isCurrentUser: readBoolean(entry.isCurrentUser, "current user ranking flag"),
     points: readNumber(entry.points, "leaderboard points"),
     prayersCount: readNumber(entry.prayersCount, "prayer count"),
@@ -323,7 +348,6 @@ export async function getFriendRequests({
     await request(`/api/v1/me/friend-requests?${createQuery({ direction, limit, offset, status })}`),
     "friend requests response",
   );
-
   return {
     data: readArray(payload.data, "friend requests").map(parseFriendRequest),
     meta: parseOffsetPageMeta(payload.meta),

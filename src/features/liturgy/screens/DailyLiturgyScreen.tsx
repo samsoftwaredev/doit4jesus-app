@@ -4,6 +4,7 @@ import { ActivityIndicator, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui";
+import { useCurrentLocalDate } from "@/hooks";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
@@ -16,7 +17,7 @@ import {
   recordDailyScriptureCompletion,
   recordRewardOnProgress,
 } from "../index";
-import { addDaysToIsoDate, canNavigateToNextLiturgyDate, getLocalIsoDate } from "../liturgy.dates";
+import { addDaysToIsoDate, canNavigateToNextLiturgyDate } from "../liturgy.dates";
 import type { DailyLiturgyViewModel, DailyReadingProgress } from "../liturgy.types";
 
 interface CompletionToastState {
@@ -59,6 +60,7 @@ export function DailyLiturgyDashboard({ country = "US", onCalendarPress }: Daily
   const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   const rewardInFlight = useRef<string | null>(null);
+  const activeLoadRequest = useRef(0);
   const toastPresentedFor = useRef<string | null>(null);
   const [completionToast, setCompletionToast] = useState<CompletionToastState | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -67,7 +69,8 @@ export function DailyLiturgyDashboard({ country = "US", onCalendarPress }: Daily
   const [liturgy, setLiturgy] = useState<DailyLiturgyViewModel | null>(null);
   const [progress, setProgress] = useState<DailyReadingProgress | null>(null);
   const [rewardError, setRewardError] = useState<string | null>(null);
-  const [selectedDate, setSelectedDate] = useState(() => getLocalIsoDate());
+  const currentLocalDate = useCurrentLocalDate();
+  const [selectedDate, setSelectedDate] = useState(currentLocalDate);
 
   const presentCompletionToast = useCallback(async (nextProgress: DailyReadingProgress, readingCount: number) => {
     const reward = nextProgress.reward;
@@ -128,9 +131,11 @@ export function DailyLiturgyDashboard({ country = "US", onCalendarPress }: Daily
     [presentCompletionToast, t],
   );
 
+  /** Synchronizes saved reading progress when the associated liturgy request is still current. */
   const syncProgress = useCallback(
-    async (model: DailyLiturgyViewModel) => {
+    async (model: DailyLiturgyViewModel, requestId = activeLoadRequest.current) => {
       const nextProgress = await loadDailyReadingProgress(model.date, model.metadata.country);
+      if (requestId !== activeLoadRequest.current) return;
       setProgress(nextProgress);
 
       if (!hasCompletedAllReadings(nextProgress, model)) return;
@@ -143,23 +148,31 @@ export function DailyLiturgyDashboard({ country = "US", onCalendarPress }: Daily
     [awardCompletion, presentCompletionToast],
   );
 
+  /** Loads one date and ignores results from requests superseded by navigation or midnight rollover. */
   const reload = useCallback(
     async (date = selectedDate) => {
+      const requestId = ++activeLoadRequest.current;
       setError(null);
       setIsLoading(true);
 
       try {
         const model = await fetchLiturgyReadings(date, country);
+        if (requestId !== activeLoadRequest.current) return;
         setLiturgy(model);
-        await syncProgress(model);
+        await syncProgress(model, requestId);
       } catch {
+        if (requestId !== activeLoadRequest.current) return;
         setError(t("liturgy.loadError"));
       } finally {
-        setIsLoading(false);
+        if (requestId === activeLoadRequest.current) setIsLoading(false);
       }
     },
     [country, selectedDate, syncProgress, t],
   );
+
+  useEffect(() => {
+    setSelectedDate(currentLocalDate);
+  }, [currentLocalDate]);
 
   useEffect(() => {
     void reload();

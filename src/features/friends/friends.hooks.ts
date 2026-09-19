@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { i18n } from "@/localization";
 
@@ -171,7 +171,9 @@ export function useFriendRequests(direction: FriendRequestDirection) {
   };
 }
 
+/** Loads the Friends leaderboard for the selected weekly or yearly period. */
 export function useRosaryLeaderboard(initialPeriod: LeaderboardPeriodType = "weekly") {
+  const activeRequest = useRef(0);
   const [error, setError] = useState<string>();
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -179,15 +181,24 @@ export function useRosaryLeaderboard(initialPeriod: LeaderboardPeriodType = "wee
   const [periodType, setPeriodType] = useState<LeaderboardPeriodType>(initialPeriod);
 
   const load = useCallback(async () => {
+    const requestId = ++activeRequest.current;
     setError(undefined);
     setIsLoading(true);
+    setIsLoadingMore(false);
 
     try {
-      setLeaderboard(await getRosaryLeaderboard({ periodType }));
+      const nextLeaderboard = await getRosaryLeaderboard({ periodType });
+      if (requestId !== activeRequest.current) return;
+      if (nextLeaderboard.period.periodType !== periodType) {
+        setPeriodType(nextLeaderboard.period.periodType);
+        return;
+      }
+      setLeaderboard(nextLeaderboard);
     } catch (requestError) {
+      if (requestId !== activeRequest.current) return;
       setError(messageFrom(requestError, i18n.t("friends.errors.loadLeaderboard")));
     } finally {
-      setIsLoading(false);
+      if (requestId === activeRequest.current) setIsLoading(false);
     }
   }, [periodType]);
 
@@ -198,12 +209,14 @@ export function useRosaryLeaderboard(initialPeriod: LeaderboardPeriodType = "wee
   const loadMore = useCallback(async () => {
     if (!leaderboard || leaderboard.entries.length >= leaderboard.total || isLoadingMore) return;
 
+    const requestId = activeRequest.current;
     setIsLoadingMore(true);
     try {
       const next = await getRosaryLeaderboard({
         offset: leaderboard.entries.length,
         periodType,
       });
+      if (requestId !== activeRequest.current) return;
       setLeaderboard((current) => {
         if (!current) return next;
         const entries = [...current.entries, ...next.entries].filter(
@@ -212,9 +225,10 @@ export function useRosaryLeaderboard(initialPeriod: LeaderboardPeriodType = "wee
         return { ...next, entries };
       });
     } catch (requestError) {
+      if (requestId !== activeRequest.current) return;
       setError(messageFrom(requestError, i18n.t("friends.errors.loadMoreRankings")));
     } finally {
-      setIsLoadingMore(false);
+      if (requestId === activeRequest.current) setIsLoadingMore(false);
     }
   }, [isLoadingMore, leaderboard, periodType]);
 
@@ -333,22 +347,33 @@ export function useSendFriendRequest() {
   return { error, pendingUsername, requestedUsernames, send };
 }
 
-export function useFriendsComparison(friendId: string | undefined) {
+/** Loads a friend comparison for the selected weekly or yearly period. */
+export function useFriendsComparison(friendId: string | undefined, initialPeriod: LeaderboardPeriodType = "weekly") {
+  const activeRequest = useRef(0);
   const [comparison, setComparison] = useState<FriendsComparison>();
   const [error, setError] = useState<string>();
   const [isLoading, setIsLoading] = useState(true);
+  const [periodType, setPeriodType] = useState<LeaderboardPeriodType>(initialPeriod);
 
   const load = useCallback(async () => {
+    const requestId = ++activeRequest.current;
     setError(undefined);
     setIsLoading(true);
     try {
-      setComparison(await getFriendsComparison());
+      const nextComparison = await getFriendsComparison({ periodType });
+      if (requestId !== activeRequest.current) return;
+      if (nextComparison.period.periodType !== periodType) {
+        setPeriodType(nextComparison.period.periodType);
+        return;
+      }
+      setComparison(nextComparison);
     } catch (requestError) {
+      if (requestId !== activeRequest.current) return;
       setError(messageFrom(requestError, i18n.t("friends.errors.compare")));
     } finally {
-      setIsLoading(false);
+      if (requestId === activeRequest.current) setIsLoading(false);
     }
-  }, []);
+  }, [periodType]);
 
   useEffect(() => {
     if (!friendId) {
@@ -363,5 +388,5 @@ export function useFriendsComparison(friendId: string | undefined) {
   const currentUser = useMemo(() => entries.find((entry) => entry.isCurrentUser), [entries]);
   const friend = useMemo(() => entries.find((entry) => entry.profile.id === friendId), [entries, friendId]);
 
-  return { comparison, currentUser, error, friend, isLoading, reload: load };
+  return { comparison, currentUser, error, friend, isLoading, periodType, reload: load, setPeriodType };
 }

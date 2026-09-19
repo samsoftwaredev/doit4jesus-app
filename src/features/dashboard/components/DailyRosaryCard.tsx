@@ -37,7 +37,7 @@ function StreakCopy({ reminder }: { reminder: RosaryReminderViewModel }) {
   return <Text style={styles.streak}>{t("dashboard.dailyRosary.dayStreak", { count: reminder.streak.current })}</Text>;
 }
 
-/** Renders the unified daily habit card and its synchronized reminder state. */
+/** Renders the unified daily habit card and explains when its synchronized streak deadline expires. */
 export function DailyRosaryCard({
   error,
   isLoading,
@@ -55,6 +55,7 @@ export function DailyRosaryCard({
   const expiredRequestRef = useRef<string | null>(null);
   const state = reminder ? getRosaryReminderState(reminder, countdown.totalSeconds) : "normal";
   const expiryKey = reminder?.deadlineAt ? `${reminder.serverNow}/${reminder.deadlineAt}` : null;
+  const formattedCountdown = `${twoDigits(countdown.hours)}:${twoDigits(countdown.minutes)}:${twoDigits(countdown.seconds)}`;
 
   useEffect(() => {
     if (state !== "expired" || !expiryKey || isLoading || expiredRequestRef.current === expiryKey) return;
@@ -120,7 +121,7 @@ export function DailyRosaryCard({
             style={[styles.timer, state === "urgent" && styles.timerUrgent]}
             testID="rosary-countdown"
           >
-            {`${twoDigits(countdown.hours)} : ${twoDigits(countdown.minutes)} : ${twoDigits(countdown.seconds)}`}
+            {t("dashboard.dailyRosary.countdownDisplay", { time: formattedCountdown })}
           </Text>
         )}
 
@@ -272,8 +273,10 @@ const styleSheet = createThemedStyles((theme) => ({
   timer: {
     ...theme.typography.caption,
     color: theme.colors.text.muted,
+    flexShrink: 1,
     fontFamily: theme.fontFamilies.devotional,
     letterSpacing: theme.letterSpacing.wide,
+    maxWidth: "100%",
     textAlign: "center",
   },
   timerUrgent: { color: theme.colors.gold.light, fontSize: 30, lineHeight: 38 },

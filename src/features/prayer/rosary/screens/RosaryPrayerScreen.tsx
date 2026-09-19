@@ -2,6 +2,7 @@ import Feather from "@expo/vector-icons/Feather";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   AccessibilityInfo,
   type LayoutChangeEvent,
@@ -13,10 +14,11 @@ import {
   View,
 } from "react-native";
 import Animated, { FadeIn, useReducedMotion } from "react-native-reanimated";
-import { useTranslation } from "react-i18next";
 
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { Confetti, SacredAtmosphere } from "@/components/ui";
+import { recordPrayerForIntention } from "@/features/prayer/intentions";
+import { recordRosaryActivity } from "@/features/prayer/rosary/api/activities.api";
 import {
   FruitOfMysteryCard,
   MysteryCard,
@@ -26,8 +28,6 @@ import {
   RosaryPresence,
   ScriptureCard,
 } from "@/features/prayer/rosary/components";
-import { recordPrayerForIntention } from "@/features/prayer/intentions";
-import { recordRosaryActivity } from "@/features/prayer/rosary/api/activities.api";
 import { getRosaryContent } from "@/features/prayer/rosary/data/localizedRosaryContent";
 import type { RosaryContent } from "@/features/prayer/rosary/data/rosaryContent";
 import { getRosaryMysteriesFromContent } from "@/features/prayer/rosary/data/rosaryMysteries";
@@ -36,10 +36,10 @@ import { useRosaryAudioPlayback } from "@/features/prayer/rosary/hooks/useRosary
 import { useRosaryAudioPreference } from "@/features/prayer/rosary/hooks/useRosaryAudioPreference";
 import { useRosaryLengthPreference } from "@/features/prayer/rosary/hooks/useRosaryLengthPreference";
 import { useRosarySession } from "@/features/prayer/rosary/hooks/useRosarySession";
+import type { RosaryBead, RosaryLength, RosaryMystery, RosaryMysteryType } from "@/features/prayer/rosary/types";
 import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
-import type { RosaryBead, RosaryLength, RosaryMystery, RosaryMysteryType } from "@/features/prayer/rosary/types";
 
 function completionDateLabel(date: string | null, locale: string, today: string) {
   const value = date ? new Date(date) : new Date();
@@ -532,7 +532,7 @@ export function RosaryPrayerScreen({
               accessibilityRole="button"
               onPress={() => {
                 setCompletionVisible(false);
-                router.replace("/");
+                router.replace("/prayer");
               }}
               style={({ pressed }) => [styles.secondaryAction, pressed && styles.pressed]}
             >

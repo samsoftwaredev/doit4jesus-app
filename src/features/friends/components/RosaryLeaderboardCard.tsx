@@ -7,6 +7,7 @@ import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles"
 import { theme } from "@/theme/tokens";
 
 import type { FriendsLeaderboard } from "../friends.types";
+import { getLeaderboardPeriodLabelKey } from "../friends.periods";
 import { LeaderboardEntries } from "./LeaderboardEntries";
 
 type RosaryLeaderboardCardProps = {
@@ -23,6 +24,7 @@ export function RosaryLeaderboardCard({
 }: RosaryLeaderboardCardProps) {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
+  const periodLabel = t(getLeaderboardPeriodLabelKey(leaderboard.period.periodType));
   const topEntries = leaderboard.entries.slice(0, 7);
   const showCurrentUserEntry = Boolean(
     leaderboard.currentUserEntry &&
@@ -37,11 +39,11 @@ export function RosaryLeaderboardCard({
             {t("friends.leaderboard.title").toUpperCase()}
           </Text>
           <Pressable
-            accessibilityLabel={t("friends.leaderboard.periodLabel", { period: leaderboard.period.name })}
+            accessibilityLabel={t("friends.leaderboard.periodLabel", { period: periodLabel })}
             onPress={onViewFullLeaderboard}
             style={styles.period}
           >
-            <Text style={styles.periodLabel}>{leaderboard.period.name}</Text>
+            <Text style={styles.periodLabel}>{periodLabel}</Text>
             <Feather color={theme.colors.icon.secondary} name="chevron-down" size={theme.sizes.iconSmall} />
           </Pressable>
         </View>

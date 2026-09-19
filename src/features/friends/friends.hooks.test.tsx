@@ -185,8 +185,44 @@ describe("friends hooks", () => {
     await act(async () => result.current.loadMore());
     expect(mockGetRosaryLeaderboard).toHaveBeenLastCalledWith({ offset: 1, periodType: "weekly" });
 
-    await act(async () => result.current.setPeriodType("monthly"));
-    await waitFor(() => expect(mockGetRosaryLeaderboard).toHaveBeenLastCalledWith({ periodType: "monthly" }));
+    mockGetRosaryLeaderboard.mockResolvedValueOnce({
+      ...leaderboard,
+      period: { ...leaderboard.period, name: "This year", periodType: "yearly" },
+    });
+    await act(async () => result.current.setPeriodType("yearly"));
+    await waitFor(() => expect(mockGetRosaryLeaderboard).toHaveBeenLastCalledWith({ periodType: "yearly" }));
+  });
+
+  it("ignores a stale weekly leaderboard response after switching to yearly", async () => {
+    let resolveWeekly: (value: FriendsLeaderboard) => void = () => undefined;
+    const weeklyRequest = new Promise<FriendsLeaderboard>((resolve) => {
+      resolveWeekly = resolve;
+    });
+    const yearlyLeaderboard: FriendsLeaderboard = {
+      ...leaderboard,
+      period: { ...leaderboard.period, name: "This year", periodType: "yearly" },
+    };
+    mockGetRosaryLeaderboard.mockImplementation(({ periodType }: { periodType: string }) =>
+      periodType === "weekly" ? weeklyRequest : Promise.resolve(yearlyLeaderboard),
+    );
+    const { result } = await renderHook(() => useRosaryLeaderboard());
+
+    await act(async () => result.current.setPeriodType("yearly"));
+    await waitFor(() => expect(result.current.leaderboard?.period.periodType).toBe("yearly"));
+    await act(async () => {
+      resolveWeekly(leaderboard);
+      await weeklyRequest;
+    });
+
+    expect(result.current.leaderboard?.period.periodType).toBe("yearly");
+  });
+
+  it("falls back to weekly when leaderboard metadata is normalized from a legacy period", async () => {
+    const { result } = await renderHook(() => useRosaryLeaderboard("yearly"));
+
+    await waitFor(() => expect(result.current.periodType).toBe("weekly"));
+    expect(mockGetRosaryLeaderboard).toHaveBeenNthCalledWith(1, { periodType: "yearly" });
+    expect(mockGetRosaryLeaderboard).toHaveBeenLastCalledWith({ periodType: "weekly" });
   });
 
   it("handles profile and comparison requirements", async () => {
@@ -202,6 +238,46 @@ describe("friends hooks", () => {
     const comparisonHook = await renderHook(() => useFriendsComparison("friend-1"));
     await waitFor(() => expect(comparisonHook.result.current.friend).toEqual(comparison.entries[1]));
     expect(comparisonHook.result.current.currentUser).toEqual(comparison.entries[0]);
+    expect(mockGetFriendsComparison).toHaveBeenLastCalledWith({ periodType: "weekly" });
+
+    mockGetFriendsComparison.mockResolvedValueOnce({
+      ...comparison,
+      period: { ...comparison.period, name: "This year", periodType: "yearly" },
+    });
+    await act(async () => comparisonHook.result.current.setPeriodType("yearly"));
+    await waitFor(() => expect(mockGetFriendsComparison).toHaveBeenLastCalledWith({ periodType: "yearly" }));
+  });
+
+  it("ignores a stale weekly comparison response after switching to yearly", async () => {
+    let resolveWeekly: (value: FriendsComparison) => void = () => undefined;
+    const weeklyRequest = new Promise<FriendsComparison>((resolve) => {
+      resolveWeekly = resolve;
+    });
+    const yearlyComparison: FriendsComparison = {
+      ...comparison,
+      period: { ...comparison.period, name: "This year", periodType: "yearly" },
+    };
+    mockGetFriendsComparison.mockImplementation(({ periodType }: { periodType: string }) =>
+      periodType === "weekly" ? weeklyRequest : Promise.resolve(yearlyComparison),
+    );
+    const { result } = await renderHook(() => useFriendsComparison("friend-1"));
+
+    await act(async () => result.current.setPeriodType("yearly"));
+    await waitFor(() => expect(result.current.comparison?.period.periodType).toBe("yearly"));
+    await act(async () => {
+      resolveWeekly(comparison);
+      await weeklyRequest;
+    });
+
+    expect(result.current.comparison?.period.periodType).toBe("yearly");
+  });
+
+  it("falls back to weekly when comparison metadata is normalized from a legacy period", async () => {
+    const { result } = await renderHook(() => useFriendsComparison("friend-1", "yearly"));
+
+    await waitFor(() => expect(result.current.periodType).toBe("weekly"));
+    expect(mockGetFriendsComparison).toHaveBeenNthCalledWith(1, { periodType: "yearly" });
+    expect(mockGetFriendsComparison).toHaveBeenLastCalledWith({ periodType: "weekly" });
   });
 
   it("validates and debounces search queries", async () => {

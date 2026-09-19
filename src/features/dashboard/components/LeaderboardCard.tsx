@@ -1,8 +1,8 @@
 import Feather from "@expo/vector-icons/Feather";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { Pressable, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
+import { Pressable, Text, View } from "react-native";
 
 import { saintAvatars } from "@/features/profile/saints";
 import { useAppLanguage } from "@/localization";
@@ -37,6 +37,7 @@ function medal(rank: number): string | null {
 export function LeaderboardCard({ entries, error, isLoading, onRetry }: LeaderboardCardProps) {
   const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
+
   return (
     <LinearGradient
       colors={theme.colors.gradients.leaderboard}

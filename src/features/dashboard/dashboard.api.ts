@@ -107,20 +107,22 @@ export async function getRosaryReminder(): Promise<RosaryReminderViewModel> {
   };
 }
 
+/** Loads and validates the backend's weekly global leaderboard entries and profile data. */
 export async function getWeeklyGlobalLeaderboard(): Promise<LeaderboardEntryViewModel[]> {
   const data = readData(
     await requestDashboard("/api/v1/leaderboards?periodType=weekly&scopeType=global&scopeReference=global&limit=5"),
     "leaderboard response",
   );
 
-  return readArray(data.entries, "leaderboard entries").map((entry) => {
-    const value = readRecord(entry, "leaderboard entry");
-    const profile = readRecord(value.profile, "leaderboard profile");
+  return readArray(data.entries, "leaderboard entries").map((rawLeaderboardEntry) => {
+    const leaderboardEntry = readRecord(rawLeaderboardEntry, "leaderboard entry");
+    const profile = readRecord(leaderboardEntry.profile, "leaderboard profile");
+
     return {
       avatarUrl: readOptionalNullableString(profile.avatar_url, "leaderboard avatar"),
       displayName: readString(profile.display_name, "leaderboard display name"),
-      rank: readNumber(value.rank, "leaderboard rank"),
-      rosaries: readNumber(value.rosaries_count, "leaderboard Rosary count"),
+      rank: readNumber(leaderboardEntry.rank, "leaderboard rank"),
+      rosaries: readNumber(leaderboardEntry.rosaries_count, "leaderboard Rosary count"),
     };
   });
 }

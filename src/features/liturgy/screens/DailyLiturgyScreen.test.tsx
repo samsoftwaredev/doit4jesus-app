@@ -2,6 +2,8 @@ import { act, fireEvent, render, screen, waitFor } from "@testing-library/react-
 
 import { DailyLiturgyDashboard } from "./DailyLiturgyScreen";
 
+let mockCurrentLocalDate = "2026-08-21";
+
 jest.mock("expo-router", () => ({
   useFocusEffect: jest.fn((cb: () => void) => cb()),
   useRouter: () => ({ back: jest.fn(), navigate: jest.fn(), push: jest.fn() }),
@@ -25,6 +27,10 @@ jest.mock("@/features/liturgy/liturgy.dates", () => ({
   }),
   canNavigateToNextLiturgyDate: jest.fn(() => true),
   getLocalIsoDate: jest.fn(() => "2026-08-21"),
+}));
+
+jest.mock("@/hooks", () => ({
+  useCurrentLocalDate: () => mockCurrentLocalDate,
 }));
 
 const { fetchLiturgyReadings, loadDailyReadingProgress, markDailyReadingComplete } = jest.requireMock(
@@ -57,8 +63,52 @@ const emptyProgress = { completedReadingIds: [], country: "US", date: "2026-08-2
 describe("DailyLiturgyDashboard", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockCurrentLocalDate = "2026-08-21";
     fetchLiturgyReadings.mockResolvedValue(liturgy);
     loadDailyReadingProgress.mockResolvedValue(emptyProgress);
+  });
+
+  it("returns to today and loads its readings when the local date changes", async () => {
+    fetchLiturgyReadings.mockImplementation((date: string) => Promise.resolve({ ...liturgy, date }));
+    const view = await render(<DailyLiturgyDashboard />);
+    await waitFor(() => expect(fetchLiturgyReadings).toHaveBeenCalledWith("2026-08-21", "US"));
+
+    await fireEvent.press(screen.getByLabelText("Show the previous day's liturgy"));
+    await waitFor(() => expect(fetchLiturgyReadings).toHaveBeenLastCalledWith("2026-08-20", "US"));
+
+    mockCurrentLocalDate = "2026-08-22";
+    await view.rerender(<DailyLiturgyDashboard />);
+
+    await waitFor(() => expect(fetchLiturgyReadings).toHaveBeenLastCalledWith("2026-08-22", "US"));
+    expect(loadDailyReadingProgress).toHaveBeenLastCalledWith("2026-08-22", "US");
+  });
+
+  it("ignores a previous day's response when it finishes after the new day's request", async () => {
+    let resolvePreviousDay: (value: typeof liturgy) => void = () => undefined;
+    const previousDayRequest = new Promise<typeof liturgy>((resolve) => {
+      resolvePreviousDay = resolve;
+    });
+    const nextLiturgy = {
+      ...liturgy,
+      celebration: { ...liturgy.celebration, name: "Memorial of the Queenship of Mary" },
+      date: "2026-08-22",
+    };
+    fetchLiturgyReadings.mockImplementation((date: string) =>
+      date === "2026-08-21" ? previousDayRequest : Promise.resolve(nextLiturgy),
+    );
+    const view = await render(<DailyLiturgyDashboard />);
+
+    mockCurrentLocalDate = "2026-08-22";
+    await view.rerender(<DailyLiturgyDashboard />);
+    await waitFor(() => expect(screen.getByText("Memorial of the Queenship of Mary")).toBeTruthy());
+
+    await act(async () => {
+      resolvePreviousDay(liturgy);
+      await previousDayRequest;
+    });
+
+    expect(screen.getByText("Memorial of the Queenship of Mary")).toBeTruthy();
+    expect(screen.queryByText("Memorial of Saint Pius X, Pope")).toBeNull();
   });
 
   it("shows a loading skeleton while fetching", async () => {

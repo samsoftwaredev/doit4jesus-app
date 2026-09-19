@@ -1,19 +1,21 @@
-import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
-import { useState } from "react";
-import { Alert, Modal, ScrollView, Text, View } from "react-native";
+import { useRef, useState } from "react";
+import { ScrollView, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
-import { IconButton } from "@/components";
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { BackHeader } from "@/components/navigation";
 import { Button, Card } from "@/components/ui";
-import { FriendAvatar, FriendsState } from "@/features/friends/components";
+import {
+  CompareStatsSection,
+  FriendAvatar,
+  FriendsState,
+  RemoveFriendConfirmationModal,
+} from "@/features/friends/components";
 import { removeFriend } from "@/features/friends/friends.api";
 import { useFriendProfile } from "@/features/friends/friends.hooks";
 import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
-import { theme } from "@/theme/tokens";
 
 /** Renders a selected friend's profile within the shared atmosphere. */
 export function FriendProfileScreen({ friendId }: { friendId: string | undefined }) {
@@ -22,36 +24,40 @@ export function FriendProfileScreen({ friendId }: { friendId: string | undefined
   const { locale } = useAppLanguage();
   const router = useRouter();
   const profile = useFriendProfile(friendId);
+  const removalInFlight = useRef(false);
   const [isRemoving, setIsRemoving] = useState(false);
-  const [showOptions, setShowOptions] = useState(false);
+  const [isRemoveConfirmationVisible, setIsRemoveConfirmationVisible] = useState(false);
+  const [removeError, setRemoveError] = useState(false);
 
-  const confirmRemove = () => {
-    if (!friendId || !profile.friend) return;
-    Alert.alert(
-      t("friends.profile.removeTitle"),
-      t("friends.profile.removeDescription", { name: profile.friend.friend.displayName }),
-      [
-        { style: "cancel", text: t("common.cancel") },
-        {
-          onPress: () => {
-            void (async () => {
-              setIsRemoving(true);
-              try {
-                await removeFriend(friendId);
-                setShowOptions(false);
-                router.replace("/community");
-              } catch {
-                Alert.alert(t("friends.profile.removeError"), t("profile.tryAgain"));
-              } finally {
-                setIsRemoving(false);
-              }
-            })();
-          },
-          style: "destructive",
-          text: t("friends.profile.remove"),
-        },
-      ],
-    );
+  /** Opens a fresh removal confirmation for the loaded friend. */
+  const openRemoveConfirmation = () => {
+    setRemoveError(false);
+    setIsRemoveConfirmationVisible(true);
+  };
+
+  /** Dismisses removal confirmation when no destructive request is active. */
+  const dismissRemoveConfirmation = () => {
+    if (isRemoving) return;
+    setRemoveError(false);
+    setIsRemoveConfirmationVisible(false);
+  };
+
+  /** Removes the loaded friend once, retaining the modal with an inline error on failure. */
+  const confirmRemove = async () => {
+    if (!friendId || !profile.friend || removalInFlight.current) return;
+    removalInFlight.current = true;
+    setIsRemoving(true);
+    setRemoveError(false);
+    try {
+      await removeFriend(friendId);
+      setIsRemoveConfirmationVisible(false);
+      router.replace("/community");
+    } catch {
+      setRemoveError(true);
+    } finally {
+      removalInFlight.current = false;
+      setIsRemoving(false);
+    }
   };
 
   return (
@@ -59,16 +65,6 @@ export function FriendProfileScreen({ friendId }: { friendId: string | undefined
       <BackHeader
         description={t("friends.profile.description")}
         onBack={() => router.back()}
-        rightAction={
-          <IconButton accessibilityLabel={t("friends.profile.optionsLabel")} onPress={() => setShowOptions(true)}>
-            <Feather
-              accessible={false}
-              color={theme.colors.icon.primary}
-              name="more-horizontal"
-              size={theme.sizes.iconMedium}
-            />
-          </IconButton>
-        }
         title={t("friends.profile.title")}
       />
       {profile.isLoading ? (
@@ -89,25 +85,27 @@ export function FriendProfileScreen({ friendId }: { friendId: string | undefined
       ) : null}
       {profile.friend && !profile.isLoading && !profile.error ? (
         <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-          <Card padding="lg" variant="elevated">
-            <View style={styles.hero}>
-              <FriendAvatar
-                accessibilityLabel={t("friends.avatarLabel", { name: profile.friend.friend.displayName })}
-                countryCode={profile.friend.friend.countryCode}
-                name={profile.friend.friend.displayName}
-                size="xl"
-                source={profile.friend.friend.avatarUrl}
-              />
-              <Text style={styles.name}>{profile.friend.friend.displayName}</Text>
-              {profile.friend.friend.title ? <Text style={styles.title}>{profile.friend.friend.title}</Text> : null}
-              <Text style={styles.level}>
-                {t("friends.level", { level: profile.friend.progress.currentLevel.levelNumber })}
-              </Text>
-              <Text style={styles.xp}>{`${profile.friend.progress.totalXp.toLocaleString(locale)} XP`}</Text>
-            </View>
-          </Card>
+          <View testID="friend-profile-section-identity">
+            <Card padding="lg" variant="elevated">
+              <View style={styles.hero}>
+                <FriendAvatar
+                  accessibilityLabel={t("friends.avatarLabel", { name: profile.friend.friend.displayName })}
+                  countryCode={profile.friend.friend.countryCode}
+                  name={profile.friend.friend.displayName}
+                  size="xl"
+                  source={profile.friend.friend.avatarUrl}
+                />
+                <Text style={styles.name}>{profile.friend.friend.displayName}</Text>
+                {profile.friend.friend.title ? <Text style={styles.title}>{profile.friend.friend.title}</Text> : null}
+                <Text style={styles.level}>
+                  {t("friends.level", { level: profile.friend.progress.currentLevel.levelNumber })}
+                </Text>
+                <Text style={styles.xp}>{`${profile.friend.progress.totalXp.toLocaleString(locale)} XP`}</Text>
+              </View>
+            </Card>
+          </View>
 
-          <View style={styles.stats}>
+          <View style={styles.stats} testID="friend-profile-section-stats">
             <ProfileStat label={t("friends.totalRosaries")} value={profile.friend.rosaryTotal.toLocaleString(locale)} />
             {profile.friend.rosaryStreak ? (
               <ProfileStat
@@ -118,38 +116,48 @@ export function FriendProfileScreen({ friendId }: { friendId: string | undefined
             <ProfileStat label={t("friends.badges")} value={profile.friend.badges.length.toLocaleString(locale)} />
           </View>
 
-          <Card padding="md" title={t("friends.profile.progress")}>
-            <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>{t("friends.currentLevel")}</Text>
-              <Text style={styles.detailValue}>
-                {profile.friend.progress.currentLevel.name ??
-                  t("friends.level", { level: profile.friend.progress.currentLevel.levelNumber })}
-              </Text>
-            </View>
-            <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>{t("friends.profile.totalXp")}</Text>
-              <Text style={styles.detailValue}>{profile.friend.progress.totalXp.toLocaleString(locale)}</Text>
-            </View>
-            {profile.friend.rosaryStreak ? (
+          <View testID="friend-profile-section-progress">
+            <Card padding="md" title={t("friends.profile.progress")}>
               <View style={styles.detailRow}>
-                <Text style={styles.detailLabel}>{t("friends.profile.longestStreak")}</Text>
+                <Text style={styles.detailLabel}>{t("friends.currentLevel")}</Text>
                 <Text style={styles.detailValue}>
-                  {t("friends.profile.days", { count: profile.friend.rosaryStreak.longestStreak })}
+                  {profile.friend.progress.currentLevel.name ??
+                    t("friends.level", { level: profile.friend.progress.currentLevel.levelNumber })}
                 </Text>
               </View>
-            ) : null}
-          </Card>
+              <View style={styles.detailRow}>
+                <Text style={styles.detailLabel}>{t("friends.profile.totalXp")}</Text>
+                <Text style={styles.detailValue}>{profile.friend.progress.totalXp.toLocaleString(locale)}</Text>
+              </View>
+              {profile.friend.rosaryStreak ? (
+                <View style={styles.detailRow}>
+                  <Text style={styles.detailLabel}>{t("friends.profile.longestStreak")}</Text>
+                  <Text style={styles.detailValue}>
+                    {t("friends.profile.days", { count: profile.friend.rosaryStreak.longestStreak })}
+                  </Text>
+                </View>
+              ) : null}
+            </Card>
+          </View>
+
+          <View testID="friend-profile-section-comparison">
+            <CompareStatsSection friendId={friendId} />
+          </View>
+
+          <View testID="friend-profile-section-remove">
+            <Button fullWidth onPress={openRemoveConfirmation} variant="danger">
+              {t("friends.profile.remove")}
+            </Button>
+          </View>
         </ScrollView>
       ) : null}
-      <FriendOptionsModal
+      <RemoveFriendConfirmationModal
+        error={removeError}
+        friendName={profile.friend?.friend.displayName ?? ""}
         isRemoving={isRemoving}
-        onClose={() => setShowOptions(false)}
-        onCompare={() => {
-          setShowOptions(false);
-          if (friendId) router.push(`/friends/${friendId}/compare`);
-        }}
-        onRemove={confirmRemove}
-        visible={showOptions}
+        onConfirm={() => void confirmRemove()}
+        onDismiss={dismissRemoveConfirmation}
+        visible={isRemoveConfirmationVisible}
       />
     </AtmosphericSafeAreaView>
   );
@@ -163,53 +171,6 @@ function ProfileStat({ label, value }: { label: string; value: string }) {
       <Text style={styles.statValue}>{value}</Text>
       <Text style={styles.statLabel}>{label}</Text>
     </Card>
-  );
-}
-
-/** Renders FriendOptionsModal with styles resolved from the active appearance. */
-function FriendOptionsModal({
-  isRemoving,
-  onClose,
-  onCompare,
-  onRemove,
-  visible,
-}: {
-  isRemoving: boolean;
-  onClose: () => void;
-  onCompare: () => void;
-  onRemove: () => void;
-  visible: boolean;
-}) {
-  const styles = useThemedStyles(styleSheet);
-  const { t } = useTranslation();
-  return (
-    <Modal animationType="fade" onRequestClose={onClose} transparent visible={visible}>
-      <View style={styles.modalOverlay}>
-        <Card padding="md" style={styles.optionsCard} variant="elevated">
-          <Text accessibilityRole="header" style={[styles.optionsTitle, { marginBottom: theme.spacing[3] }]}>
-            {t("friends.profile.friendOptions")}
-          </Text>
-          <Button fullWidth onPress={onClose} variant="secondary" style={{ marginBottom: theme.spacing[3] }}>
-            {t("friends.profile.view")}
-          </Button>
-          <Button fullWidth onPress={onCompare} variant="outline" style={{ marginBottom: theme.spacing[3] }}>
-            {t("friends.compare.title")}
-          </Button>
-          <Button
-            fullWidth
-            loading={isRemoving}
-            onPress={onRemove}
-            variant="danger"
-            style={{ marginBottom: theme.spacing[3] }}
-          >
-            {t("friends.profile.remove")}
-          </Button>
-          <Button fullWidth onPress={onClose} variant="ghost">
-            {t("common.cancel")}
-          </Button>
-        </Card>
-      </View>
-    </Modal>
   );
 }
 
@@ -247,27 +208,9 @@ const styleSheet = createThemedStyles((theme) => ({
     color: theme.colors.text.secondary,
     marginTop: theme.spacing[3],
   },
-  modalOverlay: {
-    alignItems: "center",
-    backgroundColor: theme.colors.background.overlay,
-    flex: 1,
-    justifyContent: "center",
-    padding: theme.spacing[4],
-  },
   name: {
     ...theme.typography.heading2,
     marginTop: theme.spacing[3],
-    textAlign: "center",
-  },
-  optionsCard: {
-    display: "flex",
-    flexDirection: "column",
-    gap: theme.spacing[3],
-    maxWidth: 560,
-    width: "100%",
-  },
-  optionsTitle: {
-    ...theme.typography.heading3,
     textAlign: "center",
   },
   safeArea: {

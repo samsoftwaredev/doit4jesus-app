@@ -190,6 +190,93 @@ describe("Friends API", () => {
     expect(comparison.entries[0]).toMatchObject({ isCurrentUser: true, rosaryTotal: 25 });
   });
 
+  it("parses leaderboard friends when the endpoint omits countryCode", async () => {
+    globalThis.fetch = jest.fn(async () =>
+      successResponse({
+        data: {
+          currentUserEntry: {
+            friend: {
+              avatarUrl: "https://i.pravatar.cc/256?u=testuser",
+              displayName: "Test User",
+              id: "9629e3e7-72dc-4bb1-94d3-b5a2bdd9f002",
+              title: "Faithful Beginner",
+              username: "testuser",
+            },
+            isCurrentUser: true,
+            points: 105,
+            prayersCount: 1,
+            rank: 2,
+            rosariesCount: 0,
+            scriptureReadingsCount: 2,
+          },
+          entries: [
+            {
+              friend: {
+                avatarUrl: "https://i.pravatar.cc/256?u=mariasantos",
+                displayName: "Maria Santos",
+                id: "11111111-1111-4111-8111-111111111111",
+                title: "Prayer Champion",
+                username: "mariasantos",
+              },
+              isCurrentUser: false,
+              points: 110,
+              prayersCount: 0,
+              rank: 1,
+              rosariesCount: 0,
+              scriptureReadingsCount: 0,
+            },
+          ],
+          period: {
+            code: "week-2026-W38",
+            endsAt: "2026-09-21T00:00:00+00:00",
+            id: "3e6ff0c6-ebf8-4949-b4a3-5fcf1bb24555",
+            name: "Week of 2026-09-14",
+            periodType: "weekly",
+            startsAt: "2026-09-14T00:00:00+00:00",
+            status: "active",
+          },
+          total: 2,
+        },
+      }),
+    ) as unknown as typeof fetch;
+
+    await expect(getRosaryLeaderboard()).resolves.toMatchObject({
+      currentUserEntry: { friend: { countryCode: null, displayName: "Test User" } },
+      entries: [{ friend: { countryCode: null, displayName: "Maria Santos" } }],
+      period: { periodType: "weekly" },
+      total: 2,
+    });
+  });
+
+  it("requests yearly leaderboard and comparison periods", async () => {
+    await getRosaryLeaderboard({ periodType: "yearly" });
+    await getFriendsComparison({ periodType: "yearly" });
+
+    const fetchMock = globalThis.fetch as unknown as jest.Mock;
+    expect(fetchMock.mock.calls[0][0]).toContain("/friends/leaderboard?limit=50&offset=0&periodType=yearly");
+    expect(fetchMock.mock.calls[1][0]).toContain("/friends/comparison?limit=100&offset=0&periodType=yearly");
+  });
+
+  it.each(["daily", "monthly", "season"])("normalizes legacy %s period metadata to weekly", async (periodType) => {
+    globalThis.fetch = jest.fn(async () =>
+      successResponse({
+        data: { currentUserEntry: null, entries: [], period: { ...period, periodType }, total: 0 },
+      }),
+    ) as unknown as typeof fetch;
+
+    await expect(getRosaryLeaderboard()).resolves.toMatchObject({ period: { periodType: "weekly" } });
+  });
+
+  it("rejects completely unknown leaderboard period metadata", async () => {
+    globalThis.fetch = jest.fn(async () =>
+      successResponse({
+        data: { currentUserEntry: null, entries: [], period: { ...period, periodType: "lifetime" }, total: 0 },
+      }),
+    ) as unknown as typeof fetch;
+
+    await expect(getRosaryLeaderboard()).rejects.toThrow("unknown leaderboard period");
+  });
+
   it("sends all friend mutations as authenticated requests", async () => {
     await sendFriendRequest("maria");
     await acceptFriendRequest("request/one");

@@ -1,24 +1,17 @@
 import { useRouter } from "expo-router";
-import { FlatList, Pressable, RefreshControl, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
+import { FlatList, RefreshControl, Text, View } from "react-native";
 
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { BackHeader } from "@/components/navigation";
 import { Button, Card } from "@/components/ui";
-import { FriendsState, LeaderboardEntries } from "@/features/friends/components";
+import { FriendsState, LeaderboardEntries, LeaderboardPeriodSelector } from "@/features/friends/components";
 import { formatPoints } from "@/features/friends/components/LeaderboardEntries";
 import { useRosaryLeaderboard } from "@/features/friends/friends.hooks";
-import type { FriendsLeaderboardEntry, LeaderboardPeriodType } from "@/features/friends/friends.types";
+import type { FriendsLeaderboardEntry } from "@/features/friends/friends.types";
 import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
-
-const periodOptions: readonly { labelKey: string; value: LeaderboardPeriodType }[] = [
-  { labelKey: "friends.leaderboard.today", value: "daily" },
-  { labelKey: "friends.leaderboard.thisWeek", value: "weekly" },
-  { labelKey: "friends.leaderboard.thisMonth", value: "monthly" },
-  { labelKey: "friends.leaderboard.thisYear", value: "yearly" },
-];
 
 function getGoal(entries: FriendsLeaderboardEntry[], currentUser: FriendsLeaderboardEntry | null) {
   if (!currentUser) return undefined;
@@ -90,27 +83,7 @@ export function FriendsLeaderboardScreen() {
           ListHeaderComponent={
             <View>
               <View style={styles.periods}>
-                {periodOptions.map((option) => (
-                  <Pressable
-                    accessibilityRole="button"
-                    accessibilityState={{ selected: leaderboard.periodType === option.value }}
-                    key={option.value}
-                    onPress={() => leaderboard.setPeriodType(option.value)}
-                    style={[
-                      styles.periodButton,
-                      leaderboard.periodType === option.value && styles.periodButtonSelected,
-                    ]}
-                  >
-                    <Text
-                      style={[
-                        styles.periodButtonText,
-                        leaderboard.periodType === option.value && styles.periodButtonTextSelected,
-                      ]}
-                    >
-                      {t(option.labelKey)}
-                    </Text>
-                  </Pressable>
-                ))}
+                <LeaderboardPeriodSelector onChange={leaderboard.setPeriodType} value={leaderboard.periodType} />
               </View>
               <Card padding="sm" style={styles.tableHeaderCard} variant="warning">
                 <LeaderboardEntries entries={[]} showHeader />
@@ -238,31 +211,7 @@ const styleSheet = createThemedStyles((theme) => ({
     paddingHorizontal: theme.spacing[4],
     width: "100%",
   },
-  periodButton: {
-    alignItems: "center",
-    borderColor: theme.colors.border.default,
-    borderRadius: theme.radii.pill,
-    borderWidth: theme.borderWidths.thin,
-    flex: 1,
-    justifyContent: "center",
-    minHeight: theme.sizes.touchTarget,
-    paddingHorizontal: theme.spacing[2],
-  },
-  periodButtonSelected: {
-    backgroundColor: theme.colors.gold.primary,
-    borderColor: theme.colors.gold.primary,
-  },
-  periodButtonText: {
-    ...theme.typography.labelSmall,
-    color: theme.colors.text.secondary,
-    textAlign: "center",
-  },
-  periodButtonTextSelected: {
-    color: theme.colors.text.inverse,
-  },
   periods: {
-    flexDirection: "row",
-    gap: theme.spacing[1],
     marginBottom: theme.spacing[4],
   },
   progressFill: {

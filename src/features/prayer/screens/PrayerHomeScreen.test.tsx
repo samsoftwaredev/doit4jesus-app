@@ -7,6 +7,7 @@ import { PrayerScreen } from "./PrayerHomeScreen";
 
 const mockPush = jest.fn();
 const mockGetWeeklyGlobalLeaderboard = jest.fn();
+let mockCurrentLocalDate = "2026-08-24";
 
 function MockPrayersByOthers({
   intentions,
@@ -47,11 +48,22 @@ jest.mock("@/features/dashboard/dashboard.api", () => ({
   getWeeklyGlobalLeaderboard: (...args: unknown[]) => mockGetWeeklyGlobalLeaderboard(...args),
 }));
 
+jest.mock("@/hooks", () => ({
+  ...jest.requireActual("@/hooks"),
+  useCurrentLocalDate: () => mockCurrentLocalDate,
+}));
+
 jest.mock("@/features/prayer/components", () => {
   const { Text: MockText } = jest.requireActual<typeof import("react-native")>("react-native");
   return {
     AllMysteries: () => <MockText>All Mysteries Section</MockText>,
-    MomentForPrayer: () => <MockText>Today&apos;s Rosary Section</MockText>,
+    MomentForPrayer: ({ mysteryTitle, weekday }: { mysteryTitle: string; weekday: string }) => (
+      <>
+        <MockText>Today&apos;s Rosary Section</MockText>
+        <MockText>{weekday}</MockText>
+        <MockText>{mysteryTitle}</MockText>
+      </>
+    ),
     PrayersByOthers: MockPrayersByOthers,
   };
 });
@@ -92,10 +104,33 @@ const secondIntention = {
 describe("PrayerScreen", () => {
   beforeEach(async () => {
     jest.clearAllMocks();
+    mockCurrentLocalDate = "2026-08-24";
     mockGetWeeklyGlobalLeaderboard.mockResolvedValue([
       { avatarUrl: null, displayName: "St. Michael", rank: 1, rosaries: 245 },
     ]);
     await i18n.changeLanguage("en");
+  });
+
+  it("updates today's weekday, mystery, and prayer destination when the local date changes", async () => {
+    fetchApprovedPrayerIntentions.mockResolvedValue({
+      data: [],
+      meta: { hasMore: false, limit: 10, nextOffset: null, offset: 0 },
+    });
+    const view = await render(<PrayerScreen />);
+
+    expect(screen.getByText("Monday")).toBeTruthy();
+    expect(screen.getByText("Joyful Mysteries")).toBeTruthy();
+
+    mockCurrentLocalDate = "2026-08-25";
+    await view.rerender(<PrayerScreen />);
+
+    expect(screen.getByText("Tuesday")).toBeTruthy();
+    expect(screen.getByText("Sorrowful Mysteries")).toBeTruthy();
+    await fireEvent.press(screen.getByLabelText("Pray from the embedded garden"));
+    expect(mockPush).toHaveBeenLastCalledWith({
+      pathname: "/rosary",
+      params: { isDecade: "false", mysteryType: "sorrowful", source: "today" },
+    });
   });
 
   it("renders Prayer and Rosary Garden content in one ordered page", async () => {

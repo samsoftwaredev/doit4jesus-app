@@ -1,6 +1,6 @@
 export type FriendRequestDirection = "incoming" | "outgoing";
 export type FriendRequestStatus = "pending" | "accepted" | "rejected" | "cancelled";
-export type LeaderboardPeriodType = "daily" | "weekly" | "monthly" | "yearly" | "season";
+export type LeaderboardPeriodType = "weekly" | "yearly";
 
 export interface OffsetPageMeta {
   hasMore: boolean;
@@ -31,6 +31,10 @@ export interface FriendProfileSummary {
   username: string | null;
 }
 
+export type LeaderboardFriendProfile = Omit<FriendProfileSummary, "countryCode"> & {
+  countryCode: string | null;
+};
+
 export interface FriendSummary extends FriendProfileSummary {
   badgeCount: number;
   currentLevel: CurrentLevel;
@@ -40,7 +44,7 @@ export interface FriendSummary extends FriendProfileSummary {
   totalXp: number;
 }
 
-export interface FriendRequestUser extends FriendProfileSummary {}
+export type FriendRequestUser = FriendProfileSummary;
 
 export interface FriendRequest {
   cancelledAt: string | null;
@@ -70,7 +74,7 @@ export interface LeaderboardPeriod {
 }
 
 export interface FriendsLeaderboardEntry {
-  friend: FriendProfileSummary;
+  friend: LeaderboardFriendProfile;
   isCurrentUser: boolean;
   points: number;
   prayersCount: number;

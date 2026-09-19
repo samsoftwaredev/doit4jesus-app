@@ -1,8 +1,8 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ScrollView, View } from "react-native";
 import { useTranslation } from "react-i18next";
+import { ScrollView, View } from "react-native";
 
 import { PageHeader } from "@/components";
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
@@ -18,12 +18,18 @@ import { getRosaryMysterySetFromContent } from "@/features/prayer/rosary/data/ro
 import { getTodayRosaryMysteryType, getWeekdayLabel } from "@/features/prayer/rosary/data/schedule";
 import { RosaryGardenSection } from "@/features/prayer/rosary/garden/components";
 import type { RosaryMysteryType } from "@/features/prayer/rosary/types/rosary";
-import { useResponsiveLayout } from "@/hooks";
+import { useCurrentLocalDate, useResponsiveLayout } from "@/hooks";
 import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 const previewLimit = 10;
+
+/** Parses an ISO calendar date as local noon so weekday selection never crosses a timezone boundary. */
+function localIsoDateToDate(localIsoDate: string) {
+  const [year, month, day] = localIsoDate.split("-").map(Number);
+  return new Date(year, month - 1, day, 12);
+}
 
 /** Appends newly fetched intentions without duplicating cards when pages overlap. */
 function appendUniqueIntentions(
@@ -51,7 +57,9 @@ export function PrayerScreen() {
   const [leaderboardError, setLeaderboardError] = useState(false);
   const [nextIntentionsOffset, setNextIntentionsOffset] = useState<number | null>(null);
   const isLoadingMoreIntentionsRef = useRef(false);
-  const todayMysteryType = getTodayRosaryMysteryType();
+  const currentLocalDate = useCurrentLocalDate();
+  const today = useMemo(() => localIsoDateToDate(currentLocalDate), [currentLocalDate]);
+  const todayMysteryType = getTodayRosaryMysteryType(today);
   const rosaryContent = useMemo(() => getRosaryContent(language), [language]);
   const todaySet = getRosaryMysterySetFromContent(rosaryContent, todayMysteryType);
   const columnGap = theme.spacing[2];
@@ -88,10 +96,13 @@ export function PrayerScreen() {
 
   /** Loads the weekly global Rosary leaders whenever the Prayer tab receives focus. */
   const loadLeaderboard = useCallback(async () => {
+    console.log("load...");
     setIsLoadingLeaderboard(true);
     setLeaderboardError(false);
     try {
-      setLeaderboard(await getWeeklyGlobalLeaderboard());
+      const resData = await getWeeklyGlobalLeaderboard();
+      setLeaderboard(resData);
+      console.log("here", resData);
     } catch {
       setLeaderboard(null);
       setLeaderboardError(true);
@@ -187,7 +198,7 @@ export function PrayerScreen() {
             <MomentForPrayer
               mysteryTitle={todaySet.title}
               onPrayToday={prayToday}
-              weekday={getWeekdayLabel(undefined, locale)}
+              weekday={getWeekdayLabel(today, locale)}
             />
           </View>
           <View testID="prayer-section-garden">

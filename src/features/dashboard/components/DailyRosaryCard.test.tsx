@@ -81,7 +81,13 @@ describe("DailyRosaryCard", () => {
     expect(screen.getByText("Grow your streak")).toBeTruthy();
     expect(screen.getByText("Miss a day and your streak starts again. You can always begin again.")).toBeTruthy();
     expect(screen.getByText("Begin a prayerful rhythm today.")).toBeTruthy();
-    expect(screen.getByText("04 : 00 : 00")).toBeTruthy();
+    expect(screen.getByText("04:00:00 until Rosary streak resets")).toBeTruthy();
+    expect(screen.getByLabelText("4 hours, 0 minutes, 0 seconds until Rosary streak resets")).toBeTruthy();
+    expect(StyleSheet.flatten(screen.getByTestId("rosary-countdown").props.style)).toMatchObject({
+      flexShrink: 1,
+      maxWidth: "100%",
+      textAlign: "center",
+    });
     expect(screen.getByLabelText("Devotional quote from Our Lady of Fatima")).toBeTruthy();
     expect(screen.getByRole("button", { name: "Pray Rosary" })).toBeEnabled();
 
@@ -101,7 +107,7 @@ describe("DailyRosaryCard", () => {
   it("promotes the countdown once at three hours and keeps one urgent treatment", async () => {
     const rendered = await renderCard({ reminder: reminder({ seconds: 3 * 60 * 60 + 1 }) });
     const subtleStyle = StyleSheet.flatten(screen.getByTestId("rosary-countdown").props.style);
-    expect(screen.getByText("03 : 00 : 01")).toBeTruthy();
+    expect(screen.getByText("03:00:01 until Rosary streak resets")).toBeTruthy();
 
     await rendered.rerender(
       <DailyRosaryCard
@@ -145,6 +151,7 @@ describe("DailyRosaryCard", () => {
 
     await waitFor(() => expect(onExpired).toHaveBeenCalledTimes(1));
     expect(screen.getByText("Updating time")).toBeTruthy();
+    expect(screen.queryByText(/until Rosary streak resets/)).toBeNull();
     expect(screen.queryByText(/-/)).toBeNull();
     expect(screen.getByRole("button", { name: "Pray Rosary" })).toBeEnabled();
   });
@@ -153,6 +160,7 @@ describe("DailyRosaryCard", () => {
     const onPrayRosary = jest.fn();
     const rendered = await renderCard({ onPrayRosary, reminder: reminder({ completed: true }) });
     expect(screen.getByText("Completed today")).toBeTruthy();
+    expect(screen.queryByText(/until Rosary streak resets/)).toBeNull();
     await fireEvent.press(screen.getByRole("button", { name: "Pray Rosary" }));
     expect(onPrayRosary).toHaveBeenCalledTimes(1);
 
@@ -167,6 +175,7 @@ describe("DailyRosaryCard", () => {
       />,
     );
     expect(screen.getByText("Loading time")).toBeTruthy();
+    expect(screen.queryByText(/until Rosary streak resets/)).toBeNull();
     expect(screen.getByRole("button", { name: "Pray Rosary" })).toBeEnabled();
 
     await rendered.rerender(
@@ -180,7 +189,22 @@ describe("DailyRosaryCard", () => {
       />,
     );
     expect(screen.getByText("Time unavailable")).toBeTruthy();
+    expect(screen.queryByText(/until Rosary streak resets/)).toBeNull();
     expect(screen.getByRole("button", { name: "Pray Rosary" })).toBeEnabled();
+
+    await rendered.rerender(
+      <DailyRosaryCard
+        error={false}
+        isLoading={false}
+        onExpired={jest.fn()}
+        onPrayRosary={onPrayRosary}
+        onRetry={jest.fn()}
+        reminder={reminder({ seconds: 2 * 60 * 60, status: "reset" })}
+      />,
+    );
+    expect(screen.getByText("Streak Reset")).toBeTruthy();
+    expect(screen.getByText("Start again today.")).toBeTruthy();
+    expect(screen.getByText("02:00:00 until Rosary streak resets")).toBeTruthy();
 
     await rendered.rerender(
       <DailyRosaryCard
@@ -192,8 +216,8 @@ describe("DailyRosaryCard", () => {
         reminder={{ ...reminder({ status: "reset" }), deadlineAt: null }}
       />,
     );
-    expect(screen.getByText("Streak Reset")).toBeTruthy();
     expect(screen.getByText("Time unavailable")).toBeTruthy();
+    expect(screen.queryByText(/until Rosary streak resets/)).toBeNull();
     expect(screen.getByRole("button", { name: "Pray Rosary" })).toBeEnabled();
   });
 
@@ -204,7 +228,28 @@ describe("DailyRosaryCard", () => {
     expect(screen.getByText("Reza hoy")).toBeTruthy();
     expect(screen.getByText("Planta una flor")).toBeTruthy();
     expect(screen.getByText("Aumenta tu racha")).toBeTruthy();
+    expect(screen.getByText("04:00:00 hasta que se reinicie la racha del Rosario")).toBeTruthy();
+    expect(
+      screen.getByLabelText("4 horas, 0 minutos, 0 segundos hasta que se reinicie la racha del Rosario"),
+    ).toBeTruthy();
     expect(screen.getByRole("button", { name: "Rezar el Rosario" })).toBeEnabled();
+  });
+
+  it("keeps the complete countdown explanation available on narrow screens with large text", async () => {
+    mockResponsiveLayout.mockReturnValue({
+      ...phoneLayout,
+      contentWidth: 288,
+      fontScale: 1.6,
+      isLargeText: true,
+      isNarrowPhone: true,
+      width: 320,
+    });
+
+    await renderCard();
+
+    const countdown = screen.getByText("04:00:00 until Rosary streak resets");
+    expect(countdown.props.numberOfLines).toBeUndefined();
+    expect(screen.getByRole("button", { name: "Pray Rosary" })).toBeEnabled();
   });
 
   it("cleans up the synchronized timer on unmount", async () => {

@@ -11,7 +11,7 @@ const { useRosaryLeaderboard } = jest.requireMock("@/features/friends/friends.ho
 };
 
 describe("FriendsLeaderboardScreen", () => {
-  it("switches leaderboard periods and highlights the current user", async () => {
+  it("switches between weekly and yearly periods and highlights the current user", async () => {
     const setPeriodType = jest.fn();
     useRosaryLeaderboard.mockReturnValue({
       error: undefined,
@@ -25,8 +25,11 @@ describe("FriendsLeaderboardScreen", () => {
     });
     await render(<FriendsLeaderboardScreen />);
 
-    await fireEvent.press(screen.getByText("This Month"));
-    expect(setPeriodType).toHaveBeenCalledWith("monthly");
+    expect(screen.queryByText("Today")).toBeNull();
+    expect(screen.queryByText("This Month")).toBeNull();
+    expect(screen.getByRole("tab", { name: "This Week" }).props.accessibilityState).toEqual({ selected: true });
+    await fireEvent.press(screen.getByRole("tab", { name: "This Year" }));
+    expect(setPeriodType).toHaveBeenCalledWith("yearly");
     expect(screen.getByLabelText(/Samuel Ruiz.*You/i)).toBeTruthy();
     expect(screen.getByText("120 more points to reach #1")).toBeTruthy();
   });
