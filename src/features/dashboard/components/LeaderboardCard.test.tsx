@@ -1,18 +1,36 @@
 import { fireEvent, render, screen } from "@testing-library/react-native";
+import { StyleSheet } from "react-native";
 
 import { i18n } from "@/localization";
 
 import { LeaderboardCard } from "./LeaderboardCard";
 
-describe("LeaderboardCard", () => {
-  const entries = [
-    { avatarUrl: null, displayName: "St. Michael", rank: 1, rosaries: 245 },
-    { avatarUrl: "https://example.test/warrior.png", displayName: "Samuel", rank: 1, rosaries: 245 },
-    { avatarUrl: null, displayName: "Fiat Warrior", rank: 3, rosaries: 156 },
-    { avatarUrl: null, displayName: "Ave Maria", rank: 7, rosaries: 129 },
-  ];
+const weeklyEntries = [
+  { avatarUrl: null, displayName: "First Warrior", rank: 1, rosaries: 245 },
+  { avatarUrl: "https://example.test/second.png", displayName: "Second Warrior", rank: 2, rosaries: 190 },
+  { avatarUrl: null, displayName: "Third Warrior", rank: 3, rosaries: 156 },
+];
 
+const yearlyEntries = [
+  { avatarUrl: null, displayName: "Year Leader", rank: 1, rosaries: 1245 },
+  { avatarUrl: null, displayName: "Year Runner-up", rank: 2, rosaries: 1100 },
+  { avatarUrl: null, displayName: "Year Tenth", rank: 10, rosaries: 529 },
+];
+
+const defaultProps = {
+  isWeeklyLoading: false,
+  isYearlyLoading: false,
+  onRetryWeekly: jest.fn(),
+  onRetryYearly: jest.fn(),
+  weeklyEntries,
+  weeklyError: false,
+  yearlyEntries,
+  yearlyError: false,
+};
+
+describe("LeaderboardCard", () => {
   beforeEach(async () => {
+    jest.clearAllMocks();
     await i18n.changeLanguage("en");
   });
 
@@ -20,38 +38,80 @@ describe("LeaderboardCard", () => {
     await i18n.changeLanguage("en");
   });
 
-  it("displays server-provided ranks and Rosary counts without deriving positions from index", async () => {
-    await render(<LeaderboardCard entries={entries} error={false} isLoading={false} onRetry={jest.fn()} />);
+  it("renders the weekly podium as second, first, and third with progressively sized artwork", async () => {
+    await render(<LeaderboardCard {...defaultProps} />);
 
-    expect(screen.getByText("Top Rosary prayer warriors globally this week.")).toBeTruthy();
-    expect(screen.getByLabelText("Rank 1, St. Michael, 245 Rosaries")).toBeTruthy();
-    expect(screen.getByLabelText("Rank 1, Samuel, 245 Rosaries")).toBeTruthy();
-    expect(screen.getByLabelText("Rank 7, Ave Maria, 129 Rosaries")).toBeTruthy();
-    expect(screen.getAllByText("1")).toHaveLength(2);
-    expect(screen.getAllByText("245")).toHaveLength(2);
+    expect(screen.getByText("This Week’s Top 3")).toBeTruthy();
+    expect(screen.getByTestId("weekly-podium-scroll").props.horizontal).toBe(true);
+    expect(screen.getAllByTestId(/^weekly-podium-entry-/).map((entry) => entry.props.testID)).toEqual([
+      "weekly-podium-entry-2",
+      "weekly-podium-entry-1",
+      "weekly-podium-entry-3",
+    ]);
+
+    const firstAvatar = StyleSheet.flatten(screen.getByTestId("weekly-podium-avatar-1").props.style);
+    const secondAvatar = StyleSheet.flatten(screen.getByTestId("weekly-podium-avatar-2").props.style);
+    const thirdAvatar = StyleSheet.flatten(screen.getByTestId("weekly-podium-avatar-3").props.style);
+    expect(firstAvatar.width).toBeGreaterThan(secondAvatar.width);
+    expect(secondAvatar.width).toBeGreaterThan(thirdAvatar.width);
+    expect(screen.getByLabelText("Rank 1, First Warrior, 245 Rosaries")).toBeTruthy();
+  });
+
+  it("renders the yearly top ten vertically in server-provided rank order", async () => {
+    await render(<LeaderboardCard {...defaultProps} />);
+
+    expect(screen.getByText("This Year’s Top 10")).toBeTruthy();
+    expect(screen.getAllByTestId(/^yearly-leaderboard-entry-/).map((entry) => entry.props.testID)).toEqual([
+      "yearly-leaderboard-entry-1",
+      "yearly-leaderboard-entry-2",
+      "yearly-leaderboard-entry-10",
+    ]);
+    expect(screen.getByLabelText("Rank 10, Year Tenth, 529 Rosaries")).toBeTruthy();
+    expect(screen.getByLabelText("Year Leader's avatar")).toBeTruthy();
+  });
+
+  it("keeps yearly results visible when the weekly board fails and retries only weekly", async () => {
+    const onRetryWeekly = jest.fn();
+    await render(<LeaderboardCard {...defaultProps} onRetryWeekly={onRetryWeekly} weeklyEntries={null} weeklyError />);
+
+    expect(screen.getByText("Weekly leaderboard unavailable")).toBeTruthy();
+    expect(screen.getByLabelText("Rank 1, Year Leader, 1,245 Rosaries")).toBeTruthy();
+    await fireEvent.press(screen.getByRole("button", { name: "Retry weekly leaderboard" }));
+    expect(onRetryWeekly).toHaveBeenCalledTimes(1);
+    expect(defaultProps.onRetryYearly).not.toHaveBeenCalled();
+  });
+
+  it("keeps the weekly podium visible when the yearly board fails and retries only yearly", async () => {
+    const onRetryYearly = jest.fn();
+    await render(<LeaderboardCard {...defaultProps} onRetryYearly={onRetryYearly} yearlyEntries={null} yearlyError />);
+
+    expect(screen.getByText("Yearly leaderboard unavailable")).toBeTruthy();
+    expect(screen.getByLabelText("Rank 1, First Warrior, 245 Rosaries")).toBeTruthy();
+    await fireEvent.press(screen.getByRole("button", { name: "Retry yearly leaderboard" }));
+    expect(onRetryYearly).toHaveBeenCalledTimes(1);
+    expect(defaultProps.onRetryWeekly).not.toHaveBeenCalled();
+  });
+
+  it("keeps the two board regions available for loading and empty results", async () => {
+    await render(<LeaderboardCard {...defaultProps} isWeeklyLoading weeklyEntries={null} yearlyEntries={[]} />);
+
+    expect(screen.getByLabelText("Loading weekly leaderboard")).toBeTruthy();
+    expect(screen.getByText("No yearly leaderboard results yet.")).toBeTruthy();
   });
 
   it("uses the project avatar fallback without linking to the friends leaderboard", async () => {
-    await render(<LeaderboardCard entries={entries} error={false} isLoading={false} onRetry={jest.fn()} />);
+    await render(<LeaderboardCard {...defaultProps} />);
 
-    expect(screen.getByLabelText("St. Michael's avatar")).toBeTruthy();
+    expect(screen.getByLabelText("First Warrior's avatar")).toBeTruthy();
     expect(screen.queryByRole("button", { name: "View leaderboard" })).toBeNull();
   });
 
-  it("shows a recoverable unavailable state when the endpoint fails", async () => {
-    const onRetry = jest.fn();
-    await render(<LeaderboardCard entries={null} error isLoading={false} onRetry={onRetry} />);
-    expect(screen.getByText("Leaderboard unavailable")).toBeTruthy();
-    await fireEvent.press(screen.getByRole("button", { name: "Retry leaderboard" }));
-    expect(onRetry).toHaveBeenCalledTimes(1);
-  });
-
-  it("localizes the global description in Spanish", async () => {
+  it("localizes both global boards in Spanish", async () => {
     await i18n.changeLanguage("es");
-    await render(<LeaderboardCard entries={entries} error={false} isLoading={false} onRetry={jest.fn()} />);
+    await render(<LeaderboardCard {...defaultProps} />);
 
-    expect(
-      screen.getByText("Los principales guerreros de oración del Rosario a nivel mundial esta semana."),
-    ).toBeTruthy();
+    expect(screen.getByText("Los 3 mejores de esta semana")).toBeTruthy();
+    expect(screen.getByText("Los 10 mejores de este año")).toBeTruthy();
+    expect(screen.getByLabelText("Puesto 1, First Warrior, 245 Rosarios")).toBeTruthy();
   });
 });

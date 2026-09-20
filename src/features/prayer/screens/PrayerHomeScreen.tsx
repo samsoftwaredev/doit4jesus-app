@@ -8,7 +8,7 @@ import { PageHeader } from "@/components";
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { SacredAtmosphere } from "@/components/ui";
 import { LeaderboardCard } from "@/features/dashboard/components";
-import { getWeeklyGlobalLeaderboard } from "@/features/dashboard/dashboard.api";
+import { getWeeklyGlobalLeaderboard, getYearlyGlobalLeaderboard } from "@/features/dashboard/dashboard.api";
 import type { LeaderboardEntryViewModel } from "@/features/dashboard/dashboard.types";
 import { AllMysteries, MomentForPrayer, PrayersByOthers } from "@/features/prayer/components";
 import type { ApprovedPrayerIntention } from "@/features/prayer/intentions";
@@ -51,12 +51,17 @@ export function PrayerScreen() {
   const [isLoadingIntentions, setIsLoadingIntentions] = useState(true);
   const [isLoadingMoreIntentions, setIsLoadingMoreIntentions] = useState(false);
   const [intentionsError, setIntentionsError] = useState<string>();
-  const [isLoadingLeaderboard, setIsLoadingLeaderboard] = useState(true);
+  const [isWeeklyLeaderboardLoading, setIsWeeklyLeaderboardLoading] = useState(true);
+  const [isYearlyLeaderboardLoading, setIsYearlyLeaderboardLoading] = useState(true);
   const [hasMoreIntentions, setHasMoreIntentions] = useState(false);
-  const [leaderboard, setLeaderboard] = useState<LeaderboardEntryViewModel[] | null>(null);
-  const [leaderboardError, setLeaderboardError] = useState(false);
+  const [weeklyLeaderboard, setWeeklyLeaderboard] = useState<LeaderboardEntryViewModel[] | null>(null);
+  const [yearlyLeaderboard, setYearlyLeaderboard] = useState<LeaderboardEntryViewModel[] | null>(null);
+  const [weeklyLeaderboardError, setWeeklyLeaderboardError] = useState(false);
+  const [yearlyLeaderboardError, setYearlyLeaderboardError] = useState(false);
   const [nextIntentionsOffset, setNextIntentionsOffset] = useState<number | null>(null);
   const isLoadingMoreIntentionsRef = useRef(false);
+  const weeklyLeaderboardRequestIdRef = useRef(0);
+  const yearlyLeaderboardRequestIdRef = useRef(0);
   const currentLocalDate = useCurrentLocalDate();
   const today = useMemo(() => localIsoDateToDate(currentLocalDate), [currentLocalDate]);
   const todayMysteryType = getTodayRosaryMysteryType(today);
@@ -94,27 +99,53 @@ export function PrayerScreen() {
     void loadIntentions();
   }, [loadIntentions]);
 
-  /** Loads the weekly global Rosary leaders whenever the Prayer tab receives focus. */
-  const loadLeaderboard = useCallback(async () => {
-    console.log("load...");
-    setIsLoadingLeaderboard(true);
-    setLeaderboardError(false);
+  /** Loads weekly global leaders while ignoring results from an older overlapping request. */
+  const loadWeeklyLeaderboard = useCallback(async () => {
+    const requestId = ++weeklyLeaderboardRequestIdRef.current;
+    setIsWeeklyLeaderboardLoading(true);
+    setWeeklyLeaderboardError(false);
     try {
-      const resData = await getWeeklyGlobalLeaderboard();
-      setLeaderboard(resData);
-      console.log("here", resData);
+      const entries = await getWeeklyGlobalLeaderboard();
+      if (requestId !== weeklyLeaderboardRequestIdRef.current) return;
+      setWeeklyLeaderboard(entries);
     } catch {
-      setLeaderboard(null);
-      setLeaderboardError(true);
+      if (requestId !== weeklyLeaderboardRequestIdRef.current) return;
+      setWeeklyLeaderboard(null);
+      setWeeklyLeaderboardError(true);
     } finally {
-      setIsLoadingLeaderboard(false);
+      if (requestId === weeklyLeaderboardRequestIdRef.current) setIsWeeklyLeaderboardLoading(false);
+    }
+  }, []);
+
+  /** Loads yearly global leaders while ignoring results from an older overlapping request. */
+  const loadYearlyLeaderboard = useCallback(async () => {
+    const requestId = ++yearlyLeaderboardRequestIdRef.current;
+    setIsYearlyLeaderboardLoading(true);
+    setYearlyLeaderboardError(false);
+    try {
+      const entries = await getYearlyGlobalLeaderboard();
+      if (requestId !== yearlyLeaderboardRequestIdRef.current) return;
+      setYearlyLeaderboard(entries);
+    } catch {
+      if (requestId !== yearlyLeaderboardRequestIdRef.current) return;
+      setYearlyLeaderboard(null);
+      setYearlyLeaderboardError(true);
+    } finally {
+      if (requestId === yearlyLeaderboardRequestIdRef.current) setIsYearlyLeaderboardLoading(false);
     }
   }, []);
 
   useFocusEffect(
     useCallback(() => {
-      void loadLeaderboard();
-    }, [loadLeaderboard]),
+      void loadWeeklyLeaderboard();
+      void loadYearlyLeaderboard();
+
+      /** Invalidates in-flight leaderboard responses after the Prayer page loses focus. */
+      return () => {
+        weeklyLeaderboardRequestIdRef.current += 1;
+        yearlyLeaderboardRequestIdRef.current += 1;
+      };
+    }, [loadWeeklyLeaderboard, loadYearlyLeaderboard]),
   );
 
   /** Loads and appends the next intention page when the horizontal carousel approaches its end. */
@@ -206,10 +237,14 @@ export function PrayerScreen() {
           </View>
           <View testID="prayer-section-global-leaderboard">
             <LeaderboardCard
-              entries={leaderboard}
-              error={leaderboardError}
-              isLoading={isLoadingLeaderboard}
-              onRetry={() => void loadLeaderboard()}
+              isWeeklyLoading={isWeeklyLeaderboardLoading}
+              isYearlyLoading={isYearlyLeaderboardLoading}
+              onRetryWeekly={() => void loadWeeklyLeaderboard()}
+              onRetryYearly={() => void loadYearlyLeaderboard()}
+              weeklyEntries={weeklyLeaderboard}
+              weeklyError={weeklyLeaderboardError}
+              yearlyEntries={yearlyLeaderboard}
+              yearlyError={yearlyLeaderboardError}
             />
           </View>
           <View testID="prayer-section-mysteries">

@@ -1,4 +1,9 @@
-import { getConscienceQuestion, getRosaryReminder, getWeeklyGlobalLeaderboard } from "./dashboard.api";
+import {
+  getConscienceQuestion,
+  getRosaryReminder,
+  getWeeklyGlobalLeaderboard,
+  getYearlyGlobalLeaderboard,
+} from "./dashboard.api";
 
 jest.mock("@/features/progress", () => ({
   fetchDashboardProgress: jest.fn(),
@@ -72,7 +77,7 @@ describe("dashboard API", () => {
     });
   });
 
-  it("requests and maps exactly the top-five weekly global leaderboard", async () => {
+  it("requests and maps exactly the top-three weekly global leaderboard", async () => {
     const fetchMock = jest.fn(async () => ({
       json: async () => ({
         data: {
@@ -168,7 +173,7 @@ describe("dashboard API", () => {
             status: "active",
           },
         },
-        meta: { limit: 5, offset: 0, total: 3 },
+        meta: { limit: 3, offset: 0, total: 3 },
       }),
       ok: true,
     }));
@@ -195,7 +200,37 @@ describe("dashboard API", () => {
       },
     ]);
     expect(fetchMock).toHaveBeenCalledWith(
-      "https://api.example.test/api/v1/leaderboards?periodType=weekly&scopeType=global&scopeReference=global&limit=5",
+      "https://api.example.test/api/v1/leaderboards?periodType=weekly&scopeType=global&scopeReference=global&limit=3",
+      {
+        headers: { Accept: "application/json", Authorization: "Bearer test-token" },
+        method: "GET",
+      },
+    );
+  });
+
+  it("requests and maps exactly the top-ten yearly global leaderboard", async () => {
+    const fetchMock = jest.fn(async () => ({
+      json: async () => ({
+        data: {
+          entries: [
+            {
+              profile: { avatar_url: null, display_name: "Year Leader" },
+              rank: 1,
+              rosaries_count: 412,
+            },
+          ],
+        },
+        meta: { limit: 10, offset: 0, total: 1 },
+      }),
+      ok: true,
+    }));
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+    await expect(getYearlyGlobalLeaderboard()).resolves.toEqual([
+      { avatarUrl: null, displayName: "Year Leader", rank: 1, rosaries: 412 },
+    ]);
+    expect(fetchMock).toHaveBeenCalledWith(
+      "https://api.example.test/api/v1/leaderboards?periodType=yearly&scopeType=global&scopeReference=global&limit=10",
       {
         headers: { Accept: "application/json", Authorization: "Bearer test-token" },
         method: "GET",

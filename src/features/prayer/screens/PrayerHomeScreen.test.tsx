@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react-native";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react-native";
 import { Pressable, Text, View } from "react-native";
 
 import { i18n } from "@/localization";
@@ -7,7 +7,9 @@ import { PrayerScreen } from "./PrayerHomeScreen";
 
 const mockPush = jest.fn();
 const mockGetWeeklyGlobalLeaderboard = jest.fn();
+const mockGetYearlyGlobalLeaderboard = jest.fn();
 let mockCurrentLocalDate = "2026-08-24";
+let mockFocusEffect: (() => void | (() => void)) | undefined;
 
 function MockPrayersByOthers({
   intentions,
@@ -39,6 +41,7 @@ jest.mock("@/features/prayer/intentions", () => ({
 jest.mock("expo-router", () => ({
   useFocusEffect: (effect: () => void | (() => void)) => {
     const React = jest.requireActual("react") as typeof import("react");
+    mockFocusEffect = effect;
     React.useEffect(effect, [effect]);
   },
   useRouter: () => ({ push: mockPush }),
@@ -46,6 +49,7 @@ jest.mock("expo-router", () => ({
 
 jest.mock("@/features/dashboard/dashboard.api", () => ({
   getWeeklyGlobalLeaderboard: (...args: unknown[]) => mockGetWeeklyGlobalLeaderboard(...args),
+  getYearlyGlobalLeaderboard: (...args: unknown[]) => mockGetYearlyGlobalLeaderboard(...args),
 }));
 
 jest.mock("@/hooks", () => ({
@@ -108,6 +112,9 @@ describe("PrayerScreen", () => {
     mockGetWeeklyGlobalLeaderboard.mockResolvedValue([
       { avatarUrl: null, displayName: "St. Michael", rank: 1, rosaries: 245 },
     ]);
+    mockGetYearlyGlobalLeaderboard.mockResolvedValue([
+      { avatarUrl: null, displayName: "St. Joseph", rank: 1, rosaries: 845 },
+    ]);
     await i18n.changeLanguage("en");
   });
 
@@ -154,8 +161,11 @@ describe("PrayerScreen", () => {
       "prayer-section-intentions",
     ]);
     expect(await screen.findByLabelText("Rank 1, St. Michael, 245 Rosaries")).toBeTruthy();
-    expect(screen.getByText("Top Rosary prayer warriors globally this week.")).toBeTruthy();
+    expect(screen.getByLabelText("Rank 1, St. Joseph, 845 Rosaries")).toBeTruthy();
+    expect(screen.getByText("This Week’s Top 3")).toBeTruthy();
+    expect(screen.getByText("This Year’s Top 10")).toBeTruthy();
     expect(mockGetWeeklyGlobalLeaderboard).toHaveBeenCalledTimes(1);
+    expect(mockGetYearlyGlobalLeaderboard).toHaveBeenCalledTimes(1);
 
     await fireEvent.press(screen.getByLabelText("Pray from the embedded garden"));
     expect(mockPush).toHaveBeenCalledWith({
@@ -164,7 +174,7 @@ describe("PrayerScreen", () => {
     });
   });
 
-  it("shows a recoverable global leaderboard failure and retries the request", async () => {
+  it("shows a recoverable weekly failure without hiding yearly results", async () => {
     mockGetWeeklyGlobalLeaderboard
       .mockRejectedValueOnce(new Error("Network unavailable"))
       .mockResolvedValueOnce([{ avatarUrl: null, displayName: "Ave Maria", rank: 2, rosaries: 180 }]);
@@ -175,10 +185,42 @@ describe("PrayerScreen", () => {
 
     await render(<PrayerScreen />);
 
-    expect(await screen.findByText("Leaderboard unavailable")).toBeTruthy();
-    await fireEvent.press(screen.getByRole("button", { name: "Retry leaderboard" }));
+    expect(await screen.findByText("Weekly leaderboard unavailable")).toBeTruthy();
+    expect(screen.getByLabelText("Rank 1, St. Joseph, 845 Rosaries")).toBeTruthy();
+    await fireEvent.press(screen.getByRole("button", { name: "Retry weekly leaderboard" }));
     expect(await screen.findByLabelText("Rank 2, Ave Maria, 180 Rosaries")).toBeTruthy();
     expect(mockGetWeeklyGlobalLeaderboard).toHaveBeenCalledTimes(2);
+    expect(mockGetYearlyGlobalLeaderboard).toHaveBeenCalledTimes(1);
+  });
+
+  it("ignores an older weekly response after a newer focus request succeeds", async () => {
+    let resolveOlderRequest: ((entries: unknown[]) => void) | undefined;
+    mockGetWeeklyGlobalLeaderboard
+      .mockImplementationOnce(
+        () =>
+          new Promise((resolve) => {
+            resolveOlderRequest = resolve;
+          }),
+      )
+      .mockResolvedValueOnce([{ avatarUrl: null, displayName: "Current Leader", rank: 1, rosaries: 500 }]);
+    fetchApprovedPrayerIntentions.mockResolvedValue({
+      data: [],
+      meta: { hasMore: false, limit: 10, nextOffset: null, offset: 0 },
+    });
+
+    await render(<PrayerScreen />);
+    await waitFor(() => expect(mockGetWeeklyGlobalLeaderboard).toHaveBeenCalledTimes(1));
+
+    await act(async () => {
+      mockFocusEffect?.();
+    });
+    expect(await screen.findByLabelText("Rank 1, Current Leader, 500 Rosaries")).toBeTruthy();
+
+    await act(async () => {
+      resolveOlderRequest?.([{ avatarUrl: null, displayName: "Stale Leader", rank: 1, rosaries: 1 }]);
+    });
+    expect(screen.queryByLabelText("Rank 1, Stale Leader, 1 Rosaries")).toBeNull();
+    expect(screen.getByLabelText("Rank 1, Current Leader, 500 Rosaries")).toBeTruthy();
   });
 
   it("loads successive intention pages for the horizontal home carousel", async () => {
@@ -215,8 +257,7 @@ describe("PrayerScreen", () => {
     expect(screen.getByRole("header", { name: "Oración" })).toBeTruthy();
     expect(screen.getByText("Reza el Rosario y eleva las intenciones de los demás.")).toBeTruthy();
     expect(screen.getByText("Rosary Garden Section")).toBeTruthy();
-    expect(
-      await screen.findByText("Los principales guerreros de oración del Rosario a nivel mundial esta semana."),
-    ).toBeTruthy();
+    expect(await screen.findByText("Los 3 mejores de esta semana")).toBeTruthy();
+    expect(screen.getByText("Los 10 mejores de este año")).toBeTruthy();
   });
 });

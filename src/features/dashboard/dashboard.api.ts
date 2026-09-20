@@ -107,10 +107,15 @@ export async function getRosaryReminder(): Promise<RosaryReminderViewModel> {
   };
 }
 
-/** Loads and validates the backend's weekly global leaderboard entries and profile data. */
-export async function getWeeklyGlobalLeaderboard(): Promise<LeaderboardEntryViewModel[]> {
+/** Loads and validates a ranked global leaderboard for the requested period and result limit. */
+async function getGlobalLeaderboard(
+  periodType: "weekly" | "yearly",
+  limit: 3 | 10,
+): Promise<LeaderboardEntryViewModel[]> {
   const data = readData(
-    await requestDashboard("/api/v1/leaderboards?periodType=weekly&scopeType=global&scopeReference=global&limit=5"),
+    await requestDashboard(
+      `/api/v1/leaderboards?periodType=${periodType}&scopeType=global&scopeReference=global&limit=${limit}`,
+    ),
     "leaderboard response",
   );
 
@@ -125,4 +130,14 @@ export async function getWeeklyGlobalLeaderboard(): Promise<LeaderboardEntryView
       rosaries: readNumber(leaderboardEntry.rosaries_count, "leaderboard Rosary count"),
     };
   });
+}
+
+/** Loads the backend-ranked weekly top three global Rosary leaders. */
+export function getWeeklyGlobalLeaderboard(): Promise<LeaderboardEntryViewModel[]> {
+  return getGlobalLeaderboard("weekly", 3);
+}
+
+/** Loads the backend-ranked yearly top ten global Rosary leaders. */
+export function getYearlyGlobalLeaderboard(): Promise<LeaderboardEntryViewModel[]> {
+  return getGlobalLeaderboard("yearly", 10);
 }

@@ -2,7 +2,7 @@ import Feather from "@expo/vector-icons/Feather";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { useTranslation } from "react-i18next";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
 
 import { saintAvatars } from "@/features/profile/saints";
 import { useAppLanguage } from "@/localization";
@@ -13,12 +13,31 @@ import type { LeaderboardEntryViewModel } from "../dashboard.types";
 import { formatPoints } from "../rosary-reminder";
 
 type LeaderboardCardProps = {
+  isWeeklyLoading: boolean;
+  isYearlyLoading: boolean;
+  onRetryWeekly: () => void;
+  onRetryYearly: () => void;
+  weeklyEntries: LeaderboardEntryViewModel[] | null;
+  weeklyError: boolean;
+  yearlyEntries: LeaderboardEntryViewModel[] | null;
+  yearlyError: boolean;
+};
+
+type BoardStatusProps = {
+  emptyMessage: string;
   entries: LeaderboardEntryViewModel[] | null;
   error: boolean;
   isLoading: boolean;
+  loadingLabel: string;
   onRetry: () => void;
+  retryLabel: string;
+  unavailableMessage: string;
+  variant: "weekly" | "yearly";
 };
 
+const podiumRankOrder = [2, 1, 3] as const;
+
+/** Returns the semantic medal color associated with a leaderboard rank. */
 function rankColor(rank: number) {
   if (rank === 1) return theme.colors.gold.pale;
   if (rank === 2) return "#D1D8DF";
@@ -26,6 +45,7 @@ function rankColor(rank: number) {
   return theme.colors.text.secondary;
 }
 
+/** Returns the medal glyph for a podium rank, or no glyph for later ranks. */
 function medal(rank: number): string | null {
   if (rank === 1) return "🥇";
   if (rank === 2) return "🥈";
@@ -33,8 +53,29 @@ function medal(rank: number): string | null {
   return null;
 }
 
-/** Presents the weekly global Rosary leaders without linking into the friends-only leaderboard. */
-export function LeaderboardCard({ entries, error, isLoading, onRetry }: LeaderboardCardProps) {
+/** Returns the avatar dimension that establishes first, second, and third visual emphasis. */
+function podiumAvatarSize(rank: number): number {
+  if (rank === 1) return 88;
+  if (rank === 2) return 74;
+  return 62;
+}
+
+/** Orders entries by their server-provided rank without deriving replacement ranks. */
+function orderByServerRank(entries: LeaderboardEntryViewModel[]): LeaderboardEntryViewModel[] {
+  return [...entries].sort((first, second) => first.rank - second.rank);
+}
+
+/** Presents weekly and yearly global Rosary leaders in one consolidated card. */
+export function LeaderboardCard({
+  isWeeklyLoading,
+  isYearlyLoading,
+  onRetryWeekly,
+  onRetryYearly,
+  weeklyEntries,
+  weeklyError,
+  yearlyEntries,
+  yearlyError,
+}: LeaderboardCardProps) {
   const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
 
@@ -45,48 +86,111 @@ export function LeaderboardCard({ entries, error, isLoading, onRetry }: Leaderbo
       start={{ x: 0, y: 0 }}
       style={styles.card}
     >
-      <View style={styles.header}>
-        <View style={styles.titleRow}>
-          <Feather accessible={false} color={theme.colors.gold.pale} name="award" size={theme.sizes.iconMedium} />
-          <Text accessibilityRole="header" style={styles.title}>
-            {t("dashboard.leaderboard.heading")}
-          </Text>
-        </View>
+      <View style={styles.titleRow}>
+        <Feather accessible={false} color={theme.colors.gold.pale} name="award" size={theme.sizes.iconMedium} />
+        <Text accessibilityRole="header" style={styles.title}>
+          {t("dashboard.leaderboard.heading")}
+        </Text>
       </View>
       <Text style={styles.subtitle}>{t("dashboard.leaderboard.subtitle")}</Text>
-      {isLoading ? <LeaderboardSkeleton /> : null}
-      {!isLoading && error ? (
-        <View accessibilityRole="alert" style={styles.unavailable}>
-          <Text style={styles.unavailableText}>{t("dashboard.leaderboard.unavailable")}</Text>
-          <Pressable
-            accessibilityLabel={t("dashboard.leaderboard.retryLabel")}
-            accessibilityRole="button"
-            onPress={onRetry}
-            style={styles.retry}
-          >
-            <Text style={styles.retryText}>{t("common.retry")}</Text>
-          </Pressable>
-        </View>
-      ) : null}
-      {!isLoading && !error && entries ? <LeaderboardRows entries={entries.slice(0, 5)} /> : null}
+
+      <View style={styles.boardSection}>
+        <Text accessibilityRole="header" style={styles.boardTitle}>
+          {t("dashboard.leaderboard.weeklyTitle")}
+        </Text>
+        <BoardStatus
+          emptyMessage={t("dashboard.leaderboard.weeklyEmpty")}
+          entries={weeklyEntries}
+          error={weeklyError}
+          isLoading={isWeeklyLoading}
+          loadingLabel={t("dashboard.leaderboard.weeklyLoading")}
+          onRetry={onRetryWeekly}
+          retryLabel={t("dashboard.leaderboard.weeklyRetryLabel")}
+          unavailableMessage={t("dashboard.leaderboard.weeklyUnavailable")}
+          variant="weekly"
+        />
+      </View>
+
+      <View style={styles.divider} />
+
+      <View style={styles.boardSection}>
+        <Text accessibilityRole="header" style={styles.boardTitle}>
+          {t("dashboard.leaderboard.yearlyTitle")}
+        </Text>
+        <BoardStatus
+          emptyMessage={t("dashboard.leaderboard.yearlyEmpty")}
+          entries={yearlyEntries}
+          error={yearlyError}
+          isLoading={isYearlyLoading}
+          loadingLabel={t("dashboard.leaderboard.yearlyLoading")}
+          onRetry={onRetryYearly}
+          retryLabel={t("dashboard.leaderboard.yearlyRetryLabel")}
+          unavailableMessage={t("dashboard.leaderboard.yearlyUnavailable")}
+          variant="yearly"
+        />
+      </View>
     </LinearGradient>
   );
 }
 
-/** Renders LeaderboardRows with styles resolved from the active appearance. */
-function LeaderboardRows({ entries }: { entries: LeaderboardEntryViewModel[] }) {
+/** Chooses the loading, failure, empty, or populated presentation for one board. */
+function BoardStatus({
+  emptyMessage,
+  entries,
+  error,
+  isLoading,
+  loadingLabel,
+  onRetry,
+  retryLabel,
+  unavailableMessage,
+  variant,
+}: BoardStatusProps) {
+  const { t } = useTranslation();
+  const styles = useThemedStyles(styleSheet);
+
+  if (isLoading) {
+    return <LeaderboardSkeleton count={variant === "weekly" ? 3 : 5} label={loadingLabel} variant={variant} />;
+  }
+
+  if (error) {
+    return (
+      <View accessibilityRole="alert" style={styles.unavailable}>
+        <Text style={styles.unavailableText}>{unavailableMessage}</Text>
+        <Pressable accessibilityLabel={retryLabel} accessibilityRole="button" onPress={onRetry} style={styles.retry}>
+          <Text style={styles.retryText}>{t("common.retry")}</Text>
+        </Pressable>
+      </View>
+    );
+  }
+
+  if (!entries?.length) {
+    return <Text style={styles.emptyText}>{emptyMessage}</Text>;
+  }
+
+  return variant === "weekly" ? <WeeklyPodium entries={entries} /> : <YearlyLeaderboardRows entries={entries} />;
+}
+
+/** Displays available podium placements in the requested second-first-third visual order. */
+function WeeklyPodium({ entries }: { entries: LeaderboardEntryViewModel[] }) {
   const { t } = useTranslation();
   const { locale } = useAppLanguage();
   const styles = useThemedStyles(styleSheet);
+  const podiumEntries = podiumRankOrder.flatMap((rank) => {
+    const entry = entries.find((candidate) => candidate.rank === rank);
+    return entry ? [entry] : [];
+  });
+
   return (
-    <View>
-      <View style={[styles.row, styles.columnLabels]}>
-        <Text style={[styles.columnLabel, styles.rankColumn]}>{t("dashboard.leaderboard.rank")}</Text>
-        <Text style={[styles.columnLabel, styles.warriorColumn]}>{t("dashboard.leaderboard.warrior")}</Text>
-        <Text style={[styles.columnLabel, styles.rosariesColumn]}>{t("dashboard.leaderboard.rosaries")}</Text>
-      </View>
-      {entries.map((entry) => {
-        const rankMedal = medal(entry.rank);
+    <ScrollView
+      accessibilityLabel={t("dashboard.leaderboard.weeklyScrollLabel")}
+      contentContainerStyle={styles.podiumContent}
+      horizontal
+      showsHorizontalScrollIndicator
+      style={styles.podiumScroll}
+      testID="weekly-podium-scroll"
+    >
+      {podiumEntries.map((entry) => {
+        const avatarSize = podiumAvatarSize(entry.rank);
         return (
           <View
             accessibilityLabel={t("dashboard.leaderboard.rowLabel", {
@@ -95,42 +199,116 @@ function LeaderboardRows({ entries }: { entries: LeaderboardEntryViewModel[] }) 
               rank: entry.rank,
             })}
             key={`${entry.rank}-${entry.displayName}`}
-            style={[styles.row, styles.entry, entry.rank === 1 && styles.firstPlace]}
+            style={[
+              styles.podiumEntry,
+              entry.rank === 1 && styles.podiumFirst,
+              entry.rank === 2 && styles.podiumSecond,
+            ]}
+            testID={`weekly-podium-entry-${entry.rank}`}
           >
-            <View style={styles.rankColumn}>
-              {rankMedal ? (
-                <Text accessible={false} style={styles.medal}>
-                  {rankMedal}
-                </Text>
-              ) : null}
-              <Text style={[styles.rank, { color: rankColor(entry.rank) }]}>{entry.rank}</Text>
-            </View>
-            <View style={styles.warriorColumn}>
-              <Image
-                accessibilityLabel={t("dashboard.leaderboard.avatarLabel", { name: entry.displayName })}
-                contentFit="cover"
-                source={entry.avatarUrl ?? saintAvatars[8].image}
-                style={styles.avatar}
-              />
-              <Text numberOfLines={1} style={styles.name}>
-                {entry.displayName}
-              </Text>
-            </View>
-            <Text style={styles.rosariesColumn}>{formatPoints(entry.rosaries, locale)}</Text>
+            <Text accessible={false} style={styles.podiumMedal}>
+              {medal(entry.rank)}
+            </Text>
+            <Image
+              accessibilityLabel={t("dashboard.leaderboard.avatarLabel", { name: entry.displayName })}
+              contentFit="cover"
+              source={entry.avatarUrl ?? saintAvatars[8].image}
+              style={[styles.podiumAvatar, { height: avatarSize, width: avatarSize }]}
+              testID={`weekly-podium-avatar-${entry.rank}`}
+            />
+            <Text style={[styles.podiumRank, { color: rankColor(entry.rank) }]}>#{entry.rank}</Text>
+            <Text style={styles.podiumName}>{entry.displayName}</Text>
+            <Text style={styles.podiumRosaries}>
+              {t("dashboard.leaderboard.rosaryCount", { count: formatPoints(entry.rosaries, locale) })}
+            </Text>
           </View>
         );
       })}
+    </ScrollView>
+  );
+}
+
+/** Renders the yearly leaders vertically in ascending server-provided rank order. */
+function YearlyLeaderboardRows({ entries }: { entries: LeaderboardEntryViewModel[] }) {
+  const { t } = useTranslation();
+  const { locale } = useAppLanguage();
+  const styles = useThemedStyles(styleSheet);
+
+  return (
+    <View>
+      <View style={[styles.row, styles.columnLabels]}>
+        <Text style={[styles.columnLabel, styles.rankColumn]}>{t("dashboard.leaderboard.rank")}</Text>
+        <Text style={[styles.columnLabel, styles.warriorColumn]}>{t("dashboard.leaderboard.warrior")}</Text>
+        <Text style={[styles.columnLabel, styles.rosariesColumn]}>{t("dashboard.leaderboard.rosaries")}</Text>
+      </View>
+      {orderByServerRank(entries)
+        .slice(0, 10)
+        .map((entry) => {
+          const rankMedal = medal(entry.rank);
+          return (
+            <View
+              accessibilityLabel={t("dashboard.leaderboard.rowLabel", {
+                count: formatPoints(entry.rosaries, locale),
+                name: entry.displayName,
+                rank: entry.rank,
+              })}
+              key={`${entry.rank}-${entry.displayName}`}
+              style={[styles.row, styles.entry, entry.rank === 1 && styles.firstPlace]}
+              testID={`yearly-leaderboard-entry-${entry.rank}`}
+            >
+              <View style={styles.rankColumn}>
+                {rankMedal ? (
+                  <Text accessible={false} style={styles.medal}>
+                    {rankMedal}
+                  </Text>
+                ) : null}
+                <Text style={[styles.rank, { color: rankColor(entry.rank) }]}>{entry.rank}</Text>
+              </View>
+              <View style={styles.warriorColumn}>
+                <Image
+                  accessibilityLabel={t("dashboard.leaderboard.avatarLabel", { name: entry.displayName })}
+                  contentFit="cover"
+                  source={entry.avatarUrl ?? saintAvatars[8].image}
+                  style={styles.avatar}
+                />
+                <Text style={styles.name}>{entry.displayName}</Text>
+              </View>
+              <Text style={styles.rosariesColumn}>{formatPoints(entry.rosaries, locale)}</Text>
+            </View>
+          );
+        })}
     </View>
   );
 }
 
-/** Renders LeaderboardSkeleton with styles resolved from the active appearance. */
-function LeaderboardSkeleton() {
-  const { t } = useTranslation();
+/** Renders a compact placeholder matching the selected board layout while data loads. */
+function LeaderboardSkeleton({
+  count,
+  label,
+  variant,
+}: {
+  count: number;
+  label: string;
+  variant: "weekly" | "yearly";
+}) {
   const styles = useThemedStyles(styleSheet);
+
+  if (variant === "weekly") {
+    return (
+      <View accessibilityLabel={label} style={styles.podiumSkeletons}>
+        {Array.from({ length: count }, (_, index) => (
+          <View key={index} style={styles.podiumSkeletonEntry}>
+            <View style={styles.podiumSkeletonAvatar} />
+            <View style={styles.podiumSkeletonName} />
+          </View>
+        ))}
+      </View>
+    );
+  }
+
   return (
-    <View accessibilityLabel={t("dashboard.leaderboard.loading")} style={styles.skeletons}>
-      {Array.from({ length: 5 }, (_, index) => (
+    <View accessibilityLabel={label} style={styles.skeletons}>
+      {Array.from({ length: count }, (_, index) => (
         <View key={index} style={styles.skeletonRow}>
           <View style={styles.skeletonRank} />
           <View style={styles.skeletonAvatar} />
@@ -144,10 +322,17 @@ function LeaderboardSkeleton() {
 
 const styleSheet = createThemedStyles((theme) => ({
   avatar: { borderRadius: theme.radii.pill, height: 32, width: 32 },
+  boardSection: { gap: theme.spacing[2] },
+  boardTitle: {
+    ...theme.typography.heading3,
+    color: theme.colors.gold.pale,
+    fontFamily: theme.fontFamilies.devotional,
+  },
   card: {
     borderColor: theme.colors.gold.strong,
     borderRadius: theme.radii.xl,
     borderWidth: theme.borderWidths.thin,
+    gap: theme.spacing[3],
     overflow: "hidden",
     padding: theme.spacing[4],
   },
@@ -157,7 +342,9 @@ const styleSheet = createThemedStyles((theme) => ({
     fontSize: 10,
     letterSpacing: theme.letterSpacing.wide,
   },
-  columnLabels: { paddingBottom: theme.spacing[2], paddingTop: theme.spacing[3] },
+  columnLabels: { paddingBottom: theme.spacing[2] },
+  divider: { backgroundColor: theme.colors.border.subtle, height: theme.borderWidths.hairline },
+  emptyText: { ...theme.typography.body, color: theme.colors.text.secondary, paddingVertical: theme.spacing[3] },
   entry: {
     borderTopColor: theme.colors.border.subtle,
     borderTopWidth: theme.borderWidths.hairline,
@@ -169,14 +356,70 @@ const styleSheet = createThemedStyles((theme) => ({
     borderRadius: theme.radii.sm,
     paddingHorizontal: theme.spacing[1],
   },
-  header: { alignItems: "center", flexDirection: "row", justifyContent: "space-between" },
   medal: { fontSize: 14 },
-  name: { ...theme.typography.bodyMedium, color: theme.colors.text.primary, flex: 1, marginLeft: theme.spacing[2] },
+  name: {
+    ...theme.typography.bodyMedium,
+    color: theme.colors.text.primary,
+    flex: 1,
+    marginLeft: theme.spacing[2],
+    minWidth: 0,
+  },
+  podiumAvatar: {
+    borderColor: theme.colors.gold.strong,
+    borderRadius: theme.radii.pill,
+    borderWidth: theme.borderWidths.thin,
+  },
+  podiumContent: {
+    alignItems: "flex-end",
+    flexGrow: 1,
+    gap: theme.spacing[2],
+    justifyContent: "center",
+    minWidth: 400,
+    paddingHorizontal: theme.spacing[1],
+    paddingVertical: theme.spacing[2],
+  },
+  podiumEntry: { alignItems: "center", gap: theme.spacing[1], width: 112 },
+  podiumFirst: { width: 136 },
+  podiumMedal: { fontSize: 22 },
+  podiumName: {
+    ...theme.typography.bodyMedium,
+    color: theme.colors.text.primary,
+    textAlign: "center",
+  },
+  podiumRank: { ...theme.typography.heading3, fontFamily: theme.fontFamilies.devotional },
+  podiumRosaries: { ...theme.typography.labelSmall, color: theme.colors.text.secondary, textAlign: "center" },
+  podiumSecond: { width: 124 },
+  podiumScroll: { marginHorizontal: -theme.spacing[4] },
+  podiumSkeletonAvatar: {
+    backgroundColor: theme.colors.surface.tertiary,
+    borderRadius: theme.radii.pill,
+    height: 62,
+    width: 62,
+  },
+  podiumSkeletonEntry: { alignItems: "center", gap: theme.spacing[2], width: 112 },
+  podiumSkeletonName: {
+    backgroundColor: theme.colors.surface.tertiary,
+    borderRadius: theme.radii.xs,
+    height: theme.spacing[3],
+    width: 82,
+  },
+  podiumSkeletons: {
+    alignItems: "flex-end",
+    flexDirection: "row",
+    gap: theme.spacing[2],
+    justifyContent: "center",
+    minHeight: 120,
+  },
   rank: { ...theme.typography.bodyMedium, fontFamily: theme.fontFamilies.devotional },
   rankColumn: { alignItems: "center", flexDirection: "row", gap: theme.spacing[1], width: "20%" },
   retry: { alignSelf: "flex-start", justifyContent: "center", minHeight: theme.sizes.touchTarget },
   retryText: { ...theme.typography.button, color: theme.colors.gold.pale },
-  rosariesColumn: { ...theme.typography.bodyMedium, color: theme.colors.gold.pale, textAlign: "right", width: "25%" },
+  rosariesColumn: {
+    ...theme.typography.bodyMedium,
+    color: theme.colors.gold.pale,
+    textAlign: "right",
+    width: "25%",
+  },
   row: { alignItems: "center", flexDirection: "row" },
   skeletonAvatar: {
     backgroundColor: theme.colors.surface.tertiary,
@@ -206,16 +449,14 @@ const styleSheet = createThemedStyles((theme) => ({
     marginLeft: theme.spacing[3],
     width: 38,
   },
-  skeletons: { marginTop: theme.spacing[2] },
+  skeletons: { marginTop: theme.spacing[1] },
   subtitle: {
-    ...theme.typography.labelSmall,
+    ...theme.typography.body,
     color: theme.colors.text.muted,
-    letterSpacing: theme.letterSpacing.wide,
-    marginTop: theme.spacing[1],
   },
   title: { ...theme.typography.heading3, color: theme.colors.gold.pale, fontFamily: theme.fontFamilies.devotional },
   titleRow: { alignItems: "center", flexDirection: "row", gap: theme.spacing[2] },
-  unavailable: { paddingVertical: theme.spacing[4] },
+  unavailable: { paddingVertical: theme.spacing[3] },
   unavailableText: { ...theme.typography.body, color: theme.colors.text.secondary },
   warriorColumn: { alignItems: "center", flex: 1, flexDirection: "row", minWidth: 0 },
 }));
