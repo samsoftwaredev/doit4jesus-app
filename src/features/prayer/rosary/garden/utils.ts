@@ -1,6 +1,22 @@
 import type { FlowerVariant, RosaryGardenDay, RosaryGardenMonth } from "@/features/prayer/rosary/garden/types";
 
-const flowerVariants: FlowerVariant[] = ["redRose", "pinkRose", "whiteLily", "blueFlower", "mixedFlowers"];
+const flowerVariants: FlowerVariant[] = [
+  "redRose",
+  "pinkRose",
+  "whiteLily",
+  "blueFlower",
+  "mixedFlowers",
+  "purpleTulip",
+  "sunflower",
+  "orangeMarigold",
+  "lavender",
+  "whiteDaisy",
+  "pinkPeony",
+  "magentaOrchid",
+  "redPoppy",
+  "blueHydrangea",
+  "orangeHibiscus",
+];
 
 export function toIsoDate(year: number, month: number, day: number) {
   return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
@@ -23,6 +39,7 @@ export function isMonthAfter(year: number, month: number, comparedYear: number, 
   return year > comparedYear || (year === comparedYear && month > comparedMonth);
 }
 
+/** Selects a stable flower variety for a completed calendar date. */
 export function getFlowerVariant(date: string): FlowerVariant {
   const hash = [...date].reduce((total, character) => total + character.charCodeAt(0), 0);
   return flowerVariants[hash % flowerVariants.length];

@@ -1,4 +1,23 @@
 import { buildRosaryGardenMonth, calculateStreaks, getFlowerVariant, isMonthAfter, isMonthBefore } from "./utils";
+import type { FlowerVariant } from "./types";
+
+const expectedFlowerVariants = [
+  "redRose",
+  "pinkRose",
+  "whiteLily",
+  "blueFlower",
+  "mixedFlowers",
+  "purpleTulip",
+  "sunflower",
+  "orangeMarigold",
+  "lavender",
+  "whiteDaisy",
+  "pinkPeony",
+  "magentaOrchid",
+  "redPoppy",
+  "blueHydrangea",
+  "orangeHibiscus",
+] as const satisfies readonly FlowerVariant[];
 
 describe("Rosary Garden utilities", () => {
   it("should render the selected month", () => {
@@ -24,6 +43,20 @@ describe("Rosary Garden utilities", () => {
     });
 
     expect(month.days[4]).toMatchObject({ completed: true, flowerVariant: getFlowerVariant("2026-05-05") });
+  });
+
+  it("should make every existing and new flower variety reachable from completed dates", () => {
+    const actualVariants = new Set<FlowerVariant>();
+
+    for (let month = 1; month <= 12; month += 1) {
+      const daysInMonth = new Date(Date.UTC(2026, month, 0)).getUTCDate();
+
+      for (let day = 1; day <= daysInMonth; day += 1) {
+        actualVariants.add(getFlowerVariant(`2026-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`));
+      }
+    }
+
+    expect(actualVariants).toEqual(new Set(expectedFlowerVariants));
   });
 
   it("should show a sprout for an incomplete day", () => {

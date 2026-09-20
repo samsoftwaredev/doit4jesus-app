@@ -1,11 +1,24 @@
 import { render, screen, within } from "@testing-library/react-native";
 import { StyleSheet } from "react-native";
 
-import type { RosaryGardenDay } from "@/features/prayer/rosary/garden/types";
+import type { FlowerVariant, RosaryGardenDay } from "@/features/prayer/rosary/garden/types";
+import { theme } from "@/theme/tokens";
 
 import { GardenCalendar } from "./GardenCalendar";
 
 const daysInWeek = 7;
+const newFlowerVariants = [
+  "purpleTulip",
+  "sunflower",
+  "orangeMarigold",
+  "lavender",
+  "whiteDaisy",
+  "pinkPeony",
+  "magentaOrchid",
+  "redPoppy",
+  "blueHydrangea",
+  "orangeHibiscus",
+] as const satisfies readonly FlowerVariant[];
 
 function makeDays(year: number, month: number, completedDay?: number): RosaryGardenDay[] {
   const dayCount = new Date(Date.UTC(year, month, 0)).getUTCDate();
@@ -102,13 +115,26 @@ describe("GardenCalendar", () => {
     expectSevenColumnsPerRow();
   });
 
-  it("keeps completion artwork inside its date slot without changing grid placement", async () => {
+  it("uses completed flowers as full-cell backgrounds without bottom soil lines", async () => {
     await renderMonth(2026, 8, 27);
 
     const completedCell = screen.getByTestId("garden-calendar-cell-4-4");
-    expect(within(completedCell).getByTestId("garden-day-2026-08-27")).toBeTruthy();
-    expect(within(completedCell).getByTestId("day-calendar-reward")).toBeTruthy();
+    const completedDay = within(completedCell).getByTestId("garden-day-2026-08-27");
+    const flower = within(completedDay).getByTestId("day-calendar-flower");
+
+    expect(StyleSheet.flatten(flower.props.style)).toMatchObject({
+      position: "absolute",
+    });
+    expect(flower.props.accessible).toBe(false);
+    expect(flower.props.resizeMode).toBe("cover");
+    expect(within(completedDay).queryByTestId("day-calendar-reward")).toBeNull();
     expect(within(completedCell).getByTestId("day-calendar-completion-check")).toBeTruthy();
+
+    const incompleteDay = screen.getByTestId("garden-day-2026-08-28");
+    const reward = within(incompleteDay).getByTestId("day-calendar-reward");
+    const sprout = within(incompleteDay).getByTestId("day-calendar-sprout");
+    expect(reward.children).toHaveLength(1);
+    expect(StyleSheet.flatten(sprout.props.style).fontSize).toBe(theme.sizes.iconXs);
     expect(StyleSheet.flatten(completedCell.props.style)).toMatchObject({
       aspectRatio: 1,
       flex: 1,
@@ -116,6 +142,21 @@ describe("GardenCalendar", () => {
       overflow: "hidden",
     });
     expectDayAt(2026, 8, 28, 4, 5);
+  });
+
+  it("renders every new flower variety as bundled full-cell artwork", async () => {
+    const variedDays = makeDays(2026, 8).map((day, index) =>
+      index < newFlowerVariants.length ? { ...day, completed: true, flowerVariant: newFlowerVariants[index] } : day,
+    );
+    await render(<GardenCalendar days={variedDays} month={8} year={2026} />);
+
+    newFlowerVariants.forEach((_, index) => {
+      const date = `2026-08-${String(index + 1).padStart(2, "0")}`;
+      const flower = within(screen.getByTestId(`garden-day-${date}`)).getByTestId("day-calendar-flower");
+
+      expect(flower.props.source).toBeTruthy();
+      expect(flower.props.resizeMode).toBe("cover");
+    });
   });
 
   it("announces full dates and completion status", async () => {

@@ -2,7 +2,23 @@ import type { StyleProp, ViewStyle } from "react-native";
 
 export type DayCalendarTileState = "completed" | "current" | "future" | "incomplete" | "unavailable";
 
-export type DayCalendarFlower = "redRose" | "pinkRose" | "whiteLily" | "blueFlower" | "mixed" | "mixedFlowers";
+export type DayCalendarFlower =
+  | "redRose"
+  | "pinkRose"
+  | "whiteLily"
+  | "blueFlower"
+  | "mixed"
+  | "mixedFlowers"
+  | "purpleTulip"
+  | "sunflower"
+  | "orangeMarigold"
+  | "lavender"
+  | "whiteDaisy"
+  | "pinkPeony"
+  | "magentaOrchid"
+  | "redPoppy"
+  | "blueHydrangea"
+  | "orangeHibiscus";
 
 export interface DayCalendarTileProps {
   day: number;
