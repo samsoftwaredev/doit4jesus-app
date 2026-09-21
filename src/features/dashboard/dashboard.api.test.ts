@@ -1,4 +1,5 @@
 import {
+  getConscienceQuestions,
   getConscienceQuestion,
   getRosaryReminder,
   getWeeklyGlobalLeaderboard,
@@ -54,6 +55,23 @@ describe("dashboard API", () => {
         method: "GET",
       },
     );
+  });
+
+  it("maps the complete examination list from the conscience endpoint", async () => {
+    globalThis.fetch = jest.fn(async () => ({
+      json: async () => ({
+        data: [
+          { category: "married", id: "question-1", question: "Did I show patience?", title: "Patience" },
+          { category: "religious", id: "question-2", question: "Did I keep my vows?", title: "Obedience" },
+        ],
+      }),
+      ok: true,
+    })) as unknown as typeof fetch;
+
+    await expect(getConscienceQuestions()).resolves.toEqual([
+      { category: "married", id: "question-1", question: "Did I show patience?", title: "Patience" },
+      { category: "religious", id: "question-2", question: "Did I keep my vows?", title: "Obedience" },
+    ]);
   });
 
   it("maps the server-authoritative Rosary reminder", async () => {

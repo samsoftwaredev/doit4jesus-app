@@ -18,8 +18,12 @@ import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles"
 
 import type { LevelCatalogEntry, RecentRosaryActivity } from "@/features/progress";
 import { ConscienceQuestionCard, DailyRosaryCard, HolyProgressCard, LevelProgressCard } from "./components";
-import { getConscienceQuestion, getRosaryReminder } from "./dashboard.api";
-import type { ConscienceQuestionViewModel, RosaryReminderViewModel } from "./dashboard.types";
+import { getConscienceQuestion, getConscienceQuestions, getRosaryReminder } from "./dashboard.api";
+import type {
+  ConscienceQuestionListItemViewModel,
+  ConscienceQuestionViewModel,
+  RosaryReminderViewModel,
+} from "./dashboard.types";
 
 /** Composes the Home dashboard's API-backed cards, streak progress, and earned badges. */
 export function HolyProgressDashboard() {
@@ -28,8 +32,11 @@ export function HolyProgressDashboard() {
   const router = useRouter();
   const { contentWidth, isLargeText, isTablet } = useResponsiveLayout();
   const [conscience, setConscience] = useState<ConscienceQuestionViewModel | null>(null);
+  const [conscienceQuestions, setConscienceQuestions] = useState<ConscienceQuestionListItemViewModel[]>([]);
   const [conscienceError, setConscienceError] = useState(false);
+  const [conscienceQuestionsError, setConscienceQuestionsError] = useState(false);
   const [isLoadingConscience, setIsLoadingConscience] = useState(true);
+  const [isLoadingConscienceQuestions, setIsLoadingConscienceQuestions] = useState(false);
   const [isLoadingHolyDetails, setIsLoadingHolyDetails] = useState(true);
   const [isLoadingProgress, setIsLoadingProgress] = useState(true);
   const [isLoadingReminder, setIsLoadingReminder] = useState(true);
@@ -103,6 +110,20 @@ export function HolyProgressDashboard() {
       setConscienceError(true);
     } finally {
       setIsLoadingConscience(false);
+    }
+  }, []);
+
+  /** Loads the complete examination of conscience whenever the user opens its full list. */
+  const loadConscienceQuestions = useCallback(async () => {
+    setIsLoadingConscienceQuestions(true);
+    setConscienceQuestionsError(false);
+    try {
+      setConscienceQuestions(await getConscienceQuestions());
+    } catch {
+      setConscienceQuestions([]);
+      setConscienceQuestionsError(true);
+    } finally {
+      setIsLoadingConscienceQuestions(false);
     }
   }, []);
 
@@ -197,9 +218,13 @@ export function HolyProgressDashboard() {
         </View>
         <View style={[styles.primaryCard, useCardColumns && styles.primaryCardColumn]}>
           <ConscienceQuestionCard
+            allQuestions={conscienceQuestions}
+            allQuestionsError={conscienceQuestionsError}
             error={conscienceError}
+            isLoadingAllQuestions={isLoadingConscienceQuestions}
             isLoading={isLoadingConscience}
             onRetry={() => void loadConscience()}
+            onViewMore={() => void loadConscienceQuestions()}
             question={conscience}
           />
         </View>

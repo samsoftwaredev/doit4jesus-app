@@ -10,6 +10,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Button } from "@/components/ui";
 import { AuthProvider, useAuth } from "@/features/auth";
 import { getProfileAccessState, ProfileProvider, useCurrentProfile } from "@/features/profile";
+import { AccountLanguagePreferenceSync } from "@/localization/AccountLanguagePreferenceSync";
 import { AppLanguageProvider, useAppLanguage } from "@/localization";
 import { AppThemeProvider, getStatusBarStyle, useAppTheme } from "@/theme/AppThemeProvider";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
@@ -60,7 +61,9 @@ function ThemedRoot() {
           <StatusBar style={getStatusBarStyle(colorScheme)} />
           <AuthProvider>
             <ProfileProvider>
-              <RootNavigator />
+              <AccountLanguagePreferenceSync>
+                <RootNavigator />
+              </AccountLanguagePreferenceSync>
             </ProfileProvider>
           </AuthProvider>
         </ThemeProvider>

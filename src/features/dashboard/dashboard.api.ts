@@ -3,6 +3,8 @@ import { getSupabaseAccessToken } from "@/lib/supabase";
 
 import type {
   ConscienceQuestionViewModel,
+  ConscienceQuestionCategory,
+  ConscienceQuestionListItemViewModel,
   LeaderboardEntryViewModel,
   RosaryReminderViewModel,
   RosaryStreakStatus,
@@ -48,6 +50,15 @@ function readData(value: unknown, field: string): Record<string, unknown> {
   return readRecord(readRecord(value, field).data, `${field} data`);
 }
 
+/** Validates an examination category supplied by the conscience endpoint. */
+function readConscienceCategory(value: unknown): ConscienceQuestionCategory {
+  const category = readString(value, "conscience question category");
+  if (category !== "single" && category !== "married" && category !== "religious") {
+    throw new Error("The dashboard endpoint returned an invalid conscience question category.");
+  }
+  return category;
+}
+
 async function requestDashboard(path: string): Promise<unknown> {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   if (!apiUrl) throw new Error("Set EXPO_PUBLIC_API_URL before loading the dashboard.");
@@ -85,6 +96,23 @@ export async function getConscienceQuestion(): Promise<ConscienceQuestionViewMod
     question: readString(data.question, "conscience question"),
     reflection: readOptionalNullableString(data.description, "conscience reflection"),
   };
+}
+
+/** Loads the complete examination of conscience, retaining only fields needed by the Home list. */
+export async function getConscienceQuestions(): Promise<ConscienceQuestionListItemViewModel[]> {
+  const response = readRecord(
+    await requestDashboard("/api/v1/examination-of-conscience"),
+    "examination of conscience response",
+  );
+  return readArray(response.data, "examination of conscience data").map((rawQuestion) => {
+    const question = readRecord(rawQuestion, "conscience question");
+    return {
+      category: readConscienceCategory(question.category),
+      id: readString(question.id, "conscience question ID"),
+      question: readString(question.question, "conscience question"),
+      title: readString(question.title, "conscience question title"),
+    };
+  });
 }
 
 export async function getRosaryReminder(): Promise<RosaryReminderViewModel> {

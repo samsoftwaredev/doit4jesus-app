@@ -11,6 +11,15 @@ export type ConscienceQuestionViewModel = {
   reflection: string | null;
 };
 
+export type ConscienceQuestionCategory = "single" | "married" | "religious";
+
+export type ConscienceQuestionListItemViewModel = {
+  category: ConscienceQuestionCategory;
+  id: string;
+  question: string;
+  title: string;
+};
+
 export type RosaryStreakStatus = "active" | "at-risk" | "none" | "reset";
 
 export type RosaryReminderViewModel = {

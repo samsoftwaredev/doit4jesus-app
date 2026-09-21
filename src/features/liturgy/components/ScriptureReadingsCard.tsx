@@ -36,7 +36,10 @@ function formatNavDate(isoDate: string, locale: string) {
   });
 }
 
-/** Renders this feature with colors from the currently resolved app appearance. */
+/**
+ * Renders daily Scripture readings, their completion progress, and the rewards
+ * context while preserving readable header copy on narrow layouts.
+ */
 export function ScriptureReadingsCard({
   completedReadingIds,
   readings,
@@ -62,9 +65,12 @@ export function ScriptureReadingsCard({
       <View style={styles.header}>
         <View style={styles.heading}>
           <MaterialCommunityIcons color={theme.colors.gold.pale} name="book-open-page-variant-outline" size={21} />
-          <Text accessibilityRole="header" style={styles.title}>
-            {t("liturgy.readings.title")}
-          </Text>
+          <View style={styles.headingCopy}>
+            <Text accessibilityRole="header" style={styles.title}>
+              {t("liturgy.readings.title")}
+            </Text>
+            <Text style={styles.description}>{t("liturgy.readings.description")}</Text>
+          </View>
         </View>
         <Text
           accessibilityLabel={t("liturgy.readings.completedCountLabel", {
@@ -137,6 +143,11 @@ const styleSheet = createThemedStyles((theme) => ({
     color: theme.colors.text.muted,
     textAlign: "right",
   },
+  description: {
+    ...theme.typography.bodySmall,
+    color: theme.colors.text.muted,
+    marginTop: theme.spacing[0.5],
+  },
   empty: {
     ...theme.typography.body,
     color: theme.colors.text.muted,
@@ -159,8 +170,10 @@ const styleSheet = createThemedStyles((theme) => ({
     alignItems: "center",
     flex: 1,
     flexDirection: "row",
+    minWidth: 0,
     marginRight: theme.spacing[3],
   },
+  headingCopy: { flex: 1, marginLeft: theme.spacing[2], minWidth: 0 },
   progressTrack: {
     marginTop: theme.spacing[2],
     marginBottom: theme.spacing[2],
@@ -177,6 +190,5 @@ const styleSheet = createThemedStyles((theme) => ({
   title: {
     ...theme.typography.heading3,
     color: theme.colors.text.primary,
-    marginLeft: theme.spacing[2],
   },
 }));

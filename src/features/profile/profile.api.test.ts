@@ -97,6 +97,28 @@ describe("current profile API", () => {
     expect(result.saintAvatarId).toBe("a1000000-0000-4000-8000-000000000002");
   });
 
+  it("PATCHes the supplied preferred language", async () => {
+    const fetchMock = jest.fn(async () => ({
+      json: async () => ({ data: { ...profilePayload.data, preferredLanguage: "es" } }),
+      ok: true,
+    }));
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+    await expect(updateCurrentUserProfile({ preferredLanguage: "es" })).resolves.toMatchObject({
+      preferredLanguage: "es",
+    });
+
+    expect(fetchMock).toHaveBeenCalledWith("http://localhost:3000/api/v1/me", {
+      body: JSON.stringify({ preferredLanguage: "es" }),
+      headers: {
+        Accept: "application/json",
+        Authorization: "Bearer test-access-token",
+        "Content-Type": "application/json",
+      },
+      method: "PATCH",
+    });
+  });
+
   it("DELETEs the authenticated user's profile", async () => {
     const fetchMock = jest.fn(async () => ({ ok: true }));
     globalThis.fetch = fetchMock as unknown as typeof fetch;

@@ -1,6 +1,15 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLocales } from "expo-localization";
-import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  type PropsWithChildren,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import { i18n } from "@/localization/i18n";
 
@@ -14,6 +23,7 @@ export type AppLanguageContextValue = {
   language: SupportedLanguage;
   locale: AppLocale;
   preference: SupportedLanguage | null;
+  setAccountPreference: (language: SupportedLanguage) => Promise<void>;
   setLanguage: (language: SupportedLanguage) => Promise<void>;
 };
 
@@ -42,16 +52,18 @@ const defaultContextValue: AppLanguageContextValue = {
   language: "en",
   locale: "en-US",
   preference: null,
+  setAccountPreference: async () => undefined,
   setLanguage: async () => undefined,
 };
 
 const AppLanguageContext = createContext<AppLanguageContextValue>(defaultContextValue);
 
-/** Hydrates the device-local language choice and follows the device locale until a choice is stored. */
+/** Hydrates the local language choice and follows the device locale until local or account preference is available. */
 export function AppLanguageProvider({ children }: PropsWithChildren) {
   const locales = useLocales();
   const [preference, setPreference] = useState<SupportedLanguage | null>(null);
   const [isHydrated, setIsHydrated] = useState(false);
+  const preferenceRef = useRef<SupportedLanguage | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -66,6 +78,7 @@ export function AppLanguageProvider({ children }: PropsWithChildren) {
       }
 
       if (!isMounted) return;
+      preferenceRef.current = nextPreference;
       setPreference(nextPreference);
       setIsHydrated(true);
     }
@@ -84,11 +97,28 @@ export function AppLanguageProvider({ children }: PropsWithChildren) {
 
   /** Applies an explicit language immediately and persists it on a best-effort basis. */
   const setLanguage = useCallback(async (nextLanguage: SupportedLanguage) => {
+    preferenceRef.current = nextLanguage;
     setPreference(nextLanguage);
     try {
       await AsyncStorage.setItem(APP_LANGUAGE_PREFERENCE_STORAGE_KEY, nextLanguage);
     } catch {
       // The active session still honors the selection when storage is unavailable.
+    }
+  }, []);
+
+  /**
+   * Uses an authenticated account preference only when this device has no explicit choice.
+   * The restored preference is persisted locally so it remains available while offline.
+   */
+  const setAccountPreference = useCallback(async (nextLanguage: SupportedLanguage) => {
+    if (preferenceRef.current) return;
+
+    preferenceRef.current = nextLanguage;
+    setPreference(nextLanguage);
+    try {
+      await AsyncStorage.setItem(APP_LANGUAGE_PREFERENCE_STORAGE_KEY, nextLanguage);
+    } catch {
+      // The account preference still applies during this session when storage is unavailable.
     }
   }, []);
 
@@ -98,9 +128,10 @@ export function AppLanguageProvider({ children }: PropsWithChildren) {
       language,
       locale: localeByLanguage[language],
       preference,
+      setAccountPreference,
       setLanguage,
     }),
-    [isHydrated, language, preference, setLanguage],
+    [isHydrated, language, preference, setAccountPreference, setLanguage],
   );
 
   return <AppLanguageContext.Provider value={value}>{children}</AppLanguageContext.Provider>;

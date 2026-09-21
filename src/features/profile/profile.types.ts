@@ -30,6 +30,7 @@ export type UpdateCurrentUserProfile = Partial<{
   countryCode: string;
   displayName: string;
   gender: Gender;
+  preferredLanguage: "en" | "es";
   saintAvatarId: string | null;
   username: string;
 }>;

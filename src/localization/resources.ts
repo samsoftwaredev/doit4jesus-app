@@ -56,7 +56,7 @@ export const resources = {
         startAction: "Start your journey",
       },
       home: {
-        description: "Grow in faith, compete in holiness.",
+        description: "Build lasting habits of reading Scripture, praying, attending Mass, and going to Confession.",
         title: "Welcome home",
       },
       app: {
@@ -274,8 +274,15 @@ export const resources = {
         conscience: {
           heading: "QUESTION OF CONSCIENCE",
           loading: "Loading conscience question",
+          listLoading: "Loading questions…",
+          listTitle: "Questions of Conscience",
+          listUnavailable: "Questions are unavailable right now.",
+          closeLabel: "Close questions of conscience",
           retryLabel: "Retry conscience question",
           unavailable: "Reflection unavailable.",
+          viewMore: "View more",
+          viewMoreLabel: "View more questions",
+          categories: { single: "Single", married: "Married", religious: "Religious" },
         },
         dailyRosary: {
           beginRhythm: "Begin a prayerful rhythm today.",
@@ -470,6 +477,7 @@ export const resources = {
         readings: {
           completedCount: "{{completed}} of {{total}} completed",
           completedCountLabel: "{{completed}} of {{total}} readings completed",
+          description: "Complete today's readings to earn points and work toward badges.",
           empty: "Today's Scripture readings are not available yet.",
           next: "Next",
           nextHint: "Tomorrow is the latest available liturgy.",
@@ -1204,7 +1212,7 @@ export const resources = {
         startAction: "Comienza tu camino",
       },
       home: {
-        description: "Crece en la fe, compite en santidad.",
+        description: "Crea hábitos duraderos de leer las Escrituras, orar, asistir a Misa y confesarte.",
         title: "Bienvenido a casa",
       },
       app: {
@@ -1423,8 +1431,15 @@ export const resources = {
         conscience: {
           heading: "PREGUNTA DE CONCIENCIA",
           loading: "Cargando pregunta de conciencia",
+          listLoading: "Cargando preguntas…",
+          listTitle: "Preguntas de conciencia",
+          listUnavailable: "Las preguntas no están disponibles en este momento.",
+          closeLabel: "Cerrar preguntas de conciencia",
           retryLabel: "Volver a cargar la pregunta de conciencia",
           unavailable: "La reflexión no está disponible.",
+          viewMore: "Ver más",
+          viewMoreLabel: "Ver más preguntas",
+          categories: { single: "Soltero", married: "Casado", religious: "Religioso" },
         },
         dailyRosary: {
           beginRhythm: "Comienza hoy un ritmo de oración.",
@@ -1620,6 +1635,7 @@ export const resources = {
         readings: {
           completedCount: "{{completed}} de {{total}} completadas",
           completedCountLabel: "{{completed}} de {{total}} lecturas completadas",
+          description: "Completa las lecturas de hoy para ganar puntos y avanzar hacia insignias.",
           empty: "Las lecturas de la Escritura de hoy aún no están disponibles.",
           next: "Siguiente",
           nextHint: "Mañana es la liturgia disponible más reciente.",
