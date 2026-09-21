@@ -1,12 +1,14 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { act, fireEvent, render, screen } from "@testing-library/react-native";
 import { StyleSheet } from "react-native";
 
-import { i18n } from "@/localization";
+import { AppLanguageProvider, i18n } from "@/localization";
 
 import { RosaryBottomNavigation } from "./RosaryBottomNavigation";
 
 describe("RosaryBottomNavigation", () => {
   beforeEach(async () => {
+    jest.clearAllMocks();
     await i18n.changeLanguage("en");
   });
 
@@ -134,7 +136,7 @@ describe("RosaryBottomNavigation", () => {
     expect(screen.getByRole("button", { name: "Pause prayer audio" })).toBeTruthy();
   });
 
-  it("disables unavailable audio and exposes the persisted mute switch in both languages", async () => {
+  it("explains the persisted mute switch and exposes its enabled state in both languages", async () => {
     const onAudioMutedChange = jest.fn();
     await render(
       <RosaryBottomNavigation
@@ -155,13 +157,62 @@ describe("RosaryBottomNavigation", () => {
       disabled: true,
     });
     await fireEvent.press(screen.getByLabelText("Open Rosary settings"));
-    const switchControl = screen.getByRole("switch", { name: "Rosary audio" });
-    expect(switchControl.props.accessibilityState).toEqual({ checked: false });
+    const switchControl = screen.getByRole("switch", { name: "Mute Rosary audio" });
+    expect(switchControl.props.accessibilityHint).toBe("Turn this on to mute audio during the Rosary.");
+    expect(switchControl.props.accessibilityState).toEqual({ checked: true });
+    expect(screen.getByText("Turn this on to mute audio during the Rosary.")).toBeTruthy();
     await fireEvent.press(switchControl);
     expect(onAudioMutedChange).toHaveBeenCalledWith(false);
 
     await act(async () => i18n.changeLanguage("es"));
     expect(screen.getByRole("button", { name: "Audio de oración no disponible" })).toBeTruthy();
-    expect(screen.getByRole("switch", { name: "Audio del Rosario" })).toBeTruthy();
+    expect(screen.getByRole("switch", { name: "Silenciar el audio del Rosario" })).toBeTruthy();
+    expect(screen.getByText("Activa esta opción para silenciar el audio durante el Rosario.")).toBeTruthy();
+  });
+
+  it("organizes settings into labeled sections with language last", async () => {
+    await render(
+      <RosaryBottomNavigation
+        onAdvance={jest.fn()}
+        onLengthChange={jest.fn()}
+        onRestart={jest.fn()}
+        progress={{ currentIndex: 1, prayerName: "Hail Mary", total: 10 }}
+        rosaryLength="medium"
+      />,
+    );
+
+    await fireEvent.press(screen.getByLabelText("Open Rosary settings"));
+
+    const headingNames = screen.getAllByRole("header").map((heading) => heading.props.children);
+    expect(headingNames).toEqual(["Rosary settings", "Prayer progress", "Rosary length", "Audio", "Language"]);
+    expect(screen.getByLabelText("Rosary length").props.accessibilityRole).toBe("radiogroup");
+    expect(screen.getByLabelText("App language").props.accessibilityRole).toBe("radiogroup");
+  });
+
+  it("changes and persists the app language from the final settings section", async () => {
+    await render(
+      <AppLanguageProvider>
+        <RosaryBottomNavigation
+          onAdvance={jest.fn()}
+          onLengthChange={jest.fn()}
+          onRestart={jest.fn()}
+          progress={{ currentIndex: 1, prayerName: "Hail Mary", total: 10 }}
+          rosaryLength="medium"
+        />
+      </AppLanguageProvider>,
+    );
+
+    await fireEvent.press(screen.getByLabelText("Open Rosary settings"));
+    await fireEvent.press(screen.getByRole("radio", { name: "Español" }));
+
+    expect(await screen.findByText("Configuración del Rosario")).toBeTruthy();
+    expect(screen.getAllByRole("header").map((heading) => heading.props.children)).toEqual([
+      "Configuración del Rosario",
+      "Progreso de la oración",
+      "Duración del Rosario",
+      "Audio",
+      "Idioma",
+    ]);
+    expect(AsyncStorage.setItem).toHaveBeenCalledWith("@doit4jesus/language-preference:v1", "es");
   });
 });

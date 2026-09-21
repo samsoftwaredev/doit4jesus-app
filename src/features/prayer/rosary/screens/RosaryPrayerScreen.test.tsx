@@ -280,7 +280,9 @@ describe("RosaryPrayerScreen", () => {
     expect(mockToggleAudioPlayback).toHaveBeenCalledTimes(1);
 
     await fireEvent.press(screen.getByLabelText("Open Rosary settings"));
-    await fireEvent.press(screen.getByRole("switch", { name: "Rosary audio" }));
+    const muteSwitch = screen.getByRole("switch", { name: "Mute Rosary audio" });
+    expect(muteSwitch.props.accessibilityState).toEqual({ checked: false });
+    await fireEvent.press(muteSwitch);
     expect(mockSetAudioMuted).toHaveBeenCalledWith(true);
   });
 

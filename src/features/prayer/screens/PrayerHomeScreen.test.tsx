@@ -6,6 +6,7 @@ import { i18n } from "@/localization";
 import { PrayerScreen } from "./PrayerHomeScreen";
 
 const mockPush = jest.fn();
+const mockGetGlobalRosaryStats = jest.fn();
 const mockGetWeeklyGlobalLeaderboard = jest.fn();
 const mockGetYearlyGlobalLeaderboard = jest.fn();
 let mockCurrentLocalDate = "2026-08-24";
@@ -52,15 +53,47 @@ jest.mock("@/features/dashboard/dashboard.api", () => ({
   getYearlyGlobalLeaderboard: (...args: unknown[]) => mockGetYearlyGlobalLeaderboard(...args),
 }));
 
+jest.mock("@/features/prayer/data/globalRosaryStats.api", () => ({
+  getGlobalRosaryStats: (...args: unknown[]) => mockGetGlobalRosaryStats(...args),
+}));
+
 jest.mock("@/hooks", () => ({
   ...jest.requireActual("@/hooks"),
   useCurrentLocalDate: () => mockCurrentLocalDate,
 }));
 
 jest.mock("@/features/prayer/components", () => {
-  const { Text: MockText } = jest.requireActual<typeof import("react-native")>("react-native");
+  const {
+    Pressable: MockPressable,
+    Text: MockText,
+    View: MockView,
+  } = jest.requireActual<typeof import("react-native")>("react-native");
   return {
     AllMysteries: () => <MockText>All Mysteries Section</MockText>,
+    GlobalRosaryStatsCard: ({
+      error,
+      isLoading,
+      onRetry,
+      stats,
+    }: {
+      error: boolean;
+      isLoading: boolean;
+      onRetry: () => void;
+      stats: {
+        currentUserContribution: { percentage: number; rosariesPrayed: number } | null;
+        totalRosariesPrayed: number;
+      } | null;
+    }) => (
+      <MockView>
+        {isLoading ? <MockText>Global stats loading</MockText> : null}
+        {!isLoading && stats ? <MockText>Global total {stats.totalRosariesPrayed}</MockText> : null}
+        {error ? (
+          <MockPressable accessibilityLabel="Retry global Rosary statistics" onPress={onRetry}>
+            <MockText>Global stats unavailable</MockText>
+          </MockPressable>
+        ) : null}
+      </MockView>
+    ),
     MomentForPrayer: ({ mysteryTitle, weekday }: { mysteryTitle: string; weekday: string }) => (
       <>
         <MockText>Today&apos;s Rosary Section</MockText>
@@ -109,6 +142,7 @@ describe("PrayerScreen", () => {
   beforeEach(async () => {
     jest.clearAllMocks();
     mockCurrentLocalDate = "2026-08-24";
+    mockGetGlobalRosaryStats.mockResolvedValue({ currentUserContribution: null, totalRosariesPrayed: 26 });
     mockGetWeeklyGlobalLeaderboard.mockResolvedValue([
       { avatarUrl: null, displayName: "St. Michael", rank: 1, rosaries: 245 },
     ]);
@@ -159,6 +193,7 @@ describe("PrayerScreen", () => {
       "prayer-section-global-leaderboard",
       "prayer-section-mysteries",
       "prayer-section-intentions",
+      "prayer-section-global-stats",
     ]);
     expect(await screen.findByLabelText("Rank 1, St. Michael, 245 Rosaries")).toBeTruthy();
     expect(screen.getByLabelText("Rank 1, St. Joseph, 845 Rosaries")).toBeTruthy();
@@ -166,12 +201,66 @@ describe("PrayerScreen", () => {
     expect(screen.getByText("This Year’s Top 10")).toBeTruthy();
     expect(mockGetWeeklyGlobalLeaderboard).toHaveBeenCalledTimes(1);
     expect(mockGetYearlyGlobalLeaderboard).toHaveBeenCalledTimes(1);
+    expect(mockGetGlobalRosaryStats).not.toHaveBeenCalled();
 
     await fireEvent.press(screen.getByLabelText("Pray from the embedded garden"));
     expect(mockPush).toHaveBeenCalledWith({
       pathname: "/rosary",
       params: { isDecade: "false", mysteryType: expect.any(String), source: "today" },
     });
+  });
+
+  it("loads global Rosary statistics once when the final card enters the viewport", async () => {
+    fetchApprovedPrayerIntentions.mockResolvedValue({
+      data: [],
+      meta: { hasMore: false, limit: 10, nextOffset: null, offset: 0 },
+    });
+    await render(<PrayerScreen />);
+
+    const scrollView = screen.getByTestId("prayer-home-scroll");
+    const globalStatsSection = screen.getByTestId("prayer-section-global-stats");
+    await fireEvent(scrollView, "layout", { nativeEvent: { layout: { height: 600 } } });
+    await fireEvent(globalStatsSection, "layout", {
+      nativeEvent: { layout: { height: 180, y: 1200 } },
+    });
+    expect(mockGetGlobalRosaryStats).not.toHaveBeenCalled();
+
+    await fireEvent.scroll(scrollView, { nativeEvent: { contentOffset: { y: 500 } } });
+    expect(mockGetGlobalRosaryStats).not.toHaveBeenCalled();
+
+    await fireEvent.scroll(scrollView, { nativeEvent: { contentOffset: { y: 650 } } });
+    expect(await screen.findByText("Global total 26")).toBeTruthy();
+    expect(mockGetGlobalRosaryStats).toHaveBeenCalledTimes(1);
+
+    await fireEvent.scroll(scrollView, { nativeEvent: { contentOffset: { y: 0 } } });
+    await fireEvent.scroll(scrollView, { nativeEvent: { contentOffset: { y: 650 } } });
+    await act(async () => {
+      mockFocusEffect?.();
+    });
+    expect(mockGetGlobalRosaryStats).toHaveBeenCalledTimes(1);
+  });
+
+  it("retries global Rosary statistics after a visible request fails", async () => {
+    mockGetGlobalRosaryStats.mockRejectedValueOnce(new Error("Network unavailable")).mockResolvedValueOnce({
+      currentUserContribution: { percentage: 7.1429, rosariesPrayed: 2 },
+      totalRosariesPrayed: 28,
+    });
+    fetchApprovedPrayerIntentions.mockResolvedValue({
+      data: [],
+      meta: { hasMore: false, limit: 10, nextOffset: null, offset: 0 },
+    });
+    await render(<PrayerScreen />);
+
+    const scrollView = screen.getByTestId("prayer-home-scroll");
+    await fireEvent(scrollView, "layout", { nativeEvent: { layout: { height: 600 } } });
+    await fireEvent(screen.getByTestId("prayer-section-global-stats"), "layout", {
+      nativeEvent: { layout: { height: 180, y: 1200 } },
+    });
+    await fireEvent.scroll(scrollView, { nativeEvent: { contentOffset: { y: 650 } } });
+
+    await fireEvent.press(await screen.findByLabelText("Retry global Rosary statistics"));
+    expect(await screen.findByText("Global total 28")).toBeTruthy();
+    expect(mockGetGlobalRosaryStats).toHaveBeenCalledTimes(2);
   });
 
   it("shows a recoverable weekly failure without hiding yearly results", async () => {

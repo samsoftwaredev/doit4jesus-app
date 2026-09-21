@@ -2,6 +2,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import type { LayoutChangeEvent, NativeScrollEvent, NativeSyntheticEvent } from "react-native";
 import { ScrollView, View } from "react-native";
 
 import { PageHeader } from "@/components";
@@ -10,7 +11,9 @@ import { SacredAtmosphere } from "@/components/ui";
 import { LeaderboardCard } from "@/features/dashboard/components";
 import { getWeeklyGlobalLeaderboard, getYearlyGlobalLeaderboard } from "@/features/dashboard/dashboard.api";
 import type { LeaderboardEntryViewModel } from "@/features/dashboard/dashboard.types";
-import { AllMysteries, MomentForPrayer, PrayersByOthers } from "@/features/prayer/components";
+import { AllMysteries, GlobalRosaryStatsCard, MomentForPrayer, PrayersByOthers } from "@/features/prayer/components";
+import { getGlobalRosaryStats } from "@/features/prayer/data/globalRosaryStats.api";
+import type { GlobalRosaryStats } from "@/features/prayer/data/globalRosaryStats.api";
 import type { ApprovedPrayerIntention } from "@/features/prayer/intentions";
 import { cacheApprovedPrayerIntentions, fetchApprovedPrayerIntentions } from "@/features/prayer/intentions";
 import { getRosaryContent } from "@/features/prayer/rosary/data/localizedRosaryContent";
@@ -40,7 +43,7 @@ function appendUniqueIntentions(
   return [...currentIntentions, ...incomingIntentions.filter((intention) => !currentIds.has(intention.id))];
 }
 
-/** Renders the daily Prayer page with its Rosary Garden, global leaders, mysteries, and intentions. */
+/** Renders the daily Prayer page with its Rosary Garden, global activity, mysteries, and intentions. */
 export function PrayerScreen() {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
@@ -51,6 +54,9 @@ export function PrayerScreen() {
   const [isLoadingIntentions, setIsLoadingIntentions] = useState(true);
   const [isLoadingMoreIntentions, setIsLoadingMoreIntentions] = useState(false);
   const [intentionsError, setIntentionsError] = useState<string>();
+  const [globalStats, setGlobalStats] = useState<GlobalRosaryStats | null>(null);
+  const [globalStatsError, setGlobalStatsError] = useState(false);
+  const [isGlobalStatsLoading, setIsGlobalStatsLoading] = useState(true);
   const [isWeeklyLeaderboardLoading, setIsWeeklyLeaderboardLoading] = useState(true);
   const [isYearlyLeaderboardLoading, setIsYearlyLeaderboardLoading] = useState(true);
   const [hasMoreIntentions, setHasMoreIntentions] = useState(false);
@@ -60,6 +66,10 @@ export function PrayerScreen() {
   const [yearlyLeaderboardError, setYearlyLeaderboardError] = useState(false);
   const [nextIntentionsOffset, setNextIntentionsOffset] = useState<number | null>(null);
   const isLoadingMoreIntentionsRef = useRef(false);
+  const globalStatsLayoutRef = useRef<{ height: number; y: number } | null>(null);
+  const globalStatsRequestIdRef = useRef(0);
+  const hasRequestedGlobalStatsRef = useRef(false);
+  const scrollViewportRef = useRef({ height: 0, offsetY: 0 });
   const weeklyLeaderboardRequestIdRef = useRef(0);
   const yearlyLeaderboardRequestIdRef = useRef(0);
   const currentLocalDate = useCurrentLocalDate();
@@ -98,6 +108,85 @@ export function PrayerScreen() {
   useEffect(() => {
     void loadIntentions();
   }, [loadIntentions]);
+
+  /** Loads global Rosary statistics after the card has entered the visible scroll viewport. */
+  const loadGlobalStats = useCallback(async () => {
+    const requestId = ++globalStatsRequestIdRef.current;
+    setIsGlobalStatsLoading(true);
+    setGlobalStatsError(false);
+    setGlobalStats(null);
+
+    try {
+      const nextStats = await getGlobalRosaryStats();
+      if (requestId !== globalStatsRequestIdRef.current) return;
+      setGlobalStats(nextStats);
+    } catch {
+      if (requestId !== globalStatsRequestIdRef.current) return;
+      setGlobalStatsError(true);
+    } finally {
+      if (requestId === globalStatsRequestIdRef.current) setIsGlobalStatsLoading(false);
+    }
+  }, []);
+
+  /** Starts the one-time deferred request when any part of the statistics card is visible. */
+  const loadGlobalStatsIfVisible = useCallback(() => {
+    if (hasRequestedGlobalStatsRef.current) return;
+
+    const cardLayout = globalStatsLayoutRef.current;
+    const viewport = scrollViewportRef.current;
+    if (!cardLayout || viewport.height <= 0) return;
+
+    const viewportBottom = viewport.offsetY + viewport.height;
+    const cardBottom = cardLayout.y + cardLayout.height;
+    if (cardLayout.y >= viewportBottom || cardBottom <= viewport.offsetY) return;
+
+    hasRequestedGlobalStatsRef.current = true;
+    void loadGlobalStats();
+  }, [loadGlobalStats]);
+
+  /** Records the visible height of the Prayer page's vertical scroll viewport. */
+  const handleScrollLayout = useCallback(
+    (event: LayoutChangeEvent) => {
+      scrollViewportRef.current.height = event.nativeEvent.layout.height;
+      loadGlobalStatsIfVisible();
+    },
+    [loadGlobalStatsIfVisible],
+  );
+
+  /** Tracks vertical scrolling and evaluates whether the deferred statistics card is visible. */
+  const handleScroll = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      scrollViewportRef.current.offsetY = Math.max(0, event.nativeEvent.contentOffset.y);
+      loadGlobalStatsIfVisible();
+    },
+    [loadGlobalStatsIfVisible],
+  );
+
+  /** Records the card's content coordinates and evaluates its initial visibility. */
+  const handleGlobalStatsLayout = useCallback(
+    (event: LayoutChangeEvent) => {
+      const { height, y } = event.nativeEvent.layout;
+      globalStatsLayoutRef.current = { height, y };
+      loadGlobalStatsIfVisible();
+    },
+    [loadGlobalStatsIfVisible],
+  );
+
+  /** Retries the already-revealed global statistics request after a failure. */
+  const retryGlobalStats = useCallback(() => {
+    void loadGlobalStats();
+  }, [loadGlobalStats]);
+
+  useEffect(
+    /** Invalidates an in-flight deferred request when the Prayer screen unmounts. */
+    function registerGlobalStatsCleanup() {
+      /** Marks any outstanding response as stale before React releases the screen state. */
+      return function invalidateGlobalStatsRequest() {
+        globalStatsRequestIdRef.current += 1;
+      };
+    },
+    [],
+  );
 
   /** Loads weekly global leaders while ignoring results from an older overlapping request. */
   const loadWeeklyLeaderboard = useCallback(async () => {
@@ -221,8 +310,12 @@ export function PrayerScreen() {
         <SacredAtmosphere />
         <ScrollView
           contentContainerStyle={[styles.content, { maxWidth: containerMaxWidth, paddingHorizontal: gutter }]}
+          onLayout={handleScrollLayout}
+          onScroll={handleScroll}
           showsVerticalScrollIndicator={false}
+          scrollEventThrottle={16}
           style={styles.atmosphereContent}
+          testID="prayer-home-scroll"
         >
           <PageHeader description={t("prayerHome.description")} title={t("prayerHome.title")} />
           <View testID="prayer-section-today">
@@ -263,6 +356,14 @@ export function PrayerScreen() {
               onOpenMyIntentions={openMyIntentions}
               onRetry={retryIntentions}
               onSeeAll={seeAllIntentions}
+            />
+          </View>
+          <View onLayout={handleGlobalStatsLayout} testID="prayer-section-global-stats">
+            <GlobalRosaryStatsCard
+              error={globalStatsError}
+              isLoading={isGlobalStatsLoading}
+              onRetry={retryGlobalStats}
+              stats={globalStats}
             />
           </View>
         </ScrollView>
