@@ -9,7 +9,7 @@ import { Button } from "@/components/ui";
 import { AvatarWithCountryBadge } from "@/components/identity";
 import { searchUsers, sendFriendRequest } from "@/features/friends/friends.api";
 import type { UserSearchResult } from "@/features/friends/friends.types";
-import { findSaintAvatar } from "@/features/profile/saints";
+import { getProfileAvatarSource } from "@/features/profile/saints";
 import type { RosaryPresenceUser } from "@/features/prayer/rosary/presence.types";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
@@ -134,7 +134,7 @@ export function PrayingUserProfileModal({
               countryCode={user.countryCode}
               name={user.displayName}
               size={theme.sizes.iconHero + theme.spacing[8]}
-              source={findSaintAvatar(user.saintAvatarId)?.image ?? user.avatarUrl}
+              source={getProfileAvatarSource(user.saintAvatarId, user.avatarUrl)}
             />
             <View accessible={false} style={styles.onlineDot} />
           </View>

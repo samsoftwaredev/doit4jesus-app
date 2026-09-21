@@ -191,7 +191,10 @@ export const resources = {
         totalRosariesLabel: "{{count}} total Rosaries",
         viewProfileLabel: "View {{name}}'s profile",
         leaderboard: {
+          addFriends: "Add Friends",
           description: "Compare Rosary progress with your friends.",
+          friendsOnlyDescription:
+            "This leaderboard is based only on your friends. The more friends you add, the more competitive it becomes.",
           leading: "You are leading your friends. Keep encouraging the community.",
           loadError: "Couldn't load the leaderboard",
           periodLabel: "Leaderboard period: {{period}}",
@@ -1287,7 +1290,10 @@ export const resources = {
         totalRosariesLabel: "{{count}} Rosarios totales",
         viewProfileLabel: "Ver el perfil de {{name}}",
         leaderboard: {
+          addFriends: "Agregar amigos",
           description: "Compara tu progreso del Rosario con el de tus amigos.",
+          friendsOnlyDescription:
+            "Esta clasificación se basa únicamente en tus amigos. Cuantos más amigos agregues, más competitiva será.",
           leading: "Vas a la cabeza. Sigue animando a la comunidad.",
           loadError: "No se pudo cargar la clasificación",
           periodLabel: "Período de clasificación: {{period}}",

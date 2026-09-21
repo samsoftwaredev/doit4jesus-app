@@ -1,3 +1,5 @@
+import type { ImageProps } from "expo-image";
+
 import { AvatarWithCountryBadge } from "@/components/identity";
 
 import { useAppTheme } from "@/theme/AppThemeProvider";
@@ -8,7 +10,7 @@ type FriendAvatarProps = {
   countryCode?: string | null;
   name: string;
   size?: "lg" | "md" | "sm" | "xl";
-  source: string | null;
+  source: ImageProps["source"] | null;
 };
 
 const sizeByVariant = {

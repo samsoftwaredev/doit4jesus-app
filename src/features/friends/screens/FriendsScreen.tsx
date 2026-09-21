@@ -86,6 +86,7 @@ export function FriendsScreen() {
           leaderboard.leaderboard.entries.length ? (
             <RosaryLeaderboardCard
               leaderboard={leaderboard.leaderboard}
+              onAddFriends={openAddFriend}
               onPressFriend={openFriend}
               onViewFullLeaderboard={() => router.push("/friends/leaderboard")}
             />

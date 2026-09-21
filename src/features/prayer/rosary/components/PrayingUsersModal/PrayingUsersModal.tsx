@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui";
 import { AvatarWithCountryBadge } from "@/components/identity";
 import { getFriends } from "@/features/friends/friends.api";
-import { findSaintAvatar } from "@/features/profile/saints";
+import { getProfileAvatarSource } from "@/features/profile/saints";
 import type { RosaryPresenceUser } from "@/features/prayer/rosary/presence.types";
 import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
@@ -137,7 +137,7 @@ export function PrayingUsersModal({ currentUserId, onClose, onSelectUser, users,
               countryCode={item.countryCode}
               name={item.displayName}
               size={theme.sizes.iconMedium + theme.spacing[2]}
-              source={findSaintAvatar(item.saintAvatarId)?.image ?? item.avatarUrl}
+              source={getProfileAvatarSource(item.saintAvatarId, item.avatarUrl)}
             />
             <View accessible={false} style={styles.onlineDot} />
           </View>

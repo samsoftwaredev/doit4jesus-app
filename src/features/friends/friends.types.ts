@@ -33,6 +33,7 @@ export interface FriendProfileSummary {
 
 export type LeaderboardFriendProfile = Omit<FriendProfileSummary, "countryCode"> & {
   countryCode: string | null;
+  saintAvatarId: string | null;
 };
 
 export interface FriendSummary extends FriendProfileSummary {

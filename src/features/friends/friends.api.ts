@@ -133,6 +133,7 @@ function parseLeaderboardFriendProfile(value: unknown): LeaderboardFriendProfile
     countryCode: readOptionalNullableString(profile.countryCode, "leaderboard friend country code"),
     displayName: readString(profile.displayName, "leaderboard friend display name"),
     id: readString(profile.id, "leaderboard friend ID"),
+    saintAvatarId: readOptionalNullableString(profile.saintAvatarId, "leaderboard friend saint avatar ID"),
     title: readOptionalNullableString(profile.title, "leaderboard friend title"),
     username: readOptionalNullableString(profile.username, "leaderboard friend username"),
   };

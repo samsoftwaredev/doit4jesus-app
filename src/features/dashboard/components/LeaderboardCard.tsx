@@ -1,10 +1,10 @@
 import Feather from "@expo/vector-icons/Feather";
-import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { useTranslation } from "react-i18next";
 import { Pressable, ScrollView, Text, View } from "react-native";
 
-import { saintAvatars } from "@/features/profile/saints";
+import { AvatarWithCountryBadge } from "@/components/identity";
+import { getProfileAvatarSource } from "@/features/profile/saints";
 import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
@@ -170,7 +170,7 @@ function BoardStatus({
   return variant === "weekly" ? <WeeklyPodium entries={entries} /> : <YearlyLeaderboardRows entries={entries} />;
 }
 
-/** Displays available podium placements in the requested second-first-third visual order. */
+/** Displays available podium placements with country-badged avatars in second-first-third visual order. */
 function WeeklyPodium({ entries }: { entries: LeaderboardEntryViewModel[] }) {
   const { t } = useTranslation();
   const { locale } = useAppLanguage();
@@ -209,12 +209,14 @@ function WeeklyPodium({ entries }: { entries: LeaderboardEntryViewModel[] }) {
             <Text accessible={false} style={styles.podiumMedal}>
               {medal(entry.rank)}
             </Text>
-            <Image
+            <AvatarWithCountryBadge
               accessibilityLabel={t("dashboard.leaderboard.avatarLabel", { name: entry.displayName })}
-              contentFit="cover"
-              source={entry.avatarUrl ?? saintAvatars[8].image}
-              style={[styles.podiumAvatar, { height: avatarSize, width: avatarSize }]}
-              testID={`weekly-podium-avatar-${entry.rank}`}
+              borderColor={theme.colors.gold.strong}
+              borderWidth={theme.borderWidths.thin}
+              countryCode={entry.countryCode}
+              name={entry.displayName}
+              size={avatarSize}
+              source={getProfileAvatarSource(entry.saintAvatarId, entry.avatarUrl)}
             />
             <Text style={[styles.podiumRank, { color: rankColor(entry.rank) }]}>#{entry.rank}</Text>
             <Text style={styles.podiumName}>{entry.displayName}</Text>
@@ -228,7 +230,7 @@ function WeeklyPodium({ entries }: { entries: LeaderboardEntryViewModel[] }) {
   );
 }
 
-/** Renders the yearly leaders vertically in ascending server-provided rank order. */
+/** Renders yearly leaders with country-badged avatars in ascending server-provided rank order. */
 function YearlyLeaderboardRows({ entries }: { entries: LeaderboardEntryViewModel[] }) {
   const { t } = useTranslation();
   const { locale } = useAppLanguage();
@@ -265,11 +267,13 @@ function YearlyLeaderboardRows({ entries }: { entries: LeaderboardEntryViewModel
                 <Text style={[styles.rank, { color: rankColor(entry.rank) }]}>{entry.rank}</Text>
               </View>
               <View style={styles.warriorColumn}>
-                <Image
+                <AvatarWithCountryBadge
                   accessibilityLabel={t("dashboard.leaderboard.avatarLabel", { name: entry.displayName })}
-                  contentFit="cover"
-                  source={entry.avatarUrl ?? saintAvatars[8].image}
-                  style={styles.avatar}
+                  borderWidth={0}
+                  countryCode={entry.countryCode}
+                  name={entry.displayName}
+                  size={32}
+                  source={getProfileAvatarSource(entry.saintAvatarId, entry.avatarUrl)}
                 />
                 <Text style={styles.name}>{entry.displayName}</Text>
               </View>
@@ -321,7 +325,6 @@ function LeaderboardSkeleton({
 }
 
 const styleSheet = createThemedStyles((theme) => ({
-  avatar: { borderRadius: theme.radii.pill, height: 32, width: 32 },
   boardSection: { gap: theme.spacing[2] },
   boardTitle: {
     ...theme.typography.heading3,
@@ -363,11 +366,6 @@ const styleSheet = createThemedStyles((theme) => ({
     flex: 1,
     marginLeft: theme.spacing[2],
     minWidth: 0,
-  },
-  podiumAvatar: {
-    borderColor: theme.colors.gold.strong,
-    borderRadius: theme.radii.pill,
-    borderWidth: theme.borderWidths.thin,
   },
   podiumContent: {
     alignItems: "flex-end",

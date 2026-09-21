@@ -26,9 +26,11 @@ export type RosaryReminderViewModel = {
 
 export type LeaderboardEntryViewModel = {
   avatarUrl: string | null;
+  countryCode: string | null;
   displayName: string;
   rank: number;
   rosaries: number;
+  saintAvatarId: string | null;
 };
 
 export const ROSARY_REMINDER_THRESHOLDS = {

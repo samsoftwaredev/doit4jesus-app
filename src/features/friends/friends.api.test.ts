@@ -199,6 +199,7 @@ describe("Friends API", () => {
               avatarUrl: "https://i.pravatar.cc/256?u=testuser",
               displayName: "Test User",
               id: "9629e3e7-72dc-4bb1-94d3-b5a2bdd9f002",
+              saintAvatarId: "a1000000-0000-4000-8000-000000000005",
               title: "Faithful Beginner",
               username: "testuser",
             },
@@ -215,6 +216,7 @@ describe("Friends API", () => {
                 avatarUrl: "https://i.pravatar.cc/256?u=mariasantos",
                 displayName: "Maria Santos",
                 id: "11111111-1111-4111-8111-111111111111",
+                saintAvatarId: null,
                 title: "Prayer Champion",
                 username: "mariasantos",
               },
@@ -241,8 +243,14 @@ describe("Friends API", () => {
     ) as unknown as typeof fetch;
 
     await expect(getRosaryLeaderboard()).resolves.toMatchObject({
-      currentUserEntry: { friend: { countryCode: null, displayName: "Test User" } },
-      entries: [{ friend: { countryCode: null, displayName: "Maria Santos" } }],
+      currentUserEntry: {
+        friend: {
+          countryCode: null,
+          displayName: "Test User",
+          saintAvatarId: "a1000000-0000-4000-8000-000000000005",
+        },
+      },
+      entries: [{ friend: { countryCode: null, displayName: "Maria Santos", saintAvatarId: null } }],
       period: { periodType: "weekly" },
       total: 2,
     });

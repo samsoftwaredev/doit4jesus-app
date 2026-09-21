@@ -2,6 +2,8 @@ import type { ImageSourcePropType } from "react-native";
 
 import type { SupportedLanguage } from "@/localization";
 
+const blessedVirginMaryImage: ImageSourcePropType = require("../../assets/saints/blessed-virgin-mary.png");
+
 export type SaintAvatar = {
   id: string;
   image: ImageSourcePropType;
@@ -52,7 +54,7 @@ export const saintAvatars: readonly SaintAvatar[] = [
   {
     id: "a1000000-0000-4000-8000-000000000012",
     name: "Blessed Virgin Mary",
-    image: require("../../assets/saints/blessed-virgin-mary.png"),
+    image: blessedVirginMaryImage,
   },
   {
     id: "a1000000-0000-4000-8000-000000000013",
@@ -207,4 +209,12 @@ export function getSaintDisplayName(saint: SaintAvatar, language: SupportedLangu
 
 export function findSaintAvatar(id: string | null | undefined): SaintAvatar | undefined {
   return saintAvatars.find((saint) => saint.id === id);
+}
+
+/** Resolves a profile image from the selected saint, uploaded URL, or bundled Virgin Mary default. */
+export function getProfileAvatarSource(
+  saintAvatarId: string | null | undefined,
+  avatarUrl: string | null | undefined,
+): ImageSourcePropType | string {
+  return findSaintAvatar(saintAvatarId)?.image ?? avatarUrl ?? blessedVirginMaryImage;
 }

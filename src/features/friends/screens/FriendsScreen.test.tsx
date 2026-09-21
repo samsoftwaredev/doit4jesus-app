@@ -3,7 +3,9 @@ import { fireEvent, render, screen } from "@testing-library/react-native";
 import { FriendsScreen } from "./FriendsScreen";
 import { johnRequest, leaderboard, maria, mockFriendsDashboard } from "./friends.test-utils";
 
-jest.mock("expo-router", () => ({ useRouter: () => ({ back: jest.fn(), push: jest.fn(), replace: jest.fn() }) }));
+const mockPush = jest.fn();
+
+jest.mock("expo-router", () => ({ useRouter: () => ({ back: jest.fn(), push: mockPush, replace: jest.fn() }) }));
 jest.mock("@/features/friends/friends.hooks", () => ({
   useFriendProfile: jest.fn(),
   useFriendRequests: jest.fn(),
@@ -46,6 +48,13 @@ describe("FriendsScreen", () => {
     mockFriendsDashboard(hooks, { friends: [] });
     await render(<FriendsScreen />);
     expect(screen.getByText("Your fellowship begins here")).toBeTruthy();
+  });
+
+  it("opens friend search from the leaderboard CTA", async () => {
+    await render(<FriendsScreen />);
+
+    fireEvent.press(screen.getByRole("button", { name: "Add Friends" }));
+    expect(mockPush).toHaveBeenCalledWith("/friends/add");
   });
 
   it("renders a leaderboard error without hiding the screen", async () => {

@@ -67,7 +67,7 @@ const leaderboard: FriendsLeaderboard = {
   currentUserEntry: null,
   entries: [
     {
-      friend,
+      friend: { ...friend, saintAvatarId: null },
       isCurrentUser: false,
       points: 25,
       prayersCount: 2,

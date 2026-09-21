@@ -125,9 +125,11 @@ async function getGlobalLeaderboard(
 
     return {
       avatarUrl: readOptionalNullableString(profile.avatar_url, "leaderboard avatar"),
+      countryCode: readOptionalNullableString(profile.countryCode, "leaderboard country code"),
       displayName: readString(profile.display_name, "leaderboard display name"),
       rank: readNumber(leaderboardEntry.rank, "leaderboard rank"),
       rosaries: readNumber(leaderboardEntry.rosaries_count, "leaderboard Rosary count"),
+      saintAvatarId: readOptionalNullableString(profile.saintAvatarId, "leaderboard saint avatar ID"),
     };
   });
 }

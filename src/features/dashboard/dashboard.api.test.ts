@@ -111,6 +111,7 @@ describe("dashboard API", () => {
                 avatar_url: "https://i.pravatar.cc/256?u=mariasantos",
                 countryCode: "MX",
                 display_name: "Maria Santos",
+                saintAvatarId: "a1000000-0000-4000-8000-000000000005",
                 title: "Prayer Champion",
                 user_id: "11111111-1111-4111-8111-111111111111",
                 username: "mariasantos",
@@ -182,21 +183,27 @@ describe("dashboard API", () => {
     await expect(getWeeklyGlobalLeaderboard()).resolves.toEqual([
       {
         avatarUrl: "https://i.pravatar.cc/256?u=mariasantos",
+        countryCode: "MX",
         displayName: "Maria Santos",
         rank: 1,
         rosaries: 0,
+        saintAvatarId: "a1000000-0000-4000-8000-000000000005",
       },
       {
         avatarUrl: "https://i.pravatar.cc/256?u=testuser",
+        countryCode: "US",
         displayName: "Test User",
         rank: 2,
         rosaries: 0,
+        saintAvatarId: null,
       },
       {
         avatarUrl: "https://i.pravatar.cc/256?u=johnpaul",
+        countryCode: "US",
         displayName: "John Paul",
         rank: 3,
         rosaries: 0,
+        saintAvatarId: null,
       },
     ]);
     expect(fetchMock).toHaveBeenCalledWith(
@@ -214,7 +221,7 @@ describe("dashboard API", () => {
         data: {
           entries: [
             {
-              profile: { avatar_url: null, display_name: "Year Leader" },
+              profile: { avatar_url: null, countryCode: null, display_name: "Year Leader", saintAvatarId: null },
               rank: 1,
               rosaries_count: 412,
             },
@@ -227,7 +234,14 @@ describe("dashboard API", () => {
     globalThis.fetch = fetchMock as unknown as typeof fetch;
 
     await expect(getYearlyGlobalLeaderboard()).resolves.toEqual([
-      { avatarUrl: null, displayName: "Year Leader", rank: 1, rosaries: 412 },
+      {
+        avatarUrl: null,
+        countryCode: null,
+        displayName: "Year Leader",
+        rank: 1,
+        rosaries: 412,
+        saintAvatarId: null,
+      },
     ]);
     expect(fetchMock).toHaveBeenCalledWith(
       "https://api.example.test/api/v1/leaderboards?periodType=yearly&scopeType=global&scopeReference=global&limit=10",

@@ -67,9 +67,9 @@
     "prepare": "node scripts/setup-git-hooks.mjs",
     "test": "NODE_OPTIONS='--max-old-space-size=8192' jest",
     "test:coverage": "NODE_OPTIONS='--max-old-space-size=8192' jest --runInBand --coverage",
-    "fe-ts": "supabase gen types typescript --project-id uieyknteyflglukepcdy > interfaces/database.ts",
-    "db-webhook-ts": "supabase gen types typescript --project-id uieyknteyflglukepcdy > supabase/functions/database-webhook/types.ts",
-    "resend-ts": "supabase gen types typescript --project-id uieyknteyflglukepcdy > supabase/functions/resend/types.ts",
+    "fe-ts": "supabase gen types typescript --project-id sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH > src/interfaces/database.ts",
+    "db-webhook-ts": "supabase gen types typescript --project-id sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH > supabase/functions/database-webhook/types.ts",
+    "resend-ts": "supabase gen types typescript --project-id sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH > supabase/functions/resend/types.ts",
     "db-ts": "npm run fe-ts && npm run resend-ts && npm run db-webhook-ts"
   },
   "jest": {

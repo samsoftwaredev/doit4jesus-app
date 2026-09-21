@@ -12,13 +12,15 @@ import { LeaderboardEntries } from "./LeaderboardEntries";
 
 type RosaryLeaderboardCardProps = {
   leaderboard: FriendsLeaderboard;
+  onAddFriends: () => void;
   onPressFriend: (friendId: string) => void;
   onViewFullLeaderboard: () => void;
 };
 
-/** Renders this feature with colors from the currently resolved app appearance. */
+/** Presents the friends-only leaderboard with context and actions to expand the user's fellowship. */
 export function RosaryLeaderboardCard({
   leaderboard,
+  onAddFriends,
   onPressFriend,
   onViewFullLeaderboard,
 }: RosaryLeaderboardCardProps) {
@@ -62,6 +64,12 @@ export function RosaryLeaderboardCard({
       variant="warning"
     >
       <View style={styles.content}>
+        <View style={styles.intro}>
+          <Text style={styles.description}>{t("friends.leaderboard.friendsOnlyDescription")}</Text>
+          <Button fullWidth onPress={onAddFriends} size="sm" style={styles.addFriendsButton} variant="warning">
+            {t("friends.leaderboard.addFriends")}
+          </Button>
+        </View>
         <LeaderboardEntries entries={topEntries} onPressFriend={onPressFriend} />
         {showCurrentUserEntry && leaderboard.currentUserEntry ? (
           <View style={styles.currentUserSection}>
@@ -77,9 +85,16 @@ export function RosaryLeaderboardCard({
 }
 
 const styleSheet = createThemedStyles((theme) => ({
+  addFriendsButton: {
+    minHeight: theme.sizes.touchTarget,
+  },
   content: {
     paddingHorizontal: theme.spacing[3],
     paddingVertical: theme.spacing[1],
+  },
+  description: {
+    ...theme.typography.bodySmall,
+    color: theme.colors.text.secondary,
   },
   currentUserLabel: {
     ...theme.typography.labelSmall,
@@ -100,6 +115,11 @@ const styleSheet = createThemedStyles((theme) => ({
   heading: {
     ...theme.typography.heading3,
     color: theme.colors.text.warning,
+  },
+  intro: {
+    gap: theme.spacing[2],
+    paddingBottom: theme.spacing[3],
+    paddingTop: theme.spacing[1],
   },
   period: {
     alignItems: "center",

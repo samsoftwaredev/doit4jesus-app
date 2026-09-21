@@ -1,6 +1,7 @@
 import { Pressable, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
+import { getProfileAvatarSource } from "@/features/profile/saints";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 
 import type { FriendsLeaderboardEntry } from "../friends.types";
@@ -72,7 +73,7 @@ export function LeaderboardEntries({ entries, onPressFriend, showHeader = true }
                 countryCode={entry.friend.countryCode}
                 name={entry.friend.displayName}
                 size="sm"
-                source={entry.friend.avatarUrl}
+                source={getProfileAvatarSource(entry.friend.saintAvatarId, entry.friend.avatarUrl)}
               />
               <View style={styles.nameCopy}>
                 <Text numberOfLines={1} style={styles.name}>

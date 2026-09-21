@@ -1,20 +1,49 @@
 import { fireEvent, render, screen } from "@testing-library/react-native";
 import { StyleSheet } from "react-native";
 
+import { saintAvatars } from "@/features/profile/saints";
 import { i18n } from "@/localization";
 
 import { LeaderboardCard } from "./LeaderboardCard";
 
 const weeklyEntries = [
-  { avatarUrl: null, displayName: "First Warrior", rank: 1, rosaries: 245 },
-  { avatarUrl: "https://example.test/second.png", displayName: "Second Warrior", rank: 2, rosaries: 190 },
-  { avatarUrl: null, displayName: "Third Warrior", rank: 3, rosaries: 156 },
+  {
+    avatarUrl: "https://example.test/first.png",
+    countryCode: "US",
+    displayName: "First Warrior",
+    rank: 1,
+    rosaries: 245,
+    saintAvatarId: "a1000000-0000-4000-8000-000000000005",
+  },
+  {
+    avatarUrl: "https://example.test/second.png",
+    countryCode: "MX",
+    displayName: "Second Warrior",
+    rank: 2,
+    rosaries: 190,
+    saintAvatarId: null,
+  },
+  {
+    avatarUrl: null,
+    countryCode: null,
+    displayName: "Third Warrior",
+    rank: 3,
+    rosaries: 156,
+    saintAvatarId: null,
+  },
 ];
 
 const yearlyEntries = [
-  { avatarUrl: null, displayName: "Year Leader", rank: 1, rosaries: 1245 },
-  { avatarUrl: null, displayName: "Year Runner-up", rank: 2, rosaries: 1100 },
-  { avatarUrl: null, displayName: "Year Tenth", rank: 10, rosaries: 529 },
+  { avatarUrl: null, countryCode: "US", displayName: "Year Leader", rank: 1, rosaries: 1245, saintAvatarId: null },
+  {
+    avatarUrl: null,
+    countryCode: "MX",
+    displayName: "Year Runner-up",
+    rank: 2,
+    rosaries: 1100,
+    saintAvatarId: null,
+  },
+  { avatarUrl: null, countryCode: null, displayName: "Year Tenth", rank: 10, rosaries: 529, saintAvatarId: null },
 ];
 
 const defaultProps = {
@@ -27,6 +56,12 @@ const defaultProps = {
   yearlyEntries,
   yearlyError: false,
 };
+
+function getAvatarImageSource(label: string) {
+  const avatarImage = screen.getByLabelText(label).children[0];
+  if (!avatarImage || typeof avatarImage === "string") throw new Error(`Expected ${label} to contain an image.`);
+  return avatarImage.props.source;
+}
 
 describe("LeaderboardCard", () => {
   beforeEach(async () => {
@@ -49,9 +84,9 @@ describe("LeaderboardCard", () => {
       "weekly-podium-entry-3",
     ]);
 
-    const firstAvatar = StyleSheet.flatten(screen.getByTestId("weekly-podium-avatar-1").props.style);
-    const secondAvatar = StyleSheet.flatten(screen.getByTestId("weekly-podium-avatar-2").props.style);
-    const thirdAvatar = StyleSheet.flatten(screen.getByTestId("weekly-podium-avatar-3").props.style);
+    const firstAvatar = StyleSheet.flatten(screen.getByLabelText("First Warrior's avatar").props.style);
+    const secondAvatar = StyleSheet.flatten(screen.getByLabelText("Second Warrior's avatar").props.style);
+    const thirdAvatar = StyleSheet.flatten(screen.getByLabelText("Third Warrior's avatar").props.style);
     expect(firstAvatar.width).toBeGreaterThan(secondAvatar.width);
     expect(secondAvatar.width).toBeGreaterThan(thirdAvatar.width);
     expect(screen.getByLabelText("Rank 1, First Warrior, 245 Rosaries")).toBeTruthy();
@@ -68,6 +103,14 @@ describe("LeaderboardCard", () => {
     ]);
     expect(screen.getByLabelText("Rank 10, Year Tenth, 529 Rosaries")).toBeTruthy();
     expect(screen.getByLabelText("Year Leader's avatar")).toBeTruthy();
+  });
+
+  it("displays country flags on weekly and yearly leaderboard avatars when available", async () => {
+    await render(<LeaderboardCard {...defaultProps} />);
+
+    expect(screen.getByLabelText("First Warrior's avatar").children).toHaveLength(2);
+    expect(screen.getByLabelText("Year Leader's avatar").children).toHaveLength(2);
+    expect(screen.getByLabelText("Third Warrior's avatar").children).toHaveLength(1);
   });
 
   it("keeps yearly results visible when the weekly board fails and retries only weekly", async () => {
@@ -99,9 +142,14 @@ describe("LeaderboardCard", () => {
     expect(screen.getByText("No yearly leaderboard results yet.")).toBeTruthy();
   });
 
-  it("uses the project avatar fallback without linking to the friends leaderboard", async () => {
+  it("prioritizes saint, uploaded, and default avatar sources without linking to the friends leaderboard", async () => {
     await render(<LeaderboardCard {...defaultProps} />);
 
+    const saintBenedict = saintAvatars.find((saint) => saint.name === "St. Benedict of Nursia")!;
+    const virginMary = saintAvatars.find((saint) => saint.name === "Blessed Virgin Mary")!;
+    expect(getAvatarImageSource("First Warrior's avatar")).toEqual([saintBenedict.image]);
+    expect(getAvatarImageSource("Second Warrior's avatar")).toEqual([{ uri: "https://example.test/second.png" }]);
+    expect(getAvatarImageSource("Third Warrior's avatar")).toEqual([virginMary.image]);
     expect(screen.getByLabelText("First Warrior's avatar")).toBeTruthy();
     expect(screen.queryByRole("button", { name: "View leaderboard" })).toBeNull();
   });

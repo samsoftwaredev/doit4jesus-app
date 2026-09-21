@@ -4,7 +4,7 @@ import { Pressable, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import type { CurrentUserProfile } from "@/features/profile";
-import { findSaintAvatar, saintAvatars } from "@/features/profile/saints";
+import { getProfileAvatarSource } from "@/features/profile/saints";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
@@ -18,8 +18,7 @@ type ProfileHeroCardProps = {
 export function ProfileHeroCard({ location, onAvatarPress, profile }: ProfileHeroCardProps) {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
-  const selectedSaint = findSaintAvatar(profile.saintAvatarId);
-  const avatarSource = selectedSaint?.image ?? profile.avatarUrl ?? saintAvatars[8].image;
+  const avatarSource = getProfileAvatarSource(profile.saintAvatarId, profile.avatarUrl);
 
   return (
     <View style={styles.card}>

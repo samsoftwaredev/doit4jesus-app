@@ -3,7 +3,7 @@ import { Pressable, Text, useWindowDimensions, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { AvatarWithCountryBadge } from "@/components/identity";
-import { findSaintAvatar } from "@/features/profile/saints";
+import { getProfileAvatarSource } from "@/features/profile/saints";
 import { useRosaryPresence } from "@/features/prayer/rosary/hooks/useRosaryPresence";
 import type { RosaryPresenceUser } from "@/features/prayer/rosary/presence.types";
 import { useAppLanguage } from "@/localization";
@@ -88,7 +88,7 @@ export function RosaryPresence() {
                 fallbackBackgroundColor={theme.rosary.colors.canvasLight}
                 name={user.displayName}
                 size={avatarSize}
-                source={findSaintAvatar(user.saintAvatarId)?.image ?? user.avatarUrl}
+                source={getProfileAvatarSource(user.saintAvatarId, user.avatarUrl)}
               />
               <View
                 accessible={false}
