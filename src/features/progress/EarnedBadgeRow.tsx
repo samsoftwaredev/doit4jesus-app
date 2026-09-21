@@ -9,6 +9,7 @@ import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
+import { resolveBadgeArtwork } from "./badge-assets";
 import type { EarnedBadge } from "./progress.types";
 
 type EarnedBadgeRowProps = {
@@ -22,8 +23,7 @@ const badgeIcons: Record<string, keyof typeof MaterialCommunityIcons.glyphMap> =
   ROSARY_STREAK_30: "crown",
 };
 
-const loopbackHosts = new Set(["127.0.0.1", "localhost", "[::1]", "::1"]);
-
+/** Formats a valid earned timestamp for the active locale or returns the supplied fallback. */
 function formatEarnedDate(earnedAt: string, locale: string, unavailable: string) {
   const date = new Date(earnedAt);
   if (Number.isNaN(date.getTime())) return unavailable;
@@ -35,37 +35,12 @@ function formatEarnedDate(earnedAt: string, locale: string, unavailable: string)
   }).format(date);
 }
 
+/** Selects a stable glyph fallback for badge codes without usable artwork. */
 function getBadgeIcon(code: string): keyof typeof MaterialCommunityIcons.glyphMap {
   if (badgeIcons[code]) return badgeIcons[code];
   if (code.includes("STREAK")) return "fire";
   if (code.includes("ROSARY")) return "cross";
   return "shield-cross";
-}
-
-/** Resolves storage artwork and replaces development loopback origins when possible. */
-function resolveBadgeIconUrl(iconUrl: string | null): string | null {
-  if (!iconUrl) return null;
-
-  const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
-  try {
-    const absoluteUrl = new URL(iconUrl);
-    if (!/^https?:$/.test(absoluteUrl.protocol)) return null;
-
-    if (loopbackHosts.has(absoluteUrl.hostname.toLowerCase()) && supabaseUrl) {
-      return new URL(`${absoluteUrl.pathname}${absoluteUrl.search}${absoluteUrl.hash}`, supabaseUrl).toString();
-    }
-
-    return iconUrl;
-  } catch {
-    const assetBaseUrl = supabaseUrl ?? process.env.EXPO_PUBLIC_API_URL;
-    if (!assetBaseUrl) return null;
-
-    try {
-      return new URL(iconUrl, `${assetBaseUrl.replace(/\/$/, "")}/`).toString();
-    } catch {
-      return null;
-    }
-  }
 }
 
 /** Renders an earned badge with remote artwork and a code-based icon fallback. */
@@ -74,10 +49,11 @@ export function EarnedBadgeRow({ badge, isLast }: EarnedBadgeRowProps) {
   const { locale } = useAppLanguage();
   const reduceMotion = useReducedMotion();
   const styles = useThemedStyles(styleSheet);
-  const [failedImageUrl, setFailedImageUrl] = useState<string | null>(null);
+  const [failedArtworkKey, setFailedArtworkKey] = useState<string | null>(null);
   const earnedDate = formatEarnedDate(badge.earnedAt, locale, t("progress.dateUnavailable"));
-  const iconUrl = resolveBadgeIconUrl(badge.iconUrl);
-  const shouldShowArtwork = Boolean(iconUrl && failedImageUrl !== iconUrl);
+  const artwork = resolveBadgeArtwork(badge.code, badge.iconUrl);
+  const artworkKey = typeof artwork === "number" ? String(artwork) : (artwork?.uri ?? badge.code);
+  const shouldShowArtwork = artwork !== null && artworkKey !== failedArtworkKey;
   const accessibilityLabel = t("progress.badges.earnedLabel", {
     date: earnedDate,
     description: badge.description,
@@ -86,19 +62,19 @@ export function EarnedBadgeRow({ badge, isLast }: EarnedBadgeRowProps) {
 
   /** Marks only the currently resolved artwork URL as failed so later URLs can retry. */
   const handleArtworkError = useCallback(() => {
-    setFailedImageUrl(iconUrl);
-  }, [iconUrl]);
+    setFailedArtworkKey(artworkKey);
+  }, [artworkKey]);
 
   return (
     <View accessibilityLabel={accessibilityLabel} style={[styles.row, !isLast && styles.rowDivider]}>
       <View accessible={false} style={styles.iconContainer}>
-        {shouldShowArtwork && iconUrl ? (
+        {shouldShowArtwork && artwork ? (
           <Image
             accessible={false}
             cachePolicy="memory-disk"
             contentFit="contain"
             onError={handleArtworkError}
-            source={{ uri: iconUrl }}
+            source={artwork}
             style={styles.badgeImage}
             testID={`badge-artwork-${badge.id}`}
             transition={reduceMotion ? 0 : 150}

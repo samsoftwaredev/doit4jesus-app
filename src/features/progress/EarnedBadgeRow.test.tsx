@@ -102,7 +102,7 @@ describe("EarnedBadgeRow", () => {
     await render(
       <EarnedBadgeRow
         badge={{
-          code: "FIRST_ROSARY",
+          code: "FUTURE_LOOPBACK_BADGE",
           description: "Prayed a first Rosary.",
           earnedAt: "2026-02-05T12:00:00.000Z",
           iconUrl: "http://127.0.0.1:54321/storage/v1/object/public/images/badges/first-rosary.png?version=2",
@@ -127,7 +127,7 @@ describe("EarnedBadgeRow", () => {
     await render(
       <EarnedBadgeRow
         badge={{
-          code: "FIRST_ROSARY",
+          code: "FUTURE_INVALID_BADGE",
           description: "Prayed a first Rosary.",
           earnedAt: "2026-02-05T12:00:00.000Z",
           iconUrl: "ftp://files.example.test/badges/first-rosary.png",
@@ -146,7 +146,7 @@ describe("EarnedBadgeRow", () => {
     await render(
       <EarnedBadgeRow
         badge={{
-          code: "FIRST_ROSARY",
+          code: "FUTURE_BROKEN_BADGE",
           description: "Prayed a first Rosary.",
           earnedAt: "2026-02-05T12:00:00.000Z",
           iconUrl: "https://cdn.example.test/badges/broken.png",

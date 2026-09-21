@@ -71,3 +71,43 @@ export interface EarnedBadge {
   id: string;
   name: string;
 }
+
+/** A single award event for a badge definition, including repeatable awards. */
+export interface BadgeEarnedInstance {
+  earnedAt: string;
+  id: string;
+}
+
+/** Aggregate progress reported directly by the badge endpoint. */
+export interface BadgeProgress {
+  currentValue: number;
+  percentage: number;
+  requiredValue: number;
+}
+
+/** Progress for one ordered requirement of a compound badge. */
+export interface BadgeRequirement {
+  complete: boolean;
+  currentValue: number;
+  description: string;
+  displayOrder: number;
+  id: string;
+  requiredValue: number;
+}
+
+/** Complete badge definition and the authenticated user's current achievement state. */
+export interface BadgeCatalogEntry {
+  category: string;
+  code: string;
+  description: string;
+  earned: BadgeEarnedInstance[];
+  iconUrl: string | null;
+  id: string;
+  isRepeatable: boolean;
+  name: string;
+  pointsReward: number;
+  progress: BadgeProgress | null;
+  rarity: string;
+  requirementValue: number;
+  requirements: BadgeRequirement[];
+}

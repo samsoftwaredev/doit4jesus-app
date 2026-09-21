@@ -1,5 +1,5 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
@@ -7,27 +7,49 @@ import { Card } from "@/components/ui";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
+import { BadgeCatalogModal } from "./components";
 import { EarnedBadgeRow } from "./EarnedBadgeRow";
-import { fetchEarnedBadges } from "./progress.api";
-import type { EarnedBadge } from "./progress.types";
+import { fetchBadgeCatalog } from "./progress.api";
+import type { BadgeCatalogEntry, EarnedBadge } from "./progress.types";
 
-/** Loads and displays the complete earned-badge area as a dashboard-level section. */
+const BADGE_PREVIEW_LIMIT = 3;
+
+/** Flattens repeatable award events and returns the three newest Home achievements. */
+function getRecentEarnedBadges(catalog: BadgeCatalogEntry[]): EarnedBadge[] {
+  return catalog
+    .flatMap((badge) =>
+      badge.earned.map((instance) => ({
+        code: badge.code,
+        description: badge.description,
+        earnedAt: instance.earnedAt,
+        iconUrl: badge.iconUrl,
+        id: instance.id,
+        name: badge.name,
+      })),
+    )
+    .sort((first, second) => Date.parse(second.earnedAt) - Date.parse(first.earnedAt))
+    .slice(0, BADGE_PREVIEW_LIMIT);
+}
+
+/** Loads a recent badge preview and opens the complete achievement catalog. */
 export function EarnedBadgesSection() {
   const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
-  const [badges, setBadges] = useState<EarnedBadge[]>([]);
+  const [catalog, setCatalog] = useState<BadgeCatalogEntry[]>([]);
   const [hasError, setHasError] = useState(false);
+  const [isCatalogVisible, setIsCatalogVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const badges = useMemo(() => getRecentEarnedBadges(catalog), [catalog]);
 
-  /** Fetches earned badges and replaces stale success or error state with the latest result. */
+  /** Fetches the complete catalog and replaces stale success or error state with the latest result. */
   const loadBadges = useCallback(async () => {
     setIsLoading(true);
     setHasError(false);
 
     try {
-      setBadges(await fetchEarnedBadges());
+      setCatalog(await fetchBadgeCatalog());
     } catch {
-      setBadges([]);
+      setCatalog([]);
       setHasError(true);
     } finally {
       setIsLoading(false);
@@ -38,18 +60,46 @@ export function EarnedBadgesSection() {
     void loadBadges();
   }, [loadBadges]);
 
+  /** Opens the already-loaded catalog without issuing a second request. */
+  const openCatalog = useCallback(() => {
+    setIsCatalogVisible(true);
+  }, []);
+
+  /** Dismisses the badge catalog from its close control or platform back action. */
+  const closeCatalog = useCallback(() => {
+    setIsCatalogVisible(false);
+  }, []);
+
   return (
     <View accessibilityLabel={t("progress.badges.accessibilityLabel")} style={styles.section}>
       <View style={styles.heading}>
-        <MaterialCommunityIcons
-          accessible={false}
-          color={theme.rosary.colors.gold}
-          name="shield-cross"
-          size={theme.sizes.iconSmall}
-        />
-        <Text accessibilityRole="header" style={styles.title}>
-          {t("progress.badges.heading")}
-        </Text>
+        <View style={styles.headingLabel}>
+          <MaterialCommunityIcons
+            accessible={false}
+            color={theme.rosary.colors.gold}
+            name="shield-cross"
+            size={theme.sizes.iconSmall}
+          />
+          <Text accessibilityRole="header" style={styles.title}>
+            {t("progress.badges.heading")}
+          </Text>
+        </View>
+        {!isLoading && !hasError ? (
+          <Pressable
+            accessibilityLabel={t("progress.badges.viewAll")}
+            accessibilityRole="button"
+            onPress={openCatalog}
+            style={({ pressed }) => [styles.viewAllButton, pressed && styles.buttonPressed]}
+          >
+            <Text style={styles.viewAllText}>{t("progress.badges.viewAll")}</Text>
+            <MaterialCommunityIcons
+              accessible={false}
+              color={theme.rosary.colors.goldBright}
+              name="chevron-right"
+              size={theme.sizes.iconSmall}
+            />
+          </Pressable>
+        ) : null}
       </View>
 
       {isLoading ? (
@@ -76,6 +126,7 @@ export function EarnedBadgesSection() {
           ))}
         </Card>
       )}
+      <BadgeCatalogModal badges={catalog} onClose={closeCatalog} visible={isCatalogVisible} />
     </View>
   );
 }
@@ -142,6 +193,9 @@ const styleSheet = createThemedStyles((theme) => ({
   badgesContent: {
     overflow: "hidden",
   },
+  buttonPressed: {
+    opacity: theme.opacity.pressed,
+  },
   emptyContent: {
     alignItems: "center",
     flexDirection: "row",
@@ -172,8 +226,15 @@ const styleSheet = createThemedStyles((theme) => ({
   heading: {
     alignItems: "center",
     flexDirection: "row",
-    gap: theme.spacing[2],
+    justifyContent: "space-between",
     marginBottom: theme.spacing[2],
+  },
+  headingLabel: {
+    alignItems: "center",
+    flexDirection: "row",
+    flexShrink: 1,
+    gap: theme.spacing[2],
+    minWidth: theme.spacing[0],
   },
   retryButton: {
     justifyContent: "center",
@@ -221,5 +282,16 @@ const styleSheet = createThemedStyles((theme) => ({
     color: theme.rosary.colors.gold,
     flexShrink: 1,
     letterSpacing: theme.letterSpacing.wider,
+  },
+  viewAllButton: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+    minHeight: theme.sizes.touchTarget,
+    paddingLeft: theme.spacing[2],
+  },
+  viewAllText: {
+    ...theme.typography.labelSmall,
+    color: theme.rosary.colors.goldBright,
   },
 }));

@@ -1,6 +1,10 @@
 import { getSupabaseAccessToken } from "@/lib/supabase";
 
 import type {
+  BadgeCatalogEntry,
+  BadgeEarnedInstance,
+  BadgeProgress,
+  BadgeRequirement,
   DashboardProgress,
   EarnedBadge,
   LevelCatalogEntry,
@@ -11,21 +15,16 @@ import type {
 } from "./progress.types";
 
 type BadgeDefinition = {
+  category: string;
   code: string;
   description: string;
   iconUrl: string | null;
   id: string;
+  isRepeatable: boolean;
   name: string;
-};
-
-type BadgeEarnedInstance = {
-  earnedAt: string;
-  id: string;
-};
-
-type UserBadgeResponse = {
-  definition: BadgeDefinition;
-  earned: BadgeEarnedInstance[];
+  pointsReward: number;
+  rarity: string;
+  requirementValue: number;
 };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -34,6 +33,15 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function readArray(value: unknown, field: string): unknown[] {
   if (!Array.isArray(value)) {
+    throw new Error(`The progress endpoint returned an invalid ${field}.`);
+  }
+
+  return value;
+}
+
+/** Reads a required boolean from an API record and reports its logical field on failure. */
+function readBoolean(value: unknown, field: string): boolean {
+  if (typeof value !== "boolean") {
     throw new Error(`The progress endpoint returned an invalid ${field}.`);
   }
 
@@ -127,18 +135,25 @@ function parseRecentRosaryActivity(value: unknown): RecentRosaryActivity {
   };
 }
 
+/** Parses the badge metadata displayed by the catalog and Home preview. */
 function parseBadgeDefinition(value: unknown): BadgeDefinition {
   const definition = readRecord(value, "badge definition");
 
   return {
+    category: readString(definition.category, "badge category"),
     code: readString(definition.code, "badge code"),
     description: readString(definition.description, "badge description"),
     iconUrl: readOptionalNullableString(definition.icon_url, "badge icon URL"),
     id: readString(definition.id, "badge ID"),
+    isRepeatable: readBoolean(definition.is_repeatable, "badge repeatable flag"),
     name: readString(definition.name, "badge name"),
+    pointsReward: readNumber(definition.points_reward, "badge points reward"),
+    rarity: readString(definition.rarity, "badge rarity"),
+    requirementValue: readNumber(definition.requirement_value, "badge requirement value"),
   };
 }
 
+/** Parses one earned instance while deliberately ignoring backend-only award metadata. */
 function parseBadgeEarnedInstance(value: unknown): BadgeEarnedInstance {
   const earned = readRecord(value, "earned badge");
 
@@ -148,12 +163,44 @@ function parseBadgeEarnedInstance(value: unknown): BadgeEarnedInstance {
   };
 }
 
-function parseBadgeResponse(value: unknown): UserBadgeResponse {
+/** Parses nullable aggregate progress for badges tracked by a single counter. */
+function parseBadgeProgress(value: unknown): BadgeProgress | null {
+  if (value === null || value === undefined) return null;
+  const progress = readRecord(value, "badge progress");
+
+  return {
+    currentValue: readNumber(progress.current_value, "badge progress current value"),
+    percentage: readNumber(progress.progress_percentage, "badge progress percentage"),
+    requiredValue: readNumber(progress.required_value, "badge progress required value"),
+  };
+}
+
+/** Parses one user-facing requirement and its current completion values. */
+function parseBadgeRequirement(value: unknown): BadgeRequirement {
+  const requirement = readRecord(value, "badge requirement");
+  const definition = readRecord(requirement.definition, "badge requirement definition");
+
+  return {
+    complete: readBoolean(requirement.complete, "badge requirement complete flag"),
+    currentValue: readNumber(requirement.currentValue, "badge requirement current value"),
+    description: readString(definition.description, "badge requirement description"),
+    displayOrder: readNumber(definition.display_order, "badge requirement display order"),
+    id: readString(definition.id, "badge requirement ID"),
+    requiredValue: readNumber(requirement.requiredValue, "badge requirement required value"),
+  };
+}
+
+/** Parses one badge definition together with earned, aggregate, and compound progress. */
+function parseBadgeResponse(value: unknown): BadgeCatalogEntry {
   const badge = readRecord(value, "badge");
 
   return {
-    definition: parseBadgeDefinition(badge.definition),
+    ...parseBadgeDefinition(badge.definition),
     earned: readArray(badge.earned, "earned badges").map(parseBadgeEarnedInstance),
+    progress: parseBadgeProgress(badge.progress),
+    requirements: readArray(badge.requirements, "badge requirements")
+      .map(parseBadgeRequirement)
+      .sort((first, second) => first.displayOrder - second.displayOrder),
   };
 }
 
@@ -230,23 +277,29 @@ export async function fetchRecentRosaryActivities(): Promise<RecentRosaryActivit
   return readArray(data, "Rosary activities").map(parseRecentRosaryActivity);
 }
 
-function toEarnedBadges(badges: UserBadgeResponse[]): EarnedBadge[] {
+/** Flattens repeatable award events into the recent-earned presentation model. */
+function toEarnedBadges(badges: BadgeCatalogEntry[]): EarnedBadge[] {
   return badges
-    .flatMap(({ definition, earned }) =>
-      earned.map((instance) => ({
-        code: definition.code,
-        description: definition.description,
+    .flatMap((badge) =>
+      badge.earned.map((instance) => ({
+        code: badge.code,
+        description: badge.description,
         earnedAt: instance.earnedAt,
-        iconUrl: definition.iconUrl,
+        iconUrl: badge.iconUrl,
         id: instance.id,
-        name: definition.name,
+        name: badge.name,
       })),
     )
     .sort((first, second) => Date.parse(second.earnedAt) - Date.parse(first.earnedAt));
 }
 
-export async function fetchEarnedBadges(): Promise<EarnedBadge[]> {
+/** Loads every badge definition and the authenticated user's progress for each one. */
+export async function fetchBadgeCatalog(): Promise<BadgeCatalogEntry[]> {
   const data = readData(await requestProgress("/api/v1/badges"));
+  return readArray(data, "badges").map(parseBadgeResponse);
+}
 
-  return toEarnedBadges(readArray(data, "badges").map(parseBadgeResponse));
+/** Loads recent earned events for consumers that only need achievement history. */
+export async function fetchEarnedBadges(): Promise<EarnedBadge[]> {
+  return toEarnedBadges(await fetchBadgeCatalog());
 }
