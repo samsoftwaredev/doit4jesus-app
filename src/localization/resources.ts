@@ -272,6 +272,8 @@ export const resources = {
       dashboard: {
         accessibilityLabel: "Holy Progress Dashboard",
         conscience: {
+          description:
+            "An examination of conscience is a prayerful review of your thoughts, words, and actions. Use these questions before going to sleep and before Confession.",
           heading: "QUESTION OF CONSCIENCE",
           loading: "Loading conscience question",
           listLoading: "Loading questions…",
@@ -280,6 +282,7 @@ export const resources = {
           closeLabel: "Close questions of conscience",
           retryLabel: "Retry conscience question",
           unavailable: "Reflection unavailable.",
+          vocationPrompt: "Select your current vocation:",
           viewMore: "View more",
           viewMoreLabel: "View more questions",
           categories: { single: "Single", married: "Married", religious: "Religious" },
@@ -350,6 +353,7 @@ export const resources = {
           current: "CURRENT LEVEL",
           currentMarker: "Current level",
           defaultLevel: "Awakened",
+          description: "The more you pray and read Scripture, the more you advance in levels.",
           highest: "Highest level reached",
           level: "Level {{number}}",
           listLabel: "Levels in order",
@@ -1429,6 +1433,8 @@ export const resources = {
       dashboard: {
         accessibilityLabel: "Panel de progreso espiritual",
         conscience: {
+          description:
+            "Un examen de conciencia es una revisión en oración de tus pensamientos, palabras y acciones. Usa estas preguntas antes de dormir y antes de confesarte.",
           heading: "PREGUNTA DE CONCIENCIA",
           loading: "Cargando pregunta de conciencia",
           listLoading: "Cargando preguntas…",
@@ -1437,6 +1443,7 @@ export const resources = {
           closeLabel: "Cerrar preguntas de conciencia",
           retryLabel: "Volver a cargar la pregunta de conciencia",
           unavailable: "La reflexión no está disponible.",
+          vocationPrompt: "Selecciona tu vocación actual:",
           viewMore: "Ver más",
           viewMoreLabel: "Ver más preguntas",
           categories: { single: "Soltero", married: "Casado", religious: "Religioso" },
@@ -1508,6 +1515,7 @@ export const resources = {
           current: "NIVEL ACTUAL",
           currentMarker: "Nivel actual",
           defaultLevel: "Despierto",
+          description: "Mientras más ores y leas la Sagrada Escritura, más avanzarás en los niveles.",
           highest: "Nivel máximo alcanzado",
           level: "Nivel {{number}}",
           listLabel: "Niveles en orden",

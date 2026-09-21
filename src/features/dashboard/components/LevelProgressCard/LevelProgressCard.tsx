@@ -122,6 +122,7 @@ export function LevelProgressCard({ isLoading, levelCatalog, progress, progressE
       <Text accessibilityRole="header" style={styles.heading}>
         {t("dashboard.levelProgress.title")}
       </Text>
+      <Text style={styles.description}>{t("dashboard.levelProgress.description")}</Text>
 
       {isLoading ? (
         <View accessibilityLabel={t("dashboard.levelProgress.loading")} style={styles.loadingState}>
@@ -449,6 +450,11 @@ const styleSheet = createThemedStyles((theme) => ({
     overflow: "hidden",
     paddingHorizontal: theme.spacing[2],
     paddingVertical: theme.spacing[1],
+  },
+  description: {
+    ...theme.typography.bodySmall,
+    color: theme.colors.text.secondary,
+    textAlign: "center",
   },
   heading: {
     ...theme.typography.heading3,

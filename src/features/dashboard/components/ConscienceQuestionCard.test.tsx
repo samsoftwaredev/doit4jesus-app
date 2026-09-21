@@ -29,6 +29,11 @@ describe("ConscienceQuestionCard", () => {
 
     expect(screen.getByText("Have I seriously damaged someone’s reputation?")).toBeTruthy();
     expect(screen.getByText("Revealing faults unjustly harms others (CCC 2477).")).toBeTruthy();
+    expect(
+      screen.getByText(
+        "An examination of conscience is a prayerful review of your thoughts, words, and actions. Use these questions before going to sleep and before Confession.",
+      ),
+    ).toBeTruthy();
   });
 
   it("provides a compact retry state when the endpoint fails", async () => {
@@ -73,6 +78,7 @@ describe("ConscienceQuestionCard", () => {
     await fireEvent.press(screen.getByRole("button", { name: "View more questions" }));
     expect(onViewMore).toHaveBeenCalledTimes(1);
     expect(screen.getByRole("header", { name: "Questions of Conscience" })).toBeTruthy();
+    expect(screen.getByText("Select your current vocation:")).toBeTruthy();
     expect(screen.getByText("Single question")).toBeTruthy();
     expect(screen.getByText("Married question")).toBeTruthy();
     expect(screen.getByText("Religious question")).toBeTruthy();
@@ -103,7 +109,13 @@ describe("ConscienceQuestionCard", () => {
     );
 
     await fireEvent.press(screen.getByRole("button", { name: "Ver más preguntas" }));
+    expect(
+      screen.getByText(
+        "Un examen de conciencia es una revisión en oración de tus pensamientos, palabras y acciones. Usa estas preguntas antes de dormir y antes de confesarte.",
+      ),
+    ).toBeTruthy();
     expect(screen.getByRole("header", { name: "Preguntas de conciencia" })).toBeTruthy();
+    expect(screen.getByText("Selecciona tu vocación actual:")).toBeTruthy();
     expect(screen.getByRole("switch", { name: "Soltero" })).toBeTruthy();
   });
 });

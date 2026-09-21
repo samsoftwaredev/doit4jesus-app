@@ -62,6 +62,7 @@ describe("LevelProgressCard", () => {
     );
 
     expect(screen.getByRole("header", { name: "LEVEL PROGRESS" })).toBeTruthy();
+    expect(screen.getByText("The more you pray and read Scripture, the more you advance in levels.")).toBeTruthy();
     expect(screen.getByRole("image", { name: "Disciple level artwork" })).toBeTruthy();
     expect(screen.getByRole("image", { name: "Witness level artwork" })).toBeTruthy();
     expect(screen.getByRole("progressbar").props.accessibilityValue).toEqual({ max: 100, min: 0, now: 100 });
@@ -166,6 +167,9 @@ describe("LevelProgressCard", () => {
       expect.arrayContaining([expect.objectContaining({ flexDirection: "column" })]),
     );
     expect(screen.getByRole("header", { name: "PROGRESO DE NIVEL" })).toBeTruthy();
+    expect(
+      screen.getByText("Mientras más ores y leas la Sagrada Escritura, más avanzarás en los niveles."),
+    ).toBeTruthy();
     await fireEvent.press(screen.getByRole("button", { name: "Ver todos los niveles" }));
     expect(screen.getByRole("header", { name: "Todos los niveles" })).toBeTruthy();
   });

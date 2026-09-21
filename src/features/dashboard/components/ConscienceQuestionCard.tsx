@@ -30,7 +30,7 @@ type ConscienceQuestionCardProps = {
 
 const categories: ConscienceQuestionCategory[] = ["single", "married", "religious"];
 
-/** Renders this feature with colors from the currently resolved app appearance. */
+/** Renders a daily conscience question with guidance for using the examination. */
 export function ConscienceQuestionCard({
   allQuestions,
   allQuestionsError,
@@ -96,6 +96,7 @@ export function ConscienceQuestionCard({
           <Text accessibilityRole="header" style={styles.heading}>
             {t("dashboard.conscience.heading")}
           </Text>
+          <Text style={styles.description}>{t("dashboard.conscience.description")}</Text>
           {isLoading ? <QuestionSkeleton /> : null}
           {!isLoading && error ? (
             <View accessibilityRole="alert">
@@ -152,6 +153,7 @@ export function ConscienceQuestionCard({
                 <Feather accessible={false} color={theme.colors.text.primary} name="x" size={theme.sizes.iconMedium} />
               </Pressable>
             </View>
+            <Text style={styles.vocationPrompt}>{t("dashboard.conscience.vocationPrompt")}</Text>
             <View accessibilityRole="tablist" style={styles.filters}>
               {categories.map((category) => {
                 const isSelected = selectedCategories.includes(category);
@@ -236,6 +238,7 @@ const styleSheet = createThemedStyles((theme) => ({
   copy: { flex: 1, minWidth: 0, paddingLeft: theme.spacing[3] },
   copyStacked: { paddingLeft: theme.spacing[0], paddingTop: theme.spacing[2] },
   cross: { position: "absolute", right: theme.spacing[0], top: theme.spacing[0] },
+  description: { ...theme.typography.bodySmall, color: theme.colors.text.secondary, marginTop: theme.spacing[2] },
   error: { ...theme.typography.body, color: theme.colors.text.secondary, marginTop: theme.spacing[3] },
   heading: {
     ...theme.typography.labelSmall,
@@ -296,7 +299,13 @@ const styleSheet = createThemedStyles((theme) => ({
   filterSelected: { backgroundColor: theme.colors.accent.purple, borderColor: theme.colors.accent.purple },
   filterText: { ...theme.typography.button, color: theme.colors.text.primary },
   filterTextSelected: { color: theme.colors.text.inverse },
-  filters: { flexDirection: "row", flexWrap: "wrap", gap: theme.spacing[2], marginBottom: theme.spacing[3] },
+  filters: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: theme.spacing[2],
+    marginBottom: theme.spacing[3],
+    marginTop: theme.spacing[1],
+  },
   listStatus: { ...theme.typography.body, color: theme.colors.text.secondary, paddingVertical: theme.spacing[4] },
   modal: {
     backgroundColor: theme.colors.background.elevated,
@@ -343,6 +352,7 @@ const styleSheet = createThemedStyles((theme) => ({
   retry: { alignSelf: "flex-start", minHeight: theme.sizes.touchTarget, justifyContent: "center" },
   retryText: { ...theme.typography.button, color: theme.colors.gold.pale },
   skeletons: { marginTop: theme.spacing[3] },
+  vocationPrompt: { ...theme.typography.bodySmall, color: theme.colors.text.secondary, marginTop: theme.spacing[3] },
   viewMore: {
     alignSelf: "flex-start",
     justifyContent: "center",
