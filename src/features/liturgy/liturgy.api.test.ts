@@ -1,6 +1,7 @@
 import {
   fetchLiturgyReadings,
   fetchTodayLiturgy,
+  fetchCompletedDailyScriptureActivity,
   parseDailyLiturgy,
   recordDailyScriptureCompletion,
 } from "./liturgy.api";
@@ -63,6 +64,9 @@ describe("Daily Liturgy API", () => {
         country: "US",
         idempotencyKey: "daily-liturgy-key",
         occurredAt: "2026-08-21T21:22:25.672Z",
+        passage: "Ez 37:1-14 | Mt 22:34-40",
+        quantity: 2,
+        date: "2026-08-21",
       }),
     ).resolves.toEqual({ currentLevel: 2, points: 15, replayed: false, totalXp: 365 });
 
@@ -72,10 +76,42 @@ describe("Daily Liturgy API", () => {
       "Idempotency-Key": "daily-liturgy-key",
     });
     expect(JSON.parse(String(request.body))).toMatchObject({
-      activityCode: "PRAYER",
+      activityCode: "SCRIPTURE",
       completedAt: "2026-08-21T21:22:25.672Z",
       countryCode: "US",
+      metadata: {
+        liturgyDate: "2026-08-21",
+        passage: "Ez 37:1-14 | Mt 22:34-40",
+        source: "daily_liturgy_completion",
+      },
       occurredAt: "2026-08-21T21:22:25.672Z",
+      quantity: 2,
+    });
+  });
+
+  it("finds an already completed daily Scripture activity by its date or passage", async () => {
+    const fetchMock = jest.fn(async () => ({
+      json: async () => ({
+        data: [
+          {
+            activity_code: "SCRIPTURE",
+            completed_at: "2026-08-21T21:22:25.672Z",
+            metadata: { passage: "Ez 37:1-14 | Mt 22:34-40" },
+          },
+        ],
+        meta: { hasMore: false, limit: 20, nextCursor: null },
+      }),
+      ok: true,
+    }));
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+    await expect(
+      fetchCompletedDailyScriptureActivity({ date: "2026-08-21", passage: "Ez 37:1-14 | Mt 22:34-40" }),
+    ).resolves.toEqual({ completedAt: "2026-08-21T21:22:25.672Z" });
+
+    expect(fetchMock).toHaveBeenCalledWith("http://localhost:3000/api/v1/activities?activityCode=SCRIPTURE", {
+      headers: { Accept: "application/json", Authorization: "Bearer test-access-token" },
+      method: "GET",
     });
   });
 
@@ -172,6 +208,9 @@ describe("Daily Liturgy API", () => {
         country: "US",
         idempotencyKey: "safe-defaults",
         occurredAt: "2026-08-21T21:22:25.672Z",
+        passage: "Ez 37:1-14",
+        quantity: 1,
+        date: "2026-08-21",
       }),
     ).resolves.toEqual({ currentLevel: 0, points: 0, replayed: true, totalXp: 0 });
   });
@@ -187,6 +226,9 @@ describe("Daily Liturgy API", () => {
         country: "US",
         idempotencyKey: "bad-reward",
         occurredAt: "2026-08-21T21:22:25.672Z",
+        passage: "Ez 37:1-14",
+        quantity: 1,
+        date: "2026-08-21",
       }),
     ).rejects.toThrow("unexpected reward response");
 
@@ -226,6 +268,9 @@ describe("Daily Liturgy API", () => {
         country: "US",
         idempotencyKey: "failed-completion",
         occurredAt: "2026-08-21T21:22:25.672Z",
+        passage: "Ez 37:1-14",
+        quantity: 1,
+        date: "2026-08-21",
       }),
     ).rejects.toThrow("Unable to record daily Scripture completion (503)");
   });

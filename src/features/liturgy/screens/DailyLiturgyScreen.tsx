@@ -10,10 +10,12 @@ import { theme } from "@/theme/tokens";
 
 import { CelebrationHeroCard, CompletionToast, DailyVerseCard, ScriptureReadingsCard } from "../components";
 import {
+  fetchCompletedDailyScriptureActivity,
   fetchLiturgyReadings,
   loadDailyReadingProgress,
   markCompletionToastShown,
   markDailyReadingComplete,
+  markReadingsCompletedFromRecordedActivity,
   recordDailyScriptureCompletion,
   recordRewardOnProgress,
 } from "../index";
@@ -36,6 +38,11 @@ function hasCompletedAllReadings(progress: DailyReadingProgress, model: DailyLit
   return (
     model.readings.length > 0 && model.readings.every((reading) => progress.completedReadingIds.includes(reading.id))
   );
+}
+
+/** Creates the stable passage identifier stored with the completed daily Scripture activity. */
+function createDailyScripturePassage(readings: DailyLiturgyViewModel["readings"]) {
+  return readings.map((reading) => reading.citation).join(" | ");
 }
 
 /** Renders LiturgyLoadingState with styles resolved from the active appearance. */
@@ -99,8 +106,10 @@ export function DailyLiturgyDashboard({ country = "US", onCalendarPress }: Daily
     }
   }, []);
 
+  /** Records a complete daily Scripture set and persists its awarded progress exactly once. */
   const awardCompletion = useCallback(
-    async (nextProgress: DailyReadingProgress, readingCount: number) => {
+    async (nextProgress: DailyReadingProgress, model: DailyLiturgyViewModel) => {
+      const readingCount = model.readings.length;
       const reward = nextProgress.reward;
       if (!reward || reward.status === "recorded" || rewardInFlight.current === reward.idempotencyKey) {
         if (reward?.status === "recorded") await presentCompletionToast(nextProgress, readingCount);
@@ -115,8 +124,11 @@ export function DailyLiturgyDashboard({ country = "US", onCalendarPress }: Daily
         const result = await recordDailyScriptureCompletion({
           completedAt: reward.completedAt,
           country: nextProgress.country,
+          date: nextProgress.date,
           idempotencyKey: reward.idempotencyKey,
           occurredAt: reward.occurredAt,
+          passage: createDailyScripturePassage(model.readings),
+          quantity: readingCount,
         });
         const updated = await recordRewardOnProgress(nextProgress, result);
         setProgress(updated);
@@ -134,13 +146,32 @@ export function DailyLiturgyDashboard({ country = "US", onCalendarPress }: Daily
   /** Synchronizes saved reading progress when the associated liturgy request is still current. */
   const syncProgress = useCallback(
     async (model: DailyLiturgyViewModel, requestId = activeLoadRequest.current) => {
-      const nextProgress = await loadDailyReadingProgress(model.date, model.metadata.country);
+      let nextProgress = await loadDailyReadingProgress(model.date, model.metadata.country);
+      if (requestId !== activeLoadRequest.current) return;
+
+      try {
+        const activity = await fetchCompletedDailyScriptureActivity({
+          date: model.date,
+          passage: createDailyScripturePassage(model.readings),
+        });
+        if (activity) {
+          nextProgress = await markReadingsCompletedFromRecordedActivity({
+            completedAt: activity.completedAt,
+            country: model.metadata.country,
+            date: model.date,
+            readingIds: model.readings.map((reading) => reading.id),
+          });
+        }
+      } catch {
+        // The stable idempotency key still prevents a duplicate server record when this lookup is unavailable.
+      }
+
       if (requestId !== activeLoadRequest.current) return;
       setProgress(nextProgress);
 
       if (!hasCompletedAllReadings(nextProgress, model)) return;
       if (nextProgress.reward?.status === "pending") {
-        void awardCompletion(nextProgress, model.readings.length);
+        void awardCompletion(nextProgress, model);
       } else {
         void presentCompletionToast(nextProgress, model.readings.length);
       }
@@ -186,7 +217,7 @@ export function DailyLiturgyDashboard({ country = "US", onCalendarPress }: Daily
 
   const retryReward = useCallback(() => {
     if (!liturgy || !progress) return;
-    void awardCompletion(progress, liturgy.readings.length);
+    void awardCompletion(progress, liturgy);
   }, [awardCompletion, liturgy, progress]);
 
   const showPreviousDay = useCallback(() => {
@@ -215,7 +246,7 @@ export function DailyLiturgyDashboard({ country = "US", onCalendarPress }: Daily
       setProgress(result.progress);
 
       if (result.allReadingsCompleted && result.progress.reward?.status === "pending") {
-        void awardCompletion(result.progress, liturgy.readings.length);
+        void awardCompletion(result.progress, liturgy);
       }
     },
     [awardCompletion, liturgy],

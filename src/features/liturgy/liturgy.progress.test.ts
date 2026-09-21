@@ -1,4 +1,9 @@
-import { loadDailyReadingProgress, markDailyReadingComplete, recordRewardOnProgress } from "./liturgy.progress";
+import {
+  loadDailyReadingProgress,
+  markDailyReadingComplete,
+  markReadingsCompletedFromRecordedActivity,
+  recordRewardOnProgress,
+} from "./liturgy.progress";
 
 function createStorage() {
   const values = new Map<string, string>();
@@ -35,5 +40,24 @@ describe("Daily reading progress", () => {
     const loaded = await loadDailyReadingProgress("2026-08-21", "US", storage);
     expect(recorded.reward).toMatchObject({ points: 15, status: "recorded", totalXp: 365 });
     expect(loaded.completedReadingIds).toEqual(["first", "psalm", "gospel"]);
+  });
+
+  it("marks every reading complete from a previously recorded server activity without leaving a reward to retry", async () => {
+    const storage = createStorage();
+    const input = { country: "US", date: "2026-08-21", readingIds: ["first", "psalm", "gospel"] };
+    const final = await markDailyReadingComplete({ ...input, readingId: "first" }, storage);
+
+    const progress = await markReadingsCompletedFromRecordedActivity(
+      { ...input, completedAt: "2026-08-21T21:22:25.672Z" },
+      storage,
+    );
+
+    expect(final.progress.completedReadingIds).toEqual(["first"]);
+    expect(progress).toEqual({
+      completedAt: "2026-08-21T21:22:25.672Z",
+      completedReadingIds: ["first", "psalm", "gospel"],
+      country: "US",
+      date: "2026-08-21",
+    });
   });
 });

@@ -13,10 +13,9 @@ function storageKey(date: string, country: string) {
   return `${STORAGE_PREFIX}/${country.toUpperCase()}/${date}`;
 }
 
-function createIdempotencyKey() {
-  const time = Date.now().toString(36);
-  const random = Array.from({ length: 24 }, () => Math.floor(Math.random() * 36).toString(36)).join("");
-  return `liturgy-${time}-${random}`;
+/** Creates one stable completion key for a user's country-specific liturgy day across devices. */
+function createIdempotencyKey(date: string, country: string) {
+  return `daily-liturgy-scripture-${country.toUpperCase()}-${date}`;
 }
 
 function defaultProgress(date: string, country: string): DailyReadingProgress {
@@ -68,6 +67,7 @@ export async function saveDailyReadingProgress(
   await storage.setItem(storageKey(progress.date, progress.country), JSON.stringify(progress));
 }
 
+/** Marks one reading complete and creates the daily activity only when every active reading is complete. */
 export async function markDailyReadingComplete(
   input: { date: string; country: string; readingId: string; readingIds: string[] },
   storage: LiturgyStorageAdapter = AsyncStorage,
@@ -85,7 +85,7 @@ export async function markDailyReadingComplete(
     allReadingsCompleted && completedAt
       ? (current.reward ?? {
           completedAt,
-          idempotencyKey: createIdempotencyKey(),
+          idempotencyKey: createIdempotencyKey(input.date, input.country),
           occurredAt: completedAt,
           status: "pending" as const,
         })
@@ -100,6 +100,27 @@ export async function markDailyReadingComplete(
 
   await saveDailyReadingProgress(progress, storage);
   return { allReadingsCompleted, didCompleteAllReadings, progress };
+}
+
+/**
+ * Mirrors a matching server-side Scripture activity into local reading progress.
+ * Pending local rewards are discarded because the server has already recorded the completion.
+ */
+export async function markReadingsCompletedFromRecordedActivity(
+  input: { date: string; country: string; readingIds: string[]; completedAt: string },
+  storage: LiturgyStorageAdapter = AsyncStorage,
+) {
+  const current = await loadDailyReadingProgress(input.date, input.country, storage);
+  const progress: DailyReadingProgress = {
+    completedAt: input.completedAt,
+    completedReadingIds: [...new Set(input.readingIds)],
+    country: input.country.toUpperCase(),
+    date: input.date,
+    reward: current.reward?.status === "recorded" ? current.reward : undefined,
+  };
+
+  await saveDailyReadingProgress(progress, storage);
+  return progress;
 }
 
 export async function recordRewardOnProgress(

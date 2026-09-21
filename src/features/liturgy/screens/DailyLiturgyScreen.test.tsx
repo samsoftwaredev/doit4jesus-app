@@ -10,11 +10,13 @@ jest.mock("expo-router", () => ({
 }));
 
 jest.mock("@/features/liturgy", () => ({
+  fetchCompletedDailyScriptureActivity: jest.fn(),
   fetchLiturgyReadings: jest.fn(),
   fetchTodayLiturgy: jest.fn(),
   loadDailyReadingProgress: jest.fn(),
   markCompletionToastShown: jest.fn(),
   markDailyReadingComplete: jest.fn(),
+  markReadingsCompletedFromRecordedActivity: jest.fn(),
   recordDailyScriptureCompletion: jest.fn(),
   recordRewardOnProgress: jest.fn(),
 }));
@@ -33,12 +35,18 @@ jest.mock("@/hooks", () => ({
   useCurrentLocalDate: () => mockCurrentLocalDate,
 }));
 
-const { fetchLiturgyReadings, loadDailyReadingProgress, markDailyReadingComplete } = jest.requireMock(
-  "@/features/liturgy",
-) as {
+const {
+  fetchCompletedDailyScriptureActivity,
+  fetchLiturgyReadings,
+  loadDailyReadingProgress,
+  markDailyReadingComplete,
+  markReadingsCompletedFromRecordedActivity,
+} = jest.requireMock("@/features/liturgy") as {
+  fetchCompletedDailyScriptureActivity: jest.Mock;
   fetchLiturgyReadings: jest.Mock;
   loadDailyReadingProgress: jest.Mock;
   markDailyReadingComplete: jest.Mock;
+  markReadingsCompletedFromRecordedActivity: jest.Mock;
 };
 
 const liturgy = {
@@ -65,6 +73,7 @@ describe("DailyLiturgyDashboard", () => {
     jest.clearAllMocks();
     mockCurrentLocalDate = "2026-08-21";
     fetchLiturgyReadings.mockResolvedValue(liturgy);
+    fetchCompletedDailyScriptureActivity.mockResolvedValue(null);
     loadDailyReadingProgress.mockResolvedValue(emptyProgress);
   });
 
@@ -197,5 +206,26 @@ describe("DailyLiturgyDashboard", () => {
     });
 
     expect(markDailyReadingComplete).toHaveBeenCalledWith(expect.objectContaining({ readingId: "first-reading" }));
+  });
+
+  it("shows all readings as completed when the same daily Scripture set was already recorded", async () => {
+    const completedProgress = {
+      completedAt: "2026-08-21T21:22:25.672Z",
+      completedReadingIds: ["first-reading", "gospel"],
+      country: "US",
+      date: "2026-08-21",
+    };
+    fetchCompletedDailyScriptureActivity.mockResolvedValue({ completedAt: "2026-08-21T21:22:25.672Z" });
+    markReadingsCompletedFromRecordedActivity.mockResolvedValue(completedProgress);
+
+    await render(<DailyLiturgyDashboard />);
+
+    await waitFor(() => expect(screen.getByText("2 of 2 completed")).toBeTruthy());
+    expect(markReadingsCompletedFromRecordedActivity).toHaveBeenCalledWith({
+      completedAt: "2026-08-21T21:22:25.672Z",
+      country: "US",
+      date: "2026-08-21",
+      readingIds: ["first-reading", "gospel"],
+    });
   });
 });
