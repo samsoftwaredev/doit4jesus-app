@@ -1,9 +1,6 @@
 export const firstGlorious = [
-  require("./firstGlorious01.jpg"),
-  require("./firstGlorious02.jpg"),
   require("./firstGlorious03.jpg"),
   require("./firstGlorious04.jpg"),
-  require("./firstGlorious05.jpg"),
   require("./firstGlorious06.jpg"),
   require("./firstGlorious07.jpg"),
   require("./firstGlorious08.jpg"),

@@ -3,6 +3,7 @@ import { englishRosaryContent } from "@/features/prayer/rosary/data/rosaryConten
 import { getRosaryContent } from "@/features/prayer/rosary/data/localizedRosaryContent";
 import {
   getRosaryMysteriesFromContent,
+  getRosaryMysteryImageSource,
   getRosaryMysterySetsFromContent,
   rosaryMysterySets,
 } from "@/features/prayer/rosary/data/rosaryMysteries";
@@ -10,6 +11,7 @@ import { getRosaryPrayers, prayerById } from "@/features/prayer/rosary/data/rosa
 import { getFullRosarySequence, getRosarySequenceForLength } from "@/features/prayer/rosary/data/rosarySequence";
 
 import * as mysteryCartoonImages from "../../../../../assets/images/mysteriesCartoon";
+import * as mysteryClassicArt from "../../../../../assets/images/mysteriesClassicArt";
 import { ROSARY_AUDIO_SOURCES } from "../../../../../assets/audios";
 
 describe("English Rosary content", () => {
@@ -69,6 +71,14 @@ describe("English Rosary content", () => {
           title: "The Nativity",
         }),
       ]),
+    );
+  });
+
+  it("selects supplied classic artwork while retaining comic images as the default", () => {
+    expect(getRosaryMysteryImageSource("first_joyful")).toBe(mysteryCartoonImages.firstJoyful);
+    expect(getRosaryMysteryImageSource("first_joyful", "classic", () => 0)).toBe(mysteryClassicArt.firstJoyful[0]);
+    expect(getRosaryMysteryImageSource("first_joyful", "classic", () => 0.999)).toBe(
+      mysteryClassicArt.firstJoyful[mysteryClassicArt.firstJoyful.length - 1],
     );
   });
 

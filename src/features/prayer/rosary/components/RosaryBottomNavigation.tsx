@@ -16,7 +16,7 @@ import { type SupportedLanguage, useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 import { ROSARY_LENGTH_OPTIONS } from "@/features/prayer/rosary/data/rosaryLengths";
-import type { PrayerProgress, RosaryLength } from "@/features/prayer/rosary/types";
+import type { PrayerProgress, RosaryArtStyle, RosaryLength } from "@/features/prayer/rosary/types";
 
 interface RosaryBottomNavigationProps {
   audioAvailable?: boolean;
@@ -29,12 +29,14 @@ interface RosaryBottomNavigationProps {
   activeDecadeIndex?: number;
   disabled?: boolean;
   onAdvance: () => void;
+  onArtStyleChange: (style: RosaryArtStyle) => void;
   onAudioMutedChange?: (muted: boolean) => void;
   onAudioToggle?: () => void;
   onLengthChange: (length: RosaryLength) => void;
   onRestart: () => void;
   onSettingsVisibilityChange?: (visible: boolean) => void;
   rosaryLength: RosaryLength;
+  rosaryArtStyle: RosaryArtStyle;
   settingsVisible?: boolean;
 }
 
@@ -52,6 +54,14 @@ function createLengthPressHandler(onLengthChange: (length: RosaryLength) => void
   };
 }
 
+/** Creates a press handler that selects one artwork style without forwarding the native press event. */
+function createArtStylePressHandler(onArtStyleChange: (style: RosaryArtStyle) => void, style: RosaryArtStyle) {
+  /** Applies the artwork style represented by this settings option. */
+  return function handleArtStylePress() {
+    onArtStyleChange(style);
+  };
+}
+
 /** Renders bead progress and the only controls that can change or restart the active Rosary. */
 export function RosaryBottomNavigation({
   audioAvailable = false,
@@ -64,12 +74,14 @@ export function RosaryBottomNavigation({
   activeDecadeIndex = 0,
   disabled = false,
   onAdvance,
+  onArtStyleChange,
   onAudioMutedChange,
   onAudioToggle,
   onLengthChange,
   onRestart,
   onSettingsVisibilityChange,
   rosaryLength,
+  rosaryArtStyle,
   settingsVisible,
 }: RosaryBottomNavigationProps) {
   const styles = useThemedStyles(styleSheet);
@@ -258,6 +270,42 @@ export function RosaryBottomNavigation({
                   />
                   <Text style={styles.settingActionText}>{t("rosary.settings.restart")}</Text>
                 </Pressable>
+              </View>
+
+              <View style={styles.settingSection}>
+                <Text accessibilityRole="header" style={styles.sectionTitle}>
+                  {t("rosary.settings.artStyleTitle")}
+                </Text>
+                <Text style={styles.sectionCopy}>{t("rosary.settings.artStyleCopy")}</Text>
+                <View
+                  accessibilityLabel={t("rosary.settings.artStyleTitle")}
+                  accessibilityRole="radiogroup"
+                  style={styles.lengthOptions}
+                >
+                  {(["comic", "classic"] as const).map((style) => {
+                    const selected = style === rosaryArtStyle;
+                    const label = t(`rosary.settings.artStyles.${style}`);
+                    return (
+                      <Pressable
+                        accessibilityLabel={label}
+                        accessibilityRole="radio"
+                        accessibilityState={{ selected }}
+                        key={style}
+                        onPress={createArtStylePressHandler(onArtStyleChange, style)}
+                        style={({ pressed }) => [
+                          styles.lengthOption,
+                          selected && styles.selectedLengthOption,
+                          pressed && styles.pressed,
+                        ]}
+                      >
+                        <View accessible={false} style={[styles.radio, selected && styles.selectedRadio]}>
+                          {selected ? <View style={styles.radioCore} /> : null}
+                        </View>
+                        <Text style={[styles.lengthTitle, selected && styles.selectedLengthTitle]}>{label}</Text>
+                      </Pressable>
+                    );
+                  })}
+                </View>
               </View>
 
               <View style={styles.settingSection}>

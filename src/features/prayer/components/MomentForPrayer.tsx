@@ -1,6 +1,7 @@
 import Feather from "@expo/vector-icons/Feather";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
+import type { ImageSourcePropType } from "react-native";
 import { StyleSheet, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
@@ -11,24 +12,31 @@ import { theme } from "@/theme/tokens";
 import { OrnateCard } from "./OrnateCard";
 
 type MomentForPrayerProps = {
+  mysteryImageSource: ImageSourcePropType;
   mysteryTitle: string;
   onPrayToday: () => void;
   weekday: string;
 };
 
-/** Renders today's Rosary call to action. */
-export function MomentForPrayer({ mysteryTitle, onPrayToday, weekday }: MomentForPrayerProps) {
+/** Renders today's Rosary call to action with the scheduled mystery's devotional image. */
+export function MomentForPrayer({ mysteryImageSource, mysteryTitle, onPrayToday, weekday }: MomentForPrayerProps) {
   const styles = useThemedStyles(styleSheet);
 
   return (
     <View style={styles.section}>
-      <TodayRosaryCard mysteryTitle={mysteryTitle} onPress={onPrayToday} weekday={weekday} />
+      <TodayRosaryCard
+        mysteryImageSource={mysteryImageSource}
+        mysteryTitle={mysteryTitle}
+        onPress={onPrayToday}
+        weekday={weekday}
+      />
     </View>
   );
 }
 
-/** Renders the illustrated card that begins today's scheduled Rosary. */
+/** Renders the illustrated card that begins today's scheduled Rosary with readable overlay copy. */
 function TodayRosaryCard({
+  mysteryImageSource,
   mysteryTitle,
   onPress,
   weekday,
@@ -43,10 +51,11 @@ function TodayRosaryCard({
       <Image
         accessible={false}
         contentFit="cover"
-        source={require("../../../assets/saints/blessed-virgin-mary.png")}
+        source={mysteryImageSource}
         style={styles.todayImage}
+        testID="today-rosary-mystery-image"
       />
-      <LinearGradient colors={theme.colors.gradients.prayerImage} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={theme.colors.gradients.mysteryImage} style={StyleSheet.absoluteFill} />
       <View style={styles.todayContent}>
         <View style={styles.todayLabel}>
           <Feather accessible={false} color={theme.rosary.colors.gold} name="calendar" size={theme.sizes.iconSmall} />

@@ -2,7 +2,6 @@ export const secondLuminous = [
   require("./secondLuminous01.jpg"),
   require("./secondLuminous02.jpg"),
   require("./secondLuminous03.jpg"),
-  require("./secondLuminous04.jpg"),
   require("./secondLuminous05.jpg"),
   require("./secondLuminous06.jpg"),
   require("./secondLuminous07.jpg"),

@@ -1,9 +1,11 @@
+import { useMemo } from "react";
 import { Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { RosaryMysteryCard } from "@/features/prayer/rosary/components";
 import { getRosaryContent } from "@/features/prayer/rosary/data/localizedRosaryContent";
 import { getRosaryMysterySetsFromContent } from "@/features/prayer/rosary/data/rosaryMysteries";
+import { useRosaryArtStylePreference } from "@/features/prayer/rosary/hooks/useRosaryArtStylePreference";
 import type { RosaryMysteryType } from "@/features/prayer/rosary/types/rosary";
 import { useResponsiveLayout } from "@/hooks";
 import { useAppLanguage } from "@/localization";
@@ -20,8 +22,12 @@ export function AllMysteries({ cardWidth, gap, onOpenMystery }: AllMysteriesProp
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
   const { language } = useAppLanguage();
+  const { rosaryArtStyle } = useRosaryArtStylePreference();
   const { isDesktop } = useResponsiveLayout();
-  const rosaryMysterySets = getRosaryMysterySetsFromContent(getRosaryContent(language));
+  const rosaryMysterySets = useMemo(
+    () => getRosaryMysterySetsFromContent(getRosaryContent(language), rosaryArtStyle),
+    [language, rosaryArtStyle],
+  );
 
   return (
     <View style={styles.section}>

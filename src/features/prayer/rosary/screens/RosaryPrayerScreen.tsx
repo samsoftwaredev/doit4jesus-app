@@ -34,9 +34,10 @@ import { getRosaryMysteriesFromContent } from "@/features/prayer/rosary/data/ros
 import { createRosarySequence, getRosarySequenceForLength } from "@/features/prayer/rosary/data/rosarySequence";
 import { useRosaryAudioPlayback } from "@/features/prayer/rosary/hooks/useRosaryAudioPlayback";
 import { useRosaryAudioPreference } from "@/features/prayer/rosary/hooks/useRosaryAudioPreference";
+import { useRosaryArtStylePreference } from "@/features/prayer/rosary/hooks/useRosaryArtStylePreference";
 import { useRosaryLengthPreference } from "@/features/prayer/rosary/hooks/useRosaryLengthPreference";
 import { useRosarySession } from "@/features/prayer/rosary/hooks/useRosarySession";
-import type { RosaryBead, RosaryLength, RosaryMystery, RosaryMysteryType } from "@/features/prayer/rosary/types";
+import type { RosaryArtStyle, RosaryBead, RosaryLength, RosaryMysteryType } from "@/features/prayer/rosary/types";
 import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
@@ -66,21 +67,19 @@ function physicalBeadProgress(beads: RosaryBead[], currentBeadIndex: number) {
 }
 
 /**
- * Renders the guided Rosary within the shared atmosphere using the selected set's localized prayer sequence.
+ * Renders the guided Rosary within the shared atmosphere using the selected style's localized mystery artwork and prayer sequence.
  * Full sessions include opening, five decades, and closing prayers; the bead rail remains bounded to the visible viewport.
  */
 export function RosaryPrayerScreen({
   content: providedContent,
   intentionId,
   isDecade = true,
-  mysteries: providedMysteries,
   mysteryType = "joyful",
   source: _source = "manual",
 }: {
   content?: RosaryContent;
   intentionId?: string;
   isDecade?: boolean;
-  mysteries?: RosaryMystery[];
   mysteryType?: RosaryMysteryType;
   source?: string;
 }) {
@@ -111,6 +110,7 @@ export function RosaryPrayerScreen({
     setIsMuted: setAudioMuted,
     storageError: audioStorageError,
   } = useRosaryAudioPreference();
+  const { rosaryArtStyle, setRosaryArtStyle, storageError: artStyleStorageError } = useRosaryArtStylePreference();
   const lastAnnouncement = useRef<string | null>(null);
   const hadCompletion = useRef(false);
   const hydratedCompletionState = useRef(false);
@@ -132,10 +132,10 @@ export function RosaryPrayerScreen({
   const defaultRosaryContent = useMemo(() => getRosaryContent(language), [language]);
   const rosaryContent = providedContent ?? defaultRosaryContent;
   const defaultMysteries = useMemo(
-    () => getRosaryMysteriesFromContent(rosaryContent, mysteryType),
-    [mysteryType, rosaryContent],
+    () => getRosaryMysteriesFromContent(rosaryContent, mysteryType, rosaryArtStyle),
+    [mysteryType, rosaryArtStyle, rosaryContent],
   );
-  const mysteries = providedMysteries ?? defaultMysteries;
+  const mysteries = defaultMysteries;
   const activeMysteries = useMemo(() => (isDecade ? [mysteries[0]].filter(Boolean) : mysteries), [isDecade, mysteries]);
   const shortRosaryBeads = useMemo(
     () => getRosarySequenceForLength(rosaryContent, mysteryType, "short"),
@@ -184,6 +184,17 @@ export function RosaryPrayerScreen({
       );
     },
     [setRosaryLength, t],
+  );
+
+  /** Applies and persists a mystery artwork style selected from the settings modal. */
+  const handleRosaryArtStyleChange = useCallback(
+    (style: RosaryArtStyle) => {
+      void setRosaryArtStyle(style);
+      AccessibilityInfo.announceForAccessibility(
+        t("rosary.settings.artStyleSelected", { style: t(`rosary.settings.artStyles.${style}`) }),
+      );
+    },
+    [setRosaryArtStyle, t],
   );
 
   /** Opens the shared Rosary settings modal from the active-length badge. */
@@ -427,13 +438,15 @@ export function RosaryPrayerScreen({
                     {t("rosary.audio.error")}
                   </Text>
                 ) : null}
-                {session.storageError || lengthStorageError || audioStorageError ? (
+                {session.storageError || lengthStorageError || audioStorageError || artStyleStorageError ? (
                   <Text accessibilityRole="alert" style={styles.storageNote}>
                     {session.storageError
                       ? t("rosary.storage.progress")
                       : lengthStorageError
                         ? t("rosary.storage.length")
-                        : t("rosary.storage.audio")}
+                        : audioStorageError
+                          ? t("rosary.storage.audio")
+                          : t("rosary.storage.artStyle")}
                   </Text>
                 ) : null}
               </ScrollView>
@@ -450,6 +463,7 @@ export function RosaryPrayerScreen({
             decadeCount={isDecade ? 1 : 5}
             disabled={session.isTransitioning || activeBeads.length === 0}
             onAdvance={session.goToNextBead}
+            onArtStyleChange={handleRosaryArtStyleChange}
             onAudioMutedChange={handleAudioMutedChange}
             onAudioToggle={handleAudioToggle}
             onLengthChange={handleRosaryLengthChange}
@@ -457,6 +471,7 @@ export function RosaryPrayerScreen({
             onSettingsVisibilityChange={setRosarySettingsVisible}
             progress={progress}
             rosaryLength={rosaryLength}
+            rosaryArtStyle={rosaryArtStyle}
             settingsVisible={rosarySettingsVisible}
           />
         </View>

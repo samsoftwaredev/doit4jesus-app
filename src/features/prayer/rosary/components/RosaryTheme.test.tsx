@@ -45,10 +45,12 @@ describe("Rosary prayer appearance", () => {
         />
         <RosaryBottomNavigation
           onAdvance={jest.fn()}
+          onArtStyleChange={jest.fn()}
           onLengthChange={jest.fn()}
           onRestart={jest.fn()}
           progress={{ currentIndex: 2, prayerName: "Hail Mary", total: 10 }}
           rosaryLength="medium"
+          rosaryArtStyle="comic"
         />
       </>,
     );

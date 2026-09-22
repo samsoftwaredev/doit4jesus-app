@@ -1,5 +1,4 @@
 export const firstLuminous = [
-  require("./firstLuminous01.jpg"),
   require("./firstLuminous02.jpg"),
   require("./firstLuminous03.jpg"),
   require("./firstLuminous04.jpg"),
@@ -20,8 +19,6 @@ export const firstLuminous = [
   require("./firstLuminous19.jpg"),
   require("./firstLuminous20.webp"),
   require("./firstLuminous21.webp"),
-  require("./firstLuminous22.jpg"),
-  require("./firstLuminous23.webp"),
   require("./firstLuminous24.jpg"),
   require("./firstLuminous25.jpg"),
   require("./firstLuminous26.png"),

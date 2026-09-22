@@ -1,7 +1,6 @@
 export const fourthSorrowful = [
   require("./fourthSorrowful01.jpg"),
   require("./fourthSorrowful02.jpg"),
-  require("./fourthSorrowful03.jpg"),
   require("./fourthSorrowful04.jpg"),
   require("./fourthSorrowful05.jpg"),
   require("./fourthSorrowful06.jpg"),

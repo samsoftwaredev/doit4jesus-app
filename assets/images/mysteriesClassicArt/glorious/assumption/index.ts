@@ -1,9 +1,6 @@
 export const fourthGlorious = [
-  require("./fourthGlorious01.webp"),
-  require("./fourthGlorious02.jpg"),
   require("./fourthGlorious03.jpg"),
   require("./fourthGlorious04.jpg"),
-  require("./fourthGlorious05.jpg"),
   require("./fourthGlorious06.jpg"),
   require("./fourthGlorious07.jpg"),
   require("./fourthGlorious08.jpg"),

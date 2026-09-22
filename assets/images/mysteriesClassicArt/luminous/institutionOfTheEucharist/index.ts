@@ -13,7 +13,6 @@ export const fifthLuminous = [
   require("./fifthLuminous12.jpg"),
   require("./fifthLuminous13.jpg"),
   require("./fifthLuminous14.jpg"),
-  require("./fifthLuminous15.jpg"),
   require("./fifthLuminous16.jpg"),
   require("./fifthLuminous17.jpg"),
   require("./fifthLuminous18.webp"),

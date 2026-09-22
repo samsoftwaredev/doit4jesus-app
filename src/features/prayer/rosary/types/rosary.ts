@@ -6,6 +6,8 @@ export type RosaryMysteryType = "joyful" | "luminous" | "sorrowful" | "glorious"
 
 export type RosaryLength = "short" | "medium" | "long";
 
+export type RosaryArtStyle = "comic" | "classic";
+
 export type RosaryBeadType =
   "ourFather" | "hailMary" | "gloryBe" | "fatimaPrayer" | "creed" | "hailHolyQueen" | "signOfCross" | "closingPrayer";
 

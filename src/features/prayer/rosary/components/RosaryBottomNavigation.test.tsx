@@ -17,6 +17,8 @@ describe("RosaryBottomNavigation", () => {
     const onRestart = jest.fn();
     await render(
       <RosaryBottomNavigation
+        rosaryArtStyle="comic"
+        onArtStyleChange={jest.fn()}
         onLengthChange={jest.fn()}
         onAdvance={onAdvance}
         onRestart={onRestart}
@@ -37,6 +39,8 @@ describe("RosaryBottomNavigation", () => {
     const onRestart = jest.fn();
     await render(
       <RosaryBottomNavigation
+        rosaryArtStyle="comic"
+        onArtStyleChange={jest.fn()}
         disabled
         onLengthChange={jest.fn()}
         onAdvance={jest.fn()}
@@ -56,6 +60,8 @@ describe("RosaryBottomNavigation", () => {
     const onLengthChange = jest.fn();
     await render(
       <RosaryBottomNavigation
+        rosaryArtStyle="comic"
+        onArtStyleChange={jest.fn()}
         onAdvance={jest.fn()}
         onLengthChange={onLengthChange}
         onRestart={jest.fn()}
@@ -66,7 +72,9 @@ describe("RosaryBottomNavigation", () => {
 
     await fireEvent.press(screen.getByLabelText("Open Rosary settings"));
 
-    expect(screen.getByRole("radio", { name: /Classic/i }).props.accessibilityState).toEqual({ selected: true });
+    expect(screen.getByRole("radio", { name: "Classic (20 min) Rosary" }).props.accessibilityState).toEqual({
+      selected: true,
+    });
     expect(screen.getByText("Everything in Short, plus:")).toBeTruthy();
     expect(screen.getByText("Everything in Classic, plus:")).toBeTruthy();
     expect(screen.getByText(/Our Father, Hail Mary, and Glory Be for the Pope’s intentions/)).toBeTruthy();
@@ -81,6 +89,8 @@ describe("RosaryBottomNavigation", () => {
     await act(async () => i18n.changeLanguage("es"));
     await render(
       <RosaryBottomNavigation
+        rosaryArtStyle="comic"
+        onArtStyleChange={jest.fn()}
         onAdvance={jest.fn()}
         onLengthChange={jest.fn()}
         onRestart={jest.fn()}
@@ -101,6 +111,8 @@ describe("RosaryBottomNavigation", () => {
     const onAudioToggle = jest.fn();
     const { rerender } = await render(
       <RosaryBottomNavigation
+        rosaryArtStyle="comic"
+        onArtStyleChange={jest.fn()}
         audioAvailable
         audioPlaying={false}
         audioMuted={false}
@@ -121,6 +133,8 @@ describe("RosaryBottomNavigation", () => {
 
     await rerender(
       <RosaryBottomNavigation
+        rosaryArtStyle="comic"
+        onArtStyleChange={jest.fn()}
         audioAvailable
         audioPlaying
         audioMuted={false}
@@ -140,6 +154,8 @@ describe("RosaryBottomNavigation", () => {
     const onAudioMutedChange = jest.fn();
     await render(
       <RosaryBottomNavigation
+        rosaryArtStyle="comic"
+        onArtStyleChange={jest.fn()}
         audioAvailable={false}
         audioPlaying={false}
         audioMuted
@@ -174,17 +190,27 @@ describe("RosaryBottomNavigation", () => {
     await render(
       <RosaryBottomNavigation
         onAdvance={jest.fn()}
+        onArtStyleChange={jest.fn()}
         onLengthChange={jest.fn()}
         onRestart={jest.fn()}
         progress={{ currentIndex: 1, prayerName: "Hail Mary", total: 10 }}
         rosaryLength="medium"
+        rosaryArtStyle="comic"
       />,
     );
 
     await fireEvent.press(screen.getByLabelText("Open Rosary settings"));
 
     const headingNames = screen.getAllByRole("header").map((heading) => heading.props.children);
-    expect(headingNames).toEqual(["Rosary settings", "Prayer progress", "Rosary length", "Audio", "Language"]);
+    expect(headingNames).toEqual([
+      "Rosary settings",
+      "Prayer progress",
+      "Art style",
+      "Rosary length",
+      "Audio",
+      "Language",
+    ]);
+    expect(screen.getByLabelText("Art style").props.accessibilityRole).toBe("radiogroup");
     expect(screen.getByLabelText("Rosary length").props.accessibilityRole).toBe("radiogroup");
     expect(screen.getByLabelText("App language").props.accessibilityRole).toBe("radiogroup");
   });
@@ -193,6 +219,8 @@ describe("RosaryBottomNavigation", () => {
     await render(
       <AppLanguageProvider>
         <RosaryBottomNavigation
+          rosaryArtStyle="comic"
+          onArtStyleChange={jest.fn()}
           onAdvance={jest.fn()}
           onLengthChange={jest.fn()}
           onRestart={jest.fn()}
@@ -209,10 +237,34 @@ describe("RosaryBottomNavigation", () => {
     expect(screen.getAllByRole("header").map((heading) => heading.props.children)).toEqual([
       "Configuración del Rosario",
       "Progreso de la oración",
+      "Estilo artístico",
       "Duración del Rosario",
       "Audio",
       "Idioma",
     ]);
     expect(AsyncStorage.setItem).toHaveBeenCalledWith("@doit4jesus/language-preference:v1", "es");
+  });
+
+  it("changes art style from accessible radio controls in both languages", async () => {
+    const onArtStyleChange = jest.fn();
+    await render(
+      <RosaryBottomNavigation
+        onAdvance={jest.fn()}
+        onArtStyleChange={onArtStyleChange}
+        onLengthChange={jest.fn()}
+        onRestart={jest.fn()}
+        progress={{ currentIndex: 1, prayerName: "Hail Mary", total: 10 }}
+        rosaryArtStyle="comic"
+        rosaryLength="medium"
+      />,
+    );
+
+    await fireEvent.press(screen.getByLabelText("Open Rosary settings"));
+    expect(screen.getByRole("radio", { name: "Comic style" }).props.accessibilityState).toEqual({ selected: true });
+    await fireEvent.press(screen.getByRole("radio", { name: "Classical art" }));
+    expect(onArtStyleChange).toHaveBeenCalledWith("classic");
+
+    await act(async () => i18n.changeLanguage("es"));
+    expect(screen.getByRole("radio", { name: "Arte clásico" })).toBeTruthy();
   });
 });

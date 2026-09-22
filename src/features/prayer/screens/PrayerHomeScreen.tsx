@@ -20,6 +20,7 @@ import { getRosaryContent } from "@/features/prayer/rosary/data/localizedRosaryC
 import { getRosaryMysterySetFromContent } from "@/features/prayer/rosary/data/rosaryMysteries";
 import { getTodayRosaryMysteryType, getWeekdayLabel } from "@/features/prayer/rosary/data/schedule";
 import { RosaryGardenSection } from "@/features/prayer/rosary/garden/components";
+import { useRosaryArtStylePreference } from "@/features/prayer/rosary/hooks/useRosaryArtStylePreference";
 import type { RosaryMysteryType } from "@/features/prayer/rosary/types/rosary";
 import { useCurrentLocalDate, useResponsiveLayout } from "@/hooks";
 import { useAppLanguage } from "@/localization";
@@ -48,6 +49,7 @@ export function PrayerScreen() {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
   const { language, locale } = useAppLanguage();
+  const { rosaryArtStyle } = useRosaryArtStylePreference();
   const router = useRouter();
   const { contentWidth, gutter, isDesktop, isLargeText, isNarrowPhone, isTablet, width } = useResponsiveLayout();
   const [intentions, setIntentions] = useState<ApprovedPrayerIntention[]>([]);
@@ -76,7 +78,10 @@ export function PrayerScreen() {
   const today = useMemo(() => localIsoDateToDate(currentLocalDate), [currentLocalDate]);
   const todayMysteryType = getTodayRosaryMysteryType(today);
   const rosaryContent = useMemo(() => getRosaryContent(language), [language]);
-  const todaySet = getRosaryMysterySetFromContent(rosaryContent, todayMysteryType);
+  const todaySet = useMemo(
+    () => getRosaryMysterySetFromContent(rosaryContent, todayMysteryType, rosaryArtStyle),
+    [rosaryArtStyle, rosaryContent, todayMysteryType],
+  );
   const columnGap = theme.spacing[2];
   const containerMaxWidth = isDesktop ? 960 : isTablet ? 760 : width;
   const usableWidth = Math.max(0, Math.min(contentWidth, containerMaxWidth) - gutter * 2);
@@ -320,6 +325,7 @@ export function PrayerScreen() {
           <PageHeader description={t("prayerHome.description")} title={t("prayerHome.title")} />
           <View testID="prayer-section-today">
             <MomentForPrayer
+              mysteryImageSource={todaySet.imageSource}
               mysteryTitle={todaySet.title}
               onPrayToday={prayToday}
               weekday={getWeekdayLabel(today, locale)}

@@ -5,7 +5,6 @@ export const fifthSorrowful = [
   require("./fifthSorrowful04.jpg"),
   require("./fifthSorrowful05.jpg"),
   require("./fifthSorrowful06.jpg"),
-  require("./fifthSorrowful07.jpg"),
   require("./fifthSorrowful08.jpg"),
   require("./fifthSorrowful09.jpg"),
   require("./fifthSorrowful10.jpg"),

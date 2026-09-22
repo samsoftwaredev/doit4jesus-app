@@ -17,26 +17,18 @@ jest.mock("@/features/prayer/rosary/screens/RosaryPrayerScreen", () => ({
 }));
 
 describe("RosaryRoute", () => {
-  it("passes the selected mystery set from the English Rosary JSON to the existing screen", async () => {
+  it("passes the selected content and mystery type without overriding the screen's art-style-aware mysteries", async () => {
     await render(<RosaryRoute />);
 
     const props = mockRosaryPrayerScreen.mock.lastCall?.[0] as
       | {
           content: { language: string };
-          mysteries: { id: string; scriptureReference: string; title: string }[];
           mysteryType: string;
         }
       | undefined;
 
     expect(props?.mysteryType).toBe("sorrowful");
     expect(props?.content.language).toBe("en");
-    expect(props?.mysteries).toHaveLength(5);
-    expect(props?.mysteries[0]).toEqual(
-      expect.objectContaining({
-        id: "agony_in_the_garden",
-        scriptureReference: "Matthew 26:36-46",
-        title: "The Agony in the Garden",
-      }),
-    );
+    expect(props).not.toHaveProperty("mysteries");
   });
 });
