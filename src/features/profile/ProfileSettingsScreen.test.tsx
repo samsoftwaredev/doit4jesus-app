@@ -92,6 +92,22 @@ describe("Profile settings", () => {
     expect(screen.getByLabelText("Appearance, System (Dark)")).toBeTruthy();
   });
 
+  it("places the destructive account action in the final danger zone", async () => {
+    await renderProfile();
+
+    const accountHeading = screen.getByText("ACCOUNT");
+    const dangerZoneHeading = screen.getByText("DANGER ZONE");
+    const signOut = screen.getByLabelText("Sign Out");
+    const deleteAccount = screen.getByLabelText("Delete Account");
+    const buttons = screen.getAllByRole("button");
+
+    expect(accountHeading.props.children).toBe("ACCOUNT");
+    expect(dangerZoneHeading.props.children).toBe("DANGER ZONE");
+    expect(signOut).toBeTruthy();
+    expect(deleteAccount).toBeTruthy();
+    expect(buttons.at(-1)).toBe(deleteAccount);
+  });
+
   it("opens Appearance settings from its current theme summary", async () => {
     await renderProfile();
 

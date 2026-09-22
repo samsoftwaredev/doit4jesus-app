@@ -292,21 +292,24 @@ export function ProfileSettingsScreen() {
 
         <SettingsSection title={t("profile.account")}>
           <SettingsRow
-            destructive
-            icon="trash-2"
-            label={t("profile.deleteAccount")}
-            onPress={showDeleteProfileConfirmation}
-            showChevron={!isDeletingProfile}
-            value={isDeletingProfile ? t("profile.deleting") : undefined}
-          />
-          <SettingsRow
-            destructive
             icon="log-out"
             isLast
             label={t("profile.signOut")}
             onPress={signOut}
             showChevron={!isSigningOut}
             value={isSigningOut ? t("profile.signingOut") : undefined}
+          />
+        </SettingsSection>
+
+        <SettingsSection title={t("profile.dangerZone")}>
+          <SettingsRow
+            destructive
+            icon="trash-2"
+            isLast
+            label={t("profile.deleteAccount")}
+            onPress={showDeleteProfileConfirmation}
+            showChevron={!isDeletingProfile}
+            value={isDeletingProfile ? t("profile.deleting") : undefined}
           />
         </SettingsSection>
       </ScrollView>
