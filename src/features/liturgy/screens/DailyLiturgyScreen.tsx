@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui";
 import { useCurrentLocalDate } from "@/hooks";
+import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
@@ -12,6 +13,7 @@ import { CelebrationHeroCard, CompletionToast, DailyVerseCard, ScriptureReadings
 import {
   fetchCompletedDailyScriptureActivity,
   fetchLiturgyReadings,
+  fetchTodayLiturgy,
   loadDailyReadingProgress,
   markCompletionToastShown,
   markDailyReadingComplete,
@@ -30,7 +32,6 @@ interface CompletionToastState {
 }
 
 export interface DailyLiturgyDashboardProps {
-  country?: string;
   onCalendarPress?: () => void;
 }
 
@@ -60,11 +61,12 @@ function LiturgyLoadingState() {
 }
 
 /**
- * Home-dashboard section for daily Mass and Scripture. The parent dashboard
- * owns scrolling so this component can live naturally alongside other cards.
+ * Home-dashboard section for daily Mass and Scripture in the selected language.
+ * The parent dashboard owns scrolling so this component can live naturally alongside other cards.
  */
-export function DailyLiturgyDashboard({ country = "US", onCalendarPress }: DailyLiturgyDashboardProps) {
+export function DailyLiturgyDashboard({ onCalendarPress }: DailyLiturgyDashboardProps) {
   const { t } = useTranslation();
+  const { locale } = useAppLanguage();
   const styles = useThemedStyles(styleSheet);
   const rewardInFlight = useRef<string | null>(null);
   const activeLoadRequest = useRef(0);
@@ -179,7 +181,10 @@ export function DailyLiturgyDashboard({ country = "US", onCalendarPress }: Daily
     [awardCompletion, presentCompletionToast],
   );
 
-  /** Loads one date and ignores results from requests superseded by navigation or midnight rollover. */
+  /**
+   * Loads one date in the active language, using the server's today route for the current local date.
+   * Ignores results superseded by navigation, locale changes, or midnight rollover.
+   */
   const reload = useCallback(
     async (date = selectedDate) => {
       const requestId = ++activeLoadRequest.current;
@@ -187,7 +192,8 @@ export function DailyLiturgyDashboard({ country = "US", onCalendarPress }: Daily
       setIsLoading(true);
 
       try {
-        const model = await fetchLiturgyReadings(date, country);
+        const model =
+          date === currentLocalDate ? await fetchTodayLiturgy(locale) : await fetchLiturgyReadings(date, locale);
         if (requestId !== activeLoadRequest.current) return;
         setLiturgy(model);
         await syncProgress(model, requestId);
@@ -198,7 +204,7 @@ export function DailyLiturgyDashboard({ country = "US", onCalendarPress }: Daily
         if (requestId === activeLoadRequest.current) setIsLoading(false);
       }
     },
-    [country, selectedDate, syncProgress, t],
+    [currentLocalDate, locale, selectedDate, syncProgress, t],
   );
 
   useEffect(() => {

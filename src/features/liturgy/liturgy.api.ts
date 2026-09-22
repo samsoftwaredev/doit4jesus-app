@@ -13,6 +13,16 @@ function readString(value: unknown, field: string): string {
   return value;
 }
 
+/** Returns a non-empty optional API string without treating an absent localization as invalid data. */
+function readOptionalString(value: unknown): string | undefined {
+  return typeof value === "string" && value.length > 0 ? value : undefined;
+}
+
+/** Maps the app's language-formatting locale to the locale required by the liturgy text dataset. */
+function resolveLiturgyLocale(locale: string): "en-US" | "es-MX" {
+  return locale.toLowerCase().startsWith("es") ? "es-MX" : "en-US";
+}
+
 function readLiturgicalColor(value: unknown): LiturgicalColor {
   if (
     value === "GREEN" ||
@@ -87,6 +97,7 @@ function parseCompletedDailyScriptureActivity(value: unknown, input: { date: str
   return null;
 }
 
+/** Parses the API payload into stable reading IDs while favoring server-localized display citations. */
 function parseDailyLiturgy(value: unknown): DailyLiturgyViewModel {
   if (!isRecord(value) || !isRecord(value.data)) {
     throw new Error("The liturgy endpoint returned an unexpected response.");
@@ -106,11 +117,12 @@ function parseDailyLiturgy(value: unknown): DailyLiturgyViewModel {
     try {
       if (!isRecord(rawReading)) throw new Error("Invalid reading");
       const type = readReadingType(rawReading.type);
-      const citation = readString(rawReading.citation, "reading citation");
+      const canonicalCitation = readString(rawReading.citation, "reading citation");
+      const citation = readOptionalString(rawReading.localizedCitation) ?? canonicalCitation;
       return [
         {
           citation,
-          id: createReadingId(type, citation, index),
+          id: createReadingId(type, canonicalCitation, index),
           text: readString(rawReading.text, "reading text"),
           type,
         },
@@ -164,12 +176,18 @@ async function requestLiturgy(path: string) {
   return parseDailyLiturgy((await response.json()) as unknown);
 }
 
-export function fetchTodayLiturgy(country: string) {
-  return requestLiturgy(`/api/v1/liturgy/today?${new URLSearchParams({ country })}`);
+/** Loads today's Dallas liturgy in the selected BCP 47 locale. */
+export function fetchTodayLiturgy(locale: string) {
+  return requestLiturgy(
+    `/api/v1/liturgy/today?${new URLSearchParams({ country: "US", diocese: "dallas", locale: resolveLiturgyLocale(locale) })}`,
+  );
 }
 
-export function fetchLiturgyReadings(date: string, country: string) {
-  return requestLiturgy(`/api/v1/liturgy/readings/${encodeURIComponent(date)}?${new URLSearchParams({ country })}`);
+/** Loads a selected date's US liturgy in the selected BCP 47 locale. */
+export function fetchLiturgyReadings(date: string, locale: string) {
+  return requestLiturgy(
+    `/api/v1/liturgy/readings/${encodeURIComponent(date)}?${new URLSearchParams({ country: "US", locale: resolveLiturgyLocale(locale) })}`,
+  );
 }
 
 /** Loads an existing completion so the same daily Scripture set is not recorded twice across devices. */

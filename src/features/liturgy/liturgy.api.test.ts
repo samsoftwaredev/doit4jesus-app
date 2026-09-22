@@ -51,6 +51,26 @@ describe("Daily Liturgy API", () => {
     });
   });
 
+  it("uses a localized citation when the response supplies one", () => {
+    const liturgy = parseDailyLiturgy({
+      ...liturgyPayload,
+      data: {
+        ...liturgyPayload.data,
+        readings: [
+          {
+            citation: "Jn 3:16",
+            localizedCitation: "Juan 3, 16",
+            text: "Porque tanto amó Dios al mundo.",
+            type: "GOSPEL",
+          },
+        ],
+      },
+    });
+
+    expect(liturgy.readings[0]?.citation).toBe("Juan 3, 16");
+    expect(liturgy.highlightedVerse?.citation).toBe("Juan 3, 16");
+  });
+
   it("sends timestamps and an idempotency key when recording the reward", async () => {
     const fetchMock = jest.fn(async () => ({
       json: async () => ({ data: { replayed: false, xp: { currentLevel: 2, points: 15, totalXp: 365 } } }),
@@ -184,20 +204,22 @@ describe("Daily Liturgy API", () => {
     ).toThrow("invalid celebration grade");
   });
 
-  it("requests both reading endpoints and provides safe default reward values", async () => {
+  it("requests today and dated readings with their supported localized query parameters", async () => {
     const fetchMock = jest.fn(async () => ({
       json: async () => ({ ...liturgyPayload, data: { ...liturgyPayload.data, readings: [] } }),
       ok: true,
     }));
     globalThis.fetch = fetchMock as unknown as typeof fetch;
 
-    await fetchTodayLiturgy("US");
-    await fetchLiturgyReadings("2026-08-21/with space", "CA");
+    await fetchTodayLiturgy("es-419");
+    await fetchLiturgyReadings("2026-08-21/with space", "es-419");
     expect((fetchMock.mock.calls as unknown as [string][]).map(([url]) => url)).toEqual([
-      "http://localhost:3000/api/v1/liturgy/today?country=US",
-      "http://localhost:3000/api/v1/liturgy/readings/2026-08-21%2Fwith%20space?country=CA",
+      "http://localhost:3000/api/v1/liturgy/today?country=US&diocese=dallas&locale=es-MX",
+      "http://localhost:3000/api/v1/liturgy/readings/2026-08-21%2Fwith%20space?country=US&locale=es-MX",
     ]);
+  });
 
+  it("provides safe default reward values", async () => {
     globalThis.fetch = jest.fn(async () => ({
       json: async () => ({ data: { replayed: true, xp: { currentLevel: "two", points: null, totalXp: undefined } } }),
       ok: true,
@@ -217,7 +239,7 @@ describe("Daily Liturgy API", () => {
 
   it("rejects unavailable, unsuccessful, and malformed network responses", async () => {
     globalThis.fetch = jest.fn(async () => ({ ok: false, status: 503 })) as unknown as typeof fetch;
-    await expect(fetchTodayLiturgy("US")).rejects.toThrow("Unable to load daily liturgy (503)");
+    await expect(fetchTodayLiturgy("en-US")).rejects.toThrow("Unable to load daily liturgy (503)");
 
     globalThis.fetch = jest.fn(async () => ({ json: async () => ({ data: {} }), ok: true })) as unknown as typeof fetch;
     await expect(
@@ -233,7 +255,7 @@ describe("Daily Liturgy API", () => {
     ).rejects.toThrow("unexpected reward response");
 
     delete process.env.EXPO_PUBLIC_API_URL;
-    await expect(fetchTodayLiturgy("US")).rejects.toThrow("Set EXPO_PUBLIC_API_URL");
+    await expect(fetchTodayLiturgy("en-US")).rejects.toThrow("Set EXPO_PUBLIC_API_URL");
   });
 
   it("handles defensive parser fallbacks and a failed Scripture completion request", async () => {
