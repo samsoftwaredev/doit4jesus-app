@@ -2,6 +2,9 @@ import { Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { useRosaryGarden } from "@/features/prayer/rosary/garden/useRosaryGarden";
+import { parseRosaryCompletionData, parseRosaryStreakData } from "@/features/prayer/rosary/garden/api";
+import { parseCurrentUserProfileData } from "@/features/profile/profile.api";
+import type { ScreenDataResponse } from "@/features/screen-data";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 
 import { GardenCalendar } from "../GardenCalendar";
@@ -11,14 +14,22 @@ import { MonthNavigator } from "../MonthNavigator";
 import { PrayTodayButton } from "../PrayTodayButton";
 
 export type RosaryGardenSectionProps = {
+  initialData?: ScreenDataResponse;
   onPrayToday: () => void;
 };
 
 /** Embeds the complete Rosary Garden experience within one continuous bordered surface. */
-export function RosaryGardenSection({ onPrayToday }: RosaryGardenSectionProps) {
+export function RosaryGardenSection({ initialData, onPrayToday }: RosaryGardenSectionProps) {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
-  const garden = useRosaryGarden();
+  const completion = initialData?.sections.rosaryCompletion;
+  const streak = initialData?.sections.rosaryStreak;
+  const me = initialData?.sections.me;
+  const garden = useRosaryGarden({
+    ...(completion ? { initialCompletion: parseRosaryCompletionData(completion.data) } : {}),
+    ...(me ? { initialUser: parseCurrentUserProfileData(me.data) } : {}),
+    ...(streak ? { initialStreak: parseRosaryStreakData(streak.data) } : {}),
+  });
 
   return (
     <View style={styles.section}>

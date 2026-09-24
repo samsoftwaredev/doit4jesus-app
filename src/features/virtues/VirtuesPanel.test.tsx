@@ -1,15 +1,41 @@
+/* eslint-disable @typescript-eslint/no-require-imports -- Jest mock factories load React Native primitives and SVG fixtures lazily. */
 import { render, screen } from "@testing-library/react-native";
 
 import { VirtuesPanel } from "./VirtuesPanel";
 
+const expectedVirtueIcons = [
+  require("../../../assets/images/virtues/cross.svg"),
+  require("../../../assets/images/virtues/candel.svg"),
+  require("../../../assets/images/virtues/sword.svg"),
+  require("../../../assets/images/virtues/bible.svg"),
+  require("../../../assets/images/virtues/heart.svg"),
+  require("../../../assets/images/virtues/peace.svg"),
+];
+const mockRenderedVirtueIcons = jest.fn();
+
 jest.mock("./VirtueProgressBar", () => ({
-  VirtueProgressBar: ({ label, value, maxValue }: { label: string; value: number; maxValue: number }) => {
+  VirtueProgressBar: ({
+    icon,
+    label,
+    value,
+    maxValue,
+  }: {
+    icon: number;
+    label: string;
+    value: number;
+    maxValue: number;
+  }) => {
     const { Text } = require("react-native");
+    mockRenderedVirtueIcons(icon);
     return <Text>{`${label}: ${value}/${maxValue}`}</Text>;
   },
 }));
 
 describe("VirtuesPanel", () => {
+  beforeEach(() => {
+    mockRenderedVirtueIcons.mockClear();
+  });
+
   it("renders the panel title", async () => {
     await render(<VirtuesPanel />);
     expect(screen.getByRole("header")).toBeTruthy();
@@ -24,6 +50,12 @@ describe("VirtuesPanel", () => {
     expect(screen.getByText(/Wisdom:/)).toBeTruthy();
     expect(screen.getByText(/Charity:/)).toBeTruthy();
     expect(screen.getByText(/Purity:/)).toBeTruthy();
+  });
+
+  it("uses the lightweight SVG artwork for every default virtue", async () => {
+    await render(<VirtuesPanel />);
+
+    expect(mockRenderedVirtueIcons.mock.calls.map(([icon]) => icon)).toEqual(expectedVirtueIcons);
   });
 
   it("renders custom virtues when provided", async () => {

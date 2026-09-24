@@ -156,6 +156,11 @@ function parseDailyLiturgy(value: unknown): DailyLiturgyViewModel {
   };
 }
 
+/** Parses an aggregate-screen daily liturgy section using the standalone endpoint contract. */
+export function parseDailyLiturgyData(data: unknown): DailyLiturgyViewModel {
+  return parseDailyLiturgy({ data });
+}
+
 async function getRequestConfig() {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 

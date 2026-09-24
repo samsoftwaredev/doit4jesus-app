@@ -150,6 +150,14 @@ export async function fetchApprovedPrayerIntentions({
   };
 }
 
+/** Parses an aggregate-screen approved-intentions section with its pagination metadata. */
+export function parseApprovedPrayerIntentionsPage(data: unknown, meta: unknown): PrayerIntentionsPage {
+  return {
+    data: readArray(data, "approved prayer intentions").map(parseApprovedPrayerIntention),
+    meta: parsePageMeta(meta),
+  };
+}
+
 export async function createPrayerIntention(input: CreatePrayerIntentionInput): Promise<MyPrayerIntention> {
   const title = input.title.trim();
   const description = input.description.trim();

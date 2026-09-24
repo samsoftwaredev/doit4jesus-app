@@ -28,7 +28,7 @@ export function ConfessionCard({ onPress, style, testID }: DailyPracticeCardProp
       <Image
         accessible={false}
         contentFit="cover"
-        source={require("../../../assets/images/icons/confession.png")}
+        source={require("../../../assets/images/icons/confession.svg")}
         style={styles.image}
       />
       <Text style={styles.description}>{t("formation.dailyPractice.confession.description")}</Text>

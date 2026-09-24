@@ -9,7 +9,8 @@ import { theme } from "@/theme/tokens";
 
 import { BadgeCatalogModal } from "./components";
 import { EarnedBadgeRow } from "./EarnedBadgeRow";
-import { fetchBadgeCatalog } from "./progress.api";
+import { fetchBadgeCatalog, parseBadgeCatalogData } from "./progress.api";
+import type { ScreenDataResponse } from "@/features/screen-data";
 import type { BadgeCatalogEntry, EarnedBadge } from "./progress.types";
 
 const BADGE_PREVIEW_LIMIT = 3;
@@ -32,7 +33,7 @@ function getRecentEarnedBadges(catalog: BadgeCatalogEntry[]): EarnedBadge[] {
 }
 
 /** Loads a recent badge preview and opens the complete achievement catalog. */
-export function EarnedBadgesSection() {
+export function EarnedBadgesSection({ initialData }: { initialData?: ScreenDataResponse }) {
   const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   const [catalog, setCatalog] = useState<BadgeCatalogEntry[]>([]);
@@ -47,14 +48,15 @@ export function EarnedBadgesSection() {
     setHasError(false);
 
     try {
-      setCatalog(await fetchBadgeCatalog());
+      const section = initialData?.sections.badges;
+      setCatalog(section ? parseBadgeCatalogData(section.data) : await fetchBadgeCatalog());
     } catch {
       setCatalog([]);
       setHasError(true);
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [initialData]);
 
   useEffect(() => {
     void loadBadges();

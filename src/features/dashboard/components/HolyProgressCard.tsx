@@ -12,7 +12,7 @@ import { theme } from "@/theme/tokens";
 
 import { formatPoints } from "../rosary-reminder";
 
-const rosaryIcon = require("../../../../assets/images/icons/rosary.png");
+const rosaryIcon = require("../../../../assets/images/icons/rosary.svg");
 const DEFAULT_LEVEL_NUMBER = 1;
 const DEFAULT_PROGRESS_VALUE = 0;
 

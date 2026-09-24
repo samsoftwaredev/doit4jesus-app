@@ -6,6 +6,11 @@ export {
   fetchRecentRosaryActivities,
   fetchRosaryStats,
   fetchUserProgress,
+  parseBadgeCatalogData,
+  parseDashboardProgressData,
+  parseLevelsData,
+  parseRecentRosaryActivitiesData,
+  parseRosaryStatsData,
 } from "./progress.api";
 export { EarnedBadgesSection } from "./EarnedBadgesSection";
 export type {

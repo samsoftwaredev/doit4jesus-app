@@ -17,7 +17,7 @@ export interface VirtueProgressBarProps extends VirtueScore {
 }
 
 export interface VirtuesPanelProps {
-  virtues?: ReadonlyArray<VirtueScore>;
+  virtues?: readonly VirtueScore[];
   maxValue?: number;
   fullWidth?: boolean;
   style?: StyleProp<ViewStyle>;

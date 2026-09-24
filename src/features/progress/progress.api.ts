@@ -232,6 +232,11 @@ export async function fetchRosaryStats(): Promise<UserRosaryStats> {
   return { rosariesPrayed: readNumber(data.rosariesPrayed, "Rosaries prayed") };
 }
 
+/** Parses aggregate-screen Rosary statistics using the same contract as the standalone endpoint. */
+export function parseRosaryStatsData(data: unknown): UserRosaryStats {
+  return { rosariesPrayed: readNumber(readRecord(data, "Rosary statistics").rosariesPrayed, "Rosaries prayed") };
+}
+
 export async function fetchUserProgress(): Promise<UserProgress> {
   const data = readData(await requestProgress("/api/v1/progress"));
 
@@ -267,13 +272,39 @@ export async function fetchDashboardProgress(): Promise<DashboardProgress> {
   };
 }
 
+/** Parses aggregate-screen progress using the compact dashboard representation. */
+export function parseDashboardProgressData(data: unknown): DashboardProgress {
+  const value = readRecord(data, "progress");
+  return {
+    currentLevel: parseDashboardProgressLevel(value.currentLevel),
+    levelProgressPercentage: readOptionalNumber(value.levelProgressPercentage, "level progress percentage"),
+    lifetimePoints: readNumber(value.lifetimePoints, "lifetime points"),
+    nextLevel: parseDashboardProgressLevel(value.nextLevel),
+    totalXp: readOptionalNumber(value.totalXp, "total XP"),
+    weeklyPoints: readOptionalNumber(value.weeklyPoints, "weekly points"),
+    xpIntoCurrentLevel: readOptionalNumber(value.xpIntoCurrentLevel, "XP into current level"),
+    xpRequiredForNextLevel: readOptionalNumber(value.xpRequiredForNextLevel, "XP required for next level"),
+    yearlyPoints: readOptionalNumber(value.yearlyPoints, "yearly points"),
+  };
+}
+
 export async function fetchLevels(): Promise<LevelCatalogEntry[]> {
   const data = readData(await requestProgress("/api/v1/levels"));
   return readArray(data, "levels").map(parseLevelCatalogEntry);
 }
 
+/** Parses aggregate-screen level catalog data. */
+export function parseLevelsData(data: unknown): LevelCatalogEntry[] {
+  return readArray(data, "levels").map(parseLevelCatalogEntry);
+}
+
 export async function fetchRecentRosaryActivities(): Promise<RecentRosaryActivity[]> {
   const data = readData(await requestProgress("/api/v1/activities?limit=20&activityCode=ROSARY"));
+  return readArray(data, "Rosary activities").map(parseRecentRosaryActivity);
+}
+
+/** Parses aggregate-screen Rosary activity data. */
+export function parseRecentRosaryActivitiesData(data: unknown): RecentRosaryActivity[] {
   return readArray(data, "Rosary activities").map(parseRecentRosaryActivity);
 }
 
@@ -296,6 +327,11 @@ function toEarnedBadges(badges: BadgeCatalogEntry[]): EarnedBadge[] {
 /** Loads every badge definition and the authenticated user's progress for each one. */
 export async function fetchBadgeCatalog(): Promise<BadgeCatalogEntry[]> {
   const data = readData(await requestProgress("/api/v1/badges"));
+  return readArray(data, "badges").map(parseBadgeResponse);
+}
+
+/** Parses aggregate-screen badge catalog data. */
+export function parseBadgeCatalogData(data: unknown): BadgeCatalogEntry[] {
   return readArray(data, "badges").map(parseBadgeResponse);
 }
 

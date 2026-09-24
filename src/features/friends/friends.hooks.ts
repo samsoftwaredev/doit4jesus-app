@@ -29,13 +29,16 @@ function messageFrom(error: unknown, fallback: string): string {
   return error instanceof Error ? error.message : fallback;
 }
 
-export function useFriends() {
-  const [friends, setFriends] = useState<FriendSummary[]>([]);
+export function useFriends(initialPage?: {
+  data: FriendSummary[];
+  meta: { hasMore: boolean; nextOffset: number | null };
+}) {
+  const [friends, setFriends] = useState<FriendSummary[]>(initialPage?.data ?? []);
   const [error, setError] = useState<string>();
-  const [hasMore, setHasMore] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [hasMore, setHasMore] = useState(initialPage?.meta.hasMore ?? false);
+  const [isLoading, setIsLoading] = useState(!initialPage);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [nextOffset, setNextOffset] = useState<number | null>(null);
+  const [nextOffset, setNextOffset] = useState<number | null>(initialPage?.meta.nextOffset ?? null);
 
   const load = useCallback(async () => {
     setError(undefined);
@@ -54,8 +57,8 @@ export function useFriends() {
   }, []);
 
   useEffect(() => {
-    void load();
-  }, [load]);
+    if (!initialPage) void load();
+  }, [initialPage, load]);
 
   const loadMore = useCallback(async () => {
     if (!hasMore || nextOffset === null || isLoadingMore) return;
@@ -76,14 +79,17 @@ export function useFriends() {
   return { error, friends, hasMore, isLoading, isLoadingMore, loadMore, reload: load };
 }
 
-export function useFriendRequests(direction: FriendRequestDirection) {
+export function useFriendRequests(
+  direction: FriendRequestDirection,
+  initialPage?: { data: FriendRequest[]; meta: { hasMore: boolean; nextOffset: number | null } },
+) {
   const [error, setError] = useState<string>();
-  const [hasMore, setHasMore] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [hasMore, setHasMore] = useState(initialPage?.meta.hasMore ?? false);
+  const [isLoading, setIsLoading] = useState(!initialPage);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [isMutatingId, setIsMutatingId] = useState<string>();
-  const [nextOffset, setNextOffset] = useState<number | null>(null);
-  const [requests, setRequests] = useState<FriendRequest[]>([]);
+  const [nextOffset, setNextOffset] = useState<number | null>(initialPage?.meta.nextOffset ?? null);
+  const [requests, setRequests] = useState<FriendRequest[]>(initialPage?.data ?? []);
 
   const load = useCallback(async () => {
     setError(undefined);
@@ -102,8 +108,8 @@ export function useFriendRequests(direction: FriendRequestDirection) {
   }, [direction]);
 
   useEffect(() => {
-    void load();
-  }, [load]);
+    if (!initialPage) void load();
+  }, [initialPage, load]);
 
   const loadMore = useCallback(async () => {
     if (!hasMore || nextOffset === null || isLoadingMore) return;
@@ -172,12 +178,15 @@ export function useFriendRequests(direction: FriendRequestDirection) {
 }
 
 /** Loads the Friends leaderboard for the selected weekly or yearly period. */
-export function useRosaryLeaderboard(initialPeriod: LeaderboardPeriodType = "weekly") {
+export function useRosaryLeaderboard(
+  initialPeriod: LeaderboardPeriodType = "weekly",
+  initialLeaderboard?: FriendsLeaderboard,
+) {
   const activeRequest = useRef(0);
   const [error, setError] = useState<string>();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(!initialLeaderboard);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [leaderboard, setLeaderboard] = useState<FriendsLeaderboard>();
+  const [leaderboard, setLeaderboard] = useState<FriendsLeaderboard | undefined>(initialLeaderboard);
   const [periodType, setPeriodType] = useState<LeaderboardPeriodType>(initialPeriod);
 
   const load = useCallback(async () => {
@@ -203,8 +212,8 @@ export function useRosaryLeaderboard(initialPeriod: LeaderboardPeriodType = "wee
   }, [periodType]);
 
   useEffect(() => {
-    void load();
-  }, [load]);
+    if (!initialLeaderboard) void load();
+  }, [initialLeaderboard, load]);
 
   const loadMore = useCallback(async () => {
     if (!leaderboard || leaderboard.entries.length >= leaderboard.total || isLoadingMore) return;

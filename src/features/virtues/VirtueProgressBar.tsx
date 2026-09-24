@@ -1,5 +1,6 @@
 import { useThemedStyles } from "@/theme/createThemedStyles";
-import { Image, Text, View } from "react-native";
+import { Image } from "expo-image";
+import { Text, View } from "react-native";
 
 import { styles as styleSheet, virtueToneColors } from "./VirtueProgressBar.styles";
 import type { VirtueProgressBarProps } from "./virtues.types";
@@ -17,7 +18,7 @@ export function VirtueProgressBar({ label, value, maxValue, tone, icon }: Virtue
     <View style={styles.row}>
       <View style={styles.identity}>
         <View style={styles.iconFrame}>
-          <Image accessible={false} resizeMode="cover" source={icon} style={styles.iconImage} />
+          <Image accessible={false} contentFit="cover" source={icon} style={styles.iconImage} />
         </View>
         <Text style={styles.label}>{label}</Text>
       </View>

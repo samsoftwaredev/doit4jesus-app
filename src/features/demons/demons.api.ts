@@ -39,7 +39,7 @@ function readNullableString(value: unknown, field: string): string | null {
   return readString(value, field);
 }
 
-function parseVirtueAffinities(value: unknown): ReadonlyArray<DemonVirtueAffinity> {
+function parseVirtueAffinities(value: unknown): readonly DemonVirtueAffinity[] {
   if (!Array.isArray(value)) {
     return [];
   }
@@ -69,7 +69,7 @@ function parseDemonCatalogItem(demon: Record<string, unknown>, virtueAffinities:
   };
 }
 
-function parseDemonCatalog(value: unknown): ReadonlyArray<DemonCatalogItem> {
+function parseDemonCatalog(value: unknown): readonly DemonCatalogItem[] {
   if (!isRecord(value) || !Array.isArray(value.data)) {
     throw new Error("The demons catalog returned an unexpected response.");
   }
@@ -83,7 +83,7 @@ function parseDemonCatalog(value: unknown): ReadonlyArray<DemonCatalogItem> {
   });
 }
 
-function parseAttacks(value: unknown): ReadonlyArray<DemonAttack> {
+function parseAttacks(value: unknown): readonly DemonAttack[] {
   if (!Array.isArray(value)) {
     throw new Error("The demon returned invalid attacks.");
   }
@@ -103,7 +103,7 @@ function parseAttacks(value: unknown): ReadonlyArray<DemonAttack> {
   });
 }
 
-function parseDefenses(value: unknown): ReadonlyArray<DemonDefense> {
+function parseDefenses(value: unknown): readonly DemonDefense[] {
   if (!Array.isArray(value)) {
     throw new Error("The demon returned invalid defenses.");
   }
@@ -193,7 +193,7 @@ async function fetchDemonPayload(url: string): Promise<unknown> {
   return response.json() as Promise<unknown>;
 }
 
-export async function fetchDemonCatalog(): Promise<ReadonlyArray<DemonCatalogItem>> {
+export async function fetchDemonCatalog(): Promise<readonly DemonCatalogItem[]> {
   const payload = await fetchDemonPayload(getDemonApiUrl());
 
   return parseDemonCatalog(payload);

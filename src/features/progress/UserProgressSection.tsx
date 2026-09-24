@@ -3,10 +3,11 @@ import { useTranslation } from "react-i18next";
 import { Pressable, Text, View } from "react-native";
 
 import { Card } from "@/components/ui";
-import { fetchRosaryStreak } from "@/features/prayer/rosary/garden/api";
+import { fetchRosaryStreak, parseRosaryStreakData } from "@/features/prayer/rosary/garden/api";
+import type { ScreenDataResponse } from "@/features/screen-data";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 
-import { fetchRosaryStats, fetchUserProgress } from "./progress.api";
+import { fetchRosaryStats, fetchUserProgress, parseDashboardProgressData, parseRosaryStatsData } from "./progress.api";
 import { StreakCards } from "./StreakCards";
 
 type UserProgressStats = {
@@ -17,7 +18,7 @@ type UserProgressStats = {
 };
 
 /** Loads the user's Rosary streak and presents it with the dashboard Rosary action. */
-export function UserProgressSection() {
+export function UserProgressSection({ initialData }: { initialData?: ScreenDataResponse }) {
   const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   const [isLoadingStats, setIsLoadingStats] = useState(true);
@@ -28,10 +29,13 @@ export function UserProgressSection() {
     setIsLoadingStats(true);
 
     try {
+      const streakSection = initialData?.sections.rosaryStreak;
+      const statsSection = initialData?.sections.rosaryStats;
+      const progressSection = initialData?.sections.progress;
       const [streak, rosaryStats, progress] = await Promise.all([
-        fetchRosaryStreak(),
-        fetchRosaryStats(),
-        fetchUserProgress(),
+        streakSection ? Promise.resolve(parseRosaryStreakData(streakSection.data)) : fetchRosaryStreak(),
+        statsSection ? Promise.resolve(parseRosaryStatsData(statsSection.data)) : fetchRosaryStats(),
+        progressSection ? Promise.resolve(parseDashboardProgressData(progressSection.data)) : fetchUserProgress(),
       ]);
       setStats({
         currentStreak: streak.currentStreak,
@@ -44,7 +48,7 @@ export function UserProgressSection() {
     } finally {
       setIsLoadingStats(false);
     }
-  }, []);
+  }, [initialData]);
 
   useEffect(() => {
     void loadProgress();

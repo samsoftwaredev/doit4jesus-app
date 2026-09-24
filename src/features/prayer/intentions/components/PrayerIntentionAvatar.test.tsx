@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports -- Jest mock factories load React Native primitives lazily. */
 import { render, screen } from "@testing-library/react-native";
 
 import { PrayerIntentionAvatar } from "./PrayerIntentionAvatar";

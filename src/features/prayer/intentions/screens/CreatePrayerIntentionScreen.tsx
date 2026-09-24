@@ -7,7 +7,6 @@ import { useTranslation } from "react-i18next";
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { Button } from "@/components/ui";
 import { BackHeader } from "@/components/navigation";
-import { ProfileToast } from "@/features/profile/components/ProfileToast";
 import {
   createPrayerIntention,
   invalidateMyPrayerIntentions,
@@ -29,20 +28,16 @@ export function CreatePrayerIntentionScreen() {
   const [description, setDescription] = useState("");
   const [symbol, setSymbol] = useState<PrayerIntentionSymbol>("candle");
   const [error, setError] = useState<string>();
-  const [success, setSuccess] = useState<string>();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const submit = async () => {
+  /** Submits the selected intention and replaces this completed form with the user's intentions list. */
+  const handleSubmit = async () => {
     setError(undefined);
-    setSuccess(undefined);
     setIsSubmitting(true);
     try {
       await createPrayerIntention({ description, symbol, title });
       invalidateMyPrayerIntentions();
-      setTitle("");
-      setDescription("");
-      setSymbol("candle");
-      setSuccess(t("intentions.create.success"));
+      router.replace("/my-prayer-intentions");
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : t("intentions.create.submitError"));
     } finally {
@@ -83,11 +78,10 @@ export function CreatePrayerIntentionScreen() {
           {prayerIntentionSymbols.map((option) => {
             const optionTheme = getPrayerIntentionTheme(option, colorScheme);
             const selected = symbol === option;
+            const symbolDescription = t(`intentions.create.symbolDescriptions.${option}`);
             return (
               <Pressable
-                accessibilityLabel={t("intentions.create.symbolLabel", {
-                  symbol: t(`intentions.create.symbols.${option}`),
-                })}
+                accessibilityLabel={symbolDescription}
                 accessibilityRole="button"
                 accessibilityState={{ selected }}
                 key={option}
@@ -106,7 +100,7 @@ export function CreatePrayerIntentionScreen() {
                   name={optionTheme.icon}
                   size={theme.sizes.iconMedium}
                 />
-                <Text style={styles.symbolText}>{t(`intentions.create.symbols.${option}`)}</Text>
+                <Text style={styles.symbolText}>{symbolDescription}</Text>
               </Pressable>
             );
           })}
@@ -116,10 +110,9 @@ export function CreatePrayerIntentionScreen() {
             {error}
           </Text>
         ) : null}
-        <Button fullWidth loading={isSubmitting} onPress={() => void submit()} variant="warning">
+        <Button fullWidth loading={isSubmitting} onPress={() => void handleSubmit()} variant="warning">
           {t("intentions.create.submit")}
         </Button>
-        <ProfileToast message={success} onDismiss={() => setSuccess(undefined)} />
       </ScrollView>
     </AtmosphericSafeAreaView>
   );

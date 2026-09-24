@@ -11,14 +11,25 @@ import {
   fetchLevels,
   fetchRecentRosaryActivities,
   fetchRosaryStats,
+  parseDashboardProgressData,
+  parseLevelsData,
+  parseRecentRosaryActivitiesData,
+  parseRosaryStatsData,
   UserProgressSection,
 } from "@/features/progress";
+import type { ScreenDataResponse } from "@/features/screen-data";
 import { useResponsiveLayout } from "@/hooks";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 
 import type { LevelCatalogEntry, RecentRosaryActivity } from "@/features/progress";
 import { ConscienceQuestionCard, DailyRosaryCard, HolyProgressCard, LevelProgressCard } from "./components";
-import { getConscienceQuestion, getConscienceQuestions, getRosaryReminder } from "./dashboard.api";
+import {
+  getConscienceQuestion,
+  getConscienceQuestions,
+  getRosaryReminder,
+  parseConscienceQuestionData,
+  parseRosaryReminderData,
+} from "./dashboard.api";
 import type {
   ConscienceQuestionListItemViewModel,
   ConscienceQuestionViewModel,
@@ -26,7 +37,7 @@ import type {
 } from "./dashboard.types";
 
 /** Composes the Home dashboard's API-backed cards, streak progress, and earned badges. */
-export function HolyProgressDashboard() {
+export function HolyProgressDashboard({ initialData }: { initialData?: ScreenDataResponse }) {
   const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   const router = useRouter();
@@ -55,33 +66,42 @@ export function HolyProgressDashboard() {
     setIsLoadingProgress(true);
     setProgressError(false);
     try {
-      setProgress(await fetchDashboardProgress());
+      const section = initialData?.sections.progress;
+      setProgress(section ? parseDashboardProgressData(section.data) : await fetchDashboardProgress());
     } catch {
       setProgress(null);
       setProgressError(true);
     } finally {
       setIsLoadingProgress(false);
     }
-  }, []);
+  }, [initialData]);
 
   const loadStats = useCallback(async () => {
     setIsLoadingStats(true);
     setStatsError(false);
     try {
-      setRosaryStats(await fetchRosaryStats());
+      const section = initialData?.sections.rosaryStats;
+      setRosaryStats(section ? parseRosaryStatsData(section.data) : await fetchRosaryStats());
     } catch {
       setRosaryStats(null);
       setStatsError(true);
     } finally {
       setIsLoadingStats(false);
     }
-  }, []);
+  }, [initialData]);
 
   const loadHolyDetails = useCallback(async () => {
     setIsLoadingHolyDetails(true);
     setHolyDetailsError(false);
 
-    const [levels, activities] = await Promise.allSettled([fetchLevels(), fetchRecentRosaryActivities()]);
+    const levelsSection = initialData?.sections.levels;
+    const activitiesSection = initialData?.sections.rosaryActivities;
+    const [levels, activities] = await Promise.allSettled([
+      levelsSection ? Promise.resolve(parseLevelsData(levelsSection.data)) : fetchLevels(),
+      activitiesSection
+        ? Promise.resolve(parseRecentRosaryActivitiesData(activitiesSection.data))
+        : fetchRecentRosaryActivities(),
+    ]);
 
     if (levels.status === "fulfilled") {
       setLevelCatalog(levels.value);
@@ -98,20 +118,21 @@ export function HolyProgressDashboard() {
     // A failed activity request must not be presented as an empty Rosary history.
     setHolyDetailsError(activities.status === "rejected");
     setIsLoadingHolyDetails(false);
-  }, []);
+  }, [initialData]);
 
   const loadConscience = useCallback(async () => {
     setIsLoadingConscience(true);
     setConscienceError(false);
     try {
-      setConscience(await getConscienceQuestion());
+      const section = initialData?.sections.examinationQuestion;
+      setConscience(section ? parseConscienceQuestionData(section.data) : await getConscienceQuestion());
     } catch {
       setConscience(null);
       setConscienceError(true);
     } finally {
       setIsLoadingConscience(false);
     }
-  }, []);
+  }, [initialData]);
 
   /** Loads the complete examination of conscience whenever the user opens its full list. */
   const loadConscienceQuestions = useCallback(async () => {
@@ -131,14 +152,15 @@ export function HolyProgressDashboard() {
     setIsLoadingReminder(true);
     setReminderError(false);
     try {
-      setReminder(await getRosaryReminder());
+      const section = initialData?.sections.rosaryReminder;
+      setReminder(section ? parseRosaryReminderData(section.data) : await getRosaryReminder());
     } catch {
       setReminder(null);
       setReminderError(true);
     } finally {
       setIsLoadingReminder(false);
     }
-  }, []);
+  }, [initialData]);
 
   /** Refreshes every API-backed card that remains on the Home dashboard. */
   const refreshAll = useCallback(() => {
@@ -175,7 +197,7 @@ export function HolyProgressDashboard() {
 
   return (
     <View accessibilityLabel={t("dashboard.accessibilityLabel")} style={styles.dashboard}>
-      <UserProgressSection />
+      <UserProgressSection initialData={initialData} />
       <View style={styles.primaryCard} testID="daily-rosary-card-container">
         <DailyRosaryCard
           error={reminderError}
@@ -186,7 +208,7 @@ export function HolyProgressDashboard() {
           reminder={reminder}
         />
       </View>
-      <DailyLiturgyDashboard />
+      <DailyLiturgyDashboard initialData={initialData} />
       <View style={[styles.primaryGrid, useCardColumns && styles.primaryGridColumns]} testID="dashboard-primary-grid">
         <View
           style={[styles.primaryCard, useCardColumns && styles.primaryCardColumn]}
@@ -228,7 +250,7 @@ export function HolyProgressDashboard() {
             question={conscience}
           />
         </View>
-        <EarnedBadgesSection />
+        <EarnedBadgesSection initialData={initialData} />
       </View>
     </View>
   );

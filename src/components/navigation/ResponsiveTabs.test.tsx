@@ -6,6 +6,13 @@ import { ResponsiveTabs } from "./ResponsiveTabs";
 
 const mockWindowDimensions = jest.fn();
 const mockTabsProps = jest.fn();
+const mockTabArtworkSources = jest.fn();
+const expectedTabArtworkSources = [
+  require("../../../assets/images/tabs/home.svg"),
+  require("../../../assets/images/tabs/prayer.svg"),
+  require("../../../assets/images/tabs/community.svg"),
+  require("../../../assets/images/tabs/profile.svg"),
+];
 
 jest.mock("react-native/Libraries/Utilities/useWindowDimensions", () => ({
   __esModule: true,
@@ -26,8 +33,14 @@ jest.mock("expo-router", () => {
     options,
   }: {
     name: string;
-    options: { tabBarAccessibilityLabel: string; title: string };
+    options: {
+      tabBarAccessibilityLabel: string;
+      tabBarIcon?: (props: { focused: boolean; size: number }) => React.ReactNode;
+      title: string;
+    };
   }) {
+    const icon = options.tabBarIcon?.({ focused: true, size: 24 });
+    if (React.isValidElement<{ source: unknown }>(icon)) mockTabArtworkSources(icon.props.source);
     return React.createElement(
       Text,
       { accessibilityLabel: options.tabBarAccessibilityLabel },
@@ -56,6 +69,13 @@ describe("ResponsiveTabs", () => {
   beforeEach(async () => {
     jest.clearAllMocks();
     await i18n.changeLanguage("en");
+  });
+
+  it("uses SVG artwork for every tab icon", async () => {
+    setViewport(390);
+    await render(<ResponsiveTabs />);
+
+    expect(mockTabArtworkSources.mock.calls.map(([source]) => source)).toEqual(expectedTabArtworkSources);
   });
 
   it.each([320, 390, 768])("keeps bottom navigation at %ipx", async (width) => {

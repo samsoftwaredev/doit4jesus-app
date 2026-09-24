@@ -28,7 +28,7 @@ export function MassTimesCard({ onPress, style, testID }: DailyPracticeCardProps
       <Image
         accessible={false}
         contentFit="cover"
-        source={require("../../../assets/images/icons/church.png")}
+        source={require("../../../assets/images/icons/church.svg")}
         style={styles.image}
       />
       <Text style={styles.description}>{t("formation.dailyPractice.mass.description")}</Text>

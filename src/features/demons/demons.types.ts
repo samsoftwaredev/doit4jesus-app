@@ -13,7 +13,7 @@ export interface DemonCatalogItem {
   maxHp: number;
   name: string;
   title: string;
-  virtueAffinities: ReadonlyArray<DemonVirtueAffinity>;
+  virtueAffinities: readonly DemonVirtueAffinity[];
 }
 
 export interface DemonBattleDemon extends DemonCatalogItem {
@@ -45,8 +45,8 @@ export interface DemonDefeatReward {
 }
 
 export interface DemonBattleDetails {
-  attacks: ReadonlyArray<DemonAttack>;
+  attacks: readonly DemonAttack[];
   defeatReward: DemonDefeatReward;
-  defenses: ReadonlyArray<DemonDefense>;
+  defenses: readonly DemonDefense[];
   demon: DemonBattleDemon;
 }

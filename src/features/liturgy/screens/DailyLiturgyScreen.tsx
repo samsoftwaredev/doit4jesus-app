@@ -8,6 +8,7 @@ import { useCurrentLocalDate } from "@/hooks";
 import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
+import type { ScreenDataResponse } from "@/features/screen-data";
 
 import { CelebrationHeroCard, CompletionToast, DailyVerseCard, ScriptureReadingsCard } from "../components";
 import {
@@ -21,6 +22,7 @@ import {
   recordDailyScriptureCompletion,
   recordRewardOnProgress,
 } from "../index";
+import { parseDailyLiturgyData } from "../liturgy.api";
 import { addDaysToIsoDate, canNavigateToNextLiturgyDate } from "../liturgy.dates";
 import type { DailyLiturgyViewModel, DailyReadingProgress } from "../liturgy.types";
 
@@ -32,6 +34,7 @@ interface CompletionToastState {
 }
 
 export interface DailyLiturgyDashboardProps {
+  initialData?: ScreenDataResponse;
   onCalendarPress?: () => void;
 }
 
@@ -64,7 +67,7 @@ function LiturgyLoadingState() {
  * Home-dashboard section for daily Mass and Scripture in the selected language.
  * The parent dashboard owns scrolling so this component can live naturally alongside other cards.
  */
-export function DailyLiturgyDashboard({ onCalendarPress }: DailyLiturgyDashboardProps) {
+export function DailyLiturgyDashboard({ initialData, onCalendarPress }: DailyLiturgyDashboardProps) {
   const { t } = useTranslation();
   const { locale } = useAppLanguage();
   const styles = useThemedStyles(styleSheet);
@@ -192,8 +195,12 @@ export function DailyLiturgyDashboard({ onCalendarPress }: DailyLiturgyDashboard
       setIsLoading(true);
 
       try {
-        const model =
-          date === currentLocalDate ? await fetchTodayLiturgy(locale) : await fetchLiturgyReadings(date, locale);
+        const aggregateLiturgy = date === currentLocalDate ? initialData?.sections.liturgyToday : undefined;
+        const model = aggregateLiturgy
+          ? parseDailyLiturgyData(aggregateLiturgy.data)
+          : date === currentLocalDate
+            ? await fetchTodayLiturgy(locale)
+            : await fetchLiturgyReadings(date, locale);
         if (requestId !== activeLoadRequest.current) return;
         setLiturgy(model);
         await syncProgress(model, requestId);
@@ -204,7 +211,7 @@ export function DailyLiturgyDashboard({ onCalendarPress }: DailyLiturgyDashboard
         if (requestId === activeLoadRequest.current) setIsLoading(false);
       }
     },
-    [currentLocalDate, locale, selectedDate, syncProgress, t],
+    [currentLocalDate, initialData, locale, selectedDate, syncProgress, t],
   );
 
   useEffect(() => {

@@ -334,6 +334,11 @@ export async function getFriends({
   };
 }
 
+/** Parses aggregate-screen friends data and offset metadata. */
+export function parseFriendsPage(data: unknown, meta: unknown): FriendsPage {
+  return { data: readArray(data, "friends").map(parseFriendSummary), meta: parseOffsetPageMeta(meta) };
+}
+
 export async function getFriendRequests({
   direction = "incoming",
   limit = 20,
@@ -353,6 +358,11 @@ export async function getFriendRequests({
     data: readArray(payload.data, "friend requests").map(parseFriendRequest),
     meta: parseOffsetPageMeta(payload.meta),
   };
+}
+
+/** Parses aggregate-screen incoming friend requests and offset metadata. */
+export function parseFriendRequestsPage(data: unknown, meta: unknown): FriendRequestsPage {
+  return { data: readArray(data, "friend requests").map(parseFriendRequest), meta: parseOffsetPageMeta(meta) };
 }
 
 export async function searchUsers(query: string, limit = 20, offset = 0): Promise<UserSearchPage> {
@@ -434,6 +444,19 @@ export async function getRosaryLeaderboard({
     entries: readArray(data.entries, "leaderboard entries").map(parseLeaderboardEntry),
     period: parseLeaderboardPeriod(data.period),
     total: readNumber(data.total, "leaderboard total"),
+  };
+}
+
+/** Parses aggregate-screen friends weekly leaderboard data. */
+export function parseFriendsLeaderboardData(data: unknown): FriendsLeaderboard {
+  const value = readRecord(data, "friends leaderboard data");
+  const currentUserEntry = value.currentUserEntry;
+  return {
+    currentUserEntry:
+      currentUserEntry === undefined || currentUserEntry === null ? null : parseLeaderboardEntry(currentUserEntry),
+    entries: readArray(value.entries, "leaderboard entries").map(parseLeaderboardEntry),
+    period: parseLeaderboardPeriod(value.period),
+    total: readNumber(value.total, "leaderboard total"),
   };
 }
 

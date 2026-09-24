@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { ActivityIndicator, Image, Pressable, Text, View } from "react-native";
+import { Image } from "expo-image";
+import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { useThemedStyles } from "@/theme/createThemedStyles";
@@ -11,9 +12,9 @@ import type { HeaderActionProps } from "./HeaderActionGroup.types";
 type HeaderActionIconName = "bell" | "mail" | "settings";
 
 const headerActionIconSources = {
-  bell: require("../../../../assets/images/icons/bell.png"),
-  mail: require("../../../../assets/images/icons/envelop.png"),
-  settings: require("../../../../assets/images/icons/settings.png"),
+  bell: require("../../../../assets/images/icons/bell.svg"),
+  mail: require("../../../../assets/images/icons/envelop.svg"),
+  settings: require("../../../../assets/images/icons/settings.svg"),
 } as const satisfies Record<HeaderActionIconName, number>;
 
 interface HeaderActionButtonProps extends HeaderActionProps {
@@ -70,7 +71,7 @@ export function HeaderActionButton({
       {loading ? (
         <ActivityIndicator color={theme.colors.gold.pale} size="small" />
       ) : (
-        <Image accessible={false} resizeMode="cover" source={headerActionIconSources[iconName]} style={styles.icon} />
+        <Image accessible={false} contentFit="cover" source={headerActionIconSources[iconName]} style={styles.icon} />
       )}
       {badgeText ? (
         <View accessible={false} style={styles.badge} testID={testID ? `${testID}-badge` : undefined}>

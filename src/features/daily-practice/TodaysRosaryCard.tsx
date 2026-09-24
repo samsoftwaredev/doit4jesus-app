@@ -28,7 +28,7 @@ export function TodaysRosaryCard({ onPress, style, testID }: DailyPracticeCardPr
       <Image
         accessible={false}
         contentFit="cover"
-        source={require("../../../assets/images/icons/rosary.png")}
+        source={require("../../../assets/images/icons/rosary.svg")}
         style={styles.image}
       />
       <Text style={styles.description}>{t("formation.dailyPractice.rosary.description")}</Text>

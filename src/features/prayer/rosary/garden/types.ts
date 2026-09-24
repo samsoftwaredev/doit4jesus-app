@@ -63,6 +63,9 @@ export interface RosaryStreakApiResponse {
 }
 
 export interface UseRosaryGardenOptions {
+  initialCompletion?: RosaryCompletionApiResponse;
+  initialStreak?: RosaryStreakApiResponse;
+  initialUser?: { createdAt: string; timezone: string };
   userCreatedAt?: string;
   rosaryCompletionDates?: string[];
   selectedYear?: number;

@@ -1,5 +1,6 @@
 import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
@@ -8,6 +9,9 @@ import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view
 import { Button } from "@/components/ui";
 import { FriendsList, FriendsState, PendingRequestsCard, RosaryLeaderboardCard } from "@/features/friends/components";
 import { useFriendRequests, useFriends, useRosaryLeaderboard } from "@/features/friends/friends.hooks";
+import { parseFriendRequestsPage, parseFriendsLeaderboardData, parseFriendsPage } from "@/features/friends/friends.api";
+import { fetchScreenData } from "@/features/screen-data";
+import type { ScreenDataResponse } from "@/features/screen-data";
 import type { FriendRequest } from "@/features/friends/friends.types";
 import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
@@ -15,12 +19,43 @@ import { theme } from "@/theme/tokens";
 
 /** Renders the authenticated community dashboard within the shared atmosphere. */
 export function FriendsScreen() {
+  const [initialData, setInitialData] = useState<ScreenDataResponse>();
+  const [settled, setSettled] = useState(false);
+  /** Loads Community's three initial sections through the aggregate endpoint. */
+  useEffect(() => {
+    let active = true;
+    void fetchScreenData({ screen: "community" })
+      .then((data) => {
+        if (active) setInitialData(data);
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (active) setSettled(true);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+  return settled ? <FriendsScreenContent initialData={initialData} /> : null;
+}
+
+/** Renders Community after its aggregate initial data request settles. */
+function FriendsScreenContent({ initialData }: { initialData?: ScreenDataResponse }) {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
   const router = useRouter();
-  const friends = useFriends();
-  const leaderboard = useRosaryLeaderboard();
-  const requests = useFriendRequests("incoming");
+  const friendsSection = initialData?.sections.friends;
+  const requestsSection = initialData?.sections.incomingFriendRequests;
+  const leaderboardSection = initialData?.sections.friendsWeeklyLeaderboard;
+  const friends = useFriends(friendsSection ? parseFriendsPage(friendsSection.data, friendsSection.meta) : undefined);
+  const leaderboard = useRosaryLeaderboard(
+    "weekly",
+    leaderboardSection ? parseFriendsLeaderboardData(leaderboardSection.data) : undefined,
+  );
+  const requests = useFriendRequests(
+    "incoming",
+    requestsSection ? parseFriendRequestsPage(requestsSection.data, requestsSection.meta) : undefined,
+  );
   const { contentWidth, gutter, isDesktop, isLargeText } = useResponsiveLayout();
   const useColumns = isDesktop && contentWidth >= 900 && !isLargeText;
 

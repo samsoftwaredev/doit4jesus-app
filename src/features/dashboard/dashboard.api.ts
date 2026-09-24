@@ -135,6 +135,35 @@ export async function getRosaryReminder(): Promise<RosaryReminderViewModel> {
   };
 }
 
+/** Parses an aggregate-screen Rosary reminder payload. */
+export function parseRosaryReminderData(data: unknown): RosaryReminderViewModel {
+  const value = readRecord(data, "rosary reminder");
+  const streak = readRecord(value.streak, "rosary streak");
+  const status = readString(streak.status, "rosary streak status");
+  if (status !== "active" && status !== "at-risk" && status !== "none" && status !== "reset")
+    throw new Error("The dashboard endpoint returned an invalid rosary streak status.");
+  return {
+    completed: readBoolean(value.todayRosaryCompleted, "today Rosary completion"),
+    deadlineAt: readOptionalNullableString(value.deadlineAt, "Rosary deadline"),
+    serverNow: readString(value.serverNow, "server time"),
+    streak: {
+      current: readNumber(streak.current, "current Rosary streak"),
+      longest: readNumber(streak.longest, "longest Rosary streak"),
+      status,
+    },
+  };
+}
+
+/** Parses an aggregate-screen examination question payload. */
+export function parseConscienceQuestionData(data: unknown): ConscienceQuestionViewModel {
+  const value = readRecord(data, "examination question");
+  return {
+    id: readString(value.id, "conscience question ID"),
+    question: readString(value.question, "conscience question"),
+    reflection: readOptionalNullableString(value.description, "conscience reflection"),
+  };
+}
+
 /** Loads and validates a ranked global leaderboard for the requested period and result limit. */
 async function getGlobalLeaderboard(
   periodType: "weekly" | "yearly",
@@ -151,6 +180,23 @@ async function getGlobalLeaderboard(
     const leaderboardEntry = readRecord(rawLeaderboardEntry, "leaderboard entry");
     const profile = readRecord(leaderboardEntry.profile, "leaderboard profile");
 
+    return {
+      avatarUrl: readOptionalNullableString(profile.avatar_url, "leaderboard avatar"),
+      countryCode: readOptionalNullableString(profile.countryCode, "leaderboard country code"),
+      displayName: readString(profile.display_name, "leaderboard display name"),
+      rank: readNumber(leaderboardEntry.rank, "leaderboard rank"),
+      rosaries: readNumber(leaderboardEntry.rosaries_count, "leaderboard Rosary count"),
+      saintAvatarId: readOptionalNullableString(profile.saintAvatarId, "leaderboard saint avatar ID"),
+    };
+  });
+}
+
+/** Parses aggregate-screen global leaderboard data with the standalone leaderboard contract. */
+export function parseGlobalLeaderboardData(data: unknown): LeaderboardEntryViewModel[] {
+  const value = readRecord(data, "leaderboard");
+  return readArray(value.entries, "leaderboard entries").map((rawLeaderboardEntry) => {
+    const leaderboardEntry = readRecord(rawLeaderboardEntry, "leaderboard entry");
+    const profile = readRecord(leaderboardEntry.profile, "leaderboard profile");
     return {
       avatarUrl: readOptionalNullableString(profile.avatar_url, "leaderboard avatar"),
       countryCode: readOptionalNullableString(profile.countryCode, "leaderboard country code"),

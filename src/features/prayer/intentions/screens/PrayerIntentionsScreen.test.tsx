@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports -- Jest mock factories load modules lazily. */
 import { fireEvent, render, screen, waitFor } from "@testing-library/react-native";
 
 import { PrayerIntentionsScreen } from "./PrayerIntentionsScreen";

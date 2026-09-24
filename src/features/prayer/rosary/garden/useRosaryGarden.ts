@@ -6,7 +6,6 @@ import {
   buildRosaryGardenMonth,
   calculateStreaks,
   datePartsFromIso,
-  getFlowerVariant,
   isMonthAfter,
   isMonthBefore,
   isValidIsoDate,
@@ -68,6 +67,23 @@ export function useRosaryGarden(options: UseRosaryGardenOptions = {}) {
       };
     }
 
+    if (options.initialCompletion && options.initialStreak && options.initialUser) {
+      setTimezone(options.initialUser.timezone || timezone);
+      setUserCreatedAt(options.initialUser.createdAt);
+      setCompletionDates(
+        new Set(options.initialCompletion.days.filter((day) => day.completed === true).map((day) => day.date)),
+      );
+      setRemoteStreaks({
+        currentStreak: options.initialStreak.currentStreak,
+        longestStreak: options.initialStreak.longestStreak,
+      });
+      setIsUsingMockData(false);
+      setIsLoading(false);
+      return () => {
+        active = false;
+      };
+    }
+
     async function loadGarden() {
       try {
         const [profile, completion, streak] = await Promise.all([
@@ -99,7 +115,16 @@ export function useRosaryGarden(options: UseRosaryGardenOptions = {}) {
     return () => {
       active = false;
     };
-  }, [options.userCreatedAt, providedCompletionDates, selected.month, selected.year, timezone]);
+  }, [
+    options.initialCompletion,
+    options.initialStreak,
+    options.initialUser,
+    options.userCreatedAt,
+    providedCompletionDates,
+    selected.month,
+    selected.year,
+    timezone,
+  ]);
 
   const month = useMemo(
     () =>

@@ -85,6 +85,16 @@ export async function fetchRosaryCompletion(year: number, month: number) {
   return parseCompletionPayload(await requestRosaryGarden(`/api/v1/me/rosary/completion?${search}`));
 }
 
+/** Parses an aggregate-screen Rosary completion payload. */
+export function parseRosaryCompletionData(data: unknown): RosaryCompletionApiResponse {
+  return parseCompletionPayload({ data });
+}
+
 export async function fetchRosaryStreak() {
   return parseStreakPayload(await requestRosaryGarden("/api/v1/me/rosary/streak"));
+}
+
+/** Parses an aggregate-screen Rosary streak payload. */
+export function parseRosaryStreakData(data: unknown): RosaryStreakApiResponse {
+  return parseStreakPayload({ data });
 }

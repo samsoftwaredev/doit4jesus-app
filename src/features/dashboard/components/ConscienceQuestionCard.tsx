@@ -14,7 +14,7 @@ import type {
   ConscienceQuestionViewModel,
 } from "../dashboard.types";
 
-const bibleImage = require("../../../../assets/images/icons/bible.png");
+const bibleImage = require("../../../../assets/images/icons/bible.svg");
 
 type ConscienceQuestionCardProps = {
   allQuestions: ConscienceQuestionListItemViewModel[];

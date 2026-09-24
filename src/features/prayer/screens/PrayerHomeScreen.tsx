@@ -9,13 +9,23 @@ import { PageHeader } from "@/components";
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { SacredAtmosphere } from "@/components/ui";
 import { LeaderboardCard } from "@/features/dashboard/components";
-import { getWeeklyGlobalLeaderboard, getYearlyGlobalLeaderboard } from "@/features/dashboard/dashboard.api";
+import {
+  getWeeklyGlobalLeaderboard,
+  getYearlyGlobalLeaderboard,
+  parseGlobalLeaderboardData,
+} from "@/features/dashboard/dashboard.api";
 import type { LeaderboardEntryViewModel } from "@/features/dashboard/dashboard.types";
 import { AllMysteries, GlobalRosaryStatsCard, MomentForPrayer, PrayersByOthers } from "@/features/prayer/components";
 import { getGlobalRosaryStats } from "@/features/prayer/data/globalRosaryStats.api";
 import type { GlobalRosaryStats } from "@/features/prayer/data/globalRosaryStats.api";
 import type { ApprovedPrayerIntention } from "@/features/prayer/intentions";
-import { cacheApprovedPrayerIntentions, fetchApprovedPrayerIntentions } from "@/features/prayer/intentions";
+import {
+  cacheApprovedPrayerIntentions,
+  fetchApprovedPrayerIntentions,
+  parseApprovedPrayerIntentionsPage,
+} from "@/features/prayer/intentions";
+import { fetchScreenData } from "@/features/screen-data";
+import type { ScreenDataResponse } from "@/features/screen-data";
 import { getRosaryContent } from "@/features/prayer/rosary/data/localizedRosaryContent";
 import { getRosaryMysterySetFromContent } from "@/features/prayer/rosary/data/rosaryMysteries";
 import { getTodayRosaryMysteryType, getWeekdayLabel } from "@/features/prayer/rosary/data/schedule";
@@ -67,6 +77,8 @@ export function PrayerScreen() {
   const [weeklyLeaderboardError, setWeeklyLeaderboardError] = useState(false);
   const [yearlyLeaderboardError, setYearlyLeaderboardError] = useState(false);
   const [nextIntentionsOffset, setNextIntentionsOffset] = useState<number | null>(null);
+  const [initialScreenData, setInitialScreenData] = useState<ScreenDataResponse>();
+  const [isInitialScreenLoadSettled, setIsInitialScreenLoadSettled] = useState(false);
   const isLoadingMoreIntentionsRef = useRef(false);
   const globalStatsLayoutRef = useRef<{ height: number; y: number } | null>(null);
   const globalStatsRequestIdRef = useRef(0);
@@ -91,6 +103,24 @@ export function PrayerScreen() {
     (usableWidth - columnGap * (mysteryColumns - 1)) / mysteryColumns,
   );
 
+  /** Loads Prayer's first visible sections in a single authenticated request. */
+  useEffect(() => {
+    let active = true;
+    void fetchScreenData({ screen: "prayer", selectedMonth: today.getMonth() + 1, selectedYear: today.getFullYear() })
+      .then((data) => {
+        if (active) setInitialScreenData(data);
+      })
+      .catch(() => {
+        // Individual initial loaders retain the existing offline and retry behavior.
+      })
+      .finally(() => {
+        if (active) setIsInitialScreenLoadSettled(true);
+      });
+    return () => {
+      active = false;
+    };
+  }, [today]);
+
   /** Loads the approved prayer intentions shown in the home-screen preview. */
   const loadIntentions = useCallback(async () => {
     setIntentionsError(undefined);
@@ -98,7 +128,10 @@ export function PrayerScreen() {
     setHasMoreIntentions(false);
     setNextIntentionsOffset(null);
     try {
-      const page = await fetchApprovedPrayerIntentions({ limit: previewLimit });
+      const section = initialScreenData?.sections.prayerIntentions;
+      const page = section
+        ? parseApprovedPrayerIntentionsPage(section.data, section.meta)
+        : await fetchApprovedPrayerIntentions({ limit: previewLimit });
       cacheApprovedPrayerIntentions(page.data);
       setIntentions(page.data);
       setHasMoreIntentions(page.meta.hasMore);
@@ -108,11 +141,11 @@ export function PrayerScreen() {
     } finally {
       setIsLoadingIntentions(false);
     }
-  }, [t]);
+  }, [initialScreenData, t]);
 
   useEffect(() => {
-    void loadIntentions();
-  }, [loadIntentions]);
+    if (isInitialScreenLoadSettled) void loadIntentions();
+  }, [isInitialScreenLoadSettled, loadIntentions]);
 
   /** Loads global Rosary statistics after the card has entered the visible scroll viewport. */
   const loadGlobalStats = useCallback(async () => {
@@ -199,7 +232,8 @@ export function PrayerScreen() {
     setIsWeeklyLeaderboardLoading(true);
     setWeeklyLeaderboardError(false);
     try {
-      const entries = await getWeeklyGlobalLeaderboard();
+      const section = initialScreenData?.sections.weeklyGlobalLeaderboard;
+      const entries = section ? parseGlobalLeaderboardData(section.data) : await getWeeklyGlobalLeaderboard();
       if (requestId !== weeklyLeaderboardRequestIdRef.current) return;
       setWeeklyLeaderboard(entries);
     } catch {
@@ -209,7 +243,7 @@ export function PrayerScreen() {
     } finally {
       if (requestId === weeklyLeaderboardRequestIdRef.current) setIsWeeklyLeaderboardLoading(false);
     }
-  }, []);
+  }, [initialScreenData]);
 
   /** Loads yearly global leaders while ignoring results from an older overlapping request. */
   const loadYearlyLeaderboard = useCallback(async () => {
@@ -217,7 +251,8 @@ export function PrayerScreen() {
     setIsYearlyLeaderboardLoading(true);
     setYearlyLeaderboardError(false);
     try {
-      const entries = await getYearlyGlobalLeaderboard();
+      const section = initialScreenData?.sections.yearlyGlobalLeaderboard;
+      const entries = section ? parseGlobalLeaderboardData(section.data) : await getYearlyGlobalLeaderboard();
       if (requestId !== yearlyLeaderboardRequestIdRef.current) return;
       setYearlyLeaderboard(entries);
     } catch {
@@ -227,19 +262,21 @@ export function PrayerScreen() {
     } finally {
       if (requestId === yearlyLeaderboardRequestIdRef.current) setIsYearlyLeaderboardLoading(false);
     }
-  }, []);
+  }, [initialScreenData]);
 
   useFocusEffect(
     useCallback(() => {
-      void loadWeeklyLeaderboard();
-      void loadYearlyLeaderboard();
+      if (isInitialScreenLoadSettled) {
+        void loadWeeklyLeaderboard();
+        void loadYearlyLeaderboard();
+      }
 
       /** Invalidates in-flight leaderboard responses after the Prayer page loses focus. */
       return () => {
         weeklyLeaderboardRequestIdRef.current += 1;
         yearlyLeaderboardRequestIdRef.current += 1;
       };
-    }, [loadWeeklyLeaderboard, loadYearlyLeaderboard]),
+    }, [isInitialScreenLoadSettled, loadWeeklyLeaderboard, loadYearlyLeaderboard]),
   );
 
   /** Loads and appends the next intention page when the horizontal carousel approaches its end. */
@@ -332,7 +369,7 @@ export function PrayerScreen() {
             />
           </View>
           <View testID="prayer-section-garden">
-            <RosaryGardenSection onPrayToday={prayToday} />
+            <RosaryGardenSection initialData={initialScreenData} onPrayToday={prayToday} />
           </View>
           <View testID="prayer-section-global-leaderboard">
             <LeaderboardCard
