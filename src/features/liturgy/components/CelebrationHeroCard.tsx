@@ -68,7 +68,7 @@ export function CelebrationHeroCard({ celebration, date, onCalendarPress }: Cele
       <Image
         accessible={false}
         contentFit="contain"
-        source={require("../../../assets/saints/blessed-virgin-mary.png")}
+        source={require("../../../../assets/images/saints/blessed-virgin-mary.png")}
         style={[styles.mary, reduceArtwork && styles.maryReduced]}
       />
     </View>

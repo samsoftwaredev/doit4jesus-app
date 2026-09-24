@@ -35,7 +35,7 @@ describe("PrayingUsersModal", () => {
         currentUserId="user-me"
         onClose={jest.fn()}
         onSelectUser={onSelectUser}
-        users={[makeUser("stranger-1", "Aaron"), makeUser("user-me", "Samuel"), makeUser("friend-1", "Zoe")]}
+        users={[makeUser("stranger-1", "Aaron"), makeUser("user-me", "St. Joseph"), makeUser("friend-1", "Zoe")]}
         visible
       />,
     );
@@ -54,7 +54,7 @@ describe("PrayingUsersModal", () => {
   });
 
   it("reveals live users twenty at a time as the list reaches its end", async () => {
-    const manyUsers = [makeUser("user-me", "Samuel")].concat(
+    const manyUsers = [makeUser("user-me", "St. Joseph")].concat(
       Array.from({ length: 20 }, (_, index) => makeUser(`user-${index}`, `Person ${String(index).padStart(2, "0")}`)),
     );
     await render(
@@ -79,7 +79,7 @@ describe("PrayingUsersModal", () => {
         currentUserId="user-me"
         onClose={jest.fn()}
         onSelectUser={jest.fn()}
-        users={[makeUser("user-me", "Samuel"), makeUser("stranger-1", "Maria")]}
+        users={[makeUser("user-me", "St. Joseph"), makeUser("stranger-1", "Maria")]}
         visible
       />,
     );

@@ -274,7 +274,12 @@ export function ProfileSettingsScreen() {
         </SettingsSection>
 
         <SettingsSection title={t("profile.about")}>
-          <SettingsRow icon="info" label={t("profile.aboutUs")} onPress={() => router.push("/about")} />
+          <SettingsRow
+            external
+            icon="info"
+            label={t("profile.aboutUs")}
+            onPress={() => void openExternalUrl(APP_CONFIG.aboutUrl)}
+          />
           <SettingsRow
             external
             icon="shield"

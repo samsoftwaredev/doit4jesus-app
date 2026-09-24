@@ -56,7 +56,7 @@ export function ArenaDemonSelector({ demons, onSelect, selectedCode }: ArenaDemo
       <Image
         accessible={false}
         contentFit="cover"
-        source={require("../../assets/backgrounds/battleArena.png")}
+        source={require("../../../assets/images/backgrounds/battleArena.png")}
         style={styles.background}
       />
 

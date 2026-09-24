@@ -28,7 +28,7 @@ export function TodaysScriptureCard({ onPress, style, testID }: DailyPracticeCar
       <Image
         accessible={false}
         contentFit="cover"
-        source={require("../../assets/icons/bible.png")}
+        source={require("../../../assets/images/icons/bible.png")}
         style={styles.image}
       />
       <Text style={styles.description}>{t("formation.dailyPractice.scripture.description")}</Text>

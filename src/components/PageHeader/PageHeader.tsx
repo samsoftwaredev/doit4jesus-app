@@ -21,7 +21,7 @@ export interface PageHeaderProps {
   onBack?: () => void;
   showLogo?: boolean;
   style?: StyleProp<ViewStyle>;
-  title: string;
+  title?: string;
   variant?: PageHeaderVariant;
 }
 
@@ -30,7 +30,12 @@ const companyLogoSources = {
   light: require("../../../assets/svgs/blackCompanyLogo.svg"),
 } as const;
 
-/** Renders the shared hero or compact page heading with optional navigation, actions, and Home branding. */
+/**
+ * Renders the shared hero or compact page heading with optional navigation, actions, and Home branding.
+ *
+ * @param props Header copy, navigation, actions, and branding options. A hero header may omit its title.
+ * @returns An accessible page header whose branded actions share a row with the company logo.
+ */
 export function PageHeader({
   actions,
   backAccessibilityLabel,
@@ -66,9 +71,11 @@ export function PageHeader({
           ) : null}
         </View>
         <View style={styles.compactCopy}>
-          <Text accessibilityRole="header" numberOfLines={isLargeText ? undefined : 2} style={styles.compactTitle}>
-            {title}
-          </Text>
+          {title ? (
+            <Text accessibilityRole="header" numberOfLines={isLargeText ? undefined : 2} style={styles.compactTitle}>
+              {title}
+            </Text>
+          ) : null}
           <Text style={styles.compactDescription}>{description}</Text>
         </View>
         <View style={[styles.compactSide, styles.compactActions]}>{actions}</View>
@@ -91,24 +98,45 @@ export function PageHeader({
         </View>
       ) : null}
       {showLogo ? (
-        <Image
-          accessibilityLabel="Do It for Jesus"
-          accessibilityRole="image"
-          accessible
-          contentFit="contain"
-          source={companyLogoSources[colorScheme]}
-          style={styles.logo}
-        />
-      ) : null}
-      <View style={[styles.heroMainRow, stackHero && styles.heroMainRowStacked]} testID="page-header-main-row">
-        <View style={[styles.heroCopy, stackHero && styles.heroCopyStacked]}>
-          {eyebrow ? <Text style={styles.eyebrow}>{eyebrow}</Text> : null}
-          <Text accessibilityRole="header" style={styles.heroTitle}>
-            {title}
-          </Text>
-          <Text style={styles.heroDescription}>{description}</Text>
+        <View style={styles.brandRow} testID="page-header-brand-row">
+          <Image
+            accessibilityLabel="Do It for Jesus"
+            accessibilityRole="image"
+            accessible
+            contentFit="contain"
+            source={companyLogoSources[colorScheme]}
+            style={styles.logo}
+          />
+          {actions ? <View style={styles.heroActions}>{actions}</View> : null}
         </View>
-        {actions ? <View style={[styles.heroActions, stackHero && styles.heroActionsStacked]}>{actions}</View> : null}
+      ) : null}
+      <View
+        style={[styles.heroMainRow, !showLogo && stackHero && styles.heroMainRowStacked]}
+        testID="page-header-main-row"
+      >
+        <View
+          style={[
+            styles.heroCopy,
+            showLogo && styles.heroCopyBranded,
+            !showLogo && stackHero && styles.heroCopyStacked,
+          ]}
+        >
+          {eyebrow ? <Text style={styles.eyebrow}>{eyebrow}</Text> : null}
+          {title ? (
+            <Text accessibilityRole="header" style={styles.heroTitle}>
+              {title}
+            </Text>
+          ) : null}
+          <Text
+            style={[styles.heroDescription, showLogo && styles.heroDescriptionBranded]}
+            testID="page-header-description"
+          >
+            {description}
+          </Text>
+        </View>
+        {!showLogo && actions ? (
+          <View style={[styles.heroActions, stackHero && styles.heroActionsStacked]}>{actions}</View>
+        ) : null}
       </View>
     </View>
   );
@@ -149,19 +177,27 @@ const styleSheet = createThemedStyles((theme) => ({
     color: theme.colors.text.link,
     marginBottom: theme.spacing[1],
   },
+  brandRow: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: theme.spacing[4],
+  },
   heroActions: { flexShrink: 0 },
   heroActionsStacked: { alignSelf: "flex-start", marginTop: theme.spacing[3] },
   heroBackRow: { marginBottom: theme.spacing[3] },
   heroContainer: { paddingBottom: theme.spacing[6], paddingTop: theme.spacing[5] },
   heroCopy: { flex: 1, minWidth: theme.spacing[0], paddingRight: theme.spacing[3] },
+  heroCopyBranded: { paddingRight: theme.spacing[0], width: "100%" },
   heroCopyStacked: { paddingRight: theme.spacing[0], width: "100%" },
   heroDescription: {
     ...theme.typography.body,
     color: theme.colors.text.muted,
     marginTop: theme.spacing[1],
   },
+  heroDescriptionBranded: { width: "100%" },
   heroMainRow: { alignItems: "flex-start", flexDirection: "row", justifyContent: "space-between" },
   heroMainRowStacked: { flexDirection: "column" },
   heroTitle: { ...theme.typography.heading1, color: theme.colors.text.primary },
-  logo: { height: 61, marginBottom: theme.spacing[4], width: 112 },
+  logo: { height: 61, width: 112 },
 }));

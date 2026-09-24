@@ -23,12 +23,12 @@ jest.mock("@/features/profile/profile-provider", () => ({
     profile: {
       avatarUrl: "https://example.com/me.png",
       countryCode: "US",
-      displayName: "Samuel",
+      displayName: "St. Joseph",
       profileSetup: { complete: true },
       saintAvatarId: null,
       title: "Prayer Warrior",
       userId: "user-me",
-      username: "samuel",
+      username: "st_joseph",
     },
   }),
 }));
@@ -93,11 +93,11 @@ describe("useRosaryPresence", () => {
         {
           avatarUrl: "https://example.com/me.png",
           countryCode: "US",
-          displayName: "Samuel",
+          displayName: "St. Joseph",
           joinedAt: "2026-09-15T10:01:00.000Z",
           title: "Prayer Warrior",
           userId: "user-me",
-          username: "samuel",
+          username: "st_joseph",
         },
       ],
     });

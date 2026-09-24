@@ -85,7 +85,7 @@ export function IntentionRosaryScreen() {
               <Image
                 accessible={false}
                 contentFit="cover"
-                source={require("../../../../assets/saints/blessed-virgin-mary.png")}
+                source={require("../../../../../assets/images/saints/blessed-virgin-mary.png")}
                 style={styles.art}
               />
               <LinearGradient colors={theme.colors.gradients.intentionImage} style={StyleSheet.absoluteFill} />

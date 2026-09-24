@@ -37,7 +37,7 @@ export const leaderboard: FriendsLeaderboard = {
     friend: {
       avatarUrl: null,
       countryCode: "US",
-      displayName: "Samuel Ruiz",
+      displayName: "Virgin Mary",
       id: "current-user",
       saintAvatarId: null,
       title: "Prayer Warrior",
@@ -72,7 +72,7 @@ export const leaderboard: FriendsLeaderboard = {
       friend: {
         avatarUrl: null,
         countryCode: "US",
-        displayName: "Samuel Ruiz",
+        displayName: "Virgin Mary",
         id: "current-user",
         saintAvatarId: null,
         title: "Prayer Warrior",
@@ -110,7 +110,7 @@ export const comparison: FriendsComparison = {
       profile: {
         avatarUrl: null,
         countryCode: "US",
-        displayName: "Samuel Ruiz",
+        displayName: "Virgin Mary",
         id: "current-user",
         title: "Prayer Warrior",
         username: "samsoftwaredev",

@@ -8,7 +8,7 @@ import { SpriteSheetAnimation } from "../components/ui";
  *
  * Pass an eight-frame, single-row image as `spriteSheetSource`. For example:
  *   <SpriteSheetAnimationExample
- *     spriteSheetSource={require("../assets/animations/hero-run-8.png")}
+ *     spriteSheetSource={require("../../assets/images/animations/wrathFury.png")}
  *   />
  */
 export default function SpriteSheetAnimationExample({ spriteSheetSource }) {

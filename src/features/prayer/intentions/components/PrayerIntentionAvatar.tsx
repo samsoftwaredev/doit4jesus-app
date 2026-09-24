@@ -11,7 +11,7 @@ type PrayerIntentionAvatarProps = {
   source?: string | null;
 };
 
-const defaultAvatar = require("../../../../assets/avatar/knight.png");
+const defaultAvatar = require("../../../../../assets/images/avatar/knight.png");
 
 /** Renders this feature with colors from the currently resolved app appearance. */
 export function PrayerIntentionAvatar({ countryCode, displayName, size = 38, source }: PrayerIntentionAvatarProps) {

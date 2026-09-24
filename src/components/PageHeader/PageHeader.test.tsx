@@ -58,6 +58,21 @@ describe("PageHeader", () => {
     ]);
   });
 
+  it("places branded actions beside the logo and lets titleless copy span the header", async () => {
+    await render(
+      <PageHeader actions={<Text>Header actions</Text>} description="Grow in faith." showLogo title={undefined} />,
+    );
+
+    expect(screen.queryByRole("header")).toBeNull();
+    expect(screen.getByTestId("page-header-brand-row")).toBeTruthy();
+    expect(screen.getByTestId("page-header-brand-row").props.style).toEqual(
+      expect.objectContaining({ flexDirection: "row" }),
+    );
+    expect(screen.getByTestId("page-header-description").props.style).toEqual(
+      expect.arrayContaining([expect.objectContaining({ width: "100%" })]),
+    );
+  });
+
   it("renders compact navigation with an accessible back action", async () => {
     const onBack = jest.fn();
 

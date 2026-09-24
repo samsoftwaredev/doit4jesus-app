@@ -91,10 +91,10 @@ export default function LandingScreen() {
   );
 
   const backgroundSource = isDesktop
-    ? require("../assets/backgrounds/cathedralDesktop.png")
+    ? require("../../assets/images/backgrounds/cathedralDesktop.png")
     : isTablet
-      ? require("../assets/backgrounds/cathedralTablet.png")
-      : require("../assets/backgrounds/cathedraMobile.png");
+      ? require("../../assets/images/backgrounds/cathedralTablet.png")
+      : require("../../assets/images/backgrounds/cathedraMobile.png");
 
   return (
     <View style={styles.page}>

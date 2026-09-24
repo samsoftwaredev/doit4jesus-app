@@ -62,86 +62,89 @@ export default function SettingsScreen() {
       title={t("settings.title")}
       testID="settings-screen"
     >
-      <Card title={t("common.language")}>
-        <Text style={styles.languageDescription}>{t("settings.languageDescription")}</Text>
-        <LanguageSelector language={language} onChange={(nextLanguage) => void setLanguage(nextLanguage)} />
-      </Card>
-      <Card title={t("settings.appearance")}>
-        <View
-          accessibilityLabel={t("settings.appearance")}
-          accessibilityRole="radiogroup"
-          style={styles.appearanceGroup}
-        >
-          {appearanceOptions.map((option) => {
-            const isSelected = preference === option.value;
-            return (
-              <Pressable
-                accessibilityLabel={option.label}
-                accessibilityRole="radio"
-                accessibilityState={{ checked: isSelected }}
-                key={option.value}
-                onPress={() => void setPreference(option.value)}
-                style={({ pressed }) => [
-                  styles.appearanceOption,
-                  { borderColor: isSelected ? appTheme.colors.border.focus : appTheme.colors.border.default },
-                  isSelected && styles.appearanceOptionSelected,
-                  pressed && styles.appearanceOptionPressed,
-                ]}
-              >
-                <View
-                  accessible={false}
-                  style={[
-                    styles.radioIndicator,
-                    {
-                      backgroundColor: isSelected ? appTheme.colors.brand.primary : appTheme.colors.transparent,
-                      borderColor: isSelected ? appTheme.colors.border.focus : appTheme.colors.border.interactive,
-                    },
+      <View style={styles.cardList} testID="settings-card-list">
+        <Card title={t("common.language")}>
+          <Text style={styles.languageDescription}>{t("settings.languageDescription")}</Text>
+          <LanguageSelector language={language} onChange={(nextLanguage) => void setLanguage(nextLanguage)} />
+        </Card>
+        <Card title={t("settings.appearance")}>
+          <View
+            accessibilityLabel={t("settings.appearance")}
+            accessibilityRole="radiogroup"
+            style={styles.appearanceGroup}
+          >
+            {appearanceOptions.map((option) => {
+              const isSelected = preference === option.value;
+              return (
+                <Pressable
+                  accessibilityLabel={option.label}
+                  accessibilityRole="radio"
+                  accessibilityState={{ checked: isSelected }}
+                  key={option.value}
+                  onPress={() => void setPreference(option.value)}
+                  style={({ pressed }) => [
+                    styles.appearanceOption,
+                    { borderColor: isSelected ? appTheme.colors.border.focus : appTheme.colors.border.default },
+                    isSelected && styles.appearanceOptionSelected,
+                    pressed && styles.appearanceOptionPressed,
                   ]}
                 >
-                  {isSelected ? <Feather color={appTheme.colors.icon.inverse} name="check" size={14} /> : null}
-                </View>
-                <View style={styles.appearanceCopy}>
-                  <Text style={styles.appearanceLabel}>{option.label}</Text>
-                  <Text style={styles.appearanceDescription}>{option.description}</Text>
-                </View>
-              </Pressable>
-            );
-          })}
-        </View>
-      </Card>
-      <Card title={t("settings.prayerTitle")}>
-        <View style={styles.row}>
-          <Feather color={theme.colors.icon.active} name="bell" size={theme.sizes.iconMedium} />
-          <Text style={styles.description}>{t("settings.prayerCopy")}</Text>
-        </View>
-      </Card>
-      <Card title={t("settings.accountTitle")}>
-        <View style={styles.row}>
-          <Feather color={theme.colors.icon.secondary} name="shield" size={theme.sizes.iconMedium} />
-          <Text style={styles.description}>{t("settings.accountCopy")}</Text>
-        </View>
-        <View style={styles.accountActions}>
-          <Button fullWidth onPress={() => router.push("/change-email")} variant="secondary">
-            {t("settings.changeEmail")}
-          </Button>
-          <Button
-            disabled={Boolean(configurationError)}
-            fullWidth
-            loading={isSigningOut}
-            onPress={() => void signOut()}
-            variant="ghost"
-          >
-            {t("settings.signOut")}
-          </Button>
-          {signOutError ? <Text style={styles.error}>{signOutError}</Text> : null}
-        </View>
-      </Card>
+                  <View
+                    accessible={false}
+                    style={[
+                      styles.radioIndicator,
+                      {
+                        backgroundColor: isSelected ? appTheme.colors.brand.primary : appTheme.colors.transparent,
+                        borderColor: isSelected ? appTheme.colors.border.focus : appTheme.colors.border.interactive,
+                      },
+                    ]}
+                  >
+                    {isSelected ? <Feather color={appTheme.colors.icon.inverse} name="check" size={14} /> : null}
+                  </View>
+                  <View style={styles.appearanceCopy}>
+                    <Text style={styles.appearanceLabel}>{option.label}</Text>
+                    <Text style={styles.appearanceDescription}>{option.description}</Text>
+                  </View>
+                </Pressable>
+              );
+            })}
+          </View>
+        </Card>
+        <Card title={t("settings.prayerTitle")}>
+          <View style={styles.row}>
+            <Feather color={theme.colors.icon.active} name="bell" size={theme.sizes.iconMedium} />
+            <Text style={styles.description}>{t("settings.prayerCopy")}</Text>
+          </View>
+        </Card>
+        <Card title={t("settings.accountTitle")}>
+          <View style={styles.row}>
+            <Feather color={theme.colors.icon.secondary} name="shield" size={theme.sizes.iconMedium} />
+            <Text style={styles.description}>{t("settings.accountCopy")}</Text>
+          </View>
+          <View style={styles.accountActions}>
+            <Button fullWidth onPress={() => router.push("/change-email")} variant="secondary">
+              {t("settings.changeEmail")}
+            </Button>
+            <Button
+              disabled={Boolean(configurationError)}
+              fullWidth
+              loading={isSigningOut}
+              onPress={() => void signOut()}
+              variant="ghost"
+            >
+              {t("settings.signOut")}
+            </Button>
+            {signOutError ? <Text style={styles.error}>{signOutError}</Text> : null}
+          </View>
+        </Card>
+      </View>
     </ScreenShell>
   );
 }
 
 const styleSheet = createThemedStyles((theme) => ({
   content: { maxWidth: 700 },
+  cardList: { gap: theme.spacing[4] },
   appearanceCopy: {
     flex: 1,
     minWidth: 0,

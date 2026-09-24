@@ -8,8 +8,8 @@ import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
-const maryArtwork = require("../../../../../assets/saints/blessed-virgin-mary.png");
-const flowersArtwork = require("../../../../../assets/flowers/whiteFlowerVase.png");
+const maryArtwork = require("../../../../../../assets/images/saints/blessed-virgin-mary.png");
+const flowersArtwork = require("../../../../../../assets/images/flowers/whiteFlowerVase.png");
 
 /** Renders the illustrated, borderless header for the unified Rosary Garden card. */
 export function GardenHero() {

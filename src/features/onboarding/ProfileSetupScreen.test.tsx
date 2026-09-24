@@ -70,7 +70,7 @@ const baseProfile: CurrentUserProfile = {
   countryCode: "US",
   countryName: "United States",
   createdAt: "2026-08-28T12:00:00.000Z",
-  displayName: "Samuel Ruiz",
+  displayName: "Virgin Mary",
   gender: "male",
   leaderboardVisibility: "public",
   preferredLanguage: "en",
@@ -86,7 +86,7 @@ const baseProfile: CurrentUserProfile = {
   title: "Faithful Beginner",
   updatedAt: "2026-08-28T12:00:00.000Z",
   userId: "user-1",
-  username: "SamuelR",
+  username: "VirginMary",
 };
 
 const preferences = {
@@ -194,7 +194,7 @@ describe("required profile setup", () => {
     } satisfies CurrentUserProfile;
     mockUpdateProfile.mockResolvedValue({
       ...incomplete,
-      displayName: "Samuel Ruiz",
+      displayName: "Virgin Mary",
       profileSetup: {
         ...incomplete.profileSetup,
         missingFields: ["username", "gender", "country"],
@@ -203,17 +203,17 @@ describe("required profile setup", () => {
     });
     await renderSetup(incomplete);
 
-    await fireEvent.changeText(screen.getByLabelText("Display Name"), "Samuel3 Ruiz");
+    await fireEvent.changeText(screen.getByLabelText("Display Name"), "Virgin3 Mary");
     expect(await screen.findByText("Your name cannot contain numbers.")).toBeTruthy();
     expect(screen.getByTestId("profile-setup-next").props.accessibilityState.disabled).toBe(true);
 
-    await fireEvent.changeText(screen.getByLabelText("Display Name"), "Samuel");
+    await fireEvent.changeText(screen.getByLabelText("Display Name"), "Virgin");
     expect(await screen.findByText("Enter both your first and last name, separated by a space.")).toBeTruthy();
 
-    await fireEvent.changeText(screen.getByLabelText("Display Name"), "  Samuel   Ruiz  ");
+    await fireEvent.changeText(screen.getByLabelText("Display Name"), "  Virgin   Mary  ");
     await fireEvent.press(screen.getByTestId("profile-setup-next"));
 
-    await waitFor(() => expect(mockUpdateProfile).toHaveBeenCalledWith({ displayName: "Samuel Ruiz" }));
+    await waitFor(() => expect(mockUpdateProfile).toHaveBeenCalledWith({ displayName: "Virgin Mary" }));
     expect(await screen.findByText("Choose your username")).toBeTruthy();
   });
 
@@ -317,10 +317,10 @@ describe("required profile setup", () => {
     await waitFor(() => expect(mockRouterReplace).toHaveBeenCalledWith("/"));
     expect(mockCompleteOnboarding).toHaveBeenCalledWith({
       countryCode: "US",
-      displayName: "Samuel Ruiz",
+      displayName: "Virgin Mary",
       gender: "male",
       notificationPreferences: preferences,
-      username: "SamuelR",
+      username: "VirginMary",
     });
     expect(mockReplaceProfile).toHaveBeenCalledWith(completeProfile);
     expect(mockReplaceNotificationPreferences).toHaveBeenCalledWith(preferences);

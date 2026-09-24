@@ -31,7 +31,7 @@ describe("FriendsScreen", () => {
     expect(screen.getByText("Compete with one another in prayer.")).toBeTruthy();
     expect(screen.getByText("LEADERBOARD")).toBeTruthy();
     expect(screen.getByText("240")).toBeTruthy();
-    expect(screen.getByText("Samuel Ruiz (You)")).toBeTruthy();
+    expect(screen.getByText("Virgin Mary (You)")).toBeTruthy();
     expect(screen.getByText("John Paul")).toBeTruthy();
     expect(screen.getByText("Your friends")).toBeTruthy();
   });

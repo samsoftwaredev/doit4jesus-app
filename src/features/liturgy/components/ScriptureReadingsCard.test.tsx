@@ -56,4 +56,32 @@ describe("ScriptureReadingsCard", () => {
 
     expect(screen.getByText("Completa las lecturas de hoy para ganar puntos y avanzar hacia insignias.")).toBeTruthy();
   });
+
+  it("keeps the Scripture heading copy full width and places completion count above its progress bar", async () => {
+    await render(
+      <ScriptureReadingsCard
+        completedReadingIds={[]}
+        metadata={{ country: "US", psalterWeek: 4, sundayCycle: "A", weekdayCycle: "II" }}
+        onReadingComplete={jest.fn(async () => undefined)}
+        readings={[
+          { citation: "Ez 37:1-14", id: "first-reading", text: "Dry bones, hear the word.", type: "FIRST_READING" },
+          { citation: "Mt 22:34-40", id: "gospel", text: "You shall love the Lord.", type: "GOSPEL" },
+        ]}
+        season="ORDINARY_TIME"
+      />,
+    );
+
+    expect(screen.getByTestId("scripture-readings-heading").props.style).toEqual(
+      expect.objectContaining({ width: "100%" }),
+    );
+    expect(screen.getByTestId("scripture-readings-description").props.style).toEqual(
+      expect.objectContaining({ width: "100%" }),
+    );
+    expect(screen.getByTestId("scripture-readings-progress").props.children).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ props: expect.objectContaining({ testID: "scripture-readings-progress-count" }) }),
+        expect.objectContaining({ props: expect.objectContaining({ testID: "scripture-readings-progress-bar" }) }),
+      ]),
+    );
+  });
 });

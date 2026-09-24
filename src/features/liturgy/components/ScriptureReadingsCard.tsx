@@ -38,7 +38,7 @@ function formatNavDate(isoDate: string, locale: string) {
 
 /**
  * Renders daily Scripture readings, their completion progress, and the rewards
- * context while preserving readable header copy on narrow layouts.
+ * context while preserving full-width header copy and a progress summary on narrow layouts.
  */
 export function ScriptureReadingsCard({
   completedReadingIds,
@@ -63,31 +63,37 @@ export function ScriptureReadingsCard({
   return (
     <Card fullWidth padding="md" style={styles.card}>
       <View style={styles.header}>
-        <View style={styles.heading}>
+        <View style={styles.heading} testID="scripture-readings-heading">
           <MaterialCommunityIcons color={theme.colors.gold.pale} name="book-open-page-variant-outline" size={21} />
           <View style={styles.headingCopy}>
             <Text accessibilityRole="header" style={styles.title}>
               {t("liturgy.readings.title")}
             </Text>
-            <Text style={styles.description}>{t("liturgy.readings.description")}</Text>
           </View>
         </View>
+        <Text style={styles.description} testID="scripture-readings-description">
+          {t("liturgy.readings.description")}
+        </Text>
+      </View>
+      <LiturgicalChipList metadata={metadata} season={season} />
+      <View style={styles.progress} testID="scripture-readings-progress">
         <Text
           accessibilityLabel={t("liturgy.readings.completedCountLabel", {
             completed: completedCount,
             total: readings.length,
           })}
           style={styles.count}
+          testID="scripture-readings-progress-count"
         >
           {t("liturgy.readings.completedCount", { completed: completedCount, total: readings.length })}
         </Text>
-      </View>
-      <LiturgicalChipList metadata={metadata} season={season} />
-      <View
-        accessibilityLabel={t("liturgy.readings.progressLabel", { percent: Math.round(completionPercentage) })}
-        style={styles.progressTrack}
-      >
-        <View style={[styles.progressValue, { width: `${completionPercentage}%` }]} />
+        <View
+          accessibilityLabel={t("liturgy.readings.progressLabel", { percent: Math.round(completionPercentage) })}
+          style={styles.progressTrack}
+          testID="scripture-readings-progress-bar"
+        >
+          <View style={[styles.progressValue, { width: `${completionPercentage}%` }]} />
+        </View>
       </View>
       {readings.length === 0 ? (
         <Text style={styles.empty}>{t("liturgy.readings.empty")}</Text>
@@ -147,6 +153,7 @@ const styleSheet = createThemedStyles((theme) => ({
     ...theme.typography.bodySmall,
     color: theme.colors.text.muted,
     marginTop: theme.spacing[0.5],
+    width: "100%",
   },
   empty: {
     ...theme.typography.body,
@@ -162,26 +169,24 @@ const styleSheet = createThemedStyles((theme) => ({
   navigationButton: { flex: 1 },
   header: {
     alignItems: "flex-start",
-    flexDirection: "row",
-    justifyContent: "space-between",
     paddingBottom: theme.spacing[2],
+    width: "100%",
   },
   heading: {
     alignItems: "center",
-    flex: 1,
     flexDirection: "row",
     minWidth: 0,
-    marginRight: theme.spacing[3],
+    width: "100%",
   },
   headingCopy: { flex: 1, marginLeft: theme.spacing[2], minWidth: 0 },
   progressTrack: {
-    marginTop: theme.spacing[2],
     marginBottom: theme.spacing[2],
     backgroundColor: theme.colors.border.subtle,
     borderRadius: theme.radii.pill,
     height: 4,
     overflow: "hidden",
   },
+  progress: { marginTop: theme.spacing[2] },
   progressValue: {
     backgroundColor: theme.colors.semantic.success,
     borderRadius: theme.radii.pill,

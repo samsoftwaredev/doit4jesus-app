@@ -36,6 +36,36 @@ describe("ConscienceQuestionCard", () => {
     ).toBeTruthy();
   });
 
+  it("uses full-width heading, CCC, and action rows while pairing the artwork with the question", async () => {
+    await render(
+      <ConscienceQuestionCard
+        allQuestions={[]}
+        allQuestionsError={false}
+        error={false}
+        isLoadingAllQuestions={false}
+        isLoading={false}
+        onRetry={jest.fn()}
+        onViewMore={jest.fn()}
+        question={{
+          id: "question-1",
+          question: "Have I seriously damaged someone’s reputation?",
+          reflection: "Revealing faults unjustly harms others (CCC 2477).",
+        }}
+      />,
+    );
+
+    expect(screen.getByTestId("conscience-card-header").props.style).toEqual(
+      expect.objectContaining({ width: "100%" }),
+    );
+    expect(screen.getByTestId("conscience-card-question-row").props.style).toEqual(
+      expect.objectContaining({ flexDirection: "row" }),
+    );
+    expect(screen.getByTestId("conscience-card-ccc").props.style).toEqual(expect.objectContaining({ width: "100%" }));
+    expect(screen.getByRole("button", { name: "View more questions" }).props.style).toEqual(
+      expect.arrayContaining([expect.objectContaining({ width: "100%" })]),
+    );
+  });
+
   it("provides a compact retry state when the endpoint fails", async () => {
     const onRetry = jest.fn();
     await render(

@@ -57,7 +57,6 @@ export const resources = {
       },
       home: {
         description: "Build lasting habits of reading Scripture, praying, attending Mass, and going to Confession.",
-        title: "Welcome home",
       },
       app: {
         loadingAccount: "Loading your account",
@@ -897,7 +896,7 @@ export const resources = {
           previousMonth: "Previous month",
           prayHint: "Opens today’s Rosary prayer.",
           prayLabel: "Pray today's rosary",
-          prayToday: "PRAY TODAY AND PLANT A ROSE",
+          prayToday: "PRAY TODAY",
           quote: "“Say the Rosary every day,\nto bring peace to the world\nand to your heart.”",
           quoteAttribution: "– Our Lady of Fatima",
           quoteLabel: "Devotional quote from Our Lady of Fatima",
@@ -1223,7 +1222,6 @@ export const resources = {
       },
       home: {
         description: "Crea hábitos duraderos de leer las Escrituras, orar, asistir a Misa y confesarte.",
-        title: "Bienvenido a casa",
       },
       app: {
         loadingAccount: "Cargando tu cuenta",
@@ -1469,7 +1467,7 @@ export const resources = {
           loadingTime: "Cargando la hora",
           minutes: "MINUTOS",
           plantStep: "Planta una flor",
-          pray: "REZAR EL ROSARIO Y PLANTA UNA ROSA",
+          pray: "REZAR EL ROSARIO",
           prayLabel: "Rezar el Rosario",
           prayStep: "Reza hoy",
           purposeLabel: "Cómo la oración diaria del Rosario hace crecer tu jardín y tu racha",

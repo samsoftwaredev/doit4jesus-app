@@ -8,10 +8,10 @@ import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles"
 import { theme } from "@/theme/tokens";
 
 const tabArtworkSources = {
-  community: require("../../assets/tabs/community.png"),
-  home: require("../../assets/tabs/home.png"),
-  prayer: require("../../assets/tabs/prayer.png"),
-  profile: require("../../assets/tabs/profile.png"),
+  community: require("../../../assets/images/tabs/community.png"),
+  home: require("../../../assets/images/tabs/home.png"),
+  prayer: require("../../../assets/images/tabs/prayer.png"),
+  profile: require("../../../assets/images/tabs/profile.png"),
 } as const;
 
 type TabArtworkIconProps = {

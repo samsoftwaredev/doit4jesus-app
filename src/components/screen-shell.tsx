@@ -20,7 +20,7 @@ type ScreenShellProps = PropsWithChildren<{
   onBack?: () => void;
   showLogo?: boolean;
   testID?: string;
-  title: string;
+  title?: string;
 }>;
 
 /**

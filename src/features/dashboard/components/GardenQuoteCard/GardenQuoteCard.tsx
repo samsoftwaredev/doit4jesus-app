@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 
-const rosaryArtwork = require("../../../../assets/icons/rosary.png");
+const rosaryArtwork = require("../../../../../assets/images/icons/rosary.png");
 
 /** Presents the localized Fatima quotation as a borderless devotional footer. */
 export function GardenQuoteCard() {

@@ -30,7 +30,7 @@ describe("FriendsLeaderboardScreen", () => {
     expect(screen.getByRole("tab", { name: "This Week" }).props.accessibilityState).toEqual({ selected: true });
     await fireEvent.press(screen.getByRole("tab", { name: "This Year" }));
     expect(setPeriodType).toHaveBeenCalledWith("yearly");
-    expect(screen.getByLabelText(/Samuel Ruiz.*You/i)).toBeTruthy();
+    expect(screen.getByLabelText(/Virgin Mary.*You/i)).toBeTruthy();
     expect(screen.getByText("120 more points to reach #1")).toBeTruthy();
   });
 });

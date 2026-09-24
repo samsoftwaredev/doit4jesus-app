@@ -4,7 +4,7 @@ import { VirtueProgressBar } from "./VirtueProgressBar";
 
 const baseProps = {
   id: "faith" as const,
-  icon: require("../../assets/virtues/cross.png"),
+  icon: require("../../../assets/images/virtues/cross.png"),
   label: "Faith",
   maxValue: 100,
   tone: "faith" as const,

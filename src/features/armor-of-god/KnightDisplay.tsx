@@ -39,7 +39,7 @@ export function KnightDisplay({ selectedItem }: KnightDisplayProps) {
       <Image
         accessible={false}
         contentFit="contain"
-        source={require("../../assets/avatar/knight.png")}
+        source={require("../../../assets/images/avatar/knight.png")}
         style={styles.knight}
       />
       {focusPosition ? (

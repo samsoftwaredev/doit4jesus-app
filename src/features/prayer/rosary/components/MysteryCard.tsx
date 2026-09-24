@@ -15,7 +15,7 @@ interface MysteryCardProps {
 }
 
 /** A bundled image avoids validating a remote or malformed BlurHash during initial render. */
-const devotionalPlaceholder = require("../../../../assets/flowers/whiteLily.png");
+const devotionalPlaceholder = require("../../../../../assets/images/flowers/whiteLily.png");
 const MYSTERY_IMAGE_ASPECT_RATIO = 575 / 784;
 
 /**

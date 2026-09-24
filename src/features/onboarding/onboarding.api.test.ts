@@ -22,7 +22,7 @@ const completeProfile = {
   countryCode: "US",
   countryName: "United States",
   createdAt: "2026-08-28T12:00:00.000Z",
-  displayName: "Samuel Ruiz",
+  displayName: "Virgin Mary",
   gender: "male",
   leaderboardVisibility: "public",
   preferredLanguage: "en",
@@ -38,7 +38,7 @@ const completeProfile = {
   title: "Faithful Beginner",
   updatedAt: "2026-08-28T12:30:00.000Z",
   userId: "user-1",
-  username: "SamuelR",
+  username: "VirginMary",
 };
 
 function response(payload: unknown, status = 200) {
@@ -128,10 +128,10 @@ describe("onboarding API", () => {
     ) as unknown as typeof fetch;
     const payload = {
       countryCode: "US",
-      displayName: "Samuel Ruiz",
+      displayName: "Virgin Mary",
       gender: "male" as const,
       notificationPreferences: preferences,
-      username: "SamuelR",
+      username: "VirginMary",
     };
 
     await expect(completeOnboarding(payload)).resolves.toMatchObject({
@@ -146,11 +146,11 @@ describe("onboarding API", () => {
 
   it("preserves HTTP status, reason, and suggestions for conflicts", async () => {
     globalThis.fetch = jest.fn(async () =>
-      response({ data: { reason: "USERNAME_TAKEN", suggestions: ["samuel_123"] } }, 409),
+      response({ data: { reason: "USERNAME_TAKEN", suggestions: ["virgin_mary_123"] } }, 409),
     ) as unknown as typeof fetch;
 
-    const error = await validateUsername("samuel").catch((caught) => caught);
+    const error = await validateUsername("virginmary").catch((caught) => caught);
     expect(error).toBeInstanceOf(OnboardingApiError);
-    expect(error).toMatchObject({ reason: "USERNAME_TAKEN", status: 409, suggestions: ["samuel_123"] });
+    expect(error).toMatchObject({ reason: "USERNAME_TAKEN", status: 409, suggestions: ["virgin_mary_123"] });
   });
 });

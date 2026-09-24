@@ -185,12 +185,12 @@ describe("RosaryPrayerScreen", () => {
         {
           avatarUrl: null,
           countryCode: "US",
-          displayName: "Samuel",
+          displayName: "St. Joseph",
           joinedAt: "2026-09-15T10:00:00.000Z",
           saintAvatarId: null,
           title: null,
           userId: "user-me",
-          username: "samuel",
+          username: "st_joseph",
         },
         {
           avatarUrl: null,
@@ -220,12 +220,12 @@ describe("RosaryPrayerScreen", () => {
         {
           avatarUrl: null,
           countryCode: "US",
-          displayName: "Samuel",
+          displayName: "St. Joseph",
           joinedAt: "2026-09-15T10:00:00.000Z",
           saintAvatarId: null,
           title: null,
           userId: "user-me",
-          username: "samuel",
+          username: "st_joseph",
         },
         {
           avatarUrl: null,

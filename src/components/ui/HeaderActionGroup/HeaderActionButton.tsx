@@ -11,9 +11,9 @@ import type { HeaderActionProps } from "./HeaderActionGroup.types";
 type HeaderActionIconName = "bell" | "mail" | "settings";
 
 const headerActionIconSources = {
-  bell: require("../../../assets/icons/bell.png"),
-  mail: require("../../../assets/icons/envelop.png"),
-  settings: require("../../../assets/icons/settings.png"),
+  bell: require("../../../../assets/images/icons/bell.png"),
+  mail: require("../../../../assets/images/icons/envelop.png"),
+  settings: require("../../../../assets/images/icons/settings.png"),
 } as const satisfies Record<HeaderActionIconName, number>;
 
 interface HeaderActionButtonProps extends HeaderActionProps {

@@ -1,6 +1,7 @@
 import Feather from "@expo/vector-icons/Feather";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
+import { Fragment } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
@@ -8,7 +9,7 @@ import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
-const lilyArtwork = require("../../../../assets/flowers/whiteLily.png");
+const lilyArtwork = require("../../../../../assets/images/flowers/whiteLily.png");
 
 const prayerSteps = [
   { icon: "heart" as const, translationKey: "dashboard.dailyRosary.prayStep" as const },
@@ -20,8 +21,8 @@ const prayerSteps = [
 export function GardenMotivationCard() {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
-  const { isLargeText, isTablet } = useResponsiveLayout();
-  const displayStepsInRow = isTablet && !isLargeText;
+  const { isLargeText } = useResponsiveLayout();
+  const displayStepsInRow = !isLargeText;
 
   return (
     <View style={styles.card} testID="garden-motivation-card">
@@ -50,25 +51,29 @@ export function GardenMotivationCard() {
         testID="garden-purpose-steps"
       >
         {prayerSteps.map((step, index) => (
-          <View key={step.translationKey} style={styles.step}>
-            <View style={styles.stepIcon}>
-              <Feather
-                accessible={false}
-                color={theme.colors.gold.pale}
-                name={step.icon}
-                size={theme.sizes.iconSmall}
-              />
+          <Fragment key={step.translationKey}>
+            <View style={styles.step} testID={`garden-purpose-step-${index}`}>
+              <View style={styles.stepIcon}>
+                <Feather
+                  accessible={false}
+                  color={theme.colors.gold.pale}
+                  name={step.icon}
+                  size={theme.sizes.iconSmall}
+                />
+              </View>
+              <Text style={styles.stepText}>{t(step.translationKey)}</Text>
             </View>
-            <Text style={styles.stepText}>{t(step.translationKey)}</Text>
             {index < prayerSteps.length - 1 && displayStepsInRow ? (
               <Feather
                 accessible={false}
                 color={theme.colors.text.muted}
                 name="chevron-right"
                 size={theme.sizes.iconSmall}
+                style={styles.stepChevron}
+                testID={`garden-purpose-chevron-${index}`}
               />
             ) : null}
-          </View>
+          </Fragment>
         ))}
       </View>
 
@@ -102,7 +107,8 @@ const styleSheet = createThemedStyles((theme) => ({
   steps: { gap: theme.spacing[2], marginTop: theme.spacing[4], zIndex: theme.zIndex.card },
   stepsColumn: { flexDirection: "column" },
   stepsRow: { flexDirection: "row" },
-  step: { alignItems: "center", flex: 1, flexDirection: "row", gap: theme.spacing[2], minWidth: 0 },
+  step: { alignItems: "center", flex: 1, flexDirection: "column", gap: theme.spacing[2], minWidth: 0 },
+  stepChevron: { alignSelf: "center" },
   stepIcon: {
     alignItems: "center",
     backgroundColor: "rgba(230, 186, 100, 0.13)",
@@ -111,7 +117,7 @@ const styleSheet = createThemedStyles((theme) => ({
     justifyContent: "center",
     width: theme.sizes.touchTarget,
   },
-  stepText: { ...theme.typography.bodyMedium, color: theme.colors.text.primary, flexShrink: 1 },
+  stepText: { ...theme.typography.bodyMedium, color: theme.colors.text.primary, textAlign: "center" },
   resetGuidance: {
     ...theme.typography.bodySmall,
     color: theme.colors.text.secondary,

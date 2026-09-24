@@ -36,7 +36,7 @@ describe("GardenMotivationCard", () => {
     await i18n.changeLanguage("en");
   });
 
-  it("explains the prayer cycle in a stacked, borderless phone layout", async () => {
+  it("explains the prayer cycle in a single, borderless phone row", async () => {
     await render(<GardenMotivationCard />);
 
     expect(screen.getByText("Plant Today’s Flower")).toBeTruthy();
@@ -45,14 +45,18 @@ describe("GardenMotivationCard", () => {
     expect(screen.getByText("Grow your streak")).toBeTruthy();
     expect(screen.getByText("Miss a day and your streak starts again. You can always begin again.")).toBeTruthy();
     expect(screen.getByTestId("garden-motivation-artwork").props.accessible).toBe(false);
-    expect(StyleSheet.flatten(screen.getByTestId("garden-purpose-steps").props.style).flexDirection).toBe("column");
+    expect(StyleSheet.flatten(screen.getByTestId("garden-purpose-steps").props.style).flexDirection).toBe("row");
+    expect(StyleSheet.flatten(screen.getByTestId("garden-purpose-step-0").props.style).flexDirection).toBe("column");
+    expect(StyleSheet.flatten(screen.getByTestId("garden-purpose-chevron-0").props.style)).toMatchObject({
+      alignSelf: "center",
+    });
     expect(StyleSheet.flatten(screen.getByTestId("garden-motivation-card").props.style)).toMatchObject({
       backgroundColor: "transparent",
       borderWidth: 0,
     });
   });
 
-  it("uses a step row on tablets, then stacks for large text and localizes Spanish", async () => {
+  it("keeps the step row on tablets, then stacks for large text and localizes Spanish", async () => {
     const rendered = await render(<GardenMotivationCard />);
     mockResponsiveLayout.mockReturnValue({
       ...phoneLayout,

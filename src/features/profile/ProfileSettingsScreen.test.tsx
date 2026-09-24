@@ -117,18 +117,18 @@ describe("Profile settings", () => {
   });
 
   it("edits only the display name", async () => {
-    mockUpdateProfile.mockResolvedValue({ ...profile, displayName: "Samuel Ruiz" });
+    mockUpdateProfile.mockResolvedValue({ ...profile, displayName: "Virgin Mary" });
     await renderProfile();
 
     await fireEvent.press(screen.getByLabelText("Name, Test User"));
     expect(await screen.findByText("Edit Name")).toBeTruthy();
-    await fireEvent.changeText(screen.getByLabelText("Display name"), "Samuel Ruiz");
+    await fireEvent.changeText(screen.getByLabelText("Display name"), "Virgin Mary");
     await fireEvent.press(screen.getByText("Save"));
 
     await waitFor(() => {
-      expect(mockUpdateProfile).toHaveBeenCalledWith({ displayName: "Samuel Ruiz" });
+      expect(mockUpdateProfile).toHaveBeenCalledWith({ displayName: "Virgin Mary" });
     });
-    expect(await screen.findAllByText("Samuel Ruiz")).toHaveLength(2);
+    expect(await screen.findAllByText("Virgin Mary")).toHaveLength(2);
   });
 
   it("changes gender through the selection sheet", async () => {
@@ -159,13 +159,13 @@ describe("Profile settings", () => {
     });
   });
 
-  it("opens support, legal, and about destinations", async () => {
+  it("opens support, legal, and About Us links externally", async () => {
     const openUrl = jest.spyOn(Linking, "openURL").mockResolvedValue(true as never);
     await renderProfile();
 
     await fireEvent.press(screen.getByText("Contact Support"));
     await waitFor(() => {
-      expect(openUrl).toHaveBeenCalledWith("mailto:samuel@inripaintwall.com?subject=Do%20It%20for%20Jesus%20Support");
+      expect(openUrl).toHaveBeenCalledWith("mailto:admin@doit4jesus.com?subject=Do%20It%20for%20Jesus%20Support");
     });
 
     await fireEvent.press(screen.getByText("Privacy Policy"));
@@ -174,7 +174,8 @@ describe("Profile settings", () => {
     expect(openUrl).toHaveBeenCalledWith("https://www.doitforjesus.com/terms-of-service");
 
     await fireEvent.press(screen.getByText("About Us"));
-    expect(mockPush).toHaveBeenCalledWith("/about");
+    expect(openUrl).toHaveBeenCalledWith("https://www.doitforjesus.com/about");
+    expect(mockPush).not.toHaveBeenCalledWith("/about");
     openUrl.mockRestore();
   });
 

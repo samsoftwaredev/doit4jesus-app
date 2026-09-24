@@ -72,4 +72,16 @@ describe("appearance settings", () => {
     expect(screen.getByText("Idioma")).toBeTruthy();
     expect(mockSetItem).toHaveBeenCalledWith(APP_LANGUAGE_PREFERENCE_STORAGE_KEY, "es");
   });
+
+  it("separates each settings card with the shared spacing token", async () => {
+    await render(
+      <AppLanguageProvider>
+        <AppThemeProvider>
+          <SettingsScreen />
+        </AppThemeProvider>
+      </AppLanguageProvider>,
+    );
+
+    expect(StyleSheet.flatten(screen.getByTestId("settings-card-list").props.style)).toMatchObject({ gap: 16 });
+  });
 });

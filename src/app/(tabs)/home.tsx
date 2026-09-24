@@ -5,6 +5,7 @@ import { ScreenShell } from "@/components/screen-shell";
 import { HeaderActionGroup } from "@/components/ui";
 import { HolyProgressDashboard } from "@/features/dashboard";
 
+/** Renders the Home dashboard with branded navigation and full-width introductory copy. */
 export default function HomeScreen() {
   const router = useRouter();
   const { t } = useTranslation();
@@ -20,7 +21,6 @@ export default function HomeScreen() {
       }
       description={t("home.description")}
       showLogo
-      title={t("home.title")}
     >
       <HolyProgressDashboard />
     </ScreenShell>

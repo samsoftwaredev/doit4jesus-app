@@ -86,7 +86,7 @@ export function LevelsProgression({
               <Image
                 accessible={false}
                 contentFit="cover"
-                source={require("../../assets/avatar/knight.png")}
+                source={require("../../../assets/images/avatar/knight.png")}
                 style={styles.guardianImage}
               />
             </View>

@@ -14,7 +14,7 @@ const profilePayload = {
     countryCode: "US",
     countryName: "United States",
     createdAt: "2026-08-22T15:28:02.335433+00:00",
-    displayName: "Samuel Ruiz",
+    displayName: "Virgin Mary",
     gender: "male",
     leaderboardVisibility: "public",
     preferredLanguage: "en",
@@ -53,7 +53,7 @@ describe("current profile API", () => {
     globalThis.fetch = fetchMock as unknown as typeof fetch;
 
     await expect(fetchCurrentUserProfile()).resolves.toMatchObject({
-      displayName: "Samuel Ruiz",
+      displayName: "Virgin Mary",
       gender: "female",
       userId: "9629e3e7-72dc-4bb1-94d3-b5a2bdd9f002",
     });
@@ -75,14 +75,14 @@ describe("current profile API", () => {
     globalThis.fetch = fetchMock as unknown as typeof fetch;
 
     const result = await updateCurrentUserProfile({
-      displayName: "Samuel Ruiz",
+      displayName: "Virgin Mary",
       gender: "male",
       saintAvatarId: "a1000000-0000-4000-8000-000000000002",
     });
 
     expect(fetchMock).toHaveBeenCalledWith("http://localhost:3000/api/v1/me", {
       body: JSON.stringify({
-        displayName: "Samuel Ruiz",
+        displayName: "Virgin Mary",
         gender: "male",
         saintAvatarId: "a1000000-0000-4000-8000-000000000002",
       }),
@@ -172,7 +172,7 @@ describe("current profile API", () => {
       ok: false,
       status: 422,
     })) as unknown as typeof fetch;
-    await expect(updateCurrentUserProfile({ displayName: "Samuel Ruiz" })).rejects.toThrow(
+    await expect(updateCurrentUserProfile({ displayName: "Virgin Mary" })).rejects.toThrow(
       "Unable to update the profile (422).",
     );
   });
