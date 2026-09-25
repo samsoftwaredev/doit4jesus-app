@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import { DailyLiturgyDashboard } from "@/features/liturgy/screens";
 import { subscribeToRosaryCompletion } from "@/features/prayer/rosary/rosary-completion-events";
+import { useCurrentProfile } from "@/features/profile";
 import {
   EarnedBadgesSection,
   fetchDashboardProgress,
@@ -22,7 +23,13 @@ import { useResponsiveLayout } from "@/hooks";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 
 import type { LevelCatalogEntry, RecentRosaryActivity } from "@/features/progress";
-import { ConscienceQuestionCard, DailyRosaryCard, HolyProgressCard, LevelProgressCard } from "./components";
+import {
+  ConscienceQuestionCard,
+  DailyRosaryCard,
+  HolyProgressCard,
+  JourneyWelcomeCard,
+  LevelProgressCard,
+} from "./components";
 import {
   getConscienceQuestion,
   getConscienceQuestions,
@@ -36,11 +43,16 @@ import type {
   RosaryReminderViewModel,
 } from "./dashboard.types";
 
-/** Composes the Home dashboard's API-backed cards, streak progress, and earned badges. */
+/**
+ * Composes the Home dashboard's API-backed cards, streak progress, and earned badges.
+ *
+ * Replaces unavailable Home progress and daily Rosary reminder states with a journey welcome while preserving other cards.
+ */
 export function HolyProgressDashboard({ initialData }: { initialData?: ScreenDataResponse }) {
   const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   const router = useRouter();
+  const { profile } = useCurrentProfile();
   const { contentWidth, isLargeText, isTablet } = useResponsiveLayout();
   const [conscience, setConscience] = useState<ConscienceQuestionViewModel | null>(null);
   const [conscienceQuestions, setConscienceQuestions] = useState<ConscienceQuestionListItemViewModel[]>([]);
@@ -197,16 +209,25 @@ export function HolyProgressDashboard({ initialData }: { initialData?: ScreenDat
 
   return (
     <View accessibilityLabel={t("dashboard.accessibilityLabel")} style={styles.dashboard}>
-      <UserProgressSection initialData={initialData} />
+      <UserProgressSection
+        errorFallback={
+          <JourneyWelcomeCard displayName={profile?.displayName ?? null} gender={profile?.gender ?? null} />
+        }
+        initialData={initialData}
+      />
       <View style={styles.primaryCard} testID="daily-rosary-card-container">
-        <DailyRosaryCard
-          error={reminderError}
-          isLoading={isLoadingReminder}
-          onExpired={() => void loadReminder()}
-          onPrayRosary={() => router.push({ pathname: "/rosary", params: { source: "home-dashboard" } })}
-          onRetry={() => void loadReminder()}
-          reminder={reminder}
-        />
+        {!isLoadingReminder && reminderError ? (
+          <JourneyWelcomeCard displayName={profile?.displayName ?? null} gender={profile?.gender ?? null} />
+        ) : (
+          <DailyRosaryCard
+            error={reminderError}
+            isLoading={isLoadingReminder}
+            onExpired={() => void loadReminder()}
+            onPrayRosary={() => router.push({ pathname: "/rosary", params: { source: "home-dashboard" } })}
+            onRetry={() => void loadReminder()}
+            reminder={reminder}
+          />
+        )}
       </View>
       <DailyLiturgyDashboard initialData={initialData} />
       <View style={[styles.primaryGrid, useCardColumns && styles.primaryGridColumns]} testID="dashboard-primary-grid">

@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react-native";
+import { Text } from "react-native";
 
 import { i18n } from "@/localization";
 import { UserProgressSection } from "./UserProgressSection";
@@ -61,6 +62,16 @@ describe("UserProgressSection", () => {
     await fireEvent.press(await screen.findByRole("button", { name: "Try again" }));
     expect(await screen.findByLabelText("STREAK, 14 days")).toBeTruthy();
     expect(mockFetchRosaryStreak).toHaveBeenCalledTimes(2);
+  });
+
+  it("renders the supplied Home fallback instead of the generic progress error", async () => {
+    mockFetchUserProgress.mockRejectedValue(new Error("404"));
+
+    await render(<UserProgressSection errorFallback={<Text accessibilityRole="header">Your journey begins!</Text>} />);
+
+    expect(await screen.findByRole("header", { name: "Your journey begins!" })).toBeTruthy();
+    expect(screen.queryByText("We couldn't load your progress.")).toBeNull();
+    expect(screen.queryByRole("button", { name: "Try again" })).toBeNull();
   });
 
   it("retains localized Spanish streak content", async () => {

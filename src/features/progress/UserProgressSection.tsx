@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable, Text, View } from "react-native";
 
@@ -17,8 +17,18 @@ type UserProgressStats = {
   rosariesPrayed: number;
 };
 
-/** Loads the user's Rosary streak and presents it with the dashboard Rosary action. */
-export function UserProgressSection({ initialData }: { initialData?: ScreenDataResponse }) {
+type UserProgressSectionProps = {
+  errorFallback?: ReactNode;
+  initialData?: ScreenDataResponse;
+};
+
+/**
+ * Loads the user's Rosary streak and presents it with the dashboard Rosary action.
+ *
+ * @param props - Optional screen data and a Home-specific replacement for the generic unavailable-progress state.
+ * @returns The user's streak statistics, loading treatment, or supplied fallback after a request failure.
+ */
+export function UserProgressSection({ errorFallback, initialData }: UserProgressSectionProps) {
   const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   const [isLoadingStats, setIsLoadingStats] = useState(true);
@@ -62,7 +72,7 @@ export function UserProgressSection({ initialData }: { initialData?: ScreenDataR
         ) : stats ? (
           <StreakCards currentStreak={stats.currentStreak} longestStreak={stats.longestStreak} />
         ) : (
-          <ProgressLoadError message={t("progress.loadError")} onRetry={loadProgress} />
+          (errorFallback ?? <ProgressLoadError message={t("progress.loadError")} onRetry={loadProgress} />)
         )}
       </View>
 

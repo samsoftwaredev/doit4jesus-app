@@ -3,5 +3,7 @@ export { DailyRosaryCard } from "./DailyRosaryCard";
 export { GardenMotivationCard } from "./GardenMotivationCard";
 export { GardenQuoteCard } from "./GardenQuoteCard";
 export { HolyProgressCard } from "./HolyProgressCard";
+export { JourneyWelcomeCard } from "./JourneyWelcomeCard";
+export type { JourneyWelcomeCardProps } from "./JourneyWelcomeCard";
 export { LeaderboardCard } from "./LeaderboardCard";
 export { LevelProgressCard } from "./LevelProgressCard";

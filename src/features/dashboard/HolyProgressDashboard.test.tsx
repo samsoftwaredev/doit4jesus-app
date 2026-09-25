@@ -12,6 +12,7 @@ const mockFetchRosaryStats = jest.fn();
 const mockGetConscienceQuestion = jest.fn();
 const mockGetRosaryReminder = jest.fn();
 const mockGetWeeklyGlobalLeaderboard = jest.fn();
+let mockProfile: { displayName: string | null; gender: "female" | "male" | null } | null = null;
 const mockResponsiveLayout = jest.fn(() => ({
   contentWidth: 390,
   fontScale: 1,
@@ -63,9 +64,14 @@ jest.mock("@/hooks/useResponsiveLayout", () => ({
   useResponsiveLayout: () => mockResponsiveLayout(),
 }));
 
+jest.mock("@/features/profile", () => ({
+  useCurrentProfile: () => ({ profile: mockProfile }),
+}));
+
 describe("HolyProgressDashboard", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockProfile = { displayName: "Mateo", gender: "male" };
     mockResponsiveLayout.mockReturnValue({
       contentWidth: 390,
       fontScale: 1,
@@ -175,6 +181,17 @@ describe("HolyProgressDashboard", () => {
     expect(screen.getByText("Existing User Progress")).toBeTruthy();
     expect(screen.getByText("Dashboard Earned Badges")).toBeTruthy();
     expect(screen.getByText("Existing Daily Liturgy")).toBeTruthy();
+  });
+
+  it("replaces an unavailable streak card with a male user's journey welcome while retaining progress content", async () => {
+    mockGetRosaryReminder.mockRejectedValue(new Error("404"));
+
+    await render(<HolyProgressDashboard />);
+
+    expect(await screen.findByRole("header", { name: "Your journey begins, Mateo!" })).toBeTruthy();
+    expect(screen.getByLabelText("Knight companion")).toBeTruthy();
+    expect(screen.queryByLabelText("Retry Rosary reminder")).toBeNull();
+    expect(screen.getByText("Existing User Progress")).toBeTruthy();
   });
 
   it("reflows primary cards into columns only when the viewport has room", async () => {
