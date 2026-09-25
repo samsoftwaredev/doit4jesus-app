@@ -1,7 +1,7 @@
 import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, Switch, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { LanguageSelector } from "@/components";
@@ -11,6 +11,7 @@ import { useAuth } from "@/features/auth";
 import { supabase } from "@/lib/supabase";
 import { useAppLanguage } from "@/localization";
 import { type ThemePreference, useAppTheme } from "@/theme/AppThemeProvider";
+import { useAppVisualEffects } from "@/theme/AppVisualEffectsProvider";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
@@ -22,6 +23,7 @@ export default function SettingsScreen() {
   const { configurationError } = useAuth();
   const { language, setLanguage } = useAppLanguage();
   const { preference, setPreference, theme: appTheme } = useAppTheme();
+  const { dustEnabled, lightingEnabled, setDustEnabled, setLightingEnabled } = useAppVisualEffects();
   const [signOutError, setSignOutError] = useState<string>();
   const [isSigningOut, setIsSigningOut] = useState(false);
   const appearanceOptions: readonly { description: string; label: string; value: ThemePreference }[] = [
@@ -41,6 +43,16 @@ export default function SettingsScreen() {
       value: "dark",
     },
   ];
+
+  /** Enables or hides the decorative foreground dust across the app. */
+  const handleDustEnabledChange = (enabled: boolean) => {
+    void setDustEnabled(enabled);
+  };
+
+  /** Enables or hides the decorative sunlight, beams, and haze across the app. */
+  const handleLightingEnabledChange = (enabled: boolean) => {
+    void setLightingEnabled(enabled);
+  };
 
   /** Signs out the current account while exposing any recoverable error. */
   const signOut = async () => {
@@ -110,6 +122,43 @@ export default function SettingsScreen() {
             })}
           </View>
         </Card>
+        <Card title={t("settings.backgroundEffectsTitle")}>
+          <Text style={styles.backgroundEffectsDescription}>{t("settings.backgroundEffectsDescription")}</Text>
+          <View style={styles.backgroundEffectsList}>
+            <View style={styles.effectRow}>
+              <View style={styles.effectCopy}>
+                <Text style={styles.effectLabel}>{t("settings.backgroundLighting")}</Text>
+                <Text style={styles.effectDescription}>{t("settings.backgroundLightingDescription")}</Text>
+              </View>
+              <Switch
+                accessibilityHint={t("settings.backgroundLightingDescription")}
+                accessibilityLabel={t("settings.backgroundLighting")}
+                accessibilityRole="switch"
+                accessibilityState={{ checked: lightingEnabled }}
+                onValueChange={handleLightingEnabledChange}
+                thumbColor={appTheme.colors.text.inverse}
+                trackColor={{ false: appTheme.colors.semantic.disabled, true: appTheme.colors.brand.primary }}
+                value={lightingEnabled}
+              />
+            </View>
+            <View style={styles.effectRow}>
+              <View style={styles.effectCopy}>
+                <Text style={styles.effectLabel}>{t("settings.backgroundDust")}</Text>
+                <Text style={styles.effectDescription}>{t("settings.backgroundDustDescription")}</Text>
+              </View>
+              <Switch
+                accessibilityHint={t("settings.backgroundDustDescription")}
+                accessibilityLabel={t("settings.backgroundDust")}
+                accessibilityRole="switch"
+                accessibilityState={{ checked: dustEnabled }}
+                onValueChange={handleDustEnabledChange}
+                thumbColor={appTheme.colors.text.inverse}
+                trackColor={{ false: appTheme.colors.semantic.disabled, true: appTheme.colors.brand.primary }}
+                value={dustEnabled}
+              />
+            </View>
+          </View>
+        </Card>
         <Card title={t("settings.prayerTitle")}>
           <View style={styles.row}>
             <Feather color={theme.colors.icon.active} name="bell" size={theme.sizes.iconMedium} />
@@ -148,6 +197,33 @@ const styleSheet = createThemedStyles((theme) => ({
   appearanceCopy: {
     flex: 1,
     minWidth: 0,
+  },
+  backgroundEffectsDescription: {
+    ...theme.typography.bodySmall,
+    color: theme.colors.text.muted,
+  },
+  backgroundEffectsList: {
+    gap: theme.spacing[3],
+    marginTop: theme.spacing[3],
+  },
+  effectRow: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: theme.spacing[3],
+    minHeight: theme.sizes.touchTarget,
+  },
+  effectCopy: {
+    flex: 1,
+    minWidth: 0,
+  },
+  effectLabel: {
+    ...theme.typography.bodyMedium,
+    color: theme.colors.text.primary,
+  },
+  effectDescription: {
+    ...theme.typography.bodySmall,
+    color: theme.colors.text.muted,
+    marginTop: theme.spacing[0.5],
   },
   appearanceDescription: {
     ...theme.typography.bodySmall,

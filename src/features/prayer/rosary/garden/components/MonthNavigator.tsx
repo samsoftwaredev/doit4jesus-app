@@ -15,6 +15,7 @@ interface MonthNavigatorProps {
   canGoNext: boolean;
   onPrevious: () => void;
   onNext: () => void;
+  isLoading?: boolean;
 }
 
 /** Renders MonthButton with styles resolved from the active appearance. */
@@ -60,8 +61,16 @@ function MonthButton({
   );
 }
 
-/** Renders this feature with colors from the currently resolved app appearance. */
-export function MonthNavigator({ month, year, canGoPrevious, canGoNext, onPrevious, onNext }: MonthNavigatorProps) {
+/** Renders a month navigator and prevents duplicate navigation while a month is loading. */
+export function MonthNavigator({
+  month,
+  year,
+  canGoPrevious,
+  canGoNext,
+  onPrevious,
+  onNext,
+  isLoading = false,
+}: MonthNavigatorProps) {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
   const { locale } = useAppLanguage();
@@ -73,7 +82,7 @@ export function MonthNavigator({ month, year, canGoPrevious, canGoNext, onPrevio
     <View style={styles.container}>
       <MonthButton
         accessibilityLabel={t("rosary.garden.previousMonth")}
-        canNavigate={canGoPrevious}
+        canNavigate={canGoPrevious && !isLoading}
         direction="left"
         onPress={onPrevious}
         testID="garden-previous-month"
@@ -87,7 +96,7 @@ export function MonthNavigator({ month, year, canGoPrevious, canGoNext, onPrevio
       </Animated.Text>
       <MonthButton
         accessibilityLabel={t("rosary.garden.nextMonth")}
-        canNavigate={canGoNext}
+        canNavigate={canGoNext && !isLoading}
         direction="right"
         onPress={onNext}
         testID="garden-next-month"

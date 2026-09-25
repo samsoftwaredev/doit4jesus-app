@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { useRosaryGarden } from "@/features/prayer/rosary/garden/useRosaryGarden";
@@ -44,11 +44,25 @@ export function RosaryGardenSection({ initialData, onPrayToday }: RosaryGardenSe
           <MonthNavigator
             canGoNext={garden.canGoNext}
             canGoPrevious={garden.canGoPrevious}
+            isLoading={garden.isLoading}
             month={garden.selectedMonthNumber}
             onNext={garden.goToNextMonth}
             onPrevious={garden.goToPreviousMonth}
             year={garden.selectedYear}
           />
+          {garden.hasNavigationError ? (
+            <View accessibilityRole="alert" style={styles.navigationError}>
+              <Text style={styles.navigationErrorText}>{t("rosary.garden.monthLoadError")}</Text>
+              <Pressable
+                accessibilityLabel={t("rosary.garden.retryMonthLoad")}
+                accessibilityRole="button"
+                onPress={garden.retryMonthLoad}
+                style={({ pressed }) => [styles.retryButton, pressed && styles.retryButtonPressed]}
+              >
+                <Text style={styles.retryButtonText}>{t("rosary.garden.retryMonthLoad")}</Text>
+              </Pressable>
+            </View>
+          ) : null}
           <View style={styles.calendarArea} testID="garden-calendar-area">
             <GardenCalendar days={garden.days} month={garden.selectedMonthNumber} year={garden.selectedYear} />
           </View>
@@ -83,6 +97,30 @@ const styleSheet = createThemedStyles((theme) => ({
     color: theme.rosary.colors.gold,
     letterSpacing: theme.letterSpacing.wider,
   },
+  navigationError: {
+    alignItems: "center",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: theme.spacing[2],
+    justifyContent: "space-between",
+  },
+  navigationErrorText: {
+    ...theme.typography.bodySmall,
+    color: theme.colors.text.white,
+    flex: 1,
+    minWidth: theme.spacing[0],
+  },
+  retryButton: {
+    alignItems: "center",
+    borderColor: theme.rosary.colors.gold,
+    borderRadius: theme.radii.pill,
+    borderWidth: theme.borderWidths.thin,
+    justifyContent: "center",
+    minHeight: theme.sizes.touchTarget,
+    paddingHorizontal: theme.spacing[3],
+  },
+  retryButtonPressed: { opacity: theme.opacity.pressed },
+  retryButtonText: { ...theme.typography.labelSmall, color: theme.rosary.colors.gold },
   section: {
     minWidth: theme.spacing[0],
     width: "100%",

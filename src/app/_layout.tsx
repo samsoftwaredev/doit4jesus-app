@@ -13,32 +13,38 @@ import { getProfileAccessState, ProfileProvider, useCurrentProfile } from "@/fea
 import { AccountLanguagePreferenceSync } from "@/localization/AccountLanguagePreferenceSync";
 import { AppLanguageProvider, useAppLanguage } from "@/localization";
 import { AppThemeProvider, getStatusBarStyle, useAppTheme } from "@/theme/AppThemeProvider";
+import { AppVisualEffectsProvider, useAppVisualEffects } from "@/theme/AppVisualEffectsProvider";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 void SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
-/** Installs language and appearance providers before authentication so both preferences apply app-wide. */
+/** Installs language, appearance, and visual-effect providers before authentication so preferences apply app-wide. */
 export default function RootLayout() {
   return (
     <AppLanguageProvider>
       <AppThemeProvider>
-        <ThemedRoot />
+        <AppVisualEffectsProvider>
+          <ThemedRoot />
+        </AppVisualEffectsProvider>
       </AppThemeProvider>
     </AppLanguageProvider>
   );
 }
 
-/** Holds routed content behind the native splash until appearance and language hydration finish. */
+/** Holds routed content behind the native splash until language, appearance, and visual-effect hydration finish. */
 function ThemedRoot() {
   const { isHydrated: isLanguageHydrated } = useAppLanguage();
   const { colorScheme, isHydrated: isThemeHydrated, theme: appTheme } = useAppTheme();
+  const { isHydrated: isVisualEffectsHydrated } = useAppVisualEffects();
 
   useEffect(() => {
-    if (isLanguageHydrated && isThemeHydrated) void SplashScreen.hideAsync().catch(() => undefined);
-  }, [isLanguageHydrated, isThemeHydrated]);
+    if (isLanguageHydrated && isThemeHydrated && isVisualEffectsHydrated) {
+      void SplashScreen.hideAsync().catch(() => undefined);
+    }
+  }, [isLanguageHydrated, isThemeHydrated, isVisualEffectsHydrated]);
 
-  if (!isLanguageHydrated || !isThemeHydrated) return null;
+  if (!isLanguageHydrated || !isThemeHydrated || !isVisualEffectsHydrated) return null;
 
   const baseNavigationTheme = colorScheme === "dark" ? DarkTheme : DefaultTheme;
   const navigationTheme = {

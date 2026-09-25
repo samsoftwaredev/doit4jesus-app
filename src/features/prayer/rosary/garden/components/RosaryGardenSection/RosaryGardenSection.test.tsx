@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from "@testing-library/react-native";
+import { act, fireEvent, render, screen, within } from "@testing-library/react-native";
 import { StyleSheet } from "react-native";
 
 import { i18n } from "@/localization";
@@ -8,6 +8,7 @@ import { RosaryGardenSection } from "./RosaryGardenSection";
 
 const goToNextMonth = jest.fn();
 const goToPreviousMonth = jest.fn();
+const retryMonthLoad = jest.fn();
 const phoneLayout: ResponsiveLayout = {
   contentWidth: 390,
   fontScale: 1,
@@ -51,16 +52,18 @@ const days = Array.from({ length: 31 }, (_, index) => {
   };
 });
 
-function mockGarden(isUsingMockData = false) {
+function mockGarden(isUsingMockData = false, hasNavigationError = false) {
   useRosaryGarden.mockReturnValue({
     canGoNext: false,
     canGoPrevious: true,
     days,
     goToNextMonth,
     goToPreviousMonth,
+    hasNavigationError,
     isLoading: false,
     isUsingMockData,
     markTodayCompleted: jest.fn(),
+    retryMonthLoad,
     selectedMonthNumber: 8,
     selectedYear: 2026,
     stats: { completedDays: 1, completionPercentage: 13, currentStreak: 1, eligibleDays: 8, longestStreak: 1 },
@@ -130,6 +133,21 @@ describe("RosaryGardenSection", () => {
     expect(within(screen.getByTestId("rosary-garden-card")).getByLabelText("Garden preview data")).toBeTruthy();
     await fireEvent.press(screen.getByRole("button", { name: "Pray today's rosary" }));
     expect(onPrayToday).toHaveBeenCalledTimes(1);
+  });
+
+  it("announces a failed month load and retries in English and Spanish", async () => {
+    mockGarden(false, true);
+    await render(<RosaryGardenSection onPrayToday={jest.fn()} />);
+
+    expect(screen.getByText("Couldn’t load that month’s Rosary Garden.")).toBeTruthy();
+    await fireEvent.press(screen.getByRole("button", { name: "Retry month" }));
+    expect(retryMonthLoad).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      await i18n.changeLanguage("es");
+    });
+    expect(screen.getByText("No se pudo cargar el Jardín del Rosario de ese mes.")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Volver a cargar el mes" })).toBeTruthy();
   });
 
   it("keeps garden content responsive on narrow phones, tablets, and large text", async () => {

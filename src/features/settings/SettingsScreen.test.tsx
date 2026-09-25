@@ -6,6 +6,7 @@ import { StyleSheet } from "react-native";
 import SettingsScreen from "@/app/settings";
 import { APP_LANGUAGE_PREFERENCE_STORAGE_KEY, AppLanguageProvider } from "@/localization";
 import { AppThemeProvider } from "@/theme/AppThemeProvider";
+import { APP_VISUAL_EFFECTS_PREFERENCE_STORAGE_KEY, AppVisualEffectsProvider } from "@/theme/AppVisualEffectsProvider";
 
 const mockGetItem = AsyncStorage.getItem as jest.MockedFunction<typeof AsyncStorage.getItem>;
 const mockSetItem = AsyncStorage.setItem as jest.MockedFunction<typeof AsyncStorage.setItem>;
@@ -29,7 +30,9 @@ describe("appearance settings", () => {
     await render(
       <AppLanguageProvider>
         <AppThemeProvider>
-          <SettingsScreen />
+          <AppVisualEffectsProvider>
+            <SettingsScreen />
+          </AppVisualEffectsProvider>
         </AppThemeProvider>
       </AppLanguageProvider>,
     );
@@ -61,7 +64,9 @@ describe("appearance settings", () => {
     await render(
       <AppLanguageProvider>
         <AppThemeProvider>
-          <SettingsScreen />
+          <AppVisualEffectsProvider>
+            <SettingsScreen />
+          </AppVisualEffectsProvider>
         </AppThemeProvider>
       </AppLanguageProvider>,
     );
@@ -70,14 +75,44 @@ describe("appearance settings", () => {
 
     expect(await screen.findByRole("header", { name: "Configuración" })).toBeTruthy();
     expect(screen.getByText("Idioma")).toBeTruthy();
+    expect(screen.getByRole("switch", { name: "Iluminación de fondo" })).toBeTruthy();
+    expect(screen.getByRole("switch", { name: "Polvo de fondo" })).toBeTruthy();
     expect(mockSetItem).toHaveBeenCalledWith(APP_LANGUAGE_PREFERENCE_STORAGE_KEY, "es");
+  });
+
+  it("persists independently accessible lighting and dust switches", async () => {
+    await render(
+      <AppLanguageProvider>
+        <AppThemeProvider>
+          <AppVisualEffectsProvider>
+            <SettingsScreen />
+          </AppVisualEffectsProvider>
+        </AppThemeProvider>
+      </AppLanguageProvider>,
+    );
+
+    const lighting = await screen.findByRole("switch", { name: "Background lighting" });
+    const dust = screen.getByRole("switch", { name: "Background dust" });
+    expect(lighting.props.accessibilityState).toMatchObject({ checked: false });
+    expect(dust.props.accessibilityState).toMatchObject({ checked: false });
+
+    fireEvent(lighting, "valueChange", true);
+
+    await waitFor(() => expect(lighting.props.accessibilityState).toMatchObject({ checked: true }));
+    expect(dust.props.accessibilityState).toMatchObject({ checked: false });
+    expect(mockSetItem).toHaveBeenCalledWith(
+      APP_VISUAL_EFFECTS_PREFERENCE_STORAGE_KEY,
+      JSON.stringify({ dustEnabled: false, lightingEnabled: true }),
+    );
   });
 
   it("separates each settings card with the shared spacing token", async () => {
     await render(
       <AppLanguageProvider>
         <AppThemeProvider>
-          <SettingsScreen />
+          <AppVisualEffectsProvider>
+            <SettingsScreen />
+          </AppVisualEffectsProvider>
         </AppThemeProvider>
       </AppLanguageProvider>,
     );

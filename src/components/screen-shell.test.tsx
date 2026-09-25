@@ -1,7 +1,12 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { render, screen } from "@testing-library/react-native";
 import { Text, View } from "react-native";
 
+import { AppVisualEffectsProvider } from "@/theme/AppVisualEffectsProvider";
+
 import { ScreenShell } from "./screen-shell";
+
+const mockGetItem = AsyncStorage.getItem as jest.MockedFunction<typeof AsyncStorage.getItem>;
 
 const mockResponsiveLayout = jest.fn(() => ({
   contentWidth: 390,
@@ -22,27 +27,39 @@ jest.mock("@/hooks/useResponsiveLayout", () => ({
 }));
 
 describe("ScreenShell", () => {
-  it("includes the shared decorative atmosphere by default", async () => {
+  beforeEach(() => {
+    mockGetItem.mockResolvedValue(JSON.stringify({ dustEnabled: true, lightingEnabled: true }));
+  });
+
+  it("includes the shared decorative atmosphere when both effects are enabled", async () => {
     await render(
-      <ScreenShell description="A calm place to grow." title="Welcome">
-        <Text>Screen content</Text>
-      </ScreenShell>,
+      <AppVisualEffectsProvider>
+        <ScreenShell description="A calm place to grow." title="Welcome">
+          <Text>Screen content</Text>
+        </ScreenShell>
+      </AppVisualEffectsProvider>,
     );
 
-    expect(screen.getByTestId("sacred-atmosphere").props.pointerEvents).toBe("none");
+    expect((await screen.findByTestId("sacred-atmosphere")).props.pointerEvents).toBe("none");
     expect(screen.getByTestId("sacred-atmosphere-foreground").props.pointerEvents).toBe("none");
     expect(screen.getByText("Screen content")).toBeTruthy();
   });
 
   it("keeps the shared atmosphere when a screen supplies its own background", async () => {
     await render(
-      <ScreenShell background={<View testID="route-background" />} description="A calm place to grow." title="Welcome">
-        <Text>Screen content</Text>
-      </ScreenShell>,
+      <AppVisualEffectsProvider>
+        <ScreenShell
+          background={<View testID="route-background" />}
+          description="A calm place to grow."
+          title="Welcome"
+        >
+          <Text>Screen content</Text>
+        </ScreenShell>
+      </AppVisualEffectsProvider>,
     );
 
     expect(screen.getByTestId("route-background")).toBeTruthy();
-    expect(screen.getByTestId("sacred-atmosphere")).toBeTruthy();
+    expect(await screen.findByTestId("sacred-atmosphere")).toBeTruthy();
     expect(screen.getByTestId("sacred-atmosphere-foreground")).toBeTruthy();
   });
 
@@ -54,9 +71,11 @@ describe("ScreenShell", () => {
     });
 
     await render(
-      <ScreenShell actions={<Text>Header action</Text>} description="A calm place to grow." title="Welcome">
-        <Text>Screen content</Text>
-      </ScreenShell>,
+      <AppVisualEffectsProvider>
+        <ScreenShell actions={<Text>Header action</Text>} description="A calm place to grow." title="Welcome">
+          <Text>Screen content</Text>
+        </ScreenShell>
+      </AppVisualEffectsProvider>,
     );
 
     expect(screen.getByTestId("page-header-main-row").props.style).toEqual(
@@ -67,17 +86,21 @@ describe("ScreenShell", () => {
 
   it("shows the company logo only when a screen opts in", async () => {
     const rendered = await render(
-      <ScreenShell description="A calm place to grow." title="Welcome">
-        <Text>Screen content</Text>
-      </ScreenShell>,
+      <AppVisualEffectsProvider>
+        <ScreenShell description="A calm place to grow." title="Welcome">
+          <Text>Screen content</Text>
+        </ScreenShell>
+      </AppVisualEffectsProvider>,
     );
 
     expect(screen.queryByLabelText("Do It for Jesus")).toBeNull();
 
     await rendered.rerender(
-      <ScreenShell description="A calm place to grow." showLogo title="Welcome">
-        <Text>Screen content</Text>
-      </ScreenShell>,
+      <AppVisualEffectsProvider>
+        <ScreenShell description="A calm place to grow." showLogo title="Welcome">
+          <Text>Screen content</Text>
+        </ScreenShell>
+      </AppVisualEffectsProvider>,
     );
 
     expect(screen.getByLabelText("Do It for Jesus")).toBeTruthy();

@@ -13,6 +13,7 @@ import Animated, {
 import { LinearGradient } from "expo-linear-gradient";
 
 import { useAppTheme } from "@/theme/AppThemeProvider";
+import { useAppVisualEffects } from "@/theme/AppVisualEffectsProvider";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
@@ -82,9 +83,17 @@ export function SacredAtmosphere({ layer = "background", style, testID = "sacred
   const styles = useThemedStyles(styleSheet);
   const { height, width } = useWindowDimensions();
   const reduceMotion = useReducedMotion();
+  const { dustEnabled, lightingEnabled } = useAppVisualEffects();
   const particleCount = getSacredAtmosphereParticleCount(width, reduceMotion);
 
-  if (!width || !height) return null;
+  if (
+    !width ||
+    !height ||
+    (layer === "background" && !lightingEnabled) ||
+    (layer === "foregroundDust" && !dustEnabled)
+  ) {
+    return null;
+  }
 
   return (
     <View

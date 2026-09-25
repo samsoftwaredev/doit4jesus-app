@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { fetchRosaryCompletion, fetchRosaryStreak } from "@/features/prayer/rosary/garden/api";
 import { createRosaryGardenMockData, getLocalDateParts } from "@/features/prayer/rosary/garden/mockData";
@@ -19,6 +19,7 @@ function addMonth(year: number, month: number, amount: number) {
   return { month: date.getUTCMonth() + 1, year: date.getUTCFullYear() };
 }
 
+/** Loads and exposes Rosary Garden data for the currently displayed month. */
 export function useRosaryGarden(options: UseRosaryGardenOptions = {}) {
   const fallbackTimezone = options.userTimezone ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
   const providedCompletionDates = options.rosaryCompletionDates?.filter(isValidIsoDate).join(",");
@@ -38,6 +39,10 @@ export function useRosaryGarden(options: UseRosaryGardenOptions = {}) {
   const [remoteStreaks, setRemoteStreaks] = useState<{ currentStreak: number; longestStreak: number } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isUsingMockData, setIsUsingMockData] = useState(false);
+  const [hasNavigationError, setHasNavigationError] = useState(false);
+  const [failedMonth, setFailedMonth] = useState<{ month: number; year: number } | null>(null);
+  const lastLoadedMonth = useRef<string | null>(null);
+  const monthRequestId = useRef(0);
 
   const localToday = toIsoDate(
     getLocalDateParts(timezone).year,
@@ -55,6 +60,12 @@ export function useRosaryGarden(options: UseRosaryGardenOptions = {}) {
 
   useEffect(() => {
     let active = true;
+    const monthKey = `${selected.year}-${selected.month}`;
+    if (lastLoadedMonth.current === monthKey) {
+      return () => {
+        active = false;
+      };
+    }
     setIsLoading(true);
 
     if (providedCompletionDates !== undefined) {
@@ -67,7 +78,13 @@ export function useRosaryGarden(options: UseRosaryGardenOptions = {}) {
       };
     }
 
-    if (options.initialCompletion && options.initialStreak && options.initialUser) {
+    if (
+      options.initialCompletion &&
+      options.initialStreak &&
+      options.initialUser &&
+      options.initialCompletion.year === selected.year &&
+      options.initialCompletion.selectedMonth === selected.month
+    ) {
       setTimezone(options.initialUser.timezone || timezone);
       setUserCreatedAt(options.initialUser.createdAt);
       setCompletionDates(
@@ -78,6 +95,7 @@ export function useRosaryGarden(options: UseRosaryGardenOptions = {}) {
         longestStreak: options.initialStreak.longestStreak,
       });
       setIsUsingMockData(false);
+      lastLoadedMonth.current = monthKey;
       setIsLoading(false);
       return () => {
         active = false;
@@ -86,16 +104,22 @@ export function useRosaryGarden(options: UseRosaryGardenOptions = {}) {
 
     async function loadGarden() {
       try {
-        const [profile, completion, streak] = await Promise.all([
-          fetchCurrentUserProfile(),
-          fetchRosaryCompletion(selected.year, selected.month),
-          fetchRosaryStreak(),
-        ]);
+        const hasInitialMetadata = Boolean(options.initialStreak && options.initialUser);
+        const [profile, completion, streak] = hasInitialMetadata
+          ? [null, await fetchRosaryCompletion(selected.year, selected.month), null]
+          : await Promise.all([
+              fetchCurrentUserProfile(),
+              fetchRosaryCompletion(selected.year, selected.month),
+              fetchRosaryStreak(),
+            ]);
         if (!active) return;
-        setTimezone(profile.timezone || streak.timezone || timezone);
-        setUserCreatedAt(profile.createdAt);
+        if (profile && streak) {
+          setTimezone(profile.timezone || streak.timezone || timezone);
+          setUserCreatedAt(profile.createdAt);
+          setRemoteStreaks({ currentStreak: streak.currentStreak, longestStreak: streak.longestStreak });
+        }
         setCompletionDates(new Set(completion.days.filter((day) => day.completed === true).map((day) => day.date)));
-        setRemoteStreaks({ currentStreak: streak.currentStreak, longestStreak: streak.longestStreak });
+        lastLoadedMonth.current = monthKey;
         setIsUsingMockData(false);
       } catch {
         if (!active) return;
@@ -151,14 +175,47 @@ export function useRosaryGarden(options: UseRosaryGardenOptions = {}) {
     };
   }, [completionDates, localToday, month.days, remoteStreaks]);
 
+  /** Loads a target month without replacing the visible garden until the response is verified. */
+  const loadNavigatedMonth = useCallback(async (target: { month: number; year: number }) => {
+    const requestId = ++monthRequestId.current;
+    setIsLoading(true);
+    setHasNavigationError(false);
+    try {
+      const completion = await fetchRosaryCompletion(target.year, target.month);
+      if (requestId !== monthRequestId.current) return;
+      setCompletionDates(new Set(completion.days.filter((day) => day.completed === true).map((day) => day.date)));
+      lastLoadedMonth.current = `${target.year}-${target.month}`;
+      setSelected(target);
+      setFailedMonth(null);
+      setIsUsingMockData(false);
+    } catch {
+      if (requestId !== monthRequestId.current) return;
+      setFailedMonth(target);
+      setHasNavigationError(true);
+    } finally {
+      if (requestId === monthRequestId.current) setIsLoading(false);
+    }
+  }, []);
+
+  /** Moves to the prior eligible month after its completion history has loaded. */
   const goToPreviousMonth = useCallback(() => {
     if (!canGoPrevious) return;
-    setSelected((current) => addMonth(current.year, current.month, -1));
-  }, [canGoPrevious]);
+    void loadNavigatedMonth(addMonth(selected.year, selected.month, -1));
+  }, [canGoPrevious, loadNavigatedMonth, selected.month, selected.year]);
+
+  /** Moves to the next eligible month after its completion history has loaded. */
   const goToNextMonth = useCallback(() => {
     if (!canGoNext) return;
-    setSelected((current) => addMonth(current.year, current.month, 1));
-  }, [canGoNext]);
+    void loadNavigatedMonth(addMonth(selected.year, selected.month, 1));
+  }, [canGoNext, loadNavigatedMonth, selected.month, selected.year]);
+
+  /** Retries the most recently failed month navigation while retaining the visible garden. */
+  const retryMonthLoad = useCallback(() => {
+    if (!failedMonth) return;
+    void loadNavigatedMonth(failedMonth);
+  }, [failedMonth, loadNavigatedMonth]);
+
+  /** Marks the user's local current day as completed in the visible garden. */
   const markTodayCompleted = useCallback(() => {
     setCompletionDates((current) => new Set([...current, localToday]));
     setRemoteStreaks(null);
@@ -170,9 +227,11 @@ export function useRosaryGarden(options: UseRosaryGardenOptions = {}) {
     days: month.days,
     goToNextMonth,
     goToPreviousMonth,
+    hasNavigationError,
     isLoading,
     isUsingMockData,
     markTodayCompleted,
+    retryMonthLoad,
     selectedMonth: month,
     selectedMonthNumber: selected.month,
     selectedYear: selected.year,

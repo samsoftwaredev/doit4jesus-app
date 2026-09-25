@@ -129,6 +129,64 @@ describe("useRosaryGarden", () => {
     expect(result.current.selectedYear).toBe(2026);
   });
 
+  it("loads completed days for a navigated month after being seeded with initial screen data", async () => {
+    const initialCompletion = makeCompletion(2026, 8, ["2026-08-20"]);
+    fetchRosaryCompletion.mockResolvedValueOnce(makeCompletion(2026, 7, ["2026-07-04", "2026-07-14"]));
+
+    const { result } = await renderHook(() =>
+      useRosaryGarden({
+        initialCompletion,
+        initialStreak: baseStreak,
+        initialUser: baseProfile,
+        selectedYear: 2026,
+        selectedMonth: 8,
+        userTimezone: "UTC",
+      }),
+    );
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    await act(async () => {
+      result.current.goToPreviousMonth();
+    });
+
+    await waitFor(() => expect(result.current.selectedMonthNumber).toBe(7));
+    expect(fetchRosaryCompletion).toHaveBeenCalledWith(2026, 7);
+    expect(result.current.stats.completedDays).toBe(2);
+    expect(result.current.days.find((day) => day.date === "2026-07-04")?.completed).toBe(true);
+  });
+
+  it("retains the displayed month and retries when a navigated month cannot load", async () => {
+    fetchRosaryCompletion.mockRejectedValueOnce(new Error("Network error"));
+    const initialCompletion = makeCompletion(2026, 8, ["2026-08-20"]);
+    const { result } = await renderHook(() =>
+      useRosaryGarden({
+        initialCompletion,
+        initialStreak: baseStreak,
+        initialUser: baseProfile,
+        selectedYear: 2026,
+        selectedMonth: 8,
+        userTimezone: "UTC",
+      }),
+    );
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    await act(async () => {
+      result.current.goToPreviousMonth();
+    });
+    await waitFor(() => expect(result.current.hasNavigationError).toBe(true));
+
+    expect(result.current.selectedMonthNumber).toBe(8);
+    expect(result.current.days.find((day) => day.date === "2026-08-20")?.completed).toBe(true);
+
+    fetchRosaryCompletion.mockResolvedValueOnce(makeCompletion(2026, 7, ["2026-07-04"]));
+    await act(async () => {
+      result.current.retryMonthLoad();
+    });
+
+    await waitFor(() => expect(result.current.selectedMonthNumber).toBe(7));
+    expect(result.current.hasNavigationError).toBe(false);
+  });
+
   it("does not navigate past the month the user was created", async () => {
     fetchCurrentUserProfile.mockResolvedValue({ ...baseProfile, createdAt: "2026-08-01" });
     const { result } = await renderHook(() =>

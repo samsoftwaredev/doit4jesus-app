@@ -1,13 +1,13 @@
 import Feather from "@expo/vector-icons/Feather";
-import { Pressable, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
+import { Pressable, Text, View } from "react-native";
 
 import { Button, Card } from "@/components/ui";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
-import type { FriendsLeaderboard } from "../friends.types";
 import { getLeaderboardPeriodLabelKey } from "../friends.periods";
+import type { FriendsLeaderboard } from "../friends.types";
 import { LeaderboardEntries } from "./LeaderboardEntries";
 
 type RosaryLeaderboardCardProps = {
@@ -66,7 +66,7 @@ export function RosaryLeaderboardCard({
       <View style={styles.content}>
         <View style={styles.intro}>
           <Text style={styles.description}>{t("friends.leaderboard.friendsOnlyDescription")}</Text>
-          <Button fullWidth onPress={onAddFriends} size="sm" style={styles.addFriendsButton} variant="warning">
+          <Button fullWidth onPress={onAddFriends} style={styles.addFriendsButton} variant="warning">
             {t("friends.leaderboard.addFriends")}
           </Button>
         </View>
