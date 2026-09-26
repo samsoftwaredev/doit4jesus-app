@@ -1,4 +1,3 @@
-import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
@@ -10,43 +9,33 @@ import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles"
 import { theme } from "@/theme/tokens";
 import type { ScreenDataResponse } from "@/features/screen-data";
 
-import { CelebrationHeroCard, CompletionToast, DailyVerseCard, ScriptureReadingsCard } from "../components";
+import { CelebrationHeroCard, DailyVerseCard, ScriptureReadingsCard } from "../components";
 import {
-  fetchCompletedDailyScriptureActivity,
   fetchLiturgyReadings,
   fetchTodayLiturgy,
   loadDailyReadingProgress,
-  markCompletionToastShown,
   markDailyReadingComplete,
-  markReadingsCompletedFromRecordedActivity,
   recordDailyScriptureCompletion,
-  recordRewardOnProgress,
 } from "../index";
 import { parseDailyLiturgyData } from "../liturgy.api";
 import { addDaysToIsoDate, canNavigateToNextLiturgyDate } from "../liturgy.dates";
 import type { DailyLiturgyViewModel, DailyReadingProgress } from "../liturgy.types";
-
-interface CompletionToastState {
-  count: number;
-  currentLevel?: number;
-  points?: number;
-  totalXp?: number;
-}
 
 export interface DailyLiturgyDashboardProps {
   initialData?: ScreenDataResponse;
   onCalendarPress?: () => void;
 }
 
-function hasCompletedAllReadings(progress: DailyReadingProgress, model: DailyLiturgyViewModel) {
+/** Returns whether this local reading state contains every reading in the displayed liturgy. */
+function hasCompletedAllReadings(progress: DailyReadingProgress | null, model: DailyLiturgyViewModel) {
   return (
-    model.readings.length > 0 && model.readings.every((reading) => progress.completedReadingIds.includes(reading.id))
+    model.readings.length > 0 && model.readings.every((reading) => progress?.completedReadingIds.includes(reading.id))
   );
 }
 
-/** Creates the stable passage identifier stored with the completed daily Scripture activity. */
-function createDailyScripturePassage(readings: DailyLiturgyViewModel["readings"]) {
-  return readings.map((reading) => reading.citation).join(" | ");
+/** Creates an idempotency key for one user-initiated daily Scripture completion request. */
+function createCompletionIdempotencyKey() {
+  return crypto.randomUUID();
 }
 
 /** Renders LiturgyLoadingState with styles resolved from the active appearance. */
@@ -71,118 +60,20 @@ export function DailyLiturgyDashboard({ initialData, onCalendarPress }: DailyLit
   const { t } = useTranslation();
   const { locale } = useAppLanguage();
   const styles = useThemedStyles(styleSheet);
-  const rewardInFlight = useRef<string | null>(null);
   const activeLoadRequest = useRef(0);
-  const toastPresentedFor = useRef<string | null>(null);
-  const [completionToast, setCompletionToast] = useState<CompletionToastState | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isRetryingReward, setIsRetryingReward] = useState(false);
   const [liturgy, setLiturgy] = useState<DailyLiturgyViewModel | null>(null);
   const [progress, setProgress] = useState<DailyReadingProgress | null>(null);
-  const [rewardError, setRewardError] = useState<string | null>(null);
   const currentLocalDate = useCurrentLocalDate();
   const [selectedDate, setSelectedDate] = useState(currentLocalDate);
 
-  const presentCompletionToast = useCallback(async (nextProgress: DailyReadingProgress, readingCount: number) => {
-    const reward = nextProgress.reward;
-    if (
-      !reward ||
-      reward.status !== "recorded" ||
-      reward.toastShownAt ||
-      toastPresentedFor.current === reward.idempotencyKey
-    ) {
-      return;
-    }
-
-    toastPresentedFor.current = reward.idempotencyKey;
-    setCompletionToast({
-      count: readingCount,
-      currentLevel: reward.currentLevel,
-      points: reward.points,
-      totalXp: reward.totalXp,
-    });
-
-    try {
-      const updated = await markCompletionToastShown(nextProgress);
-      setProgress(updated);
-    } catch {
-      // The toast is intentionally still shown; a storage retry is harmless on the next launch.
-    }
-  }, []);
-
-  /** Records a complete daily Scripture set and persists its awarded progress exactly once. */
-  const awardCompletion = useCallback(
-    async (nextProgress: DailyReadingProgress, model: DailyLiturgyViewModel) => {
-      const readingCount = model.readings.length;
-      const reward = nextProgress.reward;
-      if (!reward || reward.status === "recorded" || rewardInFlight.current === reward.idempotencyKey) {
-        if (reward?.status === "recorded") await presentCompletionToast(nextProgress, readingCount);
-        return;
-      }
-
-      rewardInFlight.current = reward.idempotencyKey;
-      setIsRetryingReward(true);
-      setRewardError(null);
-
-      try {
-        const result = await recordDailyScriptureCompletion({
-          completedAt: reward.completedAt,
-          country: nextProgress.country,
-          date: nextProgress.date,
-          idempotencyKey: reward.idempotencyKey,
-          occurredAt: reward.occurredAt,
-          passage: createDailyScripturePassage(model.readings),
-          quantity: readingCount,
-        });
-        const updated = await recordRewardOnProgress(nextProgress, result);
-        setProgress(updated);
-        await presentCompletionToast(updated, readingCount);
-      } catch {
-        setRewardError(t("liturgy.rewardError"));
-      } finally {
-        rewardInFlight.current = null;
-        setIsRetryingReward(false);
-      }
-    },
-    [presentCompletionToast, t],
-  );
-
   /** Synchronizes saved reading progress when the associated liturgy request is still current. */
-  const syncProgress = useCallback(
-    async (model: DailyLiturgyViewModel, requestId = activeLoadRequest.current) => {
-      let nextProgress = await loadDailyReadingProgress(model.date, model.metadata.country);
-      if (requestId !== activeLoadRequest.current) return;
-
-      try {
-        const activity = await fetchCompletedDailyScriptureActivity({
-          date: model.date,
-          passage: createDailyScripturePassage(model.readings),
-        });
-        if (activity) {
-          nextProgress = await markReadingsCompletedFromRecordedActivity({
-            completedAt: activity.completedAt,
-            country: model.metadata.country,
-            date: model.date,
-            readingIds: model.readings.map((reading) => reading.id),
-          });
-        }
-      } catch {
-        // The stable idempotency key still prevents a duplicate server record when this lookup is unavailable.
-      }
-
-      if (requestId !== activeLoadRequest.current) return;
-      setProgress(nextProgress);
-
-      if (!hasCompletedAllReadings(nextProgress, model)) return;
-      if (nextProgress.reward?.status === "pending") {
-        void awardCompletion(nextProgress, model);
-      } else {
-        void presentCompletionToast(nextProgress, model.readings.length);
-      }
-    },
-    [awardCompletion, presentCompletionToast],
-  );
+  const syncProgress = useCallback(async (model: DailyLiturgyViewModel, requestId = activeLoadRequest.current) => {
+    const nextProgress = await loadDailyReadingProgress(model.date, model.metadata.country);
+    if (requestId !== activeLoadRequest.current) return;
+    setProgress(nextProgress);
+  }, []);
 
   /**
    * Loads one date in the active language, using the server's today route for the current local date.
@@ -222,17 +113,6 @@ export function DailyLiturgyDashboard({ initialData, onCalendarPress }: DailyLit
     void reload();
   }, [reload]);
 
-  useFocusEffect(
-    useCallback(() => {
-      if (liturgy) void syncProgress(liturgy);
-    }, [liturgy, syncProgress]),
-  );
-
-  const retryReward = useCallback(() => {
-    if (!liturgy || !progress) return;
-    void awardCompletion(progress, liturgy);
-  }, [awardCompletion, liturgy, progress]);
-
   const showPreviousDay = useCallback(() => {
     setSelectedDate((date) => addDaysToIsoDate(date, -1));
   }, []);
@@ -246,9 +126,23 @@ export function DailyLiturgyDashboard({ initialData, onCalendarPress }: DailyLit
 
   const nextDayDisabled = !canNavigateToNextLiturgyDate(selectedDate);
 
+  /** Stores a completed reading, recording the date-level server completion only for the final passage. */
   const completeReading = useCallback(
     async (readingId: string) => {
       if (!liturgy) return;
+
+      const completingAllReadings =
+        hasCompletedAllReadings(progress, liturgy) ||
+        liturgy.readings.every(
+          (reading) => reading.id === readingId || progress?.completedReadingIds.includes(reading.id),
+        );
+      if (completingAllReadings) {
+        const completion = await recordDailyScriptureCompletion({
+          idempotencyKey: createCompletionIdempotencyKey(),
+          readingDate: liturgy.date,
+        });
+        setLiturgy((current) => (current?.date === liturgy.date ? { ...current, completion } : current));
+      }
 
       const result = await markDailyReadingComplete({
         country: liturgy.metadata.country,
@@ -257,13 +151,13 @@ export function DailyLiturgyDashboard({ initialData, onCalendarPress }: DailyLit
         readingIds: liturgy.readings.map((reading) => reading.id),
       });
       setProgress(result.progress);
-
-      if (result.allReadingsCompleted && result.progress.reward?.status === "pending") {
-        void awardCompletion(result.progress, liturgy);
-      }
     },
-    [awardCompletion, liturgy],
+    [liturgy, progress],
   );
+
+  const completedReadingIds = liturgy?.completion.completed
+    ? liturgy.readings.map((reading) => reading.id)
+    : (progress?.completedReadingIds ?? []);
 
   return (
     <View style={styles.dashboard}>
@@ -281,21 +175,13 @@ export function DailyLiturgyDashboard({ initialData, onCalendarPress }: DailyLit
       ) : null}
       {liturgy ? (
         <View style={styles.content}>
-          <CompletionToast
-            count={completionToast?.count ?? 0}
-            currentLevel={completionToast?.currentLevel}
-            points={completionToast?.points}
-            totalXp={completionToast?.totalXp}
-            visible={completionToast !== null}
-            onDismiss={() => setCompletionToast(null)}
-          />
           <CelebrationHeroCard
             celebration={liturgy.celebration}
             date={liturgy.date}
             onCalendarPress={onCalendarPress}
           />
           <ScriptureReadingsCard
-            completedReadingIds={progress?.completedReadingIds ?? []}
+            completedReadingIds={completedReadingIds}
             readings={liturgy.readings}
             metadata={liturgy.metadata}
             season={liturgy.celebration.season}
@@ -307,14 +193,6 @@ export function DailyLiturgyDashboard({ initialData, onCalendarPress }: DailyLit
             onNextDay={showNextDay}
             onPreviousDay={showPreviousDay}
           />
-          {rewardError ? (
-            <View accessibilityRole="alert" style={styles.rewardError}>
-              <Text style={styles.rewardErrorCopy}>{rewardError}</Text>
-              <Button loading={isRetryingReward} onPress={retryReward} size="sm" variant="outline">
-                {t("liturgy.retryPoints")}
-              </Button>
-            </View>
-          ) : null}
           {liturgy.highlightedVerse ? <DailyVerseCard {...liturgy.highlightedVerse} /> : null}
         </View>
       ) : null}
@@ -370,22 +248,6 @@ const styleSheet = createThemedStyles((theme) => ({
     top: 0,
   },
   retryButton: { marginTop: theme.spacing[4] },
-  rewardError: {
-    alignItems: "center",
-    backgroundColor: theme.colors.semantic.warningSurface,
-    borderColor: theme.colors.semantic.warningBorder,
-    borderRadius: theme.radii.lg,
-    borderWidth: theme.borderWidths.thin,
-    flexDirection: "row",
-    gap: theme.spacing[3],
-    marginTop: theme.spacing[3],
-    padding: theme.spacing[3],
-  },
-  rewardErrorCopy: {
-    ...theme.typography.bodySmall,
-    color: theme.colors.text.secondary,
-    flex: 1,
-  },
   skeleton: {
     backgroundColor: theme.colors.surface.secondary,
     borderRadius: theme.radii.lg,

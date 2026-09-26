@@ -37,8 +37,8 @@ function formatNavDate(isoDate: string, locale: string) {
 }
 
 /**
- * Renders daily Scripture readings, their completion progress, and the rewards
- * context while preserving full-width header copy and a progress summary on narrow layouts.
+ * Renders daily Scripture readings and completion progress while preserving full-width
+ * header copy and a progress summary on narrow layouts.
  */
 export function ScriptureReadingsCard({
   completedReadingIds,

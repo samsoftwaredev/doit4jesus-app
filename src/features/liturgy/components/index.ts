@@ -1,5 +1,4 @@
 export { CelebrationHeroCard } from "./CelebrationHeroCard";
-export { CompletionToast } from "./CompletionToast";
 export { DailyMassHeader } from "./DailyMassHeader";
 export { DailyVerseCard } from "./DailyVerseCard";
 export { LiturgicalChip } from "./LiturgicalChip";

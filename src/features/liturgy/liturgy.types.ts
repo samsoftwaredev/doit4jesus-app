@@ -11,6 +11,7 @@ export interface DailyReading {
 
 export interface DailyLiturgyViewModel {
   date: string;
+  completion: DailyScriptureCompletion;
   celebration: {
     id: string;
     name: string;
@@ -31,23 +32,15 @@ export interface DailyLiturgyViewModel {
   };
 }
 
-export interface CompletionReward {
-  idempotencyKey: string;
-  occurredAt: string;
-  completedAt: string;
-  status: "pending" | "recorded";
-  points?: number;
-  totalXp?: number;
-  currentLevel?: number;
-  toastShownAt?: string;
+export interface DailyScriptureCompletion {
+  completed: boolean;
+  completedAt: string | null;
 }
 
 export interface DailyReadingProgress {
   date: string;
   country: string;
   completedReadingIds: string[];
-  completedAt?: string;
-  reward?: CompletionReward;
 }
 
 export interface MarkReadingCompleteResult {

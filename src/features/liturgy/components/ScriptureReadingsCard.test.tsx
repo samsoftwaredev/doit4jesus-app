@@ -37,7 +37,7 @@ describe("ScriptureReadingsCard", () => {
     expect(screen.getByLabelText("Collapse FIRST READING, Ez 37:1-14")).toBeTruthy();
   });
 
-  it("explains the points and badge reward for completing today's readings in both supported languages", async () => {
+  it("explains the daily Scripture completion flow in both supported languages", async () => {
     const props: ComponentProps<typeof ScriptureReadingsCard> = {
       completedReadingIds: [],
       metadata: { country: "US", psalterWeek: 4, sundayCycle: "A", weekdayCycle: "II" },
@@ -47,14 +47,14 @@ describe("ScriptureReadingsCard", () => {
     };
     const rendered = await render(<ScriptureReadingsCard {...props} />);
 
-    expect(screen.getByText("Complete today's readings to earn points and work toward badges.")).toBeTruthy();
+    expect(screen.getByText("Read each passage to complete today's Scripture.")).toBeTruthy();
 
     await act(async () => {
       await i18n.changeLanguage("es");
     });
     await rendered.rerender(<ScriptureReadingsCard {...props} />);
 
-    expect(screen.getByText("Completa las lecturas de hoy para ganar puntos y avanzar hacia insignias.")).toBeTruthy();
+    expect(screen.getByText("Lee cada pasaje para completar la Escritura de hoy.")).toBeTruthy();
   });
 
   it("keeps the Scripture heading copy full width and places completion count above its progress bar", async () => {

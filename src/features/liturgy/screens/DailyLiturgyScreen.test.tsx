@@ -11,15 +11,11 @@ jest.mock("expo-router", () => ({
 }));
 
 jest.mock("@/features/liturgy", () => ({
-  fetchCompletedDailyScriptureActivity: jest.fn(),
   fetchLiturgyReadings: jest.fn(),
   fetchTodayLiturgy: jest.fn(),
   loadDailyReadingProgress: jest.fn(),
-  markCompletionToastShown: jest.fn(),
   markDailyReadingComplete: jest.fn(),
-  markReadingsCompletedFromRecordedActivity: jest.fn(),
   recordDailyScriptureCompletion: jest.fn(),
-  recordRewardOnProgress: jest.fn(),
 }));
 
 jest.mock("@/features/liturgy/liturgy.dates", () => ({
@@ -41,19 +37,17 @@ jest.mock("@/localization", () => ({
 }));
 
 const {
-  fetchCompletedDailyScriptureActivity,
   fetchLiturgyReadings,
   fetchTodayLiturgy,
   loadDailyReadingProgress,
   markDailyReadingComplete,
-  markReadingsCompletedFromRecordedActivity,
+  recordDailyScriptureCompletion,
 } = jest.requireMock("@/features/liturgy") as {
-  fetchCompletedDailyScriptureActivity: jest.Mock;
   fetchLiturgyReadings: jest.Mock;
   fetchTodayLiturgy: jest.Mock;
   loadDailyReadingProgress: jest.Mock;
   markDailyReadingComplete: jest.Mock;
-  markReadingsCompletedFromRecordedActivity: jest.Mock;
+  recordDailyScriptureCompletion: jest.Mock;
 };
 
 const liturgy = {
@@ -65,6 +59,7 @@ const liturgy = {
     season: "ORDINARY_TIME",
   },
   date: "2026-08-21",
+  completion: { completed: false, completedAt: null },
   metadata: { country: "US", psalterWeek: 4, sundayCycle: "A", weekdayCycle: "II" },
   readings: [
     { citation: "Ez 37:1-14", id: "first-reading", text: "Dry bones, hear the word.", type: "FIRST_READING" },
@@ -82,7 +77,6 @@ describe("DailyLiturgyDashboard", () => {
     mockLocale = "en-US";
     fetchLiturgyReadings.mockResolvedValue(liturgy);
     fetchTodayLiturgy.mockResolvedValue(liturgy);
-    fetchCompletedDailyScriptureActivity.mockResolvedValue(null);
     loadDailyReadingProgress.mockResolvedValue(emptyProgress);
   });
 
@@ -202,20 +196,31 @@ describe("DailyLiturgyDashboard", () => {
     await waitFor(() => expect(fetchLiturgyReadings).toHaveBeenCalledTimes(1));
   });
 
-  it("marks a reading as complete and updates progress", async () => {
-    const afterProgress = { completedReadingIds: ["first-reading"], country: "US", date: "2026-08-21" };
+  it("records the liturgy completion only after the final reading is marked", async () => {
+    const randomUUID = jest.spyOn(crypto, "randomUUID").mockReturnValue("00000000-0000-4000-8000-000000000000");
+    const afterProgress = {
+      completedReadingIds: ["first-reading", "gospel"],
+      country: "US",
+      date: "2026-08-21",
+    };
     markDailyReadingComplete.mockResolvedValue({
-      allReadingsCompleted: false,
-      didCompleteAllReadings: false,
+      allReadingsCompleted: true,
+      didCompleteAllReadings: true,
       progress: afterProgress,
     });
+    recordDailyScriptureCompletion.mockResolvedValue({ completed: true, completedAt: "2026-08-21T21:22:25.672Z" });
+    loadDailyReadingProgress.mockResolvedValue({
+      completedReadingIds: ["first-reading"],
+      country: "US",
+      date: "2026-08-21",
+    });
     await render(<DailyLiturgyDashboard />);
-    await waitFor(() => expect(screen.getByText("Ez 37:1-14")).toBeTruthy());
+    await waitFor(() => expect(screen.getByText("Mt 22:34-40")).toBeTruthy());
 
-    const toggle = screen.getByLabelText("Expand FIRST READING, Ez 37:1-14");
+    const toggle = screen.getByLabelText("Expand GOSPEL, Mt 22:34-40");
     await fireEvent.press(toggle);
 
-    const scrollView = screen.getByLabelText("FIRST READING, Ez 37:1-14, Scripture text");
+    const scrollView = screen.getByLabelText("GOSPEL, Mt 22:34-40, Scripture text");
     await fireEvent(scrollView, "layout", { nativeEvent: { layout: { height: 300 } } });
     await fireEvent(scrollView, "contentSizeChange", 0, 300);
 
@@ -223,27 +228,72 @@ describe("DailyLiturgyDashboard", () => {
       await fireEvent.press(screen.getByText("Mark as Read"));
     });
 
-    expect(markDailyReadingComplete).toHaveBeenCalledWith(expect.objectContaining({ readingId: "first-reading" }));
+    await waitFor(() =>
+      expect(recordDailyScriptureCompletion).toHaveBeenCalledWith(
+        expect.objectContaining({ idempotencyKey: "00000000-0000-4000-8000-000000000000", readingDate: "2026-08-21" }),
+      ),
+    );
+    expect(screen.getByText("2 of 2 completed")).toBeTruthy();
+    randomUUID.mockRestore();
   });
 
-  it("shows all readings as completed when the same daily Scripture set was already recorded", async () => {
-    const completedProgress = {
-      completedAt: "2026-08-21T21:22:25.672Z",
-      completedReadingIds: ["first-reading", "gospel"],
-      country: "US",
-      date: "2026-08-21",
-    };
-    fetchCompletedDailyScriptureActivity.mockResolvedValue({ completedAt: "2026-08-21T21:22:25.672Z" });
-    markReadingsCompletedFromRecordedActivity.mockResolvedValue(completedProgress);
+  it("shows all readings as completed when the liturgy response is already completed", async () => {
+    fetchTodayLiturgy.mockResolvedValue({
+      ...liturgy,
+      completion: { completed: true, completedAt: "2026-08-21T21:22:25.672Z" },
+    });
 
     await render(<DailyLiturgyDashboard />);
 
     await waitFor(() => expect(screen.getByText("2 of 2 completed")).toBeTruthy());
-    expect(markReadingsCompletedFromRecordedActivity).toHaveBeenCalledWith({
-      completedAt: "2026-08-21T21:22:25.672Z",
+  });
+
+  it("marks the final reading complete when the completion endpoint replays a prior request", async () => {
+    markDailyReadingComplete.mockResolvedValue({
+      allReadingsCompleted: true,
+      didCompleteAllReadings: true,
+      progress: { completedReadingIds: ["first-reading", "gospel"], country: "US", date: "2026-08-21" },
+    });
+    recordDailyScriptureCompletion.mockResolvedValue({ completed: true, completedAt: null });
+    loadDailyReadingProgress.mockResolvedValue({
+      completedReadingIds: ["first-reading"],
       country: "US",
       date: "2026-08-21",
-      readingIds: ["first-reading", "gospel"],
     });
+    await render(<DailyLiturgyDashboard />);
+    await waitFor(() => expect(screen.getByText("Mt 22:34-40")).toBeTruthy());
+
+    await fireEvent.press(screen.getByLabelText("Expand GOSPEL, Mt 22:34-40"));
+    const scrollView = screen.getByLabelText("GOSPEL, Mt 22:34-40, Scripture text");
+    await fireEvent(scrollView, "layout", { nativeEvent: { layout: { height: 300 } } });
+    await fireEvent(scrollView, "contentSizeChange", 0, 300);
+    await fireEvent.press(screen.getByText("Mark as Read"));
+
+    await waitFor(() => expect(screen.getByText("2 of 2 completed")).toBeTruthy());
+  });
+
+  it("keeps the final reading incomplete and displays a retryable error when completion fails", async () => {
+    markDailyReadingComplete.mockResolvedValue({
+      allReadingsCompleted: true,
+      didCompleteAllReadings: true,
+      progress: { completedReadingIds: ["first-reading", "gospel"], country: "US", date: "2026-08-21" },
+    });
+    recordDailyScriptureCompletion.mockRejectedValue(new Error("Network error"));
+    loadDailyReadingProgress.mockResolvedValue({
+      completedReadingIds: ["first-reading"],
+      country: "US",
+      date: "2026-08-21",
+    });
+    await render(<DailyLiturgyDashboard />);
+    await waitFor(() => expect(screen.getByText("Mt 22:34-40")).toBeTruthy());
+
+    await fireEvent.press(screen.getByLabelText("Expand GOSPEL, Mt 22:34-40"));
+    const scrollView = screen.getByLabelText("GOSPEL, Mt 22:34-40, Scripture text");
+    await fireEvent(scrollView, "layout", { nativeEvent: { layout: { height: 300 } } });
+    await fireEvent(scrollView, "contentSizeChange", 0, 300);
+    await fireEvent.press(screen.getByText("Mark as Read"));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("Your reading could not be saved. Please try again.");
+    expect(screen.getByText("1 of 2 completed")).toBeTruthy();
   });
 });

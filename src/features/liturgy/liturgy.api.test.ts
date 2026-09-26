@@ -1,7 +1,6 @@
 import {
   fetchLiturgyReadings,
   fetchTodayLiturgy,
-  fetchCompletedDailyScriptureActivity,
   parseDailyLiturgy,
   recordDailyScriptureCompletion,
 } from "./liturgy.api";
@@ -23,6 +22,7 @@ const liturgyPayload = {
       season: "ORDINARY_TIME",
     },
     cycles: { psalterWeek: 4, sunday: "A", weekday: "II" },
+    completion: { completed: false, completedAt: null },
     date: testDate,
     metadata: { country: testCountry },
     readings: [
@@ -49,6 +49,7 @@ describe("Daily Liturgy API", () => {
       citation: "Mt 22:34-40",
       text: "You shall love the Lord, your God, with all your heart.",
     });
+    expect(liturgy.completion).toEqual({ completed: false, completedAt: null });
   });
 
   it("uses a localized citation when the response supplies one", () => {
@@ -71,68 +72,43 @@ describe("Daily Liturgy API", () => {
     expect(liturgy.highlightedVerse?.citation).toBe("Juan 3, 16");
   });
 
-  it("sends timestamps and an idempotency key when recording the reward", async () => {
+  it("defaults an older liturgy response without completion data to incomplete", () => {
+    const { completion: _completion, ...olderData } = liturgyPayload.data;
+
+    expect(parseDailyLiturgy({ data: olderData }).completion).toEqual({ completed: false, completedAt: null });
+  });
+
+  it("records the liturgy date with an idempotency key and returns the authoritative completion", async () => {
     const fetchMock = jest.fn(async () => ({
-      json: async () => ({ data: { replayed: false, xp: { currentLevel: 2, points: 15, totalXp: 365 } } }),
+      json: async () => ({ data: { completion: { completed: true, completedAt: "2026-08-21T21:22:25.672Z" } } }),
       ok: true,
+      status: 201,
     }));
     globalThis.fetch = fetchMock as unknown as typeof fetch;
 
     await expect(
       recordDailyScriptureCompletion({
-        completedAt: "2026-08-21T21:22:25.672Z",
-        country: "US",
         idempotencyKey: "daily-liturgy-key",
-        occurredAt: "2026-08-21T21:22:25.672Z",
-        passage: "Ez 37:1-14 | Mt 22:34-40",
-        quantity: 2,
-        date: "2026-08-21",
+        readingDate: "2026-08-21",
       }),
-    ).resolves.toEqual({ currentLevel: 2, points: 15, replayed: false, totalXp: 365 });
+    ).resolves.toEqual({ completed: true, completedAt: "2026-08-21T21:22:25.672Z" });
 
-    const [, request] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
+    const [url, request] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
+    expect(url).toBe("http://localhost:3000/api/v1/me/daily-scripture/completions");
     expect(request.headers).toMatchObject({
       Authorization: "Bearer test-access-token",
+      "Content-Type": "application/json",
       "Idempotency-Key": "daily-liturgy-key",
     });
-    expect(JSON.parse(String(request.body))).toMatchObject({
-      activityCode: "SCRIPTURE",
-      completedAt: "2026-08-21T21:22:25.672Z",
-      countryCode: "US",
-      metadata: {
-        liturgyDate: "2026-08-21",
-        passage: "Ez 37:1-14 | Mt 22:34-40",
-        source: "daily_liturgy_completion",
-      },
-      occurredAt: "2026-08-21T21:22:25.672Z",
-      quantity: 2,
-    });
+    expect(JSON.parse(String(request.body))).toEqual({ readingDate: "2026-08-21" });
   });
 
-  it("finds an already completed daily Scripture activity by its date or passage", async () => {
-    const fetchMock = jest.fn(async () => ({
-      json: async () => ({
-        data: [
-          {
-            activity_code: "SCRIPTURE",
-            completed_at: "2026-08-21T21:22:25.672Z",
-            metadata: { passage: "Ez 37:1-14 | Mt 22:34-40" },
-          },
-        ],
-        meta: { hasMore: false, limit: 20, nextCursor: null },
-      }),
-      ok: true,
-    }));
-    globalThis.fetch = fetchMock as unknown as typeof fetch;
+  it("treats a 200 completion response as an idempotent replay", async () => {
+    globalThis.fetch = jest.fn(async () => ({ ok: true, status: 200 })) as unknown as typeof fetch;
 
     await expect(
-      fetchCompletedDailyScriptureActivity({ date: "2026-08-21", passage: "Ez 37:1-14 | Mt 22:34-40" }),
-    ).resolves.toEqual({ completedAt: "2026-08-21T21:22:25.672Z" });
-
-    expect(fetchMock).toHaveBeenCalledWith("http://localhost:3000/api/v1/activities?activityCode=SCRIPTURE", {
-      headers: { Accept: "application/json", Authorization: "Bearer test-access-token" },
-      method: "GET",
-    });
+      recordDailyScriptureCompletion({ idempotencyKey: "replayed-key", readingDate: "2026-08-21" }),
+    ).resolves.toEqual({ completed: true, completedAt: null });
   });
 
   it("normalizes every supported color and reading type while safely omitting invalid readings", () => {
@@ -219,24 +195,6 @@ describe("Daily Liturgy API", () => {
     ]);
   });
 
-  it("provides safe default reward values", async () => {
-    globalThis.fetch = jest.fn(async () => ({
-      json: async () => ({ data: { replayed: true, xp: { currentLevel: "two", points: null, totalXp: undefined } } }),
-      ok: true,
-    })) as unknown as typeof fetch;
-    await expect(
-      recordDailyScriptureCompletion({
-        completedAt: "2026-08-21T21:22:25.672Z",
-        country: "US",
-        idempotencyKey: "safe-defaults",
-        occurredAt: "2026-08-21T21:22:25.672Z",
-        passage: "Ez 37:1-14",
-        quantity: 1,
-        date: "2026-08-21",
-      }),
-    ).resolves.toEqual({ currentLevel: 0, points: 0, replayed: true, totalXp: 0 });
-  });
-
   it("rejects unavailable, unsuccessful, and malformed network responses", async () => {
     globalThis.fetch = jest.fn(async () => ({ ok: false, status: 503 })) as unknown as typeof fetch;
     await expect(fetchTodayLiturgy("en-US")).rejects.toThrow("Unable to load daily liturgy (503)");
@@ -244,15 +202,10 @@ describe("Daily Liturgy API", () => {
     globalThis.fetch = jest.fn(async () => ({ json: async () => ({ data: {} }), ok: true })) as unknown as typeof fetch;
     await expect(
       recordDailyScriptureCompletion({
-        completedAt: "2026-08-21T21:22:25.672Z",
-        country: "US",
         idempotencyKey: "bad-reward",
-        occurredAt: "2026-08-21T21:22:25.672Z",
-        passage: "Ez 37:1-14",
-        quantity: 1,
-        date: "2026-08-21",
+        readingDate: "2026-08-21",
       }),
-    ).rejects.toThrow("unexpected reward response");
+    ).rejects.toThrow("unexpected response");
 
     delete process.env.EXPO_PUBLIC_API_URL;
     await expect(fetchTodayLiturgy("en-US")).rejects.toThrow("Set EXPO_PUBLIC_API_URL");
@@ -286,13 +239,8 @@ describe("Daily Liturgy API", () => {
     globalThis.fetch = jest.fn(async () => ({ ok: false, status: 503 })) as unknown as typeof fetch;
     await expect(
       recordDailyScriptureCompletion({
-        completedAt: "2026-08-21T21:22:25.672Z",
-        country: "US",
         idempotencyKey: "failed-completion",
-        occurredAt: "2026-08-21T21:22:25.672Z",
-        passage: "Ez 37:1-14",
-        quantity: 1,
-        date: "2026-08-21",
+        readingDate: "2026-08-21",
       }),
     ).rejects.toThrow("Unable to record daily Scripture completion (503)");
   });

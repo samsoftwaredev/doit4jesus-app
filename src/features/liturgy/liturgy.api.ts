@@ -1,4 +1,4 @@
-import type { DailyLiturgyViewModel, LiturgicalColor, ReadingType } from "./liturgy.types";
+import type { DailyLiturgyViewModel, DailyScriptureCompletion, LiturgicalColor, ReadingType } from "./liturgy.types";
 import { getSupabaseAccessToken } from "@/lib/supabase";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -52,6 +52,16 @@ function readReadingType(value: unknown): ReadingType {
   throw new Error("The liturgy endpoint returned an unsupported reading type.");
 }
 
+/** Parses the server's date-level Scripture completion while accepting older liturgy payloads. */
+function readDailyScriptureCompletion(value: unknown): DailyScriptureCompletion {
+  if (!isRecord(value) || typeof value.completed !== "boolean") return { completed: false, completedAt: null };
+
+  return {
+    completed: value.completed,
+    completedAt: typeof value.completedAt === "string" ? value.completedAt : null,
+  };
+}
+
 function createReadingId(type: ReadingType, citation: string, index: number) {
   return `${type.toLowerCase()}:${citation.toLowerCase().replace(/[^a-z0-9]+/g, "-")}:${index}`;
 }
@@ -69,32 +79,6 @@ function createGospelExcerpt(readings: DailyLiturgyViewModel["readings"]) {
   if (!excerpt) return undefined;
 
   return { citation: gospel.citation, text: excerpt };
-}
-
-/**
- * Finds a completed Scripture activity for the liturgy day or its exact set of passages.
- * The passage match preserves compatibility with activities saved before `liturgyDate` metadata
- * was introduced.
- */
-function parseCompletedDailyScriptureActivity(value: unknown, input: { date: string; passage: string }) {
-  if (!isRecord(value) || !Array.isArray(value.data)) {
-    throw new Error("The activity endpoint returned an unexpected Scripture activity response.");
-  }
-
-  for (const rawActivity of value.data) {
-    if (!isRecord(rawActivity) || rawActivity.activity_code !== "SCRIPTURE" || !isRecord(rawActivity.metadata)) {
-      continue;
-    }
-
-    const matchesLiturgy = rawActivity.metadata.liturgyDate === input.date;
-    const matchesPassage = rawActivity.metadata.passage === input.passage;
-    if (!matchesLiturgy && !matchesPassage) continue;
-
-    const completedAt = rawActivity.completed_at ?? rawActivity.occurred_at;
-    if (typeof completedAt === "string" && completedAt.length > 0) return { completedAt };
-  }
-
-  return null;
 }
 
 /** Parses the API payload into stable reading IDs while favoring server-localized display citations. */
@@ -141,6 +125,7 @@ function parseDailyLiturgy(value: unknown): DailyLiturgyViewModel {
       name: readString(celebration.name, "celebration name"),
       season: readString(celebration.season, "liturgical season"),
     },
+    completion: readDailyScriptureCompletion(data.completion),
     date: readString(data.date, "date"),
     highlightedVerse: createGospelExcerpt(readings),
     metadata: {
@@ -195,46 +180,14 @@ export function fetchLiturgyReadings(date: string, locale: string) {
   );
 }
 
-/** Loads an existing completion so the same daily Scripture set is not recorded twice across devices. */
-export async function fetchCompletedDailyScriptureActivity(input: { date: string; passage: string }) {
-  const { accessToken, apiUrl } = await getRequestConfig();
-  const response = await fetch(`${apiUrl}/api/v1/activities?activityCode=SCRIPTURE`, {
-    headers: { Accept: "application/json", Authorization: `Bearer ${accessToken}` },
-    method: "GET",
-  });
-
-  if (!response.ok) throw new Error(`Unable to load Scripture activities (${response.status}).`);
-  return parseCompletedDailyScriptureActivity((await response.json()) as unknown, input);
-}
-
-export interface RecordDailyScriptureCompletionResult {
-  points: number;
-  totalXp: number;
-  currentLevel: number;
-  replayed: boolean;
-}
-
-/** Records the completed daily Scripture set once, using the supplied stable idempotency key. */
+/** Records one liturgical day's completed Scripture set and returns the server's authoritative state. */
 export async function recordDailyScriptureCompletion(input: {
-  country: string;
-  date: string;
-  occurredAt: string;
-  completedAt: string;
   idempotencyKey: string;
-  passage: string;
-  quantity: number;
-}): Promise<RecordDailyScriptureCompletionResult> {
+  readingDate: string;
+}): Promise<DailyScriptureCompletion> {
   const { accessToken, apiUrl } = await getRequestConfig();
-  const response = await fetch(`${apiUrl}/api/v1/activities`, {
-    body: JSON.stringify({
-      activityCode: "SCRIPTURE",
-      completedAt: input.completedAt,
-      countryCode: input.country,
-      durationSeconds: 0,
-      metadata: { liturgyDate: input.date, passage: input.passage, source: "daily_liturgy_completion" },
-      occurredAt: input.occurredAt,
-      quantity: Math.max(1, Math.floor(input.quantity)),
-    }),
+  const response = await fetch(`${apiUrl}/api/v1/me/daily-scripture/completions`, {
+    body: JSON.stringify({ readingDate: input.readingDate }),
     headers: {
       Accept: "application/json",
       Authorization: `Bearer ${accessToken}`,
@@ -245,19 +198,16 @@ export async function recordDailyScriptureCompletion(input: {
   });
 
   if (!response.ok) throw new Error(`Unable to record daily Scripture completion (${response.status}).`);
+  if (response.status === 200) return { completed: true, completedAt: null };
 
   const payload = (await response.json()) as unknown;
-  if (!isRecord(payload) || !isRecord(payload.data) || !isRecord(payload.data.xp)) {
-    throw new Error("The activity endpoint returned an unexpected reward response.");
+  if (!isRecord(payload) || !isRecord(payload.data) || !isRecord(payload.data.completion)) {
+    throw new Error("The daily Scripture completion endpoint returned an unexpected response.");
   }
 
-  const xp = payload.data.xp;
-  return {
-    currentLevel: typeof xp.currentLevel === "number" ? xp.currentLevel : 0,
-    points: typeof xp.points === "number" ? xp.points : 0,
-    replayed: payload.data.replayed === true,
-    totalXp: typeof xp.totalXp === "number" ? xp.totalXp : 0,
-  };
+  const completion = readDailyScriptureCompletion(payload.data.completion);
+  if (!completion.completed) throw new Error("The daily Scripture completion endpoint did not mark the day complete.");
+  return completion;
 }
 
 export { parseDailyLiturgy };

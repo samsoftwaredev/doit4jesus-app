@@ -1,20 +1,10 @@
-export {
-  fetchCompletedDailyScriptureActivity,
-  fetchLiturgyReadings,
-  fetchTodayLiturgy,
-  recordDailyScriptureCompletion,
-} from "./liturgy.api";
-export {
-  loadDailyReadingProgress,
-  markCompletionToastShown,
-  markDailyReadingComplete,
-  markReadingsCompletedFromRecordedActivity,
-  recordRewardOnProgress,
-} from "./liturgy.progress";
+export { fetchLiturgyReadings, fetchTodayLiturgy, recordDailyScriptureCompletion } from "./liturgy.api";
+export { loadDailyReadingProgress, markDailyReadingComplete } from "./liturgy.progress";
 export type {
   DailyLiturgyViewModel,
   DailyReading,
   DailyReadingProgress,
+  DailyScriptureCompletion,
   LiturgicalColor,
   ReadingType,
 } from "./liturgy.types";
