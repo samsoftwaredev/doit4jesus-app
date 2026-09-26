@@ -4,7 +4,6 @@ import { useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  Alert,
   KeyboardAvoidingView,
   Linking,
   Modal,
@@ -51,7 +50,7 @@ export function formatProfileLocation(profile: CurrentUserProfile): string {
   return country || "Country unavailable";
 }
 
-/** Renders profile management and settings within the shared atmosphere. */
+/** Renders profile management, destructive-account confirmation, and settings within the shared atmosphere. */
 export function ProfileSettingsScreen() {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
@@ -66,6 +65,7 @@ export function ProfileSettingsScreen() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [isDeletingProfile, setIsDeletingProfile] = useState(false);
+  const [deleteConfirmationVisible, setDeleteConfirmationVisible] = useState(false);
   const signOutInFlightRef = useRef(false);
   const deleteProfileInFlightRef = useRef(false);
   const [nameEditorVisible, setNameEditorVisible] = useState(false);
@@ -141,17 +141,16 @@ export function ProfileSettingsScreen() {
     }
   };
 
+  /** Opens the in-app confirmation dialog before any irreversible profile deletion can begin. */
   const showDeleteProfileConfirmation = () => {
     if (isDeletingProfile || isSigningOut) return;
+    setDeleteConfirmationVisible(true);
+  };
 
-    Alert.alert(t("profile.deleteConfirmation.title"), t("profile.deleteConfirmation.description"), [
-      { style: "cancel", text: t("common.cancel") },
-      {
-        style: "destructive",
-        text: t("profile.deleteAccount"),
-        onPress: () => void deleteProfile(),
-      },
-    ]);
+  /** Closes the confirmation dialog and starts the irreversible delete request exactly once. */
+  const confirmDeleteProfile = () => {
+    setDeleteConfirmationVisible(false);
+    void deleteProfile();
   };
 
   const deleteProfile = async () => {
@@ -349,6 +348,42 @@ export function ProfileSettingsScreen() {
           />
         </>
       ) : null}
+
+      <Modal
+        animationType="fade"
+        onRequestClose={() => setDeleteConfirmationVisible(false)}
+        transparent
+        visible={deleteConfirmationVisible}
+      >
+        <View style={styles.modalBackdrop}>
+          <View accessibilityViewIsModal style={styles.dialog}>
+            <Text accessibilityRole="header" style={styles.dialogTitle}>
+              {t("profile.deleteConfirmation.title")}
+            </Text>
+            <Text style={styles.dialogCopy}>{t("profile.deleteConfirmation.description")}</Text>
+            <View style={styles.dialogActions}>
+              <Button
+                disabled={isDeletingProfile}
+                onPress={() => setDeleteConfirmationVisible(false)}
+                size="sm"
+                variant="ghost"
+              >
+                {t("common.cancel")}
+              </Button>
+              <Button
+                disabled={isDeletingProfile}
+                loading={isDeletingProfile}
+                onPress={confirmDeleteProfile}
+                size="sm"
+                style={styles.deleteButton}
+                variant="warning"
+              >
+                {t("profile.deleteAccount")}
+              </Button>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </AtmosphericSafeAreaView>
   );
 }
@@ -547,6 +582,9 @@ const styleSheet = createThemedStyles((theme) => ({
   dialogTitle: {
     ...theme.typography.heading3,
     color: theme.colors.text.primary,
+  },
+  deleteButton: {
+    minWidth: 132,
   },
   errorCard: {
     backgroundColor: theme.colors.semantic.warningSurface,

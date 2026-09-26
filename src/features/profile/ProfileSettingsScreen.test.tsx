@@ -1,5 +1,5 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react-native";
-import { Alert, Linking } from "react-native";
+import { Linking } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import type { CurrentUserProfile } from "@/features/profile";
@@ -188,30 +188,24 @@ describe("Profile settings", () => {
     expect(mockSignOut).toHaveBeenCalledTimes(1);
   });
 
-  it("confirms before permanently deleting the profile, then signs out", async () => {
-    const alert = jest.spyOn(Alert, "alert");
+  it("opens an accessible dialog before permanently deleting the profile, then signs out", async () => {
     await renderProfile();
 
     await fireEvent.press(screen.getByText("Delete Account"));
-    expect(alert).toHaveBeenCalledWith(
-      "Delete account?",
-      "This permanently deletes your Do It for Jesus profile and cannot be undone.",
-      expect.any(Array),
-    );
+    expect(await screen.findByRole("header", { name: "Delete account?" })).toBeTruthy();
+    expect(
+      screen.getByText("This permanently deletes your Do It for Jesus profile and cannot be undone."),
+    ).toBeTruthy();
     expect(mockDeleteProfile).not.toHaveBeenCalled();
 
-    const buttons = alert.mock.calls[0]?.[2] ?? [];
-    const confirm = buttons.find((button) => button.text === "Delete Account");
     await act(async () => {
-      confirm?.onPress?.();
-      confirm?.onPress?.();
+      await fireEvent.press(screen.getAllByRole("button", { name: "Delete Account" }).at(-1)!);
     });
 
     await waitFor(() => {
       expect(mockDeleteProfile).toHaveBeenCalledTimes(1);
       expect(mockSignOut).toHaveBeenCalledTimes(1);
     });
-    alert.mockRestore();
   });
 
   it("shows a recoverable profile error without hiding static settings", async () => {
