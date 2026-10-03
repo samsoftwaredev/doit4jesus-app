@@ -2,6 +2,7 @@ import { setAudioModeAsync, useAudioPlayer, useAudioPlayerStatus } from "expo-au
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { ROSARY_AUDIO_SOURCES } from "../../../../../assets/audios";
+import { logDevelopmentError } from "@/lib/development-logger";
 
 interface UseRosaryAudioPlaybackOptions {
   audioQueue?: readonly string[];
@@ -56,6 +57,7 @@ export function useRosaryAudioPlayback({
           shouldPlayInBackground: false,
         });
       } catch (error) {
+        logDevelopmentError("configuring Rosary audio", error);
         setLocalError(getErrorMessage(error));
       }
     }
@@ -77,6 +79,7 @@ export function useRosaryAudioPlayback({
     try {
       player.replace(firstSource);
     } catch (error) {
+      logDevelopmentError("preparing Rosary audio", error);
       setLocalError(getErrorMessage(error));
     }
   }, [player, queueKey, resolvedSources]);
@@ -97,6 +100,7 @@ export function useRosaryAudioPlayback({
     try {
       player.play();
     } catch (error) {
+      logDevelopmentError("starting Rosary audio", error);
       setLocalError(getErrorMessage(error));
     }
   }, [isMuted, isPreferenceHydrated, player, queueKey, resolvedSources]);
@@ -128,6 +132,7 @@ export function useRosaryAudioPlayback({
       player.replace(nextSource);
       player.play();
     } catch (error) {
+      logDevelopmentError("advancing Rosary audio", error);
       setLocalError(getErrorMessage(error));
     }
   }, [isMuted, onQueueComplete, player, queueKey, resolvedSources, status.didJustFinish, status.error]);
@@ -158,6 +163,7 @@ export function useRosaryAudioPlayback({
       player.play();
       setLocalError(null);
     } catch (error) {
+      logDevelopmentError("toggling Rosary audio", error);
       setLocalError(getErrorMessage(error));
     }
   }, [isMuted, onRequestUnmute, player, resolvedSources, status.didJustFinish, status.playing]);

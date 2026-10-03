@@ -8,25 +8,25 @@ describe("onboarding step mapping", () => {
       displayName: 1,
       gender: 3,
       name: 1,
-      notifications: 5,
       username: 2,
     });
+    expect(onboardingStepMap).not.toHaveProperty("notifications");
   });
 
-  it("uses nextStep before missing fields and resumes at notifications", () => {
+  it("uses nextStep before missing fields and resumes at the final country step", () => {
     expect(
-      getResumeStep({ complete: false, completedAt: null, missingFields: ["displayName"], nextStep: "notifications" }),
-    ).toBe(5);
+      getResumeStep({ complete: false, completedAt: null, missingFields: ["displayName"], nextStep: "country" }),
+    ).toBe(4);
   });
 
   it("recognizes the backend's name alias for the first onboarding screen", () => {
     expect(getResumeStep({ complete: false, completedAt: null, missingFields: ["country"], nextStep: "name" })).toBe(1);
   });
 
-  it("uses the first missing field and treats no missing fields as All Set", () => {
+  it("uses the first missing field and treats no missing fields as the final country step", () => {
     expect(getResumeStep({ complete: false, completedAt: null, missingFields: ["countryCode"], nextStep: null })).toBe(
       4,
     );
-    expect(getResumeStep({ complete: false, completedAt: null, missingFields: [], nextStep: null })).toBe(6);
+    expect(getResumeStep({ complete: false, completedAt: null, missingFields: [], nextStep: null })).toBe(4);
   });
 });

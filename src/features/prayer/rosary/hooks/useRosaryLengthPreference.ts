@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { DEFAULT_ROSARY_LENGTH, isRosaryLength } from "@/features/prayer/rosary/data/rosaryLengths";
 import type { RosaryStorageAdapter } from "@/features/prayer/rosary/hooks/useRosarySession";
 import type { RosaryLength } from "@/features/prayer/rosary/types";
+import { logDevelopmentError } from "@/lib/development-logger";
 
 const STORAGE_KEY = "@doit4jesus/rosary-length/v1";
 
@@ -24,7 +25,8 @@ export function useRosaryLengthPreference(storage: RosaryStorageAdapter = AsyncS
       try {
         const savedLength = await storage.getItem(STORAGE_KEY);
         if (active && isRosaryLength(savedLength)) setLength(savedLength);
-      } catch {
+      } catch (error) {
+        logDevelopmentError("loading the Rosary length preference", error);
         if (active) setStorageError(true);
       } finally {
         if (active) setIsHydrated(true);
@@ -42,7 +44,8 @@ export function useRosaryLengthPreference(storage: RosaryStorageAdapter = AsyncS
       setLength(length);
       try {
         await storage.setItem(STORAGE_KEY, length);
-      } catch {
+      } catch (error) {
+        logDevelopmentError("saving the Rosary length preference", error);
         setStorageError(true);
       }
     },

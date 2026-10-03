@@ -14,6 +14,7 @@ import {
 } from "@/features/friends/components";
 import { removeFriend } from "@/features/friends/friends.api";
 import { useFriendProfile } from "@/features/friends/friends.hooks";
+import { logDevelopmentError } from "@/lib/development-logger";
 import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 
@@ -52,7 +53,8 @@ export function FriendProfileScreen({ friendId }: { friendId: string | undefined
       await removeFriend(friendId);
       setIsRemoveConfirmationVisible(false);
       router.replace("/community");
-    } catch {
+    } catch (error) {
+      logDevelopmentError("removing a friend", error);
       setRemoveError(true);
     } finally {
       removalInFlight.current = false;

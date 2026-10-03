@@ -4,6 +4,7 @@ import { Pressable, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { Card } from "@/components/ui";
+import { logDevelopmentError } from "@/lib/development-logger";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
@@ -50,7 +51,8 @@ export function EarnedBadgesSection({ initialData }: { initialData?: ScreenDataR
     try {
       const section = initialData?.sections.badges;
       setCatalog(section ? parseBadgeCatalogData(section.data) : await fetchBadgeCatalog());
-    } catch {
+    } catch (error) {
+      logDevelopmentError("loading earned badges", error);
       setCatalog([]);
       setHasError(true);
     } finally {

@@ -122,20 +122,16 @@ describe("onboarding API", () => {
     );
   });
 
-  it("transactionally completes onboarding with the full payload", async () => {
-    globalThis.fetch = jest.fn(async () =>
-      response({ data: { notificationPreferences: preferences, profile: completeProfile } }),
-    ) as unknown as typeof fetch;
+  it("completes onboarding with the required profile fields only", async () => {
+    globalThis.fetch = jest.fn(async () => response({ data: { profile: completeProfile } })) as unknown as typeof fetch;
     const payload = {
       countryCode: "US",
       displayName: "Virgin Mary",
       gender: "male" as const,
-      notificationPreferences: preferences,
       username: "VirginMary",
     };
 
     await expect(completeOnboarding(payload)).resolves.toMatchObject({
-      notificationPreferences: preferences,
       profile: { profileSetup: { complete: true } },
     });
     expect(globalThis.fetch).toHaveBeenCalledWith(

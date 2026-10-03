@@ -1,43 +1,27 @@
-import { Image } from "expo-image";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Tabs } from "expo-router";
-import { Platform, useWindowDimensions } from "react-native";
+import { type ColorValue, Platform, useWindowDimensions } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { useAppTheme } from "@/theme/AppThemeProvider";
-import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
-const tabArtworkSources = {
-  community: require("../../../assets/images/tabs/community.svg"),
-  home: require("../../../assets/images/tabs/home.svg"),
-  prayer: require("../../../assets/images/tabs/prayer.svg"),
-  profile: require("../../../assets/images/tabs/profile.svg"),
+const tabIconNames = {
+  community: "account-group-outline",
+  home: "home-variant-outline",
+  prayer: "hands-pray",
+  profile: "account-circle-outline",
 } as const;
 
-type TabArtworkIconProps = {
-  focused: boolean;
+type TabIconProps = {
+  color: ColorValue;
+  name: (typeof tabIconNames)[keyof typeof tabIconNames];
   size: number;
-  source: number;
 };
 
-/** Renders decorative tab artwork while leaving the route label as the accessible name. */
-function TabArtworkIcon({ focused, size, source }: TabArtworkIconProps) {
-  const styles = useThemedStyles(styleSheet);
-  return (
-    <Image
-      accessible={false}
-      contentFit="cover"
-      source={source}
-      style={[
-        styles.tabArtwork,
-        {
-          height: size,
-          opacity: focused ? theme.opacity.full : theme.opacity.muted,
-          width: size,
-        },
-      ]}
-    />
-  );
+/** Renders a decorative navigation glyph while the tab label remains the accessible name. */
+function TabIcon({ color, name, size }: TabIconProps) {
+  return <MaterialCommunityIcons accessible={false} color={color} name={name} size={size} />;
 }
 
 /** Keeps bottom tabs through tablet widths and presents an expanded side rail on desktop. */
@@ -105,9 +89,7 @@ export function ResponsiveTabs() {
         name="home"
         options={{
           tabBarAccessibilityLabel: t("navigation.homeTab"),
-          tabBarIcon: ({ focused, size }) => (
-            <TabArtworkIcon focused={focused} size={size} source={tabArtworkSources.home} />
-          ),
+          tabBarIcon: ({ color, size }) => <TabIcon color={color} name={tabIconNames.home} size={size} />,
           title: t("navigation.home"),
         }}
       />
@@ -115,9 +97,7 @@ export function ResponsiveTabs() {
         name="prayer"
         options={{
           tabBarAccessibilityLabel: t("navigation.prayerTab"),
-          tabBarIcon: ({ focused, size }) => (
-            <TabArtworkIcon focused={focused} size={size} source={tabArtworkSources.prayer} />
-          ),
+          tabBarIcon: ({ color, size }) => <TabIcon color={color} name={tabIconNames.prayer} size={size} />,
           title: t("navigation.prayer"),
         }}
       />
@@ -125,9 +105,7 @@ export function ResponsiveTabs() {
         name="community"
         options={{
           tabBarAccessibilityLabel: t("navigation.communityTab"),
-          tabBarIcon: ({ focused, size }) => (
-            <TabArtworkIcon focused={focused} size={size} source={tabArtworkSources.community} />
-          ),
+          tabBarIcon: ({ color, size }) => <TabIcon color={color} name={tabIconNames.community} size={size} />,
           title: t("navigation.community"),
         }}
       />
@@ -135,18 +113,10 @@ export function ResponsiveTabs() {
         name="profile"
         options={{
           tabBarAccessibilityLabel: t("navigation.profileTab"),
-          tabBarIcon: ({ focused, size }) => (
-            <TabArtworkIcon focused={focused} size={size} source={tabArtworkSources.profile} />
-          ),
+          tabBarIcon: ({ color, size }) => <TabIcon color={color} name={tabIconNames.profile} size={size} />,
           title: t("navigation.profile"),
         }}
       />
     </Tabs>
   );
 }
-
-const styleSheet = createThemedStyles((theme) => ({
-  tabArtwork: {
-    borderRadius: theme.radii.xs,
-  },
-}));

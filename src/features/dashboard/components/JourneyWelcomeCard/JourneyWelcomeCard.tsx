@@ -90,13 +90,6 @@ export function JourneyWelcomeCard({ displayName, gender }: JourneyWelcomeCardPr
                   />
                 </View>
                 <Text style={styles.tab}>{t(row.labelKey)}</Text>
-                <MaterialCommunityIcons
-                  accessible={false}
-                  color={theme.colors.text.muted}
-                  name="chevron-right"
-                  size={theme.sizes.iconSmall}
-                  testID={`journey-row-chevron-${index}`}
-                />
               </View>
               {index < journeyRows.length - 1 ? <View accessible={false} style={styles.rowDivider} /> : null}
             </View>

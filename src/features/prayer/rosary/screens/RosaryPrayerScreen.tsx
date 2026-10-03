@@ -38,6 +38,7 @@ import { useRosaryArtStylePreference } from "@/features/prayer/rosary/hooks/useR
 import { useRosaryLengthPreference } from "@/features/prayer/rosary/hooks/useRosaryLengthPreference";
 import { useRosarySession } from "@/features/prayer/rosary/hooks/useRosarySession";
 import type { RosaryArtStyle, RosaryBead, RosaryLength, RosaryMysteryType } from "@/features/prayer/rosary/types";
+import { logDevelopmentError } from "@/lib/development-logger";
 import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
@@ -280,11 +281,13 @@ export function RosaryPrayerScreen({
           const intentionResult = await recordPrayerForIntention(intentionId);
           intentionPrayerRecorded.current = true;
           setIntentionPrayerCount(intentionResult.prayerCount);
-        } catch {
+        } catch (error) {
+          logDevelopmentError("recording a Rosary prayer for an intention", error);
           setCompletionError(t("rosary.completion.intentionError"));
         }
       }
     } catch (error) {
+      logDevelopmentError("recording Rosary completion", error);
       setCompletionError(error instanceof Error ? error.message : t("rosary.completion.saveError"));
     } finally {
       completionRequestInFlight.current = false;
@@ -454,13 +457,11 @@ export function RosaryPrayerScreen({
           </ScrollView>
 
           <RosaryBottomNavigation
-            activeDecadeIndex={isDecade ? 0 : session.currentMysteryIndex}
             audioAvailable={audioPlayback.isAvailable}
             audioError={Boolean(audioPlayback.playbackError)}
             audioLoading={audioPlayback.isLoading}
             audioMuted={isAudioMuted}
             audioPlaying={audioPlayback.isPlaying}
-            decadeCount={isDecade ? 1 : 5}
             disabled={session.isTransitioning || activeBeads.length === 0}
             onAdvance={session.goToNextBead}
             onArtStyleChange={handleRosaryArtStyleChange}

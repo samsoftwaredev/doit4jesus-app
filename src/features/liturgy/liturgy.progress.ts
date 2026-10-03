@@ -1,5 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import { logDevelopmentError } from "@/lib/development-logger";
+
 import type { DailyReadingProgress, MarkReadingCompleteResult } from "./liturgy.types";
 
 const STORAGE_PREFIX = "@doit4jesus/daily-liturgy-progress/v1";
@@ -33,7 +35,8 @@ function parseProgress(value: string | null, date: string, country: string): Dai
       country: country.toUpperCase(),
       date,
     };
-  } catch {
+  } catch (error) {
+    logDevelopmentError("parsing saved daily Scripture progress", error);
     return defaultProgress(date, country);
   }
 }

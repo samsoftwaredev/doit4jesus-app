@@ -10,6 +10,7 @@ import { getFriends } from "@/features/friends/friends.api";
 import { getProfileAvatarSource } from "@/features/profile/saints";
 import type { RosaryPresenceUser } from "@/features/prayer/rosary/presence.types";
 import { useAppLanguage } from "@/localization";
+import { logDevelopmentError } from "@/lib/development-logger";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
@@ -79,7 +80,8 @@ export function PrayingUsersModal({ currentUserId, onClose, onSelectUser, users,
     try {
       const nextFriendIds = await loadAllFriendIds();
       if (requestId === friendRequestId.current) setFriendIds(nextFriendIds);
-    } catch {
+    } catch (error) {
+      logDevelopmentError("loading praying-user friendships", error);
       if (requestId === friendRequestId.current) {
         setFriendIds(new Set());
         setFriendLoadError(true);

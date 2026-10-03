@@ -14,6 +14,7 @@ import {
   getPrayerIntentionTheme,
 } from "@/features/prayer/intentions";
 import type { PrayerIntentionSymbol } from "@/features/prayer/intentions";
+import { logDevelopmentError } from "@/lib/development-logger";
 import { useAppTheme } from "@/theme/AppThemeProvider";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
@@ -39,6 +40,7 @@ export function CreatePrayerIntentionScreen() {
       invalidateMyPrayerIntentions();
       router.replace("/my-prayer-intentions");
     } catch (requestError) {
+      logDevelopmentError("creating a prayer intention", requestError);
       setError(requestError instanceof Error ? requestError.message : t("intentions.create.submitError"));
     } finally {
       setIsSubmitting(false);

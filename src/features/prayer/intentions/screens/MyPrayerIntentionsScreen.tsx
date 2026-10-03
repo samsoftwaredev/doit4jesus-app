@@ -14,6 +14,7 @@ import {
   subscribeToMyPrayerIntentionsInvalidation,
 } from "@/features/prayer/intentions";
 import type { MyPrayerIntention, MyPrayerIntentionsStatusFilter } from "@/features/prayer/intentions";
+import { logDevelopmentError } from "@/lib/development-logger";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { useAppTheme } from "@/theme/AppThemeProvider";
 import { theme } from "@/theme/tokens";
@@ -54,6 +55,7 @@ export function MyPrayerIntentionsScreen() {
       setHasMore(page.meta.hasMore);
       setNextOffset(page.meta.nextOffset);
     } catch (requestError) {
+      logDevelopmentError("loading personal prayer intentions", requestError);
       setError(requestError instanceof Error ? requestError.message : t("intentions.my.loadError"));
     } finally {
       setIsLoading(false);
@@ -78,6 +80,7 @@ export function MyPrayerIntentionsScreen() {
       setHasMore(page.meta.hasMore);
       setNextOffset(page.meta.nextOffset);
     } catch (requestError) {
+      logDevelopmentError("loading more personal prayer intentions", requestError);
       setError(requestError instanceof Error ? requestError.message : t("intentions.my.loadMoreError"));
     } finally {
       setIsLoadingMore(false);

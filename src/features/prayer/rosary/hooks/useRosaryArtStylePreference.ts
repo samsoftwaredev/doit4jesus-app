@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import type { RosaryStorageAdapter } from "@/features/prayer/rosary/hooks/useRosarySession";
 import type { RosaryArtStyle } from "@/features/prayer/rosary/types";
+import { logDevelopmentError } from "@/lib/development-logger";
 
 const STORAGE_KEY = "@doit4jesus/rosary-art-style/v1";
 
@@ -28,7 +29,8 @@ export function useRosaryArtStylePreference(storage: RosaryStorageAdapter = Asyn
       try {
         const savedStyle = await storage.getItem(STORAGE_KEY);
         if (active && isRosaryArtStyle(savedStyle)) setArtStyle(savedStyle);
-      } catch {
+      } catch (error) {
+        logDevelopmentError("loading the Rosary artwork preference", error);
         if (active) setStorageError(true);
       } finally {
         if (active) setIsHydrated(true);
@@ -46,7 +48,8 @@ export function useRosaryArtStylePreference(storage: RosaryStorageAdapter = Asyn
       setArtStyle(style);
       try {
         await storage.setItem(STORAGE_KEY, style);
-      } catch {
+      } catch (error) {
+        logDevelopmentError("saving the Rosary artwork preference", error);
         setStorageError(true);
       }
     },

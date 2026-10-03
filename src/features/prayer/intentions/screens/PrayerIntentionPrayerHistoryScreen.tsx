@@ -9,6 +9,7 @@ import { BackHeader } from "@/components/navigation";
 import { PrayerIntentionAvatar } from "@/features/prayer/intentions/components";
 import { fetchPrayerIntentionPrayerSummary, getPrayerIntentionTheme } from "@/features/prayer/intentions";
 import type { PrayerIntentionPrayerSummary } from "@/features/prayer/intentions";
+import { logDevelopmentError } from "@/lib/development-logger";
 import { useAppTheme } from "@/theme/AppThemeProvider";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
@@ -39,6 +40,7 @@ export function PrayerIntentionPrayerHistoryScreen() {
     try {
       setSummary(await fetchPrayerIntentionPrayerSummary(intentionId));
     } catch (requestError) {
+      logDevelopmentError("loading prayer intention activity", requestError);
       setError(requestError instanceof Error ? requestError.message : t("intentions.activity.loadError"));
     } finally {
       setIsLoading(false);

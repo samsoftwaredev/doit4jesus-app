@@ -12,6 +12,7 @@ import {
   toIsoDate,
 } from "@/features/prayer/rosary/garden/utils";
 import { fetchCurrentUserProfile } from "@/features/profile/profile.api";
+import { logDevelopmentError } from "@/lib/development-logger";
 import type { RosaryGardenStats, UseRosaryGardenOptions } from "@/features/prayer/rosary/garden/types";
 
 function addMonth(year: number, month: number, amount: number) {
@@ -121,7 +122,8 @@ export function useRosaryGarden(options: UseRosaryGardenOptions = {}) {
         setCompletionDates(new Set(completion.days.filter((day) => day.completed === true).map((day) => day.date)));
         lastLoadedMonth.current = monthKey;
         setIsUsingMockData(false);
-      } catch {
+      } catch (error) {
+        logDevelopmentError("loading Rosary Garden data", error);
         if (!active) return;
         const mock = createRosaryGardenMockData(selected.year, selected.month, timezone);
         setCompletionDates(
@@ -188,7 +190,8 @@ export function useRosaryGarden(options: UseRosaryGardenOptions = {}) {
       setSelected(target);
       setFailedMonth(null);
       setIsUsingMockData(false);
-    } catch {
+    } catch (error) {
+      logDevelopmentError("loading a Rosary Garden month", error);
       if (requestId !== monthRequestId.current) return;
       setFailedMonth(target);
       setHasNavigationError(true);

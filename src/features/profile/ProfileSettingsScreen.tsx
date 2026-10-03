@@ -28,6 +28,7 @@ import {
   type CurrentUserProfile,
   type Gender,
 } from "@/features/profile";
+import { logDevelopmentError } from "@/lib/development-logger";
 import { supabase } from "@/lib/supabase";
 import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
 import { useAppTheme } from "@/theme/AppThemeProvider";
@@ -80,6 +81,7 @@ export function ProfileSettingsScreen() {
     try {
       setProfile(await fetchCurrentUserProfile());
     } catch (error) {
+      logDevelopmentError("loading the profile settings", error);
       setProfileError(error instanceof Error ? error.message : t("profile.errors.load"));
     } finally {
       setIsLoadingProfile(false);
@@ -102,7 +104,8 @@ export function ProfileSettingsScreen() {
       setProfile(updatedProfile);
       setToastMessage(successMessage);
       return true;
-    } catch {
+    } catch (error) {
+      logDevelopmentError("updating the profile", error);
       setToastMessage(t("profile.errors.generic"));
       return false;
     } finally {
@@ -113,7 +116,8 @@ export function ProfileSettingsScreen() {
   const openExternalUrl = async (url: string) => {
     try {
       await Linking.openURL(url);
-    } catch {
+    } catch (error) {
+      logDevelopmentError("opening an external profile link", error);
       setToastMessage(t("profile.errors.link"));
     }
   };
@@ -134,7 +138,8 @@ export function ProfileSettingsScreen() {
       signOutInFlightRef.current = false;
       setToastMessage(error.message);
       setIsSigningOut(false);
-    } catch {
+    } catch (error) {
+      logDevelopmentError("signing out from profile settings", error);
       signOutInFlightRef.current = false;
       setToastMessage(t("profile.errors.generic"));
       setIsSigningOut(false);
@@ -164,7 +169,8 @@ export function ProfileSettingsScreen() {
     setIsDeletingProfile(true);
     try {
       await deleteCurrentUserProfile();
-    } catch {
+    } catch (error) {
+      logDevelopmentError("deleting the profile", error);
       deleteProfileInFlightRef.current = false;
       setIsDeletingProfile(false);
       setToastMessage(t("profile.errors.delete"));
@@ -176,7 +182,8 @@ export function ProfileSettingsScreen() {
       if (!error) return;
 
       setToastMessage(t("profile.errors.signedOutAfterDelete"));
-    } catch {
+    } catch (error) {
+      logDevelopmentError("signing out after profile deletion", error);
       setToastMessage(t("profile.errors.signedOutAfterDelete"));
     } finally {
       deleteProfileInFlightRef.current = false;

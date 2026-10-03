@@ -4,38 +4,28 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import type { CurrentUserProfile } from "@/features/profile/profile.types";
 import { AppLanguageProvider } from "@/localization";
+import { AchievementProvider } from "@/features/achievements";
 
 import { languageOnboardingStorageKey } from "./onboarding-language";
 import { ProfileSetupScreen } from "./ProfileSetupScreen";
 
 const mockCompleteOnboarding = jest.fn();
 const mockGetCountries = jest.fn();
-const mockGetNotificationPreferences = jest.fn();
-const mockReplaceNotificationPreferences = jest.fn();
 const mockReplaceProfile = jest.fn();
 const mockRouterReplace = jest.fn();
-const mockUpdateNotificationPreferences = jest.fn();
 const mockUpdateProfile = jest.fn();
 const mockValidateUsername = jest.fn();
 const mockGetItem = AsyncStorage.getItem as jest.MockedFunction<typeof AsyncStorage.getItem>;
 const mockSetItem = AsyncStorage.setItem as jest.MockedFunction<typeof AsyncStorage.setItem>;
 
 let mockCurrentProfile: CurrentUserProfile;
-let mockCurrentPreferences: {
-  confessionReminder: boolean;
-  dailyRosaryReminder: boolean;
-  eucharisticAdoration: boolean;
-} | null;
-
 jest.mock("expo-router", () => ({
   useRouter: () => ({ replace: mockRouterReplace }),
 }));
 
 jest.mock("@/features/profile", () => ({
   useCurrentProfile: () => ({
-    notificationPreferences: mockCurrentPreferences,
     profile: mockCurrentProfile,
-    replaceNotificationPreferences: mockReplaceNotificationPreferences,
     replaceProfile: mockReplaceProfile,
   }),
 }));
@@ -54,8 +44,6 @@ jest.mock("./onboarding.api", () => {
     ...actual,
     completeOnboarding: (...args: unknown[]) => mockCompleteOnboarding(...args),
     getCountries: (...args: unknown[]) => mockGetCountries(...args),
-    getNotificationPreferences: (...args: unknown[]) => mockGetNotificationPreferences(...args),
-    updateNotificationPreferences: (...args: unknown[]) => mockUpdateNotificationPreferences(...args),
     validateUsername: (...args: unknown[]) => mockValidateUsername(...args),
   };
 });
@@ -89,24 +77,16 @@ const baseProfile: CurrentUserProfile = {
   username: "VirginMary",
 };
 
-const preferences = {
-  confessionReminder: true,
-  dailyRosaryReminder: true,
-  eucharisticAdoration: true,
-};
-
-async function renderSetup(
-  profile: CurrentUserProfile = baseProfile,
-  notificationPreferences: typeof mockCurrentPreferences = null,
-) {
+async function renderSetup(profile: CurrentUserProfile = baseProfile) {
   mockCurrentProfile = profile;
-  mockCurrentPreferences = notificationPreferences;
   return render(
-    <AppLanguageProvider>
-      <SafeAreaProvider initialMetrics={safeAreaMetrics}>
-        <ProfileSetupScreen />
-      </SafeAreaProvider>
-    </AppLanguageProvider>,
+    <AchievementProvider>
+      <AppLanguageProvider>
+        <SafeAreaProvider initialMetrics={safeAreaMetrics}>
+          <ProfileSetupScreen />
+        </SafeAreaProvider>
+      </AppLanguageProvider>
+    </AchievementProvider>,
   );
 }
 
@@ -116,13 +96,10 @@ describe("required profile setup", () => {
     mockGetItem.mockImplementation(async (key) => (String(key).includes("onboarding-language") ? "complete" : null));
     mockSetItem.mockResolvedValue();
     mockCurrentProfile = baseProfile;
-    mockCurrentPreferences = null;
     mockGetCountries.mockResolvedValue({
       countries: [],
       meta: { hasMore: false, limit: 20, nextOffset: null, offset: 0 },
     });
-    mockGetNotificationPreferences.mockResolvedValue(preferences);
-    mockUpdateNotificationPreferences.mockImplementation(async (update) => ({ ...preferences, ...update }));
     mockValidateUsername.mockResolvedValue({
       available: true,
       normalizedUsername: "joyful_clare",
@@ -153,7 +130,7 @@ describe("required profile setup", () => {
     await renderSetup(incomplete);
 
     expect(await screen.findByRole("header", { name: "Choose your language" })).toBeTruthy();
-    expect(screen.getByLabelText("Step 1 of 7")).toBeTruthy();
+    expect(screen.getByLabelText("Step 1 of 5")).toBeTruthy();
 
     await fireEvent.press(screen.getByRole("radio", { name: "Español" }));
     expect(await screen.findByRole("header", { name: "Elige tu idioma" })).toBeTruthy();
@@ -162,7 +139,7 @@ describe("required profile setup", () => {
 
     expect(await screen.findByRole("header", { name: "¿Cuál es tu nombre y apellido?" })).toBeTruthy();
     expect(mockSetItem).toHaveBeenCalledWith(languageOnboardingStorageKey(baseProfile.userId), "complete");
-    expect(screen.getByLabelText("Paso 2 de 7")).toBeTruthy();
+    expect(screen.getByLabelText("Paso 2 de 5")).toBeTruthy();
   });
 
   it("resumes at the server-provided country step and preserves earlier values when going back", async () => {
@@ -246,17 +223,19 @@ describe("required profile setup", () => {
     jest.useRealTimers();
   });
 
-  it("advances to notification preferences when the country changes", async () => {
+  it("completes from the country step and routes Home with the achievement queued", async () => {
     mockGetCountries.mockResolvedValue({
       countries: [{ code: "MX", latitude: null, longitude: null, name: "Mexico" }],
       meta: { hasMore: false, limit: 20, nextOffset: null, offset: 0 },
     });
-    mockUpdateProfile.mockResolvedValue({
+    const completeProfile = {
       ...baseProfile,
       countryCode: "MX",
       countryName: "Mexico",
-      profileSetup: { complete: false, completedAt: null, missingFields: ["notifications"], nextStep: "notifications" },
-    });
+      profileSetup: { complete: true, completedAt: "2026-08-28T13:00:00.000Z", missingFields: [], nextStep: null },
+    } satisfies CurrentUserProfile;
+    mockUpdateProfile.mockResolvedValue({ ...baseProfile, countryCode: "MX", countryName: "Mexico" });
+    mockCompleteOnboarding.mockResolvedValue({ profile: completeProfile });
     await renderSetup({
       ...baseProfile,
       profileSetup: { complete: false, completedAt: null, missingFields: ["country"], nextStep: "country" },
@@ -269,74 +248,24 @@ describe("required profile setup", () => {
     await fireEvent.press(screen.getByTestId("profile-setup-next"));
 
     await waitFor(() => expect(mockUpdateProfile).toHaveBeenCalledWith({ countryCode: "MX" }));
-    expect(await screen.findByText("Stay close to Jesus")).toBeTruthy();
-  });
-
-  it("loads API notification defaults and persists the latest toggles before All Set", async () => {
-    await renderSetup({
-      ...baseProfile,
-      profileSetup: { complete: false, completedAt: null, missingFields: ["notifications"], nextStep: "notifications" },
-    });
-
-    expect(await screen.findByLabelText("Eucharistic Adoration")).toBeTruthy();
-    await fireEvent(screen.getByLabelText("Eucharistic Adoration"), "valueChange", false);
-    await fireEvent.press(screen.getByTestId("profile-setup-next"));
-
-    await waitFor(() =>
-      expect(mockUpdateNotificationPreferences).toHaveBeenCalledWith({
-        confessionReminder: true,
-        dailyRosaryReminder: true,
-        eucharisticAdoration: false,
-      }),
-    );
-    expect(await screen.findByText("You’re all set!")).toBeTruthy();
-  });
-
-  it("completes transactionally, updates both caches, and replaces navigation", async () => {
-    const completeProfile = {
-      ...baseProfile,
-      profileSetup: {
-        complete: true,
-        completedAt: "2026-08-28T13:00:00.000Z",
-        missingFields: [],
-        nextStep: null,
-      },
-    } satisfies CurrentUserProfile;
-    mockCompleteOnboarding.mockResolvedValue({ notificationPreferences: preferences, profile: completeProfile });
-    await renderSetup(
-      {
-        ...baseProfile,
-        profileSetup: { complete: false, completedAt: null, missingFields: [], nextStep: null },
-      },
-      preferences,
-    );
-
-    expect(screen.getByTestId("profile-setup-confetti")).toBeTruthy();
-    await fireEvent.press(screen.getByText("Enter the Mission"));
-
     await waitFor(() => expect(mockRouterReplace).toHaveBeenCalledWith("/"));
     expect(mockCompleteOnboarding).toHaveBeenCalledWith({
-      countryCode: "US",
+      countryCode: "MX",
       displayName: "Virgin Mary",
       gender: "male",
-      notificationPreferences: preferences,
       username: "VirginMary",
     });
     expect(mockReplaceProfile).toHaveBeenCalledWith(completeProfile);
-    expect(mockReplaceNotificationPreferences).toHaveBeenCalledWith(preferences);
   });
 
-  it("stays on All Set with preserved state when completion fails", async () => {
+  it("keeps the country step retryable when final completion fails", async () => {
     mockCompleteOnboarding.mockRejectedValue(new Error("offline"));
-    await renderSetup(
-      {
-        ...baseProfile,
-        profileSetup: { complete: false, completedAt: null, missingFields: [], nextStep: null },
-      },
-      preferences,
-    );
+    await renderSetup({
+      ...baseProfile,
+      profileSetup: { complete: false, completedAt: null, missingFields: ["country"], nextStep: "country" },
+    });
 
-    await fireEvent.press(screen.getByText("Enter the Mission"));
+    await fireEvent.press(screen.getByTestId("profile-setup-next"));
 
     expect(
       await screen.findByText(
@@ -344,7 +273,7 @@ describe("required profile setup", () => {
       ),
     ).toBeTruthy();
     expect(mockRouterReplace).not.toHaveBeenCalled();
-    expect(screen.getByText("You’re all set!")).toBeTruthy();
+    expect(screen.getByText("Which country will you represent?")).toBeTruthy();
     expect(screen.getByTestId("profile-setup-next").props.accessibilityState.disabled).toBe(false);
   });
 });

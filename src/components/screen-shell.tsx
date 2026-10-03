@@ -18,6 +18,7 @@ type ScreenShellProps = PropsWithChildren<{
   eyebrow?: string;
   headerVariant?: PageHeaderVariant;
   onBack?: () => void;
+  overlay?: ReactNode;
   showLogo?: boolean;
   testID?: string;
   title?: string;
@@ -28,7 +29,7 @@ type ScreenShellProps = PropsWithChildren<{
  * Warm light remains behind the UI while non-interactive dust passes above
  * normal screen content.
  *
- * @param props Header, body, and optional background content for the screen.
+ * @param props Header, body, optional background content, and an interactive viewport overlay for the screen.
  * @returns A safe-area screen shell with its content above the background.
  */
 export function ScreenShell({
@@ -41,6 +42,7 @@ export function ScreenShell({
   eyebrow,
   headerVariant,
   onBack,
+  overlay,
   showLogo,
   testID,
   title,
@@ -72,6 +74,15 @@ export function ScreenShell({
         </View>
       </ScrollView>
       <SacredAtmosphere layer="foregroundDust" testID="sacred-atmosphere-foreground" />
+      {overlay ? (
+        <View
+          pointerEvents="box-none"
+          style={[styles.overlay, { paddingHorizontal: responsive.gutter }]}
+          testID="screen-shell-overlay"
+        >
+          <View style={styles.overlayContent}>{overlay}</View>
+        </View>
+      ) : null}
     </SafeAreaView>
   );
 }
@@ -100,5 +111,18 @@ const styleSheet = createThemedStyles((theme) => ({
     position: "relative",
     width: "100%",
     zIndex: theme.zIndex.card,
+  },
+  overlay: {
+    left: 0,
+    position: "absolute",
+    right: 0,
+    top: 0,
+    zIndex: theme.zIndex.modal,
+  },
+  overlayContent: {
+    alignSelf: "center",
+    maxWidth: theme.sizes.contentMaxWidth,
+    paddingTop: theme.spacing[2],
+    width: "100%",
   },
 }));

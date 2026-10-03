@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui";
 import { useCurrentLocalDate } from "@/hooks";
 import { useAppLanguage } from "@/localization";
+import { logDevelopmentError } from "@/lib/development-logger";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 import type { ScreenDataResponse } from "@/features/screen-data";
@@ -95,7 +96,8 @@ export function DailyLiturgyDashboard({ initialData, onCalendarPress }: DailyLit
         if (requestId !== activeLoadRequest.current) return;
         setLiturgy(model);
         await syncProgress(model, requestId);
-      } catch {
+      } catch (error) {
+        logDevelopmentError("loading daily liturgy", error);
         if (requestId !== activeLoadRequest.current) return;
         setError(t("liturgy.loadError"));
       } finally {

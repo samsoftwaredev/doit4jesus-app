@@ -1,4 +1,5 @@
 import { parseCurrentUserProfileData } from "@/features/profile/profile.api";
+import { logDevelopmentError } from "@/lib/development-logger";
 import { getSupabaseAccessToken } from "@/lib/supabase";
 
 import type {
@@ -118,7 +119,8 @@ async function request(path: string, options: RequestOptions = {}): Promise<unkn
     let payload: unknown;
     try {
       payload = await response.json();
-    } catch {
+    } catch (error) {
+      logDevelopmentError("parsing an onboarding API error response", error);
       payload = undefined;
     }
     const details =
@@ -192,6 +194,7 @@ export async function updateNotificationPreferences(
   return parseNotificationPreferences(payload.data);
 }
 
+/** Posts the four required profile fields that complete onboarding and returns the authoritative profile. */
 export async function completeOnboarding(payload: CompleteOnboardingPayload): Promise<CompleteOnboardingResult> {
   const response = readRecord(
     await request("/api/v1/me/onboarding/complete", { body: payload, method: "POST" }),
@@ -200,7 +203,6 @@ export async function completeOnboarding(payload: CompleteOnboardingPayload): Pr
   const data = readRecord(response.data, "completion data");
 
   return {
-    notificationPreferences: parseNotificationPreferences(data.notificationPreferences),
     profile: parseCurrentUserProfileData(data.profile),
   };
 }

@@ -9,7 +9,9 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { Button } from "@/components/ui";
 import { AuthProvider, useAuth } from "@/features/auth";
+import { AchievementProvider, AchievementToastHost } from "@/features/achievements";
 import { getProfileAccessState, ProfileProvider, useCurrentProfile } from "@/features/profile";
+import { logDevelopmentError } from "@/lib/development-logger";
 import { AccountLanguagePreferenceSync } from "@/localization/AccountLanguagePreferenceSync";
 import { AppLanguageProvider, useAppLanguage } from "@/localization";
 import { AppThemeProvider, getStatusBarStyle, useAppTheme } from "@/theme/AppThemeProvider";
@@ -17,7 +19,7 @@ import { AppVisualEffectsProvider, useAppVisualEffects } from "@/theme/AppVisual
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
-void SplashScreen.preventAutoHideAsync().catch(() => undefined);
+void SplashScreen.preventAutoHideAsync().catch((error) => logDevelopmentError("preventing splash auto-hide", error));
 
 /** Installs language, appearance, and visual-effect providers before authentication so preferences apply app-wide. */
 export default function RootLayout() {
@@ -25,7 +27,9 @@ export default function RootLayout() {
     <AppLanguageProvider>
       <AppThemeProvider>
         <AppVisualEffectsProvider>
-          <ThemedRoot />
+          <AchievementProvider>
+            <ThemedRoot />
+          </AchievementProvider>
         </AppVisualEffectsProvider>
       </AppThemeProvider>
     </AppLanguageProvider>
@@ -40,7 +44,7 @@ function ThemedRoot() {
 
   useEffect(() => {
     if (isLanguageHydrated && isThemeHydrated && isVisualEffectsHydrated) {
-      void SplashScreen.hideAsync().catch(() => undefined);
+      void SplashScreen.hideAsync().catch((error) => logDevelopmentError("hiding the splash screen", error));
     }
   }, [isLanguageHydrated, isThemeHydrated, isVisualEffectsHydrated]);
 
@@ -61,7 +65,7 @@ function ThemedRoot() {
   };
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={{ flex: 1, position: "relative" }}>
       <SafeAreaProvider>
         <ThemeProvider value={navigationTheme}>
           <StatusBar style={getStatusBarStyle(colorScheme)} />
@@ -72,6 +76,7 @@ function ThemedRoot() {
               </AccountLanguagePreferenceSync>
             </ProfileProvider>
           </AuthProvider>
+          <AchievementToastHost />
         </ThemeProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>

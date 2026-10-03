@@ -26,6 +26,7 @@ import {
 } from "@/features/prayer/intentions";
 import { fetchScreenData } from "@/features/screen-data";
 import type { ScreenDataResponse } from "@/features/screen-data";
+import { logDevelopmentError } from "@/lib/development-logger";
 import { getRosaryContent } from "@/features/prayer/rosary/data/localizedRosaryContent";
 import { getRosaryMysterySetFromContent } from "@/features/prayer/rosary/data/rosaryMysteries";
 import { getTodayRosaryMysteryType, getWeekdayLabel } from "@/features/prayer/rosary/data/schedule";
@@ -110,7 +111,8 @@ export function PrayerScreen() {
       .then((data) => {
         if (active) setInitialScreenData(data);
       })
-      .catch(() => {
+      .catch((error) => {
+        logDevelopmentError("loading Prayer aggregate data", error);
         // Individual initial loaders retain the existing offline and retry behavior.
       })
       .finally(() => {
@@ -137,6 +139,7 @@ export function PrayerScreen() {
       setHasMoreIntentions(page.meta.hasMore);
       setNextIntentionsOffset(page.meta.nextOffset);
     } catch (error) {
+      logDevelopmentError("loading approved prayer intentions", error);
       setIntentionsError(error instanceof Error ? error.message : t("prayerHome.intentionsLoadError"));
     } finally {
       setIsLoadingIntentions(false);
@@ -158,7 +161,8 @@ export function PrayerScreen() {
       const nextStats = await getGlobalRosaryStats();
       if (requestId !== globalStatsRequestIdRef.current) return;
       setGlobalStats(nextStats);
-    } catch {
+    } catch (error) {
+      logDevelopmentError("loading global Rosary statistics", error);
       if (requestId !== globalStatsRequestIdRef.current) return;
       setGlobalStatsError(true);
     } finally {
@@ -236,7 +240,8 @@ export function PrayerScreen() {
       const entries = section ? parseGlobalLeaderboardData(section.data) : await getWeeklyGlobalLeaderboard();
       if (requestId !== weeklyLeaderboardRequestIdRef.current) return;
       setWeeklyLeaderboard(entries);
-    } catch {
+    } catch (error) {
+      logDevelopmentError("loading the weekly global leaderboard", error);
       if (requestId !== weeklyLeaderboardRequestIdRef.current) return;
       setWeeklyLeaderboard(null);
       setWeeklyLeaderboardError(true);
@@ -255,7 +260,8 @@ export function PrayerScreen() {
       const entries = section ? parseGlobalLeaderboardData(section.data) : await getYearlyGlobalLeaderboard();
       if (requestId !== yearlyLeaderboardRequestIdRef.current) return;
       setYearlyLeaderboard(entries);
-    } catch {
+    } catch (error) {
+      logDevelopmentError("loading the yearly global leaderboard", error);
       if (requestId !== yearlyLeaderboardRequestIdRef.current) return;
       setYearlyLeaderboard(null);
       setYearlyLeaderboardError(true);
@@ -293,6 +299,7 @@ export function PrayerScreen() {
       setHasMoreIntentions(page.meta.hasMore);
       setNextIntentionsOffset(page.meta.nextOffset);
     } catch (error) {
+      logDevelopmentError("loading more approved prayer intentions", error);
       setIntentionsError(error instanceof Error ? error.message : t("prayerHome.intentionsMoreError"));
     } finally {
       isLoadingMoreIntentionsRef.current = false;

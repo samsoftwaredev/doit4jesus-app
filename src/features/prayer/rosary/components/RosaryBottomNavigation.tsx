@@ -25,8 +25,6 @@ interface RosaryBottomNavigationProps {
   audioMuted?: boolean;
   audioPlaying?: boolean;
   progress: PrayerProgress;
-  decadeCount?: number;
-  activeDecadeIndex?: number;
   disabled?: boolean;
   onAdvance: () => void;
   onArtStyleChange: (style: RosaryArtStyle) => void;
@@ -70,8 +68,6 @@ export function RosaryBottomNavigation({
   audioMuted = false,
   audioPlaying = false,
   progress,
-  decadeCount = 5,
-  activeDecadeIndex = 0,
   disabled = false,
   onAdvance,
   onArtStyleChange,
@@ -212,12 +208,6 @@ export function RosaryBottomNavigation({
             size={theme.sizes.iconMedium}
           />
         </Pressable>
-      </View>
-
-      <View accessible={false} style={styles.indicators}>
-        {Array.from({ length: decadeCount }, (_, index) => (
-          <View key={index} style={[styles.indicator, index === activeDecadeIndex && styles.activeIndicator]} />
-        ))}
       </View>
 
       <Modal
@@ -469,22 +459,6 @@ const styleSheet = createThemedStyles((theme) => ({
     justifyContent: "center",
     opacity: 1,
     width: theme.sizes.touchTarget,
-  },
-  indicators: {
-    alignItems: "center",
-    flexDirection: "row",
-    gap: theme.spacing[1.5],
-    justifyContent: "center",
-    paddingTop: theme.spacing[2],
-  },
-  indicator: {
-    backgroundColor: theme.rosary.colors.blueMuted,
-    borderRadius: theme.radii.pill,
-    height: theme.spacing[1.5],
-    width: theme.spacing[1.5],
-  },
-  activeIndicator: {
-    backgroundColor: theme.rosary.colors.gold,
   },
   modalOverlay: {
     alignItems: "center",

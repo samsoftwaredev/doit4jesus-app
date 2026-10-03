@@ -3,6 +3,7 @@ import { AppState } from "react-native";
 
 import { useCurrentProfile } from "@/features/profile";
 import { updateCurrentUserProfile } from "@/features/profile/profile.api";
+import { logDevelopmentError } from "@/lib/development-logger";
 
 import { parseLanguagePreference, useAppLanguage } from "./AppLanguageProvider";
 
@@ -39,7 +40,8 @@ export function AccountLanguagePreferenceSync({ children }: PropsWithChildren) {
       .then((updatedProfile) => {
         if (isActive) replaceProfile(updatedProfile);
       })
-      .catch(() => {
+      .catch((error) => {
+        logDevelopmentError("syncing the account language preference", error);
         // Keep the local selection and retry after the next foreground, profile refresh, or new selection.
       })
       .finally(() => {

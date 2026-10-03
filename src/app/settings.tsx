@@ -1,6 +1,6 @@
 import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Pressable, Switch, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
@@ -8,6 +8,10 @@ import { LanguageSelector } from "@/components";
 import { ScreenShell } from "@/components/screen-shell";
 import { Button, Card } from "@/components/ui";
 import { useAuth } from "@/features/auth";
+import { useCurrentProfile } from "@/features/profile";
+import { getNotificationPreferences, updateNotificationPreferences } from "@/features/onboarding";
+import type { NotificationPreferences } from "@/features/onboarding";
+import { logDevelopmentError } from "@/lib/development-logger";
 import { supabase } from "@/lib/supabase";
 import { useAppLanguage } from "@/localization";
 import { type ThemePreference, useAppTheme } from "@/theme/AppThemeProvider";
@@ -21,11 +25,19 @@ export default function SettingsScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const { configurationError } = useAuth();
+  const { notificationPreferences: cachedNotificationPreferences, replaceNotificationPreferences } =
+    useCurrentProfile();
   const { language, setLanguage } = useAppLanguage();
   const { preference, setPreference, theme: appTheme } = useAppTheme();
   const { dustEnabled, lightingEnabled, setDustEnabled, setLightingEnabled } = useAppVisualEffects();
   const [signOutError, setSignOutError] = useState<string>();
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const [isLoadingNotifications, setIsLoadingNotifications] = useState(true);
+  const [isSavingNotifications, setIsSavingNotifications] = useState(false);
+  const [notificationError, setNotificationError] = useState<string>();
+  const [notificationPreferences, setNotificationPreferences] = useState<NotificationPreferences | null>(
+    cachedNotificationPreferences,
+  );
   const appearanceOptions: readonly { description: string; label: string; value: ThemePreference }[] = [
     {
       description: t("settings.appearanceSystemDescription"),
@@ -52,6 +64,48 @@ export default function SettingsScreen() {
   /** Enables or hides the decorative sunlight, beams, and haze across the app. */
   const handleLightingEnabledChange = (enabled: boolean) => {
     void setLightingEnabled(enabled);
+  };
+
+  /** Loads the server-owned reminder preferences once Settings becomes available. */
+  const loadNotificationPreferences = useCallback(async () => {
+    setNotificationError(undefined);
+    setIsLoadingNotifications(true);
+    try {
+      const preferences = await getNotificationPreferences();
+      setNotificationPreferences(preferences);
+      replaceNotificationPreferences(preferences);
+    } catch (error) {
+      logDevelopmentError("loading notification preferences", error);
+      setNotificationError(t("settings.notificationsLoadError"));
+    } finally {
+      setIsLoadingNotifications(false);
+    }
+  }, [replaceNotificationPreferences, t]);
+
+  useEffect(() => {
+    void loadNotificationPreferences();
+  }, [loadNotificationPreferences]);
+
+  /** Optimistically changes one reminder preference and restores the prior value when saving fails. */
+  const handleNotificationPreferenceChange = async (key: keyof NotificationPreferences, value: boolean) => {
+    if (!notificationPreferences || isSavingNotifications) return;
+
+    const previousPreferences = notificationPreferences;
+    const nextPreferences = { ...previousPreferences, [key]: value };
+    setNotificationError(undefined);
+    setNotificationPreferences(nextPreferences);
+    setIsSavingNotifications(true);
+    try {
+      const savedPreferences = await updateNotificationPreferences({ [key]: value });
+      setNotificationPreferences(savedPreferences);
+      replaceNotificationPreferences(savedPreferences);
+    } catch (error) {
+      logDevelopmentError("saving notification preferences", error);
+      setNotificationPreferences(previousPreferences);
+      setNotificationError(t("settings.notificationsSaveError"));
+    } finally {
+      setIsSavingNotifications(false);
+    }
   };
 
   /** Signs out the current account while exposing any recoverable error. */
@@ -160,10 +214,45 @@ export default function SettingsScreen() {
           </View>
         </Card>
         <Card title={t("settings.prayerTitle")}>
-          <View style={styles.row}>
-            <Feather color={theme.colors.icon.active} name="bell" size={theme.sizes.iconMedium} />
-            <Text style={styles.description}>{t("settings.prayerCopy")}</Text>
-          </View>
+          <Text style={styles.notificationsDescription}>{t("settings.prayerCopy")}</Text>
+          {isLoadingNotifications ? (
+            <Text accessibilityLiveRegion="polite" style={styles.notificationsStatus}>
+              {t("settings.notificationsLoading")}
+            </Text>
+          ) : null}
+          {notificationError && !isLoadingNotifications ? (
+            <View accessibilityRole="alert" style={styles.notificationsError}>
+              <Text style={styles.error}>{notificationError}</Text>
+              <Button onPress={() => void loadNotificationPreferences()} size="sm" variant="secondary">
+                {t("common.retry")}
+              </Button>
+            </View>
+          ) : null}
+          {notificationPreferences && !isLoadingNotifications ? (
+            <View style={styles.notificationsList}>
+              <NotificationPreferenceRow
+                copy={t("settings.dailyRosaryReminderDescription")}
+                disabled={isSavingNotifications}
+                label={t("settings.dailyRosaryReminder")}
+                onValueChange={(value) => void handleNotificationPreferenceChange("dailyRosaryReminder", value)}
+                value={notificationPreferences.dailyRosaryReminder}
+              />
+              <NotificationPreferenceRow
+                copy={t("settings.confessionReminderDescription")}
+                disabled={isSavingNotifications}
+                label={t("settings.confessionReminder")}
+                onValueChange={(value) => void handleNotificationPreferenceChange("confessionReminder", value)}
+                value={notificationPreferences.confessionReminder}
+              />
+              <NotificationPreferenceRow
+                copy={t("settings.eucharisticAdorationDescription")}
+                disabled={isSavingNotifications}
+                label={t("settings.eucharisticAdoration")}
+                onValueChange={(value) => void handleNotificationPreferenceChange("eucharisticAdoration", value)}
+                value={notificationPreferences.eucharisticAdoration}
+              />
+            </View>
+          ) : null}
         </Card>
         <Card title={t("settings.accountTitle")}>
           <View style={styles.row}>
@@ -188,6 +277,43 @@ export default function SettingsScreen() {
         </Card>
       </View>
     </ScreenShell>
+  );
+}
+
+/** Renders one server-managed prayer reminder switch within Settings. */
+function NotificationPreferenceRow({
+  copy,
+  disabled,
+  label,
+  onValueChange,
+  value,
+}: {
+  copy: string;
+  disabled: boolean;
+  label: string;
+  onValueChange: (value: boolean) => void;
+  value: boolean;
+}) {
+  const styles = useThemedStyles(styleSheet);
+  const { theme: appTheme } = useAppTheme();
+  return (
+    <View style={styles.notificationRow}>
+      <View style={styles.notificationCopy}>
+        <Text style={styles.notificationLabel}>{label}</Text>
+        <Text style={styles.notificationRowDescription}>{copy}</Text>
+      </View>
+      <Switch
+        accessibilityHint={copy}
+        accessibilityLabel={label}
+        accessibilityRole="switch"
+        accessibilityState={{ checked: value, disabled }}
+        disabled={disabled}
+        onValueChange={onValueChange}
+        thumbColor={appTheme.colors.text.inverse}
+        trackColor={{ false: appTheme.colors.semantic.disabled, true: appTheme.colors.brand.primary }}
+        value={value}
+      />
+    </View>
   );
 }
 
@@ -279,6 +405,26 @@ const styleSheet = createThemedStyles((theme) => ({
     color: theme.colors.text.muted,
     marginBottom: theme.spacing[3],
   },
+  notificationCopy: { flex: 1, minWidth: 0 },
+  notificationLabel: { ...theme.typography.bodyMedium, color: theme.colors.text.primary },
+  notificationRow: {
+    alignItems: "center",
+    borderBottomColor: theme.colors.border.subtle,
+    borderBottomWidth: theme.borderWidths.hairline,
+    flexDirection: "row",
+    gap: theme.spacing[3],
+    minHeight: theme.sizes.touchTarget + theme.spacing[4],
+    paddingVertical: theme.spacing[2],
+  },
+  notificationRowDescription: {
+    ...theme.typography.bodySmall,
+    color: theme.colors.text.muted,
+    marginTop: theme.spacing[0.5],
+  },
+  notificationsDescription: { ...theme.typography.bodySmall, color: theme.colors.text.muted },
+  notificationsError: { alignItems: "center", gap: theme.spacing[2], marginTop: theme.spacing[3] },
+  notificationsList: { marginTop: theme.spacing[3] },
+  notificationsStatus: { ...theme.typography.bodySmall, color: theme.colors.text.muted, marginTop: theme.spacing[3] },
   accountActions: {
     gap: theme.spacing[2],
     marginTop: theme.spacing[4],

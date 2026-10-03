@@ -1,25 +1,23 @@
 import type { CurrentUserProfile, Gender, ProfileSetup } from "@/features/profile/profile.types";
 
-export type OnboardingStep = 1 | 2 | 3 | 4 | 5 | 6;
+export type OnboardingStep = 1 | 2 | 3 | 4;
 
 export const onboardingStepMap: Readonly<Record<string, OnboardingStep>> = {
-  allSet: 6,
-  complete: 6,
   country: 4,
   countryCode: 4,
   displayName: 1,
   gender: 3,
   name: 1,
-  notifications: 5,
   username: 2,
 };
 
+/** Resolves the first unfinished editable onboarding step from the backend profile status. */
 export function getResumeStep(profileSetup: ProfileSetup): OnboardingStep {
   const serverStep = profileSetup.nextStep ? onboardingStepMap[profileSetup.nextStep] : undefined;
   if (serverStep) return serverStep;
 
   const missingStep = profileSetup.missingFields.map((field) => onboardingStepMap[field]).find(Boolean);
-  return missingStep ?? (profileSetup.missingFields.length === 0 ? 6 : 1);
+  return missingStep ?? 4;
 }
 
 export interface NotificationPreferences {
@@ -64,7 +62,6 @@ export interface ProfileSetupState {
   countryName: string | null;
   displayName: string;
   gender: Gender | null;
-  notificationPreferences: NotificationPreferences | null;
   username: string;
 }
 
@@ -72,11 +69,9 @@ export interface CompleteOnboardingPayload {
   countryCode: string;
   displayName: string;
   gender: Gender;
-  notificationPreferences: NotificationPreferences;
   username: string;
 }
 
 export interface CompleteOnboardingResult {
-  notificationPreferences: NotificationPreferences;
   profile: CurrentUserProfile;
 }

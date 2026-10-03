@@ -1,6 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
+import { logDevelopmentError } from "@/lib/development-logger";
+
 export const APP_VISUAL_EFFECTS_PREFERENCE_STORAGE_KEY = "@doit4jesus/visual-effects-preference:v1";
 
 export type VisualEffectsPreferences = {
@@ -31,7 +33,8 @@ export function parseVisualEffectsPreferences(value: string | null): VisualEffec
       lightingEnabled:
         typeof parsed.lightingEnabled === "boolean" ? parsed.lightingEnabled : defaultPreferences.lightingEnabled,
     };
-  } catch {
+  } catch (error) {
+    logDevelopmentError("parsing visual effects preferences", error);
     return defaultPreferences;
   }
 }
@@ -60,7 +63,8 @@ export function AppVisualEffectsProvider({ children }: PropsWithChildren) {
         nextPreferences = parseVisualEffectsPreferences(
           await AsyncStorage.getItem(APP_VISUAL_EFFECTS_PREFERENCE_STORAGE_KEY),
         );
-      } catch {
+      } catch (error) {
+        logDevelopmentError("loading visual effects preferences", error);
         nextPreferences = defaultPreferences;
       }
 
@@ -82,7 +86,8 @@ export function AppVisualEffectsProvider({ children }: PropsWithChildren) {
       setPreferences(nextPreferences);
       try {
         await AsyncStorage.setItem(APP_VISUAL_EFFECTS_PREFERENCE_STORAGE_KEY, JSON.stringify(nextPreferences));
-      } catch {
+      } catch (error) {
+        logDevelopmentError("saving visual effects preferences", error);
         // The running app can still respect the change when device storage is unavailable.
       }
     },

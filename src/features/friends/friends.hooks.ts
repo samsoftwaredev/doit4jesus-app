@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { i18n } from "@/localization";
+import { logDevelopmentError } from "@/lib/development-logger";
 
 import {
   acceptFriendRequest,
@@ -50,6 +51,7 @@ export function useFriends(initialPage?: {
       setHasMore(page.meta.hasMore);
       setNextOffset(page.meta.nextOffset);
     } catch (requestError) {
+      logDevelopmentError("loading friends", requestError);
       setError(messageFrom(requestError, i18n.t("friends.errors.loadFriends")));
     } finally {
       setIsLoading(false);
@@ -70,6 +72,7 @@ export function useFriends(initialPage?: {
       setHasMore(page.meta.hasMore);
       setNextOffset(page.meta.nextOffset);
     } catch (requestError) {
+      logDevelopmentError("loading more friends", requestError);
       setError(messageFrom(requestError, i18n.t("friends.errors.loadMoreFriends")));
     } finally {
       setIsLoadingMore(false);
@@ -101,6 +104,7 @@ export function useFriendRequests(
       setHasMore(page.meta.hasMore);
       setNextOffset(page.meta.nextOffset);
     } catch (requestError) {
+      logDevelopmentError("loading friend requests", requestError);
       setError(messageFrom(requestError, i18n.t("friends.errors.loadRequests")));
     } finally {
       setIsLoading(false);
@@ -121,6 +125,7 @@ export function useFriendRequests(
       setHasMore(page.meta.hasMore);
       setNextOffset(page.meta.nextOffset);
     } catch (requestError) {
+      logDevelopmentError("loading more friend requests", requestError);
       setError(messageFrom(requestError, i18n.t("friends.errors.loadMoreRequests")));
     } finally {
       setIsLoadingMore(false);
@@ -139,6 +144,7 @@ export function useFriendRequests(
       }
       setRequests((current) => current.filter((item) => item.id !== request.id));
     } catch (requestError) {
+      logDevelopmentError("resolving a friend request", requestError);
       const message = messageFrom(requestError, i18n.t("friends.errors.updateRequest"));
       setError(message);
       throw new Error(message);
@@ -155,6 +161,7 @@ export function useFriendRequests(
       await cancelFriendRequest(request.id);
       setRequests((current) => current.filter((item) => item.id !== request.id));
     } catch (requestError) {
+      logDevelopmentError("cancelling a friend request", requestError);
       const message = messageFrom(requestError, i18n.t("friends.errors.cancelRequest"));
       setError(message);
       throw new Error(message);
@@ -204,6 +211,7 @@ export function useRosaryLeaderboard(
       }
       setLeaderboard(nextLeaderboard);
     } catch (requestError) {
+      logDevelopmentError("loading the Rosary leaderboard", requestError);
       if (requestId !== activeRequest.current) return;
       setError(messageFrom(requestError, i18n.t("friends.errors.loadLeaderboard")));
     } finally {
@@ -234,6 +242,7 @@ export function useRosaryLeaderboard(
         return { ...next, entries };
       });
     } catch (requestError) {
+      logDevelopmentError("loading more Rosary leaderboard entries", requestError);
       if (requestId !== activeRequest.current) return;
       setError(messageFrom(requestError, i18n.t("friends.errors.loadMoreRankings")));
     } finally {
@@ -270,6 +279,7 @@ export function useFriendProfile(friendId: string | undefined) {
     try {
       setFriend(await getFriendProfile(friendId));
     } catch (requestError) {
+      logDevelopmentError("loading a friend profile", requestError);
       setError(messageFrom(requestError, i18n.t("friends.errors.friendProfile")));
     } finally {
       setIsLoading(false);
@@ -314,6 +324,7 @@ export function useFriendSearch(query: string) {
           setResults(page.data);
         })
         .catch((requestError: unknown) => {
+          logDevelopmentError("searching for friends", requestError);
           if (!active) return;
           setResults([]);
           setError(messageFrom(requestError, i18n.t("friends.errors.search")));
@@ -345,6 +356,7 @@ export function useSendFriendRequest() {
       await sendFriendRequest(username);
       setRequestedUsernames((current) => [...current, username.toLowerCase()]);
     } catch (requestError) {
+      logDevelopmentError("sending a friend request", requestError);
       const message = messageFrom(requestError, i18n.t("friends.errors.sendRequest"));
       setError(message);
       throw new Error(message);
@@ -377,6 +389,7 @@ export function useFriendsComparison(friendId: string | undefined, initialPeriod
       }
       setComparison(nextComparison);
     } catch (requestError) {
+      logDevelopmentError("loading a friend comparison", requestError);
       if (requestId !== activeRequest.current) return;
       setError(messageFrom(requestError, i18n.t("friends.errors.compare")));
     } finally {

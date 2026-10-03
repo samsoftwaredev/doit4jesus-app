@@ -103,6 +103,40 @@ describe("Daily Liturgy API", () => {
     expect(JSON.parse(String(request.body))).toEqual({ readingDate: "2026-08-21" });
   });
 
+  it("accepts the successful completion resource returned directly in the response data", async () => {
+    globalThis.fetch = jest.fn(async () => ({
+      json: async () => ({ data: { completed: true, completedAt: "2026-08-21T21:22:25.672Z", readingDate: testDate } }),
+      ok: true,
+      status: 201,
+    })) as unknown as typeof fetch;
+
+    await expect(
+      recordDailyScriptureCompletion({ idempotencyKey: "direct-completion-key", readingDate: testDate }),
+    ).resolves.toEqual({ completed: true, completedAt: "2026-08-21T21:22:25.672Z" });
+  });
+
+  it("accepts the activity-backed completion returned by the daily Scripture endpoint", async () => {
+    globalThis.fetch = jest.fn(async () => ({
+      json: async () => ({
+        data: {
+          activity: { activity_code: "SCRIPTURE", id: "227c58f7-bc58-4f2b-9c33-be3bcb8d1835" },
+          completion: {
+            activityId: "227c58f7-bc58-4f2b-9c33-be3bcb8d1835",
+            completedAt: "2026-10-03T16:33:38.533027+00:00",
+            readingDate: "2026-09-28",
+          },
+          xp: { currentLevel: 1, points: 20, totalXp: 170 },
+        },
+      }),
+      ok: true,
+      status: 201,
+    })) as unknown as typeof fetch;
+
+    await expect(
+      recordDailyScriptureCompletion({ idempotencyKey: "activity-backed-completion-key", readingDate: "2026-09-28" }),
+    ).resolves.toEqual({ completed: true, completedAt: "2026-10-03T16:33:38.533027+00:00" });
+  });
+
   it("treats a 200 completion response as an idempotent replay", async () => {
     globalThis.fetch = jest.fn(async () => ({ ok: true, status: 200 })) as unknown as typeof fetch;
 

@@ -3,13 +3,15 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useRouter } from "expo-router";
 import type { TFunction } from "i18next";
 import { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, BackHandler, Pressable, Switch, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, BackHandler, Pressable, Text, TextInput, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { LanguageSelector } from "@/components";
+import { useAchievement } from "@/features/achievements";
 import { useCurrentProfile } from "@/features/profile";
 import { ProfileApiError, updateCurrentUserProfile } from "@/features/profile/profile.api";
 import type { CurrentUserProfile, UpdateCurrentUserProfile } from "@/features/profile/profile.types";
+import { logDevelopmentError } from "@/lib/development-logger";
 import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
@@ -17,45 +19,23 @@ import { theme } from "@/theme/tokens";
 import { CountrySelector } from "./CountrySelector";
 import { validateFullName } from "./name-validation";
 import { completeLanguageOnboarding, hasCompletedLanguageOnboarding } from "./onboarding-language";
-import {
-  completeOnboarding,
-  getNotificationPreferences,
-  OnboardingApiError,
-  updateNotificationPreferences,
-  validateUsername,
-} from "./onboarding.api";
-import type {
-  NotificationPreferences,
-  OnboardingStep,
-  ProfileSetupState,
-  UsernameValidation,
-} from "./onboarding.types";
+import { completeOnboarding, OnboardingApiError, validateUsername } from "./onboarding.api";
+import type { OnboardingStep, ProfileSetupState, UsernameValidation } from "./onboarding.types";
 import { getResumeStep } from "./onboarding.types";
 import { ProfileSetupLayout } from "./ProfileSetupLayout";
 
 type UsernameStatus = "available" | "checking" | "idle" | "invalid" | "unavailable" | "error";
 type OnboardingFlowStep = "language" | OnboardingStep;
 
-function stateFromProfile(
-  profile: CurrentUserProfile,
-  notificationPreferences: NotificationPreferences | null,
-): ProfileSetupState {
+/** Projects persisted profile fields into the editable onboarding form without reminder preferences. */
+function stateFromProfile(profile: CurrentUserProfile): ProfileSetupState {
   return {
     countryCode: profile.countryCode,
     countryName: profile.countryName,
     displayName: profile.displayName ?? "",
     gender: profile.gender,
-    notificationPreferences,
     username: profile.username ?? "",
   };
-}
-
-function samePreferences(a: NotificationPreferences, b: NotificationPreferences) {
-  return (
-    a.confessionReminder === b.confessionReminder &&
-    a.dailyRosaryReminder === b.dailyRosaryReminder &&
-    a.eucharisticAdoration === b.eucharisticAdoration
-  );
 }
 
 /** Converts backend username validation reasons into localized guidance. */
@@ -98,36 +78,26 @@ export function ProfileSetupScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const { language, setLanguage } = useAppLanguage();
-  const {
-    notificationPreferences: cachedPreferences,
-    profile,
-    replaceNotificationPreferences,
-    replaceProfile,
-  } = useCurrentProfile();
+  const { profile, replaceProfile } = useCurrentProfile();
+  const { queueAchievement } = useAchievement();
   const completionInFlightRef = useRef(false);
   const languageHydratedUserRef = useRef<string | null>(null);
-  const preferenceRequestInFlightRef = useRef(false);
-  const savedPreferencesRef = useRef<NotificationPreferences | null>(cachedPreferences);
   const [error, setError] = useState<string | null>(null);
   const [isCompleting, setIsCompleting] = useState(false);
-  const [isLoadingPreferences, setIsLoadingPreferences] = useState(false);
   const [isLoadingLanguageStep, setIsLoadingLanguageStep] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [preferenceLoadAttempt, setPreferenceLoadAttempt] = useState(0);
-  const [preferencesError, setPreferencesError] = useState<string | null>(null);
   const [step, setStep] = useState<OnboardingFlowStep>("language");
   const [usernameResult, setUsernameResult] = useState<UsernameValidation | null>(null);
   const [usernameStatus, setUsernameStatus] = useState<UsernameStatus>("idle");
   const [usernameValidationAttempt, setUsernameValidationAttempt] = useState(0);
   const [form, setForm] = useState<ProfileSetupState>(() =>
     profile
-      ? stateFromProfile(profile, cachedPreferences)
+      ? stateFromProfile(profile)
       : {
           countryCode: null,
           countryName: null,
           displayName: "",
           gender: null,
-          notificationPreferences: cachedPreferences,
           username: "",
         },
   );
@@ -166,40 +136,6 @@ export function ProfileSetupScreen() {
   }, [step]);
 
   useEffect(() => {
-    if (
-      !profile ||
-      step === "language" ||
-      step < 5 ||
-      form.notificationPreferences ||
-      preferenceRequestInFlightRef.current
-    )
-      return;
-    let active = true;
-    preferenceRequestInFlightRef.current = true;
-    setIsLoadingPreferences(true);
-    setPreferencesError(null);
-
-    void getNotificationPreferences()
-      .then((preferences) => {
-        if (!active) return;
-        savedPreferencesRef.current = preferences;
-        replaceNotificationPreferences(preferences);
-        setForm((current) => ({ ...current, notificationPreferences: preferences }));
-      })
-      .catch(() => {
-        if (active) setPreferencesError(t("onboarding.errors.preferencesLoad"));
-      })
-      .finally(() => {
-        preferenceRequestInFlightRef.current = false;
-        if (active) setIsLoadingPreferences(false);
-      });
-
-    return () => {
-      active = false;
-    };
-  }, [form.notificationPreferences, preferenceLoadAttempt, profile, replaceNotificationPreferences, step, t]);
-
-  useEffect(() => {
     if (step !== 2 || !profile) return;
     const candidate = form.username.trim();
     if (!candidate) {
@@ -229,6 +165,7 @@ export function ProfileSetupScreen() {
           );
         })
         .catch((requestError) => {
+          logDevelopmentError("validating an onboarding username", requestError);
           if (controller.signal.aborted) return;
           if (requestError instanceof OnboardingApiError && requestError.suggestions.length > 0) {
             setUsernameResult({
@@ -258,6 +195,7 @@ export function ProfileSetupScreen() {
     ? undefined
     : translatedNameValidationMessage(t, nameValidation.message);
 
+  /** Applies a saved profile to both the global cache and the editable onboarding form. */
   const syncProfile = (updatedProfile: CurrentUserProfile) => {
     replaceProfile(updatedProfile);
     setForm((current) => ({
@@ -270,11 +208,13 @@ export function ProfileSetupScreen() {
     }));
   };
 
+  /** Advances to the next editable onboarding step after clearing any prior error. */
   const advance = (nextStep: OnboardingStep) => {
     setError(null);
     setStep(nextStep);
   };
 
+  /** Saves one editable profile field and advances only after the server accepts it. */
   const saveProfile = async (
     update: UpdateCurrentUserProfile,
     nextStep: OnboardingStep,
@@ -287,6 +227,7 @@ export function ProfileSetupScreen() {
       syncProfile(updatedProfile);
       advance(nextStep);
     } catch (requestError) {
+      logDevelopmentError("saving an onboarding profile step", requestError);
       if (options.username && requestError instanceof ProfileApiError && requestError.status === 409) {
         setError(t("onboarding.errors.usernameConflict"));
         setUsernameStatus("unavailable");
@@ -311,6 +252,7 @@ export function ProfileSetupScreen() {
     }
   };
 
+  /** Validates and persists the current step, completing onboarding from the final country step. */
   const next = async () => {
     if (isSaving || isCompleting) return;
 
@@ -362,54 +304,39 @@ export function ProfileSetupScreen() {
           return;
         }
         if (form.countryCode === profile.countryCode) {
-          advance(5);
-          return;
-        }
-        await saveProfile({ countryCode: form.countryCode }, 5);
-        return;
-      }
-      case 5: {
-        const preferences = form.notificationPreferences;
-        if (!preferences) {
-          setError(t("onboarding.errors.preferencesRequired"));
-          return;
-        }
-        if (savedPreferencesRef.current && samePreferences(preferences, savedPreferencesRef.current)) {
-          advance(6);
+          await enterMission();
           return;
         }
         setError(null);
         setIsSaving(true);
         try {
-          const saved = await updateNotificationPreferences(preferences);
-          savedPreferencesRef.current = saved;
-          replaceNotificationPreferences(saved);
-          setForm((current) => ({ ...current, notificationPreferences: saved }));
-          advance(6);
-        } catch {
-          setError(t("onboarding.errors.preferencesSave"));
+          const updatedProfile = await updateCurrentUserProfile({ countryCode: form.countryCode });
+          syncProfile(updatedProfile);
+          await enterMission({ ...form, countryCode: updatedProfile.countryCode ?? form.countryCode });
+        } catch (requestError) {
+          logDevelopmentError("saving the onboarding profile", requestError);
+          if (!completionInFlightRef.current) {
+            setError(requestError instanceof Error ? requestError.message : t("onboarding.errors.profileSave"));
+          }
         } finally {
           setIsSaving(false);
         }
         return;
       }
-      case 6:
-        await enterMission();
-        return;
     }
   };
 
-  const enterMission = async () => {
+  /** Completes the reduced onboarding contract and queues the Home celebration exactly once. */
+  const enterMission = async (completionForm: ProfileSetupState = form) => {
     if (completionInFlightRef.current) return;
-    const preferences = form.notificationPreferences;
-    const finalNameValidation = validateFullName(form.displayName);
-    const username = form.username.trim();
+    const finalNameValidation = validateFullName(completionForm.displayName);
+    const username = completionForm.username.trim();
     if (!finalNameValidation.valid) {
       setError(translatedNameValidationMessage(t, finalNameValidation.message));
       return;
     }
     const displayName = finalNameValidation.normalizedName;
-    if (!username || !form.gender || !form.countryCode || !preferences) {
+    if (!username || !completionForm.gender || !completionForm.countryCode) {
       setError(t("onboarding.errors.review"));
       return;
     }
@@ -419,22 +346,22 @@ export function ProfileSetupScreen() {
     setIsCompleting(true);
     try {
       const result = await completeOnboarding({
-        countryCode: form.countryCode,
+        countryCode: completionForm.countryCode,
         displayName,
-        gender: form.gender,
-        notificationPreferences: preferences,
+        gender: completionForm.gender,
         username,
       });
       replaceProfile(result.profile);
-      replaceNotificationPreferences(result.notificationPreferences);
-      setForm(stateFromProfile(result.profile, result.notificationPreferences));
+      setForm(stateFromProfile(result.profile));
 
       if (!result.profile.profileSetup.complete) {
         setError(t("onboarding.errors.incomplete"));
         return;
       }
+      queueAchievement("onboarding-complete");
       router.replace("/");
-    } catch {
+    } catch (error) {
+      logDevelopmentError("completing onboarding", error);
       setError(t("onboarding.errors.completion"));
     } finally {
       completionInFlightRef.current = false;
@@ -442,6 +369,7 @@ export function ProfileSetupScreen() {
     }
   };
 
+  /** Returns to the preceding onboarding step while preserving the current form values. */
   const goBack = () => {
     setError(null);
     setStep((current) => {
@@ -601,83 +529,6 @@ export function ProfileSetupScreen() {
           />
         </ProfileSetupLayout>
       );
-    case 5:
-      return (
-        <ProfileSetupLayout
-          {...shared}
-          description={t("onboarding.notifications.description")}
-          error={error ?? preferencesError}
-          icon="bell-outline"
-          nextDisabled={!form.notificationPreferences || Boolean(preferencesError)}
-          title={t("onboarding.notifications.title")}
-        >
-          {isLoadingPreferences ? (
-            <View accessibilityLabel={t("onboarding.notifications.loadingLabel")} style={styles.loadingPreferences}>
-              <ActivityIndicator color={theme.colors.brand.primaryLight} />
-              <Text style={styles.loadingCopy}>{t("onboarding.notifications.loading")}</Text>
-            </View>
-          ) : null}
-          {preferencesError && !isLoadingPreferences ? (
-            <Pressable
-              accessibilityRole="button"
-              onPress={() => setPreferenceLoadAttempt((attempt) => attempt + 1)}
-              style={styles.retryButton}
-            >
-              <Text style={styles.retryLabel}>{t("common.retry")}</Text>
-            </Pressable>
-          ) : null}
-          {form.notificationPreferences ? (
-            <View style={styles.preferenceList}>
-              <NotificationPreferenceRow
-                copy={t("onboarding.notifications.rosaryCopy")}
-                label={t("onboarding.notifications.rosaryLabel")}
-                onValueChange={(value) => updatePreference(setForm, "dailyRosaryReminder", value)}
-                value={form.notificationPreferences.dailyRosaryReminder}
-              />
-              <NotificationPreferenceRow
-                copy={t("onboarding.notifications.confessionCopy")}
-                label={t("onboarding.notifications.confessionLabel")}
-                onValueChange={(value) => updatePreference(setForm, "confessionReminder", value)}
-                value={form.notificationPreferences.confessionReminder}
-              />
-              <NotificationPreferenceRow
-                copy={t("onboarding.notifications.adorationCopy")}
-                label={t("onboarding.notifications.adorationLabel")}
-                onValueChange={(value) => updatePreference(setForm, "eucharisticAdoration", value)}
-                value={form.notificationPreferences.eucharisticAdoration}
-              />
-            </View>
-          ) : null}
-        </ProfileSetupLayout>
-      );
-    case 6:
-      return (
-        <ProfileSetupLayout
-          {...shared}
-          description={t("onboarding.complete.description")}
-          error={error ?? preferencesError}
-          icon="shield-cross"
-          nextDisabled={!form.notificationPreferences || Boolean(preferencesError)}
-          nextLabel={t("onboarding.complete.next")}
-          showConfetti
-          title={t("onboarding.complete.title")}
-        >
-          <View style={styles.missionCard}>
-            <MaterialCommunityIcons color={theme.rosary.colors.goldBright} name="earth" size={theme.sizes.iconHero} />
-            <Text style={styles.missionCopy}>{t("onboarding.complete.missionCopy")}</Text>
-            {isLoadingPreferences ? <ActivityIndicator color={theme.colors.brand.primaryLight} /> : null}
-            {preferencesError && !isLoadingPreferences ? (
-              <Pressable
-                accessibilityRole="button"
-                onPress={() => setPreferenceLoadAttempt((attempt) => attempt + 1)}
-                style={styles.retryButton}
-              >
-                <Text style={styles.retryLabel}>{t("common.retry")}</Text>
-              </Pressable>
-            ) : null}
-          </View>
-        </ProfileSetupLayout>
-      );
   }
 }
 
@@ -782,50 +633,6 @@ function GenderOption({
   );
 }
 
-/** Renders NotificationPreferenceRow with styles resolved from the active appearance. */
-function NotificationPreferenceRow({
-  copy,
-  label,
-  onValueChange,
-  value,
-}: {
-  copy: string;
-  label: string;
-  onValueChange: (value: boolean) => void;
-  value: boolean;
-}) {
-  const styles = useThemedStyles(styleSheet);
-  return (
-    <View style={styles.preferenceRow}>
-      <View style={styles.preferenceCopy}>
-        <Text style={styles.preferenceTitle}>{label}</Text>
-        <Text style={styles.preferenceDescription}>{copy}</Text>
-      </View>
-      <Switch
-        accessibilityLabel={label}
-        accessibilityRole="switch"
-        accessibilityState={{ checked: value }}
-        onValueChange={onValueChange}
-        thumbColor={theme.colors.text.white}
-        trackColor={{ false: theme.colors.semantic.disabled, true: theme.colors.brand.primary }}
-        value={value}
-      />
-    </View>
-  );
-}
-
-function updatePreference(
-  setForm: React.Dispatch<React.SetStateAction<ProfileSetupState>>,
-  key: keyof NotificationPreferences,
-  value: boolean,
-) {
-  setForm((current) =>
-    current.notificationPreferences
-      ? { ...current, notificationPreferences: { ...current.notificationPreferences, [key]: value } }
-      : current,
-  );
-}
-
 const styleSheet = createThemedStyles((theme) => ({
   chip: {
     backgroundColor: theme.colors.surface.tertiary,
@@ -865,39 +672,6 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   genderOptions: { gap: theme.spacing[3] },
   helper: { ...theme.typography.caption, color: theme.colors.text.muted },
-  inlineError: { ...theme.typography.body, color: theme.colors.text.danger, textAlign: "center" },
-  loadingCopy: { ...theme.typography.bodySmall, color: theme.colors.text.muted },
-  loadingPreferences: { alignItems: "center", gap: theme.spacing[3], paddingVertical: theme.spacing[6] },
-  missionCard: {
-    alignItems: "center",
-    backgroundColor: "rgba(230, 186, 100, 0.08)",
-    borderColor: theme.rosary.colors.goldMuted,
-    borderRadius: theme.radii.xl,
-    borderWidth: theme.borderWidths.thin,
-    gap: theme.spacing[3],
-    padding: theme.spacing[6],
-  },
-  missionCopy: { ...theme.typography.bodyMedium, color: theme.colors.text.secondary, textAlign: "center" },
-  preferenceCopy: { flex: 1, minWidth: 0 },
-  preferenceDescription: { ...theme.typography.caption, color: theme.colors.text.muted, marginTop: theme.spacing[0.5] },
-  preferenceList: {
-    backgroundColor: theme.colors.surface.navyDeep,
-    borderColor: theme.colors.border.default,
-    borderRadius: theme.radii.lg,
-    borderWidth: theme.borderWidths.thin,
-    overflow: "hidden",
-  },
-  preferenceRow: {
-    alignItems: "center",
-    borderBottomColor: theme.colors.border.subtle,
-    borderBottomWidth: theme.borderWidths.hairline,
-    flexDirection: "row",
-    gap: theme.spacing[3],
-    minHeight: 76,
-    paddingHorizontal: theme.spacing[4],
-    paddingVertical: theme.spacing[3],
-  },
-  preferenceTitle: { ...theme.typography.bodyMedium, color: theme.colors.text.primary },
   pressed: { opacity: theme.opacity.pressed },
   radio: {
     alignItems: "center",

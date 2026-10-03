@@ -11,6 +11,7 @@ import { searchUsers, sendFriendRequest } from "@/features/friends/friends.api";
 import type { UserSearchResult } from "@/features/friends/friends.types";
 import { getProfileAvatarSource } from "@/features/profile/saints";
 import type { RosaryPresenceUser } from "@/features/prayer/rosary/presence.types";
+import { logDevelopmentError } from "@/lib/development-logger";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
@@ -63,7 +64,8 @@ export function PrayingUserProfileModal({
       if (requestId === relationshipRequestId.current) {
         setRelationshipState(match?.relationshipState ?? "none");
       }
-    } catch {
+    } catch (error) {
+      logDevelopmentError("loading a praying user's relationship", error);
       if (requestId === relationshipRequestId.current) setRelationshipState("error");
     }
   }, [currentUserId, knownFriend, user]);
@@ -87,6 +89,7 @@ export function PrayingUserProfileModal({
       setRelationshipState("outgoingPending");
       AccessibilityInfo.announceForAccessibility(t("rosary.presence.requestSent", { name: selectedUser.displayName }));
     } catch (error) {
+      logDevelopmentError("sending a prayer-room friend request", error);
       setActionError(error instanceof Error ? error.message : t("rosary.presence.requestError"));
     } finally {
       setIsSending(false);

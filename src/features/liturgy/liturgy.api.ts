@@ -1,4 +1,5 @@
 import type { DailyLiturgyViewModel, DailyScriptureCompletion, LiturgicalColor, ReadingType } from "./liturgy.types";
+import { logDevelopmentError } from "@/lib/development-logger";
 import { getSupabaseAccessToken } from "@/lib/supabase";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -52,12 +53,25 @@ function readReadingType(value: unknown): ReadingType {
   throw new Error("The liturgy endpoint returned an unsupported reading type.");
 }
 
-/** Parses the server's date-level Scripture completion while accepting older liturgy payloads. */
+/** Identifies the activity-backed completion resource returned after recording daily Scripture. */
+function isActivityBackedDailyScriptureCompletion(value: Record<string, unknown>): boolean {
+  return (
+    typeof value.activityId === "string" &&
+    value.activityId.length > 0 &&
+    typeof value.completedAt === "string" &&
+    value.completedAt.length > 0
+  );
+}
+
+/** Parses date-level Scripture completion from liturgy and activity-backed endpoint payloads. */
 function readDailyScriptureCompletion(value: unknown): DailyScriptureCompletion {
-  if (!isRecord(value) || typeof value.completed !== "boolean") return { completed: false, completedAt: null };
+  if (!isRecord(value)) return { completed: false, completedAt: null };
+
+  const completed =
+    typeof value.completed === "boolean" ? value.completed : isActivityBackedDailyScriptureCompletion(value);
 
   return {
-    completed: value.completed,
+    completed,
     completedAt: typeof value.completedAt === "string" ? value.completedAt : null,
   };
 }
@@ -111,7 +125,8 @@ function parseDailyLiturgy(value: unknown): DailyLiturgyViewModel {
           type,
         },
       ];
-    } catch {
+    } catch (error) {
+      logDevelopmentError("parsing a daily liturgy reading", error);
       // Celebration and calendar metadata remain useful when reading text is temporarily unavailable.
       return [];
     }
@@ -180,7 +195,10 @@ export function fetchLiturgyReadings(date: string, locale: string) {
   );
 }
 
-/** Records one liturgical day's completed Scripture set and returns the server's authoritative state. */
+/**
+ * Records one liturgical day's completed Scripture set and returns the server's authoritative state.
+ * Accepts both the direct completion resource and the legacy nested completion response.
+ */
 export async function recordDailyScriptureCompletion(input: {
   idempotencyKey: string;
   readingDate: string;
@@ -201,11 +219,19 @@ export async function recordDailyScriptureCompletion(input: {
   if (response.status === 200) return { completed: true, completedAt: null };
 
   const payload = (await response.json()) as unknown;
-  if (!isRecord(payload) || !isRecord(payload.data) || !isRecord(payload.data.completion)) {
+  if (!isRecord(payload) || !isRecord(payload.data)) {
     throw new Error("The daily Scripture completion endpoint returned an unexpected response.");
   }
 
-  const completion = readDailyScriptureCompletion(payload.data.completion);
+  const completionValue = payload.data.completion ?? payload.data;
+  if (
+    !isRecord(completionValue) ||
+    (typeof completionValue.completed !== "boolean" && !isActivityBackedDailyScriptureCompletion(completionValue))
+  ) {
+    throw new Error("The daily Scripture completion endpoint returned an unexpected response.");
+  }
+
+  const completion = readDailyScriptureCompletion(completionValue);
   if (!completion.completed) throw new Error("The daily Scripture completion endpoint did not mark the day complete.");
   return completion;
 }

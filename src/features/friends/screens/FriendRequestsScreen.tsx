@@ -9,6 +9,7 @@ import { Button, Card } from "@/components/ui";
 import { FriendRequestItem, FriendsState } from "@/features/friends/components";
 import { useFriendRequests } from "@/features/friends/friends.hooks";
 import type { FriendRequestDirection } from "@/features/friends/friends.types";
+import { logDevelopmentError } from "@/lib/development-logger";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
@@ -99,9 +100,21 @@ export function FriendRequestsScreen() {
               <View style={styles.requestContent}>
                 <FriendRequestItem
                   isMutating={requests.isMutatingId === item.id}
-                  onAccept={() => void requests.resolve(item, "accepted").catch(() => undefined)}
-                  onCancel={() => void requests.cancel(item).catch(() => undefined)}
-                  onDecline={() => void requests.resolve(item, "rejected").catch(() => undefined)}
+                  onAccept={() =>
+                    void requests
+                      .resolve(item, "accepted")
+                      .catch((error) => logDevelopmentError("accepting a friend request", error))
+                  }
+                  onCancel={() =>
+                    void requests
+                      .cancel(item)
+                      .catch((error) => logDevelopmentError("cancelling a friend request", error))
+                  }
+                  onDecline={() =>
+                    void requests
+                      .resolve(item, "rejected")
+                      .catch((error) => logDevelopmentError("declining a friend request", error))
+                  }
                   request={item}
                 />
               </View>

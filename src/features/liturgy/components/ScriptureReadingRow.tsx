@@ -4,6 +4,7 @@ import { Pressable, ScrollView, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui";
+import { logDevelopmentError } from "@/lib/development-logger";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
@@ -52,7 +53,8 @@ export function ScriptureReadingRow({ completed, expanded, reading, onComplete, 
     setSaveError(null);
     try {
       await onComplete(reading.id);
-    } catch {
+    } catch (error) {
+      logDevelopmentError("saving a completed Scripture reading", error);
       setSaveError(t("liturgy.reading.saveError"));
     } finally {
       setIsCompleting(false);

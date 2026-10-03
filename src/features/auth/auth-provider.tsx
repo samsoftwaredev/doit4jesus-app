@@ -2,6 +2,7 @@ import type { Session } from "@supabase/supabase-js";
 import * as Linking from "expo-linking";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
+import { logDevelopmentError } from "@/lib/development-logger";
 import { supabase, supabaseConfigurationError } from "@/lib/supabase";
 
 type AuthContextValue = {
@@ -84,14 +85,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setIsPasswordRecovery(result.isPasswordRecovery);
         setSession(result.session);
       } catch (error) {
-        console.warn("Unable to restore the Supabase session from a deep link.", error);
+        logDevelopmentError("restoring the Supabase session from a deep link", error);
       }
     };
 
     const initialize = async () => {
       const { data, error } = await supabase.auth.getSession();
       if (error) {
-        console.warn("Unable to restore the Supabase session.", error);
+        logDevelopmentError("restoring the Supabase session", error);
       } else if (isMounted) {
         setSession(data.session);
       }

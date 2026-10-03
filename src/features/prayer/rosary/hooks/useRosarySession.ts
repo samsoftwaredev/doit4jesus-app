@@ -10,6 +10,7 @@ import type {
   RosaryMystery,
   RosarySessionState,
 } from "@/features/prayer/rosary/types";
+import { logDevelopmentError } from "@/lib/development-logger";
 
 const STORAGE_KEY = "@doit4jesus/rosary-session/v1";
 const TRANSITION_LOCK_MS = 320;
@@ -152,7 +153,8 @@ export function useRosarySession(options: UseRosarySessionOptions = {}) {
 
       try {
         await storage.setItem(storageKey, JSON.stringify(value));
-      } catch {
+      } catch (error) {
+        logDevelopmentError("saving the Rosary session", error);
         // A prayer session remains usable even when device storage is unavailable.
         setStorageError(true);
       }
@@ -202,7 +204,8 @@ export function useRosarySession(options: UseRosarySessionOptions = {}) {
         });
         setIsRosaryCompleted(Boolean(restored.isRosaryCompleted));
         setLastPrayedOn(typeof restored.dateLastPrayed === "string" ? restored.dateLastPrayed : null);
-      } catch {
+      } catch (error) {
+        logDevelopmentError("restoring the Rosary session", error);
         if (active) setStorageError(true);
       } finally {
         if (active) setIsHydrated(true);
@@ -259,7 +262,7 @@ export function useRosarySession(options: UseRosarySessionOptions = {}) {
       if (transitionLock.current || beads.length === 0 || mysteries.length === 0) return false;
       transitionLock.current = true;
       setSession((current) => ({ ...update(current), isTransitioning: true }));
-      void Haptics.selectionAsync().catch(() => undefined);
+      void Haptics.selectionAsync().catch((error) => logDevelopmentError("playing Rosary haptics", error));
       finishTransition();
       return true;
     },

@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react-native";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react-native";
 import * as ReactNative from "react-native";
 import { StyleSheet } from "react-native";
 
@@ -8,11 +8,27 @@ import { APP_LANGUAGE_PREFERENCE_STORAGE_KEY, AppLanguageProvider } from "@/loca
 import { AppThemeProvider } from "@/theme/AppThemeProvider";
 import { APP_VISUAL_EFFECTS_PREFERENCE_STORAGE_KEY, AppVisualEffectsProvider } from "@/theme/AppVisualEffectsProvider";
 
+const mockGetNotificationPreferences = jest.fn();
+const mockReplaceNotificationPreferences = jest.fn();
+const mockUpdateNotificationPreferences = jest.fn();
+
 const mockGetItem = AsyncStorage.getItem as jest.MockedFunction<typeof AsyncStorage.getItem>;
 const mockSetItem = AsyncStorage.setItem as jest.MockedFunction<typeof AsyncStorage.setItem>;
 
 jest.mock("@/features/auth", () => ({
   useAuth: () => ({ configurationError: null }),
+}));
+
+jest.mock("@/features/profile", () => ({
+  useCurrentProfile: () => ({
+    notificationPreferences: null,
+    replaceNotificationPreferences: mockReplaceNotificationPreferences,
+  }),
+}));
+
+jest.mock("@/features/onboarding", () => ({
+  getNotificationPreferences: (...args: unknown[]) => mockGetNotificationPreferences(...args),
+  updateNotificationPreferences: (...args: unknown[]) => mockUpdateNotificationPreferences(...args),
 }));
 
 describe("appearance settings", () => {
@@ -24,6 +40,17 @@ describe("appearance settings", () => {
     jest.clearAllMocks();
     mockGetItem.mockResolvedValue(null);
     jest.spyOn(ReactNative, "useColorScheme").mockReturnValue("dark");
+    mockGetNotificationPreferences.mockResolvedValue({
+      confessionReminder: false,
+      dailyRosaryReminder: true,
+      eucharisticAdoration: false,
+    });
+    mockUpdateNotificationPreferences.mockImplementation(async (update) => ({
+      confessionReminder: false,
+      dailyRosaryReminder: true,
+      eucharisticAdoration: false,
+      ...update,
+    }));
   });
 
   it("exposes one accessible radio group and applies the selected appearance immediately", async () => {
@@ -118,5 +145,56 @@ describe("appearance settings", () => {
     );
 
     expect(StyleSheet.flatten(screen.getByTestId("settings-card-list").props.style)).toMatchObject({ gap: 16 });
+  });
+
+  it("loads, saves, and exposes accessible prayer reminder switches above account actions", async () => {
+    await render(
+      <AppLanguageProvider>
+        <AppThemeProvider>
+          <AppVisualEffectsProvider>
+            <SettingsScreen />
+          </AppVisualEffectsProvider>
+        </AppThemeProvider>
+      </AppLanguageProvider>,
+    );
+
+    const rosaryReminder = await screen.findByRole("switch", { name: "Daily Rosary reminder" });
+    expect(rosaryReminder.props.accessibilityState).toMatchObject({ checked: true });
+    expect(screen.getByRole("switch", { name: "Confession reminder" }).props.accessibilityState).toMatchObject({
+      checked: false,
+    });
+    expect(screen.getByText("Prayer and reminders")).toBeTruthy();
+    expect(screen.getByText("Sign out")).toBeTruthy();
+
+    await act(async () => {
+      fireEvent(rosaryReminder, "valueChange", false);
+    });
+
+    await waitFor(() => expect(mockUpdateNotificationPreferences).toHaveBeenCalledWith({ dailyRosaryReminder: false }));
+    await waitFor(() =>
+      expect(mockReplaceNotificationPreferences).toHaveBeenCalledWith(
+        expect.objectContaining({ dailyRosaryReminder: false }),
+      ),
+    );
+  });
+
+  it("shows Spanish reminder labels and retries a failed preference load", async () => {
+    mockGetNotificationPreferences.mockRejectedValueOnce(new Error("offline"));
+    await render(
+      <AppLanguageProvider>
+        <AppThemeProvider>
+          <AppVisualEffectsProvider>
+            <SettingsScreen />
+          </AppVisualEffectsProvider>
+        </AppThemeProvider>
+      </AppLanguageProvider>,
+    );
+
+    expect(await screen.findByText("We couldn't load your reminder preferences. Please try again.")).toBeTruthy();
+    await fireEvent.press(screen.getByRole("button", { name: "Try Again" }));
+    await screen.findByRole("switch", { name: "Daily Rosary reminder" });
+    await fireEvent.press(screen.getByRole("radio", { name: "Español" }));
+
+    expect(await screen.findByRole("switch", { name: "Recordatorio del Rosario diario" })).toBeTruthy();
   });
 });

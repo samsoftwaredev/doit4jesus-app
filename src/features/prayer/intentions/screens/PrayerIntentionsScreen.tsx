@@ -11,6 +11,7 @@ import { Button } from "@/components/ui";
 import { PrayerIntentionCard } from "@/features/prayer/intentions/components";
 import { fetchApprovedPrayerIntentions, cacheApprovedPrayerIntentions } from "@/features/prayer/intentions";
 import type { ApprovedPrayerIntention } from "@/features/prayer/intentions";
+import { logDevelopmentError } from "@/lib/development-logger";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
@@ -36,6 +37,7 @@ export function PrayerIntentionsScreen() {
       setHasMore(page.meta.hasMore);
       setNextOffset(page.meta.nextOffset);
     } catch (requestError) {
+      logDevelopmentError("loading public prayer intentions", requestError);
       setError(requestError instanceof Error ? requestError.message : t("intentions.loadError"));
     } finally {
       setIsLoading(false);
@@ -55,6 +57,7 @@ export function PrayerIntentionsScreen() {
       setHasMore(page.meta.hasMore);
       setNextOffset(page.meta.nextOffset);
     } catch (requestError) {
+      logDevelopmentError("loading more public prayer intentions", requestError);
       setError(requestError instanceof Error ? requestError.message : t("intentions.loadMoreError"));
     } finally {
       setIsLoadingMore(false);

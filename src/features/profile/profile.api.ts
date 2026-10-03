@@ -1,4 +1,5 @@
 import type { CurrentUserProfile, Gender, ProfileSetup, UpdateCurrentUserProfile } from "./profile.types";
+import { logDevelopmentError } from "@/lib/development-logger";
 import { getSupabaseAccessToken } from "@/lib/supabase";
 
 export class ProfileApiError extends Error {
@@ -96,7 +97,8 @@ async function readProfileApiError(response: Response, action: "delete" | "load"
   let payload: unknown;
   try {
     payload = await response.json();
-  } catch {
+  } catch (error) {
+    logDevelopmentError("parsing a profile API error response", error);
     payload = undefined;
   }
 

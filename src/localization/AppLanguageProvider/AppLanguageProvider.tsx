@@ -12,6 +12,7 @@ import {
 } from "react";
 
 import { i18n } from "@/localization/i18n";
+import { logDevelopmentError } from "@/lib/development-logger";
 
 export const APP_LANGUAGE_PREFERENCE_STORAGE_KEY = "@doit4jesus/language-preference:v1";
 
@@ -73,7 +74,8 @@ export function AppLanguageProvider({ children }: PropsWithChildren) {
       let nextPreference: SupportedLanguage | null = null;
       try {
         nextPreference = parseLanguagePreference(await AsyncStorage.getItem(APP_LANGUAGE_PREFERENCE_STORAGE_KEY));
-      } catch {
+      } catch (error) {
+        logDevelopmentError("loading the app language preference", error);
         nextPreference = null;
       }
 
@@ -101,7 +103,8 @@ export function AppLanguageProvider({ children }: PropsWithChildren) {
     setPreference(nextLanguage);
     try {
       await AsyncStorage.setItem(APP_LANGUAGE_PREFERENCE_STORAGE_KEY, nextLanguage);
-    } catch {
+    } catch (error) {
+      logDevelopmentError("saving the app language preference", error);
       // The active session still honors the selection when storage is unavailable.
     }
   }, []);
@@ -117,7 +120,8 @@ export function AppLanguageProvider({ children }: PropsWithChildren) {
     setPreference(nextLanguage);
     try {
       await AsyncStorage.setItem(APP_LANGUAGE_PREFERENCE_STORAGE_KEY, nextLanguage);
-    } catch {
+    } catch (error) {
+      logDevelopmentError("saving the account language preference", error);
       // The account preference still applies during this session when storage is unavailable.
     }
   }, []);

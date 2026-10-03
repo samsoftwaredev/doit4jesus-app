@@ -7,6 +7,7 @@ import { HeaderActionGroup } from "@/components/ui";
 import { HolyProgressDashboard } from "@/features/dashboard";
 import { fetchScreenData } from "@/features/screen-data";
 import type { ScreenDataResponse } from "@/features/screen-data";
+import { logDevelopmentError } from "@/lib/development-logger";
 import { useAppLanguage } from "@/localization";
 
 /** Renders the Home dashboard with branded navigation and full-width introductory copy. */
@@ -29,7 +30,8 @@ export default function HomeScreen() {
       .then((data) => {
         if (active) setInitialData(data);
       })
-      .catch(() => {
+      .catch((error) => {
+        logDevelopmentError("loading Home aggregate data", error);
         // Individual card loaders remain the fallback when aggregate data is unavailable.
       })
       .finally(() => {

@@ -10,6 +10,7 @@ import { Button, Card } from "@/components/ui";
 import { FriendAvatar, FriendsState } from "@/features/friends/components";
 import { useFriendSearch, useSendFriendRequest } from "@/features/friends/friends.hooks";
 import type { UserSearchResult } from "@/features/friends/friends.types";
+import { logDevelopmentError } from "@/lib/development-logger";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
@@ -93,7 +94,11 @@ export function AddFriendScreen() {
           renderItem={({ item }) => (
             <SearchResultItem
               isSending={request.pendingUsername === item.username}
-              onAdd={() => void request.send(item.username).catch(() => undefined)}
+              onAdd={() =>
+                void request
+                  .send(item.username)
+                  .catch((error) => logDevelopmentError("sending a friend request from search", error))
+              }
               requestedUsernames={request.requestedUsernames}
               result={item}
             />

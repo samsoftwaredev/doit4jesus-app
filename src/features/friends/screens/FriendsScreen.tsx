@@ -13,6 +13,7 @@ import { parseFriendRequestsPage, parseFriendsLeaderboardData, parseFriendsPage 
 import { fetchScreenData } from "@/features/screen-data";
 import type { ScreenDataResponse } from "@/features/screen-data";
 import type { FriendRequest } from "@/features/friends/friends.types";
+import { logDevelopmentError } from "@/lib/development-logger";
 import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
@@ -28,7 +29,7 @@ export function FriendsScreen() {
       .then((data) => {
         if (active) setInitialData(data);
       })
-      .catch(() => {})
+      .catch((error) => logDevelopmentError("loading Community aggregate data", error))
       .finally(() => {
         if (active) setSettled(true);
       });
@@ -74,7 +75,8 @@ function FriendsScreenContent({ initialData }: { initialData?: ScreenDataRespons
       if (decision === "accepted") {
         await Promise.all([leaderboard.reload(), friends.reload()]);
       }
-    } catch {
+    } catch (error) {
+      logDevelopmentError("resolving a friend request from Community", error);
       // The request hook retains the card and exposes an inline retry state.
     }
   };

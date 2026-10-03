@@ -1,17 +1,22 @@
 import { render, screen } from "@testing-library/react-native";
 
 import { i18n } from "@/localization";
+import { theme } from "@/theme/tokens";
 
 import { ResponsiveTabs } from "./ResponsiveTabs";
 
 const mockWindowDimensions = jest.fn();
 const mockTabsProps = jest.fn();
-const mockTabArtworkSources = jest.fn();
-const expectedTabArtworkSources = [
-  require("../../../assets/images/tabs/home.svg"),
-  require("../../../assets/images/tabs/prayer.svg"),
-  require("../../../assets/images/tabs/community.svg"),
-  require("../../../assets/images/tabs/profile.svg"),
+const mockTabIcons = jest.fn();
+const expectedTabIcons = [
+  { color: theme.colors.icon.active, name: "home-variant-outline" },
+  { color: theme.colors.icon.muted, name: "home-variant-outline" },
+  { color: theme.colors.icon.active, name: "hands-pray" },
+  { color: theme.colors.icon.muted, name: "hands-pray" },
+  { color: theme.colors.icon.active, name: "account-group-outline" },
+  { color: theme.colors.icon.muted, name: "account-group-outline" },
+  { color: theme.colors.icon.active, name: "account-circle-outline" },
+  { color: theme.colors.icon.muted, name: "account-circle-outline" },
 ];
 
 jest.mock("react-native/Libraries/Utilities/useWindowDimensions", () => ({
@@ -35,12 +40,16 @@ jest.mock("expo-router", () => {
     name: string;
     options: {
       tabBarAccessibilityLabel: string;
-      tabBarIcon?: (props: { focused: boolean; size: number }) => React.ReactNode;
+      tabBarIcon?: (props: { color: string; focused: boolean; size: number }) => React.ReactNode;
       title: string;
     };
   }) {
-    const icon = options.tabBarIcon?.({ focused: true, size: 24 });
-    if (React.isValidElement<{ source: unknown }>(icon)) mockTabArtworkSources(icon.props.source);
+    const mockTheme = jest.requireActual<typeof import("@/theme/tokens")>("@/theme/tokens").theme;
+    const activeIcon = options.tabBarIcon?.({ color: mockTheme.colors.icon.active, focused: true, size: 24 });
+    const inactiveIcon = options.tabBarIcon?.({ color: mockTheme.colors.icon.muted, focused: false, size: 24 });
+    [activeIcon, inactiveIcon].forEach((icon) => {
+      if (React.isValidElement<{ color: string; name: string }>(icon)) mockTabIcons(icon.props);
+    });
     return React.createElement(
       Text,
       { accessibilityLabel: options.tabBarAccessibilityLabel },
@@ -71,11 +80,11 @@ describe("ResponsiveTabs", () => {
     await i18n.changeLanguage("en");
   });
 
-  it("uses SVG artwork for every tab icon", async () => {
+  it("uses the journey card glyphs with active and inactive navigation tints", async () => {
     setViewport(390);
     await render(<ResponsiveTabs />);
 
-    expect(mockTabArtworkSources.mock.calls.map(([source]) => source)).toEqual(expectedTabArtworkSources);
+    expect(mockTabIcons.mock.calls.map(([icon]) => ({ color: icon.color, name: icon.name }))).toEqual(expectedTabIcons);
   });
 
   it.each([320, 390, 768])("keeps bottom navigation at %ipx", async (width) => {

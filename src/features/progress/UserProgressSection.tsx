@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Pressable, Text, View } from "react-native";
 
 import { Card } from "@/components/ui";
+import { logDevelopmentError } from "@/lib/development-logger";
 import { fetchRosaryStreak, parseRosaryStreakData } from "@/features/prayer/rosary/garden/api";
 import type { ScreenDataResponse } from "@/features/screen-data";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
@@ -53,7 +54,8 @@ export function UserProgressSection({ errorFallback, initialData }: UserProgress
         longestStreak: streak.longestStreak,
         rosariesPrayed: rosaryStats.rosariesPrayed,
       });
-    } catch {
+    } catch (error) {
+      logDevelopmentError("loading user progress", error);
       setStats(null);
     } finally {
       setIsLoadingStats(false);

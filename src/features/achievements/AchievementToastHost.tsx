@@ -1,0 +1,59 @@
+import { useEffect } from "react";
+import { View } from "react-native";
+import { useTranslation } from "react-i18next";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+import { AchievementAlert } from "@/components/ui";
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
+import { theme } from "@/theme/tokens";
+
+import { useAchievement } from "./AchievementProvider";
+
+const ACHIEVEMENT_TOAST_DURATION_MS = 5_000;
+
+/** Displays queued achievements above every route and clears each toast after its celebration window. */
+export function AchievementToastHost() {
+  const styles = useThemedStyles(styleSheet);
+  const { t } = useTranslation();
+  const { gutter } = useResponsiveLayout();
+  const insets = useSafeAreaInsets();
+  const { achievement, dismissAchievement } = useAchievement();
+
+  useEffect(() => {
+    if (!achievement) return;
+
+    const timeoutId = setTimeout(dismissAchievement, ACHIEVEMENT_TOAST_DURATION_MS);
+    return () => clearTimeout(timeoutId);
+  }, [achievement, dismissAchievement]);
+
+  if (!achievement) return null;
+
+  return (
+    <View pointerEvents="box-none" style={styles.host} testID="achievement-toast-host">
+      <View
+        style={[styles.content, { paddingHorizontal: gutter, paddingTop: insets.top + theme.spacing[2] }]}
+        testID="achievement-toast-content"
+      >
+        <AchievementAlert message={t("achievements.onboardingComplete")} onDismiss={dismissAchievement} />
+      </View>
+    </View>
+  );
+}
+
+const styleSheet = createThemedStyles((theme) => ({
+  content: {
+    alignSelf: "center",
+    maxWidth: theme.sizes.contentMaxWidth,
+    width: "100%",
+  },
+  host: {
+    bottom: 0,
+    left: 0,
+    pointerEvents: "box-none",
+    position: "absolute",
+    right: 0,
+    top: 0,
+    zIndex: theme.zIndex.toast,
+  },
+}));

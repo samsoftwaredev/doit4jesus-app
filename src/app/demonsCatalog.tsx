@@ -8,6 +8,7 @@ import { ScreenShell } from "@/components/screen-shell";
 import { Button, Card } from "@/components/ui";
 import { DemonCatalogItemCard, fetchDemonCatalog } from "@/features/demons";
 import type { DemonCatalogItem } from "@/features/demons";
+import { logDevelopmentError } from "@/lib/development-logger";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
@@ -34,7 +35,8 @@ export default function DemonsCatalogScreen() {
 
     try {
       setDemons(await fetchDemonCatalog());
-    } catch {
+    } catch (error) {
+      logDevelopmentError("loading the demon catalog", error);
       setErrorMessage(t("formation.battle.catalogLoadError"));
     } finally {
       setIsLoading(false);

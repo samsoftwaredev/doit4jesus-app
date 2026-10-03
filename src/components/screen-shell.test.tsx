@@ -63,6 +63,21 @@ describe("ScreenShell", () => {
     expect(screen.getByTestId("sacred-atmosphere-foreground")).toBeTruthy();
   });
 
+  it("renders an interactive overlay above the scrollable screen content", async () => {
+    await render(
+      <AppVisualEffectsProvider>
+        <ScreenShell description="A calm place to grow." overlay={<View testID="screen-toast" />} title="Welcome">
+          <Text>Screen content</Text>
+        </ScreenShell>
+      </AppVisualEffectsProvider>,
+    );
+
+    expect(screen.getByTestId("screen-toast")).toBeTruthy();
+    expect(screen.getByTestId("screen-shell-overlay").props.style).toEqual(
+      expect.arrayContaining([expect.objectContaining({ position: "absolute", top: 0 })]),
+    );
+  });
+
   it("stacks the heading and actions when large text needs more horizontal room", async () => {
     mockResponsiveLayout.mockReturnValue({
       ...mockResponsiveLayout(),

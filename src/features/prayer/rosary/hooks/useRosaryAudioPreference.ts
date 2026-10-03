@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import type { RosaryStorageAdapter } from "@/features/prayer/rosary/hooks/useRosarySession";
+import { logDevelopmentError } from "@/lib/development-logger";
 
 const STORAGE_KEY = "@doit4jesus/rosary-audio-muted/v1";
 
@@ -19,7 +20,8 @@ export function useRosaryAudioPreference(storage: RosaryStorageAdapter = AsyncSt
       try {
         const savedValue = await storage.getItem(STORAGE_KEY);
         if (active) setMuted(savedValue === "true");
-      } catch {
+      } catch (error) {
+        logDevelopmentError("loading the Rosary audio preference", error);
         if (active) setStorageError(true);
       } finally {
         if (active) setIsHydrated(true);
@@ -37,7 +39,8 @@ export function useRosaryAudioPreference(storage: RosaryStorageAdapter = AsyncSt
       setMuted(muted);
       try {
         await storage.setItem(STORAGE_KEY, String(muted));
-      } catch {
+      } catch (error) {
+        logDevelopmentError("saving the Rosary audio preference", error);
         setStorageError(true);
       }
     },

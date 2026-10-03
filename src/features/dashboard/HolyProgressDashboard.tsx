@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { DailyLiturgyDashboard } from "@/features/liturgy/screens";
 import { subscribeToRosaryCompletion } from "@/features/prayer/rosary/rosary-completion-events";
 import { useCurrentProfile } from "@/features/profile";
+import { logDevelopmentError } from "@/lib/development-logger";
 import {
   EarnedBadgesSection,
   fetchDashboardProgress,
@@ -80,7 +81,8 @@ export function HolyProgressDashboard({ initialData }: { initialData?: ScreenDat
     try {
       const section = initialData?.sections.progress;
       setProgress(section ? parseDashboardProgressData(section.data) : await fetchDashboardProgress());
-    } catch {
+    } catch (error) {
+      logDevelopmentError("loading dashboard progress", error);
       setProgress(null);
       setProgressError(true);
     } finally {
@@ -94,7 +96,8 @@ export function HolyProgressDashboard({ initialData }: { initialData?: ScreenDat
     try {
       const section = initialData?.sections.rosaryStats;
       setRosaryStats(section ? parseRosaryStatsData(section.data) : await fetchRosaryStats());
-    } catch {
+    } catch (error) {
+      logDevelopmentError("loading Rosary statistics", error);
       setRosaryStats(null);
       setStatsError(true);
     } finally {
@@ -138,7 +141,8 @@ export function HolyProgressDashboard({ initialData }: { initialData?: ScreenDat
     try {
       const section = initialData?.sections.examinationQuestion;
       setConscience(section ? parseConscienceQuestionData(section.data) : await getConscienceQuestion());
-    } catch {
+    } catch (error) {
+      logDevelopmentError("loading the examination question", error);
       setConscience(null);
       setConscienceError(true);
     } finally {
@@ -152,7 +156,8 @@ export function HolyProgressDashboard({ initialData }: { initialData?: ScreenDat
     setConscienceQuestionsError(false);
     try {
       setConscienceQuestions(await getConscienceQuestions());
-    } catch {
+    } catch (error) {
+      logDevelopmentError("loading examination questions", error);
       setConscienceQuestions([]);
       setConscienceQuestionsError(true);
     } finally {
@@ -166,7 +171,8 @@ export function HolyProgressDashboard({ initialData }: { initialData?: ScreenDat
     try {
       const section = initialData?.sections.rosaryReminder;
       setReminder(section ? parseRosaryReminderData(section.data) : await getRosaryReminder());
-    } catch {
+    } catch (error) {
+      logDevelopmentError("loading the Rosary reminder", error);
       setReminder(null);
       setReminderError(true);
     } finally {

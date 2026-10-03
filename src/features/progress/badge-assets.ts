@@ -1,5 +1,7 @@
 import type { ImageSource } from "expo-image";
 
+import { logDevelopmentError } from "@/lib/development-logger";
+
 export type BadgeArtworkSource = ImageSource | number;
 
 const localBadgeArtwork: Record<string, BadgeArtworkSource> = {
@@ -40,13 +42,15 @@ function resolveRemoteBadgeUrl(iconUrl: string | null): string | null {
     }
 
     return iconUrl;
-  } catch {
+  } catch (error) {
+    logDevelopmentError("loading a badge asset", error);
     const assetBaseUrl = supabaseUrl ?? process.env.EXPO_PUBLIC_API_URL;
     if (!assetBaseUrl) return null;
 
     try {
       return new URL(iconUrl, `${assetBaseUrl.replace(/\/$/, "")}/`).toString();
-    } catch {
+    } catch (error) {
+      logDevelopmentError("loading a fallback badge asset", error);
       return null;
     }
   }

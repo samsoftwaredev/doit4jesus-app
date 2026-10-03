@@ -3,6 +3,7 @@ import { createContext, type PropsWithChildren, useCallback, useContext, useEffe
 import { useColorScheme } from "react-native";
 
 import { darkTheme, lightTheme, setActiveAppTheme, type AppTheme } from "@/theme/tokens";
+import { logDevelopmentError } from "@/lib/development-logger";
 
 export const APP_THEME_PREFERENCE_STORAGE_KEY = "@doit4jesus/theme-preference:v1";
 
@@ -69,7 +70,8 @@ export function AppThemeProvider({ children }: PropsWithChildren) {
       let nextPreference: ThemePreference = "system";
       try {
         nextPreference = parseThemePreference(await AsyncStorage.getItem(APP_THEME_PREFERENCE_STORAGE_KEY));
-      } catch {
+      } catch (error) {
+        logDevelopmentError("loading the appearance preference", error);
         nextPreference = "system";
       }
 
@@ -89,7 +91,8 @@ export function AppThemeProvider({ children }: PropsWithChildren) {
     setStoredPreference(nextPreference);
     try {
       await AsyncStorage.setItem(APP_THEME_PREFERENCE_STORAGE_KEY, nextPreference);
-    } catch {
+    } catch (error) {
+      logDevelopmentError("saving the appearance preference", error);
       // The active session can still honor the choice when local storage is unavailable.
     }
   }, []);

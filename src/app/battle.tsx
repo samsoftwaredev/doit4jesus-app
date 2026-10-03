@@ -9,6 +9,7 @@ import { Button, Card, SpriteSheetAnimation } from "@/components/ui";
 import { ArenaDemonSelector, BattleDemonDetails } from "@/features/battle";
 import type { DemonBattleDetails, DemonCatalogItem } from "@/features/demons";
 import { fetchDemonBattleDetails, fetchDemonCatalog } from "@/features/demons";
+import { logDevelopmentError } from "@/lib/development-logger";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
@@ -32,7 +33,8 @@ export default function BattleScreen() {
 
     try {
       setDemons(await fetchDemonCatalog());
-    } catch {
+    } catch (error) {
+      logDevelopmentError("loading the battle demon catalog", error);
       setCatalogError(t("formation.battle.catalogLoadError"));
     } finally {
       setIsLoadingCatalog(false);
@@ -55,7 +57,8 @@ export default function BattleScreen() {
         if (selectionRequestId.current === requestId) {
           setDetails(battleDetails);
         }
-      } catch {
+      } catch (error) {
+        logDevelopmentError("loading battle demon details", error);
         if (selectionRequestId.current === requestId) {
           setDetailsError(t("formation.battle.detailsLoadError"));
         }

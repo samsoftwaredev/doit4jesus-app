@@ -11,6 +11,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useTranslation } from "react-i18next";
 
+import { logDevelopmentError } from "@/lib/development-logger";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
@@ -26,7 +27,9 @@ export function PrayTodayButton({ onPress }: PrayTodayButtonProps) {
   const scale = useSharedValue(1);
   const animatedStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
   const handlePress = () => {
-    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => undefined);
+    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch((error) =>
+      logDevelopmentError("playing prayer-button haptics", error),
+    );
     onPress();
   };
 

@@ -62,6 +62,9 @@ export const resources = {
         loadingAccount: "Loading your account",
         profileErrorCopy: "Check your connection and try again. Your dashboard remains protected.",
       },
+      achievements: {
+        onboardingComplete: "Grow in faith. Change the world for Jesus.",
+      },
       pages: {
         about: {
           copy: "Do It for Jesus helps Catholics build consistent spiritual habits, grow in virtue, and encourage one another on their journey toward Christ.",
@@ -1084,20 +1087,23 @@ export const resources = {
         backgroundLightingDescription: "Show or hide the sunlight, beams, and haze throughout the app.",
         changeEmail: "Change email",
         description: "Shape the app around your life of prayer.",
+        confessionReminder: "Confession reminder",
+        confessionReminderDescription: "Make time for an examination of conscience.",
+        dailyRosaryReminder: "Daily Rosary reminder",
+        dailyRosaryReminderDescription: "Set aside time to pray the Rosary each day.",
+        eucharisticAdoration: "Eucharistic Adoration",
+        eucharisticAdorationDescription: "Find time with Jesus in Adoration.",
         languageDescription: "Choose the language used for app controls and devotional content.",
         prayerCopy: "Choose when you would like prayer reminders and spiritual encouragement.",
         prayerTitle: "Prayer and reminders",
+        notificationsLoading: "Loading your reminder preferences…",
+        notificationsLoadError: "We couldn't load your reminder preferences. Please try again.",
+        notificationsSaveError: "We couldn't save that reminder preference. Please try again.",
         signOut: "Sign out",
         title: "Settings",
       },
       onboarding: {
         back: "Previous setup step",
-        complete: {
-          description: "Let’s grow in faith, compete in holiness, and change the world for Jesus!",
-          missionCopy: "Your profile is ready for the mission.",
-          next: "Enter the Mission",
-          title: "You’re all set!",
-        },
         country: {
           accessibilityLabel: "Country, {{country}}",
           close: "Close country selector",
@@ -1115,9 +1121,6 @@ export const resources = {
         errors: {
           completion: "We couldn't complete your setup. Your previous answers are still saved. Please try again.",
           incomplete: "Your setup is still incomplete. Review your answers and try again.",
-          preferencesLoad: "We couldn't load your notification preferences. Try again.",
-          preferencesRequired: "Load your notification preferences before continuing.",
-          preferencesSave: "We couldn't save your notification preferences. Please try again.",
           profileSave: "We couldn't save your information. Please try again.",
           review: "Review your setup answers before entering the mission.",
           usernameConflict: "That username was just taken. Choose another suggestion and try again.",
@@ -1145,18 +1148,6 @@ export const resources = {
             parts: "Enter one first name and one last name, separated by a space.",
             space: "Enter both your first and last name, separated by a space.",
           },
-        },
-        notifications: {
-          adorationCopy: "Find time with Jesus",
-          adorationLabel: "Eucharistic Adoration",
-          confessionCopy: "Examination of conscience",
-          confessionLabel: "Confession Reminder",
-          description: "We’ll remind you of what matters most.",
-          loading: "Loading your preferences…",
-          loadingLabel: "Loading notification preferences",
-          rosaryCopy: "Daily Rosary",
-          rosaryLabel: "Daily Rosary Reminder",
-          title: "Stay close to Jesus",
         },
         username: {
           accessibilityLabel: "Username",
@@ -1240,6 +1231,9 @@ export const resources = {
       app: {
         loadingAccount: "Cargando tu cuenta",
         profileErrorCopy: "Comprueba tu conexión e inténtalo de nuevo. Tu panel permanece protegido.",
+      },
+      achievements: {
+        onboardingComplete: "Crece en la fe. Cambia el mundo por Jesús.",
       },
       pages: {
         about: {
@@ -2267,20 +2261,23 @@ export const resources = {
         backgroundLightingDescription: "Muestra u oculta la luz solar, los rayos y la neblina en toda la aplicación.",
         changeEmail: "Cambiar correo electrónico",
         description: "Adapta la aplicación a tu vida de oración.",
+        confessionReminder: "Recordatorio de confesión",
+        confessionReminderDescription: "Reserva tiempo para un examen de conciencia.",
+        dailyRosaryReminder: "Recordatorio del Rosario diario",
+        dailyRosaryReminderDescription: "Aparta tiempo para rezar el Rosario cada día.",
+        eucharisticAdoration: "Adoración eucarística",
+        eucharisticAdorationDescription: "Encuentra tiempo con Jesús en la Adoración.",
         languageDescription: "Elige el idioma de los controles y del contenido devocional.",
         prayerCopy: "Elige cuándo quieres recibir recordatorios de oración y ánimo espiritual.",
         prayerTitle: "Oración y recordatorios",
+        notificationsLoading: "Cargando tus preferencias de recordatorios…",
+        notificationsLoadError: "No pudimos cargar tus preferencias de recordatorios. Inténtalo de nuevo.",
+        notificationsSaveError: "No pudimos guardar esa preferencia de recordatorio. Inténtalo de nuevo.",
         signOut: "Cerrar sesión",
         title: "Configuración",
       },
       onboarding: {
         back: "Paso anterior de configuración",
-        complete: {
-          description: "¡Crezcamos en la fe, compitamos en santidad y cambiemos el mundo por Jesús!",
-          missionCopy: "Tu perfil está listo para la misión.",
-          next: "Entrar en la misión",
-          title: "¡Todo listo!",
-        },
         country: {
           accessibilityLabel: "País, {{country}}",
           close: "Cerrar selector de país",
@@ -2299,9 +2296,6 @@ export const resources = {
           completion:
             "No pudimos completar tu configuración. Tus respuestas anteriores siguen guardadas. Inténtalo de nuevo.",
           incomplete: "Tu configuración aún está incompleta. Revisa tus respuestas e inténtalo de nuevo.",
-          preferencesLoad: "No pudimos cargar tus preferencias de notificaciones. Inténtalo de nuevo.",
-          preferencesRequired: "Carga tus preferencias de notificaciones antes de continuar.",
-          preferencesSave: "No pudimos guardar tus preferencias de notificaciones. Inténtalo de nuevo.",
           profileSave: "No pudimos guardar tu información. Inténtalo de nuevo.",
           review: "Revisa tus respuestas de configuración antes de entrar en la misión.",
           usernameConflict: "Alguien acaba de tomar ese nombre de usuario. Elige otra sugerencia e inténtalo de nuevo.",
@@ -2329,18 +2323,6 @@ export const resources = {
             parts: "Escribe un nombre y un apellido separados por un espacio.",
             space: "Escribe tu nombre y apellido separados por un espacio.",
           },
-        },
-        notifications: {
-          adorationCopy: "Encuentra tiempo con Jesús",
-          adorationLabel: "Adoración eucarística",
-          confessionCopy: "Examen de conciencia",
-          confessionLabel: "Recordatorio de confesión",
-          description: "Te recordaremos lo que más importa.",
-          loading: "Cargando tus preferencias…",
-          loadingLabel: "Cargando preferencias de notificaciones",
-          rosaryCopy: "Rosario diario",
-          rosaryLabel: "Recordatorio del Rosario diario",
-          title: "Permanece cerca de Jesús",
         },
         username: {
           accessibilityLabel: "Nombre de usuario",

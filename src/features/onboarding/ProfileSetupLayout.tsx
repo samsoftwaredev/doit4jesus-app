@@ -26,7 +26,7 @@ type ProfileSetupLayoutProps = {
   title: string;
 };
 
-const totalSteps = 7;
+const totalSteps = 5;
 
 /** Renders a profile-setup step over the shared atmosphere and optional confetti. */
 export function ProfileSetupLayout({
