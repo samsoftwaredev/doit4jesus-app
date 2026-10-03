@@ -9,12 +9,17 @@ describe("AchievementAlert", () => {
     const onDismiss = jest.fn();
     await render(
       <AppLanguageProvider>
-        <AchievementAlert message="Grow in faith. Change the world for Jesus." onDismiss={onDismiss} />
+        <AchievementAlert
+          message="Account set up! Remember to seek first His kingdom, and all else will follow."
+          onDismiss={onDismiss}
+        />
       </AppLanguageProvider>,
     );
 
     expect(screen.getByTestId("achievement-alert").props.accessibilityRole).toBe("alert");
-    expect(screen.getByText("Grow in faith. Change the world for Jesus.")).toBeTruthy();
+    expect(
+      screen.getByText("Account set up! Remember to seek first His kingdom, and all else will follow."),
+    ).toBeTruthy();
     expect(screen.getByTestId("achievement-confetti")).toBeTruthy();
 
     await fireEvent.press(screen.getByRole("button", { name: "Dismiss message" }));

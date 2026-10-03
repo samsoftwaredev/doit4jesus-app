@@ -53,7 +53,9 @@ describe("AchievementToastHost", () => {
 
     await fireEvent.press(screen.getByRole("button", { name: "Show achievement" }));
 
-    expect(await screen.findByText("Grow in faith. Change the world for Jesus.")).toBeTruthy();
+    expect(
+      await screen.findByText("Account set up! Remember to seek first His kingdom, and all else will follow."),
+    ).toBeTruthy();
     expect(StyleSheet.flatten(screen.getByTestId("achievement-toast-host").props.style)).toEqual(
       expect.objectContaining({ position: "absolute", top: 0, zIndex: theme.zIndex.toast }),
     );
@@ -83,6 +85,8 @@ describe("AchievementToastHost", () => {
     await act(async () => i18n.changeLanguage("es"));
 
     await fireEvent.press(screen.getByRole("button", { name: "Show achievement" }));
-    expect(await screen.findByText("Crece en la fe. Cambia el mundo por Jesús.")).toBeTruthy();
+    expect(
+      await screen.findByText("¡Cuenta creada! Recuerda buscar primero su Reino y todo lo demás vendrá por añadidura."),
+    ).toBeTruthy();
   });
 });

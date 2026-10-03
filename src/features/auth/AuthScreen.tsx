@@ -15,6 +15,7 @@ type AuthScreenProps = {
 };
 
 type AuthTextInputProps = ComponentProps<typeof TextInput> & {
+  errorMessage?: string;
   label: string;
 };
 
@@ -39,21 +40,39 @@ export function AuthScreen({ children, subtitle, title }: AuthScreenProps) {
   );
 }
 
-/** Renders a labeled authentication input using the active palette. */
-export function AuthTextInput({ label, ...inputProps }: AuthTextInputProps) {
+/** Renders a labeled authentication input and announces an optional validation error. */
+export function AuthTextInput({ errorMessage, label, accessibilityHint, style, ...inputProps }: AuthTextInputProps) {
   const styles = useThemedStyles(styleSheet);
   return (
     <View style={styles.field}>
       <Text style={styles.label}>{label}</Text>
-      <TextInput placeholderTextColor={theme.colors.text.subtle} style={styles.input} {...inputProps} />
+      <TextInput
+        {...inputProps}
+        accessibilityHint={errorMessage ?? accessibilityHint}
+        placeholderTextColor={theme.colors.text.subtle}
+        style={[styles.input, errorMessage ? styles.inputError : undefined, style]}
+      />
+      {errorMessage ? (
+        <Text accessibilityLiveRegion="polite" accessibilityRole="alert" style={styles.fieldError}>
+          {errorMessage}
+        </Text>
+      ) : null}
     </View>
   );
 }
 
-/** Renders a semantic success or error message for authentication flows. */
+/** Renders an announced success or error message for an authentication flow. */
 export function AuthMessage({ children, tone = "error" }: { children: string; tone?: "error" | "success" }) {
   const styles = useThemedStyles(styleSheet);
-  return <Text style={[styles.message, tone === "error" ? styles.error : styles.success]}>{children}</Text>;
+  return (
+    <Text
+      accessibilityLiveRegion="polite"
+      accessibilityRole={tone === "error" ? "alert" : undefined}
+      style={[styles.message, tone === "error" ? styles.error : styles.success]}
+    >
+      {children}
+    </Text>
+  );
 }
 
 export const authScreenStyles = createThemedStyles((theme) => ({
@@ -78,6 +97,10 @@ const styleSheet = createThemedStyles((theme) => ({
   field: {
     gap: theme.spacing[1.5],
   },
+  fieldError: {
+    ...theme.typography.bodySmall,
+    color: theme.colors.text.danger,
+  },
   form: {
     gap: theme.spacing[4],
   },
@@ -91,6 +114,9 @@ const styleSheet = createThemedStyles((theme) => ({
     minHeight: theme.sizes.touchTarget,
     paddingHorizontal: theme.spacing[3],
     paddingVertical: theme.spacing[2],
+  },
+  inputError: {
+    borderColor: theme.colors.text.danger,
   },
   label: {
     ...theme.typography.label,

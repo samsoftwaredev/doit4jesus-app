@@ -63,7 +63,7 @@ export const resources = {
         profileErrorCopy: "Check your connection and try again. Your dashboard remains protected.",
       },
       achievements: {
-        onboardingComplete: "Grow in faith. Change the world for Jesus.",
+        onboardingComplete: "Account set up! Remember to seek first His kingdom, and all else will follow.",
       },
       pages: {
         about: {
@@ -268,6 +268,12 @@ export const resources = {
         saveNewPassword: "Save new password",
         signIn: "Sign in",
         signInDescription: "Continue your life of prayer.",
+        validation: {
+          emailInvalid: "Enter a valid email address.",
+          emailRequired: "Enter your email address.",
+          passwordRequired: "Enter your password.",
+          weakPassword: "Choose a password that is harder to guess.",
+        },
         verifiedDescription: "Your reset link has been verified.",
         chooseNewPassword: "Choose a new password",
       },
@@ -1233,7 +1239,7 @@ export const resources = {
         profileErrorCopy: "Comprueba tu conexión e inténtalo de nuevo. Tu panel permanece protegido.",
       },
       achievements: {
-        onboardingComplete: "Crece en la fe. Cambia el mundo por Jesús.",
+        onboardingComplete: "¡Cuenta creada! Recuerda buscar primero su Reino y todo lo demás vendrá por añadidura.",
       },
       pages: {
         about: {
@@ -1439,6 +1445,12 @@ export const resources = {
         saveNewPassword: "Guardar nueva contraseña",
         signIn: "Iniciar sesión",
         signInDescription: "Continúa tu vida de oración.",
+        validation: {
+          emailInvalid: "Escribe un correo electrónico válido.",
+          emailRequired: "Escribe tu correo electrónico.",
+          passwordRequired: "Escribe tu contraseña.",
+          weakPassword: "Elige una contraseña más difícil de adivinar.",
+        },
         verifiedDescription: "Tu enlace de restablecimiento fue verificado.",
         chooseNewPassword: "Elige una nueva contraseña",
       },

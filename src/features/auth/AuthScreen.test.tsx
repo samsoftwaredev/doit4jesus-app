@@ -42,6 +42,20 @@ describe("AuthScreen", () => {
     expect(screen.getByText("Welcome back.")).toBeTruthy();
   });
 
+  it("exposes field validation errors as accessible alerts", async () => {
+    await render(
+      <AuthTextInput
+        accessibilityLabel="Email"
+        errorMessage="Enter a valid email address."
+        label="Email"
+        value="invalid"
+      />,
+    );
+
+    expect(screen.getByLabelText("Email").props.accessibilityHint).toBe("Enter a valid email address.");
+    expect(screen.getByRole("alert")).toHaveTextContent("Enter a valid email address.");
+  });
+
   it("localizes the shared authentication eyebrow and back action", async () => {
     await i18n.changeLanguage("es");
 
