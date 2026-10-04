@@ -59,9 +59,9 @@ describe("getRemainingRosaryAudioSeconds", () => {
 
     expect(
       [joyfulEnglish("short"), joyfulEnglish("medium"), joyfulEnglish("long")].map(formatRosaryAudioDuration),
-    ).toEqual(["21:09", "23:37", "27:14"]);
+    ).toEqual(["21:09", "23:59", "27:36"]);
     expect(
       [joyfulSpanish("short"), joyfulSpanish("medium"), joyfulSpanish("long")].map(formatRosaryAudioDuration),
-    ).toEqual(["24:58", "27:43", "31:51"]);
+    ).toEqual(["24:58", "28:07", "32:14"]);
   });
 });

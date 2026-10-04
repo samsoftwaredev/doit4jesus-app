@@ -7,3 +7,5 @@ export { JourneyWelcomeCard } from "./JourneyWelcomeCard";
 export type { JourneyWelcomeCardProps } from "./JourneyWelcomeCard";
 export { LeaderboardCard } from "./LeaderboardCard";
 export { LevelProgressCard } from "./LevelProgressCard";
+export { ActivityPointsModal } from "./ActivityPointsModal";
+export type { ActivityPointsModalProps } from "./ActivityPointsModal";

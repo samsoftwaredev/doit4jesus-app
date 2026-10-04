@@ -1,4 +1,5 @@
 export {
+  fetchActivityPointsPage,
   fetchBadgeCatalog,
   fetchDashboardProgress,
   fetchEarnedBadges,
@@ -14,6 +15,8 @@ export {
 } from "./progress.api";
 export { EarnedBadgesSection } from "./EarnedBadgesSection";
 export type {
+  ActivityPointsActivity,
+  ActivityPointsPage,
   BadgeCatalogEntry,
   BadgeEarnedInstance,
   BadgeProgress,

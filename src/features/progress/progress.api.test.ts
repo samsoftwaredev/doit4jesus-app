@@ -3,6 +3,7 @@ import {
   fetchDashboardProgress,
   fetchEarnedBadges,
   fetchLevels,
+  fetchActivityPointsPage,
   fetchRecentRosaryActivities,
   fetchRosaryStats,
   fetchUserProgress,
@@ -148,6 +149,46 @@ describe("progress API", () => {
       headers: { Accept: "application/json", Authorization: "Bearer test-token" },
       method: "GET",
     });
+  });
+
+  it("loads activity points pages and sends the supplied before cursor", async () => {
+    const fetchMock = jest.fn(async () => ({
+      json: async () => ({
+        data: [
+          {
+            activity_code: "SCRIPTURE",
+            completed_at: null,
+            id: "activity-uuid",
+            occurred_at: "2026-10-02T19:00:00.000Z",
+            points: -20,
+          },
+        ],
+        meta: { hasMore: true, limit: 20, nextCursor: "2026-10-02T19:00:00.000Z" },
+      }),
+      ok: true,
+    }));
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+    await expect(fetchActivityPointsPage("2026-10-03T09:00:00Z")).resolves.toEqual({
+      activities: [
+        {
+          activityCode: "SCRIPTURE",
+          completedAt: null,
+          id: "activity-uuid",
+          occurredAt: "2026-10-02T19:00:00.000Z",
+          points: -20,
+        },
+      ],
+      hasMore: true,
+      nextCursor: "2026-10-02T19:00:00.000Z",
+    });
+    expect(fetchMock).toHaveBeenCalledWith(
+      "https://api.example.test/api/v1/activities?include=points&limit=20&before=2026-10-03T09%3A00%3A00Z",
+      {
+        headers: { Accept: "application/json", Authorization: "Bearer test-token" },
+        method: "GET",
+      },
+    );
   });
 
   it("supports nullable optional progress fields", async () => {

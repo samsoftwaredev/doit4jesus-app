@@ -6868,6 +6868,11 @@
         "path": "/assets/audios/en/prayers/prayerAfterRosary.m4a",
         "variant": "primary"
       },
+      "en_prayers_saintMichel": {
+        "language": "en",
+        "path": "/assets/audios/en/prayers/saintMichel.m4a",
+        "variant": "primary"
+      },
       "en_prayers_signOfCross": {
         "language": "en",
         "path": "/assets/audios/en/prayers/signOfCross.m4a",
@@ -7198,6 +7203,11 @@
         "path": "/assets/audios/es/prayers/proclamation.m4a",
         "variant": "fragment"
       },
+      "es_prayers_sanMiguel": {
+        "language": "es",
+        "path": "/assets/audios/es/prayers/sanMiguel.m4a",
+        "variant": "primary"
+      },
       "es_prayers_signOfCross": {
         "language": "es",
         "path": "/assets/audios/es/prayers/signOfCross.m4a",
@@ -7242,6 +7252,10 @@
       "our_father": {
         "en": "en_prayers_ourFather",
         "es": "es_prayers_ourFather"
+      },
+      "saint_michael": {
+        "en": "en_prayers_saintMichel",
+        "es": "es_prayers_sanMiguel"
       },
       "sign_of_cross": {
         "en": "en_prayers_signOfCross",

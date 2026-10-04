@@ -1,8 +1,32 @@
-import { render, screen } from "@testing-library/react-native";
+import { fireEvent, render, screen } from "@testing-library/react-native";
 
 import { HolyProgressCard } from "./HolyProgressCard";
 
 describe("HolyProgressCard", () => {
+  it("offers an accessible action to view activity points", async () => {
+    const onViewActivityPoints = jest.fn();
+
+    await render(
+      <HolyProgressCard
+        detailsError={false}
+        isLoadingDetails={false}
+        isLoadingProgress={false}
+        isLoadingStats={false}
+        levelCatalog={[]}
+        onViewActivityPoints={onViewActivityPoints}
+        progress={null}
+        progressError={false}
+        recentRosaryActivities={[]}
+        rosaryStats={{ rosariesPrayed: 0 }}
+        statsError={false}
+      />,
+    );
+
+    await fireEvent.press(screen.getByRole("button", { name: "View activity points" }));
+
+    expect(onViewActivityPoints).toHaveBeenCalledTimes(1);
+  });
+
   it("renders Rosaries, Level, and locale-formatted Points from independent API models", async () => {
     await render(
       <HolyProgressCard
@@ -11,6 +35,7 @@ describe("HolyProgressCard", () => {
         detailsError={false}
         isLoadingDetails={false}
         levelCatalog={[{ code: "faithful", levelNumber: 4, minimumTotalXp: 6000, name: "Faithful" }]}
+        onViewActivityPoints={jest.fn()}
         progress={{
           currentLevel: { code: "devoted", levelNumber: 3, minimumTotalXp: 3000, name: "Devoted" },
           levelProgressPercentage: 44,
@@ -56,6 +81,7 @@ describe("HolyProgressCard", () => {
         detailsError={false}
         isLoadingDetails={false}
         levelCatalog={[]}
+        onViewActivityPoints={jest.fn()}
         progress={null}
         progressError
         recentRosaryActivities={[]}
@@ -77,6 +103,7 @@ describe("HolyProgressCard", () => {
         isLoadingProgress={false}
         isLoadingStats={false}
         levelCatalog={[]}
+        onViewActivityPoints={jest.fn()}
         progress={null}
         progressError={false}
         recentRosaryActivities={[]}

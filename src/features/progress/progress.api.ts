@@ -1,6 +1,8 @@
 import { getSupabaseAccessToken } from "@/lib/supabase";
 
 import type {
+  ActivityPointsActivity,
+  ActivityPointsPage,
   BadgeCatalogEntry,
   BadgeEarnedInstance,
   BadgeProgress,
@@ -132,6 +134,37 @@ function parseRecentRosaryActivity(value: unknown): RecentRosaryActivity {
     id: readString(activity.id, "Rosary activity ID"),
     occurredAt: readString(activity.occurred_at, "Rosary activity date"),
     quantity: readNumber(activity.quantity, "Rosary activity quantity"),
+  };
+}
+
+/** Parses one activity record returned with its signed net ledger points. */
+function parseActivityPointsActivity(value: unknown): ActivityPointsActivity {
+  const activity = readRecord(value, "activity");
+
+  return {
+    activityCode: readString(activity.activity_code, "activity code"),
+    completedAt: readOptionalNullableString(activity.completed_at, "activity completion date"),
+    id: readString(activity.id, "activity ID"),
+    occurredAt: readString(activity.occurred_at, "activity date"),
+    points: readNumber(activity.points, "activity points"),
+  };
+}
+
+/** Parses the documented activity-history response and verifies its cursor metadata. */
+function parseActivityPointsPage(value: unknown): ActivityPointsPage {
+  const response = readRecord(value, "activity history response");
+  const meta = readRecord(response.meta, "activity history metadata");
+  const hasMore = readBoolean(meta.hasMore, "activity history has more flag");
+  const nextCursor = readNullableString(meta.nextCursor, "activity history next cursor");
+
+  if (hasMore && !nextCursor) {
+    throw new Error("The activity endpoint returned a next page without a cursor.");
+  }
+
+  return {
+    activities: readArray(response.data, "activities").map(parseActivityPointsActivity),
+    hasMore,
+    nextCursor,
   };
 }
 
@@ -301,6 +334,14 @@ export function parseLevelsData(data: unknown): LevelCatalogEntry[] {
 export async function fetchRecentRosaryActivities(): Promise<RecentRosaryActivity[]> {
   const data = readData(await requestProgress("/api/v1/activities?limit=20&activityCode=ROSARY"));
   return readArray(data, "Rosary activities").map(parseRecentRosaryActivity);
+}
+
+/** Loads one cursor page of the authenticated user's full activity history with signed net points. */
+export async function fetchActivityPointsPage(before?: string): Promise<ActivityPointsPage> {
+  const query = new URLSearchParams({ include: "points", limit: "20" });
+  if (before) query.set("before", before);
+
+  return parseActivityPointsPage(await requestProgress(`/api/v1/activities?${query.toString()}`));
 }
 
 /** Parses aggregate-screen Rosary activity data. */

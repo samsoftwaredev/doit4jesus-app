@@ -26,6 +26,7 @@ import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles"
 import type { LevelCatalogEntry, RecentRosaryActivity } from "@/features/progress";
 import {
   ConscienceQuestionCard,
+  ActivityPointsModal,
   DailyRosaryCard,
   HolyProgressCard,
   JourneyWelcomeCard,
@@ -74,6 +75,7 @@ export function HolyProgressDashboard({ initialData }: { initialData?: ScreenDat
   const [rosaryStats, setRosaryStats] = useState<Awaited<ReturnType<typeof fetchRosaryStats>> | null>(null);
   const [statsError, setStatsError] = useState(false);
   const [holyDetailsError, setHolyDetailsError] = useState(false);
+  const [isActivityPointsVisible, setIsActivityPointsVisible] = useState(false);
 
   const loadProgress = useCallback(async () => {
     setIsLoadingProgress(true);
@@ -211,6 +213,12 @@ export function HolyProgressDashboard({ initialData }: { initialData?: ScreenDat
     return () => subscription.remove();
   }, [refreshAll]);
 
+  /** Opens the full signed activity-points history without navigating away from Home. */
+  const openActivityPoints = useCallback(() => setIsActivityPointsVisible(true), []);
+
+  /** Closes the activity-points history and returns the user to the Home dashboard. */
+  const closeActivityPoints = useCallback(() => setIsActivityPointsVisible(false), []);
+
   const useCardColumns = isTablet && contentWidth >= 700 && !isLargeText;
 
   return (
@@ -247,12 +255,14 @@ export function HolyProgressDashboard({ initialData }: { initialData?: ScreenDat
             isLoadingProgress={isLoadingProgress}
             isLoadingStats={isLoadingStats}
             levelCatalog={levelCatalog}
+            onViewActivityPoints={openActivityPoints}
             progress={progress}
             progressError={progressError}
             recentRosaryActivities={recentRosaryActivities}
             rosaryStats={rosaryStats}
             statsError={statsError}
           />
+          <ActivityPointsModal onClose={closeActivityPoints} visible={isActivityPointsVisible} />
         </View>
         <View
           style={[styles.primaryCard, useCardColumns && styles.primaryCardColumn]}

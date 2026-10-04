@@ -2,7 +2,7 @@ import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import type { DashboardProgress, LevelCatalogEntry, RecentRosaryActivity, UserRosaryStats } from "@/features/progress";
@@ -22,6 +22,7 @@ type HolyProgressCardProps = {
   isLoadingProgress: boolean;
   isLoadingStats: boolean;
   levelCatalog: LevelCatalogEntry[] | null;
+  onViewActivityPoints: () => void;
   progress: DashboardProgress | null;
   progressError: boolean;
   recentRosaryActivities: RecentRosaryActivity[] | null;
@@ -38,6 +39,7 @@ function MetricValue({ error, isLoading, value }: { error: boolean; isLoading: b
   return <Text style={styles.metricValue}>{value}</Text>;
 }
 
+/** Formats an activity timestamp for the compact Rosary preview. */
 function formatActivityDate(value: string, locale: string): string | null {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return null;
@@ -52,6 +54,7 @@ export function HolyProgressCard({
   isLoadingProgress,
   isLoadingStats,
   levelCatalog,
+  onViewActivityPoints,
   progress,
   progressError,
   recentRosaryActivities,
@@ -230,12 +233,46 @@ export function HolyProgressCard({
             ) : null}
           </View>
         </View>
+
+        <Pressable
+          accessibilityLabel={t("dashboard.holyProgress.viewActivityPoints")}
+          accessibilityRole="button"
+          onPress={onViewActivityPoints}
+          style={({ pressed }) => [styles.activityPointsButton, pressed && styles.buttonPressed]}
+        >
+          <Text style={styles.activityPointsButtonText}>{t("dashboard.holyProgress.viewActivityPoints")}</Text>
+          <MaterialCommunityIcons
+            accessible={false}
+            color={theme.colors.gold.pale}
+            name="format-list-bulleted"
+            size={theme.sizes.iconSmall}
+          />
+        </Pressable>
       </View>
     </LinearGradient>
   );
 }
 
 const styleSheet = createThemedStyles((theme) => ({
+  activityPointsButton: {
+    alignItems: "center",
+    alignSelf: "center",
+    borderColor: "rgba(230, 186, 100, 0.55)",
+    borderRadius: theme.radii.pill,
+    borderWidth: theme.borderWidths.hairline,
+    flexDirection: "row",
+    gap: theme.spacing[1],
+    justifyContent: "center",
+    marginTop: theme.spacing[3],
+    minHeight: theme.sizes.touchTarget,
+    paddingHorizontal: theme.spacing[3],
+  },
+  activityPointsButtonText: {
+    ...theme.typography.labelSmall,
+    color: theme.colors.gold.pale,
+    letterSpacing: theme.letterSpacing.wide,
+  },
+  buttonPressed: { opacity: theme.opacity.pressed },
   card: {
     borderColor: theme.colors.gold.strong,
     borderRadius: theme.radii.xl,

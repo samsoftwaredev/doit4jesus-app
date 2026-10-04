@@ -22,9 +22,9 @@ describe("English Rosary content", () => {
       .map((asset) => asset.path)
       .sort();
 
-    expect(files).toHaveLength(120);
+    expect(files).toHaveLength(122);
     expect(catalogPaths).toEqual(files);
-    expect(new Set(catalogPaths).size).toBe(120);
+    expect(new Set(catalogPaths).size).toBe(122);
     expect(Object.keys(ROSARY_AUDIO_DURATIONS).sort()).toEqual(files);
     expect(Object.values(ROSARY_AUDIO_DURATIONS).every((duration) => duration > 0)).toBe(true);
     expect(
@@ -249,6 +249,9 @@ describe("English Rosary content", () => {
       "saint-michael",
       "joyful_sign_of_cross_closing",
     ]);
+    expect(medium.find((step) => step.id === "saint-michael")?.audioQueue).toEqual([
+      "/assets/audios/en/prayers/saintMichel.m4a",
+    ]);
     expect(long.slice(-6).map((step) => step.id)).toEqual([
       "pope-intentions-our-father",
       "pope-intentions-hail-mary",
@@ -259,6 +262,9 @@ describe("English Rosary content", () => {
     ]);
     expect(long.slice(-6, -1).every((step) => step.isPhysicalBead === false)).toBe(true);
     expect(long.at(-2)?.prayer?.text).toContain("Mother of Hope");
+    expect(long.find((step) => step.id === "saint-michael")?.audioQueue).toEqual([
+      "/assets/audios/en/prayers/saintMichel.m4a",
+    ]);
   });
 
   it("omits Fatima Prayers and Hail, Holy Queen from the short Rosary", () => {
@@ -316,11 +322,17 @@ describe("Spanish Rosary content", () => {
     expect(sequence.flatMap((bead) => bead.audioQueue ?? []).every((path) => path.includes("/audios/es/"))).toBe(true);
   });
 
-  it("leaves Saint Michael without audio while retaining audio for the remaining closing prayers", () => {
-    const sequence = getRosarySequenceForLength(content, "joyful", "long");
+  it("plays localized Saint Michael audio in Classic and Long Rosaries", () => {
+    const classic = getRosarySequenceForLength(content, "joyful", "medium");
+    const long = getRosarySequenceForLength(content, "joyful", "long");
 
-    expect(sequence.find((bead) => bead.id === "saint-michael")?.audioQueue).toEqual([]);
-    expect(sequence.find((bead) => bead.id === "litany-of-loreto")?.audioQueue).toEqual([
+    expect(classic.find((bead) => bead.id === "saint-michael")?.audioQueue).toEqual([
+      "/assets/audios/es/prayers/sanMiguel.m4a",
+    ]);
+    expect(long.find((bead) => bead.id === "saint-michael")?.audioQueue).toEqual([
+      "/assets/audios/es/prayers/sanMiguel.m4a",
+    ]);
+    expect(long.find((bead) => bead.id === "litany-of-loreto")?.audioQueue).toEqual([
       "/assets/audios/es/prayers/litanyOfLoreto.m4a",
     ]);
   });

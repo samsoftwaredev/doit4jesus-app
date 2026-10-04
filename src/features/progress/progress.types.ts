@@ -41,6 +41,22 @@ export interface RecentRosaryActivity {
   quantity: number;
 }
 
+/** One completed activity together with its signed, aggregated ledger points. */
+export interface ActivityPointsActivity {
+  activityCode: string;
+  completedAt: string | null;
+  id: string;
+  occurredAt: string;
+  points: number;
+}
+
+/** A cursor page of activities that includes each activity's signed net points. */
+export interface ActivityPointsPage {
+  activities: ActivityPointsActivity[];
+  hasMore: boolean;
+  nextCursor: string | null;
+}
+
 export interface ProgressLevel {
   code: string;
   levelNumber: number;
