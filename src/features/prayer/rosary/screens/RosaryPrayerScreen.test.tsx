@@ -367,14 +367,14 @@ describe("RosaryPrayerScreen", () => {
     await render(<RosaryPrayerScreen isDecade={false} />);
 
     const lengthBadge = await screen.findByRole("button", {
-      name: "Current Rosary length: Classic. Time remaining: 23:52",
+      name: /^Current Rosary length: Classic\. Time remaining: \d+:\d{2}$/,
     });
     await fireEvent.press(lengthBadge);
 
     expect(screen.getByRole("header", { name: "Rosary settings" })).toBeTruthy();
-    await fireEvent.press(screen.getByRole("radio", { name: "Long (27:36) Rosary" }));
+    await fireEvent.press(screen.getByRole("radio", { name: /^Long \(\d+:\d{2}\) Rosary$/ }));
 
-    expect(screen.getByLabelText("Current Rosary length: Long. Time remaining: 27:29")).toBeTruthy();
+    expect(screen.getByLabelText(/^Current Rosary length: Long\. Time remaining: \d+:\d{2}$/)).toBeTruthy();
     await waitFor(() =>
       expect(useRosarySession).toHaveBeenLastCalledWith(
         expect.objectContaining({

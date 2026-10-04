@@ -207,6 +207,20 @@ describe("English Rosary content", () => {
     },
   );
 
+  it.each(["joyful", "luminous", "sorrowful", "glorious"] as const)(
+    "uses the alternate Fatima Prayer recording in the complete %s Rosary",
+    (mysteryType) => {
+      const fatimaPrayerSteps = getFullRosarySequence(englishRosaryContent, mysteryType).filter(
+        (step) => step.prayerId === "fatima-prayer",
+      );
+
+      expect(fatimaPrayerSteps).toHaveLength(5);
+      expect(fatimaPrayerSteps.map((step) => step.audioQueue)).toEqual(
+        Array.from({ length: 5 }, () => ["/assets/audios/en/prayers/fatimaPrayerAlternate.m4a"]),
+      );
+    },
+  );
+
   it("preserves the bead-specific mystery and Scripture content from the JSON data", () => {
     const sequence = getFullRosarySequence(englishRosaryContent, "joyful");
 
