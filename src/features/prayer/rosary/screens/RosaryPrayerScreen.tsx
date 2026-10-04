@@ -1,21 +1,23 @@
 import Feather from "@expo/vector-icons/Feather";
+import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { SafeAreaView } from "react-native-safe-area-context";
 import {
   AccessibilityInfo,
   type LayoutChangeEvent,
   Modal,
   Pressable,
   ScrollView,
+  StyleSheet,
   Text,
   useWindowDimensions,
   View,
 } from "react-native";
 import Animated, { FadeIn, useReducedMotion } from "react-native-reanimated";
 
-import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { Confetti, SacredAtmosphere } from "@/components/ui";
 import { recordPrayerForIntention } from "@/features/prayer/intentions";
 import { recordRosaryActivity } from "@/features/prayer/rosary/api/activities.api";
@@ -101,6 +103,7 @@ export function RosaryPrayerScreen({
   const [completionError, setCompletionError] = useState<string>();
   const [intentionPrayerCount, setIntentionPrayerCount] = useState<number>();
   const [isRecordingCompletion, setIsRecordingCompletion] = useState(false);
+  const [backgroundImageFailed, setBackgroundImageFailed] = useState(false);
   const [pageViewportHeight, setPageViewportHeight] = useState(0);
   const [headerHeight, setHeaderHeight] = useState(0);
   const [rosaryRecorded, setRosaryRecorded] = useState(false);
@@ -168,6 +171,9 @@ export function RosaryPrayerScreen({
   );
   const decadeRosaryBeads = useMemo(() => createRosarySequence(1, rosaryContent), [rosaryContent]);
   const activeBeads = isDecade ? decadeRosaryBeads : selectedRosaryBeads;
+
+  /** Falls back to the Rosary gradient when the active mystery artwork cannot be displayed. */
+  const handleBackgroundImageError = useCallback(() => setBackgroundImageFailed(true), []);
   /** Unmutes persisted Rosary audio before an explicit Play action. */
   const handleRequestAudioUnmute = useCallback(() => setAudioMuted(false), [setAudioMuted]);
   const session = useRosarySession({
@@ -178,6 +184,10 @@ export function RosaryPrayerScreen({
     mysteries: activeMysteries,
     storageKey: `@doit4jesus/rosary-session/${isDecade ? "v3" : "v4"}/${mysteryType}/${isDecade ? "decade" : "full"}`,
   });
+
+  useEffect(() => {
+    setBackgroundImageFailed(false);
+  }, [session.currentMystery?.id]);
   const audioPlayback = useRosaryAudioPlayback({
     audioQueue: session.currentBead?.audioQueue,
     isMuted: isAudioMuted,
@@ -392,14 +402,29 @@ export function RosaryPrayerScreen({
   };
 
   return (
-    <AtmosphericSafeAreaView edges={["top", "bottom"]} includeAtmosphere={false} style={styles.safeArea}>
-      <LinearGradient
-        colors={[theme.rosary.colors.canvas, theme.rosary.colors.canvasLight, theme.rosary.colors.canvas]}
-        end={{ x: 1, y: 1 }}
-        start={{ x: 0, y: 0 }}
-        style={styles.background}
-      >
-        <SacredAtmosphere />
+    <View style={styles.background}>
+      {!session.currentMystery || backgroundImageFailed ? (
+        <LinearGradient
+          colors={[theme.rosary.colors.canvas, theme.rosary.colors.canvasLight, theme.rosary.colors.canvas]}
+          end={{ x: 1, y: 1 }}
+          start={{ x: 0, y: 0 }}
+          style={styles.backgroundFallback}
+        />
+      ) : (
+        <Image
+          accessible={false}
+          cachePolicy="memory-disk"
+          contentFit="cover"
+          onError={handleBackgroundImageError}
+          source={session.currentMystery.imageSource}
+          style={styles.mysteryBackground}
+          testID="rosary-mystery-background"
+          transition={reduceMotion ? 0 : 220}
+        />
+      )}
+      <View pointerEvents="none" style={styles.mysteryScrim} testID="rosary-mystery-scrim" />
+      <SacredAtmosphere />
+      <SafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
         <View
           style={[
             styles.page,
@@ -431,7 +456,7 @@ export function RosaryPrayerScreen({
               >
                 <Feather
                   accessible={false}
-                  color={theme.rosary.colors.goldBright}
+                  color={theme.rosary.colors.immersiveGold}
                   name="chevron-left"
                   size={theme.sizes.iconMedium}
                 />
@@ -449,7 +474,7 @@ export function RosaryPrayerScreen({
               >
                 <Feather
                   accessible={false}
-                  color={theme.rosary.colors.goldBright}
+                  color={theme.rosary.colors.immersiveGold}
                   name="clock"
                   size={theme.sizes.iconSmall}
                 />
@@ -480,7 +505,7 @@ export function RosaryPrayerScreen({
                 showsVerticalScrollIndicator
                 style={[styles.contentColumn, { height: rosaryViewportHeight }]}
               >
-                <MysteryCard maxImageHeight={rosaryViewportHeight} mystery={session.currentMystery} />
+                <MysteryCard mystery={session.currentMystery} />
                 <FruitOfMysteryCard
                   description={session.currentMystery?.fruitDescription}
                   fruit={session.currentMystery?.fruit}
@@ -536,99 +561,110 @@ export function RosaryPrayerScreen({
             settingsVisible={rosarySettingsVisible}
           />
         </View>
-      </LinearGradient>
 
-      <Modal
-        animationType={reduceMotion ? "none" : "fade"}
-        onRequestClose={() => setCompletionVisible(false)}
-        presentationStyle="overFullScreen"
-        transparent
-        visible={completionVisible}
-      >
-        <View style={styles.completionOverlay}>
-          {completionCelebration > 0 ? (
-            <Confetti
-              active={completionVisible}
-              particleCount={52}
-              style={styles.completionConfetti}
-              testID="rosary-completion-confetti"
-              trigger={completionCelebration}
-            />
-          ) : null}
-          <Animated.View entering={reduceMotion ? undefined : FadeIn.duration(220)} style={styles.completionCard}>
-            <View style={styles.completionIcon}>
-              <Feather
-                accessible={false}
-                color={theme.rosary.colors.goldBright}
-                name="heart"
-                size={theme.sizes.iconLarge}
+        <Modal
+          animationType={reduceMotion ? "none" : "fade"}
+          onRequestClose={() => setCompletionVisible(false)}
+          presentationStyle="overFullScreen"
+          transparent
+          visible={completionVisible}
+        >
+          <View style={styles.completionOverlay}>
+            {completionCelebration > 0 ? (
+              <Confetti
+                active={completionVisible}
+                particleCount={52}
+                style={styles.completionConfetti}
+                testID="rosary-completion-confetti"
+                trigger={completionCelebration}
               />
-            </View>
-            <Text accessibilityRole="header" style={styles.completionTitle}>
-              {t("rosary.completion.title")}
-            </Text>
-            <Text style={styles.completionDate}>
-              {completionDateLabel(session.lastPrayedOn, locale, t("rosary.completion.today"))}
-            </Text>
-            <Text style={styles.completionCopy}>{t("rosary.completion.copy")}</Text>
-            {rosaryRecorded ? <Text style={styles.completionSuccess}>{t("rosary.completion.recorded")}</Text> : null}
-            {intentionPrayerCount !== undefined ? (
-              <Text style={styles.completionSuccess}>
-                {t("rosary.completion.prayerOffered", { count: intentionPrayerCount })}
-              </Text>
             ) : null}
-            {completionError ? (
-              <Text accessibilityRole="alert" style={styles.completionError}>
-                {completionError}
+            <Animated.View entering={reduceMotion ? undefined : FadeIn.duration(220)} style={styles.completionCard}>
+              <View style={styles.completionIcon}>
+                <Feather
+                  accessible={false}
+                  color={theme.rosary.colors.goldBright}
+                  name="heart"
+                  size={theme.sizes.iconLarge}
+                />
+              </View>
+              <Text accessibilityRole="header" style={styles.completionTitle}>
+                {t("rosary.completion.title")}
               </Text>
-            ) : null}
-            {completionError ? (
-              <Pressable
-                accessibilityLabel={t("rosary.completion.retryLabel")}
-                accessibilityRole="button"
-                disabled={isRecordingCompletion}
-                onPress={() => void recordCompletedPrayer()}
-                style={({ pressed }) => [styles.retryAction, pressed && styles.pressed]}
-              >
-                <Text style={styles.retryActionText}>
-                  {isRecordingCompletion ? t("rosary.completion.recording") : t("common.retry")}
+              <Text style={styles.completionDate}>
+                {completionDateLabel(session.lastPrayedOn, locale, t("rosary.completion.today"))}
+              </Text>
+              <Text style={styles.completionCopy}>{t("rosary.completion.copy")}</Text>
+              {rosaryRecorded ? <Text style={styles.completionSuccess}>{t("rosary.completion.recorded")}</Text> : null}
+              {intentionPrayerCount !== undefined ? (
+                <Text style={styles.completionSuccess}>
+                  {t("rosary.completion.prayerOffered", { count: intentionPrayerCount })}
                 </Text>
+              ) : null}
+              {completionError ? (
+                <Text accessibilityRole="alert" style={styles.completionError}>
+                  {completionError}
+                </Text>
+              ) : null}
+              {completionError ? (
+                <Pressable
+                  accessibilityLabel={t("rosary.completion.retryLabel")}
+                  accessibilityRole="button"
+                  disabled={isRecordingCompletion}
+                  onPress={() => void recordCompletedPrayer()}
+                  style={({ pressed }) => [styles.retryAction, pressed && styles.pressed]}
+                >
+                  <Text style={styles.retryActionText}>
+                    {isRecordingCompletion ? t("rosary.completion.recording") : t("common.retry")}
+                  </Text>
+                </Pressable>
+              ) : null}
+              <Pressable
+                accessibilityLabel={t("rosary.completion.prayAgainLabel")}
+                accessibilityRole="button"
+                onPress={restart}
+                style={({ pressed }) => [styles.primaryAction, pressed && styles.pressed]}
+              >
+                <Text style={styles.primaryActionText}>{t("rosary.completion.prayAgain")}</Text>
               </Pressable>
-            ) : null}
-            <Pressable
-              accessibilityLabel={t("rosary.completion.prayAgainLabel")}
-              accessibilityRole="button"
-              onPress={restart}
-              style={({ pressed }) => [styles.primaryAction, pressed && styles.pressed]}
-            >
-              <Text style={styles.primaryActionText}>{t("rosary.completion.prayAgain")}</Text>
-            </Pressable>
-            <Pressable
-              accessibilityLabel={t("rosary.completion.returnHomeLabel")}
-              accessibilityRole="button"
-              onPress={() => {
-                setCompletionVisible(false);
-                router.replace("/prayer");
-              }}
-              style={({ pressed }) => [styles.secondaryAction, pressed && styles.pressed]}
-            >
-              <Text style={styles.secondaryActionText}>{t("rosary.completion.returnHome")}</Text>
-            </Pressable>
-          </Animated.View>
-        </View>
-      </Modal>
-    </AtmosphericSafeAreaView>
+              <Pressable
+                accessibilityLabel={t("rosary.completion.returnHomeLabel")}
+                accessibilityRole="button"
+                onPress={() => {
+                  setCompletionVisible(false);
+                  router.replace("/prayer");
+                }}
+                style={({ pressed }) => [styles.secondaryAction, pressed && styles.pressed]}
+              >
+                <Text style={styles.secondaryActionText}>{t("rosary.completion.returnHome")}</Text>
+              </Pressable>
+            </Animated.View>
+          </View>
+        </Modal>
+      </SafeAreaView>
+      <SacredAtmosphere layer="foregroundDust" testID="rosary-foreground-atmosphere" />
+    </View>
   );
 }
 
 const styleSheet = createThemedStyles((theme) => ({
   safeArea: {
-    backgroundColor: theme.rosary.colors.canvas,
     flex: 1,
   },
   background: {
+    backgroundColor: theme.rosary.colors.canvas,
     flex: 1,
     position: "relative",
+  },
+  backgroundFallback: {
+    ...StyleSheet.absoluteFill,
+  },
+  mysteryBackground: {
+    ...StyleSheet.absoluteFill,
+  },
+  mysteryScrim: {
+    ...StyleSheet.absoluteFill,
+    backgroundColor: theme.rosary.colors.immersiveScrim,
   },
   page: {
     alignSelf: "center",
@@ -646,7 +682,7 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   backButton: {
     alignItems: "center",
-    backgroundColor: "rgba(230, 186, 100, 0.12)",
+    backgroundColor: theme.rosary.colors.immersiveControl,
     borderColor: theme.rosary.colors.goldMuted,
     borderRadius: theme.radii.pill,
     borderWidth: theme.rosary.borderWidths.goldHairline,
@@ -656,7 +692,7 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   lengthIndicator: {
     alignItems: "center",
-    backgroundColor: "rgba(230, 186, 100, 0.12)",
+    backgroundColor: theme.rosary.colors.immersiveControl,
     borderColor: theme.rosary.colors.goldMuted,
     borderRadius: theme.radii.pill,
     borderWidth: theme.rosary.borderWidths.goldHairline,
@@ -670,7 +706,7 @@ const styleSheet = createThemedStyles((theme) => ({
   compactLengthIndicator: { gap: theme.spacing[1], paddingHorizontal: theme.spacing[2] },
   lengthIndicatorText: {
     ...theme.typography.labelSmall,
-    color: theme.rosary.colors.goldBright,
+    color: theme.rosary.colors.immersiveGold,
     flexShrink: 1,
   },
   main: {

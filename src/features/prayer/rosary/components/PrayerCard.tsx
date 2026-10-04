@@ -43,7 +43,7 @@ export function PrayerCard({ prayer }: PrayerCardProps) {
 
 const styleSheet = createThemedStyles((theme) => ({
   card: {
-    backgroundColor: theme.rosary.colors.card,
+    backgroundColor: theme.rosary.colors.immersiveCard,
     borderColor: "rgba(230, 186, 100, 0.32)",
     borderRadius: theme.radii.xl,
     borderWidth: theme.rosary.borderWidths.goldHairline,
@@ -51,7 +51,7 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   label: {
     ...theme.typography.labelSmall,
-    color: theme.rosary.colors.gold,
+    color: theme.rosary.colors.immersiveGold,
     letterSpacing: theme.letterSpacing.widest,
   },
   prayerScroll: {
@@ -65,7 +65,7 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   prayerText: {
     ...theme.typography.body,
-    color: theme.colors.text.primary,
+    color: theme.rosary.colors.immersivePrimary,
     lineHeight: theme.lineHeights.lg + theme.spacing[1],
     textAlign: "left",
   },
@@ -74,6 +74,6 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   emptyPrayerText: {
     ...theme.typography.bodySmall,
-    color: theme.rosary.colors.scripture,
+    color: theme.rosary.colors.immersiveSecondary,
   },
 }));

@@ -164,11 +164,15 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   countButton: {
     alignItems: "flex-end",
+    backgroundColor: theme.rosary.colors.immersiveControl,
+    borderColor: theme.rosary.colors.goldMuted,
+    borderRadius: theme.radii.pill,
+    borderWidth: theme.rosary.borderWidths.goldHairline,
     flexShrink: 1,
     justifyContent: "center",
     minHeight: theme.sizes.touchTarget,
     minWidth: 0,
-    paddingLeft: theme.spacing[1],
+    paddingHorizontal: theme.spacing[2],
   },
   countText: {
     ...theme.typography.caption,

@@ -1,35 +1,16 @@
-import { fireEvent, render, screen } from "@testing-library/react-native";
-import { StyleSheet } from "react-native";
+import { render, screen } from "@testing-library/react-native";
 
 import { rosaryMysteries } from "@/features/prayer/rosary/data/rosaryMysteries";
 
 import { MysteryCard } from "./MysteryCard";
 
 describe("MysteryCard", () => {
-  it("shows a graceful fallback when a mystery image cannot load", async () => {
+  it("shows the active mystery details without rendering inline artwork", async () => {
     await render(<MysteryCard mystery={rosaryMysteries[0]} />);
 
-    await fireEvent(screen.getByLabelText(rosaryMysteries[0].imageAlt), "error", { nativeEvent: {} });
-
-    expect(screen.getByLabelText("Devotional image unavailable")).toBeTruthy();
-  });
-
-  it("sizes the mystery image responsively with the artwork's portrait ratio", async () => {
-    await render(<MysteryCard mystery={rosaryMysteries[0]} />);
-
-    const imageFrameStyle = StyleSheet.flatten(screen.getByTestId("mystery-image-frame").props.style);
-    expect(imageFrameStyle.aspectRatio).toBeCloseTo(575 / 784);
-    expect(imageFrameStyle.height).toBeUndefined();
-    expect(imageFrameStyle.width).toBe("100%");
-  });
-
-  it("caps the responsive image frame at the available prayer viewport height", async () => {
-    await render(<MysteryCard maxImageHeight={644} mystery={rosaryMysteries[0]} />);
-
-    const imageFrameStyle = StyleSheet.flatten(screen.getByTestId("mystery-image-frame").props.style);
-    expect(imageFrameStyle.aspectRatio).toBeCloseTo(575 / 784);
-    expect(imageFrameStyle.alignSelf).toBe("center");
-    expect(imageFrameStyle.maxWidth).toBeCloseTo(644 * (575 / 784));
-    expect(imageFrameStyle.height).toBeUndefined();
+    expect(screen.getByText("CURRENT MYSTERY")).toBeTruthy();
+    expect(screen.getByRole("header", { name: "The Annunciation" })).toBeTruthy();
+    expect(screen.getByText("Joyful Mysteries")).toBeTruthy();
+    expect(screen.queryByLabelText(rosaryMysteries[0].imageAlt)).toBeNull();
   });
 });

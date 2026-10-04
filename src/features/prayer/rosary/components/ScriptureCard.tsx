@@ -18,7 +18,12 @@ export function ScriptureCard({ reference, quotation }: ScriptureCardProps) {
   return (
     <View accessibilityLabel={t("rosary.cards.scriptureLabel", { reference: visibleReference })} style={styles.card}>
       <View style={styles.labelRow}>
-        <Feather accessible={false} color={theme.rosary.colors.gold} name="book-open" size={theme.sizes.iconSmall} />
+        <Feather
+          accessible={false}
+          color={theme.rosary.colors.immersiveGold}
+          name="book-open"
+          size={theme.sizes.iconSmall}
+        />
         <Text style={styles.label}>{t("rosary.cards.scripture")}</Text>
       </View>
       <Text style={styles.reference}>{visibleReference}</Text>
@@ -30,7 +35,7 @@ export function ScriptureCard({ reference, quotation }: ScriptureCardProps) {
 
 const styleSheet = createThemedStyles((theme) => ({
   card: {
-    backgroundColor: theme.rosary.colors.card,
+    backgroundColor: theme.rosary.colors.immersiveCard,
     borderColor: theme.colors.border.warning,
     borderRadius: theme.radii.xl,
     borderWidth: theme.rosary.borderWidths.goldHairline,
@@ -43,12 +48,12 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   label: {
     ...theme.typography.labelSmall,
-    color: theme.rosary.colors.gold,
+    color: theme.rosary.colors.immersiveGold,
     letterSpacing: theme.letterSpacing.widest,
   },
   reference: {
     ...theme.typography.bodyMedium,
-    color: theme.colors.text.primary,
+    color: theme.rosary.colors.immersivePrimary,
     marginTop: theme.spacing[2],
   },
   divider: {
@@ -60,7 +65,7 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   quotation: {
     ...theme.typography.body,
-    color: theme.rosary.colors.scripture,
+    color: theme.rosary.colors.immersiveSecondary,
     fontStyle: "italic",
     lineHeight: theme.lineHeights.lg + theme.spacing[1],
   },

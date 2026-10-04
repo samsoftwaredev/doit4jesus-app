@@ -20,7 +20,12 @@ export function FruitOfMysteryCard({ description, fruit }: FruitOfMysteryCardPro
   return (
     <View accessibilityLabel={`Fruit of the mystery. ${visibleFruit}. ${visibleDescription}`} style={styles.card}>
       <View style={styles.labelRow}>
-        <Feather accessible={false} color={theme.rosary.colors.gold} name="heart" size={theme.sizes.iconSmall} />
+        <Feather
+          accessible={false}
+          color={theme.rosary.colors.immersiveGold}
+          name="heart"
+          size={theme.sizes.iconSmall}
+        />
         <Text style={styles.label}>{t("rosary.cards.fruitLabel")}</Text>
       </View>
       <Text accessibilityRole="header" style={styles.fruit}>
@@ -33,7 +38,7 @@ export function FruitOfMysteryCard({ description, fruit }: FruitOfMysteryCardPro
 
 const styleSheet = createThemedStyles((theme) => ({
   card: {
-    backgroundColor: "rgba(62, 45, 36, 0.92)",
+    backgroundColor: theme.rosary.colors.immersiveCard,
     borderColor: "rgba(230, 186, 100, 0.38)",
     borderRadius: theme.radii.xl,
     borderWidth: theme.rosary.borderWidths.goldHairline,
@@ -47,18 +52,18 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   label: {
     ...theme.typography.labelSmall,
-    color: theme.rosary.colors.gold,
+    color: theme.rosary.colors.immersiveGold,
     flexShrink: 1,
     letterSpacing: theme.letterSpacing.widest,
   },
   fruit: {
     ...theme.typography.heading3,
-    color: theme.colors.text.white,
+    color: theme.rosary.colors.immersivePrimary,
     marginTop: theme.spacing[2],
   },
   description: {
     ...theme.typography.body,
-    color: theme.rosary.colors.scripture,
+    color: theme.rosary.colors.immersiveSecondary,
     lineHeight: theme.lineHeights.lg + theme.spacing[1],
     marginTop: theme.spacing[2],
   },

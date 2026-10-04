@@ -56,11 +56,11 @@ describe("Rosary prayer appearance", () => {
     );
 
     expect(StyleSheet.flatten(screen.getByLabelText("Scripture. John 1:14").props.style)).toMatchObject({
-      backgroundColor: selectedTheme.rosary.colors.card,
+      backgroundColor: selectedTheme.rosary.colors.immersiveCard,
       borderColor: selectedTheme.colors.border.warning,
     });
     expect(StyleSheet.flatten(screen.getByText("John 1:14").props.style)).toMatchObject({
-      color: selectedTheme.colors.text.primary,
+      color: selectedTheme.rosary.colors.immersivePrimary,
     });
     const navigatorStyle = StyleSheet.flatten(screen.getByLabelText("Rosary bead navigator").props.style);
     expect(navigatorStyle.backgroundColor).toBeUndefined();
@@ -78,14 +78,14 @@ describe("Rosary prayer appearance", () => {
       backgroundColor: selectedTheme.colors.semantic.warningSurface,
     });
     expect(StyleSheet.flatten(screen.getByTestId("rosary-progress-button").props.style)).toMatchObject({
-      backgroundColor: selectedTheme.colors.surface.secondary,
+      backgroundColor: selectedTheme.rosary.colors.immersiveControl,
     });
     expect(StyleSheet.flatten(screen.getByTestId("open-rosary-settings").props.style)).toMatchObject({
-      backgroundColor: selectedTheme.colors.surface.secondary,
+      backgroundColor: selectedTheme.rosary.colors.immersiveControl,
       borderColor: selectedTheme.colors.border.warning,
     });
     expect(StyleSheet.flatten(screen.getByText("Hail Mary").props.style)).toMatchObject({
-      color: selectedTheme.colors.text.primary,
+      color: selectedTheme.rosary.colors.immersivePrimary,
     });
 
     await fireEvent.press(screen.getByLabelText("Open Rosary settings"));

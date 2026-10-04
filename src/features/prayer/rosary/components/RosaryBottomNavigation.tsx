@@ -185,7 +185,7 @@ export function RosaryBottomNavigation({
             </View>
             <Feather
               accessible={false}
-              color={theme.rosary.colors.goldBright}
+              color={theme.rosary.colors.immersiveGold}
               name="chevron-right"
               size={theme.sizes.iconMedium}
             />
@@ -202,7 +202,7 @@ export function RosaryBottomNavigation({
         >
           <Feather
             accessible={false}
-            color={audioAvailable ? theme.rosary.colors.goldBright : theme.colors.icon.muted}
+            color={audioAvailable ? theme.rosary.colors.immersiveGold : theme.colors.icon.muted}
             name={audioIconName}
             size={theme.sizes.iconMedium}
           />
@@ -218,7 +218,7 @@ export function RosaryBottomNavigation({
         >
           <Feather
             accessible={false}
-            color={theme.rosary.colors.goldBright}
+            color={theme.rosary.colors.immersiveGold}
             name="settings"
             size={theme.sizes.iconMedium}
           />
@@ -412,7 +412,7 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   progressButton: {
     alignItems: "center",
-    backgroundColor: theme.colors.surface.secondary,
+    backgroundColor: theme.rosary.colors.immersiveControl,
     borderColor: theme.rosary.colors.gold,
     borderRadius: theme.radii.pill,
     borderWidth: theme.rosary.borderWidths.gold,
@@ -447,16 +447,16 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   prayerName: {
     ...theme.typography.bodyMedium,
-    color: theme.colors.text.primary,
+    color: theme.rosary.colors.immersivePrimary,
   },
   progressText: {
     ...theme.typography.caption,
-    color: theme.rosary.colors.scripture,
+    color: theme.rosary.colors.immersiveSecondary,
     marginTop: theme.spacing[0.5],
   },
   settingsButton: {
     alignItems: "center",
-    backgroundColor: theme.colors.surface.secondary,
+    backgroundColor: theme.rosary.colors.immersiveControl,
     borderColor: theme.colors.border.warning,
     borderRadius: theme.radii.pill,
     borderWidth: theme.rosary.borderWidths.gold,
@@ -466,7 +466,7 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   audioButton: {
     alignItems: "center",
-    backgroundColor: theme.colors.surface.secondary,
+    backgroundColor: theme.rosary.colors.immersiveControl,
     borderColor: theme.colors.border.warning,
     borderRadius: theme.radii.pill,
     borderWidth: theme.rosary.borderWidths.gold,

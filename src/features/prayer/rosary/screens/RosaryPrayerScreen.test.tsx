@@ -112,6 +112,26 @@ describe("RosaryPrayerScreen", () => {
     expect(screen.getByText("HAIL MARY")).toBeTruthy();
   }, 10000);
 
+  it("uses the active mystery artwork as a decorative full-page background", async () => {
+    const rendered = await render(<RosaryPrayerScreen />);
+
+    const backgroundImage = screen.getByTestId("rosary-mystery-background");
+    expect(backgroundImage.props.source).toEqual([rosaryMysteries[0].imageSource]);
+    expect(backgroundImage.props.contentFit).toBe("cover");
+    expect(backgroundImage.props.accessible).toBe(false);
+    expect(StyleSheet.flatten(screen.getByTestId("rosary-mystery-scrim").props.style)).toMatchObject({
+      backgroundColor: "rgba(3, 13, 24, 0.58)",
+    });
+    expect(StyleSheet.flatten(screen.getByLabelText(/^Fruit of the mystery/).props.style)).toMatchObject({
+      backgroundColor: "rgba(3, 13, 24, 0.75)",
+    });
+
+    mockSession({ currentMystery: rosaryMysteries[1] });
+    await rendered.rerender(<RosaryPrayerScreen />);
+
+    expect(screen.getByTestId("rosary-mystery-background").props.source).toEqual([rosaryMysteries[1].imageSource]);
+  });
+
   it("renders every physical bead without rendering non-bead prayer markers", async () => {
     const scriptureStepIndex = fullRosarySequence.findIndex((bead) => bead.scriptureReference === "Luke 1:28");
     mockSession({
@@ -337,9 +357,6 @@ describe("RosaryPrayerScreen", () => {
     const prayerDetails = screen.getByLabelText("Rosary prayer details");
     expect(StyleSheet.flatten(prayerDetails.props.style)).toMatchObject({ height: 644 });
     expect(StyleSheet.flatten(prayerDetails.props.contentContainerStyle)).toMatchObject({ flexGrow: 1 });
-    expect(StyleSheet.flatten(within(prayerDetails).getByTestId("mystery-image-frame").props.style)).toMatchObject({
-      maxWidth: 644 * (575 / 784),
-    });
     expect(within(prayerDetails).getByText("CURRENT MYSTERY")).toBeTruthy();
     expect(within(prayerDetails).getByText("FRUIT OF THE MYSTERY")).toBeTruthy();
     expect(within(prayerDetails).getByText("HAIL MARY")).toBeTruthy();
