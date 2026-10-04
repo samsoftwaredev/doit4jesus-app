@@ -9,6 +9,7 @@ import {
 } from "@/features/prayer/rosary/data/rosaryMysteries";
 import { getRosaryPrayers, prayerById } from "@/features/prayer/rosary/data/rosaryPrayers";
 import { getFullRosarySequence, getRosarySequenceForLength } from "@/features/prayer/rosary/data/rosarySequence";
+import { ROSARY_AUDIO_DURATIONS } from "@/features/prayer/rosary/data/rosaryAudioTiming";
 
 import * as mysteryCartoonImages from "../../../../../assets/images/mysteriesCartoon";
 import * as mysteryClassicArt from "../../../../../assets/images/mysteriesClassicArt";
@@ -24,6 +25,8 @@ describe("English Rosary content", () => {
     expect(files).toHaveLength(120);
     expect(catalogPaths).toEqual(files);
     expect(new Set(catalogPaths).size).toBe(120);
+    expect(Object.keys(ROSARY_AUDIO_DURATIONS).sort()).toEqual(files);
+    expect(Object.values(ROSARY_AUDIO_DURATIONS).every((duration) => duration > 0)).toBe(true);
     expect(
       Object.values(englishRosaryContent.audio_catalog.assets).every(
         (asset) =>
@@ -234,7 +237,7 @@ describe("English Rosary content", () => {
     const medium = getRosarySequenceForLength(englishRosaryContent, "joyful", "medium");
     const long = getRosarySequenceForLength(englishRosaryContent, "joyful", "long");
 
-    expect([short.length, medium.length, long.length]).toEqual([74, 78, 79]);
+    expect([short.length, medium.length, long.length]).toEqual([68, 78, 79]);
     expect([short, medium, long].map((sequence) => sequence.filter((step) => step.isPhysicalBead).length)).toEqual([
       59, 59, 59,
     ]);
@@ -256,6 +259,17 @@ describe("English Rosary content", () => {
     ]);
     expect(long.slice(-6, -1).every((step) => step.isPhysicalBead === false)).toBe(true);
     expect(long.at(-2)?.prayer?.text).toContain("Mother of Hope");
+  });
+
+  it("omits Fatima Prayers and Hail, Holy Queen from the short Rosary", () => {
+    const sequence = getRosarySequenceForLength(englishRosaryContent, "joyful", "short");
+
+    expect(sequence).toHaveLength(68);
+    expect(sequence.filter((step) => step.isPhysicalBead)).toHaveLength(59);
+    expect(sequence.some((step) => step.type === "fatimaPrayer" || step.type === "hailHolyQueen")).toBe(false);
+    expect(sequence.at(-1)).toEqual(
+      expect.objectContaining({ prayerId: "sign-of-cross", section: "closing", type: "signOfCross" }),
+    );
   });
 });
 

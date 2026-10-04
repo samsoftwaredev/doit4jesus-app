@@ -1,10 +1,11 @@
-import { fireEvent, render, screen, waitFor, within } from "@testing-library/react-native";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react-native";
 import { StyleSheet } from "react-native";
 
 import { rosaryMysteries } from "@/features/prayer/rosary/data/rosaryMysteries";
 import { prayerById } from "@/features/prayer/rosary/data/rosaryPrayers";
 import { fullRosarySequence, rosarySequence } from "@/features/prayer/rosary/data/rosarySequence";
 import { RosaryPrayerScreen } from "@/features/prayer/rosary/screens/RosaryPrayerScreen";
+import { i18n } from "@/localization";
 
 const goToNextBead = jest.fn();
 const goToPreviousBead = jest.fn();
@@ -75,13 +76,17 @@ function mockSession(overrides = {}) {
 }
 
 describe("RosaryPrayerScreen", () => {
-  beforeEach(() => {
+  beforeEach(async () => {
+    await act(async () => i18n.changeLanguage("en"));
     jest.clearAllMocks();
     useReducedMotion.mockReturnValue(true);
     mockRecordRosaryActivity.mockResolvedValue({ points: 25 });
     mockRecordPrayerForIntention.mockResolvedValue({ prayerCount: 4 });
     mockUseRosaryPresence.mockReturnValue({ connectionState: "idle", currentUserId: "user-me", users: [] });
     mockUseRosaryAudioPlayback.mockReturnValue({
+      currentTrackDuration: 17.194,
+      currentTrackIndex: 0,
+      currentTrackPosition: 7.4,
       isAvailable: true,
       isLoading: false,
       isPlaying: false,
@@ -247,10 +252,11 @@ describe("RosaryPrayerScreen", () => {
     const controls = within(header).getAllByRole("button");
     expect(controls.map((control) => control.props.accessibilityLabel)).toEqual([
       "Go back",
-      "Current Rosary length: Classic (20 min)",
+      "Current Rosary length: Classic. Time remaining: 2:45",
       "View Maria's prayer profile, online and praying",
       "View all 2 people praying now",
     ]);
+    expect(within(header).getByText("Classic · 2:45 remaining")).toBeTruthy();
   });
 
   it("should advance to the next bead when the progress button is pressed", async () => {
@@ -284,6 +290,24 @@ describe("RosaryPrayerScreen", () => {
     expect(muteSwitch.props.accessibilityState).toEqual({ checked: false });
     await fireEvent.press(muteSwitch);
     expect(mockSetAudioMuted).toHaveBeenCalledWith(true);
+  });
+
+  it("shows the remaining Rosary audio time in the top length button instead of beneath playback controls", async () => {
+    await render(<RosaryPrayerScreen />);
+
+    expect(screen.getByText("Classic · 2:45 remaining")).toBeTruthy();
+    expect(screen.getByLabelText("Current Rosary length: Classic. Time remaining: 2:45")).toBeTruthy();
+    expect(screen.queryByLabelText(/Time remaining: 0 hours, 2 minutes, 45 seconds/i)).toBeNull();
+  });
+
+  it("localizes the combined top length and remaining-time button in Spanish", async () => {
+    await act(async () => i18n.changeLanguage("es"));
+    await render(<RosaryPrayerScreen />);
+
+    expect(screen.getByText("Clásico · quedan 2:45")).toBeTruthy();
+    expect(screen.getByLabelText("Duración actual del Rosario: Clásico. Tiempo restante: 2:45")).toBeTruthy();
+
+    await act(async () => i18n.changeLanguage("en"));
   });
 
   it("should provide accessible info, settings, progress, and bead controls", async () => {
@@ -325,13 +349,15 @@ describe("RosaryPrayerScreen", () => {
   it("opens settings from the Classic-length badge and changes the active length", async () => {
     await render(<RosaryPrayerScreen isDecade={false} />);
 
-    const lengthBadge = await screen.findByRole("button", { name: "Current Rosary length: Classic (20 min)" });
+    const lengthBadge = await screen.findByRole("button", {
+      name: "Current Rosary length: Classic. Time remaining: 23:30",
+    });
     await fireEvent.press(lengthBadge);
 
     expect(screen.getByRole("header", { name: "Rosary settings" })).toBeTruthy();
-    await fireEvent.press(screen.getByRole("radio", { name: "Long (30 min) Rosary" }));
+    await fireEvent.press(screen.getByRole("radio", { name: "Long (27:14) Rosary" }));
 
-    expect(screen.getByLabelText("Current Rosary length: Long (30 min)")).toBeTruthy();
+    expect(screen.getByLabelText("Current Rosary length: Long. Time remaining: 27:07")).toBeTruthy();
     await waitFor(() =>
       expect(useRosarySession).toHaveBeenLastCalledWith(
         expect.objectContaining({

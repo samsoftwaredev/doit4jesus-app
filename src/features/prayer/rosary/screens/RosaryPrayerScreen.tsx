@@ -29,7 +29,13 @@ import {
   ScriptureCard,
 } from "@/features/prayer/rosary/components";
 import { getRosaryContent } from "@/features/prayer/rosary/data/localizedRosaryContent";
+import {
+  formatRosaryAudioDuration,
+  getRemainingRosaryAudioSeconds,
+  getRosaryAudioDurationSeconds,
+} from "@/features/prayer/rosary/data/rosaryAudioTiming";
 import type { RosaryContent } from "@/features/prayer/rosary/data/rosaryContent";
+import { ROSARY_LENGTH_OPTIONS } from "@/features/prayer/rosary/data/rosaryLengths";
 import { getRosaryMysteriesFromContent } from "@/features/prayer/rosary/data/rosaryMysteries";
 import { createRosarySequence, getRosarySequenceForLength } from "@/features/prayer/rosary/data/rosarySequence";
 import { useRosaryAudioPlayback } from "@/features/prayer/rosary/hooks/useRosaryAudioPlayback";
@@ -146,6 +152,20 @@ export function RosaryPrayerScreen({
     () => getRosarySequenceForLength(rosaryContent, mysteryType, rosaryLength),
     [mysteryType, rosaryContent, rosaryLength],
   );
+  const rosaryLengthAudioDurations = useMemo(
+    () =>
+      ROSARY_LENGTH_OPTIONS.reduce<Record<RosaryLength, number>>(
+        (durations, option) => {
+          const audioPaths = getRosarySequenceForLength(rosaryContent, mysteryType, option.id).flatMap(
+            (bead) => bead.audioQueue ?? [],
+          );
+          durations[option.id] = getRosaryAudioDurationSeconds(audioPaths);
+          return durations;
+        },
+        { long: 0, medium: 0, short: 0 },
+      ),
+    [mysteryType, rosaryContent],
+  );
   const decadeRosaryBeads = useMemo(() => createRosarySequence(1, rosaryContent), [rosaryContent]);
   const activeBeads = isDecade ? decadeRosaryBeads : selectedRosaryBeads;
   /** Unmutes persisted Rosary audio before an explicit Play action. */
@@ -176,15 +196,56 @@ export function RosaryPrayerScreen({
     prayerName: session.currentPrayer?.name ?? t("rosary.cards.prayer"),
   };
 
+  /** Formats an exact localized audio duration for a selectable Rosary length. */
+  const getRosaryLengthLabel = useCallback(
+    (length: RosaryLength) =>
+      t("rosary.length.timedLabel", {
+        duration: formatRosaryAudioDuration(rosaryLengthAudioDurations[length]),
+        name: t(`rosary.length.${length}.name`),
+      }),
+    [rosaryLengthAudioDurations, t],
+  );
+  const remainingAudioPaths = useMemo(
+    () => activeBeads.slice(Math.max(0, session.currentBeadIndex)).flatMap((bead) => bead.audioQueue ?? []),
+    [activeBeads, session.currentBeadIndex],
+  );
+  const remainingAudioSeconds = useMemo(
+    () =>
+      getRemainingRosaryAudioSeconds({
+        currentTrackIndex: audioPlayback.currentTrackIndex,
+        currentTrackPosition: audioPlayback.currentTrackPosition,
+        remainingAudioPaths,
+      }),
+    [audioPlayback.currentTrackIndex, audioPlayback.currentTrackPosition, remainingAudioPaths],
+  );
+  const remainingAudioDuration = useMemo(
+    () => formatRosaryAudioDuration(remainingAudioSeconds),
+    [remainingAudioSeconds],
+  );
+  const lengthIndicatorLabel = useMemo(
+    () =>
+      t("rosary.length.timedRemainingLabel", {
+        length: t(`rosary.length.${rosaryLength}.name`),
+        remaining: remainingAudioDuration,
+      }),
+    [remainingAudioDuration, rosaryLength, t],
+  );
+  const lengthIndicatorAccessibilityLabel = useMemo(
+    () =>
+      t("rosary.length.currentWithRemaining", {
+        length: t(`rosary.length.${rosaryLength}.name`),
+        remaining: remainingAudioDuration,
+      }),
+    [remainingAudioDuration, rosaryLength, t],
+  );
+
   /** Applies and announces a Rosary length selected from the settings modal. */
   const handleRosaryLengthChange = useCallback(
     (length: RosaryLength) => {
       void setRosaryLength(length);
-      AccessibilityInfo.announceForAccessibility(
-        t("rosary.length.selected", { length: t(`rosary.length.${length}.label`) }),
-      );
+      AccessibilityInfo.announceForAccessibility(t("rosary.length.selected", { length: getRosaryLengthLabel(length) }));
     },
-    [setRosaryLength, t],
+    [getRosaryLengthLabel, setRosaryLength, t],
   );
 
   /** Applies and persists a mystery artwork style selected from the settings modal. */
@@ -377,9 +438,7 @@ export function RosaryPrayerScreen({
               </Pressable>
               <Pressable
                 accessibilityHint={t("rosary.length.hint")}
-                accessibilityLabel={t("rosary.length.current", {
-                  length: t(`rosary.length.${rosaryLength}.label`),
-                })}
+                accessibilityLabel={lengthIndicatorAccessibilityLabel}
                 accessibilityRole="button"
                 onPress={handleOpenRosarySettings}
                 style={({ pressed }) => [
@@ -394,8 +453,8 @@ export function RosaryPrayerScreen({
                   name="clock"
                   size={theme.sizes.iconSmall}
                 />
-                <Text numberOfLines={1} style={styles.lengthIndicatorText}>
-                  {t(`rosary.length.${rosaryLength}.label`)}
+                <Text ellipsizeMode="head" numberOfLines={1} style={styles.lengthIndicatorText}>
+                  {lengthIndicatorLabel}
                 </Text>
               </Pressable>
               <RosaryPresence />
@@ -472,6 +531,7 @@ export function RosaryPrayerScreen({
             onSettingsVisibilityChange={setRosarySettingsVisible}
             progress={progress}
             rosaryLength={rosaryLength}
+            rosaryLengthAudioDurations={rosaryLengthAudioDurations}
             rosaryArtStyle={rosaryArtStyle}
             settingsVisible={rosarySettingsVisible}
           />
@@ -601,14 +661,17 @@ const styleSheet = createThemedStyles((theme) => ({
     borderRadius: theme.radii.pill,
     borderWidth: theme.rosary.borderWidths.goldHairline,
     flexDirection: "row",
+    flexShrink: 1,
     gap: theme.spacing[1.5],
     minHeight: theme.sizes.touchTarget,
+    minWidth: 0,
     paddingHorizontal: theme.spacing[3],
   },
   compactLengthIndicator: { gap: theme.spacing[1], paddingHorizontal: theme.spacing[2] },
   lengthIndicatorText: {
     ...theme.typography.labelSmall,
     color: theme.rosary.colors.goldBright,
+    flexShrink: 1,
   },
   main: {
     flex: 1,

@@ -180,8 +180,10 @@ function createClosingPrayer(
 }
 
 /**
- * Composes a full Rosary with the selected cumulative set of non-bead closing prayers.
- * The final Sign of the Cross always remains last and physical-bead numbering is unchanged.
+ * Composes a Rosary for the selected length.
+ * The Short Rosary omits Fatima Prayer and Hail, Holy Queen; Medium and Long add their
+ * respective closing prayers to the complete base sequence. The final Sign of the Cross
+ * remains last and physical-bead numbering is unchanged.
  */
 export function getRosarySequenceForLength(
   content: RosaryContent,
@@ -189,7 +191,10 @@ export function getRosarySequenceForLength(
   length: RosaryLength,
 ): RosaryBead[] {
   const baseSequence = getFullRosarySequence(content, mysteryType);
-  if (length === "short" || baseSequence.length === 0) return baseSequence;
+  if (baseSequence.length === 0) return baseSequence;
+  if (length === "short") {
+    return baseSequence.filter((step) => step.type !== "fatimaPrayer" && step.type !== "hailHolyQueen");
+  }
 
   const finalStep = baseSequence.at(-1);
   if (!finalStep || finalStep.type !== "signOfCross" || finalStep.section !== "closing") return baseSequence;

@@ -169,6 +169,9 @@ export function useRosaryAudioPlayback({
   }, [isMuted, onRequestUnmute, player, resolvedSources, status.didJustFinish, status.playing]);
 
   return {
+    currentTrackDuration: status.duration,
+    currentTrackIndex: currentTrackIndex.current,
+    currentTrackPosition: status.currentTime,
     isAvailable: resolvedSources.length > 0,
     isLoading: status.isBuffering || (resolvedSources.length > 0 && !status.isLoaded),
     isPlaying: status.playing,

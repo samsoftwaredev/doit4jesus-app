@@ -123,6 +123,12 @@ export const resources = {
         find: "Find Friends",
         findDescription: "Add friends and encourage one another in prayer and virtue.",
         findTitle: "Your fellowship begins here",
+        invite: {
+          action: "Invite a friend",
+          description: "Share an invite link with anyone in your contacts.",
+          message: "Join me on Do It 4 Jesus! Grow in faith, pray together, and encourage one another.",
+          title: "Grow your fellowship",
+        },
         level: "Level {{level}}",
         loadMore: "Load more",
         loadMoreFriends: "Load more friends",
@@ -803,17 +809,19 @@ export const resources = {
           swipeHint: "Swipe up or down to move bead by bead",
         },
         length: {
-          current: "Current Rosary length: {{length}}",
+          currentWithRemaining: "Current Rosary length: {{length}}. Time remaining: {{remaining}}",
           default: "Classic",
           hint: "Opens Rosary settings to change the prayer length.",
           long: {
             introduction: "Everything in Classic, plus:",
             label: "Long (30 min)",
+            name: "Long",
             prayers: { one: "Litany of Loreto" },
           },
           medium: {
             introduction: "Everything in Short, plus:",
             label: "Classic (20 min)",
+            name: "Classic",
             prayers: {
               one: "Our Father, Hail Mary, and Glory Be for the Pope’s intentions",
               two: "St. Michael Prayer",
@@ -823,13 +831,15 @@ export const resources = {
           short: {
             introduction: "The standard five-decade Rosary:",
             label: "Short (15 min)",
+            name: "Short",
             prayers: {
               one: "Sign of the Cross and Apostles’ Creed",
               two: "Our Father, Hail Mary, and Glory Be",
-              three: "Five mysteries with Fatima Prayers",
-              four: "Hail, Holy Queen",
+              three: "Five mysteries",
             },
           },
+          timedLabel: "{{name}} ({{duration}})",
+          timedRemainingLabel: "{{length}} · {{remaining}} remaining",
         },
         settings: {
           advanceHint: "Advances to the next rosary bead.",
@@ -1299,6 +1309,12 @@ export const resources = {
         find: "Buscar amigos",
         findDescription: "Agrega amigos y anímense unos a otros en la oración y la virtud.",
         findTitle: "Tu comunidad comienza aquí",
+        invite: {
+          action: "Invitar a un amigo",
+          description: "Comparte un enlace de invitación con cualquier persona de tus contactos.",
+          message: "¡Únete conmigo en Do It 4 Jesus! Crezcamos en la fe, oremos juntos y animémonos mutuamente.",
+          title: "Haz crecer tu comunidad",
+        },
         level: "Nivel {{level}}",
         loadMore: "Cargar más",
         loadMoreFriends: "Cargar más amigos",
@@ -1981,17 +1997,19 @@ export const resources = {
           swipeHint: "Desliza hacia arriba o abajo para avanzar cuenta por cuenta",
         },
         length: {
-          current: "Duración actual del Rosario: {{length}}",
+          currentWithRemaining: "Duración actual del Rosario: {{length}}. Tiempo restante: {{remaining}}",
           default: "Clásico",
           hint: "Abre la configuración del Rosario para cambiar su duración.",
           long: {
             introduction: "Todo lo incluido en Clásico, más:",
             label: "Largo (30 min)",
+            name: "Largo",
             prayers: { one: "Letanías Lauretanas" },
           },
           medium: {
             introduction: "Todo lo incluido en Corto, más:",
             label: "Clásico (20 min)",
+            name: "Clásico",
             prayers: {
               one: "Padre Nuestro, Ave María y Gloria por las intenciones del Papa",
               two: "Oración a san Miguel",
@@ -2001,13 +2019,15 @@ export const resources = {
           short: {
             introduction: "El Rosario tradicional de cinco misterios:",
             label: "Corto (15 min)",
+            name: "Corto",
             prayers: {
               one: "Señal de la Cruz y Credo de los Apóstoles",
               two: "Padre Nuestro, Ave María y Gloria",
-              three: "Cinco misterios con las oraciones de Fátima",
-              four: "La Salve",
+              three: "Cinco misterios",
             },
           },
+          timedLabel: "{{name}} ({{duration}})",
+          timedRemainingLabel: "{{length}} · quedan {{remaining}}",
         },
         settings: {
           advanceHint: "Avanza a la siguiente cuenta del Rosario.",

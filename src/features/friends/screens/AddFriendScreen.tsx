@@ -1,7 +1,7 @@
 import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
-import { useMemo, useState } from "react";
-import { FlatList, KeyboardAvoidingView, Platform, Text, TextInput, View } from "react-native";
+import { useCallback, useMemo, useState } from "react";
+import { FlatList, KeyboardAvoidingView, Platform, Share, Text, TextInput, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
@@ -11,6 +11,7 @@ import { FriendAvatar, FriendsState } from "@/features/friends/components";
 import { useFriendSearch, useSendFriendRequest } from "@/features/friends/friends.hooks";
 import type { UserSearchResult } from "@/features/friends/friends.types";
 import { logDevelopmentError } from "@/lib/development-logger";
+import { APP_CONFIG } from "@/config/app-config";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
@@ -23,7 +24,7 @@ function statusKey(result: UserSearchResult, requestedUsernames: string[]): stri
   return undefined;
 }
 
-/** Renders the friend search and invitation flow within the shared atmosphere. */
+/** Renders friend search plus a native invite-link sharing action within the shared atmosphere. */
 export function AddFriendScreen() {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
@@ -32,6 +33,15 @@ export function AddFriendScreen() {
   const search = useFriendSearch(query);
   const request = useSendFriendRequest();
   const searchHint = useMemo(() => query.trim().length === 0, [query]);
+
+  /** Opens the operating system share sheet with the localized invite copy and public app landing page. */
+  const handleInvite = useCallback(async () => {
+    try {
+      await Share.share({ message: `${t("friends.invite.message")}\n${APP_CONFIG.inviteUrl}` });
+    } catch (error) {
+      logDevelopmentError("sharing a friend invite", error);
+    }
+  }, [t]);
 
   return (
     <AtmosphericSafeAreaView edges={["top", "bottom"]} style={styles.safeArea}>
@@ -70,6 +80,30 @@ export function AddFriendScreen() {
           }
           ListHeaderComponent={
             <View>
+              <Card padding="md" style={styles.inviteCard}>
+                <View style={styles.inviteCopyRow}>
+                  <Feather
+                    accessible={false}
+                    color={theme.colors.icon.active}
+                    name="user-plus"
+                    size={theme.sizes.iconMedium}
+                  />
+                  <View style={styles.inviteCopy}>
+                    <Text accessibilityRole="header" style={styles.inviteTitle}>
+                      {t("friends.invite.title")}
+                    </Text>
+                    <Text style={styles.inviteDescription}>{t("friends.invite.description")}</Text>
+                  </View>
+                </View>
+                <Button
+                  accessibilityLabel={t("friends.invite.action")}
+                  fullWidth
+                  onPress={handleInvite}
+                  variant="outline"
+                >
+                  {t("friends.invite.action")}
+                </Button>
+              </Card>
               <View style={styles.searchInputWrap}>
                 <Feather color={theme.colors.icon.muted} name="search" size={theme.sizes.iconSmall} />
                 <TextInput
@@ -160,6 +194,27 @@ function SearchResultItem({
 }
 
 const styleSheet = createThemedStyles((theme) => ({
+  inviteCard: {
+    gap: theme.spacing[4],
+    marginBottom: theme.spacing[5],
+  },
+  inviteCopy: {
+    flex: 1,
+    marginLeft: theme.spacing[3],
+    minWidth: theme.spacing[0],
+  },
+  inviteCopyRow: {
+    alignItems: "flex-start",
+    flexDirection: "row",
+  },
+  inviteDescription: {
+    ...theme.typography.bodySmall,
+    color: theme.colors.text.muted,
+    marginTop: theme.spacing[1],
+  },
+  inviteTitle: {
+    ...theme.typography.bodyMedium,
+  },
   keyboardAvoiding: {
     flex: 1,
   },

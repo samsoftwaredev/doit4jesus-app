@@ -16,6 +16,7 @@ import { type SupportedLanguage, useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 import { ROSARY_LENGTH_OPTIONS } from "@/features/prayer/rosary/data/rosaryLengths";
+import { formatRosaryAudioDuration } from "@/features/prayer/rosary/data/rosaryAudioTiming";
 import type { PrayerProgress, RosaryArtStyle, RosaryLength } from "@/features/prayer/rosary/types";
 
 interface RosaryBottomNavigationProps {
@@ -34,12 +35,13 @@ interface RosaryBottomNavigationProps {
   onRestart: () => void;
   onSettingsVisibilityChange?: (visible: boolean) => void;
   rosaryLength: RosaryLength;
+  rosaryLengthAudioDurations?: Partial<Record<RosaryLength, number>>;
   rosaryArtStyle: RosaryArtStyle;
   settingsVisible?: boolean;
 }
 
 const prayerKeysByLength: Record<RosaryLength, readonly string[]> = {
-  short: ["one", "two", "three", "four"],
+  short: ["one", "two", "three"],
   medium: ["one", "two"],
   long: ["one"],
 };
@@ -60,7 +62,7 @@ function createArtStylePressHandler(onArtStyleChange: (style: RosaryArtStyle) =>
   };
 }
 
-/** Renders bead progress and the only controls that can change or restart the active Rosary. */
+/** Renders Rosary progress plus playback, settings, and restart controls for the active prayer. */
 export function RosaryBottomNavigation({
   audioAvailable = false,
   audioError = false,
@@ -77,6 +79,7 @@ export function RosaryBottomNavigation({
   onRestart,
   onSettingsVisibilityChange,
   rosaryLength,
+  rosaryLengthAudioDurations,
   rosaryArtStyle,
   settingsVisible,
 }: RosaryBottomNavigationProps) {
@@ -132,6 +135,18 @@ export function RosaryBottomNavigation({
         : audioPlaying
           ? t("rosary.audio.pause")
           : t("rosary.audio.play");
+  const audioIconName = audioMuted ? "volume-x" : audioPlaying ? "pause" : "play";
+
+  /** Returns an exact duration label when the active Rosary sequence provides audio timing data. */
+  const getLengthLabel = (length: RosaryLength) => {
+    const duration = rosaryLengthAudioDurations?.[length];
+    if (duration === undefined) return t(`rosary.length.${length}.label`);
+
+    return t("rosary.length.timedLabel", {
+      duration: formatRosaryAudioDuration(duration),
+      name: t(`rosary.length.${length}.name`),
+    });
+  };
 
   return (
     <View style={styles.navigation}>
@@ -188,7 +203,7 @@ export function RosaryBottomNavigation({
           <Feather
             accessible={false}
             color={audioAvailable ? theme.rosary.colors.goldBright : theme.colors.icon.muted}
-            name={audioPlaying ? "pause" : "play"}
+            name={audioIconName}
             size={theme.sizes.iconMedium}
           />
         </Pressable>
@@ -309,7 +324,7 @@ export function RosaryBottomNavigation({
                 >
                   {ROSARY_LENGTH_OPTIONS.map((option) => {
                     const selected = option.id === rosaryLength;
-                    const label = t(`rosary.length.${option.id}.label`);
+                    const label = getLengthLabel(option.id);
                     const introduction = t(`rosary.length.${option.id}.introduction`);
                     const prayers = prayerKeysByLength[option.id].map((key) =>
                       t(`rosary.length.${option.id}.prayers.${key}`),

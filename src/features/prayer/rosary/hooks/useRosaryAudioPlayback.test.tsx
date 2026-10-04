@@ -9,6 +9,8 @@ const mockPlayer = {
   seekTo: jest.fn(() => Promise.resolve()),
 };
 let mockStatus = {
+  currentTime: 0,
+  duration: 0,
   didJustFinish: false,
   error: null as string | null,
   isBuffering: false,
@@ -33,7 +35,15 @@ jest.mock("../../../../../assets/audios", () => ({
 describe("useRosaryAudioPlayback", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockStatus = { didJustFinish: false, error: null, isBuffering: false, isLoaded: true, playing: false };
+    mockStatus = {
+      currentTime: 0,
+      didJustFinish: false,
+      duration: 0,
+      error: null,
+      isBuffering: false,
+      isLoaded: true,
+      playing: false,
+    };
   });
 
   it("autoplays the first recording and replaces it when the prayer changes", async () => {
@@ -221,5 +231,21 @@ describe("useRosaryAudioPlayback", () => {
     expect(result.current.playbackError).toBe("decode failed");
     await unmount();
     expect(mockPlayer.pause).toHaveBeenCalled();
+  });
+
+  it("exposes the active queue position and native playback timing for the Rosary countdown", async () => {
+    mockStatus = { ...mockStatus, currentTime: 7.25, duration: 17.194 };
+    const { result } = await renderHook(() =>
+      useRosaryAudioPlayback({
+        audioQueue: ["/audio/one.m4a", "/audio/two.m4a"],
+        isMuted: false,
+        isPreferenceHydrated: true,
+        onRequestUnmute: jest.fn(),
+      }),
+    );
+
+    expect(result.current.currentTrackIndex).toBe(0);
+    expect(result.current.currentTrackPosition).toBe(7.25);
+    expect(result.current.currentTrackDuration).toBe(17.194);
   });
 });

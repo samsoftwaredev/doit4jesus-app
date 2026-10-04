@@ -14,12 +14,7 @@ export const ROSARY_LENGTH_OPTIONS: readonly RosaryLengthOption[] = [
     id: "short",
     introduction: "The standard five-decade Rosary:",
     label: "Short (15 min)",
-    prayers: [
-      "Sign of the Cross and Apostles’ Creed",
-      "Our Father, Hail Mary, and Glory Be",
-      "Five mysteries with Fatima Prayers",
-      "Hail, Holy Queen",
-    ],
+    prayers: ["Sign of the Cross and Apostles’ Creed", "Our Father, Hail Mary, and Glory Be", "Five mysteries"],
   },
   {
     id: "medium",

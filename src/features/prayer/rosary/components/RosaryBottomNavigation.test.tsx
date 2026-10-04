@@ -6,6 +6,15 @@ import { AppLanguageProvider, i18n } from "@/localization";
 
 import { RosaryBottomNavigation } from "./RosaryBottomNavigation";
 
+jest.mock("@expo/vector-icons/Feather", () => {
+  const { View } = jest.requireActual<typeof import("react-native")>("react-native");
+
+  /** Renders icon names as test identifiers so icon state remains testable. */
+  return function MockFeather({ name }: { name: string }) {
+    return <View testID={`feather-icon-${name}`} />;
+  };
+});
+
 describe("RosaryBottomNavigation", () => {
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -66,17 +75,23 @@ describe("RosaryBottomNavigation", () => {
         onLengthChange={onLengthChange}
         onRestart={jest.fn()}
         progress={{ currentIndex: 59, prayerName: "Hail, Holy Queen", total: 59 }}
+        rosaryLengthAudioDurations={{ long: 1634, medium: 1417, short: 1269 }}
         rosaryLength="medium"
       />,
     );
 
     await fireEvent.press(screen.getByLabelText("Open Rosary settings"));
 
-    expect(screen.getByRole("radio", { name: "Classic (20 min) Rosary" }).props.accessibilityState).toEqual({
+    expect(screen.getByRole("radio", { name: "Classic (23:37) Rosary" }).props.accessibilityState).toEqual({
       selected: true,
     });
     expect(screen.getByText("Everything in Short, plus:")).toBeTruthy();
     expect(screen.getByText("Everything in Classic, plus:")).toBeTruthy();
+    expect(screen.getByText(/Five mysteries/)).toBeTruthy();
+    const shortRosaryOption = screen.getByRole("radio", { name: "Short (21:09) Rosary" });
+    expect(shortRosaryOption.props.accessibilityHint).toContain("Five mysteries");
+    expect(shortRosaryOption.props.accessibilityHint).not.toContain("Fatima Prayers");
+    expect(shortRosaryOption.props.accessibilityHint).not.toContain("Hail, Holy Queen");
     expect(screen.getByText(/Our Father, Hail Mary, and Glory Be for the Pope’s intentions/)).toBeTruthy();
     expect(screen.getByText(/Litany of Loreto/)).toBeTruthy();
 
@@ -95,21 +110,27 @@ describe("RosaryBottomNavigation", () => {
         onLengthChange={jest.fn()}
         onRestart={jest.fn()}
         progress={{ currentIndex: 1, prayerName: "Ave María", total: 10 }}
+        rosaryLengthAudioDurations={{ long: 1911, medium: 1663, short: 1498 }}
         rosaryLength="medium"
       />,
     );
 
     await fireEvent.press(screen.getByLabelText("Abrir configuración del Rosario"));
 
-    expect(screen.getByRole("radio", { name: "Clásico (20 min) Rosario" }).props.accessibilityState).toEqual({
+    expect(screen.getByRole("radio", { name: "Clásico (27:43) Rosario" }).props.accessibilityState).toEqual({
       selected: true,
     });
+    expect(screen.getByText(/Cinco misterios/)).toBeTruthy();
+    const shortRosaryOption = screen.getByRole("radio", { name: "Corto (24:58) Rosario" });
+    expect(shortRosaryOption.props.accessibilityHint).toContain("Cinco misterios");
+    expect(shortRosaryOption.props.accessibilityHint).not.toContain("oraciones de Fátima");
+    expect(shortRosaryOption.props.accessibilityHint).not.toContain("La Salve");
     expect(screen.getByText("Todo lo incluido en Clásico, más:")).toBeTruthy();
   });
 
   it("plays and pauses available prayer audio with an accessible 44 pixel control", async () => {
     const onAudioToggle = jest.fn();
-    const { rerender } = await render(
+    const rendered = await render(
       <RosaryBottomNavigation
         rosaryArtStyle="comic"
         onArtStyleChange={jest.fn()}
@@ -128,10 +149,11 @@ describe("RosaryBottomNavigation", () => {
 
     const playButton = screen.getByRole("button", { name: "Play prayer audio" });
     expect(StyleSheet.flatten(playButton.props.style)).toEqual(expect.objectContaining({ height: 44, width: 44 }));
+    expect(screen.getByTestId("feather-icon-play")).toBeTruthy();
     await fireEvent.press(playButton);
     expect(onAudioToggle).toHaveBeenCalledTimes(1);
 
-    await rerender(
+    await rendered.rerender(
       <RosaryBottomNavigation
         rosaryArtStyle="comic"
         onArtStyleChange={jest.fn()}
@@ -148,6 +170,24 @@ describe("RosaryBottomNavigation", () => {
       />,
     );
     expect(screen.getByRole("button", { name: "Pause prayer audio" })).toBeTruthy();
+
+    await rendered.rerender(
+      <RosaryBottomNavigation
+        rosaryArtStyle="comic"
+        onArtStyleChange={jest.fn()}
+        audioAvailable
+        audioPlaying={false}
+        audioMuted
+        onAudioToggle={onAudioToggle}
+        onAudioMutedChange={jest.fn()}
+        onAdvance={jest.fn()}
+        onLengthChange={jest.fn()}
+        onRestart={jest.fn()}
+        progress={{ currentIndex: 1, prayerName: "Hail Mary", total: 10 }}
+        rosaryLength="medium"
+      />,
+    );
+    expect(screen.getByTestId("feather-icon-volume-x")).toBeTruthy();
   });
 
   it("explains the persisted mute switch and exposes its enabled state in both languages", async () => {
