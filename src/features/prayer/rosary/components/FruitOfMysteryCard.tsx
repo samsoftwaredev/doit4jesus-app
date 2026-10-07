@@ -1,6 +1,6 @@
 import Feather from "@expo/vector-icons/Feather";
-import { Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
+import { Text, View } from "react-native";
 
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
@@ -39,9 +39,7 @@ export function FruitOfMysteryCard({ description, fruit }: FruitOfMysteryCardPro
 const styleSheet = createThemedStyles((theme) => ({
   card: {
     backgroundColor: theme.rosary.colors.immersiveCard,
-    borderColor: "rgba(230, 186, 100, 0.38)",
     borderRadius: theme.radii.xl,
-    borderWidth: theme.rosary.borderWidths.goldHairline,
     minWidth: 0,
     padding: theme.spacing[4],
   },

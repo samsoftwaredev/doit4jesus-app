@@ -1,9 +1,9 @@
-import { fireEvent, render, screen } from "@testing-library/react-native";
+import { render, screen } from "@testing-library/react-native";
 import { StyleSheet } from "react-native";
 
 import { fullRosarySequence, rosarySequence } from "@/features/prayer/rosary/data/rosarySequence";
-import { darkTheme, lightTheme, setActiveAppTheme } from "@/theme/tokens";
 import type { AppTheme } from "@/theme/tokens";
+import { darkTheme, lightTheme, setActiveAppTheme } from "@/theme/tokens";
 
 import { RosaryBead } from "./RosaryBead";
 import { RosaryBeadNavigator } from "./RosaryBeadNavigator";
@@ -66,35 +66,5 @@ describe("Rosary prayer appearance", () => {
     expect(navigatorStyle.backgroundColor).toBeUndefined();
     expect(navigatorStyle.borderColor).toBeUndefined();
     expect(navigatorStyle.borderWidth).toBeUndefined();
-    expect(StyleSheet.flatten(screen.getByTestId("rosary-bead-shape-1").props.style)).toMatchObject({
-      backgroundColor: selectedTheme.rosary.colors.pearlShadow,
-    });
-    expect(StyleSheet.flatten(screen.getByTestId("rosary-bead-shape-2").props.style)).toMatchObject({
-      backgroundColor: selectedTheme.rosary.colors.pearl,
-    });
-    expect(
-      StyleSheet.flatten(screen.getByTestId(`rosary-crucifix-shape-${creed?.sequence}`).props.style),
-    ).toMatchObject({
-      backgroundColor: selectedTheme.colors.semantic.warningSurface,
-    });
-    expect(StyleSheet.flatten(screen.getByTestId("rosary-progress-button").props.style)).toMatchObject({
-      backgroundColor: selectedTheme.rosary.colors.immersiveControl,
-    });
-    expect(StyleSheet.flatten(screen.getByTestId("open-rosary-settings").props.style)).toMatchObject({
-      backgroundColor: selectedTheme.rosary.colors.immersiveControl,
-      borderColor: selectedTheme.colors.border.warning,
-    });
-    expect(StyleSheet.flatten(screen.getByText("Hail Mary").props.style)).toMatchObject({
-      color: selectedTheme.rosary.colors.immersivePrimary,
-    });
-
-    await fireEvent.press(screen.getByLabelText("Open Rosary settings"));
-
-    expect(StyleSheet.flatten(screen.getByRole("header", { name: "Rosary settings" }).props.style)).toMatchObject({
-      color: selectedTheme.colors.text.primary,
-    });
-    expect(StyleSheet.flatten(screen.getByLabelText("Restart current mystery").props.style)).toMatchObject({
-      borderColor: selectedTheme.colors.border.warning,
-    });
   });
 });

@@ -1,6 +1,6 @@
 import Feather from "@expo/vector-icons/Feather";
-import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
+import { ActivityIndicator, Pressable, Text, View } from "react-native";
 
 import type { GlobalRosaryStats } from "@/features/prayer/data/globalRosaryStats.api";
 import { useAppLanguage } from "@/localization";

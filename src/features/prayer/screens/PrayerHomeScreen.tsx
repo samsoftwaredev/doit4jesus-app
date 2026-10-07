@@ -15,7 +15,13 @@ import {
   parseGlobalLeaderboardData,
 } from "@/features/dashboard/dashboard.api";
 import type { LeaderboardEntryViewModel } from "@/features/dashboard/dashboard.types";
-import { AllMysteries, GlobalRosaryStatsCard, MomentForPrayer, PrayersByOthers } from "@/features/prayer/components";
+import {
+  AllMysteries,
+  GlobalRosaryStatsCard,
+  MomentForPrayer,
+  PrayersByOthers,
+  RosaryGuideCards,
+} from "@/features/prayer/components";
 import { getGlobalRosaryStats } from "@/features/prayer/data/globalRosaryStats.api";
 import type { GlobalRosaryStats } from "@/features/prayer/data/globalRosaryStats.api";
 import type { ApprovedPrayerIntention } from "@/features/prayer/intentions";
@@ -374,6 +380,9 @@ export function PrayerScreen() {
               onPrayToday={prayToday}
               weekday={getWeekdayLabel(today, locale)}
             />
+          </View>
+          <View testID="prayer-section-rosary-guide">
+            <RosaryGuideCards />
           </View>
           <View testID="prayer-section-garden">
             <RosaryGardenSection initialData={initialScreenData} onPrayToday={prayToday} />

@@ -53,9 +53,7 @@ describe("AchievementToastHost", () => {
 
     await fireEvent.press(screen.getByRole("button", { name: "Show achievement" }));
 
-    expect(
-      await screen.findByText("Account set up! Remember to seek first His kingdom, and all else will follow."),
-    ).toBeTruthy();
+    expect(await screen.findByText("Congrats! 🎉 Your account is ready.")).toBeTruthy();
     expect(StyleSheet.flatten(screen.getByTestId("achievement-toast-host").props.style)).toEqual(
       expect.objectContaining({ position: "absolute", top: 0, zIndex: theme.zIndex.toast }),
     );

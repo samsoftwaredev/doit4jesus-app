@@ -1,11 +1,11 @@
 import { useMemo, useState } from "react";
-import { Pressable, Text, useWindowDimensions, View } from "react-native";
 import { useTranslation } from "react-i18next";
+import { Pressable, Text, useWindowDimensions, View } from "react-native";
 
 import { AvatarWithCountryBadge } from "@/components/identity";
-import { getProfileAvatarSource } from "@/features/profile/saints";
 import { useRosaryPresence } from "@/features/prayer/rosary/hooks/useRosaryPresence";
 import type { RosaryPresenceUser } from "@/features/prayer/rosary/presence.types";
+import { getProfileAvatarSource } from "@/features/profile/saints";
 import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
@@ -110,7 +110,7 @@ export function RosaryPresence() {
           })}
           accessibilityRole="button"
           onPress={openList}
-          style={({ pressed }) => [styles.countButton, pressed && styles.pressed]}
+          style={({ pressed }) => [pressed && styles.pressed]}
         >
           <Text numberOfLines={1} style={styles.countText}>
             {visibleCountCopy}

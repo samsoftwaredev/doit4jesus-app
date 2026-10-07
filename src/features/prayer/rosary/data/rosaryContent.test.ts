@@ -1,6 +1,7 @@
 import englishRosaryJson from "@/data/en.rosary.json";
-import { englishRosaryContent } from "@/features/prayer/rosary/data/rosaryContent";
 import { getRosaryContent } from "@/features/prayer/rosary/data/localizedRosaryContent";
+import { ROSARY_AUDIO_DURATIONS } from "@/features/prayer/rosary/data/rosaryAudioTiming";
+import { englishRosaryContent } from "@/features/prayer/rosary/data/rosaryContent";
 import {
   getRosaryMysteriesFromContent,
   getRosaryMysteryImageSource,
@@ -9,11 +10,10 @@ import {
 } from "@/features/prayer/rosary/data/rosaryMysteries";
 import { getRosaryPrayers, prayerById } from "@/features/prayer/rosary/data/rosaryPrayers";
 import { getFullRosarySequence, getRosarySequenceForLength } from "@/features/prayer/rosary/data/rosarySequence";
-import { ROSARY_AUDIO_DURATIONS } from "@/features/prayer/rosary/data/rosaryAudioTiming";
 
+import { ROSARY_AUDIO_SOURCES } from "../../../../../assets/audios";
 import * as mysteryCartoonImages from "../../../../../assets/images/mysteriesCartoon";
 import * as mysteryClassicArt from "../../../../../assets/images/mysteriesClassicArt";
-import { ROSARY_AUDIO_SOURCES } from "../../../../../assets/audios";
 
 describe("English Rosary content", () => {
   it("catalogs every canonical M4A asset exactly once under its matching language", () => {
@@ -241,7 +241,6 @@ describe("English Rosary content", () => {
 
     expect(firstMystery?.audioQueue).toEqual([
       "/assets/audios/en/mysteries/joyful/firstJoyfulMysteryTitle.m4a",
-      "/assets/audios/en/mysteries/joyful/firstJoyfulMysteryDescription.m4a",
       "/assets/audios/en/prayers/ourFather.m4a",
     ]);
   });

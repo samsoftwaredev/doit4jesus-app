@@ -4,7 +4,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { SafeAreaView } from "react-native-safe-area-context";
 import {
   AccessibilityInfo,
   type LayoutChangeEvent,
@@ -17,6 +16,7 @@ import {
   View,
 } from "react-native";
 import Animated, { FadeIn, useReducedMotion } from "react-native-reanimated";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Confetti, SacredAtmosphere } from "@/components/ui";
 import { recordPrayerForIntention } from "@/features/prayer/intentions";
@@ -40,9 +40,9 @@ import type { RosaryContent } from "@/features/prayer/rosary/data/rosaryContent"
 import { ROSARY_LENGTH_OPTIONS } from "@/features/prayer/rosary/data/rosaryLengths";
 import { getRosaryMysteriesFromContent } from "@/features/prayer/rosary/data/rosaryMysteries";
 import { createRosarySequence, getRosarySequenceForLength } from "@/features/prayer/rosary/data/rosarySequence";
+import { useRosaryArtStylePreference } from "@/features/prayer/rosary/hooks/useRosaryArtStylePreference";
 import { useRosaryAudioPlayback } from "@/features/prayer/rosary/hooks/useRosaryAudioPlayback";
 import { useRosaryAudioPreference } from "@/features/prayer/rosary/hooks/useRosaryAudioPreference";
-import { useRosaryArtStylePreference } from "@/features/prayer/rosary/hooks/useRosaryArtStylePreference";
 import { useRosaryLengthPreference } from "@/features/prayer/rosary/hooks/useRosaryLengthPreference";
 import { useRosarySession } from "@/features/prayer/rosary/hooks/useRosarySession";
 import type { RosaryArtStyle, RosaryBead, RosaryLength, RosaryMysteryType } from "@/features/prayer/rosary/types";
@@ -628,7 +628,7 @@ export function RosaryPrayerScreen({
                 <Text style={styles.primaryActionText}>{t("rosary.completion.prayAgain")}</Text>
               </Pressable>
               <Pressable
-                accessibilityLabel={t("rosary.completion.returnHomeLabel")}
+                accessibilityLabel={t("rosary.completion.exitGardenLabel")}
                 accessibilityRole="button"
                 onPress={() => {
                   setCompletionVisible(false);
@@ -636,7 +636,7 @@ export function RosaryPrayerScreen({
                 }}
                 style={({ pressed }) => [styles.secondaryAction, pressed && styles.pressed]}
               >
-                <Text style={styles.secondaryActionText}>{t("rosary.completion.returnHome")}</Text>
+                <Text style={styles.secondaryActionText}>{t("rosary.completion.exitGarden")}</Text>
               </Pressable>
             </Animated.View>
           </View>
@@ -692,10 +692,6 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   lengthIndicator: {
     alignItems: "center",
-    backgroundColor: theme.rosary.colors.immersiveControl,
-    borderColor: theme.rosary.colors.goldMuted,
-    borderRadius: theme.radii.pill,
-    borderWidth: theme.rosary.borderWidths.goldHairline,
     flexDirection: "row",
     flexShrink: 1,
     gap: theme.spacing[1.5],

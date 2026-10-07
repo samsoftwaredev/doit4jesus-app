@@ -1,6 +1,6 @@
 import Feather from "@expo/vector-icons/Feather";
-import { Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
+import { Text, View } from "react-native";
 
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
@@ -36,9 +36,7 @@ export function ScriptureCard({ reference, quotation }: ScriptureCardProps) {
 const styleSheet = createThemedStyles((theme) => ({
   card: {
     backgroundColor: theme.rosary.colors.immersiveCard,
-    borderColor: theme.colors.border.warning,
     borderRadius: theme.radii.xl,
-    borderWidth: theme.rosary.borderWidths.goldHairline,
     padding: theme.spacing[4],
   },
   labelRow: {

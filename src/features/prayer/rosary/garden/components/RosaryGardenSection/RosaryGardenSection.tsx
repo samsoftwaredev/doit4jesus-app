@@ -1,8 +1,8 @@
-import { Pressable, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
+import { Pressable, Text, View } from "react-native";
 
-import { useRosaryGarden } from "@/features/prayer/rosary/garden/useRosaryGarden";
 import { parseRosaryCompletionData, parseRosaryStreakData } from "@/features/prayer/rosary/garden/api";
+import { useRosaryGarden } from "@/features/prayer/rosary/garden/useRosaryGarden";
 import { parseCurrentUserProfileData } from "@/features/profile/profile.api";
 import type { ScreenDataResponse } from "@/features/screen-data";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
@@ -68,6 +68,7 @@ export function RosaryGardenSection({ initialData, onPrayToday }: RosaryGardenSe
           </View>
           <GardenStats stats={garden.stats} />
           <PrayTodayButton onPress={onPrayToday} />
+          <Text style={styles.dailyRosaryNote}>{t("rosary.garden.dailyRosaryNote")}</Text>
         </View>
       </View>
     </View>
@@ -90,6 +91,11 @@ const styleSheet = createThemedStyles((theme) => ({
   calendarArea: {
     minWidth: theme.spacing[0],
     width: "100%",
+  },
+  dailyRosaryNote: {
+    ...theme.typography.bodySmall,
+    color: theme.colors.text.secondary,
+    textAlign: "center",
   },
   offlineLabel: {
     ...theme.typography.labelSmall,

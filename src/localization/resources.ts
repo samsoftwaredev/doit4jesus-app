@@ -63,7 +63,7 @@ export const resources = {
         profileErrorCopy: "Check your connection and try again. Your dashboard remains protected.",
       },
       achievements: {
-        onboardingComplete: "Account set up! Remember to seek first His kingdom, and all else will follow.",
+        onboardingComplete: "Congrats! 🎉 Your account is ready.",
       },
       pages: {
         about: {
@@ -718,6 +718,25 @@ export const resources = {
       },
       prayerHome: {
         description: "Pray the Rosary and lift up the intentions of others.",
+        rosaryGuide: {
+          collapseHint: "Hides this Rosary guide.",
+          collapseLabel: "Collapse {{title}}",
+          expandHint: "Shows this Rosary guide.",
+          expandLabel: "Expand {{title}}",
+          history: {
+            first:
+              "The old monks prayed the 150 Psalms, and the simple folk who could not read them said 150 Our Fathers instead, counting on knotted cords. Later the Hail Mary took the place of those prayers. Tradition tells us that Our Lady herself gave the rosary to Saint Dominic in the early 13th century as a weapon against heresy.",
+            second:
+              "In our own time, the rosary has proven its power: in 1571, Pope Pius V called all Christendom to pray it, and the Christian fleet defeated the Turkish armada at Lepanto, against all expectation. Even now, the Church keeps the feast of Our Lady of the Rosary in memory of that victory.",
+            title: "History of the Rosary",
+          },
+          promises: {
+            first:
+              "The promises come down to us through the tradition of Blessed Alan de la Roche and the Dominicans. They say that those who pray the rosary faithfully will receive Our Lady's special protection, grace against sin and heresy, strength in the hour of trial, and, we hope, a good and holy death. Mark well: it is not a magic charm. It is a prayer offered with faith, and Mary presents it to her Son. But I tell you plainly: no soul who loves the Mother is ever lost.",
+            second: "Ave Maria, gratia plena...",
+            title: "What it promises",
+          },
+        },
         globalStats: {
           contribution: "Your contribution: {{count}}",
           loadingLabel: "Loading global Rosary statistics",
@@ -804,8 +823,8 @@ export const resources = {
           recorded: "Rosary recorded",
           recording: "Recording…",
           retryLabel: "Retry recording this completed Rosary",
-          returnHome: "Return Home",
-          returnHomeLabel: "Return home",
+          exitGarden: "Exit & View Garden",
+          exitGardenLabel: "Exit & View Garden",
           saveError: "Your Rosary was completed, but couldn’t be saved. Try again to record it.",
           title: "Rosary Completed",
           today: "Today",
@@ -853,7 +872,7 @@ export const resources = {
             },
           },
           timedLabel: "{{name}} ({{duration}})",
-          timedRemainingLabel: "{{length}} · {{remaining}} remaining",
+          timedRemainingLabel: "{{length}}·{{remaining}}",
         },
         settings: {
           advanceHint: "Advances to the next rosary bead.",
@@ -924,6 +943,8 @@ export const resources = {
           completedLabel: "{{count}} rosaries completed this month",
           currentStreak: "CURRENT STREAK",
           currentStreakLabel: "Current streak {{count}} days",
+          dailyRosaryNote:
+            "You can pray multiple Rosaries each day; leaderboard progress counts one Daily Rosary per day.",
           days: "DAYS",
           fullBloom: "Garden in Full Bloom",
           longestStreak: "LONGEST STREAK",
@@ -1263,7 +1284,7 @@ export const resources = {
         profileErrorCopy: "Comprueba tu conexión e inténtalo de nuevo. Tu panel permanece protegido.",
       },
       achievements: {
-        onboardingComplete: "¡Cuenta creada! Recuerda buscar primero su Reino y todo lo demás vendrá por añadidura.",
+        onboardingComplete: "¡Felicidades! 🎉 Tu cuenta está lista.",
       },
       pages: {
         about: {
@@ -1920,6 +1941,25 @@ export const resources = {
       },
       prayerHome: {
         description: "Reza el Rosario y eleva las intenciones de los demás.",
+        rosaryGuide: {
+          collapseHint: "Oculta esta guía del Rosario.",
+          collapseLabel: "Contraer {{title}}",
+          expandHint: "Muestra esta guía del Rosario.",
+          expandLabel: "Expandir {{title}}",
+          history: {
+            first:
+              "Los antiguos monjes rezaban los 150 Salmos, y la gente sencilla que no podía leerlos decía en su lugar 150 Padrenuestros, contándolos con cordones anudados. Más tarde, el Ave María ocupó el lugar de esas oraciones. La tradición nos cuenta que la misma Virgen entregó el rosario a santo Domingo a comienzos del siglo XIII como arma contra la herejía.",
+            second:
+              "En nuestro tiempo, el rosario ha demostrado su poder: en 1571, el papa Pío V llamó a toda la cristiandad a rezarlo, y la flota cristiana derrotó a la armada turca en Lepanto, contra toda expectativa. Aún hoy, la Iglesia celebra la fiesta de Nuestra Señora del Rosario en memoria de aquella victoria.",
+            title: "Historia del Rosario",
+          },
+          promises: {
+            first:
+              "Las promesas nos llegan por la tradición del beato Alano de la Roca y de los dominicos. Dicen que quienes rezan el rosario fielmente recibirán la protección especial de Nuestra Señora, gracia contra el pecado y la herejía, fortaleza en la hora de la prueba y, esperamos, una muerte buena y santa. Tenlo presente: no es un amuleto mágico. Es una oración ofrecida con fe, y María la presenta a su Hijo. Pero te lo digo claramente: ningún alma que ame a la Madre se pierde.",
+            second: "Ave María, llena de gracia...",
+            title: "Lo que promete",
+          },
+        },
         globalStats: {
           contribution: "Tu contribución: {{count}}",
           loadingLabel: "Cargando estadísticas globales del Rosario",
@@ -2006,8 +2046,8 @@ export const resources = {
           recorded: "Rosario registrado",
           recording: "Registrando…",
           retryLabel: "Reintentar el registro de este Rosario completado",
-          returnHome: "Volver al inicio",
-          returnHomeLabel: "Volver al inicio",
+          exitGarden: "Salir y ver el jardín",
+          exitGardenLabel: "Salir y ver el jardín",
           saveError: "Completaste el Rosario, pero no pudimos guardarlo. Intenta registrarlo de nuevo.",
           title: "Rosario completado",
           today: "Hoy",
@@ -2055,7 +2095,7 @@ export const resources = {
             },
           },
           timedLabel: "{{name}} ({{duration}})",
-          timedRemainingLabel: "{{length}} · quedan {{remaining}}",
+          timedRemainingLabel: "{{length}}·{{remaining}}",
         },
         settings: {
           advanceHint: "Avanza a la siguiente cuenta del Rosario.",
@@ -2127,6 +2167,8 @@ export const resources = {
           completedLabel: "{{count}} rosarios completados este mes",
           currentStreak: "RACHA ACTUAL",
           currentStreakLabel: "Racha actual de {{count}} días",
+          dailyRosaryNote:
+            "Puedes rezar varios Rosarios cada día; el progreso en las clasificaciones cuenta un solo Rosario diario por día.",
           days: "DÍAS",
           fullBloom: "Jardín en plena floración",
           longestStreak: "RACHA MÁS LARGA",

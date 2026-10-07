@@ -1,5 +1,6 @@
 import Feather from "@expo/vector-icons/Feather";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Modal, Pressable, ScrollView, Text, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -9,15 +10,14 @@ import Animated, {
   withSpring,
   withTiming,
 } from "react-native-reanimated";
-import { useTranslation } from "react-i18next";
 
 import { LanguageSelector } from "@/components";
+import { formatRosaryAudioDuration } from "@/features/prayer/rosary/data/rosaryAudioTiming";
+import { ROSARY_LENGTH_OPTIONS } from "@/features/prayer/rosary/data/rosaryLengths";
+import type { PrayerProgress, RosaryArtStyle, RosaryLength } from "@/features/prayer/rosary/types";
 import { type SupportedLanguage, useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
-import { ROSARY_LENGTH_OPTIONS } from "@/features/prayer/rosary/data/rosaryLengths";
-import { formatRosaryAudioDuration } from "@/features/prayer/rosary/data/rosaryAudioTiming";
-import type { PrayerProgress, RosaryArtStyle, RosaryLength } from "@/features/prayer/rosary/types";
 
 interface RosaryBottomNavigationProps {
   audioAvailable?: boolean;
@@ -456,20 +456,12 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   settingsButton: {
     alignItems: "center",
-    backgroundColor: theme.rosary.colors.immersiveControl,
-    borderColor: theme.colors.border.warning,
-    borderRadius: theme.radii.pill,
-    borderWidth: theme.rosary.borderWidths.gold,
     height: theme.sizes.buttonHeightLarge,
     justifyContent: "center",
     width: theme.sizes.buttonHeightLarge,
   },
   audioButton: {
     alignItems: "center",
-    backgroundColor: theme.rosary.colors.immersiveControl,
-    borderColor: theme.colors.border.warning,
-    borderRadius: theme.radii.pill,
-    borderWidth: theme.rosary.borderWidths.gold,
     height: theme.sizes.touchTarget,
     justifyContent: "center",
     opacity: 1,

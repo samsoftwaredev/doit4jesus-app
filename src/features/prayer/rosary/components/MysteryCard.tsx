@@ -1,9 +1,9 @@
+import { useTranslation } from "react-i18next";
 import { Text, View } from "react-native";
 import Animated, { FadeIn, useReducedMotion } from "react-native-reanimated";
-import { useTranslation } from "react-i18next";
 
-import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import type { RosaryMystery } from "@/features/prayer/rosary/types";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 
 interface MysteryCardProps {
   mystery?: RosaryMystery;
@@ -40,9 +40,7 @@ export function MysteryCard({ mystery }: MysteryCardProps) {
 const styleSheet = createThemedStyles((theme) => ({
   card: {
     backgroundColor: theme.rosary.colors.immersiveCard,
-    borderColor: "rgba(230, 186, 100, 0.48)",
     borderRadius: theme.radii.xl,
-    borderWidth: theme.rosary.borderWidths.goldHairline,
     overflow: "hidden",
     padding: theme.spacing[4],
     ...theme.shadows.medium,

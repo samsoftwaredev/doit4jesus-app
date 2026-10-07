@@ -1,11 +1,11 @@
-import { englishRosaryContent } from "./rosaryContent";
 import { spanishRosaryContent } from "./esRosaryContent";
-import { getRosarySequenceForLength } from "./rosarySequence";
 import {
   formatRosaryAudioDuration,
   getRemainingRosaryAudioSeconds,
   getRosaryAudioDurationSeconds,
 } from "./rosaryAudioTiming";
+import { englishRosaryContent } from "./rosaryContent";
+import { getRosarySequenceForLength } from "./rosarySequence";
 
 describe("getRemainingRosaryAudioSeconds", () => {
   const durations = {
@@ -59,7 +59,7 @@ describe("getRemainingRosaryAudioSeconds", () => {
 
     expect(
       [joyfulEnglish("short"), joyfulEnglish("medium"), joyfulEnglish("long")].map(formatRosaryAudioDuration),
-    ).toEqual(["21:09", "23:49", "27:25"]);
+    ).toEqual(["20:04", "22:43", "26:20"]);
     expect(
       [joyfulSpanish("short"), joyfulSpanish("medium"), joyfulSpanish("long")].map(formatRosaryAudioDuration),
     ).toEqual(["24:58", "28:07", "32:14"]);

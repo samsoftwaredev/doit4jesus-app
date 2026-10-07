@@ -102,6 +102,7 @@ jest.mock("@/features/prayer/components", () => {
       </>
     ),
     PrayersByOthers: MockPrayersByOthers,
+    RosaryGuideCards: () => <MockText>Rosary Guide Cards</MockText>,
   };
 });
 
@@ -189,6 +190,7 @@ describe("PrayerScreen", () => {
     const sections = screen.getAllByTestId(/^prayer-section-/);
     expect(sections.map((section) => section.props.testID)).toEqual([
       "prayer-section-today",
+      "prayer-section-rosary-guide",
       "prayer-section-garden",
       "prayer-section-global-leaderboard",
       "prayer-section-mysteries",
@@ -346,6 +348,7 @@ describe("PrayerScreen", () => {
     expect(screen.getByRole("header", { name: "Oración" })).toBeTruthy();
     expect(screen.getByText("Reza el Rosario y eleva las intenciones de los demás.")).toBeTruthy();
     expect(screen.getByText("Rosary Garden Section")).toBeTruthy();
+    expect(screen.getByText("Rosary Guide Cards")).toBeTruthy();
     expect(await screen.findByText("Los 3 mejores de esta semana")).toBeTruthy();
     expect(screen.getByText("Los 10 mejores de este año")).toBeTruthy();
   });

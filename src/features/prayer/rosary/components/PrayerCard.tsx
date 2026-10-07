@@ -1,9 +1,9 @@
-import { useWindowDimensions, ScrollView, Text, View } from "react-native";
-import Animated, { FadeInUp, useReducedMotion } from "react-native-reanimated";
 import { useTranslation } from "react-i18next";
+import { ScrollView, Text, useWindowDimensions, View } from "react-native";
+import Animated, { FadeInUp, useReducedMotion } from "react-native-reanimated";
 
-import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import type { RosaryPrayer } from "@/features/prayer/rosary/types";
+import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 
 interface PrayerCardProps {
   prayer?: RosaryPrayer;
@@ -44,9 +44,7 @@ export function PrayerCard({ prayer }: PrayerCardProps) {
 const styleSheet = createThemedStyles((theme) => ({
   card: {
     backgroundColor: theme.rosary.colors.immersiveCard,
-    borderColor: "rgba(230, 186, 100, 0.32)",
     borderRadius: theme.radii.xl,
-    borderWidth: theme.rosary.borderWidths.goldHairline,
     padding: theme.spacing[4],
   },
   label: {

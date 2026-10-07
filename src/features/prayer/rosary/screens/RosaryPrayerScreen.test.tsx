@@ -12,6 +12,7 @@ const goToPreviousBead = jest.fn();
 const restartMystery = jest.fn();
 const selectBead = jest.fn();
 const mockBack = jest.fn();
+const mockReplace = jest.fn();
 const mockRecordRosaryActivity = jest.fn();
 const mockRecordPrayerForIntention = jest.fn();
 const mockUseRosaryPresence = jest.fn();
@@ -19,7 +20,7 @@ const mockToggleAudioPlayback = jest.fn();
 const mockSetAudioMuted = jest.fn();
 const mockUseRosaryAudioPlayback = jest.fn();
 
-jest.mock("expo-router", () => ({ useRouter: () => ({ back: mockBack, replace: jest.fn() }) }));
+jest.mock("expo-router", () => ({ useRouter: () => ({ back: mockBack, replace: mockReplace }) }));
 jest.mock("@/features/prayer/rosary/hooks/useRosarySession", () => ({
   useRosarySession: jest.fn(),
 }));
@@ -276,7 +277,7 @@ describe("RosaryPrayerScreen", () => {
       "View Maria's prayer profile, online and praying",
       "View all 2 people praying now",
     ]);
-    expect(within(header).getByText("Classic · 2:45 remaining")).toBeTruthy();
+    expect(within(header).getByText("Classic·2:45")).toBeTruthy();
   });
 
   it("should advance to the next bead when the progress button is pressed", async () => {
@@ -315,7 +316,7 @@ describe("RosaryPrayerScreen", () => {
   it("shows the remaining Rosary audio time in the top length button instead of beneath playback controls", async () => {
     await render(<RosaryPrayerScreen />);
 
-    expect(screen.getByText("Classic · 2:45 remaining")).toBeTruthy();
+    expect(screen.getByText("Classic·2:45")).toBeTruthy();
     expect(screen.getByLabelText("Current Rosary length: Classic. Time remaining: 2:45")).toBeTruthy();
     expect(screen.queryByLabelText(/Time remaining: 0 hours, 2 minutes, 45 seconds/i)).toBeNull();
   });
@@ -324,7 +325,7 @@ describe("RosaryPrayerScreen", () => {
     await act(async () => i18n.changeLanguage("es"));
     await render(<RosaryPrayerScreen />);
 
-    expect(screen.getByText("Clásico · quedan 2:45")).toBeTruthy();
+    expect(screen.getByText("Clásico·2:45")).toBeTruthy();
     expect(screen.getByLabelText("Duración actual del Rosario: Clásico. Tiempo restante: 2:45")).toBeTruthy();
 
     await act(async () => i18n.changeLanguage("en"));
@@ -392,6 +393,24 @@ describe("RosaryPrayerScreen", () => {
     await fireEvent.press(screen.getByLabelText("Pray this mystery again"));
 
     expect(restartMystery).toHaveBeenCalledTimes(1);
+  });
+
+  it("exits the completion modal and opens the Rosary Garden", async () => {
+    mockSession({ isRosaryCompleted: true, lastPrayedOn: "2026-08-06T10:00:00.000Z" });
+    await render(<RosaryPrayerScreen />);
+
+    await fireEvent.press(screen.getByRole("button", { name: "Exit & View Garden" }));
+
+    expect(mockReplace).toHaveBeenCalledWith("/prayer");
+  });
+
+  it("localizes the completion Garden action in Spanish", async () => {
+    await act(async () => i18n.changeLanguage("es"));
+    mockSession({ isRosaryCompleted: true, lastPrayedOn: "2026-08-06T10:00:00.000Z" });
+
+    await render(<RosaryPrayerScreen />);
+
+    expect(screen.getByRole("button", { name: "Salir y ver el jardín" })).toBeTruthy();
   });
 
   it("should use a safe completion-date fallback for invalid saved dates", async () => {

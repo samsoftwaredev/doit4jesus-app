@@ -6613,19 +6613,9 @@
   "scripture_translation": "King James Version excerpts (public domain)",
   "audio_catalog": {
     "assets": {
-      "en_mysteries_glorious_fifthGloriousMysteryDescription": {
-        "language": "en",
-        "path": "/assets/audios/en/mysteries/glorious/fifthGloriousMysteryDescription.m4a",
-        "variant": "primary"
-      },
       "en_mysteries_glorious_fifthGloriousMysteryTitle": {
         "language": "en",
         "path": "/assets/audios/en/mysteries/glorious/fifthGloriousMysteryTitle.m4a",
-        "variant": "primary"
-      },
-      "en_mysteries_glorious_firstGloriousMysteryDescription": {
-        "language": "en",
-        "path": "/assets/audios/en/mysteries/glorious/firstGloriousMysteryDescription.m4a",
         "variant": "primary"
       },
       "en_mysteries_glorious_firstGloriousMysteryTitle": {
@@ -6633,19 +6623,9 @@
         "path": "/assets/audios/en/mysteries/glorious/firstGloriousMysteryTitle.m4a",
         "variant": "primary"
       },
-      "en_mysteries_glorious_fourthGloriousMysteryDescription": {
-        "language": "en",
-        "path": "/assets/audios/en/mysteries/glorious/fourthGloriousMysteryDescription.m4a",
-        "variant": "primary"
-      },
       "en_mysteries_glorious_fourthGloriousMysteryTitle": {
         "language": "en",
         "path": "/assets/audios/en/mysteries/glorious/fourthGloriousMysteryTitle.m4a",
-        "variant": "primary"
-      },
-      "en_mysteries_glorious_secondGloriousMysteryDescription": {
-        "language": "en",
-        "path": "/assets/audios/en/mysteries/glorious/secondGloriousMysteryDescription.m4a",
         "variant": "primary"
       },
       "en_mysteries_glorious_secondGloriousMysteryTitle": {
@@ -6653,19 +6633,9 @@
         "path": "/assets/audios/en/mysteries/glorious/secondGloriousMysteryTitle.m4a",
         "variant": "primary"
       },
-      "en_mysteries_glorious_thirdGloriousMysteryDescription": {
-        "language": "en",
-        "path": "/assets/audios/en/mysteries/glorious/thirdGloriousMysteryDescription.m4a",
-        "variant": "primary"
-      },
       "en_mysteries_glorious_thirdGloriousMysteryTitle": {
         "language": "en",
         "path": "/assets/audios/en/mysteries/glorious/thirdGloriousMysteryTitle.m4a",
-        "variant": "primary"
-      },
-      "en_mysteries_joyful_fifthJoyfulMysteryDescription": {
-        "language": "en",
-        "path": "/assets/audios/en/mysteries/joyful/fifthJoyfulMysteryDescription.m4a",
         "variant": "primary"
       },
       "en_mysteries_joyful_fifthJoyfulMysteryTitle": {
@@ -6673,19 +6643,9 @@
         "path": "/assets/audios/en/mysteries/joyful/fifthJoyfulMysteryTitle.m4a",
         "variant": "primary"
       },
-      "en_mysteries_joyful_firstJoyfulMysteryDescription": {
-        "language": "en",
-        "path": "/assets/audios/en/mysteries/joyful/firstJoyfulMysteryDescription.m4a",
-        "variant": "primary"
-      },
       "en_mysteries_joyful_firstJoyfulMysteryTitle": {
         "language": "en",
         "path": "/assets/audios/en/mysteries/joyful/firstJoyfulMysteryTitle.m4a",
-        "variant": "primary"
-      },
-      "en_mysteries_joyful_fourthJoyfulMysteryDescription": {
-        "language": "en",
-        "path": "/assets/audios/en/mysteries/joyful/fourthJoyfulMysteryDescription.m4a",
         "variant": "primary"
       },
       "en_mysteries_joyful_fourthJoyfulMysteryTitle": {
@@ -6693,19 +6653,9 @@
         "path": "/assets/audios/en/mysteries/joyful/fourthJoyfulMysteryTitle.m4a",
         "variant": "primary"
       },
-      "en_mysteries_joyful_secondJoyfulMysteryDescription": {
-        "language": "en",
-        "path": "/assets/audios/en/mysteries/joyful/secondJoyfulMysteryDescription.m4a",
-        "variant": "primary"
-      },
       "en_mysteries_joyful_secondJoyfulMysteryTitle": {
         "language": "en",
         "path": "/assets/audios/en/mysteries/joyful/secondJoyfulMysteryTitle.m4a",
-        "variant": "primary"
-      },
-      "en_mysteries_joyful_thirdJoyfulMysteryDescription": {
-        "language": "en",
-        "path": "/assets/audios/en/mysteries/joyful/thirdJoyfulMysteryDescription.m4a",
         "variant": "primary"
       },
       "en_mysteries_joyful_thirdJoyfulMysteryTitle": {
@@ -6713,19 +6663,9 @@
         "path": "/assets/audios/en/mysteries/joyful/thirdJoyfulMysteryTitle.m4a",
         "variant": "primary"
       },
-      "en_mysteries_luminous_fifthLuminousMysteryDescription": {
-        "language": "en",
-        "path": "/assets/audios/en/mysteries/luminous/fifthLuminousMysteryDescription.m4a",
-        "variant": "primary"
-      },
       "en_mysteries_luminous_fifthLuminousMysteryTitle": {
         "language": "en",
         "path": "/assets/audios/en/mysteries/luminous/fifthLuminousMysteryTitle.m4a",
-        "variant": "primary"
-      },
-      "en_mysteries_luminous_firstLuminousMysteryDescription": {
-        "language": "en",
-        "path": "/assets/audios/en/mysteries/luminous/firstLuminousMysteryDescription.m4a",
         "variant": "primary"
       },
       "en_mysteries_luminous_firstLuminousMysteryTitle": {
@@ -6733,19 +6673,9 @@
         "path": "/assets/audios/en/mysteries/luminous/firstLuminousMysteryTitle.m4a",
         "variant": "primary"
       },
-      "en_mysteries_luminous_fourthLuminousMysteryDescription": {
-        "language": "en",
-        "path": "/assets/audios/en/mysteries/luminous/fourthLuminousMysteryDescription.m4a",
-        "variant": "primary"
-      },
       "en_mysteries_luminous_fourthLuminousMysteryTitle": {
         "language": "en",
         "path": "/assets/audios/en/mysteries/luminous/fourthLuminousMysteryTitle.m4a",
-        "variant": "primary"
-      },
-      "en_mysteries_luminous_secondLuminousMysteryDescription": {
-        "language": "en",
-        "path": "/assets/audios/en/mysteries/luminous/secondLuminousMysteryDescription.m4a",
         "variant": "primary"
       },
       "en_mysteries_luminous_secondLuminousMysteryTitle": {
@@ -6753,19 +6683,9 @@
         "path": "/assets/audios/en/mysteries/luminous/secondLuminousMysteryTitle.m4a",
         "variant": "primary"
       },
-      "en_mysteries_luminous_thirdLuminousMysteryDescription": {
-        "language": "en",
-        "path": "/assets/audios/en/mysteries/luminous/thirdLuminousMysteryDescription.m4a",
-        "variant": "primary"
-      },
       "en_mysteries_luminous_thirdLuminousMysteryTitle": {
         "language": "en",
         "path": "/assets/audios/en/mysteries/luminous/thirdLuminousMysteryTitle.m4a",
-        "variant": "primary"
-      },
-      "en_mysteries_sorrowful_fifthSorrowfulMysteryDescription": {
-        "language": "en",
-        "path": "/assets/audios/en/mysteries/sorrowful/fifthSorrowfulMysteryDescription.m4a",
         "variant": "primary"
       },
       "en_mysteries_sorrowful_fifthSorrowfulMysteryTitle": {
@@ -6773,19 +6693,9 @@
         "path": "/assets/audios/en/mysteries/sorrowful/fifthSorrowfulMysteryTitle.m4a",
         "variant": "primary"
       },
-      "en_mysteries_sorrowful_firstSorrowfulMysteryDescription": {
-        "language": "en",
-        "path": "/assets/audios/en/mysteries/sorrowful/firstSorrowfulMysteryDescription.m4a",
-        "variant": "primary"
-      },
       "en_mysteries_sorrowful_firstSorrowfulMysteryTitle": {
         "language": "en",
         "path": "/assets/audios/en/mysteries/sorrowful/firstSorrowfulMysteryTitle.m4a",
-        "variant": "primary"
-      },
-      "en_mysteries_sorrowful_fourthSorrowfulMysteryDescription": {
-        "language": "en",
-        "path": "/assets/audios/en/mysteries/sorrowful/fourthSorrowfulMysteryDescription.m4a",
         "variant": "primary"
       },
       "en_mysteries_sorrowful_fourthSorrowfulMysteryTitle": {
@@ -6793,19 +6703,9 @@
         "path": "/assets/audios/en/mysteries/sorrowful/fourthSorrowfulMysteryTitle.m4a",
         "variant": "primary"
       },
-      "en_mysteries_sorrowful_secondSorrowfulMysteryDescription": {
-        "language": "en",
-        "path": "/assets/audios/en/mysteries/sorrowful/secondSorrowfulMysteryDescription.m4a",
-        "variant": "primary"
-      },
       "en_mysteries_sorrowful_secondSorrowfulMysteryTitle": {
         "language": "en",
         "path": "/assets/audios/en/mysteries/sorrowful/secondSorrowfulMysteryTitle.m4a",
-        "variant": "primary"
-      },
-      "en_mysteries_sorrowful_thirdSorrowfulMysteryDescription": {
-        "language": "en",
-        "path": "/assets/audios/en/mysteries/sorrowful/thirdSorrowfulMysteryDescription.m4a",
         "variant": "primary"
       },
       "en_mysteries_sorrowful_thirdSorrowfulMysteryTitle": {

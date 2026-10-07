@@ -995,7 +995,7 @@ export const rosaryTokens = {
     canvasLight: "#0E2D44",
     card: "rgba(15, 42, 62, 0.94)",
     cardInset: "#0B263A",
-    immersiveCard: "rgba(3, 13, 24, 0.75)",
+    immersiveCard: "rgba(3, 13, 24, 0.50)",
     immersiveControl: "rgba(3, 13, 24, 0.78)",
     immersiveGold: "#FFE09A",
     immersivePrimary: "#FFFDF8",
