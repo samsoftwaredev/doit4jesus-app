@@ -1,4 +1,6 @@
 import Feather from "@expo/vector-icons/Feather";
+import { Image, type ImageSource } from "expo-image";
+import { useCallback, useEffect, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
@@ -7,14 +9,25 @@ import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles"
 import { theme } from "@/theme/tokens";
 
 export type AchievementAlertProps = {
+  badgeArtwork?: ImageSource | number | null;
   message: string;
   onDismiss: () => void;
 };
 
 /** Renders a dismissible, celebratory achievement message with a non-interactive confetti burst. */
-export function AchievementAlert({ message, onDismiss }: AchievementAlertProps) {
+export function AchievementAlert({ badgeArtwork = null, message, onDismiss }: AchievementAlertProps) {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
+  const [hasArtworkError, setHasArtworkError] = useState(false);
+
+  useEffect(() => {
+    setHasArtworkError(false);
+  }, [badgeArtwork]);
+
+  /** Hides an unavailable badge image so the stable award icon remains visible. */
+  const handleArtworkError = useCallback(() => {
+    setHasArtworkError(true);
+  }, []);
 
   return (
     <View
@@ -25,7 +38,23 @@ export function AchievementAlert({ message, onDismiss }: AchievementAlertProps) 
     >
       <View style={styles.alert}>
         <View accessible={false} style={styles.icon}>
-          <Feather color={theme.rosary.colors.goldBright} name="award" size={theme.sizes.iconMedium} />
+          {badgeArtwork && !hasArtworkError ? (
+            <Image
+              accessible={false}
+              contentFit="contain"
+              onError={handleArtworkError}
+              source={badgeArtwork}
+              style={styles.badgeArtwork}
+              testID="achievement-badge-artwork"
+            />
+          ) : (
+            <Feather
+              color={theme.rosary.colors.goldBright}
+              name="award"
+              size={theme.sizes.iconMedium}
+              testID="achievement-icon-fallback"
+            />
+          )}
         </View>
         <Text style={styles.message}>{message}</Text>
         <Pressable
@@ -55,6 +84,7 @@ const styleSheet = createThemedStyles((theme) => ({
     overflow: "hidden",
     paddingLeft: theme.spacing[3],
   },
+  badgeArtwork: { height: "100%", width: "100%" },
   container: {
     elevation: 4,
     position: "relative",

@@ -19,6 +19,7 @@ type DailyRosaryCardProps = {
   onExpired: () => void;
   onPrayRosary: () => void;
   onRetry: () => void;
+  onViewGarden: () => void;
   reminder: RosaryReminderViewModel | null;
 };
 
@@ -44,6 +45,7 @@ export function DailyRosaryCard({
   onExpired,
   onPrayRosary,
   onRetry,
+  onViewGarden,
   reminder,
 }: DailyRosaryCardProps) {
   const { t } = useTranslation();
@@ -125,7 +127,7 @@ export function DailyRosaryCard({
           </Text>
         )}
 
-        <CardAction onPress={onPrayRosary} />
+        <CardAction onPrayRosary={onPrayRosary} onViewGarden={onViewGarden} />
       </View>
       <View style={styles.divider} />
       <GardenQuoteCard />
@@ -133,20 +135,35 @@ export function DailyRosaryCard({
   );
 }
 
-/** Opens the Rosary flow from every reminder state. */
-function CardAction({ onPress }: { onPress: () => void }) {
+/** Renders the primary Rosary action and the secondary route to the user's Garden. */
+function CardAction({ onPrayRosary, onViewGarden }: { onPrayRosary: () => void; onViewGarden: () => void }) {
   const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   return (
-    <Pressable
-      accessibilityLabel={t("dashboard.dailyRosary.prayLabel")}
-      accessibilityRole="button"
-      onPress={onPress}
-      style={({ pressed }) => [styles.action, pressed && styles.pressed]}
-    >
-      <Text style={styles.actionText}>{t("dashboard.dailyRosary.pray")}</Text>
-      <Feather accessible={false} color={theme.colors.text.inverse} name="chevron-right" size={theme.sizes.iconSmall} />
-    </Pressable>
+    <View style={styles.actions}>
+      <Pressable
+        accessibilityLabel={t("dashboard.dailyRosary.prayLabel")}
+        accessibilityRole="button"
+        onPress={onPrayRosary}
+        style={({ pressed }) => [styles.action, pressed && styles.pressed]}
+      >
+        <Text style={styles.actionText}>{t("dashboard.dailyRosary.pray")}</Text>
+        <Feather
+          accessible={false}
+          color={theme.colors.text.inverse}
+          name="chevron-right"
+          size={theme.sizes.iconSmall}
+        />
+      </Pressable>
+      <Pressable
+        accessibilityLabel={t("dashboard.dailyRosary.viewGarden")}
+        accessibilityRole="button"
+        onPress={onViewGarden}
+        style={({ pressed }) => [styles.gardenAction, pressed && styles.pressed]}
+      >
+        <Text style={styles.gardenActionText}>{t("dashboard.dailyRosary.viewGarden")}</Text>
+      </Pressable>
+    </View>
   );
 }
 
@@ -293,6 +310,7 @@ const styleSheet = createThemedStyles((theme) => ({
     paddingHorizontal: theme.spacing[3],
   },
   actionText: { ...theme.typography.button, color: theme.colors.text.inverse, letterSpacing: theme.letterSpacing.wide },
+  actions: { alignSelf: "stretch", gap: theme.spacing[1] },
   pressed: { opacity: theme.opacity.pressed },
   completedRow: { alignItems: "center", flexDirection: "row" },
   completedCopy: { flex: 1, marginLeft: theme.spacing[3] },
@@ -304,6 +322,14 @@ const styleSheet = createThemedStyles((theme) => ({
     justifyContent: "center",
     width: theme.sizes.touchTarget,
   },
+  gardenAction: {
+    alignItems: "center",
+    alignSelf: "stretch",
+    justifyContent: "center",
+    minHeight: theme.sizes.touchTarget,
+    paddingHorizontal: theme.spacing[3],
+  },
+  gardenActionText: { ...theme.typography.button, color: theme.colors.gold.pale, textAlign: "center" },
   retry: { alignSelf: "flex-start", justifyContent: "center", minHeight: theme.sizes.touchTarget },
   retryText: { ...theme.typography.button, color: theme.colors.gold.pale },
   skeleton: { justifyContent: "center", minHeight: theme.spacing[12] },

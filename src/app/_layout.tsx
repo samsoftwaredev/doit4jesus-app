@@ -9,7 +9,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { Button } from "@/components/ui";
 import { AuthProvider, useAuth } from "@/features/auth";
-import { AchievementProvider, AchievementToastHost } from "@/features/achievements";
+import { AchievementProvider, AchievementToastHost, BadgeAwardSubscription } from "@/features/achievements";
 import { getProfileAccessState, ProfileProvider, useCurrentProfile } from "@/features/profile";
 import { logDevelopmentError } from "@/lib/development-logger";
 import { AccountLanguagePreferenceSync } from "@/localization/AccountLanguagePreferenceSync";
@@ -70,6 +70,7 @@ function ThemedRoot() {
         <ThemeProvider value={navigationTheme}>
           <StatusBar style={getStatusBarStyle(colorScheme)} />
           <AuthProvider>
+            <BadgeAwardSubscription />
             <ProfileProvider>
               <AccountLanguagePreferenceSync>
                 <RootNavigator />

@@ -30,4 +30,23 @@ describe("AchievementAlert", () => {
 
     expect(screen.getByText("Crece en la fe. Cambia el mundo por Jesús.")).toBeTruthy();
   });
+
+  it("shows badge artwork and restores the award icon if the image cannot load", async () => {
+    await render(
+      <AppLanguageProvider>
+        <AchievementAlert
+          badgeArtwork={{ uri: "https://example.com/first-rosary.png" }}
+          message="You earned First Rosary!"
+          onDismiss={jest.fn()}
+        />
+      </AppLanguageProvider>,
+    );
+
+    expect(screen.getByTestId("achievement-badge-artwork")).toBeTruthy();
+
+    await fireEvent(screen.getByTestId("achievement-badge-artwork"), "error", { nativeEvent: {} });
+
+    expect(screen.queryByTestId("achievement-badge-artwork")).toBeNull();
+    expect(screen.getByTestId("achievement-icon-fallback")).toBeTruthy();
+  });
 });

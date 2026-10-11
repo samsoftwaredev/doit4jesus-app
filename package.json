@@ -71,7 +71,8 @@
     "fe-ts": "supabase gen types typescript --project-id sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH > src/interfaces/database.ts",
     "db-webhook-ts": "supabase gen types typescript --project-id sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH > supabase/functions/database-webhook/types.ts",
     "resend-ts": "supabase gen types typescript --project-id sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH > supabase/functions/resend/types.ts",
-    "db-ts": "npm run fe-ts && npm run resend-ts && npm run db-webhook-ts"
+    "db-ts": "npm run fe-ts && npm run resend-ts && npm run db-webhook-ts",
+    "supabase:types": "supabase gen types typescript --local --schema app,competition,prayer,api > supabase/types.ts"
   },
   "jest": {
     "preset": "jest-expo",

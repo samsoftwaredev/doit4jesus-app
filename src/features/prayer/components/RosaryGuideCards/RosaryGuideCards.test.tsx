@@ -12,17 +12,17 @@ describe("RosaryGuideCards", () => {
   it("starts collapsed and reveals each Rosary guide card independently", async () => {
     await render(<RosaryGuideCards />);
 
-    const historyToggle = screen.getByRole("button", { name: "Expand A short history" });
+    const historyToggle = screen.getByRole("button", { name: "Expand History of the Rosary" });
     const promisesToggle = screen.getByRole("button", { name: "Expand What it promises" });
 
     expect(historyToggle.props.accessibilityState).toEqual({ expanded: false });
     expect(promisesToggle.props.accessibilityState).toEqual({ expanded: false });
-    expect(screen.queryByText(/^Our fathers began long ago\./)).toBeNull();
+    expect(screen.queryByText(/^The old monks prayed the 150 Psalms/)).toBeNull();
     expect(screen.queryByText(/^The promises come down to us/)).toBeNull();
 
     await fireEvent.press(historyToggle);
 
-    expect(screen.getByText(/^Our fathers began long ago\./)).toBeTruthy();
+    expect(screen.getByText(/^The old monks prayed the 150 Psalms/)).toBeTruthy();
     expect(historyToggle.props.accessibilityState).toEqual({ expanded: true });
     expect(promisesToggle.props.accessibilityState).toEqual({ expanded: false });
 
@@ -37,10 +37,10 @@ describe("RosaryGuideCards", () => {
     await i18n.changeLanguage("es");
     await render(<RosaryGuideCards />);
 
-    const historyToggle = screen.getByRole("button", { name: "Expandir Una breve historia" });
+    const historyToggle = screen.getByRole("button", { name: "Expandir Historia del Rosario" });
     await fireEvent.press(historyToggle);
 
-    expect(screen.getByText(/^Nuestros padres comenzaron hace mucho tiempo\./)).toBeTruthy();
+    expect(screen.getByText(/^Los antiguos monjes rezaban los 150 Salmos/)).toBeTruthy();
     expect(historyToggle.props.accessibilityState).toEqual({ expanded: true });
   });
 });

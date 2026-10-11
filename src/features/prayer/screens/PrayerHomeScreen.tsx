@@ -1,5 +1,5 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { useFocusEffect, useRouter } from "expo-router";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { LayoutChangeEvent, NativeScrollEvent, NativeSyntheticEvent } from "react-native";
@@ -52,6 +52,11 @@ function localIsoDateToDate(localIsoDate: string) {
   return new Date(year, month - 1, day, 12);
 }
 
+/** Extracts a single search-parameter value when Expo Router supplies a repeated parameter array. */
+function firstSearchParameter(value: string | string[] | undefined) {
+  return Array.isArray(value) ? value[0] : value;
+}
+
 /** Appends newly fetched intentions without duplicating cards when pages overlap. */
 function appendUniqueIntentions(
   currentIntentions: ApprovedPrayerIntention[],
@@ -67,6 +72,7 @@ export function PrayerScreen() {
   const { t } = useTranslation();
   const { language, locale } = useAppLanguage();
   const { rosaryArtStyle } = useRosaryArtStylePreference();
+  const { scrollTo: rawScrollTarget } = useLocalSearchParams<{ scrollTo?: string | string[] }>();
   const router = useRouter();
   const { contentWidth, gutter, isDesktop, isLargeText, isNarrowPhone, isTablet, width } = useResponsiveLayout();
   const [intentions, setIntentions] = useState<ApprovedPrayerIntention[]>([]);
@@ -86,13 +92,16 @@ export function PrayerScreen() {
   const [nextIntentionsOffset, setNextIntentionsOffset] = useState<number | null>(null);
   const [initialScreenData, setInitialScreenData] = useState<ScreenDataResponse>();
   const [isInitialScreenLoadSettled, setIsInitialScreenLoadSettled] = useState(false);
+  const [gardenOffsetY, setGardenOffsetY] = useState<number | null>(null);
   const isLoadingMoreIntentionsRef = useRef(false);
+  const hasScrolledToGardenRef = useRef(false);
   const globalStatsLayoutRef = useRef<{ height: number; y: number } | null>(null);
   const globalStatsRequestIdRef = useRef(0);
   const hasRequestedGlobalStatsRef = useRef(false);
   const scrollViewportRef = useRef({ height: 0, offsetY: 0 });
   const weeklyLeaderboardRequestIdRef = useRef(0);
   const yearlyLeaderboardRequestIdRef = useRef(0);
+  const scrollViewRef = useRef<ScrollView>(null);
   const currentLocalDate = useCurrentLocalDate();
   const today = useMemo(() => localIsoDateToDate(currentLocalDate), [currentLocalDate]);
   const todayMysteryType = getTodayRosaryMysteryType(today);
@@ -108,6 +117,23 @@ export function PrayerScreen() {
   const mysteryCardWidth = Math.max(
     theme.sizes.touchTarget * 3,
     (usableWidth - columnGap * (mysteryColumns - 1)) / mysteryColumns,
+  );
+  const scrollTarget = firstSearchParameter(rawScrollTarget);
+
+  useEffect(
+    /** Scrolls a Home-requested Prayer route to the Garden after the section has been measured. */
+    function scrollToRequestedGarden() {
+      if (scrollTarget !== "garden") {
+        hasScrolledToGardenRef.current = false;
+        return;
+      }
+      if (gardenOffsetY === null || hasScrolledToGardenRef.current || !scrollViewRef.current) return;
+
+      hasScrolledToGardenRef.current = true;
+      scrollViewRef.current.scrollTo({ animated: true, y: gardenOffsetY });
+      router.setParams({ scrollTo: undefined });
+    },
+    [gardenOffsetY, router, scrollTarget],
   );
 
   /** Loads Prayer's first visible sections in a single authenticated request. */
@@ -219,6 +245,11 @@ export function PrayerScreen() {
     },
     [loadGlobalStatsIfVisible],
   );
+
+  /** Records the Garden's scroll-view offset so a Home deep link can arrive at the correct section. */
+  const handleGardenLayout = useCallback((event: LayoutChangeEvent) => {
+    setGardenOffsetY(event.nativeEvent.layout.y);
+  }, []);
 
   /** Retries the already-revealed global statistics request after a failure. */
   const retryGlobalStats = useCallback(() => {
@@ -367,6 +398,7 @@ export function PrayerScreen() {
           contentContainerStyle={[styles.content, { maxWidth: containerMaxWidth, paddingHorizontal: gutter }]}
           onLayout={handleScrollLayout}
           onScroll={handleScroll}
+          ref={scrollViewRef}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
           style={styles.atmosphereContent}
@@ -384,7 +416,7 @@ export function PrayerScreen() {
           <View testID="prayer-section-rosary-guide">
             <RosaryGuideCards />
           </View>
-          <View testID="prayer-section-garden">
+          <View onLayout={handleGardenLayout} testID="prayer-section-garden">
             <RosaryGardenSection initialData={initialScreenData} onPrayToday={prayToday} />
           </View>
           <View testID="prayer-section-global-leaderboard">

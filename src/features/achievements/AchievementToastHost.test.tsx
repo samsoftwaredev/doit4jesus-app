@@ -13,8 +13,32 @@ function AchievementTrigger() {
   const { queueAchievement } = useAchievement();
 
   return (
-    <Pressable accessibilityRole="button" onPress={() => queueAchievement("onboarding-complete")}>
+    <Pressable accessibilityRole="button" onPress={() => queueAchievement({ type: "onboarding-complete" })}>
       <Text>Show achievement</Text>
+    </Pressable>
+  );
+}
+
+/** Queues a resolved badge award for the global toast host. */
+function BadgeAchievementTrigger() {
+  const { queueAchievement } = useAchievement();
+
+  return (
+    <Pressable
+      accessibilityRole="button"
+      onPress={() =>
+        queueAchievement({
+          type: "badge-award",
+          badge: {
+            code: "FIRST_ROSARY",
+            iconUrl: "https://example.com/first-rosary.png",
+            id: "badge-1",
+            name: "First Rosary",
+          },
+        })
+      }
+    >
+      <Text>Show badge award</Text>
     </Pressable>
   );
 }
@@ -31,6 +55,7 @@ function renderToastHost() {
       >
         <AchievementProvider>
           <AchievementTrigger />
+          <BadgeAchievementTrigger />
           <AchievementToastHost />
         </AchievementProvider>
       </SafeAreaProvider>
@@ -83,8 +108,16 @@ describe("AchievementToastHost", () => {
     await act(async () => i18n.changeLanguage("es"));
 
     await fireEvent.press(screen.getByRole("button", { name: "Show achievement" }));
-    expect(
-      await screen.findByText("¡Cuenta creada! Recuerda buscar primero su Reino y todo lo demás vendrá por añadidura."),
-    ).toBeTruthy();
+    expect(await screen.findByText("¡Felicidades! 🎉 Tu cuenta está lista.")).toBeTruthy();
+  });
+
+  it("announces a localized badge award with its resolved artwork", async () => {
+    await renderToastHost();
+    await act(async () => i18n.changeLanguage("es"));
+
+    await fireEvent.press(screen.getByRole("button", { name: "Show badge award" }));
+
+    expect(await screen.findByText("¡Obtuviste First Rosary!")).toBeTruthy();
+    expect(screen.getByTestId("achievement-badge-artwork")).toBeTruthy();
   });
 });

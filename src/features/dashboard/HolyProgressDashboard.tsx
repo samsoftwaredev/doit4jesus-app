@@ -219,6 +219,11 @@ export function HolyProgressDashboard({ initialData }: { initialData?: ScreenDat
   /** Closes the activity-points history and returns the user to the Home dashboard. */
   const closeActivityPoints = useCallback(() => setIsActivityPointsVisible(false), []);
 
+  /** Opens the Prayer tab and positions its scroll view at the user's Rosary Garden. */
+  const openRosaryGarden = useCallback(() => {
+    router.navigate({ pathname: "/prayer", params: { scrollTo: "garden" } });
+  }, [router]);
+
   const useCardColumns = isTablet && contentWidth >= 700 && !isLargeText;
 
   return (
@@ -239,6 +244,7 @@ export function HolyProgressDashboard({ initialData }: { initialData?: ScreenDat
             onExpired={() => void loadReminder()}
             onPrayRosary={() => router.push({ pathname: "/rosary", params: { source: "home-dashboard" } })}
             onRetry={() => void loadReminder()}
+            onViewGarden={openRosaryGarden}
             reminder={reminder}
           />
         )}

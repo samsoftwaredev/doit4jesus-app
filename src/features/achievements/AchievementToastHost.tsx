@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { AchievementAlert } from "@/components/ui";
+import { resolveBadgeArtwork } from "@/features/progress/badge-assets";
 import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
@@ -20,6 +21,13 @@ export function AchievementToastHost() {
   const insets = useSafeAreaInsets();
   const { achievement, dismissAchievement } = useAchievement();
 
+  const message =
+    achievement?.type === "badge-award"
+      ? t("achievements.badgeAward", { name: achievement.badge.name })
+      : t("achievements.onboardingComplete");
+  const badgeArtwork =
+    achievement?.type === "badge-award" ? resolveBadgeArtwork(achievement.badge.code, achievement.badge.iconUrl) : null;
+
   useEffect(() => {
     if (!achievement) return;
 
@@ -35,7 +43,7 @@ export function AchievementToastHost() {
         style={[styles.content, { paddingHorizontal: gutter, paddingTop: insets.top + theme.spacing[2] }]}
         testID="achievement-toast-content"
       >
-        <AchievementAlert message={t("achievements.onboardingComplete")} onDismiss={dismissAchievement} />
+        <AchievementAlert badgeArtwork={badgeArtwork} message={message} onDismiss={dismissAchievement} />
       </View>
     </View>
   );

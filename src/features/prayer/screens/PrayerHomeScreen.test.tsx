@@ -1,16 +1,20 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react-native";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
 
 import { i18n } from "@/localization";
 
 import { PrayerScreen } from "./PrayerHomeScreen";
 
 const mockPush = jest.fn();
+const mockSetParams = jest.fn();
+const mockPrayerScrollTo = jest.fn();
 const mockGetGlobalRosaryStats = jest.fn();
 const mockGetWeeklyGlobalLeaderboard = jest.fn();
 const mockGetYearlyGlobalLeaderboard = jest.fn();
 let mockCurrentLocalDate = "2026-08-24";
 let mockFocusEffect: (() => void | (() => void)) | undefined;
+let mockSearchParams: { scrollTo?: string | string[] } = {};
+let scrollToSpy: jest.SpyInstance;
 
 function MockPrayersByOthers({
   intentions,
@@ -45,7 +49,8 @@ jest.mock("expo-router", () => ({
     mockFocusEffect = effect;
     React.useEffect(effect, [effect]);
   },
-  useRouter: () => ({ push: mockPush }),
+  useLocalSearchParams: () => mockSearchParams,
+  useRouter: () => ({ push: mockPush, setParams: mockSetParams }),
 }));
 
 jest.mock("@/features/dashboard/dashboard.api", () => ({
@@ -142,7 +147,9 @@ const secondIntention = {
 describe("PrayerScreen", () => {
   beforeEach(async () => {
     jest.clearAllMocks();
+    scrollToSpy = jest.spyOn(ScrollView.prototype, "scrollTo").mockImplementation(mockPrayerScrollTo);
     mockCurrentLocalDate = "2026-08-24";
+    mockSearchParams = {};
     mockGetGlobalRosaryStats.mockResolvedValue({ currentUserContribution: null, totalRosariesPrayed: 26 });
     mockGetWeeklyGlobalLeaderboard.mockResolvedValue([
       { avatarUrl: null, displayName: "St. Michael", rank: 1, rosaries: 245 },
@@ -151,6 +158,10 @@ describe("PrayerScreen", () => {
       { avatarUrl: null, displayName: "St. Joseph", rank: 1, rosaries: 845 },
     ]);
     await i18n.changeLanguage("en");
+  });
+
+  afterEach(() => {
+    scrollToSpy.mockRestore();
   });
 
   it("updates today's weekday, mystery, and prayer destination when the local date changes", async () => {
@@ -210,6 +221,23 @@ describe("PrayerScreen", () => {
       pathname: "/rosary",
       params: { isDecade: "false", mysteryType: expect.any(String), source: "today" },
     });
+  });
+
+  it("scrolls directly to the Rosary Garden when the tab receives its Home navigation target", async () => {
+    mockSearchParams = { scrollTo: "garden" };
+    fetchApprovedPrayerIntentions.mockResolvedValue({
+      data: [],
+      meta: { hasMore: false, limit: 10, nextOffset: null, offset: 0 },
+    });
+
+    await render(<PrayerScreen />);
+
+    await fireEvent(screen.getByTestId("prayer-section-garden"), "layout", {
+      nativeEvent: { layout: { height: 400, y: 520 } },
+    });
+
+    await waitFor(() => expect(mockPrayerScrollTo).toHaveBeenCalledWith({ animated: true, y: 520 }));
+    expect(mockSetParams).toHaveBeenCalledWith({ scrollTo: undefined });
   });
 
   it("loads global Rosary statistics once when the final card enters the viewport", async () => {

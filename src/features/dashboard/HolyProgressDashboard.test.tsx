@@ -5,6 +5,7 @@ import { notifyRosaryCompletionRecorded } from "@/features/prayer/rosary/rosary-
 import { HolyProgressDashboard } from "./HolyProgressDashboard";
 
 const mockPush = jest.fn();
+const mockNavigate = jest.fn();
 const mockFetchDashboardProgress = jest.fn();
 const mockFetchLevels = jest.fn();
 const mockFetchRecentRosaryActivities = jest.fn();
@@ -31,7 +32,7 @@ jest.mock("expo-router", () => {
   const React = jest.requireActual("react") as typeof import("react");
   return {
     useFocusEffect: (effect: () => void | (() => void)) => React.useEffect(effect, [effect]),
-    useRouter: () => ({ push: mockPush }),
+    useRouter: () => ({ navigate: mockNavigate, push: mockPush }),
   };
 });
 
@@ -173,6 +174,15 @@ describe("HolyProgressDashboard", () => {
 
     expect(mockPush).toHaveBeenCalledWith({ pathname: "/rosary", params: { source: "home-dashboard" } });
     expect(screen.queryByLabelText("View leaderboard")).toBeNull();
+  });
+
+  it("opens the Prayer tab at the Rosary Garden from Home", async () => {
+    await render(<HolyProgressDashboard />);
+    await screen.findByRole("button", { name: "View Garden" });
+
+    await fireEvent.press(screen.getByRole("button", { name: "View Garden" }));
+
+    expect(mockNavigate).toHaveBeenCalledWith({ pathname: "/prayer", params: { scrollTo: "garden" } });
   });
 
   it("renders progress, earned badges, and daily liturgy directly in the dashboard composition", async () => {

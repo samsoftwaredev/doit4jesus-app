@@ -51,6 +51,7 @@ function renderCard(overrides: Partial<React.ComponentProps<typeof DailyRosaryCa
       onExpired={jest.fn()}
       onPrayRosary={jest.fn()}
       onRetry={jest.fn()}
+      onViewGarden={jest.fn()}
       reminder={reminder()}
       {...overrides}
     />,
@@ -90,6 +91,7 @@ describe("DailyRosaryCard", () => {
     });
     expect(screen.getByLabelText("Devotional quote from Our Lady of Fatima")).toBeTruthy();
     expect(screen.getByRole("button", { name: "Pray Rosary" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "View Garden" })).toBeEnabled();
 
     expect(StyleSheet.flatten(screen.getByTestId("daily-rosary-habit-card").props.style).borderWidth).toBeGreaterThan(
       0,
@@ -104,6 +106,15 @@ describe("DailyRosaryCard", () => {
     });
   });
 
+  it("opens the Rosary Garden from the secondary Home action", async () => {
+    const onViewGarden = jest.fn();
+    await renderCard({ onViewGarden });
+
+    await fireEvent.press(screen.getByRole("button", { name: "View Garden" }));
+
+    expect(onViewGarden).toHaveBeenCalledTimes(1);
+  });
+
   it("promotes the countdown once at three hours and keeps one urgent treatment", async () => {
     const rendered = await renderCard({ reminder: reminder({ seconds: 3 * 60 * 60 + 1 }) });
     const subtleStyle = StyleSheet.flatten(screen.getByTestId("rosary-countdown").props.style);
@@ -116,6 +127,7 @@ describe("DailyRosaryCard", () => {
         onExpired={jest.fn()}
         onPrayRosary={jest.fn()}
         onRetry={jest.fn()}
+        onViewGarden={jest.fn()}
         reminder={reminder({ seconds: 3 * 60 * 60 })}
       />,
     );
@@ -130,6 +142,7 @@ describe("DailyRosaryCard", () => {
           onExpired={jest.fn()}
           onPrayRosary={jest.fn()}
           onRetry={jest.fn()}
+          onViewGarden={jest.fn()}
           reminder={reminder({ seconds })}
         />,
       );
@@ -171,6 +184,7 @@ describe("DailyRosaryCard", () => {
         onExpired={jest.fn()}
         onPrayRosary={onPrayRosary}
         onRetry={jest.fn()}
+        onViewGarden={jest.fn()}
         reminder={null}
       />,
     );
@@ -185,6 +199,7 @@ describe("DailyRosaryCard", () => {
         onExpired={jest.fn()}
         onPrayRosary={onPrayRosary}
         onRetry={jest.fn()}
+        onViewGarden={jest.fn()}
         reminder={null}
       />,
     );
@@ -199,6 +214,7 @@ describe("DailyRosaryCard", () => {
         onExpired={jest.fn()}
         onPrayRosary={onPrayRosary}
         onRetry={jest.fn()}
+        onViewGarden={jest.fn()}
         reminder={reminder({ seconds: 2 * 60 * 60, status: "reset" })}
       />,
     );
@@ -213,6 +229,7 @@ describe("DailyRosaryCard", () => {
         onExpired={jest.fn()}
         onPrayRosary={onPrayRosary}
         onRetry={jest.fn()}
+        onViewGarden={jest.fn()}
         reminder={{ ...reminder({ status: "reset" }), deadlineAt: null }}
       />,
     );
@@ -233,6 +250,7 @@ describe("DailyRosaryCard", () => {
       screen.getByLabelText("4 horas, 0 minutos, 0 segundos hasta que se reinicie la racha del Rosario"),
     ).toBeTruthy();
     expect(screen.getByRole("button", { name: "Rezar el Rosario" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "Ver jardín" })).toBeEnabled();
   });
 
   it("keeps the complete countdown explanation available on narrow screens with large text", async () => {

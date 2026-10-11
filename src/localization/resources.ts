@@ -63,6 +63,7 @@ export const resources = {
         profileErrorCopy: "Check your connection and try again. Your dashboard remains protected.",
       },
       achievements: {
+        badgeAward: "You earned {{name}}!",
         onboardingComplete: "Congrats! 🎉 Your account is ready.",
       },
       pages: {
@@ -315,7 +316,7 @@ export const resources = {
           loadingTime: "Loading time",
           minutes: "MINUTES",
           plantStep: "Plant a flower",
-          pray: "PRAY ROSARY & PLAN A ROSE",
+          pray: "PRAY ROSARY & PLANT A ROSE",
           prayLabel: "Pray Rosary",
           prayStep: "Pray today",
           purposeLabel: "How daily Rosary prayer grows your garden and streak",
@@ -331,6 +332,7 @@ export const resources = {
           updating: "Updating today’s Rosary status…",
           updatingLabel: "Updating today's Rosary status",
           updatingTime: "Updating time",
+          viewGarden: "View Garden",
           waiting: "Today’s Rosary is waiting for you.",
         },
         journey: {
@@ -1284,6 +1286,7 @@ export const resources = {
         profileErrorCopy: "Comprueba tu conexión e inténtalo de nuevo. Tu panel permanece protegido.",
       },
       achievements: {
+        badgeAward: "¡Obtuviste {{name}}!",
         onboardingComplete: "¡Felicidades! 🎉 Tu cuenta está lista.",
       },
       pages: {
@@ -1554,6 +1557,7 @@ export const resources = {
           updating: "Actualizando el estado del Rosario de hoy…",
           updatingLabel: "Actualizando el estado del Rosario de hoy",
           updatingTime: "Actualizando la hora",
+          viewGarden: "Ver jardín",
           waiting: "El Rosario de hoy te espera.",
         },
         journey: {

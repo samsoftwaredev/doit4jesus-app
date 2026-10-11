@@ -358,7 +358,7 @@ export function ProfileSetupScreen() {
         setError(t("onboarding.errors.incomplete"));
         return;
       }
-      queueAchievement("onboarding-complete");
+      queueAchievement({ type: "onboarding-complete" });
       router.replace("/");
     } catch (error) {
       logDevelopmentError("completing onboarding", error);

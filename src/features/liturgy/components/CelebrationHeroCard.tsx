@@ -1,8 +1,8 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { StyleSheet, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
+import { StyleSheet, Text, View } from "react-native";
 
 import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
@@ -107,7 +107,7 @@ const styleSheet = createThemedStyles((theme) => ({
   season: { ...theme.typography.label, letterSpacing: theme.letterSpacing.widest, textTransform: "uppercase" },
   seasonRow: { alignItems: "center", flexDirection: "row", gap: theme.spacing[2], marginBottom: theme.spacing[3] },
   title: {
-    ...theme.typography.heading1,
+    ...theme.typography.heading2,
     fontFamily: theme.fontFamilies.devotional,
     fontWeight: theme.fontWeights.bold,
   },

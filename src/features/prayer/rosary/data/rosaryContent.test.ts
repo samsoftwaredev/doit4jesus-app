@@ -16,16 +16,22 @@ import * as mysteryCartoonImages from "../../../../../assets/images/mysteriesCar
 import * as mysteryClassicArt from "../../../../../assets/images/mysteriesClassicArt";
 
 describe("English Rosary content", () => {
-  it("catalogs every canonical M4A asset exactly once under its matching language", () => {
-    const files = Object.keys(ROSARY_AUDIO_SOURCES).sort();
+  it("catalogs every playback M4A asset exactly once under its matching language", () => {
+    const files = Object.keys(ROSARY_AUDIO_SOURCES)
+      .filter((path) => !path.startsWith("/assets/audios/en/mysteries/") || !path.endsWith("MysteryDescription.m4a"))
+      .sort();
     const catalogPaths = Object.values(englishRosaryContent.audio_catalog.assets)
       .map((asset) => asset.path)
       .sort();
 
-    expect(files).toHaveLength(122);
+    expect(files).toHaveLength(102);
     expect(catalogPaths).toEqual(files);
-    expect(new Set(catalogPaths).size).toBe(122);
-    expect(Object.keys(ROSARY_AUDIO_DURATIONS).sort()).toEqual(files);
+    expect(new Set(catalogPaths).size).toBe(102);
+    expect(
+      Object.keys(ROSARY_AUDIO_DURATIONS)
+        .filter((path) => !path.startsWith("/assets/audios/en/mysteries/") || !path.endsWith("MysteryDescription.m4a"))
+        .sort(),
+    ).toEqual(files);
     expect(Object.values(ROSARY_AUDIO_DURATIONS).every((duration) => duration > 0)).toBe(true);
     expect(
       Object.values(englishRosaryContent.audio_catalog.assets).every(

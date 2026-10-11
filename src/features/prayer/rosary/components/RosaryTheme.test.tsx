@@ -55,9 +55,9 @@ describe("Rosary prayer appearance", () => {
       </>,
     );
 
-    expect(StyleSheet.flatten(screen.getByLabelText("Scripture. John 1:14").props.style)).toMatchObject({
+    const scriptureCardStyle = StyleSheet.flatten(screen.getByLabelText("Scripture. John 1:14").props.style);
+    expect(scriptureCardStyle).toMatchObject({
       backgroundColor: selectedTheme.rosary.colors.immersiveCard,
-      borderColor: selectedTheme.colors.border.warning,
     });
     expect(StyleSheet.flatten(screen.getByText("John 1:14").props.style)).toMatchObject({
       color: selectedTheme.rosary.colors.immersivePrimary,

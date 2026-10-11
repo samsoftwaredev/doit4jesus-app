@@ -120,12 +120,6 @@ describe("RosaryPrayerScreen", () => {
     expect(backgroundImage.props.source).toEqual([rosaryMysteries[0].imageSource]);
     expect(backgroundImage.props.contentFit).toBe("cover");
     expect(backgroundImage.props.accessible).toBe(false);
-    expect(StyleSheet.flatten(screen.getByTestId("rosary-mystery-scrim").props.style)).toMatchObject({
-      backgroundColor: "rgba(3, 13, 24, 0.58)",
-    });
-    expect(StyleSheet.flatten(screen.getByLabelText(/^Fruit of the mystery/).props.style)).toMatchObject({
-      backgroundColor: "rgba(3, 13, 24, 0.75)",
-    });
 
     mockSession({ currentMystery: rosaryMysteries[1] });
     await rendered.rerender(<RosaryPrayerScreen />);

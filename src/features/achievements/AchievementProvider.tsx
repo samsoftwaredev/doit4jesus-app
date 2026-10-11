@@ -1,6 +1,13 @@
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 
-export type AchievementEvent = "onboarding-complete";
+export type BadgeAchievement = {
+  code: string;
+  iconUrl: string | null;
+  id: string;
+  name: string;
+};
+
+export type AchievementEvent = { type: "onboarding-complete" } | { badge: BadgeAchievement; type: "badge-award" };
 
 type AchievementContextValue = {
   achievement: AchievementEvent | null;
@@ -12,16 +19,17 @@ const AchievementContext = createContext<AchievementContextValue | null>(null);
 
 /** Provides one-session achievement events that can be displayed after navigation. */
 export function AchievementProvider({ children }: { children: React.ReactNode }) {
-  const [achievement, setAchievement] = useState<AchievementEvent | null>(null);
+  const [achievements, setAchievements] = useState<AchievementEvent[]>([]);
+  const achievement = achievements[0] ?? null;
 
-  /** Queues the newest achievement for the global toast host in this app session. */
+  /** Adds an achievement to the end of the current session's visible toast queue. */
   const queueAchievement = useCallback((nextAchievement: AchievementEvent) => {
-    setAchievement(nextAchievement);
+    setAchievements((currentAchievements) => [...currentAchievements, nextAchievement]);
   }, []);
 
-  /** Clears the displayed achievement so it does not replay after dismissal or timeout. */
+  /** Removes the displayed achievement so the next queued toast can appear. */
   const dismissAchievement = useCallback(() => {
-    setAchievement(null);
+    setAchievements((currentAchievements) => currentAchievements.slice(1));
   }, []);
 
   const value = useMemo(
