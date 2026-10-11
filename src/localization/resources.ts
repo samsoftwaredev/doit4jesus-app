@@ -419,6 +419,12 @@ export const resources = {
           unavailable: "Level progress unavailable",
           xpRequired: "{{points}} XP to reach",
         },
+        avatarJourney: {
+          encouragement: "Help your avatar progress and become a persevering disciple (level 10)",
+          loading: "Loading avatar progress",
+          progressLabel: "Avatar journey: Level {{level}}, {{percent}}% complete.",
+          unavailable: "Avatar progress unavailable",
+        },
         leaderboard: {
           avatarLabel: "{{name}}'s avatar",
           heading: "LEADERBOARD",
@@ -1643,6 +1649,12 @@ export const resources = {
           title: "PROGRESO DE NIVEL",
           unavailable: "El progreso de nivel no está disponible",
           xpRequired: "{{points}} XP para alcanzar",
+        },
+        avatarJourney: {
+          encouragement: "Ayuda a tu avatar a progresar y conviértete en un discípulo perseverante (nivel 10)",
+          loading: "Cargando progreso del avatar",
+          progressLabel: "Viaje del avatar: nivel {{level}}, {{percent}}% completado.",
+          unavailable: "El progreso del avatar no está disponible",
         },
         leaderboard: {
           avatarLabel: "Avatar de {{name}}",

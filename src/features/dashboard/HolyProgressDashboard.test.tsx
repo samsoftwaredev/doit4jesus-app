@@ -156,6 +156,7 @@ describe("HolyProgressDashboard", () => {
     const cards = screen.getByTestId("dashboard-primary-grid").props.children;
     expect(cards[0].props.testID).toBe("holy-progress-card-container");
     expect(cards[1].props.testID).toBe("level-progress-card-container");
+    expect(cards).toHaveLength(4);
   });
 
   it("places the daily Rosary card directly after the streak progress", async () => {

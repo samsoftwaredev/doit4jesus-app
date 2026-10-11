@@ -54,6 +54,7 @@ describe("LevelProgressCard", () => {
   it("shows current and next level artwork with clamped accessible progress", async () => {
     await render(
       <LevelProgressCard
+        gender="female"
         isLoading={false}
         levelCatalog={levelCatalog}
         progress={{ ...progress, levelProgressPercentage: 140 }}
@@ -61,11 +62,17 @@ describe("LevelProgressCard", () => {
       />,
     );
 
+    expect(screen.queryByRole("header", { name: "AVATAR JOURNEY" })).toBeNull();
+    expect(screen.getByText("Help your avatar progress and become a persevering disciple (level 10)")).toBeTruthy();
+    expect(screen.getByTestId("avatar-journey-background")).toBeTruthy();
+    expect(screen.getByTestId("avatar-journey-character").props.source).toEqual([
+      require("../../../../../assets/images/avatar/princessProgress/level-03-hopeful-servant.png"),
+    ]);
     expect(screen.getByRole("header", { name: "LEVEL PROGRESS" })).toBeTruthy();
     expect(screen.getByText("The more you pray and read Scripture, the more you advance in levels.")).toBeTruthy();
     expect(screen.getByRole("image", { name: "Disciple level artwork" })).toBeTruthy();
     expect(screen.getByRole("image", { name: "Witness level artwork" })).toBeTruthy();
-    expect(screen.getByRole("progressbar").props.accessibilityValue).toEqual({ max: 100, min: 0, now: 100 });
+    expect(screen.getAllByRole("progressbar")[1].props.accessibilityValue).toEqual({ max: 100, min: 0, now: 100 });
     expect(screen.getByText("100% toward Witness")).toBeTruthy();
   });
 
@@ -122,7 +129,7 @@ describe("LevelProgressCard", () => {
     );
 
     expect(screen.getAllByText("Highest level reached")).toHaveLength(2);
-    expect(screen.getByRole("progressbar").props.accessibilityValue.now).toBe(100);
+    expect(screen.getAllByRole("progressbar")[1].props.accessibilityValue.now).toBe(100);
   });
 
   it("hides the catalogue action when no catalogue is available", async () => {

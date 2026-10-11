@@ -275,6 +275,7 @@ export function HolyProgressDashboard({ initialData }: { initialData?: ScreenDat
           testID="level-progress-card-container"
         >
           <LevelProgressCard
+            gender={profile?.gender ?? null}
             isLoading={isLoadingProgress}
             levelCatalog={levelCatalog}
             progress={progress}

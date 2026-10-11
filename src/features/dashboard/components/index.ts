@@ -9,3 +9,5 @@ export { LeaderboardCard } from "./LeaderboardCard";
 export { LevelProgressCard } from "./LevelProgressCard";
 export { ActivityPointsModal } from "./ActivityPointsModal";
 export type { ActivityPointsModalProps } from "./ActivityPointsModal";
+export { AvatarJourneyCard } from "./AvatarJourneyCard";
+export type { AvatarJourneyCardProps } from "./AvatarJourneyCard";

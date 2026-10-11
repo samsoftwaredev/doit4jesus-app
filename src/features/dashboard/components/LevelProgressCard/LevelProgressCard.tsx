@@ -6,6 +6,7 @@ import { Modal, Pressable, ScrollView, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { useReducedMotion } from "react-native-reanimated";
 
+import type { Gender } from "@/features/profile";
 import type { DashboardProgress, LevelCatalogEntry } from "@/features/progress";
 import { useResponsiveLayout } from "@/hooks";
 import { useAppLanguage } from "@/localization";
@@ -13,12 +14,14 @@ import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles"
 import { theme } from "@/theme/tokens";
 
 import { levelImagesByCode, type LevelImageCode } from "../../../../../assets/images/levels";
+import { AvatarJourneyCard } from "../AvatarJourneyCard";
 import { formatPoints } from "../../rosary-reminder";
 
 const DEFAULT_LEVEL_CODE = "awakened";
 const DEFAULT_LEVEL_NUMBER = 1;
 
 type LevelProgressCardProps = {
+  gender?: Gender | null;
   isLoading: boolean;
   levelCatalog: LevelCatalogEntry[] | null;
   progress: DashboardProgress | null;
@@ -64,7 +67,13 @@ function sortLevelCatalog(levelCatalog: LevelCatalogEntry[] | null): LevelCatalo
 }
 
 /** Presents current-level artwork, progression, and the complete ordered level catalogue. */
-export function LevelProgressCard({ isLoading, levelCatalog, progress, progressError }: LevelProgressCardProps) {
+export function LevelProgressCard({
+  gender = null,
+  isLoading,
+  levelCatalog,
+  progress,
+  progressError,
+}: LevelProgressCardProps) {
   const { t } = useTranslation();
   const { locale } = useAppLanguage();
   const { isLargeText, isNarrowPhone } = useResponsiveLayout();
@@ -122,6 +131,8 @@ export function LevelProgressCard({ isLoading, levelCatalog, progress, progressE
       <Text accessibilityRole="header" style={styles.heading}>
         {t("dashboard.levelProgress.title")}
       </Text>
+      <Text style={styles.description}>{t("dashboard.avatarJourney.encouragement")}</Text>
+      {!progressError ? <AvatarJourneyCard gender={gender} isLoading={isLoading} progress={progress} /> : null}
       <Text style={styles.description}>{t("dashboard.levelProgress.description")}</Text>
 
       {isLoading ? (
