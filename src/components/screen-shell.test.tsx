@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { createRef } from "react";
 import { render, screen } from "@testing-library/react-native";
-import { Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 
 import { AppVisualEffectsProvider } from "@/theme/AppVisualEffectsProvider";
 
@@ -119,5 +120,19 @@ describe("ScreenShell", () => {
     );
 
     expect(screen.getByLabelText("Do It for Jesus")).toBeTruthy();
+  });
+
+  it("exposes its scroll view to a route that needs to scroll to a section", async () => {
+    const scrollViewRef = createRef<ScrollView>();
+
+    await render(
+      <AppVisualEffectsProvider>
+        <ScreenShell description="A calm place to grow." scrollViewRef={scrollViewRef} title="Welcome">
+          <Text>Screen content</Text>
+        </ScreenShell>
+      </AppVisualEffectsProvider>,
+    );
+
+    expect(scrollViewRef.current).toBeTruthy();
   });
 });

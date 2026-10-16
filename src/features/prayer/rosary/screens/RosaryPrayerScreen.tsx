@@ -401,6 +401,12 @@ export function RosaryPrayerScreen({
     session.restartMystery();
   };
 
+  /** Closes the completion modal and returns to Home positioned at the Rosary Garden. */
+  const exitToGarden = useCallback(() => {
+    setCompletionVisible(false);
+    router.replace({ pathname: "/home", params: { scrollTo: "garden" } });
+  }, [router]);
+
   return (
     <View style={styles.background}>
       {!session.currentMystery || backgroundImageFailed ? (
@@ -630,10 +636,7 @@ export function RosaryPrayerScreen({
               <Pressable
                 accessibilityLabel={t("rosary.completion.exitGardenLabel")}
                 accessibilityRole="button"
-                onPress={() => {
-                  setCompletionVisible(false);
-                  router.replace("/prayer");
-                }}
+                onPress={exitToGarden}
                 style={({ pressed }) => [styles.secondaryAction, pressed && styles.pressed]}
               >
                 <Text style={styles.secondaryActionText}>{t("rosary.completion.exitGarden")}</Text>

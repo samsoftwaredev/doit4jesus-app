@@ -1,9 +1,10 @@
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
+import type { LayoutChangeEvent } from "react-native";
 import { AppState, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
-import { DailyLiturgyDashboard } from "@/features/liturgy/screens";
+import { RosaryGardenSection } from "@/features/prayer/rosary/garden/components";
 import { subscribeToRosaryCompletion } from "@/features/prayer/rosary/rosary-completion-events";
 import { useCurrentProfile } from "@/features/profile";
 import { logDevelopmentError } from "@/lib/development-logger";
@@ -46,11 +47,17 @@ import type {
 } from "./dashboard.types";
 
 /**
- * Composes the Home dashboard's API-backed cards, streak progress, and earned badges.
+ * Composes the Home dashboard's API-backed cards, Rosary Garden, streak progress, and earned badges.
  *
  * Replaces unavailable Home progress and daily Rosary reminder states with a journey welcome while preserving other cards.
  */
-export function HolyProgressDashboard({ initialData }: { initialData?: ScreenDataResponse }) {
+export function HolyProgressDashboard({
+  initialData,
+  onGardenLayout,
+}: {
+  initialData?: ScreenDataResponse;
+  onGardenLayout?: (event: LayoutChangeEvent) => void;
+}) {
   const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   const router = useRouter();
@@ -219,9 +226,14 @@ export function HolyProgressDashboard({ initialData }: { initialData?: ScreenDat
   /** Closes the activity-points history and returns the user to the Home dashboard. */
   const closeActivityPoints = useCallback(() => setIsActivityPointsVisible(false), []);
 
-  /** Opens the Prayer tab and positions its scroll view at the user's Rosary Garden. */
+  /** Opens Home and positions its scroll view at the user's Rosary Garden. */
   const openRosaryGarden = useCallback(() => {
-    router.navigate({ pathname: "/prayer", params: { scrollTo: "garden" } });
+    router.navigate({ pathname: "/home", params: { scrollTo: "garden" } });
+  }, [router]);
+
+  /** Starts a Rosary from the embedded Garden while retaining its established prayer source. */
+  const prayTodayFromGarden = useCallback(() => {
+    router.push({ pathname: "/rosary", params: { source: "today" } });
   }, [router]);
 
   const useCardColumns = isTablet && contentWidth >= 700 && !isLargeText;
@@ -249,7 +261,9 @@ export function HolyProgressDashboard({ initialData }: { initialData?: ScreenDat
           />
         )}
       </View>
-      <DailyLiturgyDashboard initialData={initialData} />
+      <View onLayout={onGardenLayout} testID="rosary-garden-section-container">
+        <RosaryGardenSection initialData={initialData} onPrayToday={prayTodayFromGarden} />
+      </View>
       <View style={[styles.primaryGrid, useCardColumns && styles.primaryGridColumns]} testID="dashboard-primary-grid">
         <View
           style={[styles.primaryCard, useCardColumns && styles.primaryCardColumn]}

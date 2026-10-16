@@ -55,6 +55,11 @@ jest.mock("@/features/liturgy/screens", () => {
   return { DailyLiturgyDashboard: () => <Text>Existing Daily Liturgy</Text> };
 });
 
+jest.mock("@/features/prayer/rosary/garden/components", () => {
+  const { Text } = jest.requireActual<typeof import("react-native")>("react-native");
+  return { RosaryGardenSection: () => <Text>Rosary Garden Section</Text> };
+});
+
 jest.mock("./dashboard.api", () => ({
   getConscienceQuestion: (...args: unknown[]) => mockGetConscienceQuestion(...args),
   getRosaryReminder: (...args: unknown[]) => mockGetRosaryReminder(...args),
@@ -177,21 +182,30 @@ describe("HolyProgressDashboard", () => {
     expect(screen.queryByLabelText("View leaderboard")).toBeNull();
   });
 
-  it("opens the Prayer tab at the Rosary Garden from Home", async () => {
+  it("opens Home at the Rosary Garden from the daily Rosary card", async () => {
     await render(<HolyProgressDashboard />);
     await screen.findByRole("button", { name: "View Garden" });
 
     await fireEvent.press(screen.getByRole("button", { name: "View Garden" }));
 
-    expect(mockNavigate).toHaveBeenCalledWith({ pathname: "/prayer", params: { scrollTo: "garden" } });
+    expect(mockNavigate).toHaveBeenCalledWith({ pathname: "/home", params: { scrollTo: "garden" } });
   });
 
-  it("renders progress, earned badges, and daily liturgy directly in the dashboard composition", async () => {
+  it("renders progress, earned badges, and the Garden directly in the dashboard composition", async () => {
     await render(<HolyProgressDashboard />);
 
     expect(screen.getByText("Existing User Progress")).toBeTruthy();
     expect(screen.getByText("Dashboard Earned Badges")).toBeTruthy();
-    expect(screen.getByText("Existing Daily Liturgy")).toBeTruthy();
+    expect(screen.getByText("Rosary Garden Section")).toBeTruthy();
+    expect(screen.queryByText("Existing Daily Liturgy")).toBeNull();
+  });
+
+  it("places the Rosary Garden directly after Plant Today’s Flower", async () => {
+    await render(<HolyProgressDashboard />);
+
+    const sections = screen.getByLabelText("Holy Progress Dashboard").props.children;
+    expect(sections[1].props.testID).toBe("daily-rosary-card-container");
+    expect(sections[2].props.testID).toBe("rosary-garden-section-container");
   });
 
   it("replaces an unavailable streak card with a male user's journey welcome while retaining progress content", async () => {

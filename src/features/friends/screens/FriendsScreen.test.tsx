@@ -4,8 +4,35 @@ import { FriendsScreen } from "./FriendsScreen";
 import { johnRequest, leaderboard, maria, mockFriendsDashboard } from "./friends.test-utils";
 
 const mockPush = jest.fn();
+const mockGetWeeklyGlobalLeaderboard = jest.fn();
+const mockGetYearlyGlobalLeaderboard = jest.fn();
 
-jest.mock("expo-router", () => ({ useRouter: () => ({ back: jest.fn(), push: mockPush, replace: jest.fn() }) }));
+jest.mock("expo-router", () => {
+  const React = jest.requireActual("react") as typeof import("react");
+  return {
+    useFocusEffect: (effect: () => void | (() => void)) => React.useEffect(effect, [effect]),
+    useRouter: () => ({ back: jest.fn(), push: mockPush, replace: jest.fn() }),
+  };
+});
+jest.mock("@/features/dashboard/dashboard.api", () => ({
+  getWeeklyGlobalLeaderboard: (...args: unknown[]) => mockGetWeeklyGlobalLeaderboard(...args),
+  getYearlyGlobalLeaderboard: (...args: unknown[]) => mockGetYearlyGlobalLeaderboard(...args),
+}));
+jest.mock("@/features/dashboard/components", () => {
+  const { Pressable, Text } = jest.requireActual<typeof import("react-native")>("react-native");
+  return {
+    LeaderboardCard: ({ onRetryWeekly, weeklyError }: { onRetryWeekly: () => void; weeklyError: boolean }) => (
+      <>
+        <Text>Global Leaderboards</Text>
+        {weeklyError ? (
+          <Pressable accessibilityLabel="Retry weekly global leaderboard" onPress={onRetryWeekly}>
+            <Text>Weekly global leaderboard unavailable</Text>
+          </Pressable>
+        ) : null}
+      </>
+    ),
+  };
+});
 jest.mock("@/features/friends/friends.hooks", () => ({
   useFriendProfile: jest.fn(),
   useFriendRequests: jest.fn(),
@@ -22,6 +49,8 @@ describe("FriendsScreen", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockFriendsDashboard(hooks);
+    mockGetWeeklyGlobalLeaderboard.mockResolvedValue([]);
+    mockGetYearlyGlobalLeaderboard.mockResolvedValue([]);
   });
 
   it("renders friends, points, rank, and requests", async () => {
@@ -34,6 +63,10 @@ describe("FriendsScreen", () => {
     expect(screen.getByText("Virgin Mary (You)")).toBeTruthy();
     expect(screen.getByText("John Paul")).toBeTruthy();
     expect(screen.getByText("Your friends")).toBeTruthy();
+    expect(await screen.findByText("Global Leaderboards")).toBeTruthy();
+    expect(mockGetWeeklyGlobalLeaderboard).toHaveBeenCalledTimes(1);
+    expect(mockGetYearlyGlobalLeaderboard).toHaveBeenCalledTimes(1);
+    expect(screen.getByTestId("community-section-global-leaderboard")).toBeTruthy();
   });
 
   it("renders the loading state", async () => {
@@ -62,6 +95,16 @@ describe("FriendsScreen", () => {
     hooks.useRosaryLeaderboard.mockReturnValue({ error: "Network unavailable", isLoading: false });
     await render(<FriendsScreen />);
     expect(screen.getByText("Couldn't load the leaderboard")).toBeTruthy();
+  });
+
+  it("retries a failed weekly global leaderboard without reloading Community", async () => {
+    mockGetWeeklyGlobalLeaderboard.mockRejectedValueOnce(new Error("Network unavailable")).mockResolvedValueOnce([]);
+
+    await render(<FriendsScreen />);
+
+    await fireEvent.press(await screen.findByLabelText("Retry weekly global leaderboard"));
+
+    expect(mockGetWeeklyGlobalLeaderboard).toHaveBeenCalledTimes(2);
   });
 
   it("accepts and declines incoming friend requests", async () => {

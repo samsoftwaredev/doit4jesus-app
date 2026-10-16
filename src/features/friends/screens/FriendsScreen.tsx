@@ -1,12 +1,19 @@
 import Feather from "@expo/vector-icons/Feather";
-import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ScrollView, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { IconButton, PageHeader } from "@/components";
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { Button } from "@/components/ui";
+import { LeaderboardCard } from "@/features/dashboard/components";
+import {
+  getWeeklyGlobalLeaderboard,
+  getYearlyGlobalLeaderboard,
+  parseGlobalLeaderboardData,
+} from "@/features/dashboard/dashboard.api";
+import type { LeaderboardEntryViewModel } from "@/features/dashboard/dashboard.types";
 import { FriendsList, FriendsState, PendingRequestsCard, RosaryLeaderboardCard } from "@/features/friends/components";
 import { useFriendRequests, useFriends, useRosaryLeaderboard } from "@/features/friends/friends.hooks";
 import { parseFriendRequestsPage, parseFriendsLeaderboardData, parseFriendsPage } from "@/features/friends/friends.api";
@@ -40,7 +47,7 @@ export function FriendsScreen() {
   return settled ? <FriendsScreenContent initialData={initialData} /> : null;
 }
 
-/** Renders Community after its aggregate initial data request settles. */
+/** Renders Community after its aggregate initial data request settles, including global leaders at the end. */
 function FriendsScreenContent({ initialData }: { initialData?: ScreenDataResponse }) {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
@@ -57,8 +64,69 @@ function FriendsScreenContent({ initialData }: { initialData?: ScreenDataRespons
     "incoming",
     requestsSection ? parseFriendRequestsPage(requestsSection.data, requestsSection.meta) : undefined,
   );
+  const [isWeeklyGlobalLeaderboardLoading, setIsWeeklyGlobalLeaderboardLoading] = useState(true);
+  const [isYearlyGlobalLeaderboardLoading, setIsYearlyGlobalLeaderboardLoading] = useState(true);
+  const [weeklyGlobalLeaderboard, setWeeklyGlobalLeaderboard] = useState<LeaderboardEntryViewModel[] | null>(null);
+  const [yearlyGlobalLeaderboard, setYearlyGlobalLeaderboard] = useState<LeaderboardEntryViewModel[] | null>(null);
+  const [weeklyGlobalLeaderboardError, setWeeklyGlobalLeaderboardError] = useState(false);
+  const [yearlyGlobalLeaderboardError, setYearlyGlobalLeaderboardError] = useState(false);
+  const weeklyGlobalLeaderboardRequestIdRef = useRef(0);
+  const yearlyGlobalLeaderboardRequestIdRef = useRef(0);
   const { contentWidth, gutter, isDesktop, isLargeText } = useResponsiveLayout();
   const useColumns = isDesktop && contentWidth >= 900 && !isLargeText;
+
+  /** Loads weekly global leaders while ignoring an older Community request that resolves later. */
+  const loadWeeklyGlobalLeaderboard = useCallback(async () => {
+    const requestId = ++weeklyGlobalLeaderboardRequestIdRef.current;
+    setIsWeeklyGlobalLeaderboardLoading(true);
+    setWeeklyGlobalLeaderboardError(false);
+    try {
+      const section = initialData?.sections.weeklyGlobalLeaderboard;
+      const entries = section ? parseGlobalLeaderboardData(section.data) : await getWeeklyGlobalLeaderboard();
+      if (requestId !== weeklyGlobalLeaderboardRequestIdRef.current) return;
+      setWeeklyGlobalLeaderboard(entries);
+    } catch (error) {
+      logDevelopmentError("loading Community's weekly global leaderboard", error);
+      if (requestId !== weeklyGlobalLeaderboardRequestIdRef.current) return;
+      setWeeklyGlobalLeaderboard(null);
+      setWeeklyGlobalLeaderboardError(true);
+    } finally {
+      if (requestId === weeklyGlobalLeaderboardRequestIdRef.current) setIsWeeklyGlobalLeaderboardLoading(false);
+    }
+  }, [initialData]);
+
+  /** Loads yearly global leaders while ignoring an older Community request that resolves later. */
+  const loadYearlyGlobalLeaderboard = useCallback(async () => {
+    const requestId = ++yearlyGlobalLeaderboardRequestIdRef.current;
+    setIsYearlyGlobalLeaderboardLoading(true);
+    setYearlyGlobalLeaderboardError(false);
+    try {
+      const section = initialData?.sections.yearlyGlobalLeaderboard;
+      const entries = section ? parseGlobalLeaderboardData(section.data) : await getYearlyGlobalLeaderboard();
+      if (requestId !== yearlyGlobalLeaderboardRequestIdRef.current) return;
+      setYearlyGlobalLeaderboard(entries);
+    } catch (error) {
+      logDevelopmentError("loading Community's yearly global leaderboard", error);
+      if (requestId !== yearlyGlobalLeaderboardRequestIdRef.current) return;
+      setYearlyGlobalLeaderboard(null);
+      setYearlyGlobalLeaderboardError(true);
+    } finally {
+      if (requestId === yearlyGlobalLeaderboardRequestIdRef.current) setIsYearlyGlobalLeaderboardLoading(false);
+    }
+  }, [initialData]);
+
+  useFocusEffect(
+    useCallback(() => {
+      void loadWeeklyGlobalLeaderboard();
+      void loadYearlyGlobalLeaderboard();
+
+      /** Invalidates pending requests when Community is no longer focused. */
+      return function invalidateGlobalLeaderboardRequests() {
+        weeklyGlobalLeaderboardRequestIdRef.current += 1;
+        yearlyGlobalLeaderboardRequestIdRef.current += 1;
+      };
+    }, [loadWeeklyGlobalLeaderboard, loadYearlyGlobalLeaderboard]),
+  );
 
   const openFriend = (friendId: string) => {
     router.push(`/friends/${friendId}`);
@@ -195,6 +263,18 @@ function FriendsScreenContent({ initialData }: { initialData?: ScreenDataRespons
             ) : null}
           </View>
         </View>
+        <View style={styles.globalLeaderboard} testID="community-section-global-leaderboard">
+          <LeaderboardCard
+            isWeeklyLoading={isWeeklyGlobalLeaderboardLoading}
+            isYearlyLoading={isYearlyGlobalLeaderboardLoading}
+            onRetryWeekly={() => void loadWeeklyGlobalLeaderboard()}
+            onRetryYearly={() => void loadYearlyGlobalLeaderboard()}
+            weeklyEntries={weeklyGlobalLeaderboard}
+            weeklyError={weeklyGlobalLeaderboardError}
+            yearlyEntries={yearlyGlobalLeaderboard}
+            yearlyError={yearlyGlobalLeaderboardError}
+          />
+        </View>
       </ScrollView>
     </AtmosphericSafeAreaView>
   );
@@ -208,6 +288,7 @@ const styleSheet = createThemedStyles((theme) => ({
     width: "100%",
   },
   header: { alignSelf: "center", maxWidth: theme.sizes.contentMaxWidth, width: "100%" },
+  globalLeaderboard: { marginTop: theme.spacing[5] },
   moreFriends: {
     marginTop: theme.spacing[3],
   },

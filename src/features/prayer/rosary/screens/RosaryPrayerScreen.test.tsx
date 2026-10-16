@@ -389,13 +389,13 @@ describe("RosaryPrayerScreen", () => {
     expect(restartMystery).toHaveBeenCalledTimes(1);
   });
 
-  it("exits the completion modal and opens the Rosary Garden", async () => {
+  it("exits the completion modal and opens the Home Rosary Garden", async () => {
     mockSession({ isRosaryCompleted: true, lastPrayedOn: "2026-08-06T10:00:00.000Z" });
     await render(<RosaryPrayerScreen />);
 
     await fireEvent.press(screen.getByRole("button", { name: "Exit & View Garden" }));
 
-    expect(mockReplace).toHaveBeenCalledWith("/prayer");
+    expect(mockReplace).toHaveBeenCalledWith({ pathname: "/home", params: { scrollTo: "garden" } });
   });
 
   it("localizes the completion Garden action in Spanish", async () => {

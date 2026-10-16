@@ -1,5 +1,5 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { LayoutChangeEvent, NativeScrollEvent, NativeSyntheticEvent } from "react-native";
@@ -8,13 +8,7 @@ import { ScrollView, View } from "react-native";
 import { PageHeader } from "@/components";
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { SacredAtmosphere } from "@/components/ui";
-import { LeaderboardCard } from "@/features/dashboard/components";
-import {
-  getWeeklyGlobalLeaderboard,
-  getYearlyGlobalLeaderboard,
-  parseGlobalLeaderboardData,
-} from "@/features/dashboard/dashboard.api";
-import type { LeaderboardEntryViewModel } from "@/features/dashboard/dashboard.types";
+import { DailyLiturgyDashboard } from "@/features/liturgy/screens";
 import {
   AllMysteries,
   GlobalRosaryStatsCard,
@@ -36,7 +30,6 @@ import { logDevelopmentError } from "@/lib/development-logger";
 import { getRosaryContent } from "@/features/prayer/rosary/data/localizedRosaryContent";
 import { getRosaryMysterySetFromContent } from "@/features/prayer/rosary/data/rosaryMysteries";
 import { getTodayRosaryMysteryType, getWeekdayLabel } from "@/features/prayer/rosary/data/schedule";
-import { RosaryGardenSection } from "@/features/prayer/rosary/garden/components";
 import { useRosaryArtStylePreference } from "@/features/prayer/rosary/hooks/useRosaryArtStylePreference";
 import type { RosaryMysteryType } from "@/features/prayer/rosary/types/rosary";
 import { useCurrentLocalDate, useResponsiveLayout } from "@/hooks";
@@ -52,11 +45,6 @@ function localIsoDateToDate(localIsoDate: string) {
   return new Date(year, month - 1, day, 12);
 }
 
-/** Extracts a single search-parameter value when Expo Router supplies a repeated parameter array. */
-function firstSearchParameter(value: string | string[] | undefined) {
-  return Array.isArray(value) ? value[0] : value;
-}
-
 /** Appends newly fetched intentions without duplicating cards when pages overlap. */
 function appendUniqueIntentions(
   currentIntentions: ApprovedPrayerIntention[],
@@ -66,13 +54,12 @@ function appendUniqueIntentions(
   return [...currentIntentions, ...incomingIntentions.filter((intention) => !currentIds.has(intention.id))];
 }
 
-/** Renders the daily Prayer page with its Rosary Garden, global activity, mysteries, and intentions. */
+/** Renders the daily Prayer page with its liturgy, global activity, mysteries, and intentions. */
 export function PrayerScreen() {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
   const { language, locale } = useAppLanguage();
   const { rosaryArtStyle } = useRosaryArtStylePreference();
-  const { scrollTo: rawScrollTarget } = useLocalSearchParams<{ scrollTo?: string | string[] }>();
   const router = useRouter();
   const { contentWidth, gutter, isDesktop, isLargeText, isNarrowPhone, isTablet, width } = useResponsiveLayout();
   const [intentions, setIntentions] = useState<ApprovedPrayerIntention[]>([]);
@@ -82,25 +69,15 @@ export function PrayerScreen() {
   const [globalStats, setGlobalStats] = useState<GlobalRosaryStats | null>(null);
   const [globalStatsError, setGlobalStatsError] = useState(false);
   const [isGlobalStatsLoading, setIsGlobalStatsLoading] = useState(true);
-  const [isWeeklyLeaderboardLoading, setIsWeeklyLeaderboardLoading] = useState(true);
-  const [isYearlyLeaderboardLoading, setIsYearlyLeaderboardLoading] = useState(true);
   const [hasMoreIntentions, setHasMoreIntentions] = useState(false);
-  const [weeklyLeaderboard, setWeeklyLeaderboard] = useState<LeaderboardEntryViewModel[] | null>(null);
-  const [yearlyLeaderboard, setYearlyLeaderboard] = useState<LeaderboardEntryViewModel[] | null>(null);
-  const [weeklyLeaderboardError, setWeeklyLeaderboardError] = useState(false);
-  const [yearlyLeaderboardError, setYearlyLeaderboardError] = useState(false);
   const [nextIntentionsOffset, setNextIntentionsOffset] = useState<number | null>(null);
   const [initialScreenData, setInitialScreenData] = useState<ScreenDataResponse>();
   const [isInitialScreenLoadSettled, setIsInitialScreenLoadSettled] = useState(false);
-  const [gardenOffsetY, setGardenOffsetY] = useState<number | null>(null);
   const isLoadingMoreIntentionsRef = useRef(false);
-  const hasScrolledToGardenRef = useRef(false);
   const globalStatsLayoutRef = useRef<{ height: number; y: number } | null>(null);
   const globalStatsRequestIdRef = useRef(0);
   const hasRequestedGlobalStatsRef = useRef(false);
   const scrollViewportRef = useRef({ height: 0, offsetY: 0 });
-  const weeklyLeaderboardRequestIdRef = useRef(0);
-  const yearlyLeaderboardRequestIdRef = useRef(0);
   const scrollViewRef = useRef<ScrollView>(null);
   const currentLocalDate = useCurrentLocalDate();
   const today = useMemo(() => localIsoDateToDate(currentLocalDate), [currentLocalDate]);
@@ -118,24 +95,6 @@ export function PrayerScreen() {
     theme.sizes.touchTarget * 3,
     (usableWidth - columnGap * (mysteryColumns - 1)) / mysteryColumns,
   );
-  const scrollTarget = firstSearchParameter(rawScrollTarget);
-
-  useEffect(
-    /** Scrolls a Home-requested Prayer route to the Garden after the section has been measured. */
-    function scrollToRequestedGarden() {
-      if (scrollTarget !== "garden") {
-        hasScrolledToGardenRef.current = false;
-        return;
-      }
-      if (gardenOffsetY === null || hasScrolledToGardenRef.current || !scrollViewRef.current) return;
-
-      hasScrolledToGardenRef.current = true;
-      scrollViewRef.current.scrollTo({ animated: true, y: gardenOffsetY });
-      router.setParams({ scrollTo: undefined });
-    },
-    [gardenOffsetY, router, scrollTarget],
-  );
-
   /** Loads Prayer's first visible sections in a single authenticated request. */
   useEffect(() => {
     let active = true;
@@ -246,11 +205,6 @@ export function PrayerScreen() {
     [loadGlobalStatsIfVisible],
   );
 
-  /** Records the Garden's scroll-view offset so a Home deep link can arrive at the correct section. */
-  const handleGardenLayout = useCallback((event: LayoutChangeEvent) => {
-    setGardenOffsetY(event.nativeEvent.layout.y);
-  }, []);
-
   /** Retries the already-revealed global statistics request after a failure. */
   const retryGlobalStats = useCallback(() => {
     void loadGlobalStats();
@@ -265,61 +219,6 @@ export function PrayerScreen() {
       };
     },
     [],
-  );
-
-  /** Loads weekly global leaders while ignoring results from an older overlapping request. */
-  const loadWeeklyLeaderboard = useCallback(async () => {
-    const requestId = ++weeklyLeaderboardRequestIdRef.current;
-    setIsWeeklyLeaderboardLoading(true);
-    setWeeklyLeaderboardError(false);
-    try {
-      const section = initialScreenData?.sections.weeklyGlobalLeaderboard;
-      const entries = section ? parseGlobalLeaderboardData(section.data) : await getWeeklyGlobalLeaderboard();
-      if (requestId !== weeklyLeaderboardRequestIdRef.current) return;
-      setWeeklyLeaderboard(entries);
-    } catch (error) {
-      logDevelopmentError("loading the weekly global leaderboard", error);
-      if (requestId !== weeklyLeaderboardRequestIdRef.current) return;
-      setWeeklyLeaderboard(null);
-      setWeeklyLeaderboardError(true);
-    } finally {
-      if (requestId === weeklyLeaderboardRequestIdRef.current) setIsWeeklyLeaderboardLoading(false);
-    }
-  }, [initialScreenData]);
-
-  /** Loads yearly global leaders while ignoring results from an older overlapping request. */
-  const loadYearlyLeaderboard = useCallback(async () => {
-    const requestId = ++yearlyLeaderboardRequestIdRef.current;
-    setIsYearlyLeaderboardLoading(true);
-    setYearlyLeaderboardError(false);
-    try {
-      const section = initialScreenData?.sections.yearlyGlobalLeaderboard;
-      const entries = section ? parseGlobalLeaderboardData(section.data) : await getYearlyGlobalLeaderboard();
-      if (requestId !== yearlyLeaderboardRequestIdRef.current) return;
-      setYearlyLeaderboard(entries);
-    } catch (error) {
-      logDevelopmentError("loading the yearly global leaderboard", error);
-      if (requestId !== yearlyLeaderboardRequestIdRef.current) return;
-      setYearlyLeaderboard(null);
-      setYearlyLeaderboardError(true);
-    } finally {
-      if (requestId === yearlyLeaderboardRequestIdRef.current) setIsYearlyLeaderboardLoading(false);
-    }
-  }, [initialScreenData]);
-
-  useFocusEffect(
-    useCallback(() => {
-      if (isInitialScreenLoadSettled) {
-        void loadWeeklyLeaderboard();
-        void loadYearlyLeaderboard();
-      }
-
-      /** Invalidates in-flight leaderboard responses after the Prayer page loses focus. */
-      return () => {
-        weeklyLeaderboardRequestIdRef.current += 1;
-        yearlyLeaderboardRequestIdRef.current += 1;
-      };
-    }, [isInitialScreenLoadSettled, loadWeeklyLeaderboard, loadYearlyLeaderboard]),
   );
 
   /** Loads and appends the next intention page when the horizontal carousel approaches its end. */
@@ -416,20 +315,8 @@ export function PrayerScreen() {
           <View testID="prayer-section-rosary-guide">
             <RosaryGuideCards />
           </View>
-          <View onLayout={handleGardenLayout} testID="prayer-section-garden">
-            <RosaryGardenSection initialData={initialScreenData} onPrayToday={prayToday} />
-          </View>
-          <View testID="prayer-section-global-leaderboard">
-            <LeaderboardCard
-              isWeeklyLoading={isWeeklyLeaderboardLoading}
-              isYearlyLoading={isYearlyLeaderboardLoading}
-              onRetryWeekly={() => void loadWeeklyLeaderboard()}
-              onRetryYearly={() => void loadYearlyLeaderboard()}
-              weeklyEntries={weeklyLeaderboard}
-              weeklyError={weeklyLeaderboardError}
-              yearlyEntries={yearlyLeaderboard}
-              yearlyError={yearlyLeaderboardError}
-            />
+          <View testID="prayer-section-liturgy">
+            <DailyLiturgyDashboard initialData={initialScreenData} />
           </View>
           <View testID="prayer-section-mysteries">
             <AllMysteries cardWidth={mysteryCardWidth} gap={columnGap} onOpenMystery={openMystery} />

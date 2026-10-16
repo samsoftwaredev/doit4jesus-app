@@ -1,4 +1,4 @@
-import type { PropsWithChildren, ReactNode } from "react";
+import type { PropsWithChildren, ReactNode, RefObject } from "react";
 import type { StyleProp, ViewStyle } from "react-native";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -20,6 +20,7 @@ type ScreenShellProps = PropsWithChildren<{
   onBack?: () => void;
   overlay?: ReactNode;
   showLogo?: boolean;
+  scrollViewRef?: RefObject<ScrollView | null>;
   testID?: string;
   title?: string;
 }>;
@@ -44,6 +45,7 @@ export function ScreenShell({
   onBack,
   overlay,
   showLogo,
+  scrollViewRef,
   testID,
   title,
 }: ScreenShellProps) {
@@ -52,7 +54,7 @@ export function ScreenShell({
 
   return (
     <SafeAreaView edges={["top"]} style={styles.safeArea} testID={testID}>
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={styles.scrollContent} ref={scrollViewRef} showsVerticalScrollIndicator={false}>
         <View style={styles.page}>
           <View pointerEvents="none" style={styles.backgroundLayer}>
             {background}
