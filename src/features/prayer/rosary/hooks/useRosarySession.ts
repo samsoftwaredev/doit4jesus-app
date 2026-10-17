@@ -271,6 +271,7 @@ export function useRosarySession(options: UseRosarySessionOptions = {}) {
 
   const markActivity = useCallback(() => setLastPrayedOn(new Date().toISOString()), []);
 
+  /** Advances one prayer step and reports whether the transition lock accepted the request. */
   const goToNextBead = useCallback(() => {
     const didMove = startTransition((current) => {
       const index = clamp(current.currentBeadIndex, beads.length);
@@ -295,6 +296,7 @@ export function useRosarySession(options: UseRosarySessionOptions = {}) {
       };
     });
     if (didMove) markActivity();
+    return didMove;
   }, [beads, currentMystery, isFullRosary, markActivity, mysteries, startTransition]);
 
   const goToPreviousBead = useCallback(() => {

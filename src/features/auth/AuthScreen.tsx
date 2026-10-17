@@ -1,15 +1,19 @@
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useRouter } from "expo-router";
 import type { ComponentProps } from "react";
 import { Text, TextInput, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { ScreenShell } from "@/components/screen-shell";
-import { Card } from "@/components/ui";
+import { Button, Card } from "@/components/ui";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 type AuthScreenProps = {
   children: React.ReactNode;
+  googleAuthDisabled?: boolean;
+  googleAuthLoading?: boolean;
+  onGoogleAuth?: () => void;
   subtitle: string;
   title: string;
 };
@@ -19,8 +23,15 @@ type AuthTextInputProps = ComponentProps<typeof TextInput> & {
   label: string;
 };
 
-/** Renders the shared themed frame used by sign-in and account recovery screens. */
-export function AuthScreen({ children, subtitle, title }: AuthScreenProps) {
+/** Renders the shared themed frame and optional Google action used by authentication screens. */
+export function AuthScreen({
+  children,
+  googleAuthDisabled = false,
+  googleAuthLoading = false,
+  onGoogleAuth,
+  subtitle,
+  title,
+}: AuthScreenProps) {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
   const router = useRouter();
@@ -34,7 +45,35 @@ export function AuthScreen({ children, subtitle, title }: AuthScreenProps) {
       title={title}
     >
       <Card fullWidth>
-        <View style={styles.form}>{children}</View>
+        <View style={styles.form}>
+          {onGoogleAuth ? (
+            <>
+              <Button
+                disabled={googleAuthDisabled}
+                fullWidth
+                leftIcon={
+                  <MaterialCommunityIcons
+                    accessible={false}
+                    color={theme.colors.icon.primary}
+                    name="google"
+                    size={theme.sizes.iconMedium}
+                  />
+                }
+                loading={googleAuthLoading}
+                onPress={onGoogleAuth}
+                variant="secondary"
+              >
+                {t("auth.continueWithGoogle")}
+              </Button>
+              <View accessible={false} style={styles.divider}>
+                <View style={styles.dividerLine} />
+                <Text style={styles.dividerLabel}>{t("auth.or")}</Text>
+                <View style={styles.dividerLine} />
+              </View>
+            </>
+          ) : null}
+          {children}
+        </View>
       </Card>
     </ScreenShell>
   );
@@ -93,6 +132,20 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   error: {
     color: theme.colors.text.danger,
+  },
+  divider: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: theme.spacing[3],
+  },
+  dividerLabel: {
+    ...theme.typography.bodySmall,
+    color: theme.colors.text.muted,
+  },
+  dividerLine: {
+    backgroundColor: theme.colors.border.subtle,
+    flex: 1,
+    height: theme.borderWidths.hairline,
   },
   field: {
     gap: theme.spacing[1.5],

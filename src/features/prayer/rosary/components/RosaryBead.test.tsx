@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react-native";
+import { render, screen } from "@testing-library/react-native";
 import { StyleSheet } from "react-native";
 
 import { fullRosarySequence, rosarySequence } from "@/features/prayer/rosary/data/rosarySequence";
@@ -6,20 +6,16 @@ import { fullRosarySequence, rosarySequence } from "@/features/prayer/rosary/dat
 import { RosaryBead } from "./RosaryBead";
 
 describe("RosaryBead", () => {
-  it("renders upcoming and active variants while respecting disabled state", async () => {
-    const onPress = jest.fn();
+  it("renders upcoming and active variants as non-interactive markers", async () => {
     await render(
       <>
-        <RosaryBead bead={rosarySequence[0]} onPress={onPress} state="upcoming" />
-        <RosaryBead bead={rosarySequence[1]} compact disabled onPress={onPress} state="active" />
+        <RosaryBead bead={rosarySequence[0]} state="upcoming" />
+        <RosaryBead bead={rosarySequence[1]} compact state="active" />
       </>,
     );
 
-    await fireEvent.press(screen.getByTestId("rosary-bead-1"));
-    await fireEvent.press(screen.getByTestId("rosary-bead-2"));
-
-    expect(onPress).toHaveBeenCalledWith("hail-mary-1");
-    expect(onPress).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole("image", { name: "upcoming bead 1, Hail Mary" })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "upcoming bead 1, Hail Mary" })).toBeNull();
   });
 
   it("renders Our Father beads larger than Hail Mary beads", async () => {
@@ -28,8 +24,8 @@ describe("RosaryBead", () => {
 
     await render(
       <>
-        <RosaryBead bead={rosarySequence[0]} onPress={jest.fn()} state="upcoming" />
-        <RosaryBead bead={ourFatherBead!} onPress={jest.fn()} state="upcoming" />
+        <RosaryBead bead={rosarySequence[0]} state="upcoming" />
+        <RosaryBead bead={ourFatherBead!} state="upcoming" />
       </>,
     );
 
@@ -42,13 +38,13 @@ describe("RosaryBead", () => {
     expect(ourFatherStyle.height).toBeGreaterThan(hailMaryStyle.height);
   });
 
-  it("renders the Apostles' Creed as a selectable highlighted crucifix", async () => {
+  it("renders the Apostles' Creed as a non-interactive highlighted crucifix", async () => {
     const apostlesCreed = fullRosarySequence.find((bead) => bead.type === "creed");
     expect(apostlesCreed).toBeDefined();
 
-    await render(<RosaryBead bead={apostlesCreed!} onPress={jest.fn()} state="active" />);
+    await render(<RosaryBead bead={apostlesCreed!} state="active" />);
 
-    expect(screen.getByRole("button", { name: "current crucifix, Apostles' Creed" }).props.accessibilityState).toEqual(
+    expect(screen.getByRole("image", { name: "current crucifix, Apostles' Creed" }).props.accessibilityState).toEqual(
       expect.objectContaining({ selected: true }),
     );
     expect(screen.getByTestId(`rosary-crucifix-shape-${apostlesCreed?.sequence}`)).toBeTruthy();

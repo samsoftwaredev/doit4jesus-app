@@ -18,7 +18,6 @@ interface RosaryBeadNavigatorProps {
   compact?: boolean;
   onNext: () => void;
   onPrevious: () => void;
-  onSelectBead: (beadId: string) => void;
 }
 
 const SWIPE_THRESHOLD = 36;
@@ -65,7 +64,7 @@ function bottomAnchoredScrollOffset(displayIndex: number, rowHeight: number, vie
 }
 
 /**
- * Displays a transparent, bottom-to-top Rosary rail with swipe and direct-marker navigation.
+ * Displays a transparent, bottom-to-top Rosary rail with swipe-only navigation.
  * Non-bead prayers retain the preceding marker, and optional swipe guidance stays collapsed until requested.
  */
 export function RosaryBeadNavigator({
@@ -76,7 +75,6 @@ export function RosaryBeadNavigator({
   compact = false,
   onNext,
   onPrevious,
-  onSelectBead,
 }: RosaryBeadNavigatorProps) {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
@@ -178,9 +176,7 @@ export function RosaryBeadNavigator({
                   <RosaryBead
                     bead={bead}
                     compact={compact}
-                    disabled={isTransitioning}
                     displayNumber={beadNumbers.get(bead.id)}
-                    onPress={onSelectBead}
                     state={beadState(bead)}
                   />
                   {index < displayedBeads.length - 1 ? <View style={styles.chainLink} /> : null}

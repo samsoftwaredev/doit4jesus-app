@@ -20,6 +20,7 @@ import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles"
 import { theme } from "@/theme/tokens";
 
 interface RosaryBottomNavigationProps {
+  advanceLimitReached?: boolean;
   audioAvailable?: boolean;
   audioError?: boolean;
   audioLoading?: boolean;
@@ -62,8 +63,9 @@ function createArtStylePressHandler(onArtStyleChange: (style: RosaryArtStyle) =>
   };
 }
 
-/** Renders Rosary progress plus playback, settings, and restart controls for the active prayer. */
+/** Renders Rosary progress plus playback, settings, restart, and daily skip-limit feedback controls. */
 export function RosaryBottomNavigation({
+  advanceLimitReached = false,
   audioAvailable = false,
   audioError = false,
   audioLoading = false,
@@ -136,6 +138,17 @@ export function RosaryBottomNavigation({
           ? t("rosary.audio.pause")
           : t("rosary.audio.play");
   const audioIconName = audioMuted ? "volume-x" : audioPlaying ? "pause" : "play";
+  const advanceAccessibilityLabel = t(
+    advanceLimitReached ? "rosary.settings.skipLimitButtonLabel" : "rosary.settings.nextLabel",
+    {
+      current: progress.currentIndex,
+      prayer: progress.prayerName,
+      total: progress.total,
+    },
+  );
+  const advanceAccessibilityHint = t(
+    advanceLimitReached ? "rosary.settings.skipLimitHint" : "rosary.settings.advanceHint",
+  );
 
   /** Returns an exact duration label when the active Rosary sequence provides audio timing data. */
   const getLengthLabel = (length: RosaryLength) => {
@@ -153,12 +166,8 @@ export function RosaryBottomNavigation({
       <View style={styles.buttonRow}>
         <Animated.View style={[styles.progressWrap, animatedStyle]}>
           <Pressable
-            accessibilityHint={t("rosary.settings.advanceHint")}
-            accessibilityLabel={t("rosary.settings.nextLabel", {
-              current: progress.currentIndex,
-              prayer: progress.prayerName,
-              total: progress.total,
-            })}
+            accessibilityHint={advanceAccessibilityHint}
+            accessibilityLabel={advanceAccessibilityLabel}
             accessibilityRole="button"
             accessibilityState={{ disabled }}
             disabled={disabled}

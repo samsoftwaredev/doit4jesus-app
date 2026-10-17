@@ -18,7 +18,7 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 
 ## Authentication setup
 
-The app uses Supabase email-and-password authentication. Add these values to
+The app uses Supabase email/password and Google authentication. Add these values to
 your local `.env` file from the Supabase project's Connect dialog:
 
 ```env
@@ -29,6 +29,13 @@ EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
 The app's URL scheme is already `doit4jesus`. In Supabase **Authentication →
 URL Configuration**, add `doit4jesus://**` as a redirect URL. This is required
 for signup confirmations and password-reset links to reopen the app.
+
+To enable Google sign-in, create a Web OAuth client in Google Auth Platform,
+add the Supabase callback URL shown on the project's **Authentication →
+Providers → Google** page as an authorized redirect URI, and save that OAuth
+client ID and secret on the same Supabase provider page. The Google secret stays
+in Supabase and must not be added to the mobile app or `.env` file. Test OAuth
+with a development build because Expo Go does not provide a stable callback URL.
 
 Email confirmations and secure email changes are enabled by default in hosted
 Supabase projects. Configure an SMTP provider before production use so signup,

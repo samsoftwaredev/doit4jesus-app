@@ -1,9 +1,12 @@
 import type { Session } from "@supabase/supabase-js";
 import * as Linking from "expo-linking";
+import * as WebBrowser from "expo-web-browser";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 import { logDevelopmentError } from "@/lib/development-logger";
 import { supabase, supabaseConfigurationError } from "@/lib/supabase";
+
+WebBrowser.maybeCompleteAuthSession();
 
 type AuthContextValue = {
   configurationError: string | null;
@@ -63,6 +66,28 @@ async function restoreSessionFromUrl(url: string): Promise<{
 
 export function createAuthRedirectUrl(path: string): string {
   return Linking.createURL(path);
+}
+
+/** Starts Google OAuth in a secure browser and restores the Supabase session returned to the app. */
+export async function startGoogleOAuth(): Promise<void> {
+  if (supabaseConfigurationError) throw new Error(supabaseConfigurationError);
+
+  const redirectUrl = createAuthRedirectUrl("/");
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: redirectUrl,
+      skipBrowserRedirect: true,
+    },
+  });
+
+  if (error) throw error;
+  if (!data.url) throw new Error("Google sign-in could not be started.");
+
+  const result = await WebBrowser.openAuthSessionAsync(data.url, redirectUrl);
+  if (result.type !== "success") return;
+
+  await restoreSessionFromUrl(result.url);
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {

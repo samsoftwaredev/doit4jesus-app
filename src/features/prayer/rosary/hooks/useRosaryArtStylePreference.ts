@@ -17,14 +17,14 @@ export function isRosaryArtStyle(value: string | null): value is RosaryArtStyle 
  * Storage failures retain the current in-memory selection so prayer can continue.
  */
 export function useRosaryArtStylePreference(storage: RosaryStorageAdapter = AsyncStorage) {
-  const [rosaryArtStyle, setArtStyle] = useState<RosaryArtStyle>("comic");
+  const [rosaryArtStyle, setArtStyle] = useState<RosaryArtStyle>("classic");
   const [isHydrated, setIsHydrated] = useState(false);
   const [storageError, setStorageError] = useState(false);
 
   useEffect(() => {
     let active = true;
 
-    /** Restores a recognized style while preserving Comic style for missing or invalid values. */
+    /** Restores a recognized style while preserving Classical Art for missing or invalid values. */
     async function restorePreference() {
       try {
         const savedStyle = await storage.getItem(STORAGE_KEY);

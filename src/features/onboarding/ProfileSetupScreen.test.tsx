@@ -7,6 +7,7 @@ import { AppLanguageProvider } from "@/localization";
 import { AchievementProvider } from "@/features/achievements";
 
 import { languageOnboardingStorageKey } from "./onboarding-language";
+import { OnboardingApiError } from "./onboarding.api";
 import { ProfileSetupScreen } from "./ProfileSetupScreen";
 
 const mockCompleteOnboarding = jest.fn();
@@ -220,6 +221,43 @@ describe("required profile setup", () => {
     expect(screen.getByText("Username is available.")).toBeTruthy();
     await fireEvent.press(screen.getByTestId("profile-setup-next"));
     expect(mockUpdateProfile).toHaveBeenCalledWith({ username: "joyful_clare" });
+    jest.useRealTimers();
+  });
+
+  it("prefills the username and selects the first available backend suggestion while remaining editable", async () => {
+    jest.useFakeTimers();
+    const profile = {
+      ...baseProfile,
+      profileSetup: { complete: false, completedAt: null, missingFields: ["username"], nextStep: "username" },
+      username: null,
+    } satisfies CurrentUserProfile;
+    mockValidateUsername
+      .mockRejectedValueOnce(
+        new OnboardingApiError("Username unavailable", 409, "USERNAME_TAKEN", ["virgin_mary_123", "virgin_mary_456"]),
+      )
+      .mockResolvedValueOnce({
+        available: true,
+        normalizedUsername: "virgin_mary_123",
+        reason: null,
+        suggestions: [],
+        username: "virgin_mary_123",
+        valid: true,
+      });
+
+    await renderSetup(profile);
+
+    expect(screen.getByLabelText("Username").props.value).toBe("VirginMary");
+
+    await act(async () => {
+      jest.advanceTimersByTime(1000);
+      await Promise.resolve();
+    });
+
+    expect(mockValidateUsername).toHaveBeenCalledWith("VirginMary", expect.any(AbortSignal));
+    expect(screen.getByLabelText("Username").props.value).toBe("virgin_mary_123");
+
+    await fireEvent.changeText(screen.getByLabelText("Username"), "my_custom_name");
+    expect(screen.getByLabelText("Username").props.value).toBe("my_custom_name");
     jest.useRealTimers();
   });
 

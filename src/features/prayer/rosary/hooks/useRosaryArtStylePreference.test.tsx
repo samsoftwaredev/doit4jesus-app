@@ -14,17 +14,17 @@ function createStorage(initialValue: string | null = null): jest.Mocked<RosarySt
 }
 
 describe("useRosaryArtStylePreference", () => {
-  it("defaults to comic and persists art-style changes", async () => {
+  it("defaults to classical art and persists art-style changes", async () => {
     const storage = createStorage();
     const { result } = await renderHook(() => useRosaryArtStylePreference(storage));
 
     await waitFor(() => expect(result.current.isHydrated).toBe(true));
-    expect(result.current.rosaryArtStyle).toBe("comic");
-
-    await act(async () => result.current.setRosaryArtStyle("classic"));
-
     expect(result.current.rosaryArtStyle).toBe("classic");
-    expect(storage.setItem).toHaveBeenCalledWith(ROSARY_ART_STYLE_STORAGE_KEY, "classic");
+
+    await act(async () => result.current.setRosaryArtStyle("comic"));
+
+    expect(result.current.rosaryArtStyle).toBe("comic");
+    expect(storage.setItem).toHaveBeenCalledWith(ROSARY_ART_STYLE_STORAGE_KEY, "comic");
   });
 
   it("restores only recognized art styles", async () => {
@@ -34,7 +34,7 @@ describe("useRosaryArtStylePreference", () => {
 
     const invalid = await renderHook(() => useRosaryArtStylePreference(createStorage("watercolor")));
     await waitFor(() => expect(invalid.result.current.isHydrated).toBe(true));
-    expect(invalid.result.current.rosaryArtStyle).toBe("comic");
+    expect(invalid.result.current.rosaryArtStyle).toBe("classic");
   });
 
   it("keeps art-style changes in memory when storage fails", async () => {
@@ -45,9 +45,9 @@ describe("useRosaryArtStylePreference", () => {
     const { result } = await renderHook(() => useRosaryArtStylePreference(storage));
 
     await waitFor(() => expect(result.current.isHydrated).toBe(true));
-    await act(async () => result.current.setRosaryArtStyle("classic"));
+    await act(async () => result.current.setRosaryArtStyle("comic"));
 
-    expect(result.current.rosaryArtStyle).toBe("classic");
+    expect(result.current.rosaryArtStyle).toBe("comic");
     expect(result.current.storageError).toBe(true);
   });
 });

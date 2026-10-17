@@ -44,6 +44,30 @@ describe("RosaryBottomNavigation", () => {
     expect(onRestart).toHaveBeenCalledTimes(1);
   });
 
+  it("explains that the daily Next-button limit was reached while keeping the control available for feedback", async () => {
+    const onAdvance = jest.fn();
+    await render(
+      <RosaryBottomNavigation
+        advanceLimitReached
+        onAdvance={onAdvance}
+        onArtStyleChange={jest.fn()}
+        onLengthChange={jest.fn()}
+        onRestart={jest.fn()}
+        progress={{ currentIndex: 2, prayerName: "Hail Mary", total: 10 }}
+        rosaryArtStyle="comic"
+        rosaryLength="medium"
+      />,
+    );
+
+    const limitedButton = screen.getByRole("button", {
+      name: "Hail Mary, 2 of 10. Daily skip limit reached.",
+    });
+    expect(limitedButton.props.accessibilityHint).toBe("Swipe up to continue praying.");
+
+    await fireEvent.press(limitedButton);
+    expect(onAdvance).toHaveBeenCalledTimes(1);
+  });
+
   it("allows settings to close without changing the mystery", async () => {
     const onRestart = jest.fn();
     await render(

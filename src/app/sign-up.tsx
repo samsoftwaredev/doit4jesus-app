@@ -11,6 +11,7 @@ import {
   AuthTextInput,
   authScreenStyles,
   createAuthRedirectUrl,
+  startGoogleOAuth,
   useAuth,
 } from "@/features/auth";
 import { isWeakPassword } from "@/features/auth/password-validation";
@@ -28,6 +29,7 @@ export default function SignUpScreen() {
   const { t } = useTranslation();
   const { configurationError } = useAuth();
   const [errorMessage, setErrorMessage] = useState<string>();
+  const [isGoogleSubmitting, setIsGoogleSubmitting] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string>();
   const { control, handleSubmit } = useForm<SignUpValues>({
@@ -76,8 +78,35 @@ export default function SignUpScreen() {
     void handleSubmit(signUp)();
   }
 
+  /** Opens Google authentication and reports provider or browser failures on this screen. */
+  async function handleGoogleAuth(): Promise<void> {
+    if (isGoogleSubmitting) return;
+    setErrorMessage(undefined);
+    setSuccessMessage(undefined);
+    setIsGoogleSubmitting(true);
+
+    try {
+      await startGoogleOAuth();
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : t("auth.googleError"));
+    } finally {
+      setIsGoogleSubmitting(false);
+    }
+  }
+
+  /** Starts Google authentication without leaving an unhandled promise. */
+  function handleGoogleAuthPress(): void {
+    void handleGoogleAuth();
+  }
+
   return (
-    <AuthScreen title={t("auth.createAccount")} subtitle={t("auth.createAccountDescription")}>
+    <AuthScreen
+      googleAuthDisabled={Boolean(configurationError) || isSubmitting}
+      googleAuthLoading={isGoogleSubmitting}
+      onGoogleAuth={handleGoogleAuthPress}
+      title={t("auth.createAccount")}
+      subtitle={t("auth.createAccountDescription")}
+    >
       <Controller
         control={control}
         name="email"
@@ -121,7 +150,12 @@ export default function SignUpScreen() {
       ) : null}
       {successMessage ? <AuthMessage tone="success">{successMessage}</AuthMessage> : null}
       <View style={styles.actions}>
-        <Button disabled={Boolean(configurationError)} fullWidth loading={isSubmitting} onPress={handleSignUpPress}>
+        <Button
+          disabled={Boolean(configurationError) || isGoogleSubmitting}
+          fullWidth
+          loading={isSubmitting}
+          onPress={handleSignUpPress}
+        >
           {t("auth.createAccount")}
         </Button>
       </View>

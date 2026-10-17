@@ -33,7 +33,7 @@ describe("Rosary prayer appearance", () => {
     await render(
       <>
         <ScriptureCard quotation="The Word became flesh." reference="John 1:14" />
-        <RosaryBead bead={creed!} onPress={jest.fn()} state="active" />
+        <RosaryBead bead={creed!} state="active" />
         <RosaryBeadNavigator
           beads={rosarySequence.slice(0, 2)}
           completedBeadIds={["hail-mary-1"]}
@@ -41,7 +41,6 @@ describe("Rosary prayer appearance", () => {
           isTransitioning={false}
           onNext={jest.fn()}
           onPrevious={jest.fn()}
-          onSelectBead={jest.fn()}
         />
         <RosaryBottomNavigation
           onAdvance={jest.fn()}

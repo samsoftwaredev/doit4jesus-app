@@ -6,10 +6,9 @@ import { fullRosarySequence, rosarySequence } from "@/features/prayer/rosary/dat
 import { RosaryBeadNavigator } from "./RosaryBeadNavigator";
 
 describe("RosaryBeadNavigator", () => {
-  it("provides swipe navigation and bead selection without previous or next buttons", async () => {
+  it("provides swipe-only navigation without tappable bead controls", async () => {
     const onNext = jest.fn();
     const onPrevious = jest.fn();
-    const onSelectBead = jest.fn();
     await render(
       <RosaryBeadNavigator
         beads={rosarySequence.slice(0, 2)}
@@ -18,7 +17,6 @@ describe("RosaryBeadNavigator", () => {
         isTransitioning={false}
         onNext={onNext}
         onPrevious={onPrevious}
-        onSelectBead={onSelectBead}
       />,
     );
 
@@ -27,11 +25,11 @@ describe("RosaryBeadNavigator", () => {
 
     fireGestureHandler(getByGestureTestId("rosary-swipe-gesture"), [{ translationY: -50 }]);
     fireGestureHandler(getByGestureTestId("rosary-swipe-gesture"), [{ translationY: 50 }]);
-    await fireEvent.press(screen.getByTestId("rosary-bead-1"));
 
     expect(onPrevious).toHaveBeenCalledTimes(1);
     expect(onNext).toHaveBeenCalledTimes(1);
-    expect(onSelectBead).toHaveBeenCalledWith("hail-mary-1");
+    expect(screen.getByRole("image", { name: "completed bead 1, Hail Mary" })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "completed bead 1, Hail Mary" })).toBeNull();
   });
 
   it("reveals the swipe instruction from an accessible info toggle", async () => {
@@ -43,7 +41,6 @@ describe("RosaryBeadNavigator", () => {
         isTransitioning={false}
         onNext={jest.fn()}
         onPrevious={jest.fn()}
-        onSelectBead={jest.fn()}
       />,
     );
 
@@ -71,14 +68,13 @@ describe("RosaryBeadNavigator", () => {
         isTransitioning={false}
         onNext={jest.fn()}
         onPrevious={jest.fn()}
-        onSelectBead={jest.fn()}
       />,
     );
 
     const navigator = screen.getByLabelText("Rosary bead navigator");
     const markerLabels = within(navigator)
-      .getAllByRole("button")
-      .map((button) => button.props.accessibilityLabel)
+      .getAllByRole("image")
+      .map((marker) => marker.props.accessibilityLabel)
       .filter((label) => typeof label === "string" && label.includes("bead"));
 
     expect(markerLabels).toEqual([
@@ -97,7 +93,6 @@ describe("RosaryBeadNavigator", () => {
         isTransitioning={false}
         onNext={jest.fn()}
         onPrevious={jest.fn()}
-        onSelectBead={jest.fn()}
       />,
     );
 
@@ -113,11 +108,10 @@ describe("RosaryBeadNavigator", () => {
         isTransitioning={false}
         onNext={jest.fn()}
         onPrevious={jest.fn()}
-        onSelectBead={jest.fn()}
       />,
     );
 
-    expect(screen.getByRole("button", { name: "current crucifix, Apostles' Creed" })).toBeTruthy();
+    expect(screen.getByRole("image", { name: "current crucifix, Apostles' Creed" })).toBeTruthy();
   });
 
   it.each([
@@ -142,7 +136,6 @@ describe("RosaryBeadNavigator", () => {
           isTransitioning={false}
           onNext={jest.fn()}
           onPrevious={jest.fn()}
-          onSelectBead={jest.fn()}
         />,
       );
 

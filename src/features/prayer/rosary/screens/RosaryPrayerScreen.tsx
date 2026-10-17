@@ -19,6 +19,7 @@ import Animated, { FadeIn, useReducedMotion } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Confetti, SacredAtmosphere } from "@/components/ui";
+import { useAuth } from "@/features/auth";
 import { recordPrayerForIntention } from "@/features/prayer/intentions";
 import { recordRosaryActivity } from "@/features/prayer/rosary/api/activities.api";
 import {
@@ -43,6 +44,7 @@ import { createRosarySequence, getRosarySequenceForLength } from "@/features/pra
 import { useRosaryArtStylePreference } from "@/features/prayer/rosary/hooks/useRosaryArtStylePreference";
 import { useRosaryAudioPlayback } from "@/features/prayer/rosary/hooks/useRosaryAudioPlayback";
 import { useRosaryAudioPreference } from "@/features/prayer/rosary/hooks/useRosaryAudioPreference";
+import { useDailyRosarySkipLimit } from "@/features/prayer/rosary/hooks/useDailyRosarySkipLimit";
 import { useRosaryLengthPreference } from "@/features/prayer/rosary/hooks/useRosaryLengthPreference";
 import { useRosarySession } from "@/features/prayer/rosary/hooks/useRosarySession";
 import type { RosaryArtStyle, RosaryBead, RosaryLength, RosaryMysteryType } from "@/features/prayer/rosary/types";
@@ -95,6 +97,7 @@ export function RosaryPrayerScreen({
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
   const { language, locale } = useAppLanguage();
+  const { session: authSession } = useAuth();
   const router = useRouter();
   const { width, fontScale } = useWindowDimensions();
   const reduceMotion = useReducedMotion();
@@ -108,6 +111,8 @@ export function RosaryPrayerScreen({
   const [headerHeight, setHeaderHeight] = useState(0);
   const [rosaryRecorded, setRosaryRecorded] = useState(false);
   const [rosarySettingsVisible, setRosarySettingsVisible] = useState(false);
+  const [skipWarningVisible, setSkipWarningVisible] = useState(false);
+  const dailySkipLimit = useDailyRosarySkipLimit(authSession?.user.id ?? null);
   const {
     isHydrated: isLengthHydrated,
     rosaryLength,
@@ -284,6 +289,23 @@ export function RosaryPrayerScreen({
   const handleAudioToggle = useCallback(() => {
     void audioPlayback.togglePlayback();
   }, [audioPlayback]);
+
+  /** Advances from the Next button only when today's device-local skip allowance permits it. */
+  const handleNextButtonAdvance = useCallback(() => {
+    if (!dailySkipLimit.isHydrated || session.isTransitioning) return;
+
+    const attempt = dailySkipLimit.tryUseSkip(session.goToNextBead);
+    if (attempt.limitReached) setSkipWarningVisible(true);
+  }, [dailySkipLimit, session]);
+
+  /** Hides the daily skip-limit warning without changing the persisted allowance. */
+  const dismissSkipWarning = useCallback(() => setSkipWarningVisible(false), []);
+
+  useEffect(() => {
+    if (!skipWarningVisible) return;
+    const timeout = setTimeout(dismissSkipWarning, 4000);
+    return () => clearTimeout(timeout);
+  }, [dismissSkipWarning, skipWarningVisible]);
 
   /** Records the visible scrolling region so the Rosary rail does not grow with the card stack. */
   const handlePageViewportLayout = useCallback((event: LayoutChangeEvent) => {
@@ -500,7 +522,6 @@ export function RosaryPrayerScreen({
                   isTransitioning={session.isTransitioning}
                   onNext={session.goToNextBead}
                   onPrevious={session.goToPreviousBead}
-                  onSelectBead={session.selectBead}
                 />
               </View>
 
@@ -531,7 +552,11 @@ export function RosaryPrayerScreen({
                     {t("rosary.audio.error")}
                   </Text>
                 ) : null}
-                {session.storageError || lengthStorageError || audioStorageError || artStyleStorageError ? (
+                {session.storageError ||
+                lengthStorageError ||
+                audioStorageError ||
+                artStyleStorageError ||
+                dailySkipLimit.storageError ? (
                   <Text accessibilityRole="alert" style={styles.storageNote}>
                     {session.storageError
                       ? t("rosary.storage.progress")
@@ -539,21 +564,45 @@ export function RosaryPrayerScreen({
                         ? t("rosary.storage.length")
                         : audioStorageError
                           ? t("rosary.storage.audio")
-                          : t("rosary.storage.artStyle")}
+                          : artStyleStorageError
+                            ? t("rosary.storage.artStyle")
+                            : t("rosary.storage.skips")}
                   </Text>
                 ) : null}
               </ScrollView>
             </View>
           </ScrollView>
 
+          {skipWarningVisible ? (
+            <View accessible accessibilityLiveRegion="assertive" accessibilityRole="alert" style={styles.skipWarning}>
+              <Feather
+                accessible={false}
+                color={theme.colors.semantic.warning}
+                name="alert-triangle"
+                size={theme.sizes.iconSmall}
+              />
+              <Text style={styles.skipWarningText}>{t("rosary.skipLimit.message")}</Text>
+              <Pressable
+                accessibilityLabel={t("common.dismissMessage")}
+                accessibilityRole="button"
+                hitSlop={theme.spacing[2]}
+                onPress={dismissSkipWarning}
+                style={styles.skipWarningDismiss}
+              >
+                <Feather accessible={false} color={theme.colors.text.secondary} name="x" size={theme.sizes.iconSmall} />
+              </Pressable>
+            </View>
+          ) : null}
+
           <RosaryBottomNavigation
+            advanceLimitReached={dailySkipLimit.isLimitReached}
             audioAvailable={audioPlayback.isAvailable}
             audioError={Boolean(audioPlayback.playbackError)}
             audioLoading={audioPlayback.isLoading}
             audioMuted={isAudioMuted}
             audioPlaying={audioPlayback.isPlaying}
-            disabled={session.isTransitioning || activeBeads.length === 0}
-            onAdvance={session.goToNextBead}
+            disabled={session.isTransitioning || activeBeads.length === 0 || !dailySkipLimit.isHydrated}
+            onAdvance={handleNextButtonAdvance}
             onArtStyleChange={handleRosaryArtStyleChange}
             onAudioMutedChange={handleAudioMutedChange}
             onAudioToggle={handleAudioToggle}
@@ -729,6 +778,28 @@ const styleSheet = createThemedStyles((theme) => ({
     ...theme.typography.caption,
     color: theme.colors.text.warning,
     textAlign: "center",
+  },
+  skipWarning: {
+    alignItems: "center",
+    backgroundColor: theme.colors.semantic.warningSurface,
+    borderColor: theme.colors.semantic.warningBorder,
+    borderRadius: theme.radii.md,
+    borderWidth: theme.borderWidths.thin,
+    flexDirection: "row",
+    marginTop: theme.spacing[2],
+    paddingLeft: theme.spacing[3],
+  },
+  skipWarningText: {
+    ...theme.typography.bodySmall,
+    color: theme.colors.text.primary,
+    flex: 1,
+    marginLeft: theme.spacing[2],
+  },
+  skipWarningDismiss: {
+    alignItems: "center",
+    height: theme.sizes.touchTarget,
+    justifyContent: "center",
+    width: theme.sizes.touchTarget,
   },
   completionOverlay: {
     alignItems: "center",

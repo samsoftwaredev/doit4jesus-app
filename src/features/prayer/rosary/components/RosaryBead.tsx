@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import Animated, {
   cancelAnimation,
   useAnimatedStyle,
@@ -20,11 +20,9 @@ interface RosaryBeadProps {
   state: BeadState;
   compact?: boolean;
   displayNumber?: number;
-  disabled?: boolean;
-  onPress: (beadId: string) => void;
 }
 
-/** Returns a visually distinct bead diameter while preserving the separate minimum touch target. */
+/** Returns a visually distinct bead diameter within the marker's minimum layout area. */
 function beadDiameter(type: RosaryBeadModel["type"], compact: boolean) {
   if (type === "ourFather") return compact ? 32 : 38;
   if (type === "hailMary") return compact ? 18 : 22;
@@ -32,17 +30,10 @@ function beadDiameter(type: RosaryBeadModel["type"], compact: boolean) {
 }
 
 /**
- * Renders one theme-aware selectable Rosary marker with prayer-specific sizing and current-position state.
+ * Renders one theme-aware, non-interactive Rosary marker with prayer-specific sizing and current-position state.
  * The Apostles' Creed uses a crucifix marker, while physical beads use their Rosary bead number.
  */
-export function RosaryBead({
-  bead,
-  state,
-  compact = false,
-  displayNumber,
-  disabled = false,
-  onPress,
-}: RosaryBeadProps) {
+export function RosaryBead({ bead, state, compact = false, displayNumber }: RosaryBeadProps) {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
   const reduceMotion = useReducedMotion();
@@ -86,17 +77,12 @@ export function RosaryBead({
       });
 
   return (
-    <Pressable
-      accessibilityHint={t("rosary.bead.directHint", {
-        marker: t(isCrucifix ? "rosary.bead.crucifix" : "rosary.bead.bead"),
-      })}
+    <View
+      accessible
       accessibilityLabel={markerLabel}
-      accessibilityRole="button"
-      accessibilityState={{ disabled, selected: isActive }}
-      disabled={disabled}
-      hitSlop={theme.spacing[2]}
-      onPress={() => onPress(bead.id)}
-      style={({ pressed }) => [styles.touchTarget, pressed && !disabled && styles.pressed]}
+      accessibilityRole="image"
+      accessibilityState={{ selected: isActive }}
+      style={styles.markerContainer}
       testID={`${isCrucifix ? "rosary-crucifix" : "rosary-bead"}-${bead.sequence}`}
     >
       {isCrucifix ? (
@@ -146,20 +132,17 @@ export function RosaryBead({
           {visibleNumber}
         </Text>
       ) : null}
-    </Pressable>
+    </View>
   );
 }
 
 const styleSheet = createThemedStyles((theme) => ({
-  touchTarget: {
+  markerContainer: {
     alignItems: "center",
     justifyContent: "center",
     minHeight: theme.sizes.touchTarget,
     minWidth: theme.sizes.touchTarget,
     position: "relative",
-  },
-  pressed: {
-    opacity: theme.opacity.pressed,
   },
   bead: {
     alignItems: "center",

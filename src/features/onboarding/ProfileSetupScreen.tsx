@@ -27,14 +27,24 @@ import { ProfileSetupLayout } from "./ProfileSetupLayout";
 type UsernameStatus = "available" | "checking" | "idle" | "invalid" | "unavailable" | "error";
 type OnboardingFlowStep = "language" | OnboardingStep;
 
-/** Projects persisted profile fields into the editable onboarding form without reminder preferences. */
+/** Creates an API-safe initial username candidate from the user's saved display name. */
+function usernameCandidateFromDisplayName(displayName: string | null): string {
+  if (!displayName) return "";
+  return displayName
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-zA-Z0-9_]/g, "")
+    .slice(0, 30);
+}
+
+/** Projects persisted profile fields into the editable onboarding form, proposing a username when one is missing. */
 function stateFromProfile(profile: CurrentUserProfile): ProfileSetupState {
   return {
     countryCode: profile.countryCode,
     countryName: profile.countryName,
     displayName: profile.displayName ?? "",
     gender: profile.gender,
-    username: profile.username ?? "",
+    username: profile.username ?? usernameCandidateFromDisplayName(profile.displayName),
   };
 }
 
@@ -155,6 +165,13 @@ export function ProfileSetupScreen() {
       void validateUsername(candidate, controller.signal)
         .then((result) => {
           if (controller.signal.aborted || form.username.trim() !== candidate) return;
+          const firstSuggestion = result.suggestions[0];
+          if (firstSuggestion) {
+            setUsernameResult(null);
+            setUsernameStatus("idle");
+            setForm((current) => ({ ...current, username: firstSuggestion }));
+            return;
+          }
           setUsernameResult(result);
           setUsernameStatus(
             result.valid && result.available
@@ -168,6 +185,13 @@ export function ProfileSetupScreen() {
           logDevelopmentError("validating an onboarding username", requestError);
           if (controller.signal.aborted) return;
           if (requestError instanceof OnboardingApiError && requestError.suggestions.length > 0) {
+            const [firstSuggestion] = requestError.suggestions;
+            setForm((current) => ({ ...current, username: firstSuggestion }));
+            setUsernameResult(null);
+            setUsernameStatus("idle");
+            return;
+          }
+          if (requestError instanceof OnboardingApiError) {
             setUsernameResult({
               available: false,
               normalizedUsername: candidate,
@@ -232,14 +256,10 @@ export function ProfileSetupScreen() {
         setError(t("onboarding.errors.usernameConflict"));
         setUsernameStatus("unavailable");
         if (requestError.suggestions.length > 0) {
-          setUsernameResult({
-            available: false,
-            normalizedUsername: form.username.trim(),
-            reason: "USERNAME_TAKEN",
-            suggestions: requestError.suggestions,
-            username: form.username.trim(),
-            valid: true,
-          });
+          const [firstSuggestion] = requestError.suggestions;
+          setForm((current) => ({ ...current, username: firstSuggestion }));
+          setUsernameResult(null);
+          setUsernameStatus("idle");
         }
         setUsernameValidationAttempt((attempt) => attempt + 1);
       } else if (options.username && requestError instanceof ProfileApiError && requestError.status === 422) {

@@ -8,6 +8,7 @@ import { i18n } from "@/localization";
 
 const mockSignInWithPassword = jest.fn();
 const mockSignUp = jest.fn();
+const mockStartGoogleOAuth = jest.fn();
 
 jest.mock("expo-router", () => {
   return {
@@ -22,6 +23,7 @@ jest.mock("@/features/auth", () => {
   return {
     ...actual,
     createAuthRedirectUrl: () => "doit4jesus://",
+    startGoogleOAuth: (...args: unknown[]) => mockStartGoogleOAuth(...args),
     useAuth: () => ({ configurationError: null }),
   };
 });
@@ -40,7 +42,29 @@ describe("authentication form validation", () => {
     jest.clearAllMocks();
     mockSignInWithPassword.mockResolvedValue({ error: null });
     mockSignUp.mockResolvedValue({ data: { session: {} }, error: null });
+    mockStartGoogleOAuth.mockResolvedValue(undefined);
     await i18n.changeLanguage("en");
+  });
+
+  it.each([
+    ["sign-in", SignInScreen],
+    ["sign-up", SignUpScreen],
+  ])("starts Google OAuth from the %s screen", async (_screenName, ScreenComponent) => {
+    await render(<ScreenComponent />);
+
+    await fireEvent.press(screen.getByRole("button", { name: "Continue with Google" }));
+
+    await waitFor(() => expect(mockStartGoogleOAuth).toHaveBeenCalledTimes(1));
+  });
+
+  it("shows Google OAuth failures and restores the Google action", async () => {
+    mockStartGoogleOAuth.mockRejectedValueOnce(new Error("Google sign-in is unavailable."));
+    await render(<SignInScreen />);
+
+    await fireEvent.press(screen.getByRole("button", { name: "Continue with Google" }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("Google sign-in is unavailable.");
+    expect(screen.getByRole("button", { name: "Continue with Google" })).not.toBeDisabled();
   });
 
   it("shows live login validation errors and prevents an invalid submission", async () => {
@@ -104,6 +128,7 @@ describe("authentication form validation", () => {
     await i18n.changeLanguage("es");
     await render(<SignUpScreen />);
 
+    expect(screen.getByRole("button", { name: "Continuar con Google" })).toBeTruthy();
     await fireEvent.changeText(screen.getByLabelText("Correo electrónico"), "invalid");
     expect(screen.getByText("Escribe un correo electrónico válido.")).toBeTruthy();
   });

@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
-import { RosaryMysteryCard } from "@/features/prayer/rosary/components";
+import { RosaryMysteryCard } from "@/features/prayer/rosary/components/RosaryMysteryCard";
 import { getRosaryContent } from "@/features/prayer/rosary/data/localizedRosaryContent";
 import { getRosaryMysterySetsFromContent } from "@/features/prayer/rosary/data/rosaryMysteries";
 import { useRosaryArtStylePreference } from "@/features/prayer/rosary/hooks/useRosaryArtStylePreference";

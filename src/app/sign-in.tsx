@@ -4,7 +4,7 @@ import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
 import { useTranslation } from "react-i18next";
 
-import { AuthMessage, AuthScreen, AuthTextInput, authScreenStyles, useAuth } from "@/features/auth";
+import { AuthMessage, AuthScreen, AuthTextInput, authScreenStyles, startGoogleOAuth, useAuth } from "@/features/auth";
 import { Button } from "@/components/ui";
 import { supabase } from "@/lib/supabase";
 import { useThemedStyles } from "@/theme/createThemedStyles";
@@ -20,6 +20,7 @@ export default function SignInScreen() {
   const { t } = useTranslation();
   const { configurationError } = useAuth();
   const [errorMessage, setErrorMessage] = useState<string>();
+  const [isGoogleSubmitting, setIsGoogleSubmitting] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { control, handleSubmit } = useForm<SignInValues>({
     defaultValues: { email: "", password: "" },
@@ -53,8 +54,34 @@ export default function SignInScreen() {
     void handleSubmit(signIn)();
   }
 
+  /** Opens Google authentication and reports provider or browser failures on this screen. */
+  async function handleGoogleAuth(): Promise<void> {
+    if (isGoogleSubmitting) return;
+    setErrorMessage(undefined);
+    setIsGoogleSubmitting(true);
+
+    try {
+      await startGoogleOAuth();
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : t("auth.googleError"));
+    } finally {
+      setIsGoogleSubmitting(false);
+    }
+  }
+
+  /** Starts Google authentication without leaving an unhandled promise. */
+  function handleGoogleAuthPress(): void {
+    void handleGoogleAuth();
+  }
+
   return (
-    <AuthScreen title={t("auth.signIn")} subtitle={t("auth.signInDescription")}>
+    <AuthScreen
+      googleAuthDisabled={Boolean(configurationError) || isSubmitting}
+      googleAuthLoading={isGoogleSubmitting}
+      onGoogleAuth={handleGoogleAuthPress}
+      title={t("auth.signIn")}
+      subtitle={t("auth.signInDescription")}
+    >
       <Controller
         control={control}
         name="email"
@@ -97,7 +124,12 @@ export default function SignInScreen() {
         <AuthMessage>{configurationError ?? errorMessage ?? ""}</AuthMessage>
       ) : null}
       <View style={styles.actions}>
-        <Button disabled={Boolean(configurationError)} fullWidth loading={isSubmitting} onPress={handleSignInPress}>
+        <Button
+          disabled={Boolean(configurationError) || isGoogleSubmitting}
+          fullWidth
+          loading={isSubmitting}
+          onPress={handleSignInPress}
+        >
           {t("auth.signIn")}
         </Button>
       </View>
