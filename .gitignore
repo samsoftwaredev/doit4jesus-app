@@ -36,6 +36,9 @@ yarn-error.*
 !.env.example
 .env*.local
 
+# Supabase local runtime state and generated secrets
+/supabase/.temp/
+
 # typescript
 *.tsbuildinfo
 
