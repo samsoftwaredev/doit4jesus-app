@@ -7,8 +7,6 @@ import { APP_CONFIG } from "@/config/app-config";
 import { logDevelopmentError } from "@/lib/development-logger";
 import { supabase, supabaseConfigurationError } from "@/lib/supabase";
 
-WebBrowser.maybeCompleteAuthSession();
-
 type AuthContextValue = {
   configurationError: string | null;
   finishPasswordRecovery: () => void;
@@ -18,6 +16,7 @@ type AuthContextValue = {
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
+const GOOGLE_AUTH_REDIRECT_URL = `${APP_CONFIG.appUrl}/`;
 
 export function readAuthParameters(url: string): URLSearchParams {
   const [urlWithoutFragment, fragment = ""] = url.split("#");
@@ -65,34 +64,19 @@ async function restoreSessionFromUrl(url: string): Promise<{
   };
 }
 
-/** Builds an authentication callback that canonicalizes production web URLs while preserving development and native URLs. */
+/** Builds a platform-specific callback for email confirmation and password recovery. */
 export function createAuthRedirectUrl(path: string): string {
-  const platformUrl = Linking.createURL(path);
-
-  try {
-    const parsedPlatformUrl = new URL(platformUrl);
-    const isCanonicalWebApp = parsedPlatformUrl.origin === APP_CONFIG.appUrl;
-    const isLegacyWebApp =
-      parsedPlatformUrl.origin === "https://www.doitforjesus.com" &&
-      (parsedPlatformUrl.pathname === "/app" || parsedPlatformUrl.pathname.startsWith("/app/"));
-
-    if (isCanonicalWebApp || isLegacyWebApp) return new URL(path, APP_CONFIG.appUrl).toString();
-  } catch {
-    return platformUrl;
-  }
-
-  return platformUrl;
+  return Linking.createURL(path);
 }
 
-/** Starts Google OAuth in a secure browser and restores the Supabase session returned to the app. */
+/** Starts Google OAuth in a browser that finishes at the canonical production web app. */
 export async function startGoogleOAuth(): Promise<void> {
   if (supabaseConfigurationError) throw new Error(supabaseConfigurationError);
 
-  const redirectUrl = createAuthRedirectUrl("/");
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: redirectUrl,
+      redirectTo: GOOGLE_AUTH_REDIRECT_URL,
       skipBrowserRedirect: true,
     },
   });
@@ -100,10 +84,7 @@ export async function startGoogleOAuth(): Promise<void> {
   if (error) throw error;
   if (!data.url) throw new Error("Google sign-in could not be started.");
 
-  const result = await WebBrowser.openAuthSessionAsync(data.url, redirectUrl);
-  if (result.type !== "success") return;
-
-  await restoreSessionFromUrl(result.url);
+  await WebBrowser.openBrowserAsync(data.url);
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {

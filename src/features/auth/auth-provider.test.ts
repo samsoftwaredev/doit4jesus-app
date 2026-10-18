@@ -1,6 +1,5 @@
 const mockCreateUrl = jest.fn(() => "doit4jesus://");
-const mockMaybeCompleteAuthSession = jest.fn();
-const mockOpenAuthSessionAsync = jest.fn();
+const mockOpenBrowserAsync = jest.fn();
 const mockSetSession = jest.fn();
 const mockSignInWithOAuth = jest.fn();
 
@@ -9,8 +8,7 @@ jest.mock("expo-linking", () => ({
 }));
 
 jest.mock("expo-web-browser", () => ({
-  maybeCompleteAuthSession: mockMaybeCompleteAuthSession,
-  openAuthSessionAsync: mockOpenAuthSessionAsync,
+  openBrowserAsync: mockOpenBrowserAsync,
 }));
 
 jest.mock("@/lib/supabase", () => ({
@@ -33,17 +31,13 @@ describe("Supabase auth deep links", () => {
     mockSetSession.mockResolvedValue({ data: { session: { access_token: "access" } }, error: null });
   });
 
-  it("uses the canonical app origin for web authentication callbacks", async () => {
-    mockCreateUrl.mockReturnValueOnce("https://www.doitforjesus.com/app/");
+  it("always sends successful Google authentication to the canonical web app", async () => {
     mockSignInWithOAuth.mockResolvedValue({ data: { url: "https://accounts.example/google" }, error: null });
-    mockOpenAuthSessionAsync.mockResolvedValue({
-      type: "success",
-      url: "https://app.doitforjesus.com/#access_token=access&refresh_token=refresh",
-    });
+    mockOpenBrowserAsync.mockResolvedValue({ type: "opened" });
 
     await startGoogleOAuth();
 
-    expect(mockCreateUrl).toHaveBeenCalledWith("/");
+    expect(mockCreateUrl).not.toHaveBeenCalled();
     expect(mockSignInWithOAuth).toHaveBeenCalledWith({
       provider: "google",
       options: {
@@ -51,17 +45,20 @@ describe("Supabase auth deep links", () => {
         skipBrowserRedirect: true,
       },
     });
-    expect(mockOpenAuthSessionAsync).toHaveBeenCalledWith(
-      "https://accounts.example/google",
-      "https://app.doitforjesus.com/",
-    );
-    expect(mockSetSession).toHaveBeenCalledWith({ access_token: "access", refresh_token: "refresh" });
+    expect(mockOpenBrowserAsync).toHaveBeenCalledWith("https://accounts.example/google");
+    expect(mockSetSession).not.toHaveBeenCalled();
   });
 
   it("keeps local web callbacks on the development server", () => {
     mockCreateUrl.mockReturnValueOnce("http://localhost:8081/reset-password");
 
     expect(createAuthRedirectUrl("/reset-password")).toBe("http://localhost:8081/reset-password");
+  });
+
+  it("does not canonicalize obsolete legacy web callback URLs", () => {
+    mockCreateUrl.mockReturnValueOnce("https://www.doitforjesus.com/app/reset-password");
+
+    expect(createAuthRedirectUrl("/reset-password")).toBe("https://www.doitforjesus.com/app/reset-password");
   });
 
   it("reads recovery tokens from the URL fragment", () => {
@@ -78,40 +75,10 @@ describe("Supabase auth deep links", () => {
     expect(readAuthParameters("doit4jesus://?code=verification-code").get("code")).toBe("verification-code");
   });
 
-  it("opens Google OAuth and restores the returned Supabase session", async () => {
-    mockSignInWithOAuth.mockResolvedValue({ data: { url: "https://accounts.example/google" }, error: null });
-    mockOpenAuthSessionAsync.mockResolvedValue({
-      type: "success",
-      url: "doit4jesus://#access_token=access&refresh_token=refresh",
-    });
-
-    await startGoogleOAuth();
-
-    expect(mockCreateUrl).toHaveBeenCalledWith("/");
-    expect(mockSignInWithOAuth).toHaveBeenCalledWith({
-      provider: "google",
-      options: {
-        redirectTo: "doit4jesus://",
-        skipBrowserRedirect: true,
-      },
-    });
-    expect(mockOpenAuthSessionAsync).toHaveBeenCalledWith("https://accounts.example/google", "doit4jesus://");
-    expect(mockSetSession).toHaveBeenCalledWith({ access_token: "access", refresh_token: "refresh" });
-  });
-
-  it("leaves the session unchanged when Google OAuth is canceled", async () => {
-    mockSignInWithOAuth.mockResolvedValue({ data: { url: "https://accounts.example/google" }, error: null });
-    mockOpenAuthSessionAsync.mockResolvedValue({ type: "cancel" });
-
-    await startGoogleOAuth();
-
-    expect(mockSetSession).not.toHaveBeenCalled();
-  });
-
   it("reports an OAuth setup error before opening the browser", async () => {
     mockSignInWithOAuth.mockResolvedValue({ data: { url: null }, error: new Error("Google provider is disabled.") });
 
     await expect(startGoogleOAuth()).rejects.toThrow("Google provider is disabled.");
-    expect(mockOpenAuthSessionAsync).not.toHaveBeenCalled();
+    expect(mockOpenBrowserAsync).not.toHaveBeenCalled();
   });
 });

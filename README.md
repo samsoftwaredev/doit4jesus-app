@@ -37,8 +37,9 @@ To enable Google sign-in, create a Web OAuth client in Google Auth Platform,
 add the Supabase callback URL shown on the project's **Authentication →
 Providers → Google** page as an authorized redirect URI, and save that OAuth
 client ID and secret on the same Supabase provider page. The Google secret stays
-in Supabase and must not be added to the mobile app or `.env` file. Test OAuth
-with a development build because Expo Go does not provide a stable callback URL.
+in Supabase and must not be added to the mobile app or `.env` file. Google OAuth
+always finishes in the browser at `https://app.doitforjesus.com/`, including when
+authentication starts from a native build.
 
 Email confirmations and secure email changes are enabled by default in hosted
 Supabase projects. Configure an SMTP provider before production use so signup,
