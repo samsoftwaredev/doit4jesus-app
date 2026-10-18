@@ -62,6 +62,15 @@ export const resources = {
         loadingAccount: "Loading your account",
         profileErrorCopy: "Check your connection and try again. Your dashboard remains protected.",
       },
+      notFound: {
+        description: "Don’t worry—we left the ninety-nine to come find you.",
+        eyebrow: "404 • THE LOST SHEEP",
+        imageLabel: "A confused sheep holding a map beside a signpost",
+        returnHome: "Return to the flock",
+        retraceSteps: "Retrace my steps",
+        title: "One page has wandered off.",
+        wilderness: "This page was last seen heading toward the wilderness. 🐑",
+      },
       achievements: {
         badgeAward: "You earned {{name}}!",
         onboardingComplete: "Congrats! 🎉 Your account is ready.",
@@ -1298,6 +1307,15 @@ export const resources = {
       app: {
         loadingAccount: "Cargando tu cuenta",
         profileErrorCopy: "Comprueba tu conexión e inténtalo de nuevo. Tu panel permanece protegido.",
+      },
+      notFound: {
+        description: "No te preocupes: dejamos a las noventa y nueve para venir a buscarte.",
+        eyebrow: "404 • LA OVEJA PERDIDA",
+        imageLabel: "Una oveja confundida sostiene un mapa junto a una señal",
+        returnHome: "Volver al rebaño",
+        retraceSteps: "Volver sobre mis pasos",
+        title: "Una página se apartó del rebaño.",
+        wilderness: "La última vez que vimos esta página, iba camino al desierto. 🐑",
       },
       achievements: {
         badgeAward: "¡Obtuviste {{name}}!",
