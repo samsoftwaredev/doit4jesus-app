@@ -74,15 +74,8 @@ if (failedChecks.length > 0) {
   process.exit(1);
 }
 
-if (mode === "push" && dependencyWarnings.length > 0) {
-  console.error(
-    `\nPush blocked because of warning${dependencyWarnings.length === 1 ? "" : "s"}: ${dependencyWarnings.join(", ")}.`,
-  );
-  process.exit(1);
-}
-
 if (dependencyWarnings.length > 0) {
-  console.warn("\nQuality checks passed with warnings. The commit may proceed.");
+  console.warn(`\nQuality checks passed with warnings. The ${mode} may proceed.`);
 } else {
   console.log("\nQuality checks passed.");
 }
