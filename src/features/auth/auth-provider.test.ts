@@ -23,14 +23,45 @@ jest.mock("@/lib/supabase", () => ({
   supabaseConfigurationError: null,
 }));
 
-const { readAuthParameters, startGoogleOAuth } = jest.requireActual<typeof import("@/features/auth/auth-provider")>(
-  "@/features/auth/auth-provider",
-);
+const { createAuthRedirectUrl, readAuthParameters, startGoogleOAuth } = jest.requireActual<
+  typeof import("@/features/auth/auth-provider")
+>("@/features/auth/auth-provider");
 
 describe("Supabase auth deep links", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockSetSession.mockResolvedValue({ data: { session: { access_token: "access" } }, error: null });
+  });
+
+  it("uses the canonical app origin for web authentication callbacks", async () => {
+    mockCreateUrl.mockReturnValueOnce("https://www.doitforjesus.com/app/");
+    mockSignInWithOAuth.mockResolvedValue({ data: { url: "https://accounts.example/google" }, error: null });
+    mockOpenAuthSessionAsync.mockResolvedValue({
+      type: "success",
+      url: "https://app.doitforjesus.com/#access_token=access&refresh_token=refresh",
+    });
+
+    await startGoogleOAuth();
+
+    expect(mockCreateUrl).toHaveBeenCalledWith("/");
+    expect(mockSignInWithOAuth).toHaveBeenCalledWith({
+      provider: "google",
+      options: {
+        redirectTo: "https://app.doitforjesus.com/",
+        skipBrowserRedirect: true,
+      },
+    });
+    expect(mockOpenAuthSessionAsync).toHaveBeenCalledWith(
+      "https://accounts.example/google",
+      "https://app.doitforjesus.com/",
+    );
+    expect(mockSetSession).toHaveBeenCalledWith({ access_token: "access", refresh_token: "refresh" });
+  });
+
+  it("keeps local web callbacks on the development server", () => {
+    mockCreateUrl.mockReturnValueOnce("http://localhost:8081/reset-password");
+
+    expect(createAuthRedirectUrl("/reset-password")).toBe("http://localhost:8081/reset-password");
   });
 
   it("reads recovery tokens from the URL fragment", () => {

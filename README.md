@@ -27,8 +27,11 @@ EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
 ```
 
 The app's URL scheme is already `doit4jesus`. In Supabase **Authentication →
-URL Configuration**, add `doit4jesus://**` as a redirect URL. This is required
-for signup confirmations and password-reset links to reopen the app.
+URL Configuration**, set the production **Site URL** to
+`https://app.doitforjesus.com/` and add both
+`https://app.doitforjesus.com/**` and `doit4jesus://**` as redirect URLs. The
+web URL returns browser authentication to the canonical app subdomain; the app
+scheme reopens native builds for signup confirmations and password-reset links.
 
 To enable Google sign-in, create a Web OAuth client in Google Auth Platform,
 add the Supabase callback URL shown on the project's **Authentication →

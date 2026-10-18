@@ -3,6 +3,7 @@ import * as Linking from "expo-linking";
 import * as WebBrowser from "expo-web-browser";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
+import { APP_CONFIG } from "@/config/app-config";
 import { logDevelopmentError } from "@/lib/development-logger";
 import { supabase, supabaseConfigurationError } from "@/lib/supabase";
 
@@ -64,8 +65,23 @@ async function restoreSessionFromUrl(url: string): Promise<{
   };
 }
 
+/** Builds an authentication callback that canonicalizes production web URLs while preserving development and native URLs. */
 export function createAuthRedirectUrl(path: string): string {
-  return Linking.createURL(path);
+  const platformUrl = Linking.createURL(path);
+
+  try {
+    const parsedPlatformUrl = new URL(platformUrl);
+    const isCanonicalWebApp = parsedPlatformUrl.origin === APP_CONFIG.appUrl;
+    const isLegacyWebApp =
+      parsedPlatformUrl.origin === "https://www.doitforjesus.com" &&
+      (parsedPlatformUrl.pathname === "/app" || parsedPlatformUrl.pathname.startsWith("/app/"));
+
+    if (isCanonicalWebApp || isLegacyWebApp) return new URL(path, APP_CONFIG.appUrl).toString();
+  } catch {
+    return platformUrl;
+  }
+
+  return platformUrl;
 }
 
 /** Starts Google OAuth in a secure browser and restores the Supabase session returned to the app. */
