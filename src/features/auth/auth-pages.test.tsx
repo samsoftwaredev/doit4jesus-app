@@ -70,10 +70,11 @@ describe("authentication form validation", () => {
   it("shows live login validation errors and prevents an invalid submission", async () => {
     await render(<SignInScreen />);
 
+    expect(screen.getByRole("header", { name: "Login" })).toBeTruthy();
     await fireEvent.changeText(screen.getByLabelText("Email"), "not-an-email");
     expect(screen.getByText("Enter a valid email address.")).toBeTruthy();
 
-    await fireEvent.press(screen.getByRole("button", { name: "Sign in" }));
+    await fireEvent.press(screen.getByRole("button", { name: "Login" }));
     await waitFor(() => expect(screen.getByText("Enter your password.")).toBeTruthy());
     expect(mockSignInWithPassword).not.toHaveBeenCalled();
   });
@@ -83,7 +84,7 @@ describe("authentication form validation", () => {
 
     await fireEvent.changeText(screen.getByLabelText("Email"), "  pilgrim@example.com ");
     await fireEvent.changeText(screen.getByLabelText("Password"), "a-usable-password");
-    await fireEvent.press(screen.getByRole("button", { name: "Sign in" }));
+    await fireEvent.press(screen.getByRole("button", { name: "Login" }));
 
     await waitFor(() =>
       expect(mockSignInWithPassword).toHaveBeenCalledWith({
@@ -131,5 +132,13 @@ describe("authentication form validation", () => {
     expect(screen.getByRole("button", { name: "Continuar con Google" })).toBeTruthy();
     await fireEvent.changeText(screen.getByLabelText("Correo electrónico"), "invalid");
     expect(screen.getByText("Escribe un correo electrónico válido.")).toBeTruthy();
+  });
+
+  it("localizes the login heading and action in Spanish", async () => {
+    await i18n.changeLanguage("es");
+    await render(<SignInScreen />);
+
+    expect(screen.getByRole("header", { name: "Iniciar sesión" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Iniciar sesión" })).toBeTruthy();
   });
 });

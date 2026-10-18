@@ -285,7 +285,7 @@ export const resources = {
         resetNeutralSuccess: "If an account uses this email, check your inbox for a reset link.",
         resetPassword: "Reset password",
         saveNewPassword: "Save new password",
-        signIn: "Sign in",
+        signIn: "Login",
         signInDescription: "Continue your life of prayer.",
         validation: {
           emailInvalid: "Enter a valid email address.",
