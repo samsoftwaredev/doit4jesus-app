@@ -13,6 +13,7 @@ import { AuthProvider, useAuth } from "@/features/auth";
 import { AchievementProvider, AchievementToastHost, BadgeAwardSubscription } from "@/features/achievements";
 import { getProfileAccessState, ProfileProvider, useCurrentProfile } from "@/features/profile";
 import { logDevelopmentError } from "@/lib/development-logger";
+import { supabase } from "@/lib/supabase";
 import { AccountLanguagePreferenceSync } from "@/localization/AccountLanguagePreferenceSync";
 import { AppLanguageProvider, useAppLanguage } from "@/localization";
 import { AppThemeProvider, getStatusBarStyle, useAppTheme } from "@/theme/AppThemeProvider";
@@ -106,13 +107,18 @@ export function RootNavigator() {
           {t("profile.errors.load")}
         </Text>
         <Text style={styles.errorCopy}>{t("app.profileErrorCopy")}</Text>
-        <Button
-          loading={profileState.isLoading}
-          onPress={() => void profileState.refreshProfile()}
-          style={styles.profileErrorAction}
-        >
-          {t("common.retry")}
-        </Button>
+        <View style={styles.profileErrorActions}>
+          <Button
+            loading={profileState.isLoading}
+            onPress={() => void profileState.refreshProfile()}
+            style={styles.profileErrorAction}
+          >
+            {t("common.retry")}
+          </Button>
+          <Button onPress={() => void supabase.auth.signOut()} style={styles.profileErrorAction} variant="outline">
+            {t("profile.signOut")}
+          </Button>
+        </View>
       </View>
     );
   }
@@ -171,5 +177,11 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   errorTitle: { ...theme.typography.heading3, color: theme.colors.text.primary, textAlign: "center" },
   errorCopy: { ...theme.typography.body, color: theme.colors.text.muted, maxWidth: 420, textAlign: "center" },
-  profileErrorAction: { alignSelf: "center" },
+  profileErrorActions: {
+    flexDirection: "row",
+    gap: theme.spacing[2],
+    maxWidth: 420,
+    width: "100%",
+  },
+  profileErrorAction: { flex: 1, minWidth: 0 },
 }));
