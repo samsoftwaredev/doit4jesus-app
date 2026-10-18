@@ -155,7 +155,7 @@ export function RootNavigator() {
       <Stack.Protected guard={!isSignedIn && !isPasswordRecovery}>
         <Stack.Screen name="index" options={{ animation: "fade" }} />
         <Stack.Screen name="forgot-password" />
-        <Stack.Screen name="sign-in" />
+        <Stack.Screen name="login" />
         <Stack.Screen name="sign-up" />
       </Stack.Protected>
 

@@ -159,7 +159,7 @@ export default function SignUpScreen() {
           {t("auth.createAccount")}
         </Button>
       </View>
-      <Link href="/sign-in" style={styles.link}>
+      <Link href="/login" style={styles.link}>
         {t("auth.alreadyHaveAccount")}
       </Link>
     </AuthScreen>

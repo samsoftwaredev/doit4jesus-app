@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react-nativ
 import { createElement as mockCreateElement, type ReactNode } from "react";
 import { Text as mockText } from "react-native";
 
-import SignInScreen from "@/app/sign-in";
+import SignInScreen from "@/app/login";
 import SignUpScreen from "@/app/sign-up";
 import { i18n } from "@/localization";
 
@@ -47,7 +47,7 @@ describe("authentication form validation", () => {
   });
 
   it.each([
-    ["sign-in", SignInScreen],
+    ["login", SignInScreen],
     ["sign-up", SignUpScreen],
   ])("starts Google OAuth from the %s screen", async (_screenName, ScreenComponent) => {
     await render(<ScreenComponent />);

@@ -68,6 +68,11 @@ export default function LandingScreen() {
   const { isDesktop, isLandscape, isLargeText, isTablet, width } = useResponsiveLayout();
   const [activeSlide, setActiveSlide] = useState(0);
 
+  /** Opens the public login route from the landing screen. */
+  function handleSignInPress(): void {
+    router.push("/login");
+  }
+
   const goToSlide = useCallback(
     (index: number) => {
       const nextSlide = Math.max(0, Math.min(index, slides.length - 1));
@@ -114,7 +119,7 @@ export default function LandingScreen() {
             accessibilityLabel={t("landing.signIn")}
             accessibilityRole="button"
             hitSlop={theme.spacing[2]}
-            onPress={() => router.push("/sign-in")}
+            onPress={handleSignInPress}
             style={({ pressed }) => [styles.signInButton, pressed && styles.pressed]}
           >
             <Text style={styles.signIn}>{t("landing.signIn")}</Text>
