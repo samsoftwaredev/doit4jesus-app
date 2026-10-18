@@ -224,7 +224,7 @@ describe("required profile setup", () => {
     jest.useRealTimers();
   });
 
-  it("prefills the username and selects the first available backend suggestion while remaining editable", async () => {
+  it("keeps the username stable until the user selects a backend suggestion", async () => {
     jest.useFakeTimers();
     const profile = {
       ...baseProfile,
@@ -246,7 +246,8 @@ describe("required profile setup", () => {
 
     await renderSetup(profile);
 
-    expect(screen.getByLabelText("Username").props.value).toBe("VirginMary");
+    expect(screen.getByLabelText("Username").props.value).toBe("");
+    await fireEvent.changeText(screen.getByLabelText("Username"), "VirginMary");
 
     await act(async () => {
       jest.advanceTimersByTime(1000);
@@ -254,10 +255,13 @@ describe("required profile setup", () => {
     });
 
     expect(mockValidateUsername).toHaveBeenCalledWith("VirginMary", expect.any(AbortSignal));
-    expect(screen.getByLabelText("Username").props.value).toBe("virgin_mary_123");
+    expect(screen.getByLabelText("Username").props.value).toBe("VirginMary");
+    expect(screen.getByText("Suggestions")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "virgin_mary_123" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "virgin_mary_456" })).toBeTruthy();
 
-    await fireEvent.changeText(screen.getByLabelText("Username"), "my_custom_name");
-    expect(screen.getByLabelText("Username").props.value).toBe("my_custom_name");
+    await fireEvent.press(screen.getByRole("button", { name: "virgin_mary_456" }));
+    expect(screen.getByLabelText("Username").props.value).toBe("virgin_mary_456");
     jest.useRealTimers();
   });
 
