@@ -224,9 +224,14 @@ export function ProfileSettingsScreen() {
           <View accessibilityRole="alert" style={styles.errorCard}>
             <Text style={styles.errorTitle}>{t("profile.errors.load")}</Text>
             <Text style={styles.errorCopy}>{t("profile.errors.loadCopy")}</Text>
-            <Button onPress={() => void loadProfile()} size="sm" style={styles.errorAction} variant="secondary">
-              {t("profile.tryAgain")}
-            </Button>
+            <View style={styles.errorActions}>
+              <Button loading={isSigningOut} onPress={signOut} size="sm" variant="primary">
+                {isSigningOut ? t("profile.signingOut") : t("profile.signOut")}
+              </Button>
+              <Button disabled={isSigningOut} onPress={() => void loadProfile()} size="sm" variant="outline">
+                {t("profile.tryAgain")}
+              </Button>
+            </View>
           </View>
         ) : null}
 
@@ -620,7 +625,13 @@ const styleSheet = createThemedStyles((theme) => ({
   pressed: {
     opacity: theme.opacity.pressed,
   },
-  errorAction: { marginTop: theme.spacing[3] },
+  errorActions: {
+    alignItems: "center",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: theme.spacing[2],
+    marginTop: theme.spacing[3],
+  },
   safeArea: {
     backgroundColor: theme.colors.background.primary,
     flex: 1,

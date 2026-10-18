@@ -2,11 +2,12 @@ import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
-import { ActivityIndicator, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
+import { AppLoadingScreen } from "@/components";
 import { Button } from "@/components/ui";
 import { AuthProvider, useAuth } from "@/features/auth";
 import { AchievementProvider, AchievementToastHost, BadgeAwardSubscription } from "@/features/achievements";
@@ -85,7 +86,7 @@ function ThemedRoot() {
 }
 
 /** Selects protected routes after authentication and profile access resolve. */
-function RootNavigator() {
+export function RootNavigator() {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
   const { isLoading, isPasswordRecovery, session } = useAuth();
@@ -105,7 +106,11 @@ function RootNavigator() {
           {t("profile.errors.load")}
         </Text>
         <Text style={styles.errorCopy}>{t("app.profileErrorCopy")}</Text>
-        <Button loading={profileState.isLoading} onPress={() => void profileState.refreshProfile()}>
+        <Button
+          loading={profileState.isLoading}
+          onPress={() => void profileState.refreshProfile()}
+          style={styles.profileErrorAction}
+        >
           {t("common.retry")}
         </Button>
       </View>
@@ -155,24 +160,7 @@ function RootNavigator() {
   );
 }
 
-/** Displays a theme-correct account loading surface beneath the native splash. */
-function AppLoadingScreen() {
-  const styles = useThemedStyles(styleSheet);
-  const { t } = useTranslation();
-  return (
-    <View accessibilityLabel={t("app.loadingAccount")} style={styles.loading}>
-      <ActivityIndicator color={theme.colors.brand.primaryLight} />
-    </View>
-  );
-}
-
 const styleSheet = createThemedStyles((theme) => ({
-  loading: {
-    alignItems: "center",
-    backgroundColor: theme.colors.background.primary,
-    flex: 1,
-    justifyContent: "center",
-  },
   profileError: {
     alignItems: "center",
     backgroundColor: theme.colors.background.primary,
@@ -183,4 +171,5 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   errorTitle: { ...theme.typography.heading3, color: theme.colors.text.primary, textAlign: "center" },
   errorCopy: { ...theme.typography.body, color: theme.colors.text.muted, maxWidth: 420, textAlign: "center" },
+  profileErrorAction: { alignSelf: "center" },
 }));
