@@ -35,9 +35,7 @@ export const styles = createThemedStyles((theme) => ({
     opacity: theme.opacity.disabled,
   },
   icon: {
-    borderRadius: theme.radii.xs,
-    height: theme.sizes.iconMedium,
-    width: theme.sizes.iconMedium,
+    color: theme.colors.gold.pale,
   },
   badge: {
     alignItems: "center",

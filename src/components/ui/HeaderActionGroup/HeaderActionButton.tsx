@@ -1,5 +1,5 @@
+import { Feather } from "@expo/vector-icons";
 import { useState } from "react";
-import { Image } from "expo-image";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
@@ -10,12 +10,6 @@ import { styles as styleSheet } from "./HeaderActionGroup.styles";
 import type { HeaderActionProps } from "./HeaderActionGroup.types";
 
 type HeaderActionIconName = "bell" | "mail" | "settings";
-
-const headerActionIconSources = {
-  bell: require("../../../../assets/images/icons/bell.svg"),
-  mail: require("../../../../assets/images/icons/envelop.svg"),
-  settings: require("../../../../assets/images/icons/settings.svg"),
-} as const satisfies Record<HeaderActionIconName, number>;
 
 interface HeaderActionButtonProps extends HeaderActionProps {
   iconName: HeaderActionIconName;
@@ -31,7 +25,7 @@ function getUnreadBadgeText(unreadCount: number): string | undefined {
   return unreadCount > 99 ? "99+" : String(unreadCount);
 }
 
-/** Renders this feature with colors from the currently resolved app appearance. */
+/** Renders an accessible Home header action with a decorative vector icon and optional unread badge. */
 export function HeaderActionButton({
   iconName,
   label,
@@ -71,7 +65,13 @@ export function HeaderActionButton({
       {loading ? (
         <ActivityIndicator color={theme.colors.gold.pale} size="small" />
       ) : (
-        <Image accessible={false} contentFit="cover" source={headerActionIconSources[iconName]} style={styles.icon} />
+        <Feather
+          accessible={false}
+          color={styles.icon.color}
+          name={iconName}
+          size={theme.sizes.iconMedium}
+          testID={testID ? `${testID}-icon` : undefined}
+        />
       )}
       {badgeText ? (
         <View accessible={false} style={styles.badge} testID={testID ? `${testID}-badge` : undefined}>

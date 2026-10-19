@@ -33,6 +33,24 @@ describe("HeaderActionButton", () => {
 });
 
 describe("HeaderActionGroup", () => {
+  it("renders decorative vector icons for the Home header actions", async () => {
+    const rendered = await render(
+      <HeaderActionGroup
+        onMessagesPress={jest.fn()}
+        onNotificationsPress={jest.fn()}
+        onSettingsPress={jest.fn()}
+        testID="actions"
+      />,
+    );
+
+    const icons = [
+      rendered.getByTestId("actions-notifications-icon"),
+      rendered.getByTestId("actions-messages-icon"),
+      rendered.getByTestId("actions-settings-icon"),
+    ];
+    expect(icons.every((icon) => icon.props.accessible === false)).toBe(true);
+  });
+
   it("connects each action and derives child test IDs", async () => {
     const onNotificationsPress = jest.fn();
     const onMessagesPress = jest.fn();
