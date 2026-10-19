@@ -1,5 +1,4 @@
 import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react-native";
-import { fireGestureHandler, getByGestureTestId } from "react-native-gesture-handler/jest-utils";
 import { StyleSheet } from "react-native";
 
 import { rosaryMysteries } from "@/features/prayer/rosary/data/rosaryMysteries";
@@ -20,8 +19,6 @@ const mockUseRosaryPresence = jest.fn();
 const mockToggleAudioPlayback = jest.fn();
 const mockSetAudioMuted = jest.fn();
 const mockUseRosaryAudioPlayback = jest.fn();
-const mockTryUseSkip = jest.fn();
-const mockUseDailyRosarySkipLimit = jest.fn();
 
 jest.mock("expo-router", () => ({ useRouter: () => ({ back: mockBack, replace: mockReplace }) }));
 jest.mock("@/features/prayer/rosary/hooks/useRosarySession", () => ({
@@ -32,12 +29,6 @@ jest.mock("@/features/prayer/rosary/hooks/useRosaryPresence", () => ({
 }));
 jest.mock("@/features/prayer/rosary/hooks/useRosaryAudioPlayback", () => ({
   useRosaryAudioPlayback: (options: unknown) => mockUseRosaryAudioPlayback(options),
-}));
-jest.mock("@/features/prayer/rosary/hooks/useDailyRosarySkipLimit", () => ({
-  useDailyRosarySkipLimit: (userId: string | null) => mockUseDailyRosarySkipLimit(userId),
-}));
-jest.mock("@/features/auth", () => ({
-  useAuth: () => ({ session: { user: { id: "user-one" } } }),
 }));
 jest.mock("@/features/prayer/rosary/hooks/useRosaryAudioPreference", () => ({
   useRosaryAudioPreference: () => ({
@@ -102,17 +93,6 @@ describe("RosaryPrayerScreen", () => {
       isPlaying: false,
       playbackError: null,
       togglePlayback: mockToggleAudioPlayback,
-    });
-    mockTryUseSkip.mockImplementation((advance: () => void) => {
-      advance();
-      return { allowed: true, limitReached: false, skipCount: 1 };
-    });
-    mockUseDailyRosarySkipLimit.mockReturnValue({
-      isHydrated: true,
-      isLimitReached: false,
-      skipCount: 0,
-      storageError: false,
-      tryUseSkip: mockTryUseSkip,
     });
     mockSession();
   });
@@ -211,11 +191,12 @@ describe("RosaryPrayerScreen", () => {
     expect(screen.queryByTestId("rosary-bead-19")).toBeNull();
   });
 
-  it("provides a chevron back action for this non-tab route", async () => {
+  it("returns to the Prayer tab from the chevron back action", async () => {
     await render(<RosaryPrayerScreen />);
 
     await fireEvent.press(screen.getByRole("button", { name: "Go back" }));
-    expect(mockBack).toHaveBeenCalledTimes(1);
+    expect(mockReplace).toHaveBeenCalledWith("/prayer");
+    expect(mockBack).not.toHaveBeenCalled();
   });
 
   it("shows the live Rosary Presence summary without replacing prayer controls", async () => {
@@ -301,77 +282,26 @@ describe("RosaryPrayerScreen", () => {
     await fireEvent.press(screen.getByTestId("rosary-progress-button"));
 
     expect(goToNextBead).toHaveBeenCalledTimes(1);
-    expect(mockTryUseSkip).toHaveBeenCalledTimes(1);
   });
 
-  it("allows the fifth Next-button skip, then displays a dismissible daily-limit warning", async () => {
-    mockTryUseSkip.mockImplementation((advance: () => void) => {
-      advance();
-      return { allowed: true, limitReached: true, skipCount: 5 };
-    });
+  it("returns to the previous bead from the bottom navigation", async () => {
+    mockSession({ currentBeadIndex: 1 });
     await render(<RosaryPrayerScreen />);
 
-    await fireEvent.press(screen.getByTestId("rosary-progress-button"));
+    await fireEvent.press(screen.getByRole("button", { name: "Previous bead" }));
 
-    expect(goToNextBead).toHaveBeenCalledTimes(1);
-    expect(screen.getByRole("alert")).toBeTruthy();
-    expect(screen.getByText("You’ve reached today’s limit of 5 skips. Swipe up to continue praying.")).toBeTruthy();
-
-    await fireEvent.press(screen.getByRole("button", { name: "Dismiss message" }));
-    expect(screen.queryByRole("alert")).toBeNull();
+    expect(goToPreviousBead).toHaveBeenCalledTimes(1);
   });
 
-  it("automatically dismisses the daily skip-limit warning", async () => {
-    jest.useFakeTimers();
-    try {
-      mockTryUseSkip.mockImplementation((advance: () => void) => {
-        advance();
-        return { allowed: true, limitReached: true, skipCount: 5 };
-      });
-      await render(<RosaryPrayerScreen />);
+  it("keeps Next-button navigation available beyond the former daily skip limit", async () => {
+    await render(<RosaryPrayerScreen />);
 
+    for (let skip = 0; skip < 16; skip += 1) {
       await fireEvent.press(screen.getByTestId("rosary-progress-button"));
-      expect(screen.getByRole("alert")).toBeTruthy();
-
-      await act(async () => {
-        jest.advanceTimersByTime(4000);
-      });
-      expect(screen.queryByRole("alert")).toBeNull();
-    } finally {
-      jest.useRealTimers();
     }
-  });
 
-  it("blocks later Next-button skips but leaves upward swipe navigation unrestricted", async () => {
-    mockTryUseSkip.mockReturnValue({ allowed: false, limitReached: true, skipCount: 5 });
-    mockUseDailyRosarySkipLimit.mockReturnValue({
-      isHydrated: true,
-      isLimitReached: true,
-      skipCount: 5,
-      storageError: false,
-      tryUseSkip: mockTryUseSkip,
-    });
-    await render(<RosaryPrayerScreen />);
-
-    await fireEvent.press(screen.getByTestId("rosary-progress-button"));
-    expect(goToNextBead).not.toHaveBeenCalled();
-    expect(screen.getByText(/today’s limit of 5 skips/i)).toBeTruthy();
-
-    fireGestureHandler(getByGestureTestId("rosary-swipe-gesture"), [{ translationY: -50 }]);
-    expect(goToNextBead).toHaveBeenCalledTimes(1);
-    expect(mockTryUseSkip).toHaveBeenCalledTimes(1);
-  });
-
-  it("localizes the daily skip-limit warning in Spanish", async () => {
-    await act(async () => i18n.changeLanguage("es"));
-    mockTryUseSkip.mockReturnValue({ allowed: false, limitReached: true, skipCount: 5 });
-    await render(<RosaryPrayerScreen />);
-
-    await fireEvent.press(screen.getByTestId("rosary-progress-button"));
-
-    expect(
-      screen.getByText("Alcanzaste el límite de 5 omisiones de hoy. Desliza hacia arriba para continuar rezando."),
-    ).toBeTruthy();
+    expect(goToNextBead).toHaveBeenCalledTimes(16);
+    expect(screen.queryByRole("alert")).toBeNull();
   });
 
   it("connects the current localized prayer queue to play and mute controls", async () => {
@@ -388,7 +318,6 @@ describe("RosaryPrayerScreen", () => {
       { onQueueComplete?: () => void } | undefined;
     playbackOptions?.onQueueComplete?.();
     expect(goToNextBead).toHaveBeenCalledTimes(1);
-    expect(mockTryUseSkip).not.toHaveBeenCalled();
 
     await fireEvent.press(screen.getByRole("button", { name: "Play prayer audio" }));
     expect(mockToggleAudioPlayback).toHaveBeenCalledTimes(1);
@@ -422,7 +351,7 @@ describe("RosaryPrayerScreen", () => {
     await render(<RosaryPrayerScreen />);
 
     expect(screen.getByLabelText("Show rosary swipe instructions")).toBeTruthy();
-    expect(screen.queryByLabelText("Previous bead")).toBeNull();
+    expect(screen.getByRole("button", { name: "Previous bead" }).props.accessibilityState).toEqual({ disabled: true });
     expect(screen.queryByLabelText("Next bead")).toBeNull();
     expect(screen.getByLabelText("Open Rosary settings")).toBeTruthy();
     expect(screen.getByTestId("rosary-progress-button")).toBeTruthy();

@@ -907,23 +907,19 @@ export const resources = {
           nextLabel: "{{prayer}}, {{current}} of {{total}}. Next bead.",
           open: "Open Rosary settings",
           openHint: "Opens options for this Rosary mystery.",
+          previousHint: "Returns to the previous rosary bead.",
+          previousLabel: "Previous bead",
           progressTitle: "Prayer progress",
           restart: "Restart this mystery",
           restartLabel: "Restart current mystery",
-          skipLimitButtonLabel: "{{prayer}}, {{current}} of {{total}}. Daily skip limit reached.",
-          skipLimitHint: "Swipe up to continue praying.",
           progress: "{{current}} of {{total}}",
           title: "Rosary settings",
-        },
-        skipLimit: {
-          message: "You’ve reached today’s limit of 5 skips. Swipe up to continue praying.",
         },
         storage: {
           audio: "Your prayer is continuing, but the Rosary audio preference could not be saved on this device.",
           artStyle: "Your prayer is continuing, but the Rosary art style could not be saved on this device.",
           length: "Your prayer is continuing, but the Rosary length could not be saved on this device.",
           progress: "Your prayer is continuing, but progress could not be saved on this device.",
-          skips: "Your daily skip limit is continuing in this session, but could not be saved on this device.",
         },
         presence: {
           addFriend: "Add Friend",
@@ -2155,16 +2151,13 @@ export const resources = {
           nextLabel: "{{prayer}}, {{current}} de {{total}}. Siguiente cuenta.",
           open: "Abrir configuración del Rosario",
           openHint: "Abre las opciones de este misterio del Rosario.",
+          previousHint: "Regresa a la cuenta anterior del Rosario.",
+          previousLabel: "Cuenta anterior",
           progressTitle: "Progreso de la oración",
           restart: "Reiniciar este misterio",
           restartLabel: "Reiniciar el misterio actual",
-          skipLimitButtonLabel: "{{prayer}}, {{current}} de {{total}}. Se alcanzó el límite diario de omisiones.",
-          skipLimitHint: "Desliza hacia arriba para continuar rezando.",
           progress: "{{current}} de {{total}}",
           title: "Configuración del Rosario",
-        },
-        skipLimit: {
-          message: "Alcanzaste el límite de 5 omisiones de hoy. Desliza hacia arriba para continuar rezando.",
         },
         storage: {
           audio:
@@ -2172,7 +2165,6 @@ export const resources = {
           artStyle: "Tu oración continúa, pero no se pudo guardar el estilo artístico del Rosario en este dispositivo.",
           length: "Tu oración continúa, pero no se pudo guardar la duración del Rosario en este dispositivo.",
           progress: "Tu oración continúa, pero no se pudo guardar el progreso en este dispositivo.",
-          skips: "El límite diario de omisiones continúa en esta sesión, pero no se pudo guardar en este dispositivo.",
         },
         presence: {
           addFriend: "Agregar amigo",

@@ -23,6 +23,7 @@ describe("RosaryBottomNavigation", () => {
 
   it("advances and restarts the Rosary from its accessible controls", async () => {
     const onAdvance = jest.fn();
+    const onPrevious = jest.fn();
     const onRestart = jest.fn();
     await render(
       <RosaryBottomNavigation
@@ -30,28 +31,73 @@ describe("RosaryBottomNavigation", () => {
         onArtStyleChange={jest.fn()}
         onLengthChange={jest.fn()}
         onAdvance={onAdvance}
+        onPrevious={onPrevious}
         onRestart={onRestart}
         progress={{ currentIndex: 2, prayerName: "Hail Mary", total: 10 }}
         rosaryLength="medium"
       />,
     );
 
+    await fireEvent.press(screen.getByRole("button", { name: "Previous bead" }));
     await fireEvent.press(screen.getByLabelText("Hail Mary, 2 of 10. Next bead."));
     await fireEvent.press(screen.getByLabelText("Open Rosary settings"));
     await fireEvent.press(screen.getByLabelText("Restart current mystery"));
 
+    expect(onPrevious).toHaveBeenCalledTimes(1);
     expect(onAdvance).toHaveBeenCalledTimes(1);
     expect(onRestart).toHaveBeenCalledTimes(1);
   });
 
-  it("explains that the daily Next-button limit was reached while keeping the control available for feedback", async () => {
-    const onAdvance = jest.fn();
-    await render(
+  it("disables the previous-bead button on the first step and localizes it in Spanish", async () => {
+    const onPrevious = jest.fn();
+    const rendered = await render(
       <RosaryBottomNavigation
-        advanceLimitReached
-        onAdvance={onAdvance}
+        onAdvance={jest.fn()}
         onArtStyleChange={jest.fn()}
         onLengthChange={jest.fn()}
+        onPrevious={onPrevious}
+        onRestart={jest.fn()}
+        previousDisabled
+        progress={{ currentIndex: 0, prayerName: "Sign of the Cross", total: 59 }}
+        rosaryArtStyle="comic"
+        rosaryLength="medium"
+      />,
+    );
+
+    const disabledPreviousButton = screen.getByRole("button", { name: "Previous bead" });
+    expect(disabledPreviousButton.props.accessibilityState).toEqual({ disabled: true });
+    expect(StyleSheet.flatten(disabledPreviousButton.props.style)).toEqual(
+      expect.objectContaining({ minHeight: 44, minWidth: 44 }),
+    );
+    await fireEvent.press(disabledPreviousButton);
+    expect(onPrevious).not.toHaveBeenCalled();
+
+    await act(async () => i18n.changeLanguage("es"));
+    expect(screen.getByRole("button", { name: "Cuenta anterior" })).toBeTruthy();
+
+    await rendered.rerender(
+      <RosaryBottomNavigation
+        onAdvance={jest.fn()}
+        onArtStyleChange={jest.fn()}
+        onLengthChange={jest.fn()}
+        onPrevious={onPrevious}
+        onRestart={jest.fn()}
+        progress={{ currentIndex: 1, prayerName: "Ave María", total: 59 }}
+        rosaryArtStyle="comic"
+        rosaryLength="medium"
+      />,
+    );
+    await fireEvent.press(screen.getByRole("button", { name: "Cuenta anterior" }));
+    expect(onPrevious).toHaveBeenCalledTimes(1);
+  });
+
+  it("groups the previous and next bead controls into one divided pill", async () => {
+    await render(
+      <RosaryBottomNavigation
+        onAdvance={jest.fn()}
+        onArtStyleChange={jest.fn()}
+        onLengthChange={jest.fn()}
+        onPrevious={jest.fn()}
         onRestart={jest.fn()}
         progress={{ currentIndex: 2, prayerName: "Hail Mary", total: 10 }}
         rosaryArtStyle="comic"
@@ -59,13 +105,22 @@ describe("RosaryBottomNavigation", () => {
       />,
     );
 
-    const limitedButton = screen.getByRole("button", {
-      name: "Hail Mary, 2 of 10. Daily skip limit reached.",
-    });
-    expect(limitedButton.props.accessibilityHint).toBe("Swipe up to continue praying.");
+    expect(StyleSheet.flatten(screen.getByTestId("rosary-bead-navigation-pill").props.style)).toEqual(
+      expect.objectContaining({
+        borderRadius: 999,
+        flex: 1,
+        flexDirection: "row",
+        overflow: "hidden",
+      }),
+    );
+    expect(StyleSheet.flatten(screen.getByTestId("rosary-bead-navigation-divider").props.style)).toEqual(
+      expect.objectContaining({ alignSelf: "stretch", width: 1 }),
+    );
 
-    await fireEvent.press(limitedButton);
-    expect(onAdvance).toHaveBeenCalledTimes(1);
+    const previousStyle = StyleSheet.flatten(screen.getByRole("button", { name: "Previous bead" }).props.style);
+    const nextStyle = StyleSheet.flatten(screen.getByTestId("rosary-progress-button").props.style);
+    expect(previousStyle.borderWidth).toBeUndefined();
+    expect(nextStyle.borderWidth).toBeUndefined();
   });
 
   it("allows settings to close without changing the mystery", async () => {

@@ -20,7 +20,6 @@ import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles"
 import { theme } from "@/theme/tokens";
 
 interface RosaryBottomNavigationProps {
-  advanceLimitReached?: boolean;
   audioAvailable?: boolean;
   audioError?: boolean;
   audioLoading?: boolean;
@@ -33,8 +32,10 @@ interface RosaryBottomNavigationProps {
   onAudioMutedChange?: (muted: boolean) => void;
   onAudioToggle?: () => void;
   onLengthChange: (length: RosaryLength) => void;
+  onPrevious?: () => void;
   onRestart: () => void;
   onSettingsVisibilityChange?: (visible: boolean) => void;
+  previousDisabled?: boolean;
   rosaryLength: RosaryLength;
   rosaryLengthAudioDurations?: Partial<Record<RosaryLength, number>>;
   rosaryArtStyle: RosaryArtStyle;
@@ -63,9 +64,8 @@ function createArtStylePressHandler(onArtStyleChange: (style: RosaryArtStyle) =>
   };
 }
 
-/** Renders Rosary progress plus playback, settings, restart, and daily skip-limit feedback controls. */
+/** Renders previous/next Rosary navigation plus playback, settings, and restart controls. */
 export function RosaryBottomNavigation({
-  advanceLimitReached = false,
   audioAvailable = false,
   audioError = false,
   audioLoading = false,
@@ -78,8 +78,10 @@ export function RosaryBottomNavigation({
   onAudioMutedChange,
   onAudioToggle,
   onLengthChange,
+  onPrevious,
   onRestart,
   onSettingsVisibilityChange,
+  previousDisabled = false,
   rosaryLength,
   rosaryLengthAudioDurations,
   rosaryArtStyle,
@@ -138,17 +140,11 @@ export function RosaryBottomNavigation({
           ? t("rosary.audio.pause")
           : t("rosary.audio.play");
   const audioIconName = audioMuted ? "volume-x" : audioPlaying ? "pause" : "play";
-  const advanceAccessibilityLabel = t(
-    advanceLimitReached ? "rosary.settings.skipLimitButtonLabel" : "rosary.settings.nextLabel",
-    {
-      current: progress.currentIndex,
-      prayer: progress.prayerName,
-      total: progress.total,
-    },
-  );
-  const advanceAccessibilityHint = t(
-    advanceLimitReached ? "rosary.settings.skipLimitHint" : "rosary.settings.advanceHint",
-  );
+  const advanceAccessibilityLabel = t("rosary.settings.nextLabel", {
+    current: progress.currentIndex,
+    prayer: progress.prayerName,
+    total: progress.total,
+  });
 
   /** Returns an exact duration label when the active Rosary sequence provides audio timing data. */
   const getLengthLabel = (length: RosaryLength) => {
@@ -164,42 +160,75 @@ export function RosaryBottomNavigation({
   return (
     <View style={styles.navigation}>
       <View style={styles.buttonRow}>
-        <Animated.View style={[styles.progressWrap, animatedStyle]}>
-          <Pressable
-            accessibilityHint={advanceAccessibilityHint}
-            accessibilityLabel={advanceAccessibilityLabel}
-            accessibilityRole="button"
-            accessibilityState={{ disabled }}
-            disabled={disabled}
-            onPress={onAdvance}
-            onPressIn={() => {
-              if (!reduceMotion) scale.value = withTiming(0.98, { duration: 90 });
-            }}
-            onPressOut={() => {
-              if (!reduceMotion) scale.value = withSpring(1);
-            }}
-            style={({ pressed }) => [styles.progressButton, pressed && !disabled && styles.pressed]}
-            testID="rosary-progress-button"
-          >
-            <View accessible={false} style={styles.activeBead}>
-              <View style={styles.activeBeadCore} />
-            </View>
-            <View style={styles.progressCopy}>
-              <Text numberOfLines={1} style={styles.prayerName}>
-                {progress.prayerName}
-              </Text>
-              <Text style={styles.progressText}>
-                {t("rosary.settings.progress", { current: progress.currentIndex, total: progress.total })}
-              </Text>
-            </View>
-            <Feather
-              accessible={false}
-              color={theme.rosary.colors.immersiveGold}
-              name="chevron-right"
-              size={theme.sizes.iconMedium}
-            />
-          </Pressable>
-        </Animated.View>
+        <View style={styles.beadNavigationPill} testID="rosary-bead-navigation-pill">
+          {onPrevious ? (
+            <>
+              <Pressable
+                accessibilityHint={t("rosary.settings.previousHint")}
+                accessibilityLabel={t("rosary.settings.previousLabel")}
+                accessibilityRole="button"
+                accessibilityState={{ disabled: previousDisabled }}
+                disabled={previousDisabled}
+                onPress={onPrevious}
+                style={({ pressed }) => [
+                  styles.previousButton,
+                  previousDisabled && styles.disabled,
+                  pressed && !previousDisabled && styles.pressed,
+                ]}
+              >
+                <Feather
+                  accessible={false}
+                  color={previousDisabled ? theme.colors.icon.muted : theme.rosary.colors.immersiveGold}
+                  name="chevron-left"
+                  size={theme.sizes.iconMedium}
+                />
+              </Pressable>
+              <View
+                accessible={false}
+                pointerEvents="none"
+                style={styles.beadNavigationDivider}
+                testID="rosary-bead-navigation-divider"
+              />
+            </>
+          ) : null}
+
+          <Animated.View style={[styles.progressWrap, animatedStyle]}>
+            <Pressable
+              accessibilityHint={t("rosary.settings.advanceHint")}
+              accessibilityLabel={advanceAccessibilityLabel}
+              accessibilityRole="button"
+              accessibilityState={{ disabled }}
+              disabled={disabled}
+              onPress={onAdvance}
+              onPressIn={() => {
+                if (!reduceMotion) scale.value = withTiming(0.98, { duration: 90 });
+              }}
+              onPressOut={() => {
+                if (!reduceMotion) scale.value = withSpring(1);
+              }}
+              style={({ pressed }) => [styles.progressButton, pressed && !disabled && styles.pressed]}
+              testID="rosary-progress-button"
+            >
+              <View accessible={false} style={styles.activeBead}>
+                <View style={styles.activeBeadCore} />
+              </View>
+              <View style={styles.progressCopy}>
+                <Text numberOfLines={1} style={styles.prayerName}>
+                  {progress.prayerName}
+                </Text>
+                <Text style={styles.progressText}>
+                  {t("rosary.settings.progress", { current: progress.currentIndex, total: progress.total })}
+                </Text>
+              </View>
+              <Feather
+                accessible={false}
+                color={theme.rosary.colors.immersiveGold}
+                name="chevron-right"
+                size={theme.sizes.iconMedium}
+              />
+            </Pressable>
+          </Animated.View>
+        </View>
 
         <Pressable
           accessibilityLabel={audioLabel}
@@ -416,15 +445,40 @@ const styleSheet = createThemedStyles((theme) => ({
     flexDirection: "row",
     gap: theme.spacing[3],
   },
-  progressWrap: {
-    flex: 1,
-  },
-  progressButton: {
+  beadNavigationPill: {
     alignItems: "center",
     backgroundColor: theme.rosary.colors.immersiveControl,
     borderColor: theme.rosary.colors.gold,
     borderRadius: theme.radii.pill,
     borderWidth: theme.rosary.borderWidths.gold,
+    flex: 1,
+    flexDirection: "row",
+    minHeight: theme.sizes.buttonHeightLarge,
+    minWidth: 0,
+    overflow: "hidden",
+  },
+  beadNavigationDivider: {
+    alignSelf: "stretch",
+    backgroundColor: theme.rosary.colors.gold,
+    opacity: 0.72,
+    width: theme.borderWidths.thin,
+  },
+  previousButton: {
+    alignItems: "center",
+    height: theme.sizes.buttonHeightLarge,
+    justifyContent: "center",
+    minHeight: theme.sizes.touchTarget,
+    minWidth: theme.sizes.touchTarget,
+    width: theme.sizes.buttonHeightLarge,
+  },
+  disabled: {
+    opacity: theme.opacity.disabled,
+  },
+  progressWrap: {
+    flex: 1,
+  },
+  progressButton: {
+    alignItems: "center",
     flexDirection: "row",
     minHeight: theme.sizes.buttonHeightLarge,
     paddingHorizontal: theme.spacing[3],
