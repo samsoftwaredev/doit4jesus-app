@@ -3,6 +3,7 @@ import { ActivityIndicator, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui";
+import { useAchievement } from "@/features/achievements";
 import { useCurrentLocalDate } from "@/hooks";
 import { useAppLanguage } from "@/localization";
 import { logDevelopmentError } from "@/lib/development-logger";
@@ -61,6 +62,7 @@ export function DailyLiturgyDashboard({ initialData, onCalendarPress }: DailyLit
   const { t } = useTranslation();
   const { locale } = useAppLanguage();
   const styles = useThemedStyles(styleSheet);
+  const { queueAchievement } = useAchievement();
   const activeLoadRequest = useRef(0);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -153,8 +155,11 @@ export function DailyLiturgyDashboard({ initialData, onCalendarPress }: DailyLit
         readingIds: liturgy.readings.map((reading) => reading.id),
       });
       setProgress(result.progress);
+      if (completingAllReadings && result.didCompleteAllReadings) {
+        queueAchievement({ type: "daily-scripture-complete" });
+      }
     },
-    [liturgy, progress],
+    [liturgy, progress, queueAchievement],
   );
 
   const completedReadingIds = liturgy?.completion.completed

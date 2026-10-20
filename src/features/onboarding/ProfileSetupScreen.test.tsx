@@ -12,6 +12,7 @@ import { ProfileSetupScreen } from "./ProfileSetupScreen";
 
 const mockCompleteOnboarding = jest.fn();
 const mockGetCountries = jest.fn();
+const mockGetRandomUsernames = jest.fn();
 const mockReplaceProfile = jest.fn();
 const mockRouterReplace = jest.fn();
 const mockUpdateProfile = jest.fn();
@@ -45,6 +46,7 @@ jest.mock("./onboarding.api", () => {
     ...actual,
     completeOnboarding: (...args: unknown[]) => mockCompleteOnboarding(...args),
     getCountries: (...args: unknown[]) => mockGetCountries(...args),
+    getRandomUsernames: (...args: unknown[]) => mockGetRandomUsernames(...args),
     validateUsername: (...args: unknown[]) => mockValidateUsername(...args),
   };
 });
@@ -101,6 +103,13 @@ describe("required profile setup", () => {
       countries: [],
       meta: { hasMore: false, limit: 20, nextOffset: null, offset: 0 },
     });
+    mockGetRandomUsernames.mockResolvedValue([
+      "faithful_clare1842",
+      "monica_dove7391",
+      "hopeful_pilgrim2318",
+      "dominic_witness4430",
+      "joyful_rosary8724",
+    ]);
     mockValidateUsername.mockResolvedValue({
       available: true,
       normalizedUsername: "joyful_clare",
@@ -224,6 +233,92 @@ describe("required profile setup", () => {
     jest.useRealTimers();
   });
 
+  it("prefills the first generated username and revalidates it before enabling Continue", async () => {
+    jest.useFakeTimers();
+    const profile = {
+      ...baseProfile,
+      profileSetup: { complete: false, completedAt: null, missingFields: ["username"], nextStep: "username" },
+      username: null,
+    } satisfies CurrentUserProfile;
+    mockValidateUsername.mockResolvedValue({
+      available: true,
+      normalizedUsername: "faithful_clare1842",
+      reason: null,
+      suggestions: [],
+      username: "faithful_clare1842",
+      valid: true,
+    });
+
+    await renderSetup(profile);
+
+    expect(await screen.findByDisplayValue("faithful_clare1842")).toBeTruthy();
+    expect(mockGetRandomUsernames).toHaveBeenCalledWith(expect.any(AbortSignal));
+    expect(screen.getByTestId("profile-setup-next").props.accessibilityState.disabled).toBe(true);
+
+    await act(async () => {
+      jest.advanceTimersByTime(1000);
+      await Promise.resolve();
+    });
+
+    expect(mockValidateUsername).toHaveBeenCalledWith("faithful_clare1842", expect.any(AbortSignal));
+    expect(screen.getByText("Username is available.")).toBeTruthy();
+    expect(screen.getByTestId("profile-setup-next").props.accessibilityState.disabled).toBe(false);
+  });
+
+  it("does not replace a username entered while generation is pending", async () => {
+    let resolveUsernames: (usernames: string[]) => void = () => undefined;
+    mockGetRandomUsernames.mockReturnValue(
+      new Promise<string[]>((resolve) => {
+        resolveUsernames = resolve;
+      }),
+    );
+    const profile = {
+      ...baseProfile,
+      profileSetup: { complete: false, completedAt: null, missingFields: ["username"], nextStep: "username" },
+      username: null,
+    } satisfies CurrentUserProfile;
+
+    await renderSetup(profile);
+    const input = await screen.findByLabelText("Username");
+    await fireEvent.changeText(input, "manual_pilgrim");
+    await act(async () => resolveUsernames(["faithful_clare1842"]));
+
+    expect(screen.getByLabelText("Username").props.value).toBe("manual_pilgrim");
+  });
+
+  it("keeps manual username entry available when generation fails", async () => {
+    jest.useFakeTimers();
+    mockGetRandomUsernames.mockRejectedValue(new Error("offline"));
+    const profile = {
+      ...baseProfile,
+      profileSetup: { complete: false, completedAt: null, missingFields: ["username"], nextStep: "username" },
+      username: null,
+    } satisfies CurrentUserProfile;
+
+    await renderSetup(profile);
+    const input = await screen.findByLabelText("Username");
+    await waitFor(() => expect(mockGetRandomUsernames).toHaveBeenCalledTimes(1));
+    expect(input.props.value).toBe("");
+    expect(screen.queryByText("We couldn't check this username. Try again.")).toBeNull();
+
+    await fireEvent.changeText(input, "manual_pilgrim");
+    await act(async () => {
+      jest.advanceTimersByTime(1000);
+      await Promise.resolve();
+    });
+    expect(mockValidateUsername).toHaveBeenCalledWith("manual_pilgrim", expect.any(AbortSignal));
+  });
+
+  it("preserves a saved username without requesting a generated replacement", async () => {
+    await renderSetup({
+      ...baseProfile,
+      profileSetup: { complete: false, completedAt: null, missingFields: ["username"], nextStep: "username" },
+    });
+
+    expect(await screen.findByDisplayValue("VirginMary")).toBeTruthy();
+    expect(mockGetRandomUsernames).not.toHaveBeenCalled();
+  });
+
   it("keeps the username stable until the user selects a backend suggestion", async () => {
     jest.useFakeTimers();
     const profile = {
@@ -246,7 +341,7 @@ describe("required profile setup", () => {
 
     await renderSetup(profile);
 
-    expect(screen.getByLabelText("Username").props.value).toBe("");
+    expect(screen.getByLabelText("Username").props.value).toBe("faithful_clare1842");
     await fireEvent.changeText(screen.getByLabelText("Username"), "VirginMary");
 
     await act(async () => {

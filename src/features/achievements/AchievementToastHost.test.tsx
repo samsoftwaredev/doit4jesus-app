@@ -43,6 +43,17 @@ function BadgeAchievementTrigger() {
   );
 }
 
+/** Queues a daily Scripture completion message for the global toast host. */
+function DailyScriptureAchievementTrigger() {
+  const { queueAchievement } = useAchievement();
+
+  return (
+    <Pressable accessibilityRole="button" onPress={() => queueAchievement({ type: "daily-scripture-complete" })}>
+      <Text>Show Scripture completion</Text>
+    </Pressable>
+  );
+}
+
 /** Renders the reactive achievement provider with the globally positioned toast host. */
 function renderToastHost() {
   return render(
@@ -56,6 +67,7 @@ function renderToastHost() {
         <AchievementProvider>
           <AchievementTrigger />
           <BadgeAchievementTrigger />
+          <DailyScriptureAchievementTrigger />
           <AchievementToastHost />
         </AchievementProvider>
       </SafeAreaProvider>
@@ -109,6 +121,19 @@ describe("AchievementToastHost", () => {
 
     await fireEvent.press(screen.getByRole("button", { name: "Show achievement" }));
     expect(await screen.findByText("¡Felicidades! 🎉 Tu cuenta está lista.")).toBeTruthy();
+  });
+
+  it("celebrates daily Scripture completion with localized confetti toast copy", async () => {
+    await renderToastHost();
+
+    await fireEvent.press(screen.getByRole("button", { name: "Show Scripture completion" }));
+    expect(await screen.findByText("You completed today’s Scripture! 🎉")).toBeTruthy();
+    expect(screen.getByTestId("achievement-confetti")).toBeTruthy();
+
+    await fireEvent.press(screen.getByRole("button", { name: "Dismiss message" }));
+    await act(async () => i18n.changeLanguage("es"));
+    await fireEvent.press(screen.getByRole("button", { name: "Show Scripture completion" }));
+    expect(await screen.findByText("¡Completaste la Escritura de hoy! 🎉")).toBeTruthy();
   });
 
   it("announces a localized badge award with its resolved artwork", async () => {

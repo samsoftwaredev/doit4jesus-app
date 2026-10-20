@@ -24,7 +24,9 @@ export function AchievementToastHost() {
   const message =
     achievement?.type === "badge-award"
       ? t("achievements.badgeAward", { name: achievement.badge.name })
-      : t("achievements.onboardingComplete");
+      : achievement?.type === "daily-scripture-complete"
+        ? t("achievements.dailyScriptureComplete")
+        : t("achievements.onboardingComplete");
   const badgeArtwork =
     achievement?.type === "badge-award" ? resolveBadgeArtwork(achievement.badge.code, achievement.badge.iconUrl) : null;
 

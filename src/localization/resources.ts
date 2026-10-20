@@ -73,6 +73,7 @@ export const resources = {
       },
       achievements: {
         badgeAward: "You earned {{name}}!",
+        dailyScriptureComplete: "You completed today’s Scripture! 🎉",
         onboardingComplete: "Congrats! 🎉 Your account is ready.",
       },
       pages: {
@@ -1315,6 +1316,7 @@ export const resources = {
       },
       achievements: {
         badgeAward: "¡Obtuviste {{name}}!",
+        dailyScriptureComplete: "¡Completaste la Escritura de hoy! 🎉",
         onboardingComplete: "¡Felicidades! 🎉 Tu cuenta está lista.",
       },
       pages: {

@@ -19,7 +19,7 @@ import { theme } from "@/theme/tokens";
 import { CountrySelector } from "./CountrySelector";
 import { validateFullName } from "./name-validation";
 import { completeLanguageOnboarding, hasCompletedLanguageOnboarding } from "./onboarding-language";
-import { completeOnboarding, OnboardingApiError, validateUsername } from "./onboarding.api";
+import { completeOnboarding, getRandomUsernames, OnboardingApiError, validateUsername } from "./onboarding.api";
 import type { OnboardingStep, ProfileSetupState, UsernameValidation } from "./onboarding.types";
 import { getResumeStep } from "./onboarding.types";
 import { ProfileSetupLayout } from "./ProfileSetupLayout";
@@ -72,7 +72,7 @@ function translatedNameValidationMessage(t: TFunction, message: string): string 
   }
 }
 
-/** Renders this feature with colors from the currently resolved app appearance. */
+/** Renders profile setup with themed fields and a generated, revalidated username default when needed. */
 export function ProfileSetupScreen() {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
@@ -82,6 +82,7 @@ export function ProfileSetupScreen() {
   const { queueAchievement } = useAchievement();
   const completionInFlightRef = useRef(false);
   const languageHydratedUserRef = useRef<string | null>(null);
+  const usernameGenerationUserRef = useRef<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isCompleting, setIsCompleting] = useState(false);
   const [isLoadingLanguageStep, setIsLoadingLanguageStep] = useState(true);
@@ -134,6 +135,42 @@ export function ProfileSetupScreen() {
     });
     return () => subscription.remove();
   }, [step]);
+
+  useEffect(() => {
+    if (step !== 2) {
+      usernameGenerationUserRef.current = null;
+      return;
+    }
+    if (!profile || usernameGenerationUserRef.current === profile.userId) return;
+
+    usernameGenerationUserRef.current = profile.userId;
+    if (form.username.trim()) return;
+
+    const controller = new AbortController();
+
+    /** Applies the first generated suggestion only while the username remains untouched. */
+    function applyGeneratedUsername([generatedUsername]: string[]) {
+      if (controller.signal.aborted) return;
+      setForm((current) =>
+        current.username.trim() || !generatedUsername ? current : { ...current, username: generatedUsername },
+      );
+    }
+
+    /** Keeps generation failures non-blocking while making them visible in development logs. */
+    function handleUsernameGenerationError(requestError: unknown) {
+      if (controller.signal.aborted) return;
+      logDevelopmentError("generating an onboarding username", requestError);
+    }
+
+    /** Cancels obsolete generation work when the user leaves or edits the username step. */
+    function abortUsernameGeneration() {
+      controller.abort();
+    }
+
+    void getRandomUsernames(controller.signal).then(applyGeneratedUsername).catch(handleUsernameGenerationError);
+
+    return abortUsernameGeneration;
+  }, [form.username, profile, step]);
 
   useEffect(() => {
     if (step !== 2 || !profile) return;

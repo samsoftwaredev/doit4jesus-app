@@ -7,7 +7,10 @@ export type BadgeAchievement = {
   name: string;
 };
 
-export type AchievementEvent = { type: "onboarding-complete" } | { badge: BadgeAchievement; type: "badge-award" };
+export type AchievementEvent =
+  | { type: "onboarding-complete" }
+  | { type: "daily-scripture-complete" }
+  | { badge: BadgeAchievement; type: "badge-award" };
 
 type AchievementContextValue = {
   achievement: AchievementEvent | null;

@@ -2,6 +2,7 @@ export {
   completeOnboarding,
   getCountries,
   getNotificationPreferences,
+  getRandomUsernames,
   OnboardingApiError,
   updateNotificationPreferences,
   validateUsername,

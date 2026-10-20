@@ -4,6 +4,7 @@ import { DailyLiturgyDashboard } from "./DailyLiturgyScreen";
 
 let mockCurrentLocalDate = "2026-08-21";
 let mockLocale = "en-US";
+const mockQueueAchievement = jest.fn();
 
 jest.mock("expo-router", () => ({
   useFocusEffect: jest.fn((cb: () => void) => cb()),
@@ -34,6 +35,10 @@ jest.mock("@/hooks", () => ({
 
 jest.mock("@/localization", () => ({
   useAppLanguage: () => ({ locale: mockLocale }),
+}));
+
+jest.mock("@/features/achievements", () => ({
+  useAchievement: () => ({ queueAchievement: mockQueueAchievement }),
 }));
 
 const {
@@ -234,6 +239,7 @@ describe("DailyLiturgyDashboard", () => {
       ),
     );
     expect(screen.getByText("2 of 2 completed")).toBeTruthy();
+    expect(mockQueueAchievement).toHaveBeenCalledWith({ type: "daily-scripture-complete" });
     randomUUID.mockRestore();
   });
 
@@ -295,5 +301,6 @@ describe("DailyLiturgyDashboard", () => {
 
     expect(await screen.findByRole("alert")).toHaveTextContent("Your reading could not be saved. Please try again.");
     expect(screen.getByText("1 of 2 completed")).toBeTruthy();
+    expect(mockQueueAchievement).not.toHaveBeenCalled();
   });
 });

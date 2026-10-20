@@ -2,6 +2,7 @@ import {
   completeOnboarding,
   getCountries,
   getNotificationPreferences,
+  getRandomUsernames,
   OnboardingApiError,
   updateNotificationPreferences,
   validateUsername,
@@ -84,6 +85,35 @@ describe("onboarding API", () => {
       "https://api.example.test/api/v1/usernames/validate?username=joyful_clare",
       expect.objectContaining({ method: "GET" }),
     );
+  });
+
+  it("loads available random usernames through the authenticated onboarding API", async () => {
+    const usernames = [
+      "faithful_clare1842",
+      "monica_dove7391",
+      "hopeful_pilgrim2318",
+      "dominic_witness4430",
+      "joyful_rosary8724",
+    ];
+    globalThis.fetch = jest.fn(async () => response({ data: { usernames } })) as unknown as typeof fetch;
+
+    await expect(getRandomUsernames()).resolves.toEqual(usernames);
+    expect(globalThis.fetch).toHaveBeenCalledWith(
+      "https://api.example.test/api/v1/usernames/random",
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          Accept: "application/json",
+          Authorization: "Bearer test-access-token",
+        }),
+        method: "GET",
+      }),
+    );
+  });
+
+  it("rejects an empty random username response", async () => {
+    globalThis.fetch = jest.fn(async () => response({ data: { usernames: [] } })) as unknown as typeof fetch;
+
+    await expect(getRandomUsernames()).rejects.toThrow("invalid username suggestions");
   });
 
   it("searches and paginates countries through the location API", async () => {

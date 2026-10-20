@@ -157,6 +157,19 @@ export async function validateUsername(username: string, signal?: AbortSignal): 
   };
 }
 
+/** Loads currently available username suggestions without reserving them for the signed-in user. */
+export async function getRandomUsernames(signal?: AbortSignal): Promise<string[]> {
+  const payload = readRecord(await request("/api/v1/usernames/random", { signal }), "random username response");
+  const data = readRecord(payload.data, "random username suggestions");
+  const usernames = readStringArray(data.usernames, "username suggestions");
+
+  if (usernames.length === 0) {
+    throw new Error("The onboarding API returned invalid username suggestions.");
+  }
+
+  return usernames;
+}
+
 function pageParts(payloadValue: unknown, itemKey: "countries") {
   const payload = readRecord(payloadValue, `${itemKey} response`);
   if (Array.isArray(payload.data)) return { items: payload.data, meta: parseMeta(payload.meta) };
