@@ -8,11 +8,10 @@ import { ResponsiveTabs } from "./ResponsiveTabs";
 const mockWindowDimensions = jest.fn();
 const mockTabsProps = jest.fn();
 const mockTabIcons = jest.fn();
+const mockTabScreens = jest.fn();
 const expectedTabIcons = [
   { color: theme.colors.icon.active, name: "home-variant-outline" },
   { color: theme.colors.icon.muted, name: "home-variant-outline" },
-  { color: theme.colors.icon.active, name: "hands-pray" },
-  { color: theme.colors.icon.muted, name: "hands-pray" },
   { color: theme.colors.icon.active, name: "account-group-outline" },
   { color: theme.colors.icon.muted, name: "account-group-outline" },
   { color: theme.colors.icon.active, name: "account-circle-outline" },
@@ -39,11 +38,14 @@ jest.mock("expo-router", () => {
   }: {
     name: string;
     options: {
-      tabBarAccessibilityLabel: string;
+      href?: null;
+      tabBarAccessibilityLabel?: string;
       tabBarIcon?: (props: { color: string; focused: boolean; size: number }) => React.ReactNode;
-      title: string;
+      title?: string;
     };
   }) {
+    mockTabScreens(name, options);
+    if (options.href === null) return null;
     const mockTheme = jest.requireActual<typeof import("@/theme/tokens")>("@/theme/tokens").theme;
     const activeIcon = options.tabBarIcon?.({ color: mockTheme.colors.icon.active, focused: true, size: 24 });
     const inactiveIcon = options.tabBarIcon?.({ color: mockTheme.colors.icon.muted, focused: false, size: 24 });
@@ -103,11 +105,11 @@ describe("ResponsiveTabs", () => {
     expect(options.tabBarLabelPosition).toBe("beside-icon");
     expect(options.tabBarStyle).toEqual(expect.objectContaining({ width: 240 }));
     expect(screen.getByText("home:Home")).toBeTruthy();
-    expect(screen.getByText("prayer:Prayer")).toBeTruthy();
+    expect(screen.queryByText("prayer:Prayer")).toBeNull();
     expect(screen.getByText("community:Community")).toBeTruthy();
     expect(screen.getByText("profile:Profile")).toBeTruthy();
     expect(screen.getByLabelText("Home tab")).toBeTruthy();
-    expect(screen.getByLabelText("Prayer tab")).toBeTruthy();
+    expect(screen.queryByLabelText("Prayer tab")).toBeNull();
     expect(screen.getByLabelText("Community tab")).toBeTruthy();
     expect(screen.getByLabelText("Profile tab")).toBeTruthy();
     expect(options.tabBarActiveTintColor).not.toBe(options.tabBarInactiveTintColor);
@@ -120,9 +122,11 @@ describe("ResponsiveTabs", () => {
     await render(<ResponsiveTabs />);
 
     expect(screen.getByText("home:Inicio")).toBeTruthy();
-    expect(screen.getByText("prayer:Oración")).toBeTruthy();
+    expect(screen.queryByText("prayer:Oración")).toBeNull();
     expect(screen.getByText("community:Comunidad")).toBeTruthy();
     expect(screen.getByText("profile:Perfil")).toBeTruthy();
     expect(screen.getByLabelText("Pestaña de inicio")).toBeTruthy();
+    expect(screen.queryByLabelText("Pestaña de oración")).toBeNull();
+    expect(mockTabScreens).toHaveBeenCalledWith("prayer", { href: null });
   });
 });

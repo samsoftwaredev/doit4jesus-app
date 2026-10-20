@@ -9,7 +9,6 @@ import { theme } from "@/theme/tokens";
 const tabIconNames = {
   community: "account-group-outline",
   home: "home-variant-outline",
-  prayer: "hands-pray",
   profile: "account-circle-outline",
 } as const;
 
@@ -93,14 +92,7 @@ export function ResponsiveTabs() {
           title: t("navigation.home"),
         }}
       />
-      <Tabs.Screen
-        name="prayer"
-        options={{
-          tabBarAccessibilityLabel: t("navigation.prayerTab"),
-          tabBarIcon: ({ color, size }) => <TabIcon color={color} name={tabIconNames.prayer} size={size} />,
-          title: t("navigation.prayer"),
-        }}
-      />
+      <Tabs.Screen name="prayer" options={{ href: null }} />
       <Tabs.Screen
         name="community"
         options={{

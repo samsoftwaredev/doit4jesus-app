@@ -89,7 +89,7 @@ describe("DailyRosaryCard", () => {
       maxWidth: "100%",
       textAlign: "center",
     });
-    expect(screen.getByLabelText("Devotional quote from Our Lady of Fatima")).toBeTruthy();
+    expect(screen.queryByLabelText("Devotional quote from Our Lady of Fatima")).toBeNull();
     expect(screen.getByRole("button", { name: "Pray Rosary" })).toBeEnabled();
     expect(screen.getByRole("button", { name: "View Garden" })).toBeEnabled();
 
@@ -100,10 +100,7 @@ describe("DailyRosaryCard", () => {
       backgroundColor: "transparent",
       borderWidth: 0,
     });
-    expect(StyleSheet.flatten(screen.getByTestId("garden-quote-card").props.style)).toMatchObject({
-      backgroundColor: "transparent",
-      borderWidth: 0,
-    });
+    expect(screen.queryByTestId("garden-quote-card")).toBeNull();
   });
 
   it("opens the Rosary Garden from the secondary Home action", async () => {

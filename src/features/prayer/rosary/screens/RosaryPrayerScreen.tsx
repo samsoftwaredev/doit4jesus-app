@@ -422,9 +422,9 @@ export function RosaryPrayerScreen({
     router.replace({ pathname: "/home", params: { scrollTo: "garden" } });
   }, [router]);
 
-  /** Returns from the standalone Rosary route to the Prayer tab without retaining the Rosary in history. */
-  const handleBackToPrayer = useCallback(() => {
-    router.replace("/prayer");
+  /** Returns from the standalone Rosary route to Home without retaining the Rosary in history. */
+  const handleBackToHome = useCallback(() => {
+    router.replace("/home");
   }, [router]);
 
   return (
@@ -477,7 +477,7 @@ export function RosaryPrayerScreen({
                 accessibilityLabel={t("rosary.controls.goBack")}
                 accessibilityRole="button"
                 hitSlop={theme.spacing[2]}
-                onPress={handleBackToPrayer}
+                onPress={handleBackToHome}
                 style={styles.backButton}
               >
                 <Feather

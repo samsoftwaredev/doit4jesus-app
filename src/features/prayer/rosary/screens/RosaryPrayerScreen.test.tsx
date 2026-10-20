@@ -243,11 +243,11 @@ describe("RosaryPrayerScreen", () => {
     expect(screen.queryByTestId("rosary-bead-19")).toBeNull();
   });
 
-  it("returns to the Prayer tab from the chevron back action", async () => {
+  it("returns to Home from the chevron back action", async () => {
     await render(<RosaryPrayerScreen />);
 
     await fireEvent.press(screen.getByRole("button", { name: "Go back" }));
-    expect(mockReplace).toHaveBeenCalledWith("/prayer");
+    expect(mockReplace).toHaveBeenCalledWith("/home");
     expect(mockBack).not.toHaveBeenCalled();
   });
 

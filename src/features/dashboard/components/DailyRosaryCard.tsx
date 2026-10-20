@@ -11,7 +11,6 @@ import type { RosaryReminderViewModel } from "../dashboard.types";
 import { getRosaryReminderState } from "../rosary-reminder";
 import { useServerSynchronizedCountdown } from "../useServerSynchronizedCountdown";
 import { GardenMotivationCard } from "./GardenMotivationCard";
-import { GardenQuoteCard } from "./GardenQuoteCard";
 
 type DailyRosaryCardProps = {
   error: boolean;
@@ -129,8 +128,6 @@ export function DailyRosaryCard({
 
         <CardAction onPrayRosary={onPrayRosary} onViewGarden={onViewGarden} />
       </View>
-      <View style={styles.divider} />
-      <GardenQuoteCard />
     </LinearGradient>
   );
 }
