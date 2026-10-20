@@ -54,6 +54,17 @@ function DailyScriptureAchievementTrigger() {
   );
 }
 
+/** Queues a completed video Rosary for the global confetti toast. */
+function VideoRosaryAchievementTrigger() {
+  const { queueAchievement } = useAchievement();
+
+  return (
+    <Pressable accessibilityRole="button" onPress={() => queueAchievement({ type: "rosary-video-complete" })}>
+      <Text>Show video Rosary completion</Text>
+    </Pressable>
+  );
+}
+
 /** Renders the reactive achievement provider with the globally positioned toast host. */
 function renderToastHost() {
   return render(
@@ -68,6 +79,7 @@ function renderToastHost() {
           <AchievementTrigger />
           <BadgeAchievementTrigger />
           <DailyScriptureAchievementTrigger />
+          <VideoRosaryAchievementTrigger />
           <AchievementToastHost />
         </AchievementProvider>
       </SafeAreaProvider>
@@ -134,6 +146,19 @@ describe("AchievementToastHost", () => {
     await act(async () => i18n.changeLanguage("es"));
     await fireEvent.press(screen.getByRole("button", { name: "Show Scripture completion" }));
     expect(await screen.findByText("¡Completaste la Escritura de hoy! 🎉")).toBeTruthy();
+  });
+
+  it("celebrates a recorded video Rosary in English and Spanish", async () => {
+    await renderToastHost();
+
+    await fireEvent.press(screen.getByRole("button", { name: "Show video Rosary completion" }));
+    expect(await screen.findByText("Your video Rosary is complete! 🎉")).toBeTruthy();
+    expect(screen.getByTestId("achievement-confetti")).toBeTruthy();
+
+    await fireEvent.press(screen.getByRole("button", { name: "Dismiss message" }));
+    await act(async () => i18n.changeLanguage("es"));
+    await fireEvent.press(screen.getByRole("button", { name: "Show video Rosary completion" }));
+    expect(await screen.findByText("¡Completaste tu Rosario en video! 🎉")).toBeTruthy();
   });
 
   it("announces a localized badge award with its resolved artwork", async () => {

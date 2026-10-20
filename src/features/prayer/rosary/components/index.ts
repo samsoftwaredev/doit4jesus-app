@@ -10,4 +10,11 @@ export { RosaryBeadNavigator } from "./RosaryBeadNavigator";
 export { RosaryBottomNavigation } from "./RosaryBottomNavigation";
 export { RosaryMysteryCard } from "./RosaryMysteryCard";
 export { RosaryPresence } from "./RosaryPresence";
+export { RosaryVideoPlayer } from "./RosaryVideoPlayer";
+export type {
+  RosaryVideoPlaybackState,
+  RosaryVideoPlayerHandle,
+  RosaryVideoPlayerProps,
+  RosaryVideoProgress,
+} from "./RosaryVideoPlayer";
 export { ScriptureCard } from "./ScriptureCard";

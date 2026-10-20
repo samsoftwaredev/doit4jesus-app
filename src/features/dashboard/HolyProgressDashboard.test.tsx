@@ -351,10 +351,16 @@ describe("HolyProgressDashboard", () => {
     expect(sections[0].props.testID).toBe("today-rosary-card-container");
     expect(sections[1].props.testID).toBe("streak-progress-container");
 
-    await fireEvent.press(screen.getByLabelText("Pray today's Joyful Mysteries"));
+    await fireEvent.press(screen.getByLabelText("Pray digital Rosary for today's Joyful Mysteries"));
     expect(mockPush).toHaveBeenCalledWith({
       pathname: "/rosary",
       params: { isDecade: "false", mysteryType: "joyful", source: "today" },
+    });
+
+    await fireEvent.press(screen.getByLabelText("Pray video Rosary for today's Joyful Mysteries"));
+    expect(mockPush).toHaveBeenCalledWith({
+      pathname: "/rosary-video",
+      params: { mysteryType: "joyful" },
     });
   });
 

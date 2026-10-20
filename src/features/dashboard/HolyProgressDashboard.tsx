@@ -478,12 +478,17 @@ export function HolyProgressDashboard({
     router.push({ pathname: "/rosary", params: { source: "today" } });
   }, [router]);
 
-  /** Starts the complete mystery set scheduled for the device-local weekday. */
-  const prayTodaysRosary = useCallback(() => {
+  /** Starts the digital mystery set scheduled for the device-local weekday. */
+  const prayTodaysDigitalRosary = useCallback(() => {
     router.push({
       pathname: "/rosary",
       params: { isDecade: "false", mysteryType: todayMysteryType, source: "today" },
     });
+  }, [router, todayMysteryType]);
+
+  /** Starts the localized video Rosary for the device-local weekday. */
+  const prayTodaysVideoRosary = useCallback(() => {
+    router.push({ pathname: "/rosary-video", params: { mysteryType: todayMysteryType } });
   }, [router, todayMysteryType]);
 
   /** Starts a manually selected full mystery set from the combined Home page. */
@@ -517,7 +522,8 @@ export function HolyProgressDashboard({
         <MomentForPrayer
           mysteryImageSource={todayMysterySet.imageSource}
           mysteryTitle={todayMysterySet.title}
-          onPrayToday={prayTodaysRosary}
+          onPrayDigital={prayTodaysDigitalRosary}
+          onPrayVideo={prayTodaysVideoRosary}
           weekday={getWeekdayLabel(today, locale)}
         />
       </View>

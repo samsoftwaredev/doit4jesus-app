@@ -10,6 +10,7 @@ export type BadgeAchievement = {
 export type AchievementEvent =
   | { type: "onboarding-complete" }
   | { type: "daily-scripture-complete" }
+  | { type: "rosary-video-complete" }
   | { badge: BadgeAchievement; type: "badge-award" };
 
 type AchievementContextValue = {
