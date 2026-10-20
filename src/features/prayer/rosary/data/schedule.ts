@@ -10,6 +10,12 @@ const mysteryByWeekday: Record<number, RosaryMysteryType> = {
   6: "joyful",
 };
 
+/** Parses an ISO calendar date as local noon so weekday selection never crosses a timezone boundary. */
+export function localIsoDateToDate(localIsoDate: string) {
+  const [year, month, day] = localIsoDate.split("-").map(Number);
+  return new Date(year, month - 1, day, 12);
+}
+
 export function getTodayRosaryMysteryType(date = new Date()): RosaryMysteryType {
   return mysteryByWeekday[date.getDay()] ?? "joyful";
 }

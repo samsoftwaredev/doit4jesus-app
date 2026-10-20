@@ -29,7 +29,7 @@ import type { ScreenDataResponse } from "@/features/screen-data";
 import { logDevelopmentError } from "@/lib/development-logger";
 import { getRosaryContent } from "@/features/prayer/rosary/data/localizedRosaryContent";
 import { getRosaryMysterySetFromContent } from "@/features/prayer/rosary/data/rosaryMysteries";
-import { getTodayRosaryMysteryType, getWeekdayLabel } from "@/features/prayer/rosary/data/schedule";
+import { getTodayRosaryMysteryType, getWeekdayLabel, localIsoDateToDate } from "@/features/prayer/rosary/data/schedule";
 import { useRosaryArtStylePreference } from "@/features/prayer/rosary/hooks/useRosaryArtStylePreference";
 import type { RosaryMysteryType } from "@/features/prayer/rosary/types/rosary";
 import { useCurrentLocalDate, useResponsiveLayout } from "@/hooks";
@@ -38,12 +38,6 @@ import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles"
 import { theme } from "@/theme/tokens";
 
 const previewLimit = 10;
-
-/** Parses an ISO calendar date as local noon so weekday selection never crosses a timezone boundary. */
-function localIsoDateToDate(localIsoDate: string) {
-  const [year, month, day] = localIsoDate.split("-").map(Number);
-  return new Date(year, month - 1, day, 12);
-}
 
 /** Appends newly fetched intentions without duplicating cards when pages overlap. */
 function appendUniqueIntentions(

@@ -1,10 +1,15 @@
 import { useFocusEffect, useRouter } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { LayoutChangeEvent } from "react-native";
 import { AppState, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { RosaryGardenSection } from "@/features/prayer/rosary/garden/components";
+import { MomentForPrayer } from "@/features/prayer/components";
+import { getRosaryContent } from "@/features/prayer/rosary/data/localizedRosaryContent";
+import { getRosaryMysterySetFromContent } from "@/features/prayer/rosary/data/rosaryMysteries";
+import { getTodayRosaryMysteryType, getWeekdayLabel, localIsoDateToDate } from "@/features/prayer/rosary/data/schedule";
+import { useRosaryArtStylePreference } from "@/features/prayer/rosary/hooks/useRosaryArtStylePreference";
 import { subscribeToRosaryCompletion } from "@/features/prayer/rosary/rosary-completion-events";
 import { useCurrentProfile } from "@/features/profile";
 import { logDevelopmentError } from "@/lib/development-logger";
@@ -21,7 +26,9 @@ import {
   UserProgressSection,
 } from "@/features/progress";
 import type { ScreenDataResponse } from "@/features/screen-data";
+import { useCurrentLocalDate } from "@/hooks/useCurrentLocalDate";
 import { useResponsiveLayout } from "@/hooks";
+import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 
 import type { LevelCatalogEntry, RecentRosaryActivity } from "@/features/progress";
@@ -47,7 +54,7 @@ import type {
 } from "./dashboard.types";
 
 /**
- * Composes the Home dashboard's API-backed cards, Rosary Garden, streak progress, and earned badges.
+ * Composes Home with today's scheduled Rosary first, followed by API-backed progress, Garden, and formation cards.
  *
  * Replaces unavailable Home progress and daily Rosary reminder states with a journey welcome while preserving other cards.
  */
@@ -59,6 +66,8 @@ export function HolyProgressDashboard({
   onGardenLayout?: (event: LayoutChangeEvent) => void;
 }) {
   const { t } = useTranslation();
+  const { language, locale } = useAppLanguage();
+  const { rosaryArtStyle } = useRosaryArtStylePreference();
   const styles = useThemedStyles(styleSheet);
   const router = useRouter();
   const { profile } = useCurrentProfile();
@@ -83,6 +92,14 @@ export function HolyProgressDashboard({
   const [statsError, setStatsError] = useState(false);
   const [holyDetailsError, setHolyDetailsError] = useState(false);
   const [isActivityPointsVisible, setIsActivityPointsVisible] = useState(false);
+  const currentLocalDate = useCurrentLocalDate();
+  const today = useMemo(() => localIsoDateToDate(currentLocalDate), [currentLocalDate]);
+  const todayMysteryType = getTodayRosaryMysteryType(today);
+  const rosaryContent = useMemo(() => getRosaryContent(language), [language]);
+  const todayMysterySet = useMemo(
+    () => getRosaryMysterySetFromContent(rosaryContent, todayMysteryType, rosaryArtStyle),
+    [rosaryArtStyle, rosaryContent, todayMysteryType],
+  );
 
   const loadProgress = useCallback(async () => {
     setIsLoadingProgress(true);
@@ -236,16 +253,34 @@ export function HolyProgressDashboard({
     router.push({ pathname: "/rosary", params: { source: "today" } });
   }, [router]);
 
+  /** Starts the complete mystery set scheduled for the device-local weekday. */
+  const prayTodaysRosary = useCallback(() => {
+    router.push({
+      pathname: "/rosary",
+      params: { isDecade: "false", mysteryType: todayMysteryType, source: "today" },
+    });
+  }, [router, todayMysteryType]);
+
   const useCardColumns = isTablet && contentWidth >= 700 && !isLargeText;
 
   return (
     <View accessibilityLabel={t("dashboard.accessibilityLabel")} style={styles.dashboard}>
-      <UserProgressSection
-        errorFallback={
-          <JourneyWelcomeCard displayName={profile?.displayName ?? null} gender={profile?.gender ?? null} />
-        }
-        initialData={initialData}
-      />
+      <View style={styles.primaryCard} testID="today-rosary-card-container">
+        <MomentForPrayer
+          mysteryImageSource={todayMysterySet.imageSource}
+          mysteryTitle={todayMysterySet.title}
+          onPrayToday={prayTodaysRosary}
+          weekday={getWeekdayLabel(today, locale)}
+        />
+      </View>
+      <View testID="streak-progress-container">
+        <UserProgressSection
+          errorFallback={
+            <JourneyWelcomeCard displayName={profile?.displayName ?? null} gender={profile?.gender ?? null} />
+          }
+          initialData={initialData}
+        />
+      </View>
       <View style={styles.primaryCard} testID="daily-rosary-card-container">
         {!isLoadingReminder && reminderError ? (
           <JourneyWelcomeCard displayName={profile?.displayName ?? null} gender={profile?.gender ?? null} />

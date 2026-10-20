@@ -1,6 +1,7 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react-native";
 
 import { notifyRosaryCompletionRecorded } from "@/features/prayer/rosary/rosary-completion-events";
+import { i18n } from "@/localization";
 
 import { HolyProgressDashboard } from "./HolyProgressDashboard";
 
@@ -13,6 +14,8 @@ const mockFetchRosaryStats = jest.fn();
 const mockGetConscienceQuestion = jest.fn();
 const mockGetRosaryReminder = jest.fn();
 const mockGetWeeklyGlobalLeaderboard = jest.fn();
+let mockCurrentLocalDate = "2026-08-24";
+let mockRosaryArtStyle: "classic" | "comic" = "comic";
 let mockProfile: { displayName: string | null; gender: "female" | "male" | null } | null = null;
 const mockResponsiveLayout = jest.fn(() => ({
   contentWidth: 390,
@@ -38,16 +41,28 @@ jest.mock("expo-router", () => {
 
 jest.mock("@/features/progress", () => ({
   ...(() => {
-    const { Text } = jest.requireActual<typeof import("react-native")>("react-native");
+    const { Text, View } = jest.requireActual<typeof import("react-native")>("react-native");
     return {
       EarnedBadgesSection: () => <Text>Dashboard Earned Badges</Text>,
       fetchDashboardProgress: (...args: unknown[]) => mockFetchDashboardProgress(...args),
       fetchLevels: (...args: unknown[]) => mockFetchLevels(...args),
       fetchRecentRosaryActivities: (...args: unknown[]) => mockFetchRecentRosaryActivities(...args),
       fetchRosaryStats: (...args: unknown[]) => mockFetchRosaryStats(...args),
-      UserProgressSection: () => <Text>Existing User Progress</Text>,
+      UserProgressSection: () => (
+        <View testID="mock-streak-progress">
+          <Text>Existing User Progress</Text>
+        </View>
+      ),
     };
   })(),
+}));
+
+jest.mock("@/features/prayer/rosary/hooks/useRosaryArtStylePreference", () => ({
+  useRosaryArtStylePreference: () => ({ rosaryArtStyle: mockRosaryArtStyle }),
+}));
+
+jest.mock("@/hooks/useCurrentLocalDate", () => ({
+  useCurrentLocalDate: () => mockCurrentLocalDate,
 }));
 
 jest.mock("@/features/liturgy/screens", () => {
@@ -75,8 +90,11 @@ jest.mock("@/features/profile", () => ({
 }));
 
 describe("HolyProgressDashboard", () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.clearAllMocks();
+    await i18n.changeLanguage("en");
+    mockCurrentLocalDate = "2026-08-24";
+    mockRosaryArtStyle = "comic";
     mockProfile = { displayName: "Mateo", gender: "male" };
     mockResponsiveLayout.mockReturnValue({
       contentWidth: 390,
@@ -164,12 +182,28 @@ describe("HolyProgressDashboard", () => {
     expect(cards).toHaveLength(4);
   });
 
-  it("places the daily Rosary card directly after the streak progress", async () => {
+  it("places today's Rosary first, before streak progress, and opens the scheduled full Rosary", async () => {
+    await render(<HolyProgressDashboard />);
+
+    expect(screen.getByText("Monday")).toBeTruthy();
+    expect(screen.getByText("Joyful Mysteries")).toBeTruthy();
+    const sections = screen.getByLabelText("Holy Progress Dashboard").props.children;
+    expect(sections[0].props.testID).toBe("today-rosary-card-container");
+    expect(sections[1].props.testID).toBe("streak-progress-container");
+
+    await fireEvent.press(screen.getByLabelText("Pray today's Joyful Mysteries"));
+    expect(mockPush).toHaveBeenCalledWith({
+      pathname: "/rosary",
+      params: { isDecade: "false", mysteryType: "joyful", source: "today" },
+    });
+  });
+
+  it("keeps the daily Rosary reminder directly after the streak progress", async () => {
     await render(<HolyProgressDashboard />);
     await screen.findByLabelText("Pray Rosary");
 
     const sections = screen.getByLabelText("Holy Progress Dashboard").props.children;
-    expect(sections[1].props.testID).toBe("daily-rosary-card-container");
+    expect(sections[2].props.testID).toBe("daily-rosary-card-container");
   });
 
   it("uses the existing Rosary route without presenting a global leaderboard action", async () => {
@@ -204,8 +238,8 @@ describe("HolyProgressDashboard", () => {
     await render(<HolyProgressDashboard />);
 
     const sections = screen.getByLabelText("Holy Progress Dashboard").props.children;
-    expect(sections[1].props.testID).toBe("daily-rosary-card-container");
-    expect(sections[2].props.testID).toBe("rosary-garden-section-container");
+    expect(sections[2].props.testID).toBe("daily-rosary-card-container");
+    expect(sections[3].props.testID).toBe("rosary-garden-section-container");
   });
 
   it("replaces an unavailable streak card with a male user's journey welcome while retaining progress content", async () => {
