@@ -64,6 +64,32 @@ const classicMysteryImageSources: Record<string, readonly ImageSourcePropType[]>
   third_sorrowful: mysteryClassicArt.thirdSorrowful,
 };
 
+/** Returns a shuffled copy while leaving the bundled asset collection in its declared order. */
+function shuffleImageSources(sources: readonly ImageSourcePropType[], random: () => number): ImageSourcePropType[] {
+  const shuffled = [...sources];
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.min(index, Math.max(0, Math.floor(random() * (index + 1))));
+    [shuffled[index], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[index]];
+  }
+  return shuffled;
+}
+
+/**
+ * Returns the artwork collection available to one mystery in a stable caller-owned order.
+ * Classical collections are shuffled without mutation; comic mysteries retain their single illustration.
+ */
+export function getRosaryMysteryImageSources(
+  appImageKey: string,
+  artStyle: RosaryArtStyle = "comic",
+  random: () => number = Math.random,
+): readonly ImageSourcePropType[] {
+  if (artStyle === "classic") {
+    const images = classicMysteryImageSources[appImageKey];
+    if (images?.length) return shuffleImageSources(images, random);
+  }
+  return [mysteryImageSources[appImageKey] ?? fallbackImageSource];
+}
+
 /** Resolves one bundled image for a mystery, choosing a new classic artwork when requested. */
 export function getRosaryMysteryImageSource(
   appImageKey: string,
@@ -77,28 +103,34 @@ export function getRosaryMysteryImageSource(
   return mysteryImageSources[appImageKey] ?? fallbackImageSource;
 }
 
+/** Builds one localized mystery set with a stable artwork order for the mounted prayer session. */
 function createMysterySet(
   content: RosaryContent,
   type: RosaryMysteryType,
   artStyle: RosaryArtStyle = "comic",
+  random: () => number = Math.random,
 ): RosaryMysterySet | undefined {
   const contentSet = content.mystery_sets.find((set) => set.id === type);
   if (!contentSet) return undefined;
 
   const category = contentSet.title;
   const prayers = getRosaryPrayers(content);
-  const mysteries: RosaryMystery[] = contentSet.mysteries.map((mystery) => ({
-    id: mystery.id,
-    title: mystery.title,
-    category,
-    fruit: mystery.fruit,
-    fruitDescription: mystery.fruit_description,
-    imageSource: getRosaryMysteryImageSource(mystery.app_image_key, artStyle),
-    imageAlt: mystery.image_alt,
-    scriptureReference: mystery.primary_scripture,
-    scriptureText: mystery.scripture_text,
-    prayers,
-  }));
+  const mysteries: RosaryMystery[] = contentSet.mysteries.map((mystery) => {
+    const backgroundImageSources = getRosaryMysteryImageSources(mystery.app_image_key, artStyle, random);
+    return {
+      id: mystery.id,
+      title: mystery.title,
+      category,
+      backgroundImageSources,
+      fruit: mystery.fruit,
+      fruitDescription: mystery.fruit_description,
+      imageSource: backgroundImageSources.at(-1) ?? fallbackImageSource,
+      imageAlt: mystery.image_alt,
+      scriptureReference: mystery.primary_scripture,
+      scriptureText: mystery.scripture_text,
+      prayers,
+    };
+  });
 
   return {
     type,
@@ -110,21 +142,24 @@ function createMysterySet(
   };
 }
 
+/** Returns the localized mysteries and session-stable artwork for one Rosary mystery type. */
 export function getRosaryMysteriesFromContent(
   content: RosaryContent,
   type: RosaryMysteryType,
   artStyle: RosaryArtStyle = "comic",
+  random: () => number = Math.random,
 ) {
-  return createMysterySet(content, type, artStyle)?.mysteries ?? [];
+  return createMysterySet(content, type, artStyle, random)?.mysteries ?? [];
 }
 
 /** Builds all four localized mystery sets while retaining their stable ordering. */
 export function getRosaryMysterySetsFromContent(
   content: RosaryContent,
   artStyle: RosaryArtStyle = "comic",
+  random: () => number = Math.random,
 ): RosaryMysterySet[] {
   return mysteryTypeOrder.flatMap((type) => {
-    const mysterySet = createMysterySet(content, type, artStyle);
+    const mysterySet = createMysterySet(content, type, artStyle, random);
     return mysterySet ? [mysterySet] : [];
   });
 }
@@ -142,8 +177,9 @@ export function getRosaryMysterySetFromContent(
   content: RosaryContent,
   type: RosaryMysteryType,
   artStyle: RosaryArtStyle = "comic",
+  random: () => number = Math.random,
 ) {
-  const sets = getRosaryMysterySetsFromContent(content, artStyle);
+  const sets = getRosaryMysterySetsFromContent(content, artStyle, random);
   return sets.find((set) => set.type === type) ?? sets[0];
 }
 

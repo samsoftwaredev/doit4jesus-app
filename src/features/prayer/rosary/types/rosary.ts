@@ -42,6 +42,7 @@ export interface RosaryMystery {
   id: string;
   title: string;
   category: RosaryMysteryCategory;
+  backgroundImageSources: readonly ImageSourcePropType[];
   fruit: string;
   fruitDescription: string;
   imageSource: ImageSourcePropType;

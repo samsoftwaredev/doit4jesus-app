@@ -11,7 +11,6 @@ export const secondGlorious = [
   require("./secondGlorious10.jpg"),
   require("./secondGlorious11.jpg"),
   require("./secondGlorious12.jpg"),
-  require("./secondGlorious13.jpg"),
   require("./secondGlorious14.jpg"),
   require("./secondGlorious16.jpg"),
   require("./secondGlorious17.webp"),

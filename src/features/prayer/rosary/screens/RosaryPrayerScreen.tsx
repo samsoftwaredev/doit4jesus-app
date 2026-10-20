@@ -36,6 +36,7 @@ import {
   getRemainingRosaryAudioSeconds,
   getRosaryAudioDurationSeconds,
 } from "@/features/prayer/rosary/data/rosaryAudioTiming";
+import { getRosaryBackgroundImageSource } from "@/features/prayer/rosary/data/rosaryBackgrounds";
 import type { RosaryContent } from "@/features/prayer/rosary/data/rosaryContent";
 import { ROSARY_LENGTH_OPTIONS } from "@/features/prayer/rosary/data/rosaryLengths";
 import { getRosaryMysteriesFromContent } from "@/features/prayer/rosary/data/rosaryMysteries";
@@ -76,7 +77,7 @@ function physicalBeadProgress(beads: RosaryBead[], currentBeadIndex: number) {
 }
 
 /**
- * Renders the guided Rosary within the shared atmosphere using the selected style's localized mystery artwork and prayer sequence.
+ * Renders the guided Rosary with prayer-responsive artwork from the selected style and localized prayer sequence.
  * Full sessions include opening, five decades, and closing prayers; the bead rail remains bounded to the visible viewport.
  */
 export function RosaryPrayerScreen({
@@ -184,10 +185,19 @@ export function RosaryPrayerScreen({
     mysteries: activeMysteries,
     storageKey: `@doit4jesus/rosary-session/${isDecade ? "v3" : "v4"}/${mysteryType}/${isDecade ? "decade" : "full"}`,
   });
+  const backgroundImageSource = useMemo(
+    () =>
+      getRosaryBackgroundImageSource({
+        artStyle: rosaryArtStyle,
+        bead: session.currentBead,
+        mystery: session.currentMystery,
+      }),
+    [rosaryArtStyle, session.currentBead, session.currentMystery],
+  );
 
   useEffect(() => {
     setBackgroundImageFailed(false);
-  }, [session.currentMystery?.id]);
+  }, [backgroundImageSource]);
   const audioPlayback = useRosaryAudioPlayback({
     audioQueue: session.currentBead?.audioQueue,
     isMuted: isAudioMuted,
@@ -419,7 +429,7 @@ export function RosaryPrayerScreen({
 
   return (
     <View style={styles.background}>
-      {!session.currentMystery || backgroundImageFailed ? (
+      {!backgroundImageSource || backgroundImageFailed ? (
         <LinearGradient
           colors={[theme.rosary.colors.canvas, theme.rosary.colors.canvasLight, theme.rosary.colors.canvas]}
           end={{ x: 1, y: 1 }}
@@ -432,7 +442,7 @@ export function RosaryPrayerScreen({
           cachePolicy="memory-disk"
           contentFit="cover"
           onError={handleBackgroundImageError}
-          source={session.currentMystery.imageSource}
+          source={backgroundImageSource}
           style={styles.mysteryBackground}
           testID="rosary-mystery-background"
           transition={reduceMotion ? 0 : 220}

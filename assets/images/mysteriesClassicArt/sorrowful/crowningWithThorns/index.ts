@@ -14,6 +14,5 @@ export const thirdSorrowful = [
   require("./thirdSorrowful13.jpg"),
   require("./thirdSorrowful14.jpg"),
   require("./thirdSorrowful15.jpg"),
-  require("./thirdSorrowful16.jpg"),
   require("./thirdSorrowful17.jpg"),
 ] as const;

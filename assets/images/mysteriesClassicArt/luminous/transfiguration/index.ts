@@ -12,7 +12,6 @@ export const fourthLuminous = [
   require("./fourthLuminous11.jpg"),
   require("./fourthLuminous12.jpg"),
   require("./fourthLuminous13.png"),
-  require("./fourthLuminous14.png"),
   require("./fourthLuminous15.jpg"),
   require("./fourthLuminous16.jpg"),
   require("./fourthLuminous17.jpg"),

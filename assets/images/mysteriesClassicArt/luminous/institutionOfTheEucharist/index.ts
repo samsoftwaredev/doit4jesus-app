@@ -11,7 +11,6 @@ export const fifthLuminous = [
   require("./fifthLuminous10.jpg"),
   require("./fifthLuminous11.png"),
   require("./fifthLuminous12.jpg"),
-  require("./fifthLuminous13.jpg"),
   require("./fifthLuminous14.jpg"),
   require("./fifthLuminous16.jpg"),
   require("./fifthLuminous17.jpg"),

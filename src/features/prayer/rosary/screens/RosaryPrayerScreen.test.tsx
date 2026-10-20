@@ -7,6 +7,8 @@ import { fullRosarySequence, rosarySequence } from "@/features/prayer/rosary/dat
 import { RosaryPrayerScreen } from "@/features/prayer/rosary/screens/RosaryPrayerScreen";
 import { i18n } from "@/localization";
 
+import * as mysteryClassicArt from "../../../../../assets/images/mysteriesClassicArt";
+
 const goToNextBead = jest.fn();
 const goToPreviousBead = jest.fn();
 const restartMystery = jest.fn();
@@ -19,6 +21,8 @@ const mockUseRosaryPresence = jest.fn();
 const mockToggleAudioPlayback = jest.fn();
 const mockSetAudioMuted = jest.fn();
 const mockUseRosaryAudioPlayback = jest.fn();
+const mockSetRosaryArtStyle = jest.fn();
+let mockRosaryArtStyle: "classic" | "comic" = "classic";
 
 jest.mock("expo-router", () => ({ useRouter: () => ({ back: mockBack, replace: mockReplace }) }));
 jest.mock("@/features/prayer/rosary/hooks/useRosarySession", () => ({
@@ -35,6 +39,14 @@ jest.mock("@/features/prayer/rosary/hooks/useRosaryAudioPreference", () => ({
     isHydrated: true,
     isMuted: false,
     setIsMuted: mockSetAudioMuted,
+    storageError: false,
+  }),
+}));
+jest.mock("@/features/prayer/rosary/hooks/useRosaryArtStylePreference", () => ({
+  useRosaryArtStylePreference: () => ({
+    isHydrated: true,
+    rosaryArtStyle: mockRosaryArtStyle,
+    setRosaryArtStyle: mockSetRosaryArtStyle,
     storageError: false,
   }),
 }));
@@ -80,6 +92,7 @@ describe("RosaryPrayerScreen", () => {
   beforeEach(async () => {
     await act(async () => i18n.changeLanguage("en"));
     jest.clearAllMocks();
+    mockRosaryArtStyle = "classic";
     useReducedMotion.mockReturnValue(true);
     mockRecordRosaryActivity.mockResolvedValue({ points: 25 });
     mockRecordPrayerForIntention.mockResolvedValue({ prayerCount: 4 });
@@ -125,6 +138,45 @@ describe("RosaryPrayerScreen", () => {
     await rendered.rerender(<RosaryPrayerScreen />);
 
     expect(screen.getByTestId("rosary-mystery-background").props.source).toEqual([rosaryMysteries[1].imageSource]);
+  });
+
+  it("changes classic Hail Mary artwork by bead and clears a failed-image fallback", async () => {
+    const mystery = {
+      ...rosaryMysteries[0],
+      backgroundImageSources: mysteryClassicArt.firstJoyful.slice(0, 3),
+      imageSource: mysteryClassicArt.firstJoyful[3],
+    };
+    mockSession({
+      currentBead: { ...fullRosarySequence[8], beadInDecade: 1, prayerId: "hail-mary", type: "hailMary" },
+      currentMystery: mystery,
+    });
+    const rendered = await render(<RosaryPrayerScreen isDecade={false} />);
+
+    expect(screen.getByTestId("rosary-mystery-background").props.source).toEqual([mysteryClassicArt.firstJoyful[0]]);
+    await fireEvent(screen.getByTestId("rosary-mystery-background"), "error", { nativeEvent: {} });
+    expect(screen.queryByTestId("rosary-mystery-background")).toBeNull();
+
+    mockSession({
+      currentBead: { ...fullRosarySequence[9], beadInDecade: 2, prayerId: "hail-mary", type: "hailMary" },
+      currentMystery: mystery,
+    });
+    await rendered.rerender(<RosaryPrayerScreen isDecade={false} />);
+
+    await waitFor(() =>
+      expect(screen.getByTestId("rosary-mystery-background").props.source).toEqual([mysteryClassicArt.firstJoyful[1]]),
+    );
+  });
+
+  it("does not replace comic-style mystery artwork for special prayers", async () => {
+    mockRosaryArtStyle = "comic";
+    mockSession({
+      currentBead: { ...fullRosarySequence[18], prayerId: "glory-be", type: "gloryBe" },
+      currentMystery: rosaryMysteries[0],
+    });
+
+    await render(<RosaryPrayerScreen isDecade={false} />);
+
+    expect(screen.getByTestId("rosary-mystery-background").props.source).toEqual([rosaryMysteries[0].imageSource]);
   });
 
   it("renders every physical bead without rendering non-bead prayer markers", async () => {
