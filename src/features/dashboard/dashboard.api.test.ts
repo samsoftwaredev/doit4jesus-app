@@ -1,9 +1,9 @@
 import {
   getConscienceQuestions,
   getConscienceQuestion,
+  getLifetimeGlobalLeaderboard,
   getRosaryReminder,
   getWeeklyGlobalLeaderboard,
-  getYearlyGlobalLeaderboard,
 } from "./dashboard.api";
 
 jest.mock("@/features/progress", () => ({
@@ -95,19 +95,18 @@ describe("dashboard API", () => {
     });
   });
 
-  it("requests and maps exactly the top-three weekly global leaderboard", async () => {
+  it("requests and maps the top-three weekly global Rosary leaderboard", async () => {
     const fetchMock = jest.fn(async () => ({
       json: async () => ({
         data: {
           currentUserEntry: {
             isCurrentUser: true,
             period_id: "3e6ff0c6-ebf8-4949-b4a3-5fcf1bb24555",
-            points: 105,
-            prayers_count: 1,
             profile: {
               avatar_url: "https://i.pravatar.cc/256?u=testuser",
               countryCode: "US",
               display_name: "Test User",
+              saintAvatarId: null,
               title: "Faithful Beginner",
               user_id: "9629e3e7-72dc-4bb1-94d3-b5a2bdd9f002",
               username: "testuser",
@@ -116,15 +115,13 @@ describe("dashboard API", () => {
             rosaries_count: 0,
             scope_reference: "global",
             scope_type: "global",
-            scripture_readings_count: 2,
+            updated_at: "2026-10-19T18:05:00.000Z",
             user_id: "9629e3e7-72dc-4bb1-94d3-b5a2bdd9f002",
           },
           entries: [
             {
               isCurrentUser: false,
               period_id: "3e6ff0c6-ebf8-4949-b4a3-5fcf1bb24555",
-              points: 110,
-              prayers_count: 0,
               profile: {
                 avatar_url: "https://i.pravatar.cc/256?u=mariasantos",
                 countryCode: "MX",
@@ -138,18 +135,17 @@ describe("dashboard API", () => {
               rosaries_count: 0,
               scope_reference: "global",
               scope_type: "global",
-              scripture_readings_count: 0,
+              updated_at: "2026-10-19T18:05:00.000Z",
               user_id: "11111111-1111-4111-8111-111111111111",
             },
             {
               isCurrentUser: true,
               period_id: "3e6ff0c6-ebf8-4949-b4a3-5fcf1bb24555",
-              points: 105,
-              prayers_count: 1,
               profile: {
                 avatar_url: "https://i.pravatar.cc/256?u=testuser",
                 countryCode: "US",
                 display_name: "Test User",
+                saintAvatarId: null,
                 title: "Faithful Beginner",
                 user_id: "9629e3e7-72dc-4bb1-94d3-b5a2bdd9f002",
                 username: "testuser",
@@ -158,18 +154,17 @@ describe("dashboard API", () => {
               rosaries_count: 0,
               scope_reference: "global",
               scope_type: "global",
-              scripture_readings_count: 2,
+              updated_at: "2026-10-19T18:05:00.000Z",
               user_id: "9629e3e7-72dc-4bb1-94d3-b5a2bdd9f002",
             },
             {
               isCurrentUser: false,
               period_id: "3e6ff0c6-ebf8-4949-b4a3-5fcf1bb24555",
-              points: 40,
-              prayers_count: 0,
               profile: {
                 avatar_url: "https://i.pravatar.cc/256?u=johnpaul",
                 countryCode: "US",
                 display_name: "John Paul",
+                saintAvatarId: null,
                 title: "Scripture Seeker",
                 user_id: "22222222-2222-4222-8222-222222222222",
                 username: "johnpaul",
@@ -178,13 +173,15 @@ describe("dashboard API", () => {
               rosaries_count: 0,
               scope_reference: "global",
               scope_type: "global",
-              scripture_readings_count: 0,
+              updated_at: "2026-10-19T18:05:00.000Z",
               user_id: "22222222-2222-4222-8222-222222222222",
             },
           ],
           period: {
             code: "week-2026-W38",
+            created_at: "2026-09-14T00:00:00+00:00",
             ends_at: "2026-09-21T00:00:00+00:00",
+            finalized_at: null,
             id: "3e6ff0c6-ebf8-4949-b4a3-5fcf1bb24555",
             name: "Week of 2026-09-14",
             period_type: "weekly",
@@ -198,34 +195,41 @@ describe("dashboard API", () => {
     }));
     globalThis.fetch = fetchMock as unknown as typeof fetch;
 
-    await expect(getWeeklyGlobalLeaderboard()).resolves.toEqual([
-      {
-        avatarUrl: "https://i.pravatar.cc/256?u=mariasantos",
-        countryCode: "MX",
-        displayName: "Maria Santos",
-        rank: 1,
-        rosaries: 0,
-        saintAvatarId: "a1000000-0000-4000-8000-000000000005",
-      },
-      {
-        avatarUrl: "https://i.pravatar.cc/256?u=testuser",
-        countryCode: "US",
+    await expect(getWeeklyGlobalLeaderboard()).resolves.toMatchObject({
+      currentUserEntry: {
         displayName: "Test User",
+        isCurrentUser: true,
         rank: 2,
         rosaries: 0,
-        saintAvatarId: null,
+        userId: "9629e3e7-72dc-4bb1-94d3-b5a2bdd9f002",
       },
-      {
-        avatarUrl: "https://i.pravatar.cc/256?u=johnpaul",
-        countryCode: "US",
-        displayName: "John Paul",
-        rank: 3,
-        rosaries: 0,
-        saintAvatarId: null,
+      entries: [
+        {
+          displayName: "Maria Santos",
+          isCurrentUser: false,
+          rank: 1,
+          rosaries: 0,
+          saintAvatarId: "a1000000-0000-4000-8000-000000000005",
+          userId: "11111111-1111-4111-8111-111111111111",
+        },
+        { displayName: "Test User", isCurrentUser: true, rank: 2 },
+        { displayName: "John Paul", isCurrentUser: false, rank: 3 },
+      ],
+      meta: { limit: 3, offset: 0, total: 3 },
+      period: {
+        code: "week-2026-W38",
+        createdAt: "2026-09-14T00:00:00+00:00",
+        endsAt: "2026-09-21T00:00:00+00:00",
+        finalizedAt: null,
+        id: "3e6ff0c6-ebf8-4949-b4a3-5fcf1bb24555",
+        name: "Week of 2026-09-14",
+        periodType: "weekly",
+        startsAt: "2026-09-14T00:00:00+00:00",
+        status: "active",
       },
-    ]);
+    });
     expect(fetchMock).toHaveBeenCalledWith(
-      "https://api.example.test/api/v1/leaderboards?periodType=weekly&scopeType=global&scopeReference=global&limit=3",
+      "https://api.example.test/api/v1/leaderboards?periodType=weekly&scopeType=global&scopeReference=global&limit=3&offset=0",
       {
         headers: { Accept: "application/json", Authorization: "Bearer test-token" },
         method: "GET",
@@ -233,17 +237,43 @@ describe("dashboard API", () => {
     );
   });
 
-  it("requests and maps exactly the top-ten yearly global leaderboard", async () => {
+  it("requests and maps the top-ten lifetime global Rosary leaderboard", async () => {
     const fetchMock = jest.fn(async () => ({
       json: async () => ({
         data: {
+          currentUserEntry: null,
           entries: [
             {
-              profile: { avatar_url: null, countryCode: null, display_name: "Year Leader", saintAvatarId: null },
+              isCurrentUser: false,
+              period_id: "lifetime-period",
+              profile: {
+                avatar_url: null,
+                countryCode: "MX",
+                display_name: "Lifetime Leader",
+                saintAvatarId: null,
+                title: "Prayer Champion",
+                user_id: "lifetime-leader",
+                username: "lifetimeleader",
+              },
               rank: 1,
               rosaries_count: 412,
+              scope_reference: "global",
+              scope_type: "global",
+              updated_at: "2026-10-19T15:00:00Z",
+              user_id: "lifetime-leader",
             },
           ],
+          period: {
+            code: "lifetime",
+            created_at: "2026-10-19T15:00:00Z",
+            ends_at: "2026-10-19T15:00:00Z",
+            finalized_at: null,
+            id: "lifetime-period",
+            name: "Lifetime",
+            period_type: "lifetime",
+            starts_at: "2024-01-15T12:00:00Z",
+            status: "active",
+          },
         },
         meta: { limit: 10, offset: 0, total: 1 },
       }),
@@ -251,18 +281,14 @@ describe("dashboard API", () => {
     }));
     globalThis.fetch = fetchMock as unknown as typeof fetch;
 
-    await expect(getYearlyGlobalLeaderboard()).resolves.toEqual([
-      {
-        avatarUrl: null,
-        countryCode: null,
-        displayName: "Year Leader",
-        rank: 1,
-        rosaries: 412,
-        saintAvatarId: null,
-      },
-    ]);
+    await expect(getLifetimeGlobalLeaderboard()).resolves.toMatchObject({
+      currentUserEntry: null,
+      entries: [{ countryCode: "MX", displayName: "Lifetime Leader", rank: 1, rosaries: 412 }],
+      meta: { limit: 10, offset: 0, total: 1 },
+      period: { code: "lifetime", periodType: "lifetime" },
+    });
     expect(fetchMock).toHaveBeenCalledWith(
-      "https://api.example.test/api/v1/leaderboards?periodType=yearly&scopeType=global&scopeReference=global&limit=10",
+      "https://api.example.test/api/v1/leaderboards?periodType=lifetime&scopeType=global&scopeReference=global&limit=10&offset=0",
       {
         headers: { Accept: "application/json", Authorization: "Bearer test-token" },
         method: "GET",
@@ -270,8 +296,47 @@ describe("dashboard API", () => {
     );
   });
 
-  it("surfaces an endpoint failure instead of manufacturing dashboard data", async () => {
-    globalThis.fetch = jest.fn(async () => ({ ok: false, status: 503 })) as unknown as typeof fetch;
-    await expect(getRosaryReminder()).rejects.toThrow("Unable to load dashboard data (503).");
+  it("accepts an empty leaderboard and a null current-user entry", async () => {
+    globalThis.fetch = jest.fn(async () => ({
+      json: async () => ({
+        data: {
+          currentUserEntry: null,
+          entries: [],
+          period: {
+            code: "lifetime",
+            created_at: "2026-10-19T15:00:00Z",
+            ends_at: "2026-10-19T15:00:00Z",
+            finalized_at: null,
+            id: "lifetime-period",
+            name: "Lifetime",
+            period_type: "lifetime",
+            starts_at: "2024-01-15T12:00:00Z",
+            status: "active",
+          },
+        },
+        meta: { limit: 10, offset: 0, total: 0 },
+      }),
+      ok: true,
+    })) as unknown as typeof fetch;
+
+    await expect(getLifetimeGlobalLeaderboard()).resolves.toMatchObject({
+      currentUserEntry: null,
+      entries: [],
+      meta: { limit: 10, offset: 0, total: 0 },
+    });
+  });
+
+  it("rejects a malformed successful global leaderboard response", async () => {
+    globalThis.fetch = jest.fn(async () => ({
+      json: async () => ({ data: { currentUserEntry: null, entries: [] }, meta: { limit: 3, offset: 0, total: 0 } }),
+      ok: true,
+    })) as unknown as typeof fetch;
+
+    await expect(getWeeklyGlobalLeaderboard()).rejects.toThrow("leaderboard period");
+  });
+
+  it("surfaces a global leaderboard endpoint failure instead of manufacturing data", async () => {
+    globalThis.fetch = jest.fn(async () => ({ ok: false, status: 422 })) as unknown as typeof fetch;
+    await expect(getLifetimeGlobalLeaderboard()).rejects.toThrow("Unable to load dashboard data (422).");
   });
 });

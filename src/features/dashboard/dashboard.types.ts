@@ -37,9 +37,38 @@ export type LeaderboardEntryViewModel = {
   avatarUrl: string | null;
   countryCode: string | null;
   displayName: string;
+  isCurrentUser: boolean;
   rank: number;
   rosaries: number;
   saintAvatarId: string | null;
+  userId: string;
+};
+
+export type GlobalLeaderboardPeriodType = "weekly" | "lifetime";
+
+export type GlobalLeaderboardPeriod = {
+  code: string;
+  createdAt: string;
+  endsAt: string;
+  finalizedAt: string | null;
+  id: string;
+  name: string;
+  periodType: GlobalLeaderboardPeriodType;
+  startsAt: string;
+  status: string;
+};
+
+export type GlobalLeaderboardMeta = {
+  limit: number;
+  offset: number;
+  total: number;
+};
+
+export type GlobalRosaryLeaderboard = {
+  currentUserEntry: LeaderboardEntryViewModel | null;
+  entries: LeaderboardEntryViewModel[];
+  meta: GlobalLeaderboardMeta;
+  period: GlobalLeaderboardPeriod;
 };
 
 export const ROSARY_REMINDER_THRESHOLDS = {

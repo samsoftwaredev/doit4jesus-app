@@ -5,6 +5,9 @@ import type {
   ConscienceQuestionViewModel,
   ConscienceQuestionCategory,
   ConscienceQuestionListItemViewModel,
+  GlobalLeaderboardPeriod,
+  GlobalLeaderboardPeriodType,
+  GlobalRosaryLeaderboard,
   LeaderboardEntryViewModel,
   RosaryReminderViewModel,
   RosaryStreakStatus,
@@ -44,6 +47,11 @@ function readString(value: unknown, field: string): string {
 function readOptionalNullableString(value: unknown, field: string): string | null {
   if (value === undefined || value === null) return null;
   return readString(value, field);
+}
+
+/** Reads a required API field whose value may explicitly be null. */
+function readNullableString(value: unknown, field: string): string | null {
+  return value === null ? null : readString(value, field);
 }
 
 function readData(value: unknown, field: string): Record<string, unknown> {
@@ -164,56 +172,81 @@ export function parseConscienceQuestionData(data: unknown): ConscienceQuestionVi
   };
 }
 
-/** Loads and validates a ranked global leaderboard for the requested period and result limit. */
+/** Normalizes one server-ranked global Rosary entry and its profile projection. */
+function parseGlobalLeaderboardEntry(value: unknown): LeaderboardEntryViewModel {
+  const entry = readRecord(value, "leaderboard entry");
+  const profile = readRecord(entry.profile, "leaderboard profile");
+
+  return {
+    avatarUrl: readNullableString(profile.avatar_url, "leaderboard avatar"),
+    countryCode: readNullableString(profile.countryCode, "leaderboard country code"),
+    displayName: readString(profile.display_name, "leaderboard display name"),
+    isCurrentUser: readBoolean(entry.isCurrentUser, "leaderboard current-user flag"),
+    rank: readNumber(entry.rank, "leaderboard rank"),
+    rosaries: readNumber(entry.rosaries_count, "leaderboard Rosary count"),
+    saintAvatarId: readNullableString(profile.saintAvatarId, "leaderboard saint avatar ID"),
+    userId: readString(entry.user_id, "leaderboard user ID"),
+  };
+}
+
+/** Normalizes and validates the weekly or lifetime period returned with a global leaderboard. */
+function parseGlobalLeaderboardPeriod(value: unknown): GlobalLeaderboardPeriod {
+  const period = readRecord(value, "leaderboard period");
+  const periodType = readString(period.period_type, "leaderboard period type");
+  if (periodType !== "weekly" && periodType !== "lifetime") {
+    throw new Error("The dashboard endpoint returned an invalid leaderboard period type.");
+  }
+
+  return {
+    code: readString(period.code, "leaderboard period code"),
+    createdAt: readString(period.created_at, "leaderboard period creation date"),
+    endsAt: readString(period.ends_at, "leaderboard period end"),
+    finalizedAt: readNullableString(period.finalized_at, "leaderboard period finalization date"),
+    id: readString(period.id, "leaderboard period ID"),
+    name: readString(period.name, "leaderboard period name"),
+    periodType: periodType as GlobalLeaderboardPeriodType,
+    startsAt: readString(period.starts_at, "leaderboard period start"),
+    status: readString(period.status, "leaderboard period status"),
+  };
+}
+
+/** Parses the complete global Rosary leaderboard envelope used by the Community card. */
+function parseGlobalLeaderboardResponse(value: unknown): GlobalRosaryLeaderboard {
+  const response = readRecord(value, "leaderboard response");
+  const data = readRecord(response.data, "leaderboard response data");
+  const meta = readRecord(response.meta, "leaderboard metadata");
+  const currentUserEntry = data.currentUserEntry;
+
+  return {
+    currentUserEntry: currentUserEntry === null ? null : parseGlobalLeaderboardEntry(currentUserEntry),
+    entries: readArray(data.entries, "leaderboard entries").map(parseGlobalLeaderboardEntry),
+    meta: {
+      limit: readNumber(meta.limit, "leaderboard page limit"),
+      offset: readNumber(meta.offset, "leaderboard page offset"),
+      total: readNumber(meta.total, "leaderboard total"),
+    },
+    period: parseGlobalLeaderboardPeriod(data.period),
+  };
+}
+
+/** Loads and validates a ranked global Rosary leaderboard for the requested period and compact result limit. */
 async function getGlobalLeaderboard(
-  periodType: "weekly" | "yearly",
+  periodType: GlobalLeaderboardPeriodType,
   limit: 3 | 10,
-): Promise<LeaderboardEntryViewModel[]> {
-  const data = readData(
+): Promise<GlobalRosaryLeaderboard> {
+  return parseGlobalLeaderboardResponse(
     await requestDashboard(
-      `/api/v1/leaderboards?periodType=${periodType}&scopeType=global&scopeReference=global&limit=${limit}`,
+      `/api/v1/leaderboards?periodType=${periodType}&scopeType=global&scopeReference=global&limit=${limit}&offset=0`,
     ),
-    "leaderboard response",
   );
-
-  return readArray(data.entries, "leaderboard entries").map((rawLeaderboardEntry) => {
-    const leaderboardEntry = readRecord(rawLeaderboardEntry, "leaderboard entry");
-    const profile = readRecord(leaderboardEntry.profile, "leaderboard profile");
-
-    return {
-      avatarUrl: readOptionalNullableString(profile.avatar_url, "leaderboard avatar"),
-      countryCode: readOptionalNullableString(profile.countryCode, "leaderboard country code"),
-      displayName: readString(profile.display_name, "leaderboard display name"),
-      rank: readNumber(leaderboardEntry.rank, "leaderboard rank"),
-      rosaries: readNumber(leaderboardEntry.rosaries_count, "leaderboard Rosary count"),
-      saintAvatarId: readOptionalNullableString(profile.saintAvatarId, "leaderboard saint avatar ID"),
-    };
-  });
 }
 
-/** Parses aggregate-screen global leaderboard data with the standalone leaderboard contract. */
-export function parseGlobalLeaderboardData(data: unknown): LeaderboardEntryViewModel[] {
-  const value = readRecord(data, "leaderboard");
-  return readArray(value.entries, "leaderboard entries").map((rawLeaderboardEntry) => {
-    const leaderboardEntry = readRecord(rawLeaderboardEntry, "leaderboard entry");
-    const profile = readRecord(leaderboardEntry.profile, "leaderboard profile");
-    return {
-      avatarUrl: readOptionalNullableString(profile.avatar_url, "leaderboard avatar"),
-      countryCode: readOptionalNullableString(profile.countryCode, "leaderboard country code"),
-      displayName: readString(profile.display_name, "leaderboard display name"),
-      rank: readNumber(leaderboardEntry.rank, "leaderboard rank"),
-      rosaries: readNumber(leaderboardEntry.rosaries_count, "leaderboard Rosary count"),
-      saintAvatarId: readOptionalNullableString(profile.saintAvatarId, "leaderboard saint avatar ID"),
-    };
-  });
-}
-
-/** Loads the backend-ranked weekly top three global Rosary leaders. */
-export function getWeeklyGlobalLeaderboard(): Promise<LeaderboardEntryViewModel[]> {
+/** Loads the backend-ranked weekly top three global Rosary leaders and the authenticated user's rank. */
+export function getWeeklyGlobalLeaderboard(): Promise<GlobalRosaryLeaderboard> {
   return getGlobalLeaderboard("weekly", 3);
 }
 
-/** Loads the backend-ranked yearly top ten global Rosary leaders. */
-export function getYearlyGlobalLeaderboard(): Promise<LeaderboardEntryViewModel[]> {
-  return getGlobalLeaderboard("yearly", 10);
+/** Loads the backend-ranked lifetime top ten global Rosary leaders and the authenticated user's rank. */
+export function getLifetimeGlobalLeaderboard(): Promise<GlobalRosaryLeaderboard> {
+  return getGlobalLeaderboard("lifetime", 10);
 }

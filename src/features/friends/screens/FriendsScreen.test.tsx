@@ -4,8 +4,8 @@ import { FriendsScreen } from "./FriendsScreen";
 import { johnRequest, leaderboard, maria, mockFriendsDashboard } from "./friends.test-utils";
 
 const mockPush = jest.fn();
+const mockGetLifetimeGlobalLeaderboard = jest.fn();
 const mockGetWeeklyGlobalLeaderboard = jest.fn();
-const mockGetYearlyGlobalLeaderboard = jest.fn();
 
 jest.mock("expo-router", () => {
   const React = jest.requireActual("react") as typeof import("react");
@@ -15,18 +15,33 @@ jest.mock("expo-router", () => {
   };
 });
 jest.mock("@/features/dashboard/dashboard.api", () => ({
+  getLifetimeGlobalLeaderboard: (...args: unknown[]) => mockGetLifetimeGlobalLeaderboard(...args),
   getWeeklyGlobalLeaderboard: (...args: unknown[]) => mockGetWeeklyGlobalLeaderboard(...args),
-  getYearlyGlobalLeaderboard: (...args: unknown[]) => mockGetYearlyGlobalLeaderboard(...args),
 }));
 jest.mock("@/features/dashboard/components", () => {
   const { Pressable, Text } = jest.requireActual<typeof import("react-native")>("react-native");
   return {
-    LeaderboardCard: ({ onRetryWeekly, weeklyError }: { onRetryWeekly: () => void; weeklyError: boolean }) => (
+    LeaderboardCard: ({
+      lifetimeError,
+      onRetryLifetime,
+      onRetryWeekly,
+      weeklyError,
+    }: {
+      lifetimeError: boolean;
+      onRetryLifetime: () => void;
+      onRetryWeekly: () => void;
+      weeklyError: boolean;
+    }) => (
       <>
         <Text>Global Leaderboards</Text>
         {weeklyError ? (
           <Pressable accessibilityLabel="Retry weekly global leaderboard" onPress={onRetryWeekly}>
             <Text>Weekly global leaderboard unavailable</Text>
+          </Pressable>
+        ) : null}
+        {lifetimeError ? (
+          <Pressable accessibilityLabel="Retry lifetime global leaderboard" onPress={onRetryLifetime}>
+            <Text>Lifetime global leaderboard unavailable</Text>
           </Pressable>
         ) : null}
       </>
@@ -49,8 +64,8 @@ describe("FriendsScreen", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockFriendsDashboard(hooks);
-    mockGetWeeklyGlobalLeaderboard.mockResolvedValue([]);
-    mockGetYearlyGlobalLeaderboard.mockResolvedValue([]);
+    mockGetLifetimeGlobalLeaderboard.mockResolvedValue({ currentUserEntry: null, entries: [] });
+    mockGetWeeklyGlobalLeaderboard.mockResolvedValue({ currentUserEntry: null, entries: [] });
   });
 
   it("renders friends, points, rank, and requests", async () => {
@@ -65,7 +80,7 @@ describe("FriendsScreen", () => {
     expect(screen.getByText("Your friends")).toBeTruthy();
     expect(await screen.findByText("Global Leaderboards")).toBeTruthy();
     expect(mockGetWeeklyGlobalLeaderboard).toHaveBeenCalledTimes(1);
-    expect(mockGetYearlyGlobalLeaderboard).toHaveBeenCalledTimes(1);
+    expect(mockGetLifetimeGlobalLeaderboard).toHaveBeenCalledTimes(1);
     expect(screen.getByTestId("community-section-global-leaderboard")).toBeTruthy();
   });
 
@@ -98,13 +113,28 @@ describe("FriendsScreen", () => {
   });
 
   it("retries a failed weekly global leaderboard without reloading Community", async () => {
-    mockGetWeeklyGlobalLeaderboard.mockRejectedValueOnce(new Error("Network unavailable")).mockResolvedValueOnce([]);
+    mockGetWeeklyGlobalLeaderboard
+      .mockRejectedValueOnce(new Error("Network unavailable"))
+      .mockResolvedValueOnce({ currentUserEntry: null, entries: [] });
 
     await render(<FriendsScreen />);
 
     await fireEvent.press(await screen.findByLabelText("Retry weekly global leaderboard"));
 
     expect(mockGetWeeklyGlobalLeaderboard).toHaveBeenCalledTimes(2);
+  });
+
+  it("retries a failed lifetime global leaderboard independently", async () => {
+    mockGetLifetimeGlobalLeaderboard
+      .mockRejectedValueOnce(new Error("Network unavailable"))
+      .mockResolvedValueOnce({ currentUserEntry: null, entries: [] });
+
+    await render(<FriendsScreen />);
+
+    await fireEvent.press(await screen.findByLabelText("Retry lifetime global leaderboard"));
+
+    expect(mockGetLifetimeGlobalLeaderboard).toHaveBeenCalledTimes(2);
+    expect(mockGetWeeklyGlobalLeaderboard).toHaveBeenCalledTimes(1);
   });
 
   it("accepts and declines incoming friend requests", async () => {

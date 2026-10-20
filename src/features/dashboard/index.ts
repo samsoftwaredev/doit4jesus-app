@@ -1,14 +1,18 @@
 export { HolyProgressDashboard } from "./HolyProgressDashboard";
 export {
   getConscienceQuestion,
+  getLifetimeGlobalLeaderboard,
   getRosaryReminder,
   getWeeklyGlobalLeaderboard,
-  getYearlyGlobalLeaderboard,
 } from "./dashboard.api";
 export { formatPoints, getRosaryReminderState } from "./rosary-reminder";
 export { useServerSynchronizedCountdown } from "./useServerSynchronizedCountdown";
 export type {
   ConscienceQuestionViewModel,
+  GlobalLeaderboardMeta,
+  GlobalLeaderboardPeriod,
+  GlobalLeaderboardPeriodType,
+  GlobalRosaryLeaderboard,
   HolyProgressViewModel,
   LeaderboardEntryViewModel,
   RosaryReminderState,

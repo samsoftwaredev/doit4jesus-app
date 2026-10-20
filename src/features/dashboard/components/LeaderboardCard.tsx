@@ -9,30 +9,30 @@ import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
-import type { LeaderboardEntryViewModel } from "../dashboard.types";
+import type { GlobalRosaryLeaderboard, LeaderboardEntryViewModel } from "../dashboard.types";
 import { formatPoints } from "../rosary-reminder";
 
 type LeaderboardCardProps = {
+  isLifetimeLoading: boolean;
   isWeeklyLoading: boolean;
-  isYearlyLoading: boolean;
+  lifetimeError: boolean;
+  lifetimeLeaderboard: GlobalRosaryLeaderboard | null;
+  onRetryLifetime: () => void;
   onRetryWeekly: () => void;
-  onRetryYearly: () => void;
-  weeklyEntries: LeaderboardEntryViewModel[] | null;
   weeklyError: boolean;
-  yearlyEntries: LeaderboardEntryViewModel[] | null;
-  yearlyError: boolean;
+  weeklyLeaderboard: GlobalRosaryLeaderboard | null;
 };
 
 type BoardStatusProps = {
   emptyMessage: string;
-  entries: LeaderboardEntryViewModel[] | null;
   error: boolean;
   isLoading: boolean;
+  leaderboard: GlobalRosaryLeaderboard | null;
   loadingLabel: string;
   onRetry: () => void;
   retryLabel: string;
   unavailableMessage: string;
-  variant: "weekly" | "yearly";
+  variant: "weekly" | "lifetime";
 };
 
 const podiumRankOrder = [2, 1, 3] as const;
@@ -65,16 +65,16 @@ function orderByServerRank(entries: LeaderboardEntryViewModel[]): LeaderboardEnt
   return [...entries].sort((first, second) => first.rank - second.rank);
 }
 
-/** Presents weekly and yearly global Rosary leaders in one consolidated card. */
+/** Presents weekly and lifetime global Rosary leaders with independent status and current-rank states. */
 export function LeaderboardCard({
+  isLifetimeLoading,
   isWeeklyLoading,
-  isYearlyLoading,
+  lifetimeError,
+  lifetimeLeaderboard,
+  onRetryLifetime,
   onRetryWeekly,
-  onRetryYearly,
-  weeklyEntries,
   weeklyError,
-  yearlyEntries,
-  yearlyError,
+  weeklyLeaderboard,
 }: LeaderboardCardProps) {
   const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
@@ -100,9 +100,9 @@ export function LeaderboardCard({
         </Text>
         <BoardStatus
           emptyMessage={t("dashboard.leaderboard.weeklyEmpty")}
-          entries={weeklyEntries}
           error={weeklyError}
           isLoading={isWeeklyLoading}
+          leaderboard={weeklyLeaderboard}
           loadingLabel={t("dashboard.leaderboard.weeklyLoading")}
           onRetry={onRetryWeekly}
           retryLabel={t("dashboard.leaderboard.weeklyRetryLabel")}
@@ -115,18 +115,18 @@ export function LeaderboardCard({
 
       <View style={styles.boardSection}>
         <Text accessibilityRole="header" style={styles.boardTitle}>
-          {t("dashboard.leaderboard.yearlyTitle")}
+          {t("dashboard.leaderboard.lifetimeTitle")}
         </Text>
         <BoardStatus
-          emptyMessage={t("dashboard.leaderboard.yearlyEmpty")}
-          entries={yearlyEntries}
-          error={yearlyError}
-          isLoading={isYearlyLoading}
-          loadingLabel={t("dashboard.leaderboard.yearlyLoading")}
-          onRetry={onRetryYearly}
-          retryLabel={t("dashboard.leaderboard.yearlyRetryLabel")}
-          unavailableMessage={t("dashboard.leaderboard.yearlyUnavailable")}
-          variant="yearly"
+          emptyMessage={t("dashboard.leaderboard.lifetimeEmpty")}
+          error={lifetimeError}
+          isLoading={isLifetimeLoading}
+          leaderboard={lifetimeLeaderboard}
+          loadingLabel={t("dashboard.leaderboard.lifetimeLoading")}
+          onRetry={onRetryLifetime}
+          retryLabel={t("dashboard.leaderboard.lifetimeRetryLabel")}
+          unavailableMessage={t("dashboard.leaderboard.lifetimeUnavailable")}
+          variant="lifetime"
         />
       </View>
     </LinearGradient>
@@ -136,9 +136,9 @@ export function LeaderboardCard({
 /** Chooses the loading, failure, empty, or populated presentation for one board. */
 function BoardStatus({
   emptyMessage,
-  entries,
   error,
   isLoading,
+  leaderboard,
   loadingLabel,
   onRetry,
   retryLabel,
@@ -147,6 +147,7 @@ function BoardStatus({
 }: BoardStatusProps) {
   const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
+  const entries = leaderboard?.entries ?? null;
 
   if (isLoading) {
     return <LeaderboardSkeleton count={variant === "weekly" ? 3 : 5} label={loadingLabel} variant={variant} />;
@@ -167,7 +168,12 @@ function BoardStatus({
     return <Text style={styles.emptyText}>{emptyMessage}</Text>;
   }
 
-  return variant === "weekly" ? <WeeklyPodium entries={entries} /> : <YearlyLeaderboardRows entries={entries} />;
+  return (
+    <>
+      {variant === "weekly" ? <WeeklyPodium entries={entries} /> : <LifetimeLeaderboardRows entries={entries} />}
+      {leaderboard ? <PinnedCurrentUser leaderboard={leaderboard} /> : null}
+    </>
+  );
 }
 
 /** Displays available podium placements with country-badged avatars in second-first-third visual order. */
@@ -193,11 +199,11 @@ function WeeklyPodium({ entries }: { entries: LeaderboardEntryViewModel[] }) {
         const avatarSize = podiumAvatarSize(entry.rank);
         return (
           <View
-            accessibilityLabel={t("dashboard.leaderboard.rowLabel", {
+            accessibilityLabel={`${t("dashboard.leaderboard.rowLabel", {
               count: entry.rosaries,
               name: entry.displayName,
               rank: entry.rank,
-            })}
+            })}${entry.isCurrentUser ? t("dashboard.leaderboard.currentUserSuffix") : ""}`}
             key={`${entry.rank}-${entry.displayName}`}
             style={[
               styles.podiumEntry,
@@ -230,8 +236,8 @@ function WeeklyPodium({ entries }: { entries: LeaderboardEntryViewModel[] }) {
   );
 }
 
-/** Renders yearly leaders with country-badged avatars in ascending server-provided rank order. */
-function YearlyLeaderboardRows({ entries }: { entries: LeaderboardEntryViewModel[] }) {
+/** Renders lifetime leaders with country-badged avatars in ascending server-provided rank order. */
+function LifetimeLeaderboardRows({ entries }: { entries: LeaderboardEntryViewModel[] }) {
   const { t } = useTranslation();
   const { locale } = useAppLanguage();
   const styles = useThemedStyles(styleSheet);
@@ -249,14 +255,19 @@ function YearlyLeaderboardRows({ entries }: { entries: LeaderboardEntryViewModel
           const rankMedal = medal(entry.rank);
           return (
             <View
-              accessibilityLabel={t("dashboard.leaderboard.rowLabel", {
+              accessibilityLabel={`${t("dashboard.leaderboard.rowLabel", {
                 count: formatPoints(entry.rosaries, locale),
                 name: entry.displayName,
                 rank: entry.rank,
-              })}
+              })}${entry.isCurrentUser ? t("dashboard.leaderboard.currentUserSuffix") : ""}`}
               key={`${entry.rank}-${entry.displayName}`}
-              style={[styles.row, styles.entry, entry.rank === 1 && styles.firstPlace]}
-              testID={`yearly-leaderboard-entry-${entry.rank}`}
+              style={[
+                styles.row,
+                styles.entry,
+                entry.rank === 1 && styles.firstPlace,
+                entry.isCurrentUser && styles.currentUserEntry,
+              ]}
+              testID={`lifetime-leaderboard-entry-${entry.rank}`}
             >
               <View style={styles.rankColumn}>
                 {rankMedal ? (
@@ -285,6 +296,49 @@ function YearlyLeaderboardRows({ entries }: { entries: LeaderboardEntryViewModel
   );
 }
 
+/** Shows the authenticated user's authoritative rank when it falls outside the compact leaders list. */
+function PinnedCurrentUser({ leaderboard }: { leaderboard: GlobalRosaryLeaderboard }) {
+  const { t } = useTranslation();
+  const { locale } = useAppLanguage();
+  const styles = useThemedStyles(styleSheet);
+  const entry = leaderboard.currentUserEntry;
+  if (!entry || leaderboard.entries.some((candidate) => candidate.userId === entry.userId)) return null;
+  const formattedRosaries = formatPoints(entry.rosaries, locale);
+
+  return (
+    <View style={styles.currentUserSection}>
+      <Text accessibilityRole="header" style={styles.currentUserTitle}>
+        {t("dashboard.leaderboard.yourRank")}
+      </Text>
+      <View
+        accessibilityLabel={t("dashboard.leaderboard.pinnedRowLabel", {
+          count: formattedRosaries,
+          name: entry.displayName,
+          rank: entry.rank,
+        })}
+        style={[styles.row, styles.entry, styles.currentUserEntry]}
+      >
+        <View style={styles.rankColumn}>
+          <Text style={[styles.rank, { color: rankColor(entry.rank) }]}>{entry.rank}</Text>
+        </View>
+        <View style={styles.warriorColumn}>
+          <AvatarWithCountryBadge
+            accessibilityLabel={t("dashboard.leaderboard.avatarLabel", { name: entry.displayName })}
+            borderColor={theme.colors.gold.strong}
+            borderWidth={theme.borderWidths.thin}
+            countryCode={entry.countryCode}
+            name={entry.displayName}
+            size={32}
+            source={getProfileAvatarSource(entry.saintAvatarId, entry.avatarUrl)}
+          />
+          <Text style={styles.name}>{entry.displayName}</Text>
+        </View>
+        <Text style={styles.rosariesColumn}>{formattedRosaries}</Text>
+      </View>
+    </View>
+  );
+}
+
 /** Renders a compact placeholder matching the selected board layout while data loads. */
 function LeaderboardSkeleton({
   count,
@@ -293,7 +347,7 @@ function LeaderboardSkeleton({
 }: {
   count: number;
   label: string;
-  variant: "weekly" | "yearly";
+  variant: "weekly" | "lifetime";
 }) {
   const styles = useThemedStyles(styleSheet);
 
@@ -346,6 +400,24 @@ const styleSheet = createThemedStyles((theme) => ({
     letterSpacing: theme.letterSpacing.wide,
   },
   columnLabels: { paddingBottom: theme.spacing[2] },
+  currentUserEntry: {
+    backgroundColor: theme.colors.surface.green,
+    borderColor: theme.colors.semantic.successBorder,
+    borderRadius: theme.radii.sm,
+    borderWidth: theme.borderWidths.thin,
+    paddingHorizontal: theme.spacing[2],
+  },
+  currentUserSection: {
+    borderTopColor: theme.colors.border.subtle,
+    borderTopWidth: theme.borderWidths.hairline,
+    gap: theme.spacing[1],
+    marginTop: theme.spacing[2],
+    paddingTop: theme.spacing[2],
+  },
+  currentUserTitle: {
+    ...theme.typography.labelSmall,
+    color: theme.colors.text.success,
+  },
   divider: { backgroundColor: theme.colors.border.subtle, height: theme.borderWidths.hairline },
   emptyText: { ...theme.typography.body, color: theme.colors.text.secondary, paddingVertical: theme.spacing[3] },
   entry: {

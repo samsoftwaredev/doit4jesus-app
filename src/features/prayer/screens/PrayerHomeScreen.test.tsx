@@ -7,8 +7,8 @@ import { PrayerScreen } from "./PrayerHomeScreen";
 
 const mockPush = jest.fn();
 const mockGetGlobalRosaryStats = jest.fn();
+const mockGetLifetimeGlobalLeaderboard = jest.fn();
 const mockGetWeeklyGlobalLeaderboard = jest.fn();
-const mockGetYearlyGlobalLeaderboard = jest.fn();
 let mockCurrentLocalDate = "2026-08-24";
 let mockFocusEffect: (() => void | (() => void)) | undefined;
 
@@ -50,8 +50,8 @@ jest.mock("expo-router", () => ({
 }));
 
 jest.mock("@/features/dashboard/dashboard.api", () => ({
+  getLifetimeGlobalLeaderboard: (...args: unknown[]) => mockGetLifetimeGlobalLeaderboard(...args),
   getWeeklyGlobalLeaderboard: (...args: unknown[]) => mockGetWeeklyGlobalLeaderboard(...args),
-  getYearlyGlobalLeaderboard: (...args: unknown[]) => mockGetYearlyGlobalLeaderboard(...args),
 }));
 
 jest.mock("@/features/prayer/data/globalRosaryStats.api", () => ({
@@ -149,7 +149,7 @@ describe("PrayerScreen", () => {
     mockGetWeeklyGlobalLeaderboard.mockResolvedValue([
       { avatarUrl: null, displayName: "St. Michael", rank: 1, rosaries: 245 },
     ]);
-    mockGetYearlyGlobalLeaderboard.mockResolvedValue([
+    mockGetLifetimeGlobalLeaderboard.mockResolvedValue([
       { avatarUrl: null, displayName: "St. Joseph", rank: 1, rosaries: 845 },
     ]);
     await i18n.changeLanguage("en");
@@ -199,7 +199,7 @@ describe("PrayerScreen", () => {
       "prayer-section-global-stats",
     ]);
     expect(mockGetWeeklyGlobalLeaderboard).not.toHaveBeenCalled();
-    expect(mockGetYearlyGlobalLeaderboard).not.toHaveBeenCalled();
+    expect(mockGetLifetimeGlobalLeaderboard).not.toHaveBeenCalled();
     expect(mockGetGlobalRosaryStats).not.toHaveBeenCalled();
   });
 

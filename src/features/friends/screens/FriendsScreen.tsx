@@ -8,12 +8,8 @@ import { IconButton, PageHeader } from "@/components";
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { Button } from "@/components/ui";
 import { LeaderboardCard } from "@/features/dashboard/components";
-import {
-  getWeeklyGlobalLeaderboard,
-  getYearlyGlobalLeaderboard,
-  parseGlobalLeaderboardData,
-} from "@/features/dashboard/dashboard.api";
-import type { LeaderboardEntryViewModel } from "@/features/dashboard/dashboard.types";
+import { getLifetimeGlobalLeaderboard, getWeeklyGlobalLeaderboard } from "@/features/dashboard/dashboard.api";
+import type { GlobalRosaryLeaderboard } from "@/features/dashboard/dashboard.types";
 import { FriendsList, FriendsState, PendingRequestsCard, RosaryLeaderboardCard } from "@/features/friends/components";
 import { useFriendRequests, useFriends, useRosaryLeaderboard } from "@/features/friends/friends.hooks";
 import { parseFriendRequestsPage, parseFriendsLeaderboardData, parseFriendsPage } from "@/features/friends/friends.api";
@@ -64,14 +60,14 @@ function FriendsScreenContent({ initialData }: { initialData?: ScreenDataRespons
     "incoming",
     requestsSection ? parseFriendRequestsPage(requestsSection.data, requestsSection.meta) : undefined,
   );
+  const [isLifetimeGlobalLeaderboardLoading, setIsLifetimeGlobalLeaderboardLoading] = useState(true);
   const [isWeeklyGlobalLeaderboardLoading, setIsWeeklyGlobalLeaderboardLoading] = useState(true);
-  const [isYearlyGlobalLeaderboardLoading, setIsYearlyGlobalLeaderboardLoading] = useState(true);
-  const [weeklyGlobalLeaderboard, setWeeklyGlobalLeaderboard] = useState<LeaderboardEntryViewModel[] | null>(null);
-  const [yearlyGlobalLeaderboard, setYearlyGlobalLeaderboard] = useState<LeaderboardEntryViewModel[] | null>(null);
+  const [lifetimeGlobalLeaderboard, setLifetimeGlobalLeaderboard] = useState<GlobalRosaryLeaderboard | null>(null);
+  const [weeklyGlobalLeaderboard, setWeeklyGlobalLeaderboard] = useState<GlobalRosaryLeaderboard | null>(null);
+  const [lifetimeGlobalLeaderboardError, setLifetimeGlobalLeaderboardError] = useState(false);
   const [weeklyGlobalLeaderboardError, setWeeklyGlobalLeaderboardError] = useState(false);
-  const [yearlyGlobalLeaderboardError, setYearlyGlobalLeaderboardError] = useState(false);
+  const lifetimeGlobalLeaderboardRequestIdRef = useRef(0);
   const weeklyGlobalLeaderboardRequestIdRef = useRef(0);
-  const yearlyGlobalLeaderboardRequestIdRef = useRef(0);
   const { contentWidth, gutter, isDesktop, isLargeText } = useResponsiveLayout();
   const useColumns = isDesktop && contentWidth >= 900 && !isLargeText;
 
@@ -81,10 +77,9 @@ function FriendsScreenContent({ initialData }: { initialData?: ScreenDataRespons
     setIsWeeklyGlobalLeaderboardLoading(true);
     setWeeklyGlobalLeaderboardError(false);
     try {
-      const section = initialData?.sections.weeklyGlobalLeaderboard;
-      const entries = section ? parseGlobalLeaderboardData(section.data) : await getWeeklyGlobalLeaderboard();
+      const nextLeaderboard = await getWeeklyGlobalLeaderboard();
       if (requestId !== weeklyGlobalLeaderboardRequestIdRef.current) return;
-      setWeeklyGlobalLeaderboard(entries);
+      setWeeklyGlobalLeaderboard(nextLeaderboard);
     } catch (error) {
       logDevelopmentError("loading Community's weekly global leaderboard", error);
       if (requestId !== weeklyGlobalLeaderboardRequestIdRef.current) return;
@@ -93,39 +88,38 @@ function FriendsScreenContent({ initialData }: { initialData?: ScreenDataRespons
     } finally {
       if (requestId === weeklyGlobalLeaderboardRequestIdRef.current) setIsWeeklyGlobalLeaderboardLoading(false);
     }
-  }, [initialData]);
+  }, []);
 
-  /** Loads yearly global leaders while ignoring an older Community request that resolves later. */
-  const loadYearlyGlobalLeaderboard = useCallback(async () => {
-    const requestId = ++yearlyGlobalLeaderboardRequestIdRef.current;
-    setIsYearlyGlobalLeaderboardLoading(true);
-    setYearlyGlobalLeaderboardError(false);
+  /** Loads lifetime global leaders while ignoring an older Community request that resolves later. */
+  const loadLifetimeGlobalLeaderboard = useCallback(async () => {
+    const requestId = ++lifetimeGlobalLeaderboardRequestIdRef.current;
+    setIsLifetimeGlobalLeaderboardLoading(true);
+    setLifetimeGlobalLeaderboardError(false);
     try {
-      const section = initialData?.sections.yearlyGlobalLeaderboard;
-      const entries = section ? parseGlobalLeaderboardData(section.data) : await getYearlyGlobalLeaderboard();
-      if (requestId !== yearlyGlobalLeaderboardRequestIdRef.current) return;
-      setYearlyGlobalLeaderboard(entries);
+      const nextLeaderboard = await getLifetimeGlobalLeaderboard();
+      if (requestId !== lifetimeGlobalLeaderboardRequestIdRef.current) return;
+      setLifetimeGlobalLeaderboard(nextLeaderboard);
     } catch (error) {
-      logDevelopmentError("loading Community's yearly global leaderboard", error);
-      if (requestId !== yearlyGlobalLeaderboardRequestIdRef.current) return;
-      setYearlyGlobalLeaderboard(null);
-      setYearlyGlobalLeaderboardError(true);
+      logDevelopmentError("loading Community's lifetime global leaderboard", error);
+      if (requestId !== lifetimeGlobalLeaderboardRequestIdRef.current) return;
+      setLifetimeGlobalLeaderboard(null);
+      setLifetimeGlobalLeaderboardError(true);
     } finally {
-      if (requestId === yearlyGlobalLeaderboardRequestIdRef.current) setIsYearlyGlobalLeaderboardLoading(false);
+      if (requestId === lifetimeGlobalLeaderboardRequestIdRef.current) setIsLifetimeGlobalLeaderboardLoading(false);
     }
-  }, [initialData]);
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
+      void loadLifetimeGlobalLeaderboard();
       void loadWeeklyGlobalLeaderboard();
-      void loadYearlyGlobalLeaderboard();
 
       /** Invalidates pending requests when Community is no longer focused. */
       return function invalidateGlobalLeaderboardRequests() {
+        lifetimeGlobalLeaderboardRequestIdRef.current += 1;
         weeklyGlobalLeaderboardRequestIdRef.current += 1;
-        yearlyGlobalLeaderboardRequestIdRef.current += 1;
       };
-    }, [loadWeeklyGlobalLeaderboard, loadYearlyGlobalLeaderboard]),
+    }, [loadLifetimeGlobalLeaderboard, loadWeeklyGlobalLeaderboard]),
   );
 
   const openFriend = (friendId: string) => {
@@ -265,14 +259,14 @@ function FriendsScreenContent({ initialData }: { initialData?: ScreenDataRespons
         </View>
         <View style={styles.globalLeaderboard} testID="community-section-global-leaderboard">
           <LeaderboardCard
+            isLifetimeLoading={isLifetimeGlobalLeaderboardLoading}
             isWeeklyLoading={isWeeklyGlobalLeaderboardLoading}
-            isYearlyLoading={isYearlyGlobalLeaderboardLoading}
+            lifetimeError={lifetimeGlobalLeaderboardError}
+            lifetimeLeaderboard={lifetimeGlobalLeaderboard}
+            onRetryLifetime={() => void loadLifetimeGlobalLeaderboard()}
             onRetryWeekly={() => void loadWeeklyGlobalLeaderboard()}
-            onRetryYearly={() => void loadYearlyGlobalLeaderboard()}
-            weeklyEntries={weeklyGlobalLeaderboard}
             weeklyError={weeklyGlobalLeaderboardError}
-            yearlyEntries={yearlyGlobalLeaderboard}
-            yearlyError={yearlyGlobalLeaderboardError}
+            weeklyLeaderboard={weeklyGlobalLeaderboard}
           />
         </View>
       </ScrollView>
