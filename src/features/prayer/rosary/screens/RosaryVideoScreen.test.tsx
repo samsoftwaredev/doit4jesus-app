@@ -16,6 +16,7 @@ const mockPlay = jest.fn();
 const mockPause = jest.fn();
 const mockSeekBy = jest.fn();
 const mockPlayerProps = jest.fn();
+const mockRosaryPresence = jest.fn();
 const mockFocusCleanups: (() => void)[] = [];
 
 jest.mock("expo-router", () => ({
@@ -40,6 +41,10 @@ jest.mock("@/features/prayer/rosary/components", () => ({
     const ReactActual = jest.requireActual("react") as typeof import("react");
     const ReactNative = jest.requireActual<typeof import("react-native")>("react-native");
     return {
+      RosaryPresence: function MockRosaryPresence() {
+        mockRosaryPresence();
+        return <ReactNative.View testID="mock-rosary-presence" />;
+      },
       RosaryVideoPlayer: ReactActual.forwardRef<RosaryVideoPlayerHandle, RosaryVideoPlayerProps>(
         function MockPlayer(props, ref) {
           ReactActual.useImperativeHandle(ref, () => ({ pause: mockPause, play: mockPlay, seekBy: mockSeekBy }));
@@ -93,6 +98,8 @@ describe("RosaryVideoScreen", () => {
       flexDirection: "row",
       overflow: "hidden",
     });
+    expect(screen.getByTestId("mock-rosary-presence")).toBeTruthy();
+    expect(mockRosaryPresence).toHaveBeenCalledTimes(1);
     expect(latestPlayerProps()).toMatchObject({ language: "en", showYouTubeControls: true, videoId: "Yxl_DsofPTk" });
 
     await act(async () => latestPlayerProps().onReady());
@@ -165,6 +172,7 @@ describe("RosaryVideoScreen", () => {
     await act(async () => mockFocusCleanups[0]?.());
     expect(mockPause).toHaveBeenCalled();
     expect(screen.queryByTestId("mock-youtube-player")).toBeNull();
+    expect(screen.queryByTestId("mock-rosary-presence")).toBeNull();
   });
 
   it("localizes the player controls and completion error in Spanish", async () => {

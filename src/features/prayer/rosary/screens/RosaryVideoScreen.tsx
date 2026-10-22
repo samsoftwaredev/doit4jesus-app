@@ -11,6 +11,7 @@ import { APP_CONFIG } from "@/config/app-config";
 import { useAchievement } from "@/features/achievements";
 import { recordRosaryActivity } from "@/features/prayer/rosary/api/activities.api";
 import {
+  RosaryPresence,
   RosaryVideoPlayer,
   type RosaryVideoPlaybackState,
   type RosaryVideoPlayerHandle,
@@ -92,7 +93,7 @@ function VideoControl({
 }
 
 /**
- * Plays one localized mystery video and records a Rosary after the playhead reaches 85 percent.
+ * Plays one localized mystery video, shares focused-route Rosary Presence, and records completion at 85 percent.
  * Completion recording is idempotent within the mounted session and never interrupts playback.
  */
 export function RosaryVideoScreen({
@@ -232,7 +233,12 @@ export function RosaryVideoScreen({
   return (
     <SafeAreaView edges={["top", "bottom"]} style={styles.safeArea} testID="rosary-video-screen">
       <View style={styles.content}>
-        <BackHeader description={t("rosary.video.description")} onBack={handleBack} title={t("rosary.video.title")} />
+        <BackHeader
+          description={t("rosary.video.description")}
+          onBack={handleBack}
+          rightAction={isRouteFocused ? <RosaryPresence /> : undefined}
+          title={t("rosary.video.title")}
+        />
         <View style={styles.playerArea} testID="rosary-video-player-area">
           <View
             accessibilityLabel={t("rosary.video.playerLabel")}
