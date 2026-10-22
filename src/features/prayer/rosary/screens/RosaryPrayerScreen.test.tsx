@@ -458,6 +458,7 @@ describe("RosaryPrayerScreen", () => {
     await render(<RosaryPrayerScreen />);
 
     expect(screen.getByText("Rosary Completed")).toBeTruthy();
+    expect(screen.queryByTestId("rosary-completion-confetti")).toBeNull();
     await fireEvent.press(screen.getByLabelText("Pray this mystery again"));
 
     expect(restartMystery).toHaveBeenCalledTimes(1);
@@ -503,6 +504,7 @@ describe("RosaryPrayerScreen", () => {
   });
 
   it("records a newly completed Rosary and its linked intention", async () => {
+    useReducedMotion.mockReturnValue(false);
     const rendered = await render(<RosaryPrayerScreen intentionId="intention-1" />);
     mockSession({ isRosaryCompleted: true, lastPrayedOn: "2026-08-06T10:00:00.000Z" });
 
@@ -515,6 +517,10 @@ describe("RosaryPrayerScreen", () => {
       expect.objectContaining({ durationSeconds: expect.any(Number), idempotencyKey: expect.any(String) }),
     );
     expect(mockRecordPrayerForIntention).toHaveBeenCalledWith("intention-1");
+
+    await rendered.rerender(<RosaryPrayerScreen intentionId="intention-1" />);
+    expect(mockRecordRosaryActivity).toHaveBeenCalledTimes(1);
+    expect(mockRecordPrayerForIntention).toHaveBeenCalledTimes(1);
   });
 
   it("shows a retry action when completion recording fails", async () => {

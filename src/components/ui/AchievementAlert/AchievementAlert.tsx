@@ -4,7 +4,6 @@ import { useCallback, useEffect, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
-import { Confetti } from "@/components/ui/Confetti";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
@@ -14,7 +13,7 @@ export type AchievementAlertProps = {
   onDismiss: () => void;
 };
 
-/** Renders a dismissible, celebratory achievement message with a non-interactive confetti burst. */
+/** Renders a dismissible achievement message above host-owned celebration effects. */
 export function AchievementAlert({ badgeArtwork = null, message, onDismiss }: AchievementAlertProps) {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
@@ -67,7 +66,6 @@ export function AchievementAlert({ badgeArtwork = null, message, onDismiss }: Ac
           <Feather accessible={false} color={theme.colors.text.secondary} name="x" size={theme.sizes.iconSmall} />
         </Pressable>
       </View>
-      <Confetti particleCount={28} testID="achievement-confetti" />
     </View>
   );
 }

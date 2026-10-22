@@ -8,6 +8,10 @@ import { theme } from "@/theme/tokens";
 import { AchievementProvider, useAchievement } from "./AchievementProvider";
 import { AchievementToastHost } from "./AchievementToastHost";
 
+const { useReducedMotion } = jest.requireMock("react-native-reanimated") as {
+  useReducedMotion: jest.Mock;
+};
+
 /** Queues an onboarding completion message for the global toast host. */
 function AchievementTrigger() {
   const { queueAchievement } = useAchievement();
@@ -90,6 +94,7 @@ function renderToastHost() {
 describe("AchievementToastHost", () => {
   beforeEach(async () => {
     jest.clearAllMocks();
+    useReducedMotion.mockReturnValue(false);
     await i18n.changeLanguage("en");
   });
 
@@ -107,11 +112,16 @@ describe("AchievementToastHost", () => {
       expect.objectContaining({ position: "absolute", top: 0, zIndex: theme.zIndex.toast }),
     );
     expect(StyleSheet.flatten(screen.getByTestId("achievement-toast-content").props.style)).toEqual(
-      expect.objectContaining({ alignSelf: "center" }),
+      expect.objectContaining({ alignSelf: "center", zIndex: 1 }),
     );
+    expect(StyleSheet.flatten(screen.getByTestId("achievement-confetti").props.style)).toEqual(
+      expect.objectContaining({ bottom: 0, left: 0, position: "absolute", right: 0, top: 0, zIndex: 0 }),
+    );
+    expect(screen.getByTestId("achievement-confetti").props.pointerEvents).toBe("none");
 
     await fireEvent.press(screen.getByRole("button", { name: "Dismiss message" }));
     expect(screen.queryByTestId("achievement-alert")).toBeNull();
+    expect(screen.queryByTestId("achievement-confetti")).toBeNull();
   });
 
   it("automatically dismisses the toast after five seconds", async () => {
@@ -161,6 +171,17 @@ describe("AchievementToastHost", () => {
     expect(await screen.findByText("¡Completaste tu Rosario en video! 🎉")).toBeTruthy();
   });
 
+  it("keeps completion feedback visible without particles when reduced motion is enabled", async () => {
+    useReducedMotion.mockReturnValue(true);
+    await renderToastHost();
+
+    await fireEvent.press(screen.getByRole("button", { name: "Show achievement" }));
+
+    expect(await screen.findByText("Congrats! 🎉 Your account is ready.")).toBeTruthy();
+    expect(screen.getByTestId("achievement-confetti")).toBeTruthy();
+    expect(screen.queryAllByTestId("confetti-particle")).toHaveLength(0);
+  });
+
   it("announces a localized badge award with its resolved artwork", async () => {
     await renderToastHost();
     await act(async () => i18n.changeLanguage("es"));
@@ -169,5 +190,6 @@ describe("AchievementToastHost", () => {
 
     expect(await screen.findByText("¡Obtuviste First Rosary!")).toBeTruthy();
     expect(screen.getByTestId("achievement-badge-artwork")).toBeTruthy();
+    expect(screen.getByTestId("achievement-confetti")).toBeTruthy();
   });
 });

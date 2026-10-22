@@ -3,7 +3,7 @@ import { View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { AchievementAlert } from "@/components/ui";
+import { AchievementAlert, Confetti } from "@/components/ui";
 import { resolveBadgeArtwork } from "@/features/progress/badge-assets";
 import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
@@ -19,7 +19,7 @@ export function AchievementToastHost() {
   const { t } = useTranslation();
   const { gutter } = useResponsiveLayout();
   const insets = useSafeAreaInsets();
-  const { achievement, dismissAchievement } = useAchievement();
+  const { achievement, achievementSequence, dismissAchievement } = useAchievement();
 
   const message =
     achievement?.type === "badge-award"
@@ -43,6 +43,12 @@ export function AchievementToastHost() {
 
   return (
     <View pointerEvents="box-none" style={styles.host} testID="achievement-toast-host">
+      <Confetti
+        key={achievementSequence}
+        style={styles.confetti}
+        testID="achievement-confetti"
+        trigger={achievementSequence ?? 0}
+      />
       <View
         style={[styles.content, { paddingHorizontal: gutter, paddingTop: insets.top + theme.spacing[2] }]}
         testID="achievement-toast-content"
@@ -54,10 +60,12 @@ export function AchievementToastHost() {
 }
 
 const styleSheet = createThemedStyles((theme) => ({
+  confetti: { zIndex: 0 },
   content: {
     alignSelf: "center",
     maxWidth: theme.sizes.contentMaxWidth,
     width: "100%",
+    zIndex: 1,
   },
   host: {
     bottom: 0,

@@ -1,10 +1,11 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react-native";
+import { Text } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import type { CurrentUserProfile } from "@/features/profile/profile.types";
 import { AppLanguageProvider } from "@/localization";
-import { AchievementProvider } from "@/features/achievements";
+import { AchievementProvider, useAchievement } from "@/features/achievements";
 
 import { languageOnboardingStorageKey } from "./onboarding-language";
 import { OnboardingApiError } from "./onboarding.api";
@@ -87,10 +88,17 @@ async function renderSetup(profile: CurrentUserProfile = baseProfile) {
       <AppLanguageProvider>
         <SafeAreaProvider initialMetrics={safeAreaMetrics}>
           <ProfileSetupScreen />
+          <QueuedAchievementProbe />
         </SafeAreaProvider>
       </AppLanguageProvider>
     </AchievementProvider>,
   );
+}
+
+/** Exposes the queued onboarding event so completion tests can verify its success boundary. */
+function QueuedAchievementProbe() {
+  const { achievement } = useAchievement();
+  return <Text>{achievement?.type ?? "none"}</Text>;
 }
 
 describe("required profile setup", () => {
@@ -393,6 +401,7 @@ describe("required profile setup", () => {
       username: "VirginMary",
     });
     expect(mockReplaceProfile).toHaveBeenCalledWith(completeProfile);
+    expect(screen.getByText("onboarding-complete")).toBeTruthy();
   });
 
   it("keeps the country step retryable when final completion fails", async () => {

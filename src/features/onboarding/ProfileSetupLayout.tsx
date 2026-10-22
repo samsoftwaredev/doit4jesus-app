@@ -6,7 +6,7 @@ import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } fro
 import { useTranslation } from "react-i18next";
 
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
-import { Button, Confetti } from "@/components/ui";
+import { Button } from "@/components/ui";
 import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
@@ -21,14 +21,13 @@ type ProfileSetupLayoutProps = {
   nextLoading?: boolean;
   onBack?: () => void;
   onNext: () => void;
-  showConfetti?: boolean;
   step: number;
   title: string;
 };
 
 const totalSteps = 5;
 
-/** Renders a profile-setup step over the shared atmosphere and optional confetti. */
+/** Renders a profile-setup step over the shared atmosphere. */
 export function ProfileSetupLayout({
   children,
   description,
@@ -39,7 +38,6 @@ export function ProfileSetupLayout({
   nextLoading,
   onBack,
   onNext,
-  showConfetti = false,
   step,
   title,
 }: ProfileSetupLayoutProps) {
@@ -135,7 +133,6 @@ export function ProfileSetupLayout({
           </ScrollView>
         </KeyboardAvoidingView>
       </AtmosphericSafeAreaView>
-      {showConfetti ? <Confetti particleCount={48} testID="profile-setup-confetti" /> : null}
     </LinearGradient>
   );
 }

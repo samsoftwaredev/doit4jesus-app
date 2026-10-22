@@ -10,16 +10,38 @@ describe("AchievementProvider", () => {
     const { result } = await renderHook(() => useAchievement(), { wrapper });
 
     expect(result.current.achievement).toBeNull();
+    expect(result.current.achievementSequence).toBeNull();
 
     await act(async () => {
       result.current.queueAchievement({ type: "onboarding-complete" });
     });
     expect(result.current.achievement).toEqual({ type: "onboarding-complete" });
+    expect(result.current.achievementSequence).toBe(1);
 
     await act(async () => {
       result.current.dismissAchievement();
     });
     expect(result.current.achievement).toBeNull();
+    expect(result.current.achievementSequence).toBeNull();
+  });
+
+  it("assigns a new sequence to consecutive achievements of the same type", async () => {
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <AchievementProvider>{children}</AchievementProvider>
+    );
+    const { result } = await renderHook(() => useAchievement(), { wrapper });
+
+    await act(async () => {
+      result.current.queueAchievement({ type: "daily-scripture-complete" });
+      result.current.queueAchievement({ type: "daily-scripture-complete" });
+    });
+    expect(result.current.achievementSequence).toBe(1);
+
+    await act(async () => {
+      result.current.dismissAchievement();
+    });
+    expect(result.current.achievement).toEqual({ type: "daily-scripture-complete" });
+    expect(result.current.achievementSequence).toBe(2);
   });
 
   it("keeps badge awards in arrival order until each toast is dismissed", async () => {

@@ -600,7 +600,6 @@ export function RosaryPrayerScreen({
             {completionCelebration > 0 ? (
               <Confetti
                 active={completionVisible}
-                particleCount={52}
                 style={styles.completionConfetti}
                 testID="rosary-completion-confetti"
                 trigger={completionCelebration}

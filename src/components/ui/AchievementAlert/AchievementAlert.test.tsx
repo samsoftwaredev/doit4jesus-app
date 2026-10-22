@@ -5,7 +5,7 @@ import { AppLanguageProvider } from "@/localization";
 import { AchievementAlert } from "./AchievementAlert";
 
 describe("AchievementAlert", () => {
-  it("announces its message, shows confetti, and can be dismissed", async () => {
+  it("announces its message without constraining the host-owned confetti and can be dismissed", async () => {
     const onDismiss = jest.fn();
     await render(
       <AppLanguageProvider>
@@ -15,7 +15,7 @@ describe("AchievementAlert", () => {
 
     expect(screen.getByTestId("achievement-alert").props.accessibilityRole).toBe("alert");
     expect(screen.getByText("Congrats! 🎉 Your account is ready.")).toBeTruthy();
-    expect(screen.getByTestId("achievement-confetti")).toBeTruthy();
+    expect(screen.queryByTestId("achievement-confetti")).toBeNull();
 
     await fireEvent.press(screen.getByRole("button", { name: "Dismiss message" }));
     expect(onDismiss).toHaveBeenCalledTimes(1);

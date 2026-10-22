@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useMemo, useRef, useState } from "react";
 
 export type BadgeAchievement = {
   code: string;
@@ -15,20 +15,31 @@ export type AchievementEvent =
 
 type AchievementContextValue = {
   achievement: AchievementEvent | null;
+  achievementSequence: number | null;
   dismissAchievement: () => void;
   queueAchievement: (achievement: AchievementEvent) => void;
+};
+
+type QueuedAchievement = {
+  event: AchievementEvent;
+  sequence: number;
 };
 
 const AchievementContext = createContext<AchievementContextValue | null>(null);
 
 /** Provides one-session achievement events that can be displayed after navigation. */
 export function AchievementProvider({ children }: { children: React.ReactNode }) {
-  const [achievements, setAchievements] = useState<AchievementEvent[]>([]);
-  const achievement = achievements[0] ?? null;
+  const [achievements, setAchievements] = useState<QueuedAchievement[]>([]);
+  const nextSequence = useRef(0);
+  const queuedAchievement = achievements[0] ?? null;
+  const achievement = queuedAchievement?.event ?? null;
+  const achievementSequence = queuedAchievement?.sequence ?? null;
 
-  /** Adds an achievement to the end of the current session's visible toast queue. */
+  /** Adds an achievement with a unique replay sequence to the session's visible toast queue. */
   const queueAchievement = useCallback((nextAchievement: AchievementEvent) => {
-    setAchievements((currentAchievements) => [...currentAchievements, nextAchievement]);
+    nextSequence.current += 1;
+    const queued = { event: nextAchievement, sequence: nextSequence.current };
+    setAchievements((currentAchievements) => [...currentAchievements, queued]);
   }, []);
 
   /** Removes the displayed achievement so the next queued toast can appear. */
@@ -37,8 +48,8 @@ export function AchievementProvider({ children }: { children: React.ReactNode })
   }, []);
 
   const value = useMemo(
-    () => ({ achievement, dismissAchievement, queueAchievement }),
-    [achievement, dismissAchievement, queueAchievement],
+    () => ({ achievement, achievementSequence, dismissAchievement, queueAchievement }),
+    [achievement, achievementSequence, dismissAchievement, queueAchievement],
   );
 
   return <AchievementContext.Provider value={value}>{children}</AchievementContext.Provider>;
