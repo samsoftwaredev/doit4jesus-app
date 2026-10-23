@@ -1,6 +1,5 @@
 import { useTranslation } from "react-i18next";
 import { Text, View } from "react-native";
-import Animated, { FadeIn, useReducedMotion } from "react-native-reanimated";
 
 import type { RosaryMystery } from "@/features/prayer/rosary/types";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
@@ -15,7 +14,6 @@ interface MysteryCardProps {
 export function MysteryCard({ mystery }: MysteryCardProps) {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
-  const reduceMotion = useReducedMotion();
 
   if (!mystery) {
     return (
@@ -27,13 +25,13 @@ export function MysteryCard({ mystery }: MysteryCardProps) {
   }
 
   return (
-    <Animated.View entering={reduceMotion ? undefined : FadeIn.duration(220)} key={mystery.id} style={styles.card}>
+    <View key={mystery.id} style={styles.card}>
       <Text style={styles.label}>{t("rosary.cards.currentMystery")}</Text>
       <Text accessibilityRole="header" style={styles.title}>
         {mystery.title}
       </Text>
       <Text style={styles.category}>{mystery.category}</Text>
-    </Animated.View>
+    </View>
   );
 }
 

@@ -1,5 +1,6 @@
 import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react-native";
 import { StyleSheet } from "react-native";
+import { fireGestureHandler, getByGestureTestId } from "react-native-gesture-handler/jest-utils";
 
 import { rosaryMysteries } from "@/features/prayer/rosary/data/rosaryMysteries";
 import { prayerById } from "@/features/prayer/rosary/data/rosaryPrayers";
@@ -70,6 +71,7 @@ function mockSession(overrides = {}) {
     currentBead: rosarySequence[0],
     currentBeadIndex: 0,
     currentMystery: rosaryMysteries[0],
+    currentMysteryIndex: 0,
     currentPrayer: rosaryMysteries[0].prayers[1],
     currentPrayerIndex: 1,
     goToNextBead,
@@ -115,15 +117,10 @@ describe("RosaryPrayerScreen", () => {
 
     expect(screen.getByText("CURRENT MYSTERY")).toBeTruthy();
     expect(screen.getByText("The Annunciation")).toBeTruthy();
-    expect(screen.getByText("Luke 1:26-38")).toBeTruthy();
-    expect(screen.getByText("FRUIT OF THE MYSTERY")).toBeTruthy();
-    expect(screen.getByRole("header", { name: "Humility" })).toBeTruthy();
-    expect(
-      screen.getByText(
-        "Mary receives God's message with trust and calls herself his servant. Ask for grace to surrender pride and welcome God's will with a humble heart.",
-      ),
-    ).toBeTruthy();
-    expect(screen.getByText("HAIL MARY")).toBeTruthy();
+    expect(screen.queryByText("Luke 1:26-38")).toBeNull();
+    expect(screen.queryByText("FRUIT OF THE MYSTERY")).toBeNull();
+    expect(screen.queryByText("HAIL MARY")).toBeNull();
+    expect(screen.queryByText("SCRIPTURE")).toBeNull();
   }, 10000);
 
   it("uses the active mystery artwork as a decorative full-page background", async () => {
@@ -153,8 +150,13 @@ describe("RosaryPrayerScreen", () => {
     const rendered = await render(<RosaryPrayerScreen isDecade={false} />);
 
     expect(screen.getByTestId("rosary-mystery-background").props.source).toEqual([mysteryClassicArt.firstJoyful[0]]);
+    await fireEvent.press(screen.getByRole("button", { name: "Show Artwork, page 2 of 5" }));
+    expect(screen.getByTestId("rosary-artwork-image").props.source).toEqual([mysteryClassicArt.firstJoyful[0]]);
+    expect(screen.getByTestId("rosary-artwork-image").props.contentFit).toBe("contain");
     await fireEvent(screen.getByTestId("rosary-mystery-background"), "error", { nativeEvent: {} });
     expect(screen.queryByTestId("rosary-mystery-background")).toBeNull();
+    expect(screen.queryByTestId("rosary-artwork-image")).toBeNull();
+    expect(screen.getByText("Devotional image unavailable")).toBeTruthy();
 
     mockSession({
       currentBead: { ...fullRosarySequence[9], beadInDecade: 2, prayerId: "hail-mary", type: "hailMary" },
@@ -165,6 +167,7 @@ describe("RosaryPrayerScreen", () => {
     await waitFor(() =>
       expect(screen.getByTestId("rosary-mystery-background").props.source).toEqual([mysteryClassicArt.firstJoyful[1]]),
     );
+    expect(screen.getByTestId("rosary-artwork-image").props.source).toEqual([mysteryClassicArt.firstJoyful[1]]);
   });
 
   it("does not replace comic-style mystery artwork for special prayers", async () => {
@@ -192,6 +195,7 @@ describe("RosaryPrayerScreen", () => {
     const completedCrucifix = screen.getByRole("button", { name: "completed crucifix, Apostles' Creed" });
     expect(screen.getByLabelText(/upcoming bead 59, Hail Mary/i)).toBeTruthy();
     expect(screen.queryByTestId(`rosary-arc-physical-${fullRosarySequence[71].id}`)).toBeNull();
+    await fireEvent.press(screen.getByRole("button", { name: "Show Scripture, page 5 of 5" }));
     expect(screen.getByText("Luke 1:28")).toBeTruthy();
     expect(
       screen.getByText("Hail, thou that art highly favoured, the Lord is with thee: blessed art thou among women."),
@@ -212,6 +216,7 @@ describe("RosaryPrayerScreen", () => {
     });
     const rendered = await render(<RosaryPrayerScreen isDecade={false} />);
 
+    await fireEvent.press(screen.getByRole("button", { name: "Show Prayer, page 4 of 5" }));
     expect(screen.getByText("SIGN OF THE CROSS")).toBeTruthy();
     expect(screen.getAllByText("0 of 59").length).toBeGreaterThan(0);
     expect(screen.getByRole("button", { name: "current crucifix, Apostles' Creed" })).toBeTruthy();
@@ -239,6 +244,7 @@ describe("RosaryPrayerScreen", () => {
 
     await render(<RosaryPrayerScreen isDecade={false} />);
 
+    await fireEvent.press(screen.getByRole("button", { name: "Show Prayer, page 4 of 5" }));
     expect(screen.getByText("FATIMA PRAYER")).toBeTruthy();
     expect(screen.getAllByText("15 of 59").length).toBeGreaterThan(0);
     expect(screen.getByLabelText(/current bead 15, Hail Mary/i)).toBeTruthy();
@@ -338,6 +344,17 @@ describe("RosaryPrayerScreen", () => {
     expect(goToNextBead).toHaveBeenCalledTimes(1);
   });
 
+  it("shows the active mystery type and ordinal in the bottom progress control", async () => {
+    mockSession({ currentMysteryIndex: 3 });
+    await render(<RosaryPrayerScreen mysteryType="glorious" />);
+
+    expect(screen.getByText("4th Glorious Mystery")).toBeTruthy();
+    expect(within(screen.getByTestId("rosary-progress-button")).queryByText("Hail Mary")).toBeNull();
+
+    await act(async () => i18n.changeLanguage("es"));
+    expect(screen.getByText("4.º Misterio Glorioso")).toBeTruthy();
+  });
+
   it("returns to the previous bead from the bottom navigation", async () => {
     mockSession({ currentBeadIndex: 1 });
     await render(<RosaryPrayerScreen />);
@@ -412,7 +429,7 @@ describe("RosaryPrayerScreen", () => {
     expect(screen.getByLabelText(/current bead 1/i)).toBeTruthy();
   });
 
-  it("places the full-width Rosary arc above independently scrolling prayer details", async () => {
+  it("places a single swipeable detail below the Rosary arc without changing prayer progress", async () => {
     await render(<RosaryPrayerScreen />);
 
     expect(screen.getByTestId("rosary-arc-stage")).toBeTruthy();
@@ -421,9 +438,20 @@ describe("RosaryPrayerScreen", () => {
     expect(StyleSheet.flatten(prayerDetails.props.style)).toMatchObject({ flex: 1 });
     expect(StyleSheet.flatten(prayerDetails.props.contentContainerStyle)).toMatchObject({ flexGrow: 1 });
     expect(within(prayerDetails).getByText("CURRENT MYSTERY")).toBeTruthy();
-    expect(within(prayerDetails).getByText("FRUIT OF THE MYSTERY")).toBeTruthy();
-    expect(within(prayerDetails).getByText("HAIL MARY")).toBeTruthy();
-    expect(within(prayerDetails).getByText("SCRIPTURE")).toBeTruthy();
+    expect(within(prayerDetails).queryByTestId("rosary-artwork-image")).toBeNull();
+    expect(within(prayerDetails).queryByText("FRUIT OF THE MYSTERY")).toBeNull();
+    expect(within(prayerDetails).queryByText("HAIL MARY")).toBeNull();
+    expect(within(prayerDetails).queryByText("SCRIPTURE")).toBeNull();
+
+    await act(async () => {
+      fireGestureHandler(getByGestureTestId("rosary-detail-carousel-swipe"), [{ translationX: -60, translationY: 2 }]);
+    });
+
+    expect(within(prayerDetails).getByTestId("rosary-artwork-image").props.source).toEqual([
+      rosaryMysteries[0].imageSource,
+    ]);
+    expect(goToNextBead).not.toHaveBeenCalled();
+    expect(goToPreviousBead).not.toHaveBeenCalled();
   });
 
   it("opens settings from the Classic-length badge and changes the active length", async () => {

@@ -18,7 +18,13 @@ export function FruitOfMysteryCard({ description, fruit }: FruitOfMysteryCardPro
   const visibleDescription = description?.trim() || t("rosary.cards.reflectionUnavailable");
 
   return (
-    <View accessibilityLabel={`Fruit of the mystery. ${visibleFruit}. ${visibleDescription}`} style={styles.card}>
+    <View
+      accessibilityLabel={t("rosary.cards.fruitAccessibilityLabel", {
+        description: visibleDescription,
+        fruit: visibleFruit,
+      })}
+      style={styles.card}
+    >
       <View style={styles.labelRow}>
         <Feather
           accessible={false}

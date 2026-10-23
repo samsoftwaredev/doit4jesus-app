@@ -1,8 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { act, fireEvent, render, screen } from "@testing-library/react-native";
+import { act, fireEvent, render, screen, within } from "@testing-library/react-native";
 import { StyleSheet } from "react-native";
 
 import { AppLanguageProvider, i18n } from "@/localization";
+import { theme } from "@/theme/tokens";
 
 import { RosaryBottomNavigation } from "./RosaryBottomNavigation";
 
@@ -25,8 +26,10 @@ describe("RosaryBottomNavigation", () => {
     const onAdvance = jest.fn();
     const onPrevious = jest.fn();
     const onRestart = jest.fn();
-    await render(
+    const rendered = await render(
       <RosaryBottomNavigation
+        mysteryPosition={4}
+        mysteryType="glorious"
         rosaryArtStyle="comic"
         onArtStyleChange={jest.fn()}
         onLengthChange={jest.fn()}
@@ -39,13 +42,39 @@ describe("RosaryBottomNavigation", () => {
     );
 
     await fireEvent.press(screen.getByRole("button", { name: "Previous bead" }));
-    await fireEvent.press(screen.getByLabelText("Hail Mary, 2 of 10. Next bead."));
+    expect(screen.getByText("4th Glorious Mystery").props.numberOfLines).toBe(2);
+    expect(screen.queryByText("Hail Mary")).toBeNull();
+    const progressButton = screen.getByTestId("rosary-progress-button");
+    expect(within(progressButton).queryByText("2 of 10")).toBeNull();
+    expect(JSON.stringify(rendered.toJSON())).not.toContain(theme.rosary.colors.pearl);
+    await fireEvent.press(screen.getByLabelText("4th Glorious Mystery. Next bead."));
     await fireEvent.press(screen.getByLabelText("Open Rosary settings"));
     await fireEvent.press(screen.getByLabelText("Restart current mystery"));
 
     expect(onPrevious).toHaveBeenCalledTimes(1);
     expect(onAdvance).toHaveBeenCalledTimes(1);
     expect(onRestart).toHaveBeenCalledTimes(1);
+  });
+
+  it("localizes the mystery position shown by the progress control", async () => {
+    await act(async () => i18n.changeLanguage("es"));
+    await render(
+      <RosaryBottomNavigation
+        mysteryPosition={4}
+        mysteryType="glorious"
+        onAdvance={jest.fn()}
+        onArtStyleChange={jest.fn()}
+        onLengthChange={jest.fn()}
+        onRestart={jest.fn()}
+        progress={{ currentIndex: 38, prayerName: "Ave María", total: 59 }}
+        rosaryArtStyle="comic"
+        rosaryLength="medium"
+      />,
+    );
+
+    expect(screen.getByText("4.º Misterio Glorioso")).toBeTruthy();
+    expect(screen.getByLabelText("4.º Misterio Glorioso. Siguiente cuenta.")).toBeTruthy();
+    expect(screen.queryByText("38 de 59")).toBeNull();
   });
 
   it("disables the previous-bead button on the first step and localizes it in Spanish", async () => {

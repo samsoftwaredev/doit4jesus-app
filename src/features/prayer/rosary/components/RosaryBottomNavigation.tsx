@@ -14,7 +14,7 @@ import Animated, {
 import { LanguageSelector } from "@/components";
 import { formatRosaryAudioDuration } from "@/features/prayer/rosary/data/rosaryAudioTiming";
 import { ROSARY_LENGTH_OPTIONS } from "@/features/prayer/rosary/data/rosaryLengths";
-import type { PrayerProgress, RosaryArtStyle, RosaryLength } from "@/features/prayer/rosary/types";
+import type { PrayerProgress, RosaryArtStyle, RosaryLength, RosaryMysteryType } from "@/features/prayer/rosary/types";
 import { type SupportedLanguage, useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
@@ -25,6 +25,8 @@ interface RosaryBottomNavigationProps {
   audioLoading?: boolean;
   audioMuted?: boolean;
   audioPlaying?: boolean;
+  mysteryPosition?: number;
+  mysteryType?: RosaryMysteryType;
   progress: PrayerProgress;
   disabled?: boolean;
   onAdvance: () => void;
@@ -47,6 +49,14 @@ const prayerKeysByLength: Record<RosaryLength, readonly string[]> = {
   medium: ["one", "two"],
   long: ["one"],
 };
+const mysteryOrdinalKeys = ["first", "second", "third", "fourth", "fifth"] as const;
+
+/** Resolves any mystery position to one of the five traditional Rosary ordinal labels. */
+function getMysteryOrdinalKey(position: number) {
+  const normalizedPosition = Number.isFinite(position) ? Math.trunc(position) : 1;
+  const boundedPosition = Math.max(1, Math.min(normalizedPosition, mysteryOrdinalKeys.length));
+  return mysteryOrdinalKeys[boundedPosition - 1];
+}
 
 /** Creates a press handler that selects one length without forwarding the native press event. */
 function createLengthPressHandler(onLengthChange: (length: RosaryLength) => void, length: RosaryLength) {
@@ -64,13 +74,15 @@ function createArtStylePressHandler(onArtStyleChange: (style: RosaryArtStyle) =>
   };
 }
 
-/** Renders previous/next Rosary navigation plus playback, settings, and restart controls. */
+/** Renders mystery-aware previous/next Rosary navigation plus playback, settings, and restart controls. */
 export function RosaryBottomNavigation({
   audioAvailable = false,
   audioError = false,
   audioLoading = false,
   audioMuted = false,
   audioPlaying = false,
+  mysteryPosition = 1,
+  mysteryType = "joyful",
   progress,
   disabled = false,
   onAdvance,
@@ -140,10 +152,12 @@ export function RosaryBottomNavigation({
           ? t("rosary.audio.pause")
           : t("rosary.audio.play");
   const audioIconName = audioMuted ? "volume-x" : audioPlaying ? "pause" : "play";
+  const mysteryLabel = t("rosary.settings.mysteryPosition", {
+    ordinal: t(`rosary.settings.mysteryOrdinals.${getMysteryOrdinalKey(mysteryPosition)}`),
+    type: t(`rosary.settings.mysteryTypes.${mysteryType}`),
+  });
   const advanceAccessibilityLabel = t("rosary.settings.nextLabel", {
-    current: progress.currentIndex,
-    prayer: progress.prayerName,
-    total: progress.total,
+    mystery: mysteryLabel,
   });
 
   /** Returns an exact duration label when the active Rosary sequence provides audio timing data. */
@@ -209,15 +223,9 @@ export function RosaryBottomNavigation({
               style={({ pressed }) => [styles.progressButton, pressed && !disabled && styles.pressed]}
               testID="rosary-progress-button"
             >
-              <View accessible={false} style={styles.activeBead}>
-                <View style={styles.activeBeadCore} />
-              </View>
               <View style={styles.progressCopy}>
-                <Text numberOfLines={1} style={styles.prayerName}>
-                  {progress.prayerName}
-                </Text>
-                <Text style={styles.progressText}>
-                  {t("rosary.settings.progress", { current: progress.currentIndex, total: progress.total })}
+                <Text numberOfLines={2} style={styles.mysteryName}>
+                  {mysteryLabel}
                 </Text>
               </View>
               <Feather
@@ -486,36 +494,13 @@ const styleSheet = createThemedStyles((theme) => ({
   pressed: {
     opacity: theme.opacity.pressed,
   },
-  activeBead: {
-    alignItems: "center",
-    backgroundColor: theme.rosary.colors.pearl,
-    borderColor: theme.rosary.colors.goldBright,
-    borderRadius: theme.radii.pill,
-    borderWidth: theme.rosary.borderWidths.goldEmphasis,
-    height: theme.spacing[7],
-    justifyContent: "center",
-    marginRight: theme.spacing[2],
-    width: theme.spacing[7],
-    ...theme.rosary.shadows.activeBead,
-  },
-  activeBeadCore: {
-    backgroundColor: theme.rosary.colors.gold,
-    borderRadius: theme.radii.pill,
-    height: theme.spacing[1.5],
-    width: theme.spacing[1.5],
-  },
   progressCopy: {
     flex: 1,
     minWidth: 0,
   },
-  prayerName: {
+  mysteryName: {
     ...theme.typography.bodyMedium,
     color: theme.rosary.colors.immersivePrimary,
-  },
-  progressText: {
-    ...theme.typography.caption,
-    color: theme.rosary.colors.immersiveSecondary,
-    marginTop: theme.spacing[0.5],
   },
   settingsButton: {
     alignItems: "center",

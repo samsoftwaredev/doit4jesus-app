@@ -1,6 +1,5 @@
 import { useTranslation } from "react-i18next";
 import { ScrollView, Text, useWindowDimensions, View } from "react-native";
-import Animated, { FadeInUp, useReducedMotion } from "react-native-reanimated";
 
 import type { RosaryPrayer } from "@/features/prayer/rosary/types";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
@@ -13,13 +12,12 @@ interface PrayerCardProps {
 export function PrayerCard({ prayer }: PrayerCardProps) {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
-  const reduceMotion = useReducedMotion();
   const { fontScale } = useWindowDimensions();
   const hasText = Boolean(prayer?.text.trim());
   const shouldScroll = fontScale > 1.2;
 
   return (
-    <Animated.View entering={reduceMotion ? undefined : FadeInUp.duration(210)} key={prayer?.id} style={styles.card}>
+    <View key={prayer?.id} style={styles.card}>
       <Text style={styles.label}>{prayer?.name?.toUpperCase() ?? t("rosary.cards.prayer").toUpperCase()}</Text>
       {hasText ? (
         <ScrollView
@@ -37,7 +35,7 @@ export function PrayerCard({ prayer }: PrayerCardProps) {
           <Text style={styles.emptyPrayerText}>{t("rosary.cards.prayerTextUnavailableCopy")}</Text>
         </View>
       )}
-    </Animated.View>
+    </View>
   );
 }
 

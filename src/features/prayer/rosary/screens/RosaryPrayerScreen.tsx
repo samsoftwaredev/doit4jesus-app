@@ -21,13 +21,10 @@ import { Confetti, SacredAtmosphere } from "@/components/ui";
 import { recordPrayerForIntention } from "@/features/prayer/intentions";
 import { recordRosaryActivity } from "@/features/prayer/rosary/api/activities.api";
 import {
-  FruitOfMysteryCard,
-  MysteryCard,
-  PrayerCard,
   RosaryArc,
   RosaryBottomNavigation,
+  RosaryDetailCarousel,
   RosaryPresence,
-  ScriptureCard,
 } from "@/features/prayer/rosary/components";
 import { getRosaryContent } from "@/features/prayer/rosary/data/localizedRosaryContent";
 import {
@@ -497,17 +494,14 @@ export function RosaryPrayerScreen({
               showsVerticalScrollIndicator
               style={styles.contentColumn}
             >
-              <MysteryCard mystery={session.currentMystery} />
-              <FruitOfMysteryCard
-                description={session.currentMystery?.fruitDescription}
-                fruit={session.currentMystery?.fruit}
-              />
-              <PrayerCard prayer={session.currentPrayer} />
-              <ScriptureCard
-                quotation={
+              <RosaryDetailCarousel
+                artworkSource={backgroundImageFailed ? undefined : backgroundImageSource}
+                mystery={session.currentMystery}
+                prayer={session.currentPrayer}
+                scriptureQuotation={
                   session.currentBead?.scriptureText ?? (isDecade ? session.currentMystery?.scriptureText : undefined)
                 }
-                reference={
+                scriptureReference={
                   session.currentBead?.scriptureReference ??
                   (isDecade ? session.currentMystery?.scriptureReference : undefined)
                 }
@@ -538,6 +532,8 @@ export function RosaryPrayerScreen({
             audioMuted={isAudioMuted}
             audioPlaying={audioPlayback.isPlaying}
             disabled={session.isTransitioning || activeBeads.length === 0}
+            mysteryPosition={session.currentMysteryIndex + 1}
+            mysteryType={mysteryType}
             onAdvance={handleNextButtonAdvance}
             onArtStyleChange={handleRosaryArtStyleChange}
             onAudioMutedChange={handleAudioMutedChange}
