@@ -74,7 +74,7 @@ function physicalBeadProgress(beads: RosaryBead[], currentBeadIndex: number) {
 
 /**
  * Renders the guided Rosary with prayer-responsive artwork from the selected style and localized prayer sequence.
- * Full sessions include opening, five decades, and closing prayers; the bead rail remains bounded to the visible viewport.
+ * Prayer content scrolls as one surface while the mystery-aware navigation remains fixed and immediately available.
  */
 export function RosaryPrayerScreen({
   content: providedContent,
@@ -418,6 +418,7 @@ export function RosaryPrayerScreen({
           accessible={false}
           cachePolicy="memory-disk"
           contentFit="cover"
+          contentPosition="top center"
           onError={handleBackgroundImageError}
           source={backgroundImageSource}
           style={styles.mysteryBackground}
@@ -437,7 +438,13 @@ export function RosaryPrayerScreen({
             },
           ]}
         >
-          <View accessibilityLabel={t("rosary.controls.content")} style={styles.prayerExperience}>
+          <ScrollView
+            accessibilityLabel={t("rosary.controls.content")}
+            contentContainerStyle={styles.prayerExperienceContent}
+            nestedScrollEnabled
+            showsVerticalScrollIndicator
+            style={styles.prayerExperience}
+          >
             <View accessibilityLabel={t("rosary.controls.header")} style={[styles.topBar, { gap: compact ? 4 : 8 }]}>
               <Pressable
                 accessibilityLabel={t("rosary.controls.goBack")}
@@ -487,13 +494,7 @@ export function RosaryPrayerScreen({
               progress={progress}
             />
 
-            <ScrollView
-              accessibilityLabel={t("rosary.controls.details")}
-              contentContainerStyle={[styles.contentColumnContent, { gap: contentGap }]}
-              nestedScrollEnabled
-              showsVerticalScrollIndicator
-              style={styles.contentColumn}
-            >
+            <View accessibilityLabel={t("rosary.controls.details")} style={[styles.contentColumn, { gap: contentGap }]}>
               <RosaryDetailCarousel
                 artworkSource={backgroundImageFailed ? undefined : backgroundImageSource}
                 mystery={session.currentMystery}
@@ -522,8 +523,8 @@ export function RosaryPrayerScreen({
                         : t("rosary.storage.artStyle")}
                 </Text>
               ) : null}
-            </ScrollView>
-          </View>
+            </View>
+          </ScrollView>
 
           <RosaryBottomNavigation
             audioAvailable={audioPlayback.isAvailable}
@@ -692,16 +693,15 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   prayerExperience: {
     flex: 1,
-    gap: theme.spacing[2],
     minHeight: 0,
   },
-  contentColumn: {
-    flex: 1,
-    minWidth: 0,
-  },
-  contentColumnContent: {
+  prayerExperienceContent: {
     flexGrow: 1,
+    gap: theme.spacing[2],
     paddingBottom: theme.spacing[2],
+  },
+  contentColumn: {
+    minWidth: 0,
   },
   storageNote: {
     ...theme.typography.caption,

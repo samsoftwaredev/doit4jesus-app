@@ -129,7 +129,9 @@ describe("RosaryPrayerScreen", () => {
     const backgroundImage = screen.getByTestId("rosary-mystery-background");
     expect(backgroundImage.props.source).toEqual([rosaryMysteries[0].imageSource]);
     expect(backgroundImage.props.contentFit).toBe("cover");
+    expect(backgroundImage.props.contentPosition).toEqual({ left: "50%", top: 0 });
     expect(backgroundImage.props.accessible).toBe(false);
+    expect(screen.queryByTestId("rosary-background-bottom-fade")).toBeNull();
 
     mockSession({ currentMystery: rosaryMysteries[1] });
     await rendered.rerender(<RosaryPrayerScreen />);
@@ -427,19 +429,25 @@ describe("RosaryPrayerScreen", () => {
     expect(screen.getByLabelText(/current bead 1/i)).toBeTruthy();
   });
 
-  it("places a single swipeable detail below the Rosary arc without changing prayer progress", async () => {
+  it("scrolls the header, Rosary arc, and single detail while keeping bottom controls fixed", async () => {
     await render(<RosaryPrayerScreen />);
 
+    const scrollingContent = screen.getByLabelText("Rosary prayer content");
+    expect(StyleSheet.flatten(scrollingContent.props.style)).toMatchObject({ flex: 1, minHeight: 0 });
+    expect(StyleSheet.flatten(scrollingContent.props.contentContainerStyle)).toMatchObject({ flexGrow: 1 });
+    expect(within(scrollingContent).getByLabelText("Rosary controls header")).toBeTruthy();
     expect(screen.getByTestId("rosary-arc-stage")).toBeTruthy();
+    expect(within(scrollingContent).getByTestId("rosary-arc-stage")).toBeTruthy();
     expect(screen.queryByTestId("rosary-navigator-column")).toBeNull();
     const prayerDetails = screen.getByLabelText("Rosary prayer details");
-    expect(StyleSheet.flatten(prayerDetails.props.style)).toMatchObject({ flex: 1 });
-    expect(StyleSheet.flatten(prayerDetails.props.contentContainerStyle)).toMatchObject({ flexGrow: 1 });
+    expect(prayerDetails.props.contentContainerStyle).toBeUndefined();
     expect(within(prayerDetails).getByText("CURRENT MYSTERY")).toBeTruthy();
     expect(within(prayerDetails).queryByTestId("rosary-artwork-image")).toBeNull();
     expect(within(prayerDetails).queryByText("FRUIT OF THE MYSTERY")).toBeNull();
     expect(within(prayerDetails).queryByText("HAIL MARY")).toBeNull();
     expect(within(prayerDetails).queryByText("SCRIPTURE")).toBeNull();
+    expect(within(scrollingContent).queryByTestId("rosary-progress-button")).toBeNull();
+    expect(screen.getByTestId("rosary-progress-button")).toBeTruthy();
 
     await act(async () => {
       fireGestureHandler(getByGestureTestId("rosary-detail-carousel-swipe"), [{ translationX: -60, translationY: 2 }]);
