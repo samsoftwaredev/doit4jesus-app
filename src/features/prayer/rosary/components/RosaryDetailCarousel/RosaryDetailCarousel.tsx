@@ -108,19 +108,6 @@ export function RosaryDetailCarousel({
         pointerEvents="none"
         style={styles.accessibilityGuide}
       />
-      <GestureDetector gesture={panGesture}>
-        <View style={styles.gestureArea}>
-          <Animated.View
-            entering={reduceMotion ? undefined : FadeIn.duration(180)}
-            key={activePage}
-            style={styles.page}
-            testID={`rosary-detail-page-${activePage}`}
-          >
-            {renderActivePage(activePage)}
-          </Animated.View>
-        </View>
-      </GestureDetector>
-
       <View style={styles.pagination}>
         {DETAIL_PAGES.map((page, index) => {
           const isSelected = index === activePageIndex;
@@ -147,6 +134,19 @@ export function RosaryDetailCarousel({
           );
         })}
       </View>
+
+      <GestureDetector gesture={panGesture}>
+        <View style={styles.gestureArea}>
+          <Animated.View
+            entering={reduceMotion ? undefined : FadeIn.duration(180)}
+            key={activePage}
+            style={styles.page}
+            testID={`rosary-detail-page-${activePage}`}
+          >
+            {renderActivePage(activePage)}
+          </Animated.View>
+        </View>
+      </GestureDetector>
     </View>
   );
 }
@@ -176,7 +176,7 @@ const styleSheet = createThemedStyles((theme) => ({
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "center",
-    marginTop: theme.spacing[1],
+    marginBottom: theme.spacing[1],
   },
   dotTarget: {
     alignItems: "center",

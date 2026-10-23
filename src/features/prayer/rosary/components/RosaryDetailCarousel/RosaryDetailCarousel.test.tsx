@@ -56,6 +56,17 @@ describe("RosaryDetailCarousel", () => {
     expect(screen.getAllByRole("button", { name: /Show .+, page \d of 5/ })).toHaveLength(5);
   });
 
+  it("places the pagination controls above the active detail card", async () => {
+    await render(<RosaryDetailCarousel {...defaultProps} />);
+    const container = screen.getByTestId("rosary-detail-carousel");
+    const activePageContainer = screen.getByTestId("rosary-detail-page-mystery").parent;
+    const paginationContainer = screen.getByRole("button", { name: "Show Mystery, page 1 of 5" }).parent;
+
+    expect(container.children.indexOf(paginationContainer!)).toBeLessThan(
+      container.children.indexOf(activePageContainer!),
+    );
+  });
+
   it("cycles through details in both directions and wraps at each end", async () => {
     await render(<RosaryDetailCarousel {...defaultProps} />);
 
