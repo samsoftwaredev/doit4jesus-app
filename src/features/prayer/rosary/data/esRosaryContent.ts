@@ -1,4 +1,9 @@
 import { englishRosaryContent, type RosaryContent, type RosaryContentPrayerId } from "./rosaryContent";
+import {
+  buildSpanishScriptureByStepId,
+  getSpanishMysteryScriptureText,
+  localizeSpanishScriptureReference,
+} from "./esRosaryScripture";
 
 const spanishPrayerLibrary: RosaryContent["prayer_library"] = {
   sign_of_cross: {
@@ -115,7 +120,6 @@ type MysteryTranslation = {
   description: string;
   fruit: string;
   imageAlt: string;
-  scriptureText: string;
   title: string;
 };
 
@@ -125,7 +129,6 @@ const mysteryTranslations: Record<string, MysteryTranslation> = {
     fruit: "Humildad",
     description:
       "María recibe con confianza el mensaje de Dios y se llama a sí misma su sierva. Pide la gracia de dejar el orgullo y acoger la voluntad de Dios con un corazón humilde.",
-    scriptureText: "El ángel Gabriel fue enviado por Dios a una ciudad de Galilea llamada Nazaret.",
     imageAlt: "Ilustración del misterio del Rosario: la Anunciación.",
   },
   the_visitation: {
@@ -133,7 +136,6 @@ const mysteryTranslations: Record<string, MysteryTranslation> = {
     fruit: "Amor al prójimo",
     description:
       "María lleva a Cristo hasta Isabel y la sirve con generosa prontitud. Pide la gracia de reconocer las necesidades de los demás y llevar el amor de Cristo con obras concretas de caridad.",
-    scriptureText: "María se levantó en aquellos días y fue de prisa a la región montañosa.",
     imageAlt: "Ilustración del misterio del Rosario: la Visitación.",
   },
   the_nativity: {
@@ -141,7 +143,6 @@ const mysteryTranslations: Record<string, MysteryTranslation> = {
     fruit: "Pobreza de espíritu",
     description:
       "Jesús nace en un pesebre humilde y revela que la verdadera riqueza se encuentra en Dios. Pide la gracia de soltar el apego a lo material y atesorar lo que acerca el corazón a él.",
-    scriptureText: "Salió un decreto de César Augusto para que todo el mundo fuera empadronado.",
     imageAlt: "Ilustración del misterio del Rosario: el Nacimiento de Jesús.",
   },
   the_presentation: {
@@ -149,7 +150,6 @@ const mysteryTranslations: Record<string, MysteryTranslation> = {
     fruit: "Obediencia",
     description:
       "María y José presentan a Jesús según la ley de Dios, incluso con sacrificio personal. Pide la gracia de obedecer fielmente a Dios y ofrecerle cada aspecto de tu vida.",
-    scriptureText: "Llevaron a Jesús a Jerusalén para presentarlo al Señor.",
     imageAlt: "Ilustración del misterio del Rosario: la Presentación.",
   },
   finding_jesus_in_the_temple: {
@@ -157,7 +157,6 @@ const mysteryTranslations: Record<string, MysteryTranslation> = {
     fruit: "Alegría al encontrar a Jesús",
     description:
       "Después de buscarlo con dolor, María y José encuentran a Jesús en la casa de su Padre. Pide la gracia de buscar a Cristo con perseverancia y alegrarte cada vez que lo encuentres de nuevo.",
-    scriptureText: "El niño crecía y se fortalecía, lleno de sabiduría.",
     imageAlt: "Ilustración del misterio del Rosario: Jesús hallado en el Templo.",
   },
   baptism_of_jesus: {
@@ -165,7 +164,6 @@ const mysteryTranslations: Record<string, MysteryTranslation> = {
     fruit: "Apertura al Espíritu Santo",
     description:
       "En el bautismo de Jesús, el Padre habla y el Espíritu Santo desciende sobre el Hijo. Pide la gracia de escuchar la voz de Dios y seguir la guía del Espíritu con un corazón abierto.",
-    scriptureText: "Jesús fue de Galilea al Jordán, donde estaba Juan, para ser bautizado por él.",
     imageAlt: "Ilustración del misterio del Rosario: el Bautismo de Jesús en el Jordán.",
   },
   wedding_at_cana: {
@@ -173,7 +171,6 @@ const mysteryTranslations: Record<string, MysteryTranslation> = {
     fruit: "Confianza en la intercesión de María",
     description:
       "María percibe la necesidad en Caná, se la presenta a Jesús y pide a los sirvientes que lo sigan. Pide la gracia de confiar en su intercesión y hacer lo que Cristo te diga.",
-    scriptureText: "Se celebraron unas bodas en Caná de Galilea, y la madre de Jesús estaba allí.",
     imageAlt: "Ilustración del misterio del Rosario: las Bodas de Caná.",
   },
   proclamation_of_the_kingdom: {
@@ -181,7 +178,6 @@ const mysteryTranslations: Record<string, MysteryTranslation> = {
     fruit: "Conversión",
     description:
       "Jesús anuncia el Reino de Dios y llama a todos a convertirse y creer en el Evangelio. Pide la gracia de apartarte del pecado y permitir que Cristo transforme tu vida diaria.",
-    scriptureText: "Jesús fue a Galilea proclamando el Evangelio del Reino de Dios.",
     imageAlt: "Ilustración del misterio del Rosario: el Anuncio del Reino de Dios.",
   },
   the_transfiguration: {
@@ -189,7 +185,6 @@ const mysteryTranslations: Record<string, MysteryTranslation> = {
     fruit: "Deseo de santidad",
     description:
       "Jesús revela su gloria para fortalecer a los discípulos en el camino. Pide la gracia de desear la transformación y reflejar la luz de Cristo en la vida cotidiana.",
-    scriptureText: "Jesús tomó consigo a Pedro, Santiago y Juan, y los llevó aparte a un monte alto.",
     imageAlt: "Ilustración del misterio del Rosario: la Transfiguración.",
   },
   institution_of_the_eucharist: {
@@ -197,7 +192,6 @@ const mysteryTranslations: Record<string, MysteryTranslation> = {
     fruit: "Amor eucarístico",
     description:
       "Jesús entrega su Cuerpo y su Sangre como alimento y permanece con su pueblo en la Eucaristía. Pide la gracia de amar su presencia y convertirte en un don generoso para los demás.",
-    scriptureText: "Cuando llegó la hora, Jesús se sentó a la mesa con los doce apóstoles.",
     imageAlt: "Ilustración del misterio del Rosario: la Institución de la Eucaristía.",
   },
   agony_in_the_garden: {
@@ -205,7 +199,6 @@ const mysteryTranslations: Record<string, MysteryTranslation> = {
     fruit: "Contrición",
     description:
       "En Getsemaní, Jesús siente una profunda tristeza y se confía a la voluntad del Padre. Pide verdadero dolor por el pecado y la gracia de volver a la misericordia de Dios con un corazón renovado.",
-    scriptureText: "Jesús salió y fue, como de costumbre, al monte de los Olivos.",
     imageAlt: "Ilustración del misterio del Rosario: la Oración de Jesús en el Huerto.",
   },
   scourging_at_the_pillar: {
@@ -213,7 +206,6 @@ const mysteryTranslations: Record<string, MysteryTranslation> = {
     fruit: "Pureza",
     description:
       "Jesús inocente soporta las heridas causadas por el pecado humano. Pide pureza de corazón y de cuerpo, y decisiones que honren la dignidad que Dios dio a cada persona.",
-    scriptureText: "Pilato tomó entonces a Jesús y mandó azotarlo.",
     imageAlt: "Ilustración del misterio del Rosario: la Flagelación del Señor.",
   },
   crowning_with_thorns: {
@@ -221,7 +213,6 @@ const mysteryTranslations: Record<string, MysteryTranslation> = {
     fruit: "Fortaleza moral",
     description:
       "Jesús soporta burlas y crueldad sin abandonar la verdad ni el amor. Pide valor para permanecer fiel a lo correcto, especialmente ante la presión o el desprecio.",
-    scriptureText: "Los soldados del gobernador llevaron a Jesús al pretorio.",
     imageAlt: "Ilustración del misterio del Rosario: la Coronación de Espinas.",
   },
   carrying_of_the_cross: {
@@ -229,7 +220,6 @@ const mysteryTranslations: Record<string, MysteryTranslation> = {
     fruit: "Paciencia",
     description:
       "Jesús carga la cruz paso a paso y acepta la ayuda de Simón. Pide paciencia en la dificultad y humildad tanto para recibir ayuda como para ofrecerla.",
-    scriptureText: "Detuvieron a Simón de Cirene y le pusieron la cruz para que la llevara detrás de Jesús.",
     imageAlt: "Ilustración del misterio del Rosario: Jesús con la Cruz a Cuestas.",
   },
   the_crucifixion: {
@@ -237,7 +227,6 @@ const mysteryTranslations: Record<string, MysteryTranslation> = {
     fruit: "Amor sacrificado",
     description:
       "Jesús entrega su vida, perdona a quienes lo persiguen y confía todo al Padre. Pide un amor que perdone, sirva con generosidad y acepte el costo de buscar el bien de los demás.",
-    scriptureText: "Junto a la cruz de Jesús estaba su madre.",
     imageAlt: "Ilustración del misterio del Rosario: la Crucifixión y Muerte de Jesús.",
   },
   the_resurrection: {
@@ -245,7 +234,6 @@ const mysteryTranslations: Record<string, MysteryTranslation> = {
     fruit: "Fe",
     description:
       "Cristo resucitado vence el pecado y la muerte, y confirma cada una de sus promesas. Pide una fe firme en Jesús, especialmente cuando el miedo o la incertidumbre dificultan la esperanza.",
-    scriptureText: "Pasado el sábado, María Magdalena y la otra María fueron a visitar el sepulcro.",
     imageAlt: "Ilustración del misterio del Rosario: la Resurrección del Señor.",
   },
   the_ascension: {
@@ -253,7 +241,6 @@ const mysteryTranslations: Record<string, MysteryTranslation> = {
     fruit: "Esperanza",
     description:
       "Jesús vuelve al Padre, prepara un lugar para su pueblo y lo envía en misión. Pide una esperanza en el cielo que dé valor y propósito a tu vida de hoy.",
-    scriptureText: "Señor, ¿es ahora cuando vas a restaurar el reino de Israel?",
     imageAlt: "Ilustración del misterio del Rosario: la Ascensión del Señor.",
   },
   descent_of_the_holy_spirit: {
@@ -261,7 +248,6 @@ const mysteryTranslations: Record<string, MysteryTranslation> = {
     fruit: "Amor a Dios",
     description:
       "El Espíritu Santo llena a los discípulos y enciende sus corazones por el Evangelio. Pide un amor más profundo a Dios que transforme cada palabra, decisión y obra de servicio.",
-    scriptureText: "Al llegar el día de Pentecostés, todos estaban reunidos en un mismo lugar.",
     imageAlt: "Ilustración del misterio del Rosario: la Venida del Espíritu Santo.",
   },
   the_assumption: {
@@ -269,7 +255,6 @@ const mysteryTranslations: Record<string, MysteryTranslation> = {
     fruit: "Gracia de una buena muerte",
     description:
       "María es llevada en cuerpo y alma a la gloria celestial y participa plenamente de la victoria de su Hijo. Pide la gracia de vivir cerca de Dios y afrontar la muerte confiando en la resurrección prometida.",
-    scriptureText: "Pondré enemistad entre ti y la mujer, entre tu descendencia y la suya.",
     imageAlt: "Ilustración del misterio del Rosario: la Asunción de María.",
   },
   the_coronation: {
@@ -277,7 +262,6 @@ const mysteryTranslations: Record<string, MysteryTranslation> = {
     fruit: "Confianza en la intercesión de María",
     description:
       "María es coronada Reina del Cielo y continúa guiando a los hijos de Dios hacia su Hijo. Pide la gracia de confiar cada necesidad a su oración mientras sigues a Cristo con mayor fidelidad.",
-    scriptureText: "Apareció una gran señal en el cielo: una mujer coronada de estrellas.",
     imageAlt: "Ilustración del misterio del Rosario: la Coronación de María.",
   },
 };
@@ -299,6 +283,8 @@ const dayNames: Record<string, string> = {
   Sunday: "Domingo",
 };
 
+const spanishScriptureByStepId = buildSpanishScriptureByStepId(englishRosaryContent);
+
 /** Builds the Spanish devotional bundle while preserving every stable content and sequence identifier. */
 export function createSpanishRosaryContent(): RosaryContent {
   return {
@@ -316,18 +302,20 @@ export function createSpanishRosaryContent(): RosaryContent {
           title: translation.title,
           fruit: translation.fruit,
           fruit_description: translation.description,
-          scripture_text: translation.scriptureText,
+          primary_scripture: localizeSpanishScriptureReference(mystery.primary_scripture),
+          scripture_text: getSpanishMysteryScriptureText(mystery.id),
           image_alt: translation.imageAlt,
         };
       }),
       prayer_sequence: set.prayer_sequence.map((step) => {
         const prayer = spanishPrayerLibrary[step.prayer_type as RosaryContentPrayerId];
-        const mystery = step.mystery_id ? mysteryTranslations[step.mystery_id] : undefined;
+        const scripture = spanishScriptureByStepId.get(step.id);
         return {
           ...step,
           title: prayer.title,
           text: prayer.text,
-          scripture_text: step.scripture_text ? (mystery?.scriptureText ?? null) : null,
+          scripture_reference: scripture?.reference ?? null,
+          scripture_text: scripture?.text ?? null,
         };
       }),
     })),

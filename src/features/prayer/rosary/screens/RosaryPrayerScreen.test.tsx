@@ -197,9 +197,7 @@ describe("RosaryPrayerScreen", () => {
     expect(screen.queryByTestId(`rosary-arc-physical-${fullRosarySequence[71].id}`)).toBeNull();
     await fireEvent.press(screen.getByRole("button", { name: "Show Scripture, page 5 of 5" }));
     expect(screen.getByText("Luke 1:28")).toBeTruthy();
-    expect(
-      screen.getByText("Hail, thou that art highly favoured, the Lord is with thee: blessed art thou among women."),
-    ).toBeTruthy();
+    expect(screen.getByText("And coming to her, he said, “Hail, favored one! The Lord is with you.”")).toBeTruthy();
     expect(useRosarySession).toHaveBeenCalledWith(
       expect.objectContaining({ beads: expect.arrayContaining([fullRosarySequence[71]]), isFullRosary: true }),
     );
