@@ -3,6 +3,7 @@ import { StyleSheet } from "react-native";
 
 import type { ResponsiveLayout } from "@/hooks/useResponsiveLayout";
 import { i18n } from "@/localization";
+import { darkTheme, lightTheme, setActiveAppTheme } from "@/theme/tokens";
 
 import { DailyRosaryCard } from "./DailyRosaryCard";
 
@@ -21,10 +22,32 @@ const phoneLayout: ResponsiveLayout = {
   width: 390,
 };
 const mockResponsiveLayout = jest.fn(() => phoneLayout);
+let mockColorScheme: "light" | "dark" = "dark";
 
 jest.mock("@/hooks/useResponsiveLayout", () => ({
   useResponsiveLayout: () => mockResponsiveLayout(),
 }));
+
+jest.mock("@/theme/AppThemeProvider", () => ({
+  useAppTheme: () => ({ colorScheme: mockColorScheme }),
+}));
+
+function relativeLuminance(hexColor: string): number {
+  const channels = hexColor
+    .slice(1)
+    .match(/../g)!
+    .map((channel) => Number.parseInt(channel, 16) / 255)
+    .map((channel) => (channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4));
+
+  return channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722;
+}
+
+function contrastRatio(firstColor: string, secondColor: string): number {
+  const luminances = [relativeLuminance(firstColor), relativeLuminance(secondColor)].sort(
+    (left, right) => right - left,
+  );
+  return (luminances[0] + 0.05) / (luminances[1] + 0.05);
+}
 
 function reminder({
   completed = false,
@@ -61,12 +84,16 @@ function renderCard(overrides: Partial<React.ComponentProps<typeof DailyRosaryCa
 describe("DailyRosaryCard", () => {
   beforeEach(async () => {
     jest.clearAllMocks();
+    mockColorScheme = "dark";
     mockResponsiveLayout.mockReturnValue(phoneLayout);
+    setActiveAppTheme(darkTheme);
     await i18n.changeLanguage("en");
   });
 
   afterEach(() => {
     jest.useRealTimers();
+    mockColorScheme = "dark";
+    setActiveAppTheme(darkTheme);
   });
 
   afterAll(async () => {
@@ -148,6 +175,80 @@ describe("DailyRosaryCard", () => {
         fontSize: urgentStyle.fontSize,
       });
     }
+  });
+
+  it("keeps every light-mode timing treatment readable across the Daily Rosary gradients", async () => {
+    mockColorScheme = "light";
+    setActiveAppTheme(lightTheme);
+    const rendered = await renderCard();
+
+    expect(StyleSheet.flatten(screen.getByTestId("rosary-countdown").props.style).color).toBe(
+      lightTheme.colors.text.secondary,
+    );
+    for (const gradient of [
+      lightTheme.colors.gradients.dailyRosary,
+      lightTheme.colors.gradients.dailyRosaryComplete,
+      lightTheme.colors.gradients.dailyRosaryReset,
+    ]) {
+      for (const backgroundColor of gradient) {
+        expect(contrastRatio(lightTheme.colors.text.secondary, backgroundColor)).toBeGreaterThanOrEqual(4.5);
+      }
+    }
+
+    await rendered.rerender(
+      <DailyRosaryCard
+        error={false}
+        isLoading={false}
+        onExpired={jest.fn()}
+        onPrayRosary={jest.fn()}
+        onRetry={jest.fn()}
+        onViewGarden={jest.fn()}
+        reminder={reminder({ completed: true })}
+      />,
+    );
+    expect(StyleSheet.flatten(screen.getByText("Completed today").props.style).color).toBe(
+      lightTheme.colors.text.secondary,
+    );
+
+    await rendered.rerender(
+      <DailyRosaryCard
+        error={false}
+        isLoading={false}
+        onExpired={jest.fn()}
+        onPrayRosary={jest.fn()}
+        onRetry={jest.fn()}
+        onViewGarden={jest.fn()}
+        reminder={reminder({ seconds: 3 * 60 * 60 })}
+      />,
+    );
+    const urgentColor = StyleSheet.flatten(screen.getByTestId("rosary-countdown").props.style).color;
+    expect(urgentColor).toBe(lightTheme.colors.text.warning);
+    for (const backgroundColor of lightTheme.colors.gradients.countdownHour) {
+      expect(contrastRatio(urgentColor, backgroundColor)).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+
+  it("preserves the existing dark-mode Daily Rosary timing colors", async () => {
+    const rendered = await renderCard();
+
+    expect(StyleSheet.flatten(screen.getByTestId("rosary-countdown").props.style).color).toBe(
+      darkTheme.colors.text.muted,
+    );
+
+    await rendered.rerender(
+      <DailyRosaryCard
+        error={false}
+        isLoading={false}
+        onExpired={jest.fn()}
+        onPrayRosary={jest.fn()}
+        onRetry={jest.fn()}
+        onViewGarden={jest.fn()}
+        reminder={reminder({ seconds: 3 * 60 * 60 })}
+      />,
+    );
+    expect(StyleSheet.flatten(screen.getByTestId("rosary-countdown").props.style).color).toBe(
+      darkTheme.colors.gold.light,
+    );
   });
 
   it("refreshes once at expiry without hiding the Rosary action", async () => {

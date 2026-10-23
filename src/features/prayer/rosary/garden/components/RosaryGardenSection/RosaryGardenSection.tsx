@@ -112,7 +112,7 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   navigationErrorText: {
     ...theme.typography.bodySmall,
-    color: theme.colors.text.white,
+    color: theme.rosary.colors.gardenTextPrimary,
     flex: 1,
     minWidth: theme.spacing[0],
   },

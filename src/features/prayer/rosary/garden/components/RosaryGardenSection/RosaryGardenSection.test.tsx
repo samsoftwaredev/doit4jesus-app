@@ -3,6 +3,7 @@ import { StyleSheet } from "react-native";
 
 import { i18n } from "@/localization";
 import type { ResponsiveLayout } from "@/hooks/useResponsiveLayout";
+import { darkTheme, lightTheme, setActiveAppTheme } from "@/theme/tokens";
 
 import { RosaryGardenSection } from "./RosaryGardenSection";
 
@@ -23,6 +24,7 @@ const phoneLayout: ResponsiveLayout = {
   width: 390,
 };
 const mockResponsiveLayout = jest.fn(() => phoneLayout);
+let mockColorScheme: "light" | "dark" = "dark";
 
 jest.mock("expo-haptics", () => ({
   ImpactFeedbackStyle: { Light: "light" },
@@ -31,6 +33,10 @@ jest.mock("expo-haptics", () => ({
 
 jest.mock("@/hooks/useResponsiveLayout", () => ({
   useResponsiveLayout: () => mockResponsiveLayout(),
+}));
+
+jest.mock("@/theme/AppThemeProvider", () => ({
+  useAppTheme: () => ({ colorScheme: mockColorScheme }),
 }));
 
 jest.mock("@/features/prayer/rosary/garden/useRosaryGarden", () => ({ useRosaryGarden: jest.fn() }));
@@ -51,6 +57,23 @@ const days = Array.from({ length: 31 }, (_, index) => {
     isToday: day === 8,
   };
 });
+
+function relativeLuminance(hexColor: string): number {
+  const channels = hexColor
+    .slice(1)
+    .match(/../g)!
+    .map((channel) => Number.parseInt(channel, 16) / 255)
+    .map((channel) => (channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4));
+
+  return channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722;
+}
+
+function contrastRatio(firstColor: string, secondColor: string): number {
+  const luminances = [relativeLuminance(firstColor), relativeLuminance(secondColor)].sort(
+    (left, right) => right - left,
+  );
+  return (luminances[0] + 0.05) / (luminances[1] + 0.05);
+}
 
 function mockGarden(isUsingMockData = false, hasNavigationError = false) {
   useRosaryGarden.mockReturnValue({
@@ -73,9 +96,16 @@ function mockGarden(isUsingMockData = false, hasNavigationError = false) {
 describe("RosaryGardenSection", () => {
   beforeEach(async () => {
     jest.clearAllMocks();
+    mockColorScheme = "dark";
     mockResponsiveLayout.mockReturnValue(phoneLayout);
+    setActiveAppTheme(darkTheme);
     mockGarden();
     await i18n.changeLanguage("en");
+  });
+
+  afterEach(() => {
+    mockColorScheme = "dark";
+    setActiveAppTheme(darkTheme);
   });
 
   afterAll(async () => {
@@ -133,6 +163,53 @@ describe("RosaryGardenSection", () => {
     expect(within(screen.getByTestId("rosary-garden-card")).getByLabelText("Garden preview data")).toBeTruthy();
     await fireEvent.press(screen.getByRole("button", { name: "Pray today's rosary" }));
     expect(onPrayToday).toHaveBeenCalledTimes(1);
+  });
+
+  it("uses high-contrast light-mode text and action colors throughout the Garden card", async () => {
+    mockColorScheme = "light";
+    setActiveAppTheme(lightTheme);
+    mockGarden(false, true);
+    await render(<RosaryGardenSection onPrayToday={jest.fn()} />);
+
+    const primaryText = lightTheme.colors.text.primary;
+    const secondaryText = lightTheme.colors.text.secondary;
+    expect(StyleSheet.flatten(screen.getByText("Rosary Garden").props.style).color).toBe(primaryText);
+    expect(
+      StyleSheet.flatten(screen.getByText("Complete a rosary each day\nto make the garden bloom.").props.style).color,
+    ).toBe(secondaryText);
+    expect(StyleSheet.flatten(screen.getByText("August 2026").props.style).color).toBe(primaryText);
+    expect(StyleSheet.flatten(screen.getByText("CURRENT STREAK").props.style).color).toBe(secondaryText);
+    expect(
+      StyleSheet.flatten(within(screen.getByLabelText("Current streak 1 days")).getByText("1").props.style).color,
+    ).toBe(primaryText);
+    expect(StyleSheet.flatten(within(screen.getByTestId("garden-weekday-0")).getByText("S").props.style).color).toBe(
+      secondaryText,
+    );
+    expect(StyleSheet.flatten(screen.getByText("Couldn’t load that month’s Rosary Garden.").props.style).color).toBe(
+      primaryText,
+    );
+
+    for (const backgroundColor of lightTheme.colors.gradients.gardenHero) {
+      expect(contrastRatio(primaryText, backgroundColor)).toBeGreaterThanOrEqual(4.5);
+      expect(contrastRatio(secondaryText, backgroundColor)).toBeGreaterThanOrEqual(4.5);
+    }
+    expect(lightTheme.colors.gradients.prayButton).toEqual(["#2F7A59", "#20583F"]);
+    for (const backgroundColor of lightTheme.colors.gradients.prayButton) {
+      expect(contrastRatio(lightTheme.colors.text.white, backgroundColor)).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+
+  it("preserves the Garden card's existing dark-mode color treatment", async () => {
+    mockGarden(false, true);
+    await render(<RosaryGardenSection onPrayToday={jest.fn()} />);
+
+    expect(StyleSheet.flatten(screen.getByText("Rosary Garden").props.style).color).toBe(darkTheme.colors.text.white);
+    expect(
+      StyleSheet.flatten(screen.getByText("Complete a rosary each day\nto make the garden bloom.").props.style).color,
+    ).toBe("#D3E2DD");
+    expect(StyleSheet.flatten(screen.getByText("August 2026").props.style).color).toBe(darkTheme.colors.text.white);
+    expect(StyleSheet.flatten(screen.getByText("CURRENT STREAK").props.style).color).toBe(darkTheme.colors.text.muted);
+    expect(darkTheme.colors.gradients.prayButton).toEqual(["#276EEA", "#154FAE"]);
   });
 
   it("announces a failed month load and retries in English and Spanish", async () => {

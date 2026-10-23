@@ -109,7 +109,7 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   column: { flex: 1, minWidth: 0 },
   weekHeader: { flexDirection: "row", gap: gridGap, marginBottom: gridGap },
-  weekDay: { ...theme.typography.labelSmall, color: theme.colors.text.muted, textAlign: "center" },
+  weekDay: { ...theme.typography.labelSmall, color: theme.rosary.colors.gardenTextMuted, textAlign: "center" },
   grid: { gap: gridGap, width: "100%" },
   calendarRow: { flexDirection: "row", gap: gridGap, width: "100%" },
   dateCell: { aspectRatio: 1, overflow: "hidden" },

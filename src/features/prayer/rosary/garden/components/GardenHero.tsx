@@ -95,7 +95,7 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   title: {
     ...theme.typography.heading1,
-    color: theme.colors.text.white,
+    color: theme.rosary.colors.gardenTextPrimary,
     flexShrink: 1,
     fontFamily: theme.fontFamilies.devotional,
   },
@@ -105,7 +105,7 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   subtitle: {
     ...theme.typography.body,
-    color: "#D3E2DD",
+    color: theme.rosary.colors.gardenTextSecondary,
     marginTop: theme.spacing[2],
   },
   compactSubtitle: {

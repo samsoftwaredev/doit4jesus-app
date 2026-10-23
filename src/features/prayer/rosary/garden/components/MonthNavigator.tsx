@@ -124,7 +124,7 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   label: {
     ...theme.typography.heading2,
-    color: theme.colors.text.white,
+    color: theme.rosary.colors.gardenTextPrimary,
     flex: 1,
     fontFamily: theme.fontFamilies.devotional,
     minWidth: 0,

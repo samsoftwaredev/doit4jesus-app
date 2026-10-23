@@ -286,15 +286,15 @@ const styleSheet = createThemedStyles((theme) => ({
   supporting: { ...theme.typography.bodySmall, color: theme.colors.text.secondary, marginTop: theme.spacing[1] },
   timer: {
     ...theme.typography.caption,
-    color: theme.colors.text.muted,
+    color: theme.rosary.colors.dailyTimerText,
     flexShrink: 1,
     fontFamily: theme.fontFamilies.devotional,
     letterSpacing: theme.letterSpacing.wide,
     maxWidth: "100%",
     textAlign: "center",
   },
-  timerUrgent: { color: theme.colors.gold.light, fontSize: 30, lineHeight: 38 },
-  timingStatus: { ...theme.typography.caption, color: theme.colors.text.muted, textAlign: "center" },
+  timerUrgent: { color: theme.rosary.colors.dailyTimerUrgent, fontSize: 30, lineHeight: 38 },
+  timingStatus: { ...theme.typography.caption, color: theme.rosary.colors.dailyTimerText, textAlign: "center" },
   action: {
     alignItems: "center",
     alignSelf: "stretch",
