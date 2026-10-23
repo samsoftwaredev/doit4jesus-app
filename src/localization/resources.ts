@@ -848,6 +848,16 @@ export const resources = {
           signOfCross: "Sign of the Cross",
           upcoming: "upcoming",
         },
+        arc: {
+          completedHint: "Returns to this completed prayer.",
+          currentHint: "Centers the current prayer.",
+          label: "Interactive Rosary arc",
+          prayerName: "Prayer name: {{prayer}}",
+          progress: "{{current}} of {{total}}",
+          progressLabel: "Rosary progress: {{current}} of {{total}}",
+          swipeHint: "Swipe left for the next prayer or right for the previous prayer.",
+          upcomingHint: "This prayer is not yet available.",
+        },
         cards: {
           currentMystery: "CURRENT MYSTERY",
           devotionalImageUnavailable: "Devotional image unavailable",
@@ -2128,6 +2138,16 @@ export const resources = {
           ourFather: "Padre Nuestro",
           signOfCross: "Señal de la Cruz",
           upcoming: "pendiente",
+        },
+        arc: {
+          completedHint: "Vuelve a esta oración completada.",
+          currentHint: "Centra la oración actual.",
+          label: "Arco interactivo del Rosario",
+          prayerName: "Nombre de la oración: {{prayer}}",
+          progress: "{{current}} de {{total}}",
+          progressLabel: "Progreso del Rosario: {{current}} de {{total}}",
+          swipeHint: "Desliza a la izquierda para la siguiente oración o a la derecha para la anterior.",
+          upcomingHint: "Esta oración aún no está disponible.",
         },
         cards: {
           currentMystery: "MISTERIO ACTUAL",

@@ -1,12 +1,11 @@
 import { render, screen } from "@testing-library/react-native";
 import { StyleSheet } from "react-native";
 
-import { fullRosarySequence, rosarySequence } from "@/features/prayer/rosary/data/rosarySequence";
+import { rosarySequence } from "@/features/prayer/rosary/data/rosarySequence";
 import type { AppTheme } from "@/theme/tokens";
 import { darkTheme, lightTheme, setActiveAppTheme } from "@/theme/tokens";
 
-import { RosaryBead } from "./RosaryBead";
-import { RosaryBeadNavigator } from "./RosaryBeadNavigator";
+import { RosaryArc } from "./RosaryArc";
 import { RosaryBottomNavigation } from "./RosaryBottomNavigation";
 import { ScriptureCard } from "./ScriptureCard";
 
@@ -27,20 +26,18 @@ describe("Rosary prayer appearance", () => {
   ] as const)("uses the %s palette for prayer cards and controls", async (colorScheme, selectedTheme: AppTheme) => {
     mockColorScheme = colorScheme;
     setActiveAppTheme(selectedTheme);
-    const creed = fullRosarySequence.find((bead) => bead.type === "creed");
-    expect(creed).toBeDefined();
-
     await render(
       <>
         <ScriptureCard quotation="The Word became flesh." reference="John 1:14" />
-        <RosaryBead bead={creed!} state="active" />
-        <RosaryBeadNavigator
+        <RosaryArc
           beads={rosarySequence.slice(0, 2)}
           completedBeadIds={["hail-mary-1"]}
           currentBeadIndex={1}
           isTransitioning={false}
           onNext={jest.fn()}
           onPrevious={jest.fn()}
+          onSelectBead={jest.fn()}
+          progress={{ currentIndex: 2, prayerName: "Hail Mary", total: 10 }}
         />
         <RosaryBottomNavigation
           onAdvance={jest.fn()}
@@ -61,9 +58,9 @@ describe("Rosary prayer appearance", () => {
     expect(StyleSheet.flatten(screen.getByText("John 1:14").props.style)).toMatchObject({
       color: selectedTheme.rosary.colors.immersivePrimary,
     });
-    const navigatorStyle = StyleSheet.flatten(screen.getByLabelText("Rosary bead navigator").props.style);
-    expect(navigatorStyle.backgroundColor).toBeUndefined();
-    expect(navigatorStyle.borderColor).toBeUndefined();
-    expect(navigatorStyle.borderWidth).toBeUndefined();
+    const arcStyle = StyleSheet.flatten(screen.getByLabelText("Interactive Rosary arc").props.style);
+    expect(arcStyle.backgroundColor).toBeUndefined();
+    expect(arcStyle.borderColor).toBeUndefined();
+    expect(arcStyle.borderWidth).toBeUndefined();
   });
 });

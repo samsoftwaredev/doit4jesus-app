@@ -189,10 +189,9 @@ describe("RosaryPrayerScreen", () => {
 
     await render(<RosaryPrayerScreen isDecade={false} />);
 
-    expect(screen.getByRole("image", { name: "completed crucifix, Apostles' Creed" })).toBeTruthy();
-    expect(screen.queryByRole("button", { name: "completed crucifix, Apostles' Creed" })).toBeNull();
+    const completedCrucifix = screen.getByRole("button", { name: "completed crucifix, Apostles' Creed" });
     expect(screen.getByLabelText(/upcoming bead 59, Hail Mary/i)).toBeTruthy();
-    expect(screen.queryByTestId("rosary-bead-72")).toBeNull();
+    expect(screen.queryByTestId(`rosary-arc-physical-${fullRosarySequence[71].id}`)).toBeNull();
     expect(screen.getByText("Luke 1:28")).toBeTruthy();
     expect(
       screen.getByText("Hail, thou that art highly favoured, the Lord is with thee: blessed art thou among women."),
@@ -200,6 +199,9 @@ describe("RosaryPrayerScreen", () => {
     expect(useRosarySession).toHaveBeenCalledWith(
       expect.objectContaining({ beads: expect.arrayContaining([fullRosarySequence[71]]), isFullRosary: true }),
     );
+
+    await fireEvent.press(completedCrucifix);
+    expect(selectBead).toHaveBeenCalledWith(fullRosarySequence[1].id);
   });
 
   it("starts and ends with an unnumbered Sign of the Cross while retaining the correct highlight", async () => {
@@ -211,8 +213,8 @@ describe("RosaryPrayerScreen", () => {
     const rendered = await render(<RosaryPrayerScreen isDecade={false} />);
 
     expect(screen.getByText("SIGN OF THE CROSS")).toBeTruthy();
-    expect(screen.getByText("0 of 59")).toBeTruthy();
-    expect(screen.getByRole("image", { name: "current crucifix, Apostles' Creed" })).toBeTruthy();
+    expect(screen.getAllByText("0 of 59").length).toBeGreaterThan(0);
+    expect(screen.getByRole("button", { name: "current crucifix, Apostles' Creed" })).toBeTruthy();
 
     const closingIndex = fullRosarySequence.length - 1;
     mockSession({
@@ -223,7 +225,7 @@ describe("RosaryPrayerScreen", () => {
     await rendered.rerender(<RosaryPrayerScreen isDecade={false} />);
 
     expect(screen.getByText("SIGN OF THE CROSS")).toBeTruthy();
-    expect(screen.getByText("59 of 59")).toBeTruthy();
+    expect(screen.getAllByText("59 of 59").length).toBeGreaterThan(0);
     expect(screen.getByLabelText(/current bead 59, Hail Mary/i)).toBeTruthy();
   });
 
@@ -238,9 +240,9 @@ describe("RosaryPrayerScreen", () => {
     await render(<RosaryPrayerScreen isDecade={false} />);
 
     expect(screen.getByText("FATIMA PRAYER")).toBeTruthy();
-    expect(screen.getByText("15 of 59")).toBeTruthy();
+    expect(screen.getAllByText("15 of 59").length).toBeGreaterThan(0);
     expect(screen.getByLabelText(/current bead 15, Hail Mary/i)).toBeTruthy();
-    expect(screen.queryByTestId("rosary-bead-19")).toBeNull();
+    expect(screen.queryByTestId(`rosary-arc-physical-${fullRosarySequence[fatimaPrayerIndex].id}`)).toBeNull();
   });
 
   it("returns to Home from the chevron back action", async () => {
@@ -402,7 +404,7 @@ describe("RosaryPrayerScreen", () => {
   it("should provide accessible info, settings, progress, and bead controls", async () => {
     await render(<RosaryPrayerScreen />);
 
-    expect(screen.getByLabelText("Show rosary swipe instructions")).toBeTruthy();
+    expect(screen.getByLabelText("Interactive Rosary arc")).toBeTruthy();
     expect(screen.getByRole("button", { name: "Previous bead" }).props.accessibilityState).toEqual({ disabled: true });
     expect(screen.queryByLabelText("Next bead")).toBeNull();
     expect(screen.getByLabelText("Open Rosary settings")).toBeTruthy();
@@ -410,21 +412,13 @@ describe("RosaryPrayerScreen", () => {
     expect(screen.getByLabelText(/current bead 1/i)).toBeTruthy();
   });
 
-  it("gives the rosary rail and prayer details the same viewport height", async () => {
+  it("places the full-width Rosary arc above independently scrolling prayer details", async () => {
     await render(<RosaryPrayerScreen />);
 
-    await fireEvent(screen.getByLabelText("Rosary prayer content"), "layout", {
-      nativeEvent: { layout: { height: 700 } },
-    });
-    await fireEvent(screen.getByLabelText("Rosary controls header"), "layout", {
-      nativeEvent: { layout: { height: 44 } },
-    });
-
-    expect(StyleSheet.flatten(screen.getByTestId("rosary-navigator-column").props.style)).toMatchObject({
-      height: 644,
-    });
+    expect(screen.getByTestId("rosary-arc-stage")).toBeTruthy();
+    expect(screen.queryByTestId("rosary-navigator-column")).toBeNull();
     const prayerDetails = screen.getByLabelText("Rosary prayer details");
-    expect(StyleSheet.flatten(prayerDetails.props.style)).toMatchObject({ height: 644 });
+    expect(StyleSheet.flatten(prayerDetails.props.style)).toMatchObject({ flex: 1 });
     expect(StyleSheet.flatten(prayerDetails.props.contentContainerStyle)).toMatchObject({ flexGrow: 1 });
     expect(within(prayerDetails).getByText("CURRENT MYSTERY")).toBeTruthy();
     expect(within(prayerDetails).getByText("FRUIT OF THE MYSTERY")).toBeTruthy();

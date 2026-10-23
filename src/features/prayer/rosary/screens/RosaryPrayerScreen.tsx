@@ -6,7 +6,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   AccessibilityInfo,
-  type LayoutChangeEvent,
   Modal,
   Pressable,
   ScrollView,
@@ -25,7 +24,7 @@ import {
   FruitOfMysteryCard,
   MysteryCard,
   PrayerCard,
-  RosaryBeadNavigator,
+  RosaryArc,
   RosaryBottomNavigation,
   RosaryPresence,
   ScriptureCard,
@@ -105,8 +104,6 @@ export function RosaryPrayerScreen({
   const [intentionPrayerCount, setIntentionPrayerCount] = useState<number>();
   const [isRecordingCompletion, setIsRecordingCompletion] = useState(false);
   const [backgroundImageFailed, setBackgroundImageFailed] = useState(false);
-  const [pageViewportHeight, setPageViewportHeight] = useState(0);
-  const [headerHeight, setHeaderHeight] = useState(0);
   const [rosaryRecorded, setRosaryRecorded] = useState(false);
   const [rosarySettingsVisible, setRosarySettingsVisible] = useState(false);
   const {
@@ -132,14 +129,7 @@ export function RosaryPrayerScreen({
   const completionRequestInFlight = useRef(false);
   const isTablet = width >= theme.breakpoints.tablet;
   const compact = width < theme.breakpoints.smallPhone || fontScale > 1.25;
-  const rosaryColumnWidth = isTablet
-    ? Math.min(224, Math.max(176, width * 0.24))
-    : Math.min(compact ? 104 : 142, Math.max(compact ? 88 : 108, width * (compact ? 0.28 : 0.3)));
   const contentGap = isTablet ? theme.spacing[6] : theme.spacing[3];
-  const rosaryViewportHeight =
-    pageViewportHeight > 0 && headerHeight > 0
-      ? Math.max(0, pageViewportHeight - headerHeight - contentGap)
-      : undefined;
   const defaultRosaryContent = useMemo(() => getRosaryContent(language), [language]);
   const rosaryContent = providedContent ?? defaultRosaryContent;
   const defaultMysteries = useMemo(
@@ -300,16 +290,6 @@ export function RosaryPrayerScreen({
     if (!session.isTransitioning) session.goToNextBead();
   }, [session]);
 
-  /** Records the visible scrolling region so the Rosary rail does not grow with the card stack. */
-  const handlePageViewportLayout = useCallback((event: LayoutChangeEvent) => {
-    setPageViewportHeight(event.nativeEvent.layout.height);
-  }, []);
-
-  /** Records the responsive header height used to calculate the remaining Rosary viewport. */
-  const handleHeaderLayout = useCallback((event: LayoutChangeEvent) => {
-    setHeaderHeight(event.nativeEvent.layout.height);
-  }, []);
-
   useEffect(() => {
     if (!session.isHydrated || !session.currentMystery || !session.currentBead || session.isTransitioning) return;
     const isAtCrucifix =
@@ -460,19 +440,8 @@ export function RosaryPrayerScreen({
             },
           ]}
         >
-          <ScrollView
-            accessibilityLabel={t("rosary.controls.content")}
-            contentContainerStyle={[styles.pageScrollContent, { gap: contentGap }]}
-            nestedScrollEnabled
-            onLayout={handlePageViewportLayout}
-            showsVerticalScrollIndicator={false}
-            style={styles.pageScroll}
-          >
-            <View
-              accessibilityLabel={t("rosary.controls.header")}
-              onLayout={handleHeaderLayout}
-              style={[styles.topBar, { gap: compact ? 4 : 8 }]}
-            >
+          <View accessibilityLabel={t("rosary.controls.content")} style={styles.prayerExperience}>
+            <View accessibilityLabel={t("rosary.controls.header")} style={[styles.topBar, { gap: compact ? 4 : 8 }]}>
               <Pressable
                 accessibilityLabel={t("rosary.controls.goBack")}
                 accessibilityRole="button"
@@ -510,60 +479,57 @@ export function RosaryPrayerScreen({
               </Pressable>
               <RosaryPresence />
             </View>
-            <View style={[styles.main, { gap: contentGap }]}>
-              <View style={{ height: rosaryViewportHeight, width: rosaryColumnWidth }} testID="rosary-navigator-column">
-                <RosaryBeadNavigator
-                  beads={activeBeads}
-                  compact={compact}
-                  completedBeadIds={session.completedBeadIds}
-                  currentBeadIndex={session.currentBeadIndex}
-                  isTransitioning={session.isTransitioning}
-                  onNext={session.goToNextBead}
-                  onPrevious={session.goToPreviousBead}
-                />
-              </View>
+            <RosaryArc
+              beads={activeBeads}
+              completedBeadIds={session.completedBeadIds}
+              currentBeadIndex={session.currentBeadIndex}
+              isTransitioning={session.isTransitioning}
+              onNext={session.goToNextBead}
+              onPrevious={session.goToPreviousBead}
+              onSelectBead={session.selectBead}
+              progress={progress}
+            />
 
-              <ScrollView
-                accessibilityLabel={t("rosary.controls.details")}
-                contentContainerStyle={[styles.contentColumnContent, { gap: contentGap }]}
-                nestedScrollEnabled
-                showsVerticalScrollIndicator
-                style={[styles.contentColumn, { height: rosaryViewportHeight }]}
-              >
-                <MysteryCard mystery={session.currentMystery} />
-                <FruitOfMysteryCard
-                  description={session.currentMystery?.fruitDescription}
-                  fruit={session.currentMystery?.fruit}
-                />
-                <PrayerCard prayer={session.currentPrayer} />
-                <ScriptureCard
-                  quotation={
-                    session.currentBead?.scriptureText ?? (isDecade ? session.currentMystery?.scriptureText : undefined)
-                  }
-                  reference={
-                    session.currentBead?.scriptureReference ??
-                    (isDecade ? session.currentMystery?.scriptureReference : undefined)
-                  }
-                />
-                {audioPlayback.playbackError ? (
-                  <Text accessibilityRole="alert" style={styles.storageNote}>
-                    {t("rosary.audio.error")}
-                  </Text>
-                ) : null}
-                {session.storageError || lengthStorageError || audioStorageError || artStyleStorageError ? (
-                  <Text accessibilityRole="alert" style={styles.storageNote}>
-                    {session.storageError
-                      ? t("rosary.storage.progress")
-                      : lengthStorageError
-                        ? t("rosary.storage.length")
-                        : audioStorageError
-                          ? t("rosary.storage.audio")
-                          : t("rosary.storage.artStyle")}
-                  </Text>
-                ) : null}
-              </ScrollView>
-            </View>
-          </ScrollView>
+            <ScrollView
+              accessibilityLabel={t("rosary.controls.details")}
+              contentContainerStyle={[styles.contentColumnContent, { gap: contentGap }]}
+              nestedScrollEnabled
+              showsVerticalScrollIndicator
+              style={styles.contentColumn}
+            >
+              <MysteryCard mystery={session.currentMystery} />
+              <FruitOfMysteryCard
+                description={session.currentMystery?.fruitDescription}
+                fruit={session.currentMystery?.fruit}
+              />
+              <PrayerCard prayer={session.currentPrayer} />
+              <ScriptureCard
+                quotation={
+                  session.currentBead?.scriptureText ?? (isDecade ? session.currentMystery?.scriptureText : undefined)
+                }
+                reference={
+                  session.currentBead?.scriptureReference ??
+                  (isDecade ? session.currentMystery?.scriptureReference : undefined)
+                }
+              />
+              {audioPlayback.playbackError ? (
+                <Text accessibilityRole="alert" style={styles.storageNote}>
+                  {t("rosary.audio.error")}
+                </Text>
+              ) : null}
+              {session.storageError || lengthStorageError || audioStorageError || artStyleStorageError ? (
+                <Text accessibilityRole="alert" style={styles.storageNote}>
+                  {session.storageError
+                    ? t("rosary.storage.progress")
+                    : lengthStorageError
+                      ? t("rosary.storage.length")
+                      : audioStorageError
+                        ? t("rosary.storage.audio")
+                        : t("rosary.storage.artStyle")}
+                </Text>
+              ) : null}
+            </ScrollView>
+          </View>
 
           <RosaryBottomNavigation
             audioAvailable={audioPlayback.isAvailable}
@@ -728,9 +694,9 @@ const styleSheet = createThemedStyles((theme) => ({
     color: theme.rosary.colors.immersiveGold,
     flexShrink: 1,
   },
-  main: {
+  prayerExperience: {
     flex: 1,
-    flexDirection: "row",
+    gap: theme.spacing[2],
     minHeight: 0,
   },
   contentColumn: {
@@ -738,10 +704,6 @@ const styleSheet = createThemedStyles((theme) => ({
     minWidth: 0,
   },
   contentColumnContent: {
-    flexGrow: 1,
-  },
-  pageScroll: { flex: 1, minHeight: 0 },
-  pageScrollContent: {
     flexGrow: 1,
     paddingBottom: theme.spacing[2],
   },
