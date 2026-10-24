@@ -1,0 +1,17 @@
+{
+  "name": "DoItForJesus",
+  "short_name": "DoItForJesus",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#071A26",
+  "theme_color": "#071A26",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "16x16 32x32 48x48",
+      "type": "image/x-icon"
+    }
+  ]
+}

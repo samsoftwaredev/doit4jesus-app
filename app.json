@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "doit4jesus",
+    "name": "DoItForJesus",
     "slug": "doit4jesus",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -30,7 +30,18 @@
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/favicon.png",
+      "name": "DoItForJesus",
+      "shortName": "DoItForJesus",
+      "themeColor": "#071A26",
+      "backgroundColor": "#071A26",
+      "display": "standalone",
+      "barStyle": "black-translucent",
+      "splash": {
+        "backgroundColor": "#071A26",
+        "image": "./assets/images/splash.png",
+        "resizeMode": "contain"
+      }
     },
     "plugins": [
       "expo-router",
