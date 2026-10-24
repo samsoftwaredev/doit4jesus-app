@@ -6778,6 +6778,11 @@
         "path": "/assets/audios/en/prayers/signOfCross.m4a",
         "variant": "primary"
       },
+      "en_prayers_threeHailMaryFruits": {
+        "language": "en",
+        "path": "/assets/audios/en/prayers/threeHailMaryFruits.m4a",
+        "variant": "primary"
+      },
       "es_mysteries_glorious_fifthGloriousMysteryDescription": {
         "language": "es",
         "path": "/assets/audios/es/mysteries/glorious/fifthGloriousMysteryDescription.m4a",
@@ -7083,11 +7088,6 @@
         "path": "/assets/audios/es/prayers/popeIntentions.m4a",
         "variant": "primary"
       },
-      "es_prayers_popeIntentionsAlternate": {
-        "language": "es",
-        "path": "/assets/audios/es/prayers/popeIntentionsAlternate.m4a",
-        "variant": "alternate"
-      },
       "es_prayers_prayForUs": {
         "language": "es",
         "path": "/assets/audios/es/prayers/prayForUs.m4a",
@@ -7098,14 +7098,9 @@
         "path": "/assets/audios/es/prayers/prayerAfterRosary.m4a",
         "variant": "primary"
       },
-      "es_prayers_proclamation": {
+      "es_prayers_saintMichel": {
         "language": "es",
-        "path": "/assets/audios/es/prayers/proclamation.m4a",
-        "variant": "fragment"
-      },
-      "es_prayers_sanMiguel": {
-        "language": "es",
-        "path": "/assets/audios/es/prayers/sanMiguel.m4a",
+        "path": "/assets/audios/es/prayers/saintMichel.m4a",
         "variant": "primary"
       },
       "es_prayers_signOfCross": {
@@ -7155,7 +7150,7 @@
       },
       "saint_michael": {
         "en": "en_prayers_saintMichel",
-        "es": "es_prayers_sanMiguel"
+        "es": "es_prayers_saintMichel"
       },
       "sign_of_cross": {
         "en": "en_prayers_signOfCross",

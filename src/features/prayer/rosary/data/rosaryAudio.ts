@@ -4,6 +4,19 @@ import type {
   RosaryContentPrayerId,
 } from "@/features/prayer/rosary/data/rosaryContent";
 
+const introAssetIds = {
+  popeIntentions: {
+    en: "en_prayers_popeIntentions",
+    es: "es_prayers_popeIntentions",
+  },
+  threeHailMaryFruits: {
+    en: "en_prayers_threeHailMaryFruits",
+    es: "es_prayers_threeHailMaryFruits",
+  },
+} as const;
+
+export type RosaryIntroAudioId = keyof typeof introAssetIds;
+
 /** Returns the supported audio language represented by localized Rosary content. */
 function getAudioLanguage(content: RosaryContent): RosaryAudioLanguage {
   return content.language === "es" ? "es" : "en";
@@ -20,6 +33,12 @@ function resolveAssetPath(content: RosaryContent, assetId?: string): string | un
 export function getPrayerAudioPath(content: RosaryContent, prayerId: RosaryContentPrayerId): string | undefined {
   const language = getAudioLanguage(content);
   return resolveAssetPath(content, content.audio_catalog.prayer_primary[prayerId]?.[language]);
+}
+
+/** Resolves a Rosary group introduction to the bundled recording matching the content language. */
+export function getRosaryIntroAudioPath(content: RosaryContent, introId: RosaryIntroAudioId): string | undefined {
+  const language = getAudioLanguage(content);
+  return resolveAssetPath(content, introAssetIds[introId][language]);
 }
 
 /** Builds the localized transition queue for a mystery, omitting any unavailable optional recording. */

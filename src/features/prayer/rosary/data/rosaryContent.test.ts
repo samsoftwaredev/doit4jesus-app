@@ -9,7 +9,12 @@ import {
   rosaryMysterySets,
 } from "@/features/prayer/rosary/data/rosaryMysteries";
 import { getRosaryPrayers, prayerById } from "@/features/prayer/rosary/data/rosaryPrayers";
-import { getFullRosarySequence, getRosarySequenceForLength } from "@/features/prayer/rosary/data/rosarySequence";
+import { getRosaryIntroAudioPath } from "@/features/prayer/rosary/data/rosaryAudio";
+import {
+  createRosarySequence,
+  getFullRosarySequence,
+  getRosarySequenceForLength,
+} from "@/features/prayer/rosary/data/rosarySequence";
 
 import { ROSARY_AUDIO_SOURCES } from "../../../../../assets/audios";
 import * as mysteryCartoonImages from "../../../../../assets/images/mysteriesCartoon";
@@ -290,9 +295,9 @@ describe("English Rosary content", () => {
       .map((asset) => asset.path)
       .sort();
 
-    expect(files).toHaveLength(102);
+    expect(files).toHaveLength(101);
     expect(catalogPaths).toEqual(files);
-    expect(new Set(catalogPaths).size).toBe(102);
+    expect(new Set(catalogPaths).size).toBe(101);
     expect(
       Object.keys(ROSARY_AUDIO_DURATIONS)
         .filter((path) => !path.startsWith("/assets/audios/en/mysteries/") || !path.endsWith("MysteryDescription.m4a"))
@@ -592,6 +597,30 @@ describe("English Rosary content", () => {
     ]);
   });
 
+  it.each(["joyful", "luminous", "sorrowful", "glorious"] as const)(
+    "plays the English three-Hail-Marys introduction once at the start of the %s opening group",
+    (mysteryType) => {
+      const openingHailMarys = getFullRosarySequence(englishRosaryContent, mysteryType).filter(
+        (step) => step.section === "opening" && step.prayerId === "hail-mary",
+      );
+
+      expect(getRosaryIntroAudioPath(englishRosaryContent, "threeHailMaryFruits")).toBe(
+        "/assets/audios/en/prayers/threeHailMaryFruits.m4a",
+      );
+      expect(openingHailMarys.map((step) => step.audioQueue)).toEqual([
+        ["/assets/audios/en/prayers/threeHailMaryFruits.m4a", "/assets/audios/en/prayers/hailMary.m4a"],
+        ["/assets/audios/en/prayers/hailMary.m4a"],
+        ["/assets/audios/en/prayers/hailMary.m4a"],
+      ]);
+    },
+  );
+
+  it("keeps the focused decade free of the full-Rosary opening introduction", () => {
+    expect(createRosarySequence(1, englishRosaryContent).flatMap((step) => step.audioQueue ?? [])).toEqual(
+      Array.from({ length: 10 }, () => "/assets/audios/en/prayers/hailMary.m4a"),
+    );
+  });
+
   it("adds the selected closing prayers without adding physical beads", () => {
     const short = getRosarySequenceForLength(englishRosaryContent, "joyful", "short");
     const medium = getRosarySequenceForLength(englishRosaryContent, "joyful", "medium");
@@ -625,6 +654,31 @@ describe("English Rosary content", () => {
     expect(long.find((step) => step.id === "saint-michael")?.audioQueue).toEqual([
       "/assets/audios/en/prayers/saintMichel.m4a",
     ]);
+  });
+
+  it.each(["medium", "long"] as const)(
+    "plays the English Pope-intentions introduction once before the closing Our Father in the %s Rosary",
+    (length) => {
+      const sequence = getRosarySequenceForLength(englishRosaryContent, "joyful", length);
+      const popeGroup = sequence.filter((step) => step.id.startsWith("pope-intentions-"));
+
+      expect(getRosaryIntroAudioPath(englishRosaryContent, "popeIntentions")).toBe(
+        "/assets/audios/en/prayers/popeIntentions.m4a",
+      );
+      expect(popeGroup.map((step) => step.audioQueue)).toEqual([
+        ["/assets/audios/en/prayers/popeIntentions.m4a", "/assets/audios/en/prayers/ourFather.m4a"],
+        ["/assets/audios/en/prayers/hailMary.m4a"],
+        ["/assets/audios/en/prayers/gloryBe.m4a"],
+      ]);
+    },
+  );
+
+  it("does not add the Pope-intentions group to the short Rosary", () => {
+    expect(
+      getRosarySequenceForLength(englishRosaryContent, "joyful", "short").some((step) =>
+        step.id.startsWith("pope-intentions-"),
+      ),
+    ).toBe(false);
   });
 
   it("omits Fatima Prayers and Hail, Holy Queen from the short Rosary", () => {
@@ -722,15 +776,36 @@ describe("Spanish Rosary content", () => {
     expect(sequence.flatMap((bead) => bead.audioQueue ?? []).every((path) => path.includes("/audios/es/"))).toBe(true);
   });
 
+  it.each(["joyful", "luminous", "sorrowful", "glorious"] as const)(
+    "plays the Spanish three-Hail-Marys introduction once at the start of the %s opening group",
+    (mysteryType) => {
+      const openingHailMarys = getFullRosarySequence(content, mysteryType).filter(
+        (step) => step.section === "opening" && step.prayerId === "hail-mary",
+      );
+
+      expect(getRosaryIntroAudioPath(content, "threeHailMaryFruits")).toBe(
+        "/assets/audios/es/prayers/threeHailMaryFruits.m4a",
+      );
+      expect(openingHailMarys.map((step) => step.audioQueue)).toEqual([
+        ["/assets/audios/es/prayers/threeHailMaryFruits.m4a", "/assets/audios/es/prayers/hailMary.m4a"],
+        ["/assets/audios/es/prayers/hailMary.m4a"],
+        ["/assets/audios/es/prayers/hailMary.m4a"],
+      ]);
+      expect(
+        openingHailMarys.flatMap((step) => step.audioQueue ?? []).every((path) => path.includes("/audios/es/")),
+      ).toBe(true);
+    },
+  );
+
   it("plays localized Saint Michael audio in Classic and Long Rosaries", () => {
     const classic = getRosarySequenceForLength(content, "joyful", "medium");
     const long = getRosarySequenceForLength(content, "joyful", "long");
 
     expect(classic.find((bead) => bead.id === "saint-michael")?.audioQueue).toEqual([
-      "/assets/audios/es/prayers/sanMiguel.m4a",
+      "/assets/audios/es/prayers/saintMichel.m4a",
     ]);
     expect(long.find((bead) => bead.id === "saint-michael")?.audioQueue).toEqual([
-      "/assets/audios/es/prayers/sanMiguel.m4a",
+      "/assets/audios/es/prayers/saintMichel.m4a",
     ]);
     expect(long.find((bead) => bead.id === "litany-of-loreto")?.audioQueue).toEqual([
       "/assets/audios/es/prayers/litanyOfLoreto.m4a",
@@ -744,4 +819,22 @@ describe("Spanish Rosary content", () => {
     );
     expect(sequence.find((step) => step.id === "litany-of-loreto")?.prayer?.text).toContain("Reina de la paz");
   });
+
+  it.each(["medium", "long"] as const)(
+    "plays the Spanish Pope-intentions introduction once before the closing Our Father in the %s Rosary",
+    (length) => {
+      const sequence = getRosarySequenceForLength(content, "joyful", length);
+      const popeGroup = sequence.filter((step) => step.id.startsWith("pope-intentions-"));
+
+      expect(getRosaryIntroAudioPath(content, "popeIntentions")).toBe("/assets/audios/es/prayers/popeIntentions.m4a");
+      expect(popeGroup.map((step) => step.audioQueue)).toEqual([
+        ["/assets/audios/es/prayers/popeIntentions.m4a", "/assets/audios/es/prayers/ourFather.m4a"],
+        ["/assets/audios/es/prayers/hailMary.m4a"],
+        ["/assets/audios/es/prayers/gloryBe.m4a"],
+      ]);
+      expect(popeGroup.flatMap((step) => step.audioQueue ?? []).every((path) => path.includes("/audios/es/"))).toBe(
+        true,
+      );
+    },
+  );
 });
