@@ -21,6 +21,7 @@ type RosaryDetailPage = (typeof DETAIL_PAGES)[number];
 
 export interface RosaryDetailCarouselProps {
   artworkSource?: ImageSourcePropType;
+  isNarrationOnly?: boolean;
   mystery?: RosaryMystery;
   prayer?: RosaryPrayer;
   scriptureQuotation?: string;
@@ -38,6 +39,7 @@ function wrapPageIndex(index: number) {
  */
 export function RosaryDetailCarousel({
   artworkSource,
+  isNarrationOnly = false,
   mystery,
   prayer,
   scriptureQuotation,
@@ -90,7 +92,7 @@ export function RosaryDetailCarousel({
       case "fruit":
         return <FruitOfMysteryCard description={mystery?.fruitDescription} fruit={mystery?.fruit} />;
       case "prayer":
-        return <PrayerCard prayer={prayer} />;
+        return <PrayerCard hideWhenEmpty={isNarrationOnly} prayer={prayer} />;
       case "scripture":
         return <ScriptureCard quotation={scriptureQuotation} reference={scriptureReference} />;
       default:

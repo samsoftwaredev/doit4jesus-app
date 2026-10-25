@@ -9,7 +9,15 @@ export type RosaryLength = "short" | "medium" | "long";
 export type RosaryArtStyle = "comic" | "classic";
 
 export type RosaryBeadType =
-  "ourFather" | "hailMary" | "gloryBe" | "fatimaPrayer" | "creed" | "hailHolyQueen" | "signOfCross" | "closingPrayer";
+  | "ourFather"
+  | "hailMary"
+  | "gloryBe"
+  | "fatimaPrayer"
+  | "creed"
+  | "hailHolyQueen"
+  | "signOfCross"
+  | "closingPrayer"
+  | "narration";
 
 export type RosarySection = "opening" | "decade" | "closing";
 

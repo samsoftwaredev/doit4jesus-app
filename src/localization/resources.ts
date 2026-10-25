@@ -794,6 +794,12 @@ export const resources = {
       rosary: {
         name: "Rosary",
         openMystery: "Open {{mystery}}",
+        narration: {
+          fruit: "Fruit of the Mystery",
+          popeIntentions: "Pope’s Intentions",
+          reflection: "Mystery Reflection",
+          threeHailMaryFruits: "Fruits of the Three Hail Marys",
+        },
         video: {
           back15: "15 sec",
           back15Hint: "Moves the video 15 seconds earlier.",
@@ -842,6 +848,7 @@ export const resources = {
           gloryBe: "Glory Be",
           hailHolyQueen: "Hail, Holy Queen",
           hailMary: "Hail Mary",
+          narration: "Narration",
           markerLabel: "{{state}} {{marker}} {{number}}, {{prayer}}",
           markerLabelCrucifix: "{{state}} crucifix, {{prayer}}",
           ourFather: "Our Father",
@@ -2104,6 +2111,12 @@ export const resources = {
       rosary: {
         name: "Rosario",
         openMystery: "Abrir {{mystery}}",
+        narration: {
+          fruit: "Fruto del misterio",
+          popeIntentions: "Intenciones del Papa",
+          reflection: "Reflexión del misterio",
+          threeHailMaryFruits: "Frutos de las tres Avemarías",
+        },
         video: {
           back15: "15 s",
           back15Hint: "Retrocede el video 15 segundos.",
@@ -2152,6 +2165,7 @@ export const resources = {
           gloryBe: "Gloria",
           hailHolyQueen: "La Salve",
           hailMary: "Ave María",
+          narration: "Narración",
           markerLabel: "{{marker}} {{number}}, {{state}}, {{prayer}}",
           markerLabelCrucifix: "crucifijo {{state}}, {{prayer}}",
           ourFather: "Padre Nuestro",

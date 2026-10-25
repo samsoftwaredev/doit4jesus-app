@@ -442,8 +442,9 @@ describe("English Rosary content", () => {
     (mysteryType) => {
       const sequence = getFullRosarySequence(englishRosaryContent, mysteryType);
 
-      expect(sequence).toHaveLength(74);
+      expect(sequence).toHaveLength(80);
       expect(sequence.filter((bead) => bead.isPhysicalBead)).toHaveLength(59);
+      expect(sequence.every((bead) => (bead.audioQueue?.length ?? 0) <= 1)).toBe(true);
       expect(sequence.map((bead) => bead.type)).toEqual(
         expect.arrayContaining([
           "signOfCross",
@@ -587,31 +588,50 @@ describe("English Rosary content", () => {
     ]);
   });
 
-  it("resolves English mystery introductions before the current prayer", () => {
+  it("creates one localized non-counted step for each English mystery recording", () => {
     const sequence = getFullRosarySequence(englishRosaryContent, "joyful");
-    const firstMystery = sequence.find((bead) => bead.mysteryId === "the_annunciation" && bead.beadInDecade === 0);
+    const firstMysterySteps = sequence.filter(
+      (bead) => bead.mysteryId === "the_annunciation" && bead.beadInDecade === 0,
+    );
 
-    expect(firstMystery?.audioQueue).toEqual([
-      "/assets/audios/en/mysteries/joyful/firstJoyfulMysteryTitle.m4a",
-      "/assets/audios/en/prayers/ourFather.m4a",
+    expect(firstMysterySteps).toEqual([
+      expect.objectContaining({
+        audioQueue: ["/assets/audios/en/mysteries/joyful/firstJoyfulMysteryTitle.m4a"],
+        id: "joyful_bead_07-mystery-title",
+        isPhysicalBead: false,
+        prayer: expect.objectContaining({ name: "The Annunciation", text: "" }),
+        type: "narration",
+      }),
+      expect.objectContaining({
+        audioQueue: ["/assets/audios/en/prayers/ourFather.m4a"],
+        id: "joyful_bead_07",
+        type: "ourFather",
+      }),
     ]);
   });
 
   it.each(["joyful", "luminous", "sorrowful", "glorious"] as const)(
     "plays the English three-Hail-Marys introduction once at the start of the %s opening group",
     (mysteryType) => {
-      const openingHailMarys = getFullRosarySequence(englishRosaryContent, mysteryType).filter(
-        (step) => step.section === "opening" && step.prayerId === "hail-mary",
-      );
+      const sequence = getFullRosarySequence(englishRosaryContent, mysteryType);
+      const openingHailMarys = sequence.filter((step) => step.section === "opening" && step.prayerId === "hail-mary");
+      const introduction = sequence.find((step) => step.id.endsWith("-three-hail-mary-fruits"));
 
       expect(getRosaryIntroAudioPath(englishRosaryContent, "threeHailMaryFruits")).toBe(
         "/assets/audios/en/prayers/threeHailMaryFruits.m4a",
       );
-      expect(openingHailMarys.map((step) => step.audioQueue)).toEqual([
-        ["/assets/audios/en/prayers/threeHailMaryFruits.m4a", "/assets/audios/en/prayers/hailMary.m4a"],
-        ["/assets/audios/en/prayers/hailMary.m4a"],
-        ["/assets/audios/en/prayers/hailMary.m4a"],
-      ]);
+      expect(introduction).toEqual(
+        expect.objectContaining({
+          audioQueue: ["/assets/audios/en/prayers/threeHailMaryFruits.m4a"],
+          isPhysicalBead: false,
+          prayer: expect.objectContaining({ name: "Fruits of the Three Hail Marys", text: "" }),
+          type: "narration",
+        }),
+      );
+      expect(openingHailMarys.map((step) => step.audioQueue)).toEqual(
+        Array.from({ length: 3 }, () => ["/assets/audios/en/prayers/hailMary.m4a"]),
+      );
+      expect(sequence.indexOf(introduction!)).toBe(sequence.indexOf(openingHailMarys[0]) - 1);
     },
   );
 
@@ -626,12 +646,13 @@ describe("English Rosary content", () => {
     const medium = getRosarySequenceForLength(englishRosaryContent, "joyful", "medium");
     const long = getRosarySequenceForLength(englishRosaryContent, "joyful", "long");
 
-    expect([short.length, medium.length, long.length]).toEqual([68, 78, 79]);
+    expect([short.length, medium.length, long.length]).toEqual([74, 85, 86]);
     expect([short, medium, long].map((sequence) => sequence.filter((step) => step.isPhysicalBead).length)).toEqual([
       59, 59, 59,
     ]);
     expect(short.at(-1)?.prayerId).toBe("sign-of-cross");
-    expect(medium.slice(-5).map((step) => step.id)).toEqual([
+    expect(medium.slice(-6).map((step) => step.id)).toEqual([
+      "pope-intentions-narration",
       "pope-intentions-our-father",
       "pope-intentions-hail-mary",
       "pope-intentions-glory-be",
@@ -641,7 +662,8 @@ describe("English Rosary content", () => {
     expect(medium.find((step) => step.id === "saint-michael")?.audioQueue).toEqual([
       "/assets/audios/en/prayers/saintMichel.m4a",
     ]);
-    expect(long.slice(-6).map((step) => step.id)).toEqual([
+    expect(long.slice(-7).map((step) => step.id)).toEqual([
+      "pope-intentions-narration",
       "pope-intentions-our-father",
       "pope-intentions-hail-mary",
       "pope-intentions-glory-be",
@@ -649,7 +671,7 @@ describe("English Rosary content", () => {
       "litany-of-loreto",
       "joyful_sign_of_cross_closing",
     ]);
-    expect(long.slice(-6, -1).every((step) => step.isPhysicalBead === false)).toBe(true);
+    expect(long.slice(-7, -1).every((step) => step.isPhysicalBead === false)).toBe(true);
     expect(long.at(-2)?.prayer?.text).toContain("Mother of Hope");
     expect(long.find((step) => step.id === "saint-michael")?.audioQueue).toEqual([
       "/assets/audios/en/prayers/saintMichel.m4a",
@@ -666,10 +688,18 @@ describe("English Rosary content", () => {
         "/assets/audios/en/prayers/popeIntentions.m4a",
       );
       expect(popeGroup.map((step) => step.audioQueue)).toEqual([
-        ["/assets/audios/en/prayers/popeIntentions.m4a", "/assets/audios/en/prayers/ourFather.m4a"],
+        ["/assets/audios/en/prayers/popeIntentions.m4a"],
+        ["/assets/audios/en/prayers/ourFather.m4a"],
         ["/assets/audios/en/prayers/hailMary.m4a"],
         ["/assets/audios/en/prayers/gloryBe.m4a"],
       ]);
+      expect(popeGroup[0]).toEqual(
+        expect.objectContaining({
+          isPhysicalBead: false,
+          prayer: expect.objectContaining({ name: "Pope’s Intentions", text: "" }),
+          type: "narration",
+        }),
+      );
     },
   );
 
@@ -684,7 +714,7 @@ describe("English Rosary content", () => {
   it("omits Fatima Prayers and Hail, Holy Queen from the short Rosary", () => {
     const sequence = getRosarySequenceForLength(englishRosaryContent, "joyful", "short");
 
-    expect(sequence).toHaveLength(68);
+    expect(sequence).toHaveLength(74);
     expect(sequence.filter((step) => step.isPhysicalBead)).toHaveLength(59);
     expect(sequence.some((step) => step.type === "fatimaPrayer" || step.type === "hailHolyQueen")).toBe(false);
     expect(sequence.at(-1)).toEqual(
@@ -767,11 +797,23 @@ describe("Spanish Rosary content", () => {
 
   it("uses only Spanish audio and tolerates the missing first Sorrowful description", () => {
     const sequence = getFullRosarySequence(content, "sorrowful");
-    const firstMystery = sequence.find((bead) => bead.mysteryId === "agony_in_the_garden" && bead.beadInDecade === 0);
+    const firstMysterySteps = sequence.filter(
+      (bead) => bead.mysteryId === "agony_in_the_garden" && bead.beadInDecade === 0,
+    );
 
-    expect(firstMystery?.audioQueue).toEqual([
-      "/assets/audios/es/mysteries/sorrowful/firstSorrowfulMysteryFruit.m4a",
-      "/assets/audios/es/prayers/ourFather.m4a",
+    expect(firstMysterySteps).toEqual([
+      expect.objectContaining({
+        audioQueue: ["/assets/audios/es/mysteries/sorrowful/firstSorrowfulMysteryFruit.m4a"],
+        id: "sorrowful_bead_07-mystery-fruit",
+        isPhysicalBead: false,
+        prayer: expect.objectContaining({ name: "Fruto del misterio", text: "" }),
+        type: "narration",
+      }),
+      expect.objectContaining({
+        audioQueue: ["/assets/audios/es/prayers/ourFather.m4a"],
+        id: "sorrowful_bead_07",
+        type: "ourFather",
+      }),
     ]);
     expect(sequence.flatMap((bead) => bead.audioQueue ?? []).every((path) => path.includes("/audios/es/"))).toBe(true);
   });
@@ -779,18 +821,23 @@ describe("Spanish Rosary content", () => {
   it.each(["joyful", "luminous", "sorrowful", "glorious"] as const)(
     "plays the Spanish three-Hail-Marys introduction once at the start of the %s opening group",
     (mysteryType) => {
-      const openingHailMarys = getFullRosarySequence(content, mysteryType).filter(
-        (step) => step.section === "opening" && step.prayerId === "hail-mary",
-      );
+      const sequence = getFullRosarySequence(content, mysteryType);
+      const openingHailMarys = sequence.filter((step) => step.section === "opening" && step.prayerId === "hail-mary");
+      const introduction = sequence.find((step) => step.id.endsWith("-three-hail-mary-fruits"));
 
       expect(getRosaryIntroAudioPath(content, "threeHailMaryFruits")).toBe(
         "/assets/audios/es/prayers/threeHailMaryFruits.m4a",
       );
-      expect(openingHailMarys.map((step) => step.audioQueue)).toEqual([
-        ["/assets/audios/es/prayers/threeHailMaryFruits.m4a", "/assets/audios/es/prayers/hailMary.m4a"],
-        ["/assets/audios/es/prayers/hailMary.m4a"],
-        ["/assets/audios/es/prayers/hailMary.m4a"],
-      ]);
+      expect(introduction).toEqual(
+        expect.objectContaining({
+          audioQueue: ["/assets/audios/es/prayers/threeHailMaryFruits.m4a"],
+          prayer: expect.objectContaining({ name: "Frutos de las tres Avemarías", text: "" }),
+          type: "narration",
+        }),
+      );
+      expect(openingHailMarys.map((step) => step.audioQueue)).toEqual(
+        Array.from({ length: 3 }, () => ["/assets/audios/es/prayers/hailMary.m4a"]),
+      );
       expect(
         openingHailMarys.flatMap((step) => step.audioQueue ?? []).every((path) => path.includes("/audios/es/")),
       ).toBe(true);
@@ -828,10 +875,12 @@ describe("Spanish Rosary content", () => {
 
       expect(getRosaryIntroAudioPath(content, "popeIntentions")).toBe("/assets/audios/es/prayers/popeIntentions.m4a");
       expect(popeGroup.map((step) => step.audioQueue)).toEqual([
-        ["/assets/audios/es/prayers/popeIntentions.m4a", "/assets/audios/es/prayers/ourFather.m4a"],
+        ["/assets/audios/es/prayers/popeIntentions.m4a"],
+        ["/assets/audios/es/prayers/ourFather.m4a"],
         ["/assets/audios/es/prayers/hailMary.m4a"],
         ["/assets/audios/es/prayers/gloryBe.m4a"],
       ]);
+      expect(popeGroup[0]?.prayer?.name).toBe("Intenciones del Papa");
       expect(popeGroup.flatMap((step) => step.audioQueue ?? []).every((path) => path.includes("/audios/es/"))).toBe(
         true,
       );

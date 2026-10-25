@@ -497,6 +497,7 @@ export function RosaryPrayerScreen({
             <View accessibilityLabel={t("rosary.controls.details")} style={[styles.contentColumn, { gap: contentGap }]}>
               <RosaryDetailCarousel
                 artworkSource={backgroundImageFailed ? undefined : backgroundImageSource}
+                isNarrationOnly={session.currentBead?.type === "narration"}
                 mystery={session.currentMystery}
                 prayer={session.currentPrayer}
                 scriptureQuotation={

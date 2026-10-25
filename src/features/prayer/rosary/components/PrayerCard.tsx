@@ -5,14 +5,17 @@ import type { RosaryPrayer } from "@/features/prayer/rosary/types";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 
 interface PrayerCardProps {
+  hideWhenEmpty?: boolean;
   prayer?: RosaryPrayer;
 }
 
-/** Renders the complete active prayer at natural height for the page-level Rosary scroll. */
-export function PrayerCard({ prayer }: PrayerCardProps) {
+/** Renders the complete active prayer, or no visual content for an audio-only narration step. */
+export function PrayerCard({ hideWhenEmpty = false, prayer }: PrayerCardProps) {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
   const hasText = Boolean(prayer?.text.trim());
+
+  if (hideWhenEmpty && !hasText) return null;
 
   return (
     <View key={prayer?.id} style={styles.card}>

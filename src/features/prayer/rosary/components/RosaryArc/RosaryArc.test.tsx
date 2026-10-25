@@ -7,6 +7,11 @@ import { i18n } from "@/localization";
 
 import { RosaryArc, type RosaryArcProps } from "./RosaryArc";
 
+const openingOurFather = fullRosarySequence.find((bead) => bead.id === "joyful_bead_02")!;
+const firstOpeningHailMary = fullRosarySequence.find((bead) => bead.id === "joyful_bead_03")!;
+const secondOpeningHailMary = fullRosarySequence.find((bead) => bead.id === "joyful_bead_04")!;
+const firstOpeningHailMaryIndex = fullRosarySequence.indexOf(firstOpeningHailMary);
+
 function setWindowDimensions({ fontScale = 1, height, width }: { fontScale?: number; height: number; width: number }) {
   const dimensions = { fontScale, height, scale: 3, width };
   Dimensions.set({ screen: dimensions, window: dimensions });
@@ -14,8 +19,8 @@ function setWindowDimensions({ fontScale = 1, height, width }: { fontScale?: num
 
 const defaultProps: RosaryArcProps = {
   beads: fullRosarySequence,
-  completedBeadIds: [fullRosarySequence[2].id],
-  currentBeadIndex: 3,
+  completedBeadIds: [openingOurFather.id],
+  currentBeadIndex: firstOpeningHailMaryIndex,
   isTransitioning: false,
   onNext: jest.fn(),
   onPrevious: jest.fn(),
@@ -34,8 +39,8 @@ describe("RosaryArc", () => {
     await render(<RosaryArc {...defaultProps} />);
 
     expect(screen.getAllByTestId(/^rosary-arc-physical-/)).toHaveLength(59);
-    expect(screen.getByTestId(`rosary-arc-pearl-${fullRosarySequence[2].id}`)).toBeTruthy();
-    expect(screen.getByTestId(`rosary-arc-rose-${fullRosarySequence[3].id}`)).toBeTruthy();
+    expect(screen.getByTestId(`rosary-arc-pearl-${openingOurFather.id}`)).toBeTruthy();
+    expect(screen.getByTestId(`rosary-arc-rose-${firstOpeningHailMary.id}`)).toBeTruthy();
     expect(screen.getByRole("header", { name: "Hail Mary" })).toBeTruthy();
     expect(screen.getByText("2 of 59")).toBeTruthy();
     expect(screen.getByRole("progressbar").props.accessibilityValue).toEqual({
@@ -59,7 +64,7 @@ describe("RosaryArc", () => {
     await fireEvent.press(upcoming);
 
     expect(onSelectBead).toHaveBeenCalledTimes(1);
-    expect(onSelectBead).toHaveBeenCalledWith(fullRosarySequence[2].id);
+    expect(onSelectBead).toHaveBeenCalledWith(openingOurFather.id);
     expect(current.props.accessibilityState).toMatchObject({ selected: true });
   });
 
@@ -152,9 +157,9 @@ describe("RosaryArc", () => {
     setWindowDimensions({ fontScale: 1.4, height: 844, width: 390 });
     await render(<RosaryArc {...defaultProps} />);
 
-    const roseStyle = StyleSheet.flatten(screen.getByTestId(`rosary-arc-rose-${fullRosarySequence[3].id}`).props.style);
+    const roseStyle = StyleSheet.flatten(screen.getByTestId(`rosary-arc-rose-${firstOpeningHailMary.id}`).props.style);
     const targetStyle = StyleSheet.flatten(
-      screen.getByTestId(`rosary-arc-physical-${fullRosarySequence[3].id}`).props.style,
+      screen.getByTestId(`rosary-arc-physical-${firstOpeningHailMary.id}`).props.style,
     );
     expect(roseStyle).toMatchObject({ height: 20, width: 20 });
     expect(targetStyle).toMatchObject({ height: 44, width: 44 });
@@ -165,10 +170,10 @@ describe("RosaryArc", () => {
     await render(<RosaryArc {...defaultProps} />);
 
     const currentStyle = StyleSheet.flatten(
-      screen.getByTestId(`rosary-arc-physical-${fullRosarySequence[3].id}`).props.style,
+      screen.getByTestId(`rosary-arc-physical-${firstOpeningHailMary.id}`).props.style,
     );
     const nextStyle = StyleSheet.flatten(
-      screen.getByTestId(`rosary-arc-physical-${fullRosarySequence[4].id}`).props.style,
+      screen.getByTestId(`rosary-arc-physical-${secondOpeningHailMary.id}`).props.style,
     );
     const horizontalDistance = Math.abs(Number(nextStyle.left) - Number(currentStyle.left));
 
@@ -180,13 +185,13 @@ describe("RosaryArc", () => {
     await render(<RosaryArc {...defaultProps} />);
 
     const ourFatherStyle = StyleSheet.flatten(
-      screen.getByTestId(`rosary-arc-physical-${fullRosarySequence[2].id}`).props.style,
+      screen.getByTestId(`rosary-arc-physical-${openingOurFather.id}`).props.style,
     );
     const firstRoseStyle = StyleSheet.flatten(
-      screen.getByTestId(`rosary-arc-physical-${fullRosarySequence[3].id}`).props.style,
+      screen.getByTestId(`rosary-arc-physical-${firstOpeningHailMary.id}`).props.style,
     );
     const secondRoseStyle = StyleSheet.flatten(
-      screen.getByTestId(`rosary-arc-physical-${fullRosarySequence[4].id}`).props.style,
+      screen.getByTestId(`rosary-arc-physical-${secondOpeningHailMary.id}`).props.style,
     );
     const distanceBetween = (first: { left: number; top: number }, second: { left: number; top: number }) =>
       Math.hypot(Number(second.left) - Number(first.left), Number(second.top) - Number(first.top));

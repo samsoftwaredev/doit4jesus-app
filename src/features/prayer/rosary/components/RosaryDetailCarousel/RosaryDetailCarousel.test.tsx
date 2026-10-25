@@ -130,6 +130,23 @@ describe("RosaryDetailCarousel", () => {
     });
   });
 
+  it("keeps the Prayer page empty for narration while retaining the other carousel pages", async () => {
+    await render(
+      <RosaryDetailCarousel
+        {...defaultProps}
+        isNarrationOnly
+        prayer={{ ...mystery.prayers[1], beadType: "narration", name: "Mystery Reflection", text: "" }}
+      />,
+    );
+
+    await fireEvent.press(screen.getByRole("button", { name: "Show Prayer, page 4 of 5" }));
+
+    expect(screen.getByTestId("rosary-detail-page-prayer")).toBeTruthy();
+    expect(screen.queryByText("MYSTERY REFLECTION")).toBeNull();
+    expect(screen.queryByLabelText("Prayer text unavailable")).toBeNull();
+    expect(screen.getAllByRole("button", { name: /Show .+, page \d of 5/ })).toHaveLength(5);
+  });
+
   it("localizes carousel controls and Fruit accessibility content in Spanish", async () => {
     await act(async () => i18n.changeLanguage("es"));
     await render(<RosaryDetailCarousel {...defaultProps} />);

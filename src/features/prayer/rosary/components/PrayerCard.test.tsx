@@ -19,6 +19,18 @@ describe("PrayerCard", () => {
     expect(screen.getByLabelText("Prayer text unavailable")).toBeTruthy();
   });
 
+  it("renders no prayer card content when an empty narration requests a hidden body", async () => {
+    await render(
+      <PrayerCard
+        hideWhenEmpty
+        prayer={{ ...rosaryMysteries[0].prayers[1], beadType: "narration", name: "Mystery Reflection", text: "" }}
+      />,
+    );
+
+    expect(screen.queryByText("MYSTERY REFLECTION")).toBeNull();
+    expect(screen.queryByLabelText("Prayer text unavailable")).toBeNull();
+  });
+
   it("uses a generic accessibility name for incomplete prayer data", async () => {
     await render(
       <PrayerCard

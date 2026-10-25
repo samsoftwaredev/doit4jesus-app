@@ -5,11 +5,13 @@ import type {
   RosaryContentPrayerStep,
 } from "@/features/prayer/rosary/data/rosaryContent";
 import {
-  getMysteryAudioPaths,
+  getMysteryAudioTracks,
   getPrayerAudioPath,
   getRosaryIntroAudioPath,
 } from "@/features/prayer/rosary/data/rosaryAudio";
+import type { RosaryMysteryAudioKind } from "@/features/prayer/rosary/data/rosaryAudio";
 import type { RosaryBead, RosaryBeadType, RosaryLength, RosaryMysteryType } from "@/features/prayer/rosary/types";
+import { resources } from "@/localization/resources";
 
 const prayerIdByContentId: Record<RosaryContentPrayerId, string> = {
   apostles_creed: "apostles-creed",
@@ -87,28 +89,91 @@ const longClosingPrayers: readonly ClosingPrayerDefinition[] = [
   },
 ];
 
-/**
- * Converts one localized content step into the session model, prefixing the full Rosary's opening
- * Hail Mary group introduction only on its first prayer.
- */
-function createRosaryBead(step: RosaryContentPrayerStep, content: RosaryContent): RosaryBead {
+/** Returns the localized labels used by audio-only Rosary steps. */
+function getNarrationLabels(content: RosaryContent) {
+  return content.language === "es"
+    ? resources.es.translation.rosary.narration
+    : resources.en.translation.rosary.narration;
+}
+
+/** Finds the localized title for a mystery narration recording. */
+function getMysteryTitle(content: RosaryContent, mysteryId: string) {
+  return content.mystery_sets.flatMap((set) => set.mysteries).find((mystery) => mystery.id === mysteryId)?.title;
+}
+
+/** Resolves a descriptive title for one semantic mystery recording. */
+function getMysteryNarrationName(content: RosaryContent, mysteryId: string, kind: RosaryMysteryAudioKind) {
+  const labels = getNarrationLabels(content);
+  if (kind === "title") return getMysteryTitle(content, mysteryId) ?? labels.reflection;
+  return labels[kind];
+}
+
+/** Creates an audio-only step that carries prayer context without adding a physical Rosary bead. */
+function createNarrationBead({
+  audioPath,
+  id,
+  name,
+  sourceStep,
+}: {
+  audioPath: string;
+  id: string;
+  name: string;
+  sourceStep: RosaryContentPrayerStep;
+}): RosaryBead {
+  return {
+    audioQueue: [audioPath],
+    beadInDecade: sourceStep.bead_in_decade ?? undefined,
+    decade: sourceStep.decade ?? undefined,
+    id,
+    isPhysicalBead: false,
+    mysteryId: sourceStep.mystery_id ?? undefined,
+    prayer: {
+      beadType: "narration",
+      id,
+      name,
+      text: "",
+    },
+    prayerId: id,
+    section: sourceStep.section,
+    sequence: sourceStep.sequence,
+    type: "narration",
+  };
+}
+
+/** Converts one localized content step into its narration entries followed by the original prayer. */
+function createRosarySteps(step: RosaryContentPrayerStep, content: RosaryContent): RosaryBead[] {
   const prayerId = prayerIdByContentId[step.prayer_type];
   const type = beadTypeByContentId[step.prayer_type];
 
   const prayerAudio = getPrayerAudioPath(content, step.prayer_type);
   const mysteryAudio =
-    step.mystery_id && step.bead_in_decade === 0 ? getMysteryAudioPaths(content, step.mystery_id) : [];
+    step.mystery_id && step.bead_in_decade === 0 ? getMysteryAudioTracks(content, step.mystery_id) : [];
   const openingGroupAudio =
     step.section === "opening" && step.prayer_type === "hail_mary" && step.bead_in_decade === 1
       ? getRosaryIntroAudioPath(content, "threeHailMaryFruits")
       : undefined;
 
-  return {
-    audioQueue: [
-      ...mysteryAudio,
-      ...(openingGroupAudio ? [openingGroupAudio] : []),
-      ...(prayerAudio ? [prayerAudio] : []),
-    ],
+  const narrationSteps = mysteryAudio.map((track) =>
+    createNarrationBead({
+      audioPath: track.path,
+      id: `${step.id}-mystery-${track.kind}`,
+      name: getMysteryNarrationName(content, step.mystery_id!, track.kind),
+      sourceStep: step,
+    }),
+  );
+  if (openingGroupAudio) {
+    narrationSteps.push(
+      createNarrationBead({
+        audioPath: openingGroupAudio,
+        id: `${step.id}-three-hail-mary-fruits`,
+        name: getNarrationLabels(content).threeHailMaryFruits,
+        sourceStep: step,
+      }),
+    );
+  }
+
+  const prayerStep: RosaryBead = {
+    audioQueue: prayerAudio ? [prayerAudio] : [],
     beadInDecade: step.bead_in_decade ?? undefined,
     decade: step.decade ?? undefined,
     id: step.id,
@@ -127,6 +192,13 @@ function createRosaryBead(step: RosaryContentPrayerStep, content: RosaryContent)
     sequence: step.sequence,
     type,
   };
+
+  return [...narrationSteps, prayerStep];
+}
+
+/** Reassigns display sequence numbers after optional narration and length-specific steps are inserted. */
+function reindexSequence(beads: RosaryBead[]) {
+  return beads.map((bead, index) => ({ ...bead, sequence: index + 1 }));
 }
 
 /**
@@ -163,10 +235,10 @@ export function getFullRosarySequence(content: RosaryContent, mysteryType: Rosar
   const mysterySet = content.mystery_sets.find((set) => set.id === mysteryType);
   if (!mysterySet) return [];
 
-  return mysterySet.prayer_sequence.map((step) => createRosaryBead(step, content));
+  return reindexSequence(mysterySet.prayer_sequence.flatMap((step) => createRosarySteps(step, content)));
 }
 
-/** Creates one non-bead closing step, prefixing the Pope-intentions group introduction when applicable. */
+/** Creates one non-bead closing prayer with only its own prayer recording. */
 function createClosingPrayer(
   content: RosaryContent,
   definition: ClosingPrayerDefinition,
@@ -174,11 +246,9 @@ function createClosingPrayer(
 ): RosaryBead {
   const prayer = content.prayer_library[definition.contentId];
   const prayerAudio = getPrayerAudioPath(content, definition.contentId);
-  const groupIntroAudio =
-    definition.id === "pope-intentions-our-father" ? getRosaryIntroAudioPath(content, "popeIntentions") : undefined;
 
   return {
-    audioQueue: [...(groupIntroAudio ? [groupIntroAudio] : []), ...(prayerAudio ? [prayerAudio] : [])],
+    audioQueue: prayerAudio ? [prayerAudio] : [],
     id: definition.id,
     isPhysicalBead: false,
     prayer: {
@@ -192,6 +262,31 @@ function createClosingPrayer(
     sequence,
     type: definition.beadType,
   };
+}
+
+/** Creates the Pope-intentions introduction as a standalone closing narration when audio is bundled. */
+function createPopeIntentionsNarration(content: RosaryContent, sequence: number): RosaryBead[] {
+  const audioPath = getRosaryIntroAudioPath(content, "popeIntentions");
+  if (!audioPath) return [];
+
+  const id = "pope-intentions-narration";
+  return [
+    {
+      audioQueue: [audioPath],
+      id,
+      isPhysicalBead: false,
+      prayer: {
+        beadType: "narration",
+        id,
+        name: getNarrationLabels(content).popeIntentions,
+        text: "",
+      },
+      prayerId: id,
+      section: "closing",
+      sequence,
+      type: "narration",
+    },
+  ];
 }
 
 /**
@@ -208,7 +303,9 @@ export function getRosarySequenceForLength(
   const baseSequence = getFullRosarySequence(content, mysteryType);
   if (baseSequence.length === 0) return baseSequence;
   if (length === "short") {
-    return baseSequence.filter((step) => step.type !== "fatimaPrayer" && step.type !== "hailHolyQueen");
+    return reindexSequence(
+      baseSequence.filter((step) => step.type !== "fatimaPrayer" && step.type !== "hailHolyQueen"),
+    );
   }
 
   const finalStep = baseSequence.at(-1);
@@ -216,11 +313,12 @@ export function getRosarySequenceForLength(
 
   const sharedSteps = baseSequence.slice(0, -1);
   const definitions = length === "long" ? longClosingPrayers : mediumClosingPrayers;
+  const popeNarration = createPopeIntentionsNarration(content, sharedSteps.length + 1);
   const addedSteps = definitions.map((definition, index) =>
-    createClosingPrayer(content, definition, sharedSteps.length + index + 1),
+    createClosingPrayer(content, definition, sharedSteps.length + popeNarration.length + index + 1),
   );
 
-  return [...sharedSteps, ...addedSteps, { ...finalStep, sequence: sharedSteps.length + addedSteps.length + 1 }];
+  return reindexSequence([...sharedSteps, ...popeNarration, ...addedSteps, finalStep]);
 }
 
 export const rosarySequence = createRosarySequence(1);

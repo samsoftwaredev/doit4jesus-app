@@ -186,6 +186,7 @@ describe("RosaryPrayerScreen", () => {
 
   it("renders every physical bead without rendering non-bead prayer markers", async () => {
     const scriptureStepIndex = fullRosarySequence.findIndex((bead) => bead.scriptureReference === "Luke 1:28");
+    const nonPhysicalPrayer = fullRosarySequence.find((bead) => bead.type === "fatimaPrayer")!;
     mockSession({
       currentBead: fullRosarySequence[scriptureStepIndex],
       currentBeadIndex: scriptureStepIndex,
@@ -196,12 +197,12 @@ describe("RosaryPrayerScreen", () => {
 
     const completedCrucifix = screen.getByRole("button", { name: "completed crucifix, Apostles' Creed" });
     expect(screen.getByLabelText(/upcoming bead 59, Hail Mary/i)).toBeTruthy();
-    expect(screen.queryByTestId(`rosary-arc-physical-${fullRosarySequence[71].id}`)).toBeNull();
+    expect(screen.queryByTestId(`rosary-arc-physical-${nonPhysicalPrayer.id}`)).toBeNull();
     await fireEvent.press(screen.getByRole("button", { name: "Show Scripture, page 5 of 5" }));
     expect(screen.getByText("Luke 1:28")).toBeTruthy();
     expect(screen.getByText("And coming to her, he said, “Hail, favored one! The Lord is with you.”")).toBeTruthy();
     expect(useRosarySession).toHaveBeenCalledWith(
-      expect.objectContaining({ beads: expect.arrayContaining([fullRosarySequence[71]]), isFullRosary: true }),
+      expect.objectContaining({ beads: expect.arrayContaining([nonPhysicalPrayer]), isFullRosary: true }),
     );
 
     await fireEvent.press(completedCrucifix);
@@ -249,6 +250,32 @@ describe("RosaryPrayerScreen", () => {
     expect(screen.getAllByText("15 of 59").length).toBeGreaterThan(0);
     expect(screen.getByLabelText(/current bead 15, Hail Mary/i)).toBeTruthy();
     expect(screen.queryByTestId(`rosary-arc-physical-${fullRosarySequence[fatimaPrayerIndex].id}`)).toBeNull();
+  });
+
+  it("shows narration as an empty Prayer page without adding a bead or changing automatic audio advance", async () => {
+    const narrationIndex = fullRosarySequence.findIndex((bead) => bead.id.endsWith("-three-hail-mary-fruits"));
+    const narration = fullRosarySequence[narrationIndex];
+    mockSession({
+      currentBead: narration,
+      currentBeadIndex: narrationIndex,
+      currentPrayer: narration.prayer,
+    });
+
+    await render(<RosaryPrayerScreen isDecade={false} />);
+    await fireEvent.press(screen.getByRole("button", { name: "Show Prayer, page 4 of 5" }));
+
+    expect(screen.getByRole("header", { name: "Fruits of the Three Hail Marys" })).toBeTruthy();
+    expect(screen.getAllByText("1 of 59").length).toBeGreaterThan(0);
+    expect(screen.getByRole("button", { name: "current bead 1, Our Father" })).toBeTruthy();
+    expect(screen.queryByText("FRUITS OF THE THREE HAIL MARYS")).toBeNull();
+    expect(screen.queryByLabelText("Prayer text unavailable")).toBeNull();
+    expect(screen.queryByTestId(`rosary-arc-physical-${narration.id}`)).toBeNull();
+
+    const playbackOptions = mockUseRosaryAudioPlayback.mock.lastCall?.[0] as
+      { audioQueue?: string[]; onQueueComplete?: () => void } | undefined;
+    expect(playbackOptions?.audioQueue).toEqual(["/assets/audios/en/prayers/threeHailMaryFruits.m4a"]);
+    playbackOptions?.onQueueComplete?.();
+    expect(goToNextBead).toHaveBeenCalledTimes(1);
   });
 
   it("returns to Home from the chevron back action", async () => {
