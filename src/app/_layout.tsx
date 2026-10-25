@@ -11,6 +11,7 @@ import { AppLoadingScreen } from "@/components";
 import { Button } from "@/components/ui";
 import { AuthProvider, useAuth } from "@/features/auth";
 import { AchievementProvider, AchievementToastHost, BadgeAwardSubscription } from "@/features/achievements";
+import { BackgroundMusicProvider, BackgroundMusicSideDrawerHandle } from "@/features/background-music";
 import { getProfileAccessState, ProfileProvider, useCurrentProfile } from "@/features/profile";
 import { logDevelopmentError } from "@/lib/development-logger";
 import { supabase } from "@/lib/supabase";
@@ -123,7 +124,7 @@ export function RootNavigator() {
     );
   }
 
-  return (
+  const navigator = (
     <Stack
       screenOptions={{
         contentStyle: { backgroundColor: theme.colors.background.primary },
@@ -164,6 +165,15 @@ export function RootNavigator() {
         <Stack.Screen name="reset-password" />
       </Stack.Protected>
     </Stack>
+  );
+
+  if (!isSignedIn || isPasswordRecovery || !hasCompleteProfile) return navigator;
+
+  return (
+    <BackgroundMusicProvider>
+      {navigator}
+      <BackgroundMusicSideDrawerHandle />
+    </BackgroundMusicProvider>
   );
 }
 

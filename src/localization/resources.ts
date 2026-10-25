@@ -791,6 +791,13 @@ export const resources = {
         prayVideoLabel: "Pray video Rosary for today's {{mystery}}",
         todaysRosary: "TODAY'S ROSARY",
       },
+      backgroundMusic: {
+        close: "Close background music",
+        next: "Play next background music track",
+        open: "Open background music",
+        pause: "Pause background music",
+        play: "Play background music",
+      },
       rosary: {
         name: "Rosary",
         openMystery: "Open {{mystery}}",
@@ -2107,6 +2114,13 @@ export const resources = {
         prayVideoHint: "Abre el Rosario guiado en video de hoy.",
         prayVideoLabel: "Rezar el Rosario en video de los {{mystery}}",
         todaysRosary: "ROSARIO DE HOY",
+      },
+      backgroundMusic: {
+        close: "Cerrar música de fondo",
+        next: "Reproducir la siguiente pista de música de fondo",
+        open: "Abrir música de fondo",
+        pause: "Pausar música de fondo",
+        play: "Reproducir música de fondo",
       },
       rosary: {
         name: "Rosario",

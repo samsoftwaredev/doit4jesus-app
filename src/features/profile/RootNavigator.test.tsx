@@ -5,15 +5,52 @@ import { i18n } from "@/localization";
 
 const mockRefreshProfile = jest.fn();
 const mockSignOut = jest.fn();
+let mockAuthState = {
+  isLoading: false,
+  isPasswordRecovery: false,
+  session: { user: { id: "user-1" } } as { user: { id: string } } | null,
+};
+let mockProfileAccessState: "complete" | "error" | "onboarding" = "error";
+
+jest.mock("expo-router", () => {
+  const React = jest.requireActual("react");
+
+  const Stack = Object.assign(
+    ({ children }: { children: React.ReactNode }) => React.createElement(React.Fragment, null, children),
+    {
+      Protected: ({ children, guard }: { children: React.ReactNode; guard: boolean }) =>
+        guard ? React.createElement(React.Fragment, null, children) : null,
+      Screen: () => null,
+    },
+  );
+
+  return {
+    DarkTheme: { colors: {} },
+    DefaultTheme: { colors: {} },
+    Stack,
+    ThemeProvider: ({ children }: { children: React.ReactNode }) => children,
+  };
+});
 
 jest.mock("@/features/auth", () => ({
-  useAuth: () => ({ isLoading: false, isPasswordRecovery: false, session: { user: { id: "user-1" } } }),
+  useAuth: () => mockAuthState,
 }));
 
 jest.mock("@/features/profile", () => ({
-  getProfileAccessState: () => "error",
+  getProfileAccessState: () => mockProfileAccessState,
   useCurrentProfile: () => ({ isLoading: false, refreshProfile: mockRefreshProfile }),
 }));
+
+jest.mock("@/features/background-music", () => {
+  const React = jest.requireActual("react");
+  const { Text, View } = jest.requireActual("react-native");
+
+  return {
+    BackgroundMusicProvider: ({ children }: { children: React.ReactNode }) =>
+      React.createElement(View, { testID: "background-music-provider" }, children),
+    BackgroundMusicSideDrawerHandle: () => React.createElement(Text, null, "Background music drawer"),
+  };
+});
 
 jest.mock("@/lib/supabase", () => ({
   supabase: {
@@ -29,6 +66,12 @@ describe("Root navigator profile error", () => {
     mockRefreshProfile.mockReset();
     mockSignOut.mockReset();
     mockSignOut.mockResolvedValue({ error: null });
+    mockAuthState = {
+      isLoading: false,
+      isPasswordRecovery: false,
+      session: { user: { id: "user-1" } },
+    };
+    mockProfileAccessState = "error";
   });
 
   afterAll(async () => {
@@ -57,5 +100,26 @@ describe("Root navigator profile error", () => {
 
     expect(getByRole("button", { name: "Intentar de nuevo" })).toBeTruthy();
     expect(getByRole("button", { name: "Cerrar sesión" })).toBeTruthy();
+  });
+
+  it("mounts background music only for the complete signed-in app", async () => {
+    mockProfileAccessState = "complete";
+    const rendered = await render(<RootNavigator />);
+
+    expect(rendered.getByTestId("background-music-provider")).toBeTruthy();
+    expect(rendered.getByText("Background music drawer")).toBeTruthy();
+
+    mockAuthState = { ...mockAuthState, session: null };
+    await rendered.rerender(<RootNavigator />);
+    expect(rendered.queryByTestId("background-music-provider")).toBeNull();
+
+    mockAuthState = { ...mockAuthState, isPasswordRecovery: true, session: { user: { id: "user-1" } } };
+    await rendered.rerender(<RootNavigator />);
+    expect(rendered.queryByTestId("background-music-provider")).toBeNull();
+
+    mockAuthState = { ...mockAuthState, isPasswordRecovery: false };
+    mockProfileAccessState = "onboarding";
+    await rendered.rerender(<RootNavigator />);
+    expect(rendered.queryByTestId("background-music-provider")).toBeNull();
   });
 });
