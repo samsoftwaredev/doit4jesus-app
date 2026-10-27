@@ -29,7 +29,7 @@ export interface BackgroundMusicContextValue {
 }
 
 const BackgroundMusicContext = createContext<BackgroundMusicContextValue | undefined>(undefined);
-const BACKGROUND_MUSIC_VOLUME = 0.3;
+const BACKGROUND_MUSIC_VOLUME = 0.15;
 const PLAYER_STATUS_INTERVAL_MS = 250;
 
 preloadInitialBackgroundMusicTrack();

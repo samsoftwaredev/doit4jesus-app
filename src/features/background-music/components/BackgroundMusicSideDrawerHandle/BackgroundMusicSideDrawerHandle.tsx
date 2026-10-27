@@ -88,6 +88,11 @@ export function BackgroundMusicSideDrawerHandle() {
     setIsExpanded((expanded) => !expanded);
   }, []);
 
+  /** Collapses the drawer after an outside tap without changing playback. */
+  const handleOutsidePress = useCallback(() => {
+    setIsExpanded(false);
+  }, []);
+
   /** Records the visible title viewport used to decide whether marquee motion is necessary. */
   const handleTitleMaskLayout = useCallback((event: LayoutChangeEvent) => {
     setTitleMaskWidth(event.nativeEvent.layout.width);
@@ -101,109 +106,129 @@ export function BackgroundMusicSideDrawerHandle() {
   if (isRosaryVideo) return null;
 
   return (
-    <Animated.View
-      pointerEvents="box-none"
-      style={[styles.drawer, { top: drawerTop, width: drawerWidth }, drawerAnimatedStyle]}
-      testID="background-music-drawer"
-    >
-      <Pressable
-        accessibilityLabel={t(isExpanded ? "backgroundMusic.close" : "backgroundMusic.open")}
-        accessibilityRole="button"
-        accessibilityState={{ expanded: isExpanded }}
-        onPress={handleDrawerToggle}
-        style={({ pressed }) => [styles.handle, pressed && styles.pressed]}
-      >
-        <Feather
-          accessible={false}
-          color={theme.rosary.colors.immersiveGold}
-          name="music"
-          size={22}
-          testID="background-music-handle-icon"
-        />
-      </Pressable>
-
+    <View pointerEvents="box-none" style={styles.host}>
       {isExpanded ? (
-        <View style={[styles.panel, { width: panelWidth }]} testID="background-music-panel">
-          <View style={styles.trackRow}>
-            <Image
-              accessible={false}
-              contentFit="cover"
-              source={currentTrack.artwork}
-              style={styles.artwork}
-              testID="background-music-artwork"
-              transition={reduceMotion ? 0 : 160}
-            />
-            <View style={styles.trackDetails}>
-              <View
-                accessible
-                accessibilityLabel={localizedTitle}
-                onLayout={handleTitleMaskLayout}
-                style={styles.titleMask}
-                testID="background-music-title-mask"
-              >
-                <Text
-                  accessible={false}
-                  onLayout={handleTitleLayout}
-                  numberOfLines={1}
-                  style={[styles.title, styles.titleMeasure]}
-                  testID="background-music-title-measure"
+        <Pressable
+          accessibilityElementsHidden
+          accessible={false}
+          importantForAccessibility="no-hide-descendants"
+          onPress={handleOutsidePress}
+          style={styles.dismissBackdrop}
+          testID="background-music-dismiss-backdrop"
+        />
+      ) : null}
+
+      <Animated.View
+        pointerEvents="box-none"
+        style={[styles.drawer, { top: drawerTop, width: drawerWidth }, drawerAnimatedStyle]}
+        testID="background-music-drawer"
+      >
+        <Pressable
+          accessibilityLabel={t(isExpanded ? "backgroundMusic.close" : "backgroundMusic.open")}
+          accessibilityRole="button"
+          accessibilityState={{ expanded: isExpanded }}
+          onPress={handleDrawerToggle}
+          style={({ pressed }) => [styles.handle, pressed && styles.pressed]}
+        >
+          <Feather
+            accessible={false}
+            color={theme.rosary.colors.immersiveGold}
+            name="music"
+            size={22}
+            testID="background-music-handle-icon"
+          />
+        </Pressable>
+
+        {isExpanded ? (
+          <View style={[styles.panel, { width: panelWidth }]} testID="background-music-panel">
+            <View style={styles.trackRow}>
+              <Image
+                accessible={false}
+                contentFit="cover"
+                source={currentTrack.artwork}
+                style={styles.artwork}
+                testID="background-music-artwork"
+                transition={reduceMotion ? 0 : 160}
+              />
+              <View style={styles.trackDetails}>
+                <View
+                  accessible
+                  accessibilityLabel={localizedTitle}
+                  onLayout={handleTitleMaskLayout}
+                  style={styles.titleMask}
+                  testID="background-music-title-mask"
                 >
-                  {localizedTitle}
-                </Text>
-                {shouldMarquee ? (
-                  <Animated.View accessible={false} style={[styles.marqueeTrack, marqueeAnimatedStyle]}>
-                    <Text numberOfLines={1} style={styles.title} testID="background-music-marquee-copy-1">
-                      {localizedTitle}
-                    </Text>
-                    <View style={styles.marqueeGap} />
-                    <Text numberOfLines={1} style={styles.title} testID="background-music-marquee-copy-2">
-                      {localizedTitle}
-                    </Text>
-                  </Animated.View>
-                ) : (
-                  <Text accessible={false} numberOfLines={1} style={styles.title}>
+                  <Text
+                    accessible={false}
+                    onLayout={handleTitleLayout}
+                    numberOfLines={1}
+                    style={[styles.title, styles.titleMeasure]}
+                    testID="background-music-title-measure"
+                  >
                     {localizedTitle}
                   </Text>
-                )}
-              </View>
+                  {shouldMarquee ? (
+                    <Animated.View accessible={false} style={[styles.marqueeTrack, marqueeAnimatedStyle]}>
+                      <Text numberOfLines={1} style={styles.title} testID="background-music-marquee-copy-1">
+                        {localizedTitle}
+                      </Text>
+                      <View style={styles.marqueeGap} />
+                      <Text numberOfLines={1} style={styles.title} testID="background-music-marquee-copy-2">
+                        {localizedTitle}
+                      </Text>
+                    </Animated.View>
+                  ) : (
+                    <Text accessible={false} numberOfLines={1} style={styles.title}>
+                      {localizedTitle}
+                    </Text>
+                  )}
+                </View>
 
-              <View style={styles.controls}>
-                <IconButton
-                  accessibilityLabel={t(isPlaying ? "backgroundMusic.pause" : "backgroundMusic.play")}
-                  loading={isLoading}
-                  onPress={togglePlayback}
-                  style={styles.controlButton}
-                >
-                  <Feather
-                    accessible={false}
-                    color={theme.rosary.colors.immersiveGold}
-                    name={isPlaying ? "pause" : "play"}
-                    size={theme.sizes.iconMedium}
-                  />
-                </IconButton>
-                <IconButton
-                  accessibilityLabel={t("backgroundMusic.next")}
-                  disabled={isLoading}
-                  onPress={playNext}
-                  style={styles.controlButton}
-                >
-                  <Feather
-                    accessible={false}
-                    color={theme.rosary.colors.immersiveGold}
-                    name="skip-forward"
-                    size={theme.sizes.iconMedium}
-                  />
-                </IconButton>
+                <View style={styles.controls}>
+                  <IconButton
+                    accessibilityLabel={t(isPlaying ? "backgroundMusic.pause" : "backgroundMusic.play")}
+                    loading={isLoading}
+                    onPress={togglePlayback}
+                    style={styles.controlButton}
+                  >
+                    <Feather
+                      accessible={false}
+                      color={theme.rosary.colors.immersiveGold}
+                      name={isPlaying ? "pause" : "play"}
+                      size={theme.sizes.iconMedium}
+                    />
+                  </IconButton>
+                  <IconButton
+                    accessibilityLabel={t("backgroundMusic.next")}
+                    disabled={isLoading}
+                    onPress={playNext}
+                    style={styles.controlButton}
+                  >
+                    <Feather
+                      accessible={false}
+                      color={theme.rosary.colors.immersiveGold}
+                      name="skip-forward"
+                      size={theme.sizes.iconMedium}
+                    />
+                  </IconButton>
+                </View>
               </View>
             </View>
           </View>
-        </View>
-      ) : null}
-    </Animated.View>
+        ) : null}
+      </Animated.View>
+    </View>
   );
 }
 
 const styleSheet = createThemedStyles((theme) => ({
+  dismissBackdrop: {
+    bottom: 0,
+    left: 0,
+    position: "absolute",
+    right: 0,
+    top: 0,
+  },
   drawer: {
     flexDirection: "row",
     height: DRAWER_HEIGHT,
@@ -211,6 +236,15 @@ const styleSheet = createThemedStyles((theme) => ({
     right: 0,
     zIndex: theme.zIndex.drawer,
     ...theme.shadows.medium,
+  },
+  host: {
+    bottom: 0,
+    left: 0,
+    pointerEvents: "box-none",
+    position: "absolute",
+    right: 0,
+    top: 0,
+    zIndex: theme.zIndex.drawer,
   },
   handle: {
     alignItems: "center",

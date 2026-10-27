@@ -109,11 +109,33 @@ describe("BackgroundMusicSideDrawerHandle", () => {
     );
     expect(screen.getByRole("button", { name: "Play background music" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "Play next background music track" })).toBeTruthy();
+    expect(screen.getByTestId("background-music-dismiss-backdrop", { includeHiddenElements: true })).toBeTruthy();
 
     await fireEvent.press(screen.getByRole("button", { name: "Play background music" }));
     await fireEvent.press(screen.getByRole("button", { name: "Play next background music track" }));
     expect(mockTogglePlayback).toHaveBeenCalledTimes(1);
     expect(mockPlayNext).toHaveBeenCalledTimes(1);
+    expect(screen.getByTestId("background-music-panel")).toBeTruthy();
+  });
+
+  it("closes on an outside tap without changing playback", async () => {
+    await render(<BackgroundMusicSideDrawerHandle />);
+
+    expect(screen.queryByTestId("background-music-dismiss-backdrop")).toBeNull();
+    await fireEvent.press(screen.getByRole("button", { name: "Open background music" }));
+
+    const backdrop = screen.getByTestId("background-music-dismiss-backdrop", { includeHiddenElements: true });
+    expect(backdrop.props.accessible).toBe(false);
+    await fireEvent.press(backdrop);
+
+    expect(screen.queryByTestId("background-music-dismiss-backdrop")).toBeNull();
+    expect(screen.queryByTestId("background-music-panel")).toBeNull();
+    expect(screen.getByRole("button", { name: "Open background music" }).props.accessibilityState).toEqual(
+      expect.objectContaining({ expanded: false }),
+    );
+    expect(mockPausePlayback).not.toHaveBeenCalled();
+    expect(mockTogglePlayback).not.toHaveBeenCalled();
+    expect(mockPlayNext).not.toHaveBeenCalled();
   });
 
   it("updates playback state and presents localized Spanish labels and titles", async () => {
@@ -136,6 +158,7 @@ describe("BackgroundMusicSideDrawerHandle", () => {
     const rendered = await render(<BackgroundMusicSideDrawerHandle />);
 
     expect(screen.queryByTestId("background-music-drawer")).toBeNull();
+    expect(screen.queryByTestId("background-music-dismiss-backdrop")).toBeNull();
     await waitFor(() => expect(mockPausePlayback).toHaveBeenCalledTimes(1));
 
     mockPathname = "/home";

@@ -73,7 +73,7 @@ describe("BackgroundMusicProvider", () => {
     };
   });
 
-  it("creates one player for the first track, starts paused, and fixes music volume at 30 percent", async () => {
+  it("creates one player for the first track, starts paused, and fixes music volume at 15 percent", async () => {
     await render(
       <BackgroundMusicProvider>
         <MusicConsumer />
@@ -82,7 +82,7 @@ describe("BackgroundMusicProvider", () => {
 
     expect(useAudioPlayer).toHaveBeenCalledWith(11, { updateInterval: 250 });
     expect(useAudioPlayer).toHaveBeenCalledTimes(1);
-    expect(mockNativePlayer.volume).toBe(0.3);
+    expect(mockNativePlayer.volume).toBe(0.15);
     expect(mockNativePlayer.play).not.toHaveBeenCalled();
     expect(screen.getByText("agnus-dei")).toBeTruthy();
   });
