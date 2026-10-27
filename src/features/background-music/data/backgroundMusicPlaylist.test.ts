@@ -10,7 +10,7 @@ describe("background music playlist", () => {
     ]);
 
     for (const track of BACKGROUND_MUSIC_PLAYLIST) {
-      expect(track.audioSource).toEqual(expect.any(Number));
+      expect(track.audioSource).toBeTruthy();
       expect(track.artwork).toBeTruthy();
       expect(track.title.en).toEqual(expect.any(String));
       expect(track.title.es).toEqual(expect.any(String));

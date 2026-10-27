@@ -62,6 +62,12 @@
           "microphonePermission": false,
           "recordAudioAndroid": false
         }
+      ],
+      [
+        "expo-asset",
+        {
+          "assets": ["./assets/audios/music"]
+        }
       ]
     ],
     "experiments": {

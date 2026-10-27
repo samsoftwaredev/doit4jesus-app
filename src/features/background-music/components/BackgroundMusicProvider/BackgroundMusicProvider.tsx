@@ -1,6 +1,19 @@
-import { useAudioPlaylist, useAudioPlaylistStatus } from "expo-audio";
-import { createContext, type PropsWithChildren, useCallback, useContext, useEffect, useMemo } from "react";
+import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
+import {
+  createContext,
+  type PropsWithChildren,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
+import {
+  preloadInitialBackgroundMusicTrack,
+  preloadRemainingBackgroundMusicTracks,
+} from "@/features/background-music/data/backgroundMusicPreload";
 import {
   BACKGROUND_MUSIC_PLAYLIST,
   type BackgroundMusicTrack,
@@ -17,38 +30,81 @@ export interface BackgroundMusicContextValue {
 
 const BackgroundMusicContext = createContext<BackgroundMusicContextValue | undefined>(undefined);
 const BACKGROUND_MUSIC_VOLUME = 0.3;
-const PLAYLIST_SOURCES = BACKGROUND_MUSIC_PLAYLIST.map((track) => track.audioSource);
+const PLAYER_STATUS_INTERVAL_MS = 250;
 
-/** Owns the authenticated session's single looping music playlist and exposes stable playback actions. */
+preloadInitialBackgroundMusicTrack();
+
+/** Owns one background-music player and advances its source without allowing overlapping playback. */
 export function BackgroundMusicProvider({ children }: PropsWithChildren) {
-  const playlist = useAudioPlaylist({ loop: "all", sources: PLAYLIST_SOURCES });
-  const status = useAudioPlaylistStatus(playlist);
+  const player = useAudioPlayer(BACKGROUND_MUSIC_PLAYLIST[0].audioSource, {
+    updateInterval: PLAYER_STATUS_INTERVAL_MS,
+  });
+  const status = useAudioPlayerStatus(player);
+  const currentTrackIndexRef = useRef(0);
+  const completionArmedRef = useRef(false);
+  const handledCompletionRef = useRef(false);
+  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
 
   useEffect(() => {
-    playlist.volume = BACKGROUND_MUSIC_VOLUME;
-  }, [playlist]);
+    player.volume = BACKGROUND_MUSIC_VOLUME;
+  }, [player]);
+
+  useEffect(() => {
+    preloadRemainingBackgroundMusicTracks();
+  }, []);
+
+  useEffect(
+    () => () => {
+      player.pause();
+    },
+    [player],
+  );
+
+  /** Stops the active source, replaces it with the next track, and starts playback immediately. */
+  const advanceTrack = useCallback(() => {
+    const nextIndex = (currentTrackIndexRef.current + 1) % BACKGROUND_MUSIC_PLAYLIST.length;
+    currentTrackIndexRef.current = nextIndex;
+    setCurrentTrackIndex(nextIndex);
+    player.pause();
+    player.replace(BACKGROUND_MUSIC_PLAYLIST[nextIndex].audioSource);
+    player.play();
+  }, [player]);
+
+  useEffect(() => {
+    if (!status.didJustFinish) {
+      completionArmedRef.current = true;
+      handledCompletionRef.current = false;
+      return;
+    }
+    if (!completionArmedRef.current || handledCompletionRef.current) return;
+
+    completionArmedRef.current = false;
+    handledCompletionRef.current = true;
+    advanceTrack();
+  }, [advanceTrack, status.didJustFinish]);
 
   /** Pauses without seeking so route exclusions and the Pause control preserve position. */
   const pausePlayback = useCallback(() => {
-    playlist.pause();
-  }, [playlist]);
+    player.pause();
+  }, [player]);
 
-  /** Advances exactly one item and starts it even when the previous item was paused. */
+  /** Advances exactly one track and starts it even when the previous track was paused. */
   const playNext = useCallback(() => {
-    playlist.next();
-    playlist.play();
-  }, [playlist]);
+    completionArmedRef.current = true;
+    handledCompletionRef.current = false;
+    advanceTrack();
+  }, [advanceTrack]);
 
-  /** Toggles the current item while retaining its native playback position. */
+  /** Toggles the current track while retaining its native playback position. */
   const togglePlayback = useCallback(() => {
     if (status.playing) {
-      playlist.pause();
+      player.pause();
       return;
     }
-    playlist.play();
-  }, [playlist, status.playing]);
+    player.play();
+  }, [player, status.playing]);
 
-  const currentTrack = BACKGROUND_MUSIC_PLAYLIST[status.currentIndex] ?? BACKGROUND_MUSIC_PLAYLIST[0];
+  const currentTrack = BACKGROUND_MUSIC_PLAYLIST[currentTrackIndex];
   const value = useMemo<BackgroundMusicContextValue>(
     () => ({
       currentTrack,

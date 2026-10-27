@@ -6,30 +6,25 @@ import {
   useBackgroundMusic,
 } from "@/features/background-music/components/BackgroundMusicProvider/BackgroundMusicProvider";
 
-const mockNativePlaylist = {
-  next: jest.fn(),
+const mockNativePlayer = {
   pause: jest.fn(),
   play: jest.fn(),
+  replace: jest.fn(),
   volume: 1,
 };
-let mockPlaylistStatus = {
-  currentIndex: 0,
+let mockPlayerStatus = {
   currentTime: 0,
   didJustFinish: false,
   duration: 0,
+  error: null,
   isBuffering: false,
   isLoaded: true,
-  loop: "all" as const,
-  muted: false,
   playing: false,
-  playbackRate: 1,
-  trackCount: 4,
-  volume: 1,
 };
 
 jest.mock("expo-audio", () => ({
-  useAudioPlaylist: jest.fn(() => mockNativePlaylist),
-  useAudioPlaylistStatus: jest.fn(() => mockPlaylistStatus),
+  useAudioPlayer: jest.fn(() => mockNativePlayer),
+  useAudioPlayerStatus: jest.fn(() => mockPlayerStatus),
 }));
 
 jest.mock("@/features/background-music/data/backgroundMusicPlaylist", () => ({
@@ -41,8 +36,8 @@ jest.mock("@/features/background-music/data/backgroundMusicPlaylist", () => ({
   ],
 }));
 
-const { useAudioPlaylist } = jest.requireMock("expo-audio") as {
-  useAudioPlaylist: jest.Mock;
+const { useAudioPlayer } = jest.requireMock("expo-audio") as {
+  useAudioPlayer: jest.Mock;
 };
 
 function MusicConsumer() {
@@ -68,34 +63,31 @@ function MusicConsumer() {
 describe("BackgroundMusicProvider", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockNativePlaylist.volume = 1;
-    mockPlaylistStatus = {
-      ...mockPlaylistStatus,
-      currentIndex: 0,
+    mockNativePlayer.volume = 1;
+    mockPlayerStatus = {
+      ...mockPlayerStatus,
+      didJustFinish: false,
       isBuffering: false,
       isLoaded: true,
       playing: false,
-      volume: 1,
     };
   });
 
-  it("creates one looping playlist, starts paused, and fixes music volume at 30 percent", async () => {
+  it("creates one player for the first track, starts paused, and fixes music volume at 30 percent", async () => {
     await render(
       <BackgroundMusicProvider>
         <MusicConsumer />
       </BackgroundMusicProvider>,
     );
 
-    expect(useAudioPlaylist).toHaveBeenCalledWith({
-      loop: "all",
-      sources: [11, 12, 13, 14],
-    });
-    expect(mockNativePlaylist.volume).toBe(0.3);
-    expect(mockNativePlaylist.play).not.toHaveBeenCalled();
+    expect(useAudioPlayer).toHaveBeenCalledWith(11, { updateInterval: 250 });
+    expect(useAudioPlayer).toHaveBeenCalledTimes(1);
+    expect(mockNativePlayer.volume).toBe(0.3);
+    expect(mockNativePlayer.play).not.toHaveBeenCalled();
     expect(screen.getByText("agnus-dei")).toBeTruthy();
   });
 
-  it("plays, pauses, advances exactly once, and exposes the native current track", async () => {
+  it("resumes and pauses without replacing the current source", async () => {
     const rendered = await render(
       <BackgroundMusicProvider>
         <MusicConsumer />
@@ -103,29 +95,94 @@ describe("BackgroundMusicProvider", () => {
     );
 
     await fireEvent.press(screen.getByRole("button", { name: "Play" }));
-    expect(mockNativePlaylist.play).toHaveBeenCalledTimes(1);
+    expect(mockNativePlayer.play).toHaveBeenCalledTimes(1);
+    expect(mockNativePlayer.replace).not.toHaveBeenCalled();
 
-    mockPlaylistStatus = { ...mockPlaylistStatus, currentIndex: 2, playing: true };
+    mockPlayerStatus = { ...mockPlayerStatus, playing: true };
     await rendered.rerender(
       <BackgroundMusicProvider>
         <MusicConsumer />
       </BackgroundMusicProvider>,
     );
 
-    expect(screen.getByText("kyrie")).toBeTruthy();
     await fireEvent.press(screen.getByRole("button", { name: "Pause" }));
-    expect(mockNativePlaylist.pause).toHaveBeenCalledTimes(1);
-
-    await fireEvent.press(screen.getByRole("button", { name: "Next" }));
-    expect(mockNativePlaylist.next).toHaveBeenCalledTimes(1);
-    expect(mockNativePlaylist.play).toHaveBeenCalledTimes(2);
-
-    await fireEvent.press(screen.getByRole("button", { name: "Stop for video" }));
-    expect(mockNativePlaylist.pause).toHaveBeenCalledTimes(2);
+    expect(mockNativePlayer.pause).toHaveBeenCalledTimes(1);
+    expect(mockNativePlayer.replace).not.toHaveBeenCalled();
   });
 
-  it("reports buffering and loading states without losing the selected track", async () => {
-    mockPlaylistStatus = { ...mockPlaylistStatus, currentIndex: 3, isBuffering: true, isLoaded: false };
+  it("advances rapid Next presses sequentially with one player and wraps to the first track", async () => {
+    await render(
+      <BackgroundMusicProvider>
+        <MusicConsumer />
+      </BackgroundMusicProvider>,
+    );
+
+    const nextButton = screen.getByRole("button", { name: "Next" });
+    await fireEvent.press(nextButton);
+    await fireEvent.press(nextButton);
+    await fireEvent.press(nextButton);
+    await fireEvent.press(nextButton);
+
+    expect(mockNativePlayer.pause).toHaveBeenCalledTimes(4);
+    expect(mockNativePlayer.replace.mock.calls).toEqual([[12], [13], [14], [11]]);
+    expect(mockNativePlayer.play).toHaveBeenCalledTimes(4);
+    expect(new Set(useAudioPlayer.mock.results.map(({ value }) => value))).toEqual(new Set([mockNativePlayer]));
+    expect(screen.getByText("agnus-dei")).toBeTruthy();
+  });
+
+  it("advances once after natural completion and ignores a repeated completion status", async () => {
+    const rendered = await render(
+      <BackgroundMusicProvider>
+        <MusicConsumer />
+      </BackgroundMusicProvider>,
+    );
+
+    mockPlayerStatus = { ...mockPlayerStatus, didJustFinish: true };
+    await rendered.rerender(
+      <BackgroundMusicProvider>
+        <MusicConsumer />
+      </BackgroundMusicProvider>,
+    );
+
+    expect(mockNativePlayer.replace).toHaveBeenCalledTimes(1);
+    expect(mockNativePlayer.replace).toHaveBeenCalledWith(12);
+    expect(mockNativePlayer.play).toHaveBeenCalledTimes(1);
+
+    await rendered.rerender(
+      <BackgroundMusicProvider>
+        <MusicConsumer />
+      </BackgroundMusicProvider>,
+    );
+
+    expect(mockNativePlayer.replace).toHaveBeenCalledTimes(1);
+    expect(mockNativePlayer.play).toHaveBeenCalledTimes(1);
+  });
+
+  it("keeps natural advancement armed after manual skips and wraps the final track", async () => {
+    const rendered = await render(
+      <BackgroundMusicProvider>
+        <MusicConsumer />
+      </BackgroundMusicProvider>,
+    );
+
+    const nextButton = screen.getByRole("button", { name: "Next" });
+    await fireEvent.press(nextButton);
+    await fireEvent.press(nextButton);
+    await fireEvent.press(nextButton);
+
+    mockPlayerStatus = { ...mockPlayerStatus, didJustFinish: true };
+    await rendered.rerender(
+      <BackgroundMusicProvider>
+        <MusicConsumer />
+      </BackgroundMusicProvider>,
+    );
+
+    expect(mockNativePlayer.replace.mock.calls).toEqual([[12], [13], [14], [11]]);
+    expect(screen.getByText("agnus-dei")).toBeTruthy();
+  });
+
+  it("reports the current player's buffering state without losing the selected track", async () => {
+    mockPlayerStatus = { ...mockPlayerStatus, isBuffering: true, isLoaded: false };
 
     await render(
       <BackgroundMusicProvider>
@@ -133,7 +190,19 @@ describe("BackgroundMusicProvider", () => {
       </BackgroundMusicProvider>,
     );
 
-    expect(screen.getByText("sanctus")).toBeTruthy();
+    await fireEvent.press(screen.getByRole("button", { name: "Next" }));
+    expect(screen.getByText("dies-irae")).toBeTruthy();
     expect(screen.getByText("loading")).toBeTruthy();
+  });
+
+  it("exposes an explicit pause action for the Rosary video route", async () => {
+    await render(
+      <BackgroundMusicProvider>
+        <MusicConsumer />
+      </BackgroundMusicProvider>,
+    );
+
+    await fireEvent.press(screen.getByRole("button", { name: "Stop for video" }));
+    expect(mockNativePlayer.pause).toHaveBeenCalledTimes(1);
   });
 });
