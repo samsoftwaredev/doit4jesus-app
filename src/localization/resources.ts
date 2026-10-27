@@ -523,6 +523,7 @@ export const resources = {
         retryLabel: "Try again",
         sectionLabel: "User progress",
         streak: "STREAK",
+        streakDailyLimit: "Only one Rosary per day counts toward your daily streak.",
         streakLabel: "Rosary streak statistics",
       },
       liturgy: {
@@ -1847,6 +1848,7 @@ export const resources = {
         retryLabel: "Intentar de nuevo",
         sectionLabel: "Progreso del usuario",
         streak: "RACHA",
+        streakDailyLimit: "Solo un Rosario por día cuenta para tu racha diaria.",
         streakLabel: "Estadísticas de racha del Rosario",
       },
       liturgy: {

@@ -1,5 +1,5 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { View } from "react-native";
+import { Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { useAppLanguage } from "@/localization";
@@ -20,7 +20,7 @@ type StreakCardsProps =
       longestStreak?: never;
     };
 
-/** Groups the current and longest Rosary streak cards using the shared tablet breakpoint. */
+/** Explains daily streak counting and groups the current and longest Rosary streak cards. */
 export function StreakCards(props: StreakCardsProps) {
   const { t } = useTranslation();
   const { locale } = useAppLanguage();
@@ -28,52 +28,51 @@ export function StreakCards(props: StreakCardsProps) {
   const cardStyle = styles.rowCard;
 
   return (
-    <View
-      accessibilityLabel={t("progress.streakLabel")}
-      style={[styles.layout, styles.rowLayout]}
-      testID="streak-cards-layout"
-    >
-      {props.isLoading ? (
-        Array.from({ length: 2 }, (_, index) => (
-          <View accessibilityLabel={t("progress.loadingStreak")} key={index} style={[styles.skeleton, cardStyle]}>
-            <View style={styles.skeletonIcon} />
-            <View style={styles.skeletonLabel} />
-            <View style={styles.skeletonValue} />
-            <View style={styles.skeletonSuffix} />
-          </View>
-        ))
-      ) : (
-        <>
-          <ProgressStatCard
-            icon={
-              <MaterialCommunityIcons
-                accessible={false}
-                color={theme.rosary.colors.gold}
-                name="fire"
-                size={theme.sizes.iconLarge}
-              />
-            }
-            label={t("progress.streak")}
-            style={cardStyle}
-            suffix={t("progress.days")}
-            value={new Intl.NumberFormat(locale).format(props.currentStreak)}
-          />
-          <ProgressStatCard
-            icon={
-              <MaterialCommunityIcons
-                accessible={false}
-                color={theme.rosary.colors.gold}
-                name="crown"
-                size={theme.sizes.iconLarge}
-              />
-            }
-            label={t("progress.longestStreak")}
-            style={cardStyle}
-            suffix={t("progress.days")}
-            value={new Intl.NumberFormat(locale).format(props.longestStreak)}
-          />
-        </>
-      )}
+    <View style={styles.layout} testID="streak-cards-layout">
+      <Text style={styles.explanation}>{t("progress.streakDailyLimit")}</Text>
+      <View accessibilityLabel={t("progress.streakLabel")} style={styles.rowLayout}>
+        {props.isLoading ? (
+          Array.from({ length: 2 }, (_, index) => (
+            <View accessibilityLabel={t("progress.loadingStreak")} key={index} style={[styles.skeleton, cardStyle]}>
+              <View style={styles.skeletonIcon} />
+              <View style={styles.skeletonLabel} />
+              <View style={styles.skeletonValue} />
+              <View style={styles.skeletonSuffix} />
+            </View>
+          ))
+        ) : (
+          <>
+            <ProgressStatCard
+              icon={
+                <MaterialCommunityIcons
+                  accessible={false}
+                  color={theme.rosary.colors.gold}
+                  name="fire"
+                  size={theme.sizes.iconLarge}
+                />
+              }
+              label={t("progress.streak")}
+              style={cardStyle}
+              suffix={t("progress.days")}
+              value={new Intl.NumberFormat(locale).format(props.currentStreak)}
+            />
+            <ProgressStatCard
+              icon={
+                <MaterialCommunityIcons
+                  accessible={false}
+                  color={theme.rosary.colors.gold}
+                  name="crown"
+                  size={theme.sizes.iconLarge}
+                />
+              }
+              label={t("progress.longestStreak")}
+              style={cardStyle}
+              suffix={t("progress.days")}
+              value={new Intl.NumberFormat(locale).format(props.longestStreak)}
+            />
+          </>
+        )}
+      </View>
     </View>
   );
 }
@@ -84,12 +83,19 @@ const styleSheet = createThemedStyles((theme) => ({
     gap: theme.spacing[2],
     width: "100%",
   },
+  explanation: {
+    ...theme.typography.bodySmall,
+    color: theme.colors.text.secondary,
+    textAlign: "center",
+  },
   rowCard: {
     flex: 1,
     minWidth: theme.spacing[0],
   },
   rowLayout: {
     flexDirection: "row",
+    gap: theme.spacing[2],
+    width: "100%",
   },
   skeleton: {
     alignItems: "center",

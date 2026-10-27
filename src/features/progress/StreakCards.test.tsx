@@ -1,5 +1,7 @@
 import { render, screen } from "@testing-library/react-native";
 
+import { i18n } from "@/localization";
+
 import { StreakCards } from "./StreakCards";
 
 const mockResponsiveLayout = jest.fn();
@@ -25,13 +27,19 @@ function setViewport(width: number, isTablet: boolean, fontScale = 1) {
 }
 
 describe("StreakCards", () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.clearAllMocks();
+    await i18n.changeLanguage("en");
+  });
+
+  afterAll(async () => {
+    await i18n.changeLanguage("en");
   });
 
   it("renders the streak cards correctly", async () => {
     await render(<StreakCards currentStreak={14} longestStreak={27} />);
 
+    expect(screen.getByText("Only one Rosary per day counts toward your daily streak.")).toBeTruthy();
     expect(screen.getByLabelText("STREAK, 14 days")).toBeTruthy();
     expect(screen.getByLabelText("LONGEST STREAK, 27 days")).toBeTruthy();
   });
@@ -41,6 +49,14 @@ describe("StreakCards", () => {
 
     await render(<StreakCards isLoading />);
 
+    expect(screen.getByText("Only one Rosary per day counts toward your daily streak.")).toBeTruthy();
     expect(screen.getAllByLabelText("Loading streak statistic")).toHaveLength(2);
+  });
+
+  it("renders the daily streak explanation in Spanish", async () => {
+    await i18n.changeLanguage("es");
+    await render(<StreakCards currentStreak={14} longestStreak={27} />);
+
+    expect(screen.getByText("Solo un Rosario por día cuenta para tu racha diaria.")).toBeTruthy();
   });
 });

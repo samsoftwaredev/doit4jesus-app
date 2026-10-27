@@ -78,6 +78,7 @@ describe("UserProgressSection", () => {
     await i18n.changeLanguage("es");
     await render(<UserProgressSection />);
 
+    expect(await screen.findByText("Solo un Rosario por día cuenta para tu racha diaria.")).toBeTruthy();
     expect(await screen.findByLabelText("RACHA, 14 días")).toBeTruthy();
     expect(screen.getByLabelText("RACHA MÁS LARGA, 27 días")).toBeTruthy();
   });
