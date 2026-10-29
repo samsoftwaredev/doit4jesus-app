@@ -65,6 +65,15 @@ const baseProfile: CurrentUserProfile = {
   displayName: "Virgin Mary",
   gender: "male",
   leaderboardVisibility: "public",
+  legalAcceptance: {
+    accepted: true,
+    acceptedAt: "2026-10-27T06:00:00.000Z",
+    communityGuidelinesVersion: "2026-10-28",
+    grandfathered: false,
+    privacyVersion: "2026-10-28",
+    required: false,
+    termsVersion: "2026-10-28",
+  },
   preferredLanguage: "en",
   profileSetup: {
     complete: false,

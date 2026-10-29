@@ -5,7 +5,7 @@ import { StyleSheet } from "react-native";
 
 import SettingsScreen from "@/app/settings";
 import { APP_LANGUAGE_PREFERENCE_STORAGE_KEY, AppLanguageProvider } from "@/localization";
-import { AppThemeProvider } from "@/theme/AppThemeProvider";
+import { APP_TEXT_SIZE_PREFERENCE_STORAGE_KEY, AppThemeProvider } from "@/theme/AppThemeProvider";
 import { APP_VISUAL_EFFECTS_PREFERENCE_STORAGE_KEY, AppVisualEffectsProvider } from "@/theme/AppVisualEffectsProvider";
 
 const mockGetNotificationPreferences = jest.fn();
@@ -105,6 +105,53 @@ describe("appearance settings", () => {
     expect(screen.getByRole("switch", { name: "Iluminación de fondo" })).toBeTruthy();
     expect(screen.getByRole("switch", { name: "Polvo de fondo" })).toBeTruthy();
     expect(mockSetItem).toHaveBeenCalledWith(APP_LANGUAGE_PREFERENCE_STORAGE_KEY, "es");
+  });
+
+  it("shows four text sizes below Language and applies the selected size immediately", async () => {
+    await render(
+      <AppLanguageProvider>
+        <AppThemeProvider>
+          <AppVisualEffectsProvider>
+            <SettingsScreen />
+          </AppVisualEffectsProvider>
+        </AppThemeProvider>
+      </AppLanguageProvider>,
+    );
+
+    const defaultSize = await screen.findByRole("radio", { name: "Default, 100%" });
+    const largestSize = screen.getByRole("radio", { name: "Largest, 130%" });
+    const headers = screen.getAllByRole("header").map((header) => header.props.children);
+
+    expect(headers.indexOf("Language")).toBeLessThan(headers.indexOf("Text size"));
+    expect(defaultSize.props.accessibilityState).toMatchObject({ checked: true });
+    expect(largestSize.props.accessibilityState).toMatchObject({ checked: false });
+    expect(
+      screen.getByText("Increase text throughout the app. Your device text-size setting is also respected."),
+    ).toBeTruthy();
+
+    fireEvent.press(largestSize);
+
+    await waitFor(() => expect(largestSize.props.accessibilityState).toMatchObject({ checked: true }));
+    expect(mockSetItem).toHaveBeenCalledWith(APP_TEXT_SIZE_PREFERENCE_STORAGE_KEY, "130");
+    expect(StyleSheet.flatten(screen.getByText("Text size").props.style)).toMatchObject({ fontSize: 26 });
+  });
+
+  it("localizes the text size choices in Spanish", async () => {
+    await render(
+      <AppLanguageProvider>
+        <AppThemeProvider>
+          <AppVisualEffectsProvider>
+            <SettingsScreen />
+          </AppVisualEffectsProvider>
+        </AppThemeProvider>
+      </AppLanguageProvider>,
+    );
+
+    await fireEvent.press(await screen.findByRole("radio", { name: "Español" }));
+
+    expect(await screen.findByRole("header", { name: "Tamaño del texto" })).toBeTruthy();
+    expect(screen.getByRole("radio", { name: "Predeterminado, 100 %" })).toBeTruthy();
+    expect(screen.getByRole("radio", { name: "Máximo, 130 %" })).toBeTruthy();
   });
 
   it("persists independently accessible lighting and dust switches", async () => {

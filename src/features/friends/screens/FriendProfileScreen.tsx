@@ -1,11 +1,12 @@
 import { useRouter } from "expo-router";
 import { useRef, useState } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { Alert, ScrollView, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { BackHeader } from "@/components/navigation";
 import { Button, Card } from "@/components/ui";
+import { blockAccount, ReportContentModal } from "@/features/community-safety";
 import {
   CompareStatsSection,
   FriendAvatar,
@@ -29,6 +30,8 @@ export function FriendProfileScreen({ friendId }: { friendId: string | undefined
   const [isRemoving, setIsRemoving] = useState(false);
   const [isRemoveConfirmationVisible, setIsRemoveConfirmationVisible] = useState(false);
   const [removeError, setRemoveError] = useState(false);
+  const [reportVisible, setReportVisible] = useState(false);
+  const [safetyError, setSafetyError] = useState(false);
 
   /** Opens a fresh removal confirmation for the loaded friend. */
   const openRemoveConfirmation = () => {
@@ -60,6 +63,25 @@ export function FriendProfileScreen({ friendId }: { friendId: string | undefined
       removalInFlight.current = false;
       setIsRemoving(false);
     }
+  };
+
+  const confirmBlock = () => {
+    if (!friendId) return;
+    Alert.alert(t("safety.blockTitle"), t("safety.blockDescription"), [
+      { text: t("common.cancel"), style: "cancel" },
+      {
+        text: t("safety.block"),
+        style: "destructive",
+        onPress: () => {
+          void blockAccount(friendId)
+            .then(() => router.replace("/community"))
+            .catch((error) => {
+              logDevelopmentError("blocking an account", error);
+              setSafetyError(true);
+            });
+        },
+      },
+    ]);
   };
 
   return (
@@ -147,6 +169,17 @@ export function FriendProfileScreen({ friendId }: { friendId: string | undefined
           </View>
 
           <View testID="friend-profile-section-remove">
+            {safetyError ? (
+              <Text accessibilityRole="alert" style={styles.safetyError}>
+                {t("safety.actionError")}
+              </Text>
+            ) : null}
+            <Button fullWidth onPress={() => setReportVisible(true)} variant="outline">
+              {t("safety.reportUser")}
+            </Button>
+            <Button fullWidth onPress={confirmBlock} variant="danger">
+              {t("safety.block")}
+            </Button>
             <Button fullWidth onPress={openRemoveConfirmation} variant="danger">
               {t("friends.profile.remove")}
             </Button>
@@ -161,6 +194,14 @@ export function FriendProfileScreen({ friendId }: { friendId: string | undefined
         onDismiss={dismissRemoveConfirmation}
         visible={isRemoveConfirmationVisible}
       />
+      {friendId ? (
+        <ReportContentModal
+          onDismiss={() => setReportVisible(false)}
+          targetId={friendId}
+          targetType="user"
+          visible={reportVisible}
+        />
+      ) : null}
     </AtmosphericSafeAreaView>
   );
 }
@@ -177,6 +218,7 @@ function ProfileStat({ label, value }: { label: string; value: string }) {
 }
 
 const styleSheet = createThemedStyles((theme) => ({
+  safetyError: { ...theme.typography.bodySmall, color: theme.colors.text.danger, marginBottom: theme.spacing[2] },
   content: {
     alignSelf: "center",
     gap: theme.spacing[4],

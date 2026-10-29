@@ -16,6 +16,7 @@
     "ios": {
       "icon": "./assets/expo.icon",
       "bundleIdentifier": "doit4jesus.com",
+      "usesAppleSignIn": true,
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -45,6 +46,7 @@
     },
     "plugins": [
       "expo-router",
+      "expo-apple-authentication",
       [
         "expo-splash-screen",
         {

@@ -1,4 +1,5 @@
 import {
+  acceptLegalDocuments,
   deleteCurrentUserProfile,
   fetchCurrentUserProfile,
   updateCurrentUserProfile,
@@ -17,6 +18,15 @@ const profilePayload = {
     displayName: "Virgin Mary",
     gender: "male",
     leaderboardVisibility: "public",
+    legalAcceptance: {
+      accepted: true,
+      acceptedAt: "2026-10-27T06:00:00.000Z",
+      communityGuidelinesVersion: "2026-10-28",
+      grandfathered: false,
+      privacyVersion: "2026-10-28",
+      required: false,
+      termsVersion: "2026-10-28",
+    },
     preferredLanguage: "en",
     profileSetup: {
       complete: true,
@@ -64,6 +74,24 @@ describe("current profile API", () => {
         Authorization: "Bearer test-access-token",
       },
       method: "GET",
+    });
+  });
+
+  it("POSTs the required confirmations without client-controlled versions", async () => {
+    const fetchMock = jest.fn(async () => ({
+      json: async () => ({ data: profilePayload.data.legalAcceptance }),
+      ok: true,
+    }));
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+    await expect(acceptLegalDocuments("es")).resolves.toMatchObject({ accepted: true, required: false });
+    expect(fetchMock).toHaveBeenCalledWith("http://localhost:3000/api/v1/me/legal-acceptance", {
+      body: JSON.stringify({ locale: "es", adultConfirmed: true, usResidentConfirmed: true }),
+      headers: {
+        Accept: "application/json",
+        Authorization: "Bearer test-access-token",
+        "Content-Type": "application/json",
+      },
+      method: "POST",
     });
   });
 

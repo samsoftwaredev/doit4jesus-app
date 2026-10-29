@@ -1,4 +1,6 @@
 import type { Session } from "@supabase/supabase-js";
+import * as AppleAuthentication from "expo-apple-authentication";
+import * as Crypto from "expo-crypto";
 import * as Linking from "expo-linking";
 import * as WebBrowser from "expo-web-browser";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
@@ -85,6 +87,56 @@ export async function startGoogleOAuth(): Promise<void> {
   if (!data.url) throw new Error("Google sign-in could not be started.");
 
   await WebBrowser.openBrowserAsync(data.url);
+}
+
+function randomNonce(bytes: Uint8Array) {
+  return Array.from(bytes, (value) => value.toString(16).padStart(2, "0")).join("");
+}
+
+/** Completes native Sign in with Apple using a one-time SHA-256 nonce. */
+export async function startAppleSignIn(): Promise<boolean> {
+  if (supabaseConfigurationError) throw new Error(supabaseConfigurationError);
+  try {
+    const rawNonce = randomNonce(await Crypto.getRandomBytesAsync(32));
+    const hashedNonce = await Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, rawNonce);
+    const credential = await AppleAuthentication.signInAsync({
+      nonce: hashedNonce,
+      requestedScopes: [
+        AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+        AppleAuthentication.AppleAuthenticationScope.EMAIL,
+      ],
+    });
+    if (!credential.identityToken) throw new Error("Apple did not return an identity token.");
+    const { error } = await supabase.auth.signInWithIdToken({
+      provider: "apple",
+      token: credential.identityToken,
+      nonce: rawNonce,
+    });
+    if (error) throw error;
+
+    const fullName = [credential.fullName?.givenName, credential.fullName?.familyName].filter(Boolean).join(" ");
+    if (fullName) await supabase.auth.updateUser({ data: { full_name: fullName } });
+    return true;
+  } catch (error) {
+    if (error instanceof Error && "code" in error && error.code === "ERR_REQUEST_CANCELED") return false;
+    throw error;
+  }
+}
+
+/** Requests a fresh Apple authorization code so the API can revoke it before deletion. */
+export async function getAppleDeletionAuthorizationCode(): Promise<string | null> {
+  const { data } = await supabase.auth.getUser();
+  const usesApple = data.user?.identities?.some((identity) => identity.provider === "apple");
+  if (!usesApple) return null;
+  try {
+    const credential = await AppleAuthentication.signInAsync({ requestedScopes: [] });
+    return credential.authorizationCode;
+  } catch (error) {
+    if (error instanceof Error && "code" in error && error.code === "ERR_REQUEST_CANCELED") {
+      throw new Error("Apple reauthentication is required before deleting this account.");
+    }
+    throw error;
+  }
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {

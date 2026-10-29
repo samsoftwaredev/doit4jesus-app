@@ -100,6 +100,7 @@ export function RootNavigator() {
   const profileAccess = getProfileAccessState(profileState);
   const hasCompleteProfile = profileAccess === "complete";
   const needsProfileSetup = profileAccess === "onboarding";
+  const needsLegalAcceptance = profileAccess === "legal";
 
   if (isSignedIn && !isPasswordRecovery && profileAccess === "error") {
     return (
@@ -135,6 +136,7 @@ export function RootNavigator() {
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="about" />
         <Stack.Screen name="battle" />
+        <Stack.Screen name="blocked-accounts" />
         <Stack.Screen name="change-email" />
         <Stack.Screen name="demonsCatalog" />
         <Stack.Screen name="friends" />
@@ -152,6 +154,10 @@ export function RootNavigator() {
 
       <Stack.Protected guard={isSignedIn && !isPasswordRecovery && needsProfileSetup}>
         <Stack.Screen name="onboarding" options={{ gestureEnabled: false }} />
+      </Stack.Protected>
+
+      <Stack.Protected guard={isSignedIn && !isPasswordRecovery && needsLegalAcceptance}>
+        <Stack.Screen name="legal-acceptance" options={{ gestureEnabled: false }} />
       </Stack.Protected>
 
       <Stack.Protected guard={!isSignedIn && !isPasswordRecovery}>

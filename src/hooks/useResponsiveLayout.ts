@@ -1,5 +1,6 @@
 import { useWindowDimensions } from "react-native";
 
+import { useAppTheme } from "@/theme/AppThemeProvider";
 import { theme } from "@/theme/tokens";
 
 export type ResponsiveSize = "phone" | "tablet" | "desktop";
@@ -46,7 +47,17 @@ export function getResponsiveLayout({ fontScale, height, width }: Viewport): Res
   };
 }
 
+/** Combines the operating-system accessibility scale with the bounded in-app multiplier. */
+export function getEffectiveFontScale(deviceFontScale: number, appTextScale: number): number {
+  return deviceFontScale * appTextScale;
+}
+
 /** Returns breakpoint, orientation, and text-scale state that updates with the active window. */
 export function useResponsiveLayout(): ResponsiveLayout {
-  return getResponsiveLayout(useWindowDimensions());
+  const viewport = useWindowDimensions();
+  const { textScale } = useAppTheme();
+  return getResponsiveLayout({
+    ...viewport,
+    fontScale: getEffectiveFontScale(viewport.fontScale, textScale),
+  });
 }

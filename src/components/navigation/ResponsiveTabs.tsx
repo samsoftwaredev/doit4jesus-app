@@ -1,8 +1,9 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Tabs } from "expo-router";
-import { type ColorValue, Platform, useWindowDimensions } from "react-native";
+import { type ColorValue, Platform } from "react-native";
 import { useTranslation } from "react-i18next";
 
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
 import { useAppTheme } from "@/theme/AppThemeProvider";
 import { theme } from "@/theme/tokens";
 
@@ -26,8 +27,8 @@ function TabIcon({ color, name, size }: TabIconProps) {
 /** Keeps bottom tabs through tablet widths and presents an expanded side rail on desktop. */
 export function ResponsiveTabs() {
   const { t } = useTranslation();
-  const { theme: appTheme } = useAppTheme();
-  const { fontScale, width } = useWindowDimensions();
+  const { textScale, theme: appTheme } = useAppTheme();
+  const { fontScale, width } = useResponsiveLayout();
   const isDesktop = width >= theme.breakpoints.desktop;
   const scaledBottomBarHeight =
     theme.sizes.bottomNavigationHeight +
@@ -56,10 +57,10 @@ export function ResponsiveTabs() {
         tabBarLabelPosition: isDesktop ? "beside-icon" : "below-icon",
         tabBarLabelStyle: {
           fontFamily: theme.fontFamilies.bodyMedium,
-          fontSize: theme.fontSizes.xs,
+          fontSize: theme.fontSizes.xs * textScale,
           fontWeight: theme.fontWeights.semibold,
           letterSpacing: theme.letterSpacing.wide,
-          lineHeight: theme.lineHeights.xs,
+          lineHeight: theme.lineHeights.xs * textScale,
           marginTop: isDesktop ? theme.spacing[0] : theme.spacing[0.5],
           textAlign: isDesktop ? "left" : "center",
         },

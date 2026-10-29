@@ -1,0 +1,1 @@
+export { LegalAcceptanceScreen } from "./LegalAcceptanceScreen";

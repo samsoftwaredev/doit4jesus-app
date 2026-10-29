@@ -2,13 +2,15 @@ import Feather from "@expo/vector-icons/Feather";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { SacredAtmosphere } from "@/components/ui";
 import { BackHeader } from "@/components/navigation";
 import { OrnateCard } from "@/features/prayer/components";
+import { blockAccount, ReportContentModal } from "@/features/community-safety";
 import { PrayerIntentionAvatar } from "@/features/prayer/intentions/components";
 import { getPrayerIntentionTheme, getCachedApprovedPrayerIntention } from "@/features/prayer/intentions";
 import { useAppTheme } from "@/theme/AppThemeProvider";
@@ -29,6 +31,7 @@ export function IntentionRosaryScreen() {
   const intentionId = firstString(rawIntentionId);
   const intention = getCachedApprovedPrayerIntention(intentionId);
   const intentionTheme = getPrayerIntentionTheme(intention?.symbol, colorScheme);
+  const [reportVisible, setReportVisible] = useState(false);
 
   if (!intention) {
     return (
@@ -114,7 +117,39 @@ export function IntentionRosaryScreen() {
               <Feather accessible={false} color={theme.colors.text.inverse} name="plus" size={theme.sizes.iconSmall} />
               <Text style={styles.actionText}>{t("intentions.offer.action")}</Text>
             </Pressable>
+            <View style={styles.safetyActions}>
+              <Pressable
+                accessibilityRole="button"
+                onPress={() => setReportVisible(true)}
+                style={styles.secondaryAction}
+              >
+                <Text style={styles.secondaryActionText}>{t("safety.reportIntention")}</Text>
+              </Pressable>
+              <Pressable
+                accessibilityRole="button"
+                onPress={() =>
+                  Alert.alert(t("safety.blockTitle"), t("safety.blockDescription"), [
+                    { text: t("common.cancel"), style: "cancel" },
+                    {
+                      text: t("safety.block"),
+                      style: "destructive",
+                      onPress: () =>
+                        void blockAccount(intention.creator.userId).then(() => router.replace("/prayer-intentions")),
+                    },
+                  ])
+                }
+                style={styles.secondaryAction}
+              >
+                <Text style={styles.secondaryActionText}>{t("safety.blockCreator")}</Text>
+              </Pressable>
+            </View>
           </ScrollView>
+          <ReportContentModal
+            onDismiss={() => setReportVisible(false)}
+            targetId={intention.id}
+            targetType="prayer_intention"
+            visible={reportVisible}
+          />
         </View>
       </LinearGradient>
     </AtmosphericSafeAreaView>
@@ -133,6 +168,17 @@ const styleSheet = createThemedStyles((theme) => ({
     paddingHorizontal: theme.spacing[4],
   },
   actionText: { ...theme.typography.button, color: theme.colors.text.inverse },
+  safetyActions: { gap: theme.spacing[2] },
+  secondaryAction: {
+    alignItems: "center",
+    borderColor: theme.colors.border.default,
+    borderRadius: theme.radii.pill,
+    borderWidth: 1,
+    minHeight: theme.sizes.buttonHeightLarge,
+    justifyContent: "center",
+    paddingHorizontal: theme.spacing[4],
+  },
+  secondaryActionText: { ...theme.typography.button, color: theme.colors.text.primary },
   art: { height: "100%", width: "100%" },
   atmosphereContent: { flex: 1, zIndex: theme.zIndex.card },
   artFrame: {

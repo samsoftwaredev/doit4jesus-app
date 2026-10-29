@@ -1,4 +1,10 @@
-import type { CurrentUserProfile, Gender, ProfileSetup, UpdateCurrentUserProfile } from "./profile.types";
+import type {
+  CurrentUserProfile,
+  Gender,
+  LegalAcceptanceStatus,
+  ProfileSetup,
+  UpdateCurrentUserProfile,
+} from "./profile.types";
 import { logDevelopmentError } from "@/lib/development-logger";
 import { getSupabaseAccessToken } from "@/lib/supabase";
 
@@ -62,6 +68,25 @@ function parseProfileSetup(value: unknown): ProfileSetup {
   };
 }
 
+function readBoolean(value: unknown, field: string): boolean {
+  if (typeof value !== "boolean") throw new Error(`The profile endpoint returned an invalid ${field}.`);
+  return value;
+}
+
+export function parseLegalAcceptanceStatus(value: unknown): LegalAcceptanceStatus {
+  if (!isRecord(value)) throw new Error("The profile endpoint returned an invalid legal acceptance status.");
+
+  return {
+    accepted: readBoolean(value.accepted, "legal acceptance state"),
+    acceptedAt: readNullableString(value.acceptedAt, "legal acceptance date"),
+    communityGuidelinesVersion: readString(value.communityGuidelinesVersion, "Community Guidelines version"),
+    grandfathered: readBoolean(value.grandfathered, "legal grandfather state"),
+    privacyVersion: readString(value.privacyVersion, "Privacy Policy version"),
+    required: readBoolean(value.required, "legal acceptance requirement"),
+    termsVersion: readString(value.termsVersion, "Terms version"),
+  };
+}
+
 export function parseCurrentUserProfileData(value: unknown): CurrentUserProfile {
   if (!isRecord(value)) throw new Error("The profile endpoint returned an unexpected response.");
 
@@ -73,6 +98,7 @@ export function parseCurrentUserProfileData(value: unknown): CurrentUserProfile 
     displayName: readNullableString(value.displayName, "display name"),
     gender: readNullableGender(value.gender),
     leaderboardVisibility: readString(value.leaderboardVisibility, "leaderboard visibility"),
+    legalAcceptance: parseLegalAcceptanceStatus(value.legalAcceptance),
     preferredLanguage: readString(value.preferredLanguage, "preferred language"),
     profileSetup: parseProfileSetup(value.profileSetup),
     prayerMapVisibility: readString(value.prayerMapVisibility, "prayer map visibility"),
@@ -93,7 +119,10 @@ function parseCurrentUserProfile(value: unknown): CurrentUserProfile {
   return parseCurrentUserProfileData(value.data);
 }
 
-async function readProfileApiError(response: Response, action: "delete" | "load" | "update") {
+async function readProfileApiError(
+  response: Response,
+  action: "accept legal documents" | "delete" | "load" | "revoke Apple credentials" | "update",
+) {
   let payload: unknown;
   try {
     payload = await response.json();
@@ -186,4 +215,28 @@ export async function deleteCurrentUserProfile(): Promise<void> {
   if (!response.ok) {
     throw await readProfileApiError(response, "delete");
   }
+}
+
+export async function revokeAppleCredential(authorizationCode: string): Promise<void> {
+  const response = await fetch(`${getProfileApiUrl()}/apple-credential-revocation`, {
+    body: JSON.stringify({ authorizationCode }),
+    headers: { ...(await getProfileHeaders()), "Content-Type": "application/json" },
+    method: "POST",
+  });
+  if (!response.ok) throw await readProfileApiError(response, "revoke Apple credentials");
+}
+
+export async function acceptLegalDocuments(locale: "en" | "es"): Promise<LegalAcceptanceStatus> {
+  const apiUrl = `${getProfileApiUrl()}/legal-acceptance`;
+  const headers = await getProfileHeaders();
+  const response = await fetch(apiUrl, {
+    body: JSON.stringify({ locale, adultConfirmed: true, usResidentConfirmed: true }),
+    headers: { ...headers, "Content-Type": "application/json" },
+    method: "POST",
+  });
+
+  if (!response.ok) throw await readProfileApiError(response, "accept legal documents");
+  const payload = (await response.json()) as unknown;
+  if (!isRecord(payload)) throw new Error("The legal acceptance endpoint returned an unexpected response.");
+  return parseLegalAcceptanceStatus(payload.data);
 }

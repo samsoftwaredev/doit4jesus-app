@@ -11,6 +11,7 @@ import {
   AuthTextInput,
   authScreenStyles,
   createAuthRedirectUrl,
+  startAppleSignIn,
   startGoogleOAuth,
   useAuth,
 } from "@/features/auth";
@@ -30,6 +31,7 @@ export default function SignUpScreen() {
   const { configurationError } = useAuth();
   const [errorMessage, setErrorMessage] = useState<string>();
   const [isGoogleSubmitting, setIsGoogleSubmitting] = useState(false);
+  const [isAppleSubmitting, setIsAppleSubmitting] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string>();
   const { control, handleSubmit } = useForm<SignUpValues>({
@@ -99,11 +101,28 @@ export default function SignUpScreen() {
     void handleGoogleAuth();
   }
 
+  async function handleAppleAuth(): Promise<void> {
+    if (isAppleSubmitting) return;
+    setErrorMessage(undefined);
+    setSuccessMessage(undefined);
+    setIsAppleSubmitting(true);
+    try {
+      await startAppleSignIn();
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : t("auth.appleError"));
+    } finally {
+      setIsAppleSubmitting(false);
+    }
+  }
+
   return (
     <AuthScreen
+      appleAuthDisabled={Boolean(configurationError) || isSubmitting || isGoogleSubmitting}
+      appleAuthLoading={isAppleSubmitting}
       googleAuthDisabled={Boolean(configurationError) || isSubmitting}
       googleAuthLoading={isGoogleSubmitting}
       onGoogleAuth={handleGoogleAuthPress}
+      onAppleAuth={() => void handleAppleAuth()}
       title={t("auth.createAccount")}
       subtitle={t("auth.createAccountDescription")}
     >

@@ -9,6 +9,7 @@ const mockWindowDimensions = jest.fn();
 const mockTabsProps = jest.fn();
 const mockTabIcons = jest.fn();
 const mockTabScreens = jest.fn();
+let mockTextScale = 1;
 const expectedTabIcons = [
   { color: theme.colors.icon.active, name: "home-variant-outline" },
   { color: theme.colors.icon.muted, name: "home-variant-outline" },
@@ -69,7 +70,7 @@ jest.mock("expo-image", () => {
 
 jest.mock("@/theme/AppThemeProvider", () => {
   const { theme } = jest.requireActual<typeof import("@/theme/tokens")>("@/theme/tokens");
-  return { useAppTheme: () => ({ theme }) };
+  return { useAppTheme: () => ({ textScale: mockTextScale, theme }) };
 });
 
 function setViewport(width: number, height = 844, fontScale = 1) {
@@ -79,6 +80,7 @@ function setViewport(width: number, height = 844, fontScale = 1) {
 describe("ResponsiveTabs", () => {
   beforeEach(async () => {
     jest.clearAllMocks();
+    mockTextScale = 1;
     await i18n.changeLanguage("en");
   });
 
@@ -113,6 +115,17 @@ describe("ResponsiveTabs", () => {
     expect(screen.getByLabelText("Community tab")).toBeTruthy();
     expect(screen.getByLabelText("Profile tab")).toBeTruthy();
     expect(options.tabBarActiveTintColor).not.toBe(options.tabBarInactiveTintColor);
+  });
+
+  it("uses the in-app multiplier for tab labels and responsive bar height", async () => {
+    mockTextScale = 1.3;
+    setViewport(390, 844, 1);
+
+    await render(<ResponsiveTabs />);
+
+    const options = mockTabsProps.mock.lastCall?.[0].screenOptions;
+    expect(options.tabBarLabelStyle).toMatchObject({ fontSize: 14.3, lineHeight: 18.2 });
+    expect(options.tabBarStyle.height).toBeGreaterThan(theme.sizes.bottomNavigationHeight);
   });
 
   it("localizes tab names and accessible labels in Spanish", async () => {

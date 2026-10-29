@@ -1,6 +1,6 @@
 import type { CurrentUserProfile } from "./profile.types";
 
-export type ProfileAccessState = "complete" | "error" | "loading" | "onboarding";
+export type ProfileAccessState = "complete" | "error" | "legal" | "loading" | "onboarding";
 
 export function getProfileAccessState({
   error,
@@ -12,6 +12,7 @@ export function getProfileAccessState({
   profile: CurrentUserProfile | null;
 }): ProfileAccessState {
   if (isLoading) return "loading";
+  if (profile?.legalAcceptance.required === true) return "legal";
   if (profile?.profileSetup.complete === true) return "complete";
   if (profile?.profileSetup.complete === false) return "onboarding";
   return error ? "error" : "loading";

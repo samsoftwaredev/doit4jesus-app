@@ -4,20 +4,12 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  AccessibilityInfo,
-  Modal,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  useWindowDimensions,
-  View,
-} from "react-native";
+import { AccessibilityInfo, Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import Animated, { FadeIn, useReducedMotion } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Confetti, SacredAtmosphere } from "@/components/ui";
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
 import { recordPrayerForIntention } from "@/features/prayer/intentions";
 import { recordRosaryActivity } from "@/features/prayer/rosary/api/activities.api";
 import {
@@ -93,7 +85,7 @@ export function RosaryPrayerScreen({
   const { t } = useTranslation();
   const { language, locale } = useAppLanguage();
   const router = useRouter();
-  const { width, fontScale } = useWindowDimensions();
+  const { fontScale, width } = useResponsiveLayout();
   const reduceMotion = useReducedMotion();
   const [completionVisible, setCompletionVisible] = useState(false);
   const [completionCelebration, setCompletionCelebration] = useState(0);

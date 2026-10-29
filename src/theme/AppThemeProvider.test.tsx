@@ -3,10 +3,12 @@ import { act, renderHook, waitFor } from "@testing-library/react-native";
 import * as ReactNative from "react-native";
 
 import {
+  APP_TEXT_SIZE_PREFERENCE_STORAGE_KEY,
   APP_THEME_PREFERENCE_STORAGE_KEY,
   AppThemeProvider,
   formatAppearancePreference,
   getStatusBarStyle,
+  parseTextSizePreference,
   resolveColorScheme,
   useAppTheme,
 } from "@/theme/AppThemeProvider";
@@ -38,6 +40,26 @@ describe("AppThemeProvider", () => {
     expect(result.current.preference).toBe("light");
     expect(result.current.colorScheme).toBe("light");
     expect(mockGetItem).toHaveBeenCalledWith(APP_THEME_PREFERENCE_STORAGE_KEY);
+  });
+
+  it("hydrates, applies, and persists the device-local text size preference", async () => {
+    mockGetItem.mockImplementation(async (key) => (key === APP_TEXT_SIZE_PREFERENCE_STORAGE_KEY ? "120" : null));
+
+    const { result } = await renderHook(() => useAppTheme(), { wrapper: AppThemeProvider });
+
+    await waitFor(() => expect(result.current.isHydrated).toBe(true));
+    expect(result.current.textSizePreference).toBe(120);
+    expect(result.current.textScale).toBe(1.2);
+
+    await act(async () => result.current.setTextSizePreference(130));
+
+    expect(result.current.textSizePreference).toBe(130);
+    expect(result.current.textScale).toBe(1.3);
+    expect(mockSetItem).toHaveBeenCalledWith(APP_TEXT_SIZE_PREFERENCE_STORAGE_KEY, "130");
+  });
+
+  it.each([null, "", "90", "131", "large"])("uses 100%% for invalid text size storage %p", (storedValue) => {
+    expect(parseTextSizePreference(storedValue)).toBe(100);
   });
 
   it.each([null, "sepia", "", "LIGHT"])("falls back to System for %p storage", async (storedValue) => {

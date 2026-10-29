@@ -31,7 +31,7 @@ function setResponsiveLayout(isLargeText = false) {
 const intention: ApprovedPrayerIntention = {
   approvedAt: "2026-08-01T00:00:00.000Z",
   createdAt: "2026-07-28T00:00:00.000Z",
-  creator: { avatarUrl: null, countryCode: "US", displayName: "John Paul" },
+  creator: { avatarUrl: null, countryCode: "US", displayName: "John Paul", userId: "user-1" },
   description: "Please pray for healing and strength.",
   expiresAt: "2026-09-01T00:00:00.000Z",
   id: "intention-1",

@@ -71,4 +71,20 @@ describe("theme-aware cached values", () => {
 
     expect(themed.result.current.styles.title).toMatchObject({ color: lightTheme.colors.text.primary });
   });
+
+  it("scales cached font metrics once without changing control dimensions", async () => {
+    const styleSheet = createThemedStyles({
+      title: { fontSize: 15, lineHeight: 22, minHeight: 44 },
+    });
+    const themed = await renderHook(() => ({ appearance: useAppTheme(), styles: useThemedStyles(styleSheet) }), {
+      wrapper: AppThemeProvider,
+    });
+
+    await waitFor(() => expect(themed.result.current.appearance.isHydrated).toBe(true));
+    expect(themed.result.current.styles.title).toMatchObject({ fontSize: 15, lineHeight: 22, minHeight: 44 });
+
+    await act(async () => themed.result.current.appearance.setTextSizePreference(130));
+
+    expect(themed.result.current.styles.title).toMatchObject({ fontSize: 19.5, lineHeight: 28.6, minHeight: 44 });
+  });
 });

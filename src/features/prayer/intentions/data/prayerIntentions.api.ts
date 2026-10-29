@@ -63,6 +63,7 @@ function parseCreator(value: unknown) {
     avatarUrl: readNullableString(creator.avatarUrl, "creator avatar URL"),
     countryCode: readNullableString(creator.countryCode, "creator country code"),
     displayName: readString(creator.displayName, "creator display name"),
+    userId: readString(creator.userId, "creator user ID"),
   };
 }
 

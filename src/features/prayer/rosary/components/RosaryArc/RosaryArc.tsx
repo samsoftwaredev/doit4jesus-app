@@ -1,7 +1,7 @@
 import { Image } from "expo-image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Pressable, StyleSheet, Text, useWindowDimensions, View, type ViewStyle } from "react-native";
+import { Pressable, StyleSheet, Text, View, type ViewStyle } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   cancelAnimation,
@@ -14,6 +14,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import type { BeadState, PrayerProgress, RosaryBead } from "@/features/prayer/rosary/types";
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
@@ -218,7 +219,7 @@ export function RosaryArc({
 }: RosaryArcProps) {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
-  const { width: windowWidth, height: windowHeight, fontScale } = useWindowDimensions();
+  const { fontScale, height: windowHeight, width: windowWidth } = useResponsiveLayout();
   const reduceMotion = useReducedMotion();
   const [stageWidth, setStageWidth] = useState(windowWidth);
   const [tooltip, setTooltip] = useState<VisibleTooltip>();

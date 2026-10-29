@@ -10,7 +10,7 @@ let mockAuthState = {
   isPasswordRecovery: false,
   session: { user: { id: "user-1" } } as { user: { id: string } } | null,
 };
-let mockProfileAccessState: "complete" | "error" | "onboarding" = "error";
+let mockProfileAccessState: "complete" | "error" | "legal" | "onboarding" = "error";
 
 jest.mock("expo-router", () => {
   const React = jest.requireActual("react");
@@ -119,6 +119,10 @@ describe("Root navigator profile error", () => {
 
     mockAuthState = { ...mockAuthState, isPasswordRecovery: false };
     mockProfileAccessState = "onboarding";
+    await rendered.rerender(<RootNavigator />);
+    expect(rendered.queryByTestId("background-music-provider")).toBeNull();
+
+    mockProfileAccessState = "legal";
     await rendered.rerender(<RootNavigator />);
     expect(rendered.queryByTestId("background-music-provider")).toBeNull();
   });

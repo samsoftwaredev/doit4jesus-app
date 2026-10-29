@@ -8,6 +8,7 @@ export type PrayerIntentionCreator = {
   avatarUrl: string | null;
   countryCode: string | null;
   displayName: string;
+  userId: string;
 };
 
 export type ApprovedPrayerIntention = {

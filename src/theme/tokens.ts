@@ -1132,15 +1132,26 @@ export const lightTheme = {
 export type AppTheme = typeof darkTheme | typeof lightTheme;
 
 let activeTheme: AppTheme = darkTheme;
+let activeTextScale = 1;
 
 /** Updates the compatibility palette used by legacy modules during their incremental migration. */
 export function setActiveAppTheme(nextTheme: AppTheme): void {
   activeTheme = nextTheme;
 }
 
+/** Updates the compatibility scale used by cached styles accessed outside React hooks. */
+export function setActiveTextScale(nextScale: number): void {
+  activeTextScale = nextScale;
+}
+
 /** Returns the currently resolved palette for cached theme-aware styles. */
 export function getActiveAppTheme(): AppTheme {
   return activeTheme;
+}
+
+/** Returns the currently selected in-app text multiplier. */
+export function getActiveTextScale(): number {
+  return activeTextScale;
 }
 
 /**

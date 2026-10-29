@@ -14,7 +14,7 @@ const pageMeta = { hasMore: false, limit: 10, nextOffset: null, offset: 0 };
 const approvedIntention = {
   approvedAt: "2026-08-20T00:00:00.000Z",
   createdAt: "2026-08-19T00:00:00.000Z",
-  creator: { avatarUrl: null, countryCode: "US", displayName: "Maria" },
+  creator: { avatarUrl: null, countryCode: "US", displayName: "Maria", userId: "user-1" },
   description: "For my family.",
   expiresAt: "2026-09-20T00:00:00.000Z",
   id: "intention-1",

@@ -1,11 +1,12 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Pressable, Text, useWindowDimensions, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
 import { AvatarWithCountryBadge } from "@/components/identity";
 import { useRosaryPresence } from "@/features/prayer/rosary/hooks/useRosaryPresence";
 import type { RosaryPresenceUser } from "@/features/prayer/rosary/presence.types";
 import { getProfileAvatarSource } from "@/features/profile/saints";
+import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
 import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
@@ -23,7 +24,7 @@ export function RosaryPresence() {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
   const { locale } = useAppLanguage();
-  const { fontScale, width } = useWindowDimensions();
+  const { fontScale, width } = useResponsiveLayout();
   const { connectionState, currentUserId, users } = useRosaryPresence();
   const [listVisible, setListVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState<SelectedUser | null>(null);

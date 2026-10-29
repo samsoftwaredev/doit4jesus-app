@@ -4,7 +4,15 @@ import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
 import { useTranslation } from "react-i18next";
 
-import { AuthMessage, AuthScreen, AuthTextInput, authScreenStyles, startGoogleOAuth, useAuth } from "@/features/auth";
+import {
+  AuthMessage,
+  AuthScreen,
+  AuthTextInput,
+  authScreenStyles,
+  startAppleSignIn,
+  startGoogleOAuth,
+  useAuth,
+} from "@/features/auth";
 import { Button } from "@/components/ui";
 import { supabase } from "@/lib/supabase";
 import { useThemedStyles } from "@/theme/createThemedStyles";
@@ -21,6 +29,7 @@ export default function SignInScreen() {
   const { configurationError } = useAuth();
   const [errorMessage, setErrorMessage] = useState<string>();
   const [isGoogleSubmitting, setIsGoogleSubmitting] = useState(false);
+  const [isAppleSubmitting, setIsAppleSubmitting] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { control, handleSubmit } = useForm<SignInValues>({
     defaultValues: { email: "", password: "" },
@@ -74,11 +83,27 @@ export default function SignInScreen() {
     void handleGoogleAuth();
   }
 
+  async function handleAppleAuth(): Promise<void> {
+    if (isAppleSubmitting) return;
+    setErrorMessage(undefined);
+    setIsAppleSubmitting(true);
+    try {
+      await startAppleSignIn();
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : t("auth.appleError"));
+    } finally {
+      setIsAppleSubmitting(false);
+    }
+  }
+
   return (
     <AuthScreen
+      appleAuthDisabled={Boolean(configurationError) || isSubmitting || isGoogleSubmitting}
+      appleAuthLoading={isAppleSubmitting}
       googleAuthDisabled={Boolean(configurationError) || isSubmitting}
       googleAuthLoading={isGoogleSubmitting}
       onGoogleAuth={handleGoogleAuthPress}
+      onAppleAuth={() => void handleAppleAuth()}
       title={t("auth.signIn")}
       subtitle={t("auth.signInDescription")}
     >

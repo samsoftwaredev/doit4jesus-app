@@ -14,7 +14,12 @@ import type { NotificationPreferences } from "@/features/onboarding";
 import { logDevelopmentError } from "@/lib/development-logger";
 import { supabase } from "@/lib/supabase";
 import { useAppLanguage } from "@/localization";
-import { type ThemePreference, useAppTheme } from "@/theme/AppThemeProvider";
+import {
+  TEXT_SIZE_PREFERENCES,
+  type TextSizePreference,
+  type ThemePreference,
+  useAppTheme,
+} from "@/theme/AppThemeProvider";
 import { useAppVisualEffects } from "@/theme/AppVisualEffectsProvider";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
@@ -28,7 +33,7 @@ export default function SettingsScreen() {
   const { notificationPreferences: cachedNotificationPreferences, replaceNotificationPreferences } =
     useCurrentProfile();
   const { language, setLanguage } = useAppLanguage();
-  const { preference, setPreference, theme: appTheme } = useAppTheme();
+  const { preference, setPreference, setTextSizePreference, textSizePreference, theme: appTheme } = useAppTheme();
   const { dustEnabled, lightingEnabled, setDustEnabled, setLightingEnabled } = useAppVisualEffects();
   const [signOutError, setSignOutError] = useState<string>();
   const [isSigningOut, setIsSigningOut] = useState(false);
@@ -55,6 +60,19 @@ export default function SettingsScreen() {
       value: "dark",
     },
   ];
+  const textSizeOptions: readonly { label: string; value: TextSizePreference }[] = TEXT_SIZE_PREFERENCES.map(
+    (value) => ({
+      label:
+        value === 100
+          ? t("settings.textSizeDefault")
+          : value === 110
+            ? t("settings.textSizeLarge")
+            : value === 120
+              ? t("settings.textSizeLarger")
+              : t("settings.textSizeLargest"),
+      value,
+    }),
+  );
 
   /** Enables or hides the decorative foreground dust across the app. */
   const handleDustEnabledChange = (enabled: boolean) => {
@@ -132,6 +150,53 @@ export default function SettingsScreen() {
         <Card title={t("common.language")}>
           <Text style={styles.languageDescription}>{t("settings.languageDescription")}</Text>
           <LanguageSelector language={language} onChange={(nextLanguage) => void setLanguage(nextLanguage)} />
+        </Card>
+        <Card title={t("settings.textSizeTitle")}>
+          <Text style={styles.textSizeDescription}>{t("settings.textSizeDescription")}</Text>
+          <View
+            accessibilityLabel={t("settings.textSizeGroupLabel")}
+            accessibilityRole="radiogroup"
+            style={styles.textSizeGroup}
+          >
+            {textSizeOptions.map((option) => {
+              const isSelected = textSizePreference === option.value;
+              return (
+                <Pressable
+                  accessibilityLabel={t("settings.textSizeOptionLabel", {
+                    label: option.label,
+                    percent: option.value,
+                  })}
+                  accessibilityRole="radio"
+                  accessibilityState={{ checked: isSelected }}
+                  key={option.value}
+                  onPress={() => void setTextSizePreference(option.value)}
+                  style={({ pressed }) => [
+                    styles.textSizeOption,
+                    { borderColor: isSelected ? appTheme.colors.border.focus : appTheme.colors.border.default },
+                    isSelected && styles.textSizeOptionSelected,
+                    pressed && styles.textSizeOptionPressed,
+                  ]}
+                >
+                  <View
+                    accessible={false}
+                    style={[
+                      styles.radioIndicator,
+                      {
+                        backgroundColor: isSelected ? appTheme.colors.brand.primary : appTheme.colors.transparent,
+                        borderColor: isSelected ? appTheme.colors.border.focus : appTheme.colors.border.interactive,
+                      },
+                    ]}
+                  >
+                    {isSelected ? <Feather color={appTheme.colors.icon.inverse} name="check" size={14} /> : null}
+                  </View>
+                  <View style={styles.textSizeOptionCopy}>
+                    <Text style={styles.textSizeOptionLabel}>{option.label}</Text>
+                    <Text style={styles.textSizeOptionPercent}>{option.value}%</Text>
+                  </View>
+                </Pressable>
+              );
+            })}
+          </View>
         </Card>
         <Card title={t("settings.appearance")}>
           <View
@@ -404,6 +469,34 @@ const styleSheet = createThemedStyles((theme) => ({
     ...theme.typography.bodySmall,
     color: theme.colors.text.muted,
     marginBottom: theme.spacing[3],
+  },
+  textSizeDescription: {
+    ...theme.typography.bodySmall,
+    color: theme.colors.text.muted,
+    marginBottom: theme.spacing[3],
+  },
+  textSizeGroup: { gap: theme.spacing[2] },
+  textSizeOption: {
+    alignItems: "center",
+    backgroundColor: theme.colors.surface.tertiary,
+    borderRadius: theme.radii.md,
+    borderWidth: theme.borderWidths.thin,
+    flexDirection: "row",
+    minHeight: theme.sizes.touchTarget,
+    paddingHorizontal: theme.spacing[3],
+    paddingVertical: theme.spacing[2],
+  },
+  textSizeOptionCopy: { flex: 1, minWidth: 0 },
+  textSizeOptionLabel: { ...theme.typography.bodyMedium, color: theme.colors.text.primary },
+  textSizeOptionPercent: {
+    ...theme.typography.bodySmall,
+    color: theme.colors.text.muted,
+    marginTop: theme.spacing[0.5],
+  },
+  textSizeOptionPressed: { opacity: theme.opacity.pressed },
+  textSizeOptionSelected: {
+    backgroundColor: theme.colors.surface.green,
+    borderWidth: theme.borderWidths.medium,
   },
   notificationCopy: { flex: 1, minWidth: 0 },
   notificationLabel: { ...theme.typography.bodyMedium, color: theme.colors.text.primary },

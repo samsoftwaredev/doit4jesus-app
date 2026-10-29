@@ -7,6 +7,16 @@ export interface ProfileSetup {
   nextStep: string | null;
 }
 
+export interface LegalAcceptanceStatus {
+  accepted: boolean;
+  acceptedAt: string | null;
+  communityGuidelinesVersion: string;
+  grandfathered: boolean;
+  privacyVersion: string;
+  required: boolean;
+  termsVersion: string;
+}
+
 export interface CurrentUserProfile {
   avatarUrl: string | null;
   countryCode: string | null;
@@ -15,6 +25,7 @@ export interface CurrentUserProfile {
   displayName: string | null;
   gender: Gender | null;
   leaderboardVisibility: string;
+  legalAcceptance: LegalAcceptanceStatus;
   preferredLanguage: string;
   profileSetup: ProfileSetup;
   prayerMapVisibility: string;

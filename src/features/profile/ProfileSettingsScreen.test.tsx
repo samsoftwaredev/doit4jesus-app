@@ -10,6 +10,7 @@ const mockFetchProfile = jest.fn();
 const mockUpdateProfile = jest.fn();
 const mockDeleteProfile = jest.fn();
 const mockSignOut = jest.fn();
+const mockGetAppleDeletionAuthorizationCode = jest.fn();
 const safeAreaMetrics = {
   frame: { height: 844, width: 390, x: 0, y: 0 },
   insets: { bottom: 0, left: 0, right: 0, top: 0 },
@@ -20,6 +21,7 @@ jest.mock("expo-router", () => ({
 }));
 
 jest.mock("@/features/auth", () => ({
+  getAppleDeletionAuthorizationCode: (...args: unknown[]) => mockGetAppleDeletionAuthorizationCode(...args),
   useAuth: () => ({ configurationError: null }),
 }));
 
@@ -27,6 +29,7 @@ jest.mock("@/features/profile", () => ({
   deleteCurrentUserProfile: (...args: unknown[]) => mockDeleteProfile(...args),
   fetchCurrentUserProfile: (...args: unknown[]) => mockFetchProfile(...args),
   updateCurrentUserProfile: (...args: unknown[]) => mockUpdateProfile(...args),
+  revokeAppleCredential: jest.fn(),
 }));
 
 jest.mock("@/lib/supabase", () => ({
@@ -45,6 +48,15 @@ const profile: CurrentUserProfile = {
   displayName: "Test User",
   gender: "male",
   leaderboardVisibility: "public",
+  legalAcceptance: {
+    accepted: false,
+    acceptedAt: null,
+    communityGuidelinesVersion: "2026-10-28",
+    grandfathered: true,
+    privacyVersion: "2026-10-28",
+    required: false,
+    termsVersion: "2026-10-28",
+  },
   preferredLanguage: "en",
   profileSetup: { complete: true, completedAt: "2026-08-22T15:28:02.335433+00:00", missingFields: [], nextStep: null },
   prayerMapVisibility: "aggregated",
@@ -72,6 +84,7 @@ describe("Profile settings", () => {
     mockFetchProfile.mockReset();
     mockUpdateProfile.mockReset();
     mockDeleteProfile.mockResolvedValue(undefined);
+    mockGetAppleDeletionAuthorizationCode.mockResolvedValue(null);
     mockSignOut.mockResolvedValue({ error: null });
   });
 
@@ -85,6 +98,7 @@ describe("Profile settings", () => {
     expect(screen.getByText("Contact Support")).toBeTruthy();
     expect(screen.getByText("Privacy Policy")).toBeTruthy();
     expect(screen.getByText("Terms of Service")).toBeTruthy();
+    expect(screen.getByText("Community Guidelines")).toBeTruthy();
     expect(screen.getByText("App Version")).toBeTruthy();
     expect(screen.getByText("Sign Out")).toBeTruthy();
     expect(screen.getByText("Delete Account")).toBeTruthy();

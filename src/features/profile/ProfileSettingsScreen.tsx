@@ -19,17 +19,19 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { PageHeader } from "@/components";
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { Button } from "@/components/ui";
-import { APP_CONFIG } from "@/config/app-config";
-import { useAuth } from "@/features/auth";
+import { APP_CONFIG, getLocalizedLegalUrls } from "@/config/app-config";
+import { getAppleDeletionAuthorizationCode, useAuth } from "@/features/auth";
 import {
   deleteCurrentUserProfile,
   fetchCurrentUserProfile,
   updateCurrentUserProfile,
   type CurrentUserProfile,
   type Gender,
+  revokeAppleCredential,
 } from "@/features/profile";
 import { logDevelopmentError } from "@/lib/development-logger";
 import { supabase } from "@/lib/supabase";
+import { useAppLanguage } from "@/localization";
 import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
 import { useAppTheme } from "@/theme/AppThemeProvider";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
@@ -55,6 +57,8 @@ export function formatProfileLocation(profile: CurrentUserProfile): string {
 export function ProfileSettingsScreen() {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
+  const { language } = useAppLanguage();
+  const legalUrls = getLocalizedLegalUrls(language);
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { configurationError } = useAuth();
@@ -168,6 +172,8 @@ export function ProfileSettingsScreen() {
     deleteProfileInFlightRef.current = true;
     setIsDeletingProfile(true);
     try {
+      const appleAuthorizationCode = await getAppleDeletionAuthorizationCode();
+      if (appleAuthorizationCode) await revokeAppleCredential(appleAuthorizationCode);
       await deleteCurrentUserProfile();
     } catch (error) {
       logDevelopmentError("deleting the profile", error);
@@ -295,18 +301,29 @@ export function ProfileSettingsScreen() {
             external
             icon="shield"
             label={t("profile.privacyPolicy")}
-            onPress={() => void openExternalUrl(APP_CONFIG.privacyPolicyUrl)}
+            onPress={() => void openExternalUrl(legalUrls.privacy)}
           />
           <SettingsRow
             external
             icon="file-text"
             label={t("profile.terms")}
-            onPress={() => void openExternalUrl(APP_CONFIG.termsOfServiceUrl)}
+            onPress={() => void openExternalUrl(legalUrls.terms)}
+          />
+          <SettingsRow
+            external
+            icon="users"
+            label={t("profile.communityGuidelines")}
+            onPress={() => void openExternalUrl(legalUrls.communityGuidelines)}
           />
           <SettingsRow icon="info" isLast label={t("profile.appVersion")} value={appVersion} />
         </SettingsSection>
 
         <SettingsSection title={t("profile.account")}>
+          <SettingsRow
+            icon="slash"
+            label={t("safety.blockedAccounts")}
+            onPress={() => router.push("/blocked-accounts")}
+          />
           <SettingsRow
             icon="log-out"
             isLast

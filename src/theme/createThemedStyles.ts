@@ -1,13 +1,15 @@
 import { ImageStyle, StyleSheet, TextStyle, ViewStyle } from "react-native";
 
 import { useAppTheme } from "@/theme/AppThemeProvider";
-import { darkTheme, getActiveAppTheme, lightTheme, type AppTheme } from "@/theme/tokens";
+import { darkTheme, getActiveAppTheme, getActiveTextScale, lightTheme, type AppTheme } from "@/theme/tokens";
 
 type NamedStyles = Record<string, ImageStyle | TextStyle | ViewStyle>;
 type ThemedFactory<T> = (theme: AppTheme) => T;
 
 const lightColorByDarkColor = new Map<string, string>();
-const themedStyleVariants = new WeakMap<object, { dark: NamedStyles; light: NamedStyles }>();
+const textScales = [1, 1.1, 1.2, 1.3] as const;
+type StyleScaleVariants = Map<number, NamedStyles>;
+const themedStyleVariants = new WeakMap<object, { dark: StyleScaleVariants; light: StyleScaleVariants }>();
 
 /** Pairs every dark semantic leaf with the matching light semantic leaf. */
 function indexPalettePairs(darkValue: unknown, lightValue: unknown): void {
@@ -133,6 +135,22 @@ function mapStyleValue(value: unknown): unknown {
   return Object.fromEntries(Object.entries(value).map(([key, child]) => [key, mapStyleValue(child)]));
 }
 
+/** Multiplies only text metrics so layout spacing, artwork, icons, and touch targets remain stable. */
+function scaleTextMetrics(value: unknown, scale: number, property?: string): unknown {
+  if (typeof value === "number" && (property === "fontSize" || property === "lineHeight")) {
+    return value * scale;
+  }
+  if (Array.isArray(value)) return value.map((child) => scaleTextMetrics(child, scale));
+  if (!value || typeof value !== "object") return value;
+
+  return Object.fromEntries(Object.entries(value).map(([key, child]) => [key, scaleTextMetrics(child, scale, key)]));
+}
+
+/** Creates native style sheets for every supported bounded text multiplier. */
+function createScaleVariants<T extends NamedStyles>(definitions: T): StyleScaleVariants {
+  return new Map(textScales.map((scale) => [scale, StyleSheet.create(scaleTextMetrics(definitions, scale) as T)]));
+}
+
 /** Creates cached dark and light configuration values from a theme factory or legacy dark value. */
 export function createThemedValue<T extends object>(valueOrFactory: T | ThemedFactory<T>): T {
   const isFactory = typeof valueOrFactory === "function";
@@ -156,12 +174,14 @@ export function createThemedStyles<T extends NamedStyles>(stylesOrFactory: T | T
   const lightDefinitions = isFactory
     ? (stylesOrFactory as ThemedFactory<T>)(lightTheme)
     : (mapStyleValue(darkDefinitions) as T);
-  const darkStyles = StyleSheet.create(darkDefinitions);
-  const lightStyles = StyleSheet.create(lightDefinitions);
+  const darkStyles = createScaleVariants(darkDefinitions);
+  const lightStyles = createScaleVariants(lightDefinitions);
 
-  const styleSheet = new Proxy(darkStyles, {
+  const baselineDarkStyles = darkStyles.get(1) as T;
+  const styleSheet = new Proxy(baselineDarkStyles, {
     get(target, property: string | symbol) {
-      const selectedStyles = getActiveAppTheme() === lightTheme ? lightStyles : target;
+      const paletteVariants = getActiveAppTheme() === lightTheme ? lightStyles : darkStyles;
+      const selectedStyles = paletteVariants.get(getActiveTextScale()) ?? target;
       return Reflect.get(selectedStyles, property);
     },
   }) as T;
@@ -175,9 +195,9 @@ export function createThemedStyles<T extends NamedStyles>(stylesOrFactory: T | T
  * observe and invalidate styles when the selected appearance changes.
  */
 export function useThemedStyles<T extends NamedStyles>(styleSheet: T): T {
-  const { colorScheme } = useAppTheme();
+  const { colorScheme, textScale } = useAppTheme();
   const variants = themedStyleVariants.get(styleSheet);
 
   if (!variants) return styleSheet;
-  return variants[colorScheme] as T;
+  return (variants[colorScheme].get(textScale) ?? variants[colorScheme].get(1)) as T;
 }

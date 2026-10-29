@@ -1,7 +1,8 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import * as AppleAuthentication from "expo-apple-authentication";
 import { useRouter } from "expo-router";
 import type { ComponentProps } from "react";
-import { Text, TextInput, View } from "react-native";
+import { Platform, Text, TextInput, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { ScreenShell } from "@/components/screen-shell";
@@ -11,9 +12,12 @@ import { theme } from "@/theme/tokens";
 
 type AuthScreenProps = {
   children: React.ReactNode;
+  appleAuthDisabled?: boolean;
+  appleAuthLoading?: boolean;
   googleAuthDisabled?: boolean;
   googleAuthLoading?: boolean;
   onGoogleAuth?: () => void;
+  onAppleAuth?: () => void;
   subtitle: string;
   title: string;
 };
@@ -26,9 +30,12 @@ type AuthTextInputProps = ComponentProps<typeof TextInput> & {
 /** Renders the shared themed frame and optional Google action used by authentication screens. */
 export function AuthScreen({
   children,
+  appleAuthDisabled = false,
+  appleAuthLoading = false,
   googleAuthDisabled = false,
   googleAuthLoading = false,
   onGoogleAuth,
+  onAppleAuth,
   subtitle,
   title,
 }: AuthScreenProps) {
@@ -46,6 +53,20 @@ export function AuthScreen({
     >
       <Card fullWidth>
         <View style={styles.form}>
+          {Platform.OS === "ios" && onAppleAuth ? (
+            <AppleAuthentication.AppleAuthenticationButton
+              buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+              buttonType={AppleAuthentication.AppleAuthenticationButtonType.CONTINUE}
+              cornerRadius={8}
+              onPress={() => {
+                if (!appleAuthDisabled && !appleAuthLoading) onAppleAuth();
+              }}
+              style={[
+                styles.appleButton,
+                appleAuthDisabled || appleAuthLoading ? styles.appleButtonDisabled : undefined,
+              ]}
+            />
+          ) : null}
           {onGoogleAuth ? (
             <>
               <Button
@@ -127,6 +148,8 @@ export const authScreenStyles = createThemedStyles((theme) => ({
 }));
 
 const styleSheet = createThemedStyles((theme) => ({
+  appleButton: { height: theme.sizes.buttonHeightLarge, width: "100%" },
+  appleButtonDisabled: { opacity: 0.5 },
   content: {
     maxWidth: 480,
   },
