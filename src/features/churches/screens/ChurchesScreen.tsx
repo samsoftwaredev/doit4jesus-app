@@ -1,7 +1,7 @@
 import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ActivityIndicator, Pressable, Text, TextInput, useWindowDimensions, View } from "react-native";
+import { ActivityIndicator, Pressable, Text, useWindowDimensions, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { ScreenShell } from "@/components/screen-shell";
@@ -33,15 +33,36 @@ import {
   type NotificationWeekday,
   type ResolvedPostalCode,
 } from "../churches.types";
-import { ChurchDiscoveryGlobe, ChurchMap, ChurchResultsSheet, type ChurchResultsSheetSnap } from "../components";
+import {
+  ChurchDiscoveryGlobe,
+  ChurchMap,
+  ChurchResultsSheet,
+  ChurchSearchToolbar,
+  type ChurchDiscoveryView,
+  type ChurchFilterSelection,
+  type ChurchResultsSheetSnap,
+} from "../components";
 
-type DiscoveryView = "list" | "map";
 type ScreenStage = "discover" | "preferences";
 type MutationFailure = { churchId: string; message: string; name: string };
+type ClassifiedChurchSearch =
+  | { kind: "empty" }
+  | { kind: "invalidPostalCode" }
+  | { kind: "postalCode"; value: string }
+  | { kind: "query"; value: string };
 
 const SEARCH_PAGE_SIZE = 20;
 const DEFAULT_RADIUS_MILES = 25;
 const MAX_SUBSCRIPTIONS = 3;
+
+/** Classifies one explicit submission without guessing whether backend q text is a name or an address. */
+export function classifyChurchSearchTerm(searchTerm: string): ClassifiedChurchSearch {
+  const value = searchTerm.trim();
+  if (!value) return { kind: "empty" };
+  if (/^\d{5}$/u.test(value)) return { kind: "postalCode", value };
+  if (/^\d+$/u.test(value)) return { kind: "invalidPostalCode" };
+  return { kind: "query", value };
+}
 
 /** Builds one readable address line without exposing blank optional fields. */
 function formatChurchAddress(church: ChurchSummary): string {
@@ -76,14 +97,13 @@ export function ChurchesScreen() {
   const { isDesktop, isTablet } = useResponsiveLayout();
   const { height: viewportHeight } = useWindowDimensions();
   const [stage, setStage] = useState<ScreenStage>("discover");
-  const [postalCode, setPostalCode] = useState("");
-  const [query, setQuery] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [resolvedPostalCode, setResolvedPostalCode] = useState<ResolvedPostalCode | null>(null);
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDioceseId, setSelectedDioceseId] = useState("");
   const [results, setResults] = useState<ChurchSummary[]>([]);
   const [nextOffset, setNextOffset] = useState<number | null>(null);
-  const [view, setView] = useState<DiscoveryView>("list");
+  const [view, setView] = useState<ChurchDiscoveryView>("list");
   const [hasSearched, setHasSearched] = useState(false);
   const [sheetSnap, setSheetSnap] = useState<ChurchResultsSheetSnap>("peek");
   const [selectedDetails, setSelectedDetails] = useState<ChurchDetails | null>(null);
@@ -149,11 +169,11 @@ export function ChurchesScreen() {
     return t(fallbackKey);
   }
 
-  /** Resets stale map and result state whenever the ZIP no longer matches the submitted location. */
-  function handlePostalCodeChange(value: string): void {
-    setPostalCode(value);
-    if (!hasSearched && !resolvedPostalCode) return;
-    if (value.trim() === resolvedPostalCode?.postalCode) return;
+  /** Clears submitted discovery state as soon as the unified search term is edited. */
+  function handleSearchTermChange(value: string): void {
+    setSearchTerm(value);
+    setErrorMessage(null);
+    if (!hasSearched && !resolvedPostalCode && results.length === 0) return;
     setResolvedPostalCode(null);
     setSelectedCity("");
     setSelectedDioceseId("");
@@ -165,41 +185,42 @@ export function ChurchesScreen() {
     setSheetSnap("peek");
   }
 
-  /** Performs either ZIP-based discovery or a q-only anywhere search at the requested offset. */
-  async function runSearch(offset = 0): Promise<void> {
-    const cleanPostalCode = postalCode.trim();
-    const cleanQuery = query.trim();
-    if (cleanPostalCode && !/^\d{5}$/u.test(cleanPostalCode)) {
+  /** Performs either ZIP discovery or backend-authoritative name/address search at the requested offset. */
+  async function runSearch(offset = 0, filterOverride?: ChurchFilterSelection): Promise<void> {
+    const classifiedSearch = classifyChurchSearchTerm(searchTerm);
+    if (classifiedSearch.kind === "invalidPostalCode") {
       setErrorMessage(t("churches.search.invalidZip"));
       return;
     }
-    if (!cleanPostalCode && !cleanQuery) {
+    if (classifiedSearch.kind === "empty") {
       setErrorMessage(t("churches.search.invalid"));
       return;
     }
+    const isPostalSearch = classifiedSearch.kind === "postalCode";
     const loadingMore = offset > 0;
     if (loadingMore) setIsLoadingMore(true);
     else setIsSearching(true);
     setErrorMessage(null);
     try {
       let location = resolvedPostalCode;
-      if (cleanPostalCode && (!location || location.postalCode !== cleanPostalCode)) {
-        location = await resolvePostalCode(cleanPostalCode);
+      if (isPostalSearch && (!location || location.postalCode !== classifiedSearch.value)) {
+        location = await resolvePostalCode(classifiedSearch.value);
         setResolvedPostalCode(location);
         setSelectedCity("");
         setSelectedDioceseId("");
       }
+      const activeCity = filterOverride?.city ?? selectedCity;
+      const activeDioceseId = filterOverride?.dioceseId ?? selectedDioceseId;
       const page = await searchChurches({
-        ...(cleanPostalCode
+        country: "US",
+        ...(isPostalSearch
           ? {
-              country: "US",
-              ...(selectedCity ? { city: selectedCity } : {}),
-              ...(selectedDioceseId ? { dioceseId: selectedDioceseId } : {}),
-              postalCode: cleanPostalCode,
+              ...(activeCity ? { city: activeCity } : {}),
+              ...(activeDioceseId ? { dioceseId: activeDioceseId } : {}),
+              postalCode: classifiedSearch.value,
               radiusMiles: DEFAULT_RADIUS_MILES,
             }
-          : {}),
-        ...(cleanQuery ? { q: cleanQuery } : {}),
+          : { q: classifiedSearch.value }),
         limit: SEARCH_PAGE_SIZE,
         offset,
       });
@@ -208,8 +229,8 @@ export function ChurchesScreen() {
       setSelectedDetails(null);
       setHasSearched(true);
       if (!loadingMore) {
-        setView(cleanPostalCode ? "map" : "list");
-        setSheetSnap(cleanPostalCode ? (page.data.length === 0 ? "middle" : "peek") : "expanded");
+        setView(isPostalSearch ? "map" : "list");
+        setSheetSnap(isPostalSearch ? (page.data.length === 0 ? "middle" : "peek") : "expanded");
       }
     } catch (error) {
       logDevelopmentError("searching churches", error);
@@ -218,6 +239,13 @@ export function ChurchesScreen() {
       if (loadingMore) setIsLoadingMore(false);
       else setIsSearching(false);
     }
+  }
+
+  /** Applies staged ZIP filters and reruns discovery once with the selected server parameters. */
+  function applyLocationFilters(selection: ChurchFilterSelection): void {
+    setSelectedCity(selection.city);
+    setSelectedDioceseId(selection.dioceseId);
+    void runSearch(0, selection);
   }
 
   /** Loads and selects a church from either the map marker or list row. */
@@ -247,8 +275,8 @@ export function ChurchesScreen() {
   }
 
   /** Keeps the full map visible at peek and expands the sheet when list browsing is selected. */
-  function changeDiscoveryView(nextView: DiscoveryView): void {
-    if (nextView === "map" && !resolvedPostalCode) return;
+  function changeDiscoveryView(nextView: ChurchDiscoveryView): void {
+    if (nextView === "map" && !resolvedPostalCode && results.length === 0) return;
     setSelectedDetails(null);
     setView(nextView);
     setSheetSnap(nextView === "map" ? "peek" : "expanded");
@@ -405,6 +433,8 @@ export function ChurchesScreen() {
     longitude: church.longitude,
     name: church.name,
   }));
+  const canShowMap = resolvedPostalCode !== null || mapMarkers.length > 0;
+  const shouldShowMap = resolvedPostalCode !== null || (hasSearched && view === "map" && mapMarkers.length > 0);
 
   return (
     <ScreenShell
@@ -434,7 +464,7 @@ export function ChurchesScreen() {
       {stage === "discover" ? (
         <View style={[styles.discoveryPanel, { height: discoveryPanelHeight }]}>
           <View style={styles.discoveryBackground}>
-            {resolvedPostalCode ? (
+            {shouldShowMap ? (
               <ChurchMap
                 center={mapCenter}
                 dom={{ scrollEnabled: false, style: { height: discoveryPanelHeight } }}
@@ -448,88 +478,21 @@ export function ChurchesScreen() {
           </View>
 
           <View style={styles.searchOverlay}>
-            <Card subtitle={t("churches.search.description")}>
-              <View style={styles.formStack}>
-                <View style={[styles.searchFields, isDesktop && styles.searchFieldsDesktop]}>
-                  <View style={styles.searchField}>
-                    <Text style={styles.label}>{t("churches.search.zipLabel")}</Text>
-                    <TextInput
-                      accessibilityLabel={t("churches.search.zipLabel")}
-                      inputMode="numeric"
-                      maxLength={5}
-                      onChangeText={handlePostalCodeChange}
-                      placeholder={t("churches.search.zipPlaceholder")}
-                      placeholderTextColor={theme.colors.text.muted}
-                      style={styles.input}
-                      value={postalCode}
-                    />
-                  </View>
-                  <View style={styles.searchField}>
-                    <Text style={styles.label}>{t("churches.search.queryLabel")}</Text>
-                    <TextInput
-                      accessibilityLabel={t("churches.search.queryLabel")}
-                      onChangeText={setQuery}
-                      placeholder={t("churches.search.queryPlaceholder")}
-                      placeholderTextColor={theme.colors.text.muted}
-                      style={styles.input}
-                      value={query}
-                    />
-                  </View>
-                </View>
-                <Button fullWidth loading={isSearching} onPress={() => void runSearch()}>
-                  {isSearching ? t("churches.search.searching") : t("churches.search.action")}
-                </Button>
-                {resolvedPostalCode ? (
-                  <View style={styles.filterStack}>
-                    <Text style={styles.locationText}>
-                      {t("churches.search.resolved", {
-                        city: resolvedPostalCode.primaryCity,
-                        region: resolvedPostalCode.regionCodes[0],
-                      })}
-                    </Text>
-                    <Text style={styles.label}>{t("churches.filters.city")}</Text>
-                    <View style={styles.chips}>
-                      {[{ name: "" }, ...resolvedPostalCode.cities].map((city) => (
-                        <Pressable
-                          accessibilityRole="radio"
-                          accessibilityState={{ checked: selectedCity === city.name }}
-                          key={city.name || "all-cities"}
-                          onPress={() => setSelectedCity(city.name)}
-                          style={[styles.chip, selectedCity === city.name && styles.chipSelected]}
-                        >
-                          <Text style={styles.chipText}>{city.name || t("churches.filters.allCities")}</Text>
-                        </Pressable>
-                      ))}
-                    </View>
-                    {resolvedPostalCode.dioceses.length > 0 ? (
-                      <>
-                        <Text style={styles.label}>{t("churches.filters.diocese")}</Text>
-                        <View style={styles.chips}>
-                          {[{ id: "", name: t("churches.filters.allDioceses") }, ...resolvedPostalCode.dioceses].map(
-                            (diocese) => (
-                              <Pressable
-                                accessibilityRole="radio"
-                                accessibilityState={{ checked: selectedDioceseId === diocese.id }}
-                                key={diocese.id || "all-dioceses"}
-                                onPress={() => setSelectedDioceseId(diocese.id)}
-                                style={[styles.chip, selectedDioceseId === diocese.id && styles.chipSelected]}
-                              >
-                                <Text style={styles.chipText}>{diocese.name}</Text>
-                              </Pressable>
-                            ),
-                          )}
-                        </View>
-                      </>
-                    ) : null}
-                  </View>
-                ) : null}
-                {errorMessage ? (
-                  <Text accessibilityLiveRegion="polite" accessibilityRole="alert" style={styles.errorText}>
-                    {errorMessage}
-                  </Text>
-                ) : null}
-              </View>
-            </Card>
+            <ChurchSearchToolbar
+              canShowMap={canShowMap}
+              errorMessage={errorMessage}
+              hasSearched={hasSearched}
+              isSearching={isSearching}
+              onApplyFilters={applyLocationFilters}
+              onChangeText={handleSearchTermChange}
+              onSearch={() => void runSearch()}
+              onViewChange={changeDiscoveryView}
+              resolvedPostalCode={resolvedPostalCode}
+              searchTerm={searchTerm}
+              selectedCity={selectedCity}
+              selectedDioceseId={selectedDioceseId}
+              view={view}
+            />
           </View>
 
           {hasSearched ? (
@@ -540,22 +503,6 @@ export function ChurchesScreen() {
               summary={t("churches.results.selectedCount", { count: drafts.length })}
               title={t("churches.results.title")}
             >
-              {resolvedPostalCode && !selectedDetails ? (
-                <View accessibilityRole="tablist" style={styles.tabs}>
-                  {(["map", "list"] as const).map((option) => (
-                    <Pressable
-                      accessibilityRole="tab"
-                      accessibilityState={{ selected: view === option }}
-                      key={option}
-                      onPress={() => changeDiscoveryView(option)}
-                      style={[styles.tab, view === option && styles.tabSelected]}
-                    >
-                      <Text style={styles.tabText}>{t(`churches.results.${option}`)}</Text>
-                    </Pressable>
-                  ))}
-                </View>
-              ) : null}
-
               {isDetailsLoading ? <ActivityIndicator color={theme.colors.brand.primaryLight} /> : null}
 
               {selectedDetails ? (
@@ -797,7 +744,6 @@ const styleSheet = createThemedStyles((theme) => ({
     textAlign: "center",
   },
   errorText: { ...theme.typography.bodySmall, color: theme.colors.semantic.danger },
-  filterStack: { gap: theme.spacing[2] },
   formStack: { gap: theme.spacing[3] },
   iconButton: {
     alignItems: "center",
@@ -805,20 +751,8 @@ const styleSheet = createThemedStyles((theme) => ({
     justifyContent: "center",
     width: theme.sizes.touchTarget,
   },
-  input: {
-    ...theme.typography.body,
-    backgroundColor: theme.colors.surface.tertiary,
-    borderColor: theme.colors.border.default,
-    borderRadius: theme.radii.md,
-    borderWidth: theme.borderWidths.thin,
-    color: theme.colors.text.primary,
-    minHeight: theme.sizes.touchTarget,
-    paddingHorizontal: theme.spacing[3],
-    paddingVertical: theme.spacing[2],
-  },
   label: { ...theme.typography.label, color: theme.colors.text.primary },
   liveText: { ...theme.typography.bodySmall, color: theme.colors.semantic.success, fontWeight: "700" },
-  locationText: { ...theme.typography.bodySmall, color: theme.colors.text.secondary },
   muted: { ...theme.typography.bodySmall, color: theme.colors.text.secondary },
   preferenceCard: {
     backgroundColor: theme.colors.surface.tertiary,
@@ -859,12 +793,8 @@ const styleSheet = createThemedStyles((theme) => ({
     paddingVertical: theme.spacing[2],
   },
   reviewPanel: { paddingBottom: theme.spacing[4] },
-  searchField: { flex: 1, gap: theme.spacing[1], minWidth: 0 },
-  searchFields: { gap: theme.spacing[2] },
-  searchFieldsDesktop: { flexDirection: "row" },
   searchOverlay: {
     left: theme.spacing[3],
-    maxWidth: 720,
     position: "absolute",
     right: theme.spacing[3],
     top: theme.spacing[3],
@@ -872,21 +802,5 @@ const styleSheet = createThemedStyles((theme) => ({
   },
   screenStack: { gap: theme.spacing[4] },
   statusText: { ...theme.typography.bodySmall, color: theme.colors.semantic.info },
-  tab: {
-    alignItems: "center",
-    borderRadius: theme.radii.md,
-    flex: 1,
-    justifyContent: "center",
-    minHeight: theme.sizes.touchTarget,
-  },
-  tabSelected: { backgroundColor: theme.colors.surface.green },
-  tabText: { ...theme.typography.label, color: theme.colors.text.primary },
-  tabs: {
-    backgroundColor: theme.colors.surface.tertiary,
-    borderRadius: theme.radii.md,
-    flexDirection: "row",
-    gap: theme.spacing[1],
-    padding: theme.spacing[1],
-  },
   warningText: { ...theme.typography.bodySmall, color: theme.colors.semantic.warning },
 }));

@@ -10,7 +10,7 @@ describe("ChurchResultsSheet", () => {
     await i18n.changeLanguage("en");
   });
 
-  it("exposes accessible snap controls and hides content at the peek position", async () => {
+  it("uses one accessible arrow button to toggle the drawer fully open and closed", async () => {
     const onSnapChange = jest.fn<void, [ChurchResultsSheetSnap]>();
     const { rerender } = await render(
       <ChurchResultsSheet
@@ -25,8 +25,9 @@ describe("ChurchResultsSheet", () => {
     );
 
     expect(screen.queryByText("Church result content")).toBeNull();
+    expect(screen.getAllByRole("button")).toHaveLength(1);
     await fireEvent.press(screen.getByRole("button", { name: "Expand church results" }));
-    expect(onSnapChange).toHaveBeenCalledWith("middle");
+    expect(onSnapChange).toHaveBeenCalledWith("expanded");
 
     await rerender(
       <ChurchResultsSheet
@@ -40,8 +41,9 @@ describe("ChurchResultsSheet", () => {
       </ChurchResultsSheet>,
     );
     expect(screen.getByText("Church result content")).toBeTruthy();
+    expect(screen.getAllByRole("button")).toHaveLength(1);
     await fireEvent.press(screen.getByRole("button", { name: "Collapse church results" }));
-    expect(onSnapChange).toHaveBeenLastCalledWith("middle");
+    expect(onSnapChange).toHaveBeenLastCalledWith("peek");
   });
 
   it("derives ordered peek, middle, and expanded snap heights", () => {

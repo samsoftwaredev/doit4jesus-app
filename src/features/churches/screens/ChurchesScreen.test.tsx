@@ -40,7 +40,7 @@ jest.mock("../components", () => ({
     const { Text, View } = require("react-native");
     return (
       <View accessibilityLabel="Church discovery globe">
-        <Text>Enter a ZIP code and search to explore nearby churches.</Text>
+        <Text>Search by U.S. ZIP, church name, or address to explore churches.</Text>
       </View>
     );
   },
@@ -64,6 +64,66 @@ jest.mock("../components", () => ({
             <Text>{marker.name}</Text>
           </Pressable>
         ))}
+      </View>
+    );
+  },
+  ChurchSearchToolbar: ({
+    canShowMap,
+    errorMessage,
+    hasSearched,
+    onApplyFilters,
+    onChangeText,
+    onSearch,
+    onViewChange,
+    resolvedPostalCode,
+    searchTerm,
+    view,
+  }: {
+    canShowMap: boolean;
+    errorMessage: string | null;
+    hasSearched: boolean;
+    onApplyFilters: (filters: { city: string; dioceseId: string }) => void;
+    onChangeText: (value: string) => void;
+    onSearch: () => void;
+    onViewChange: (view: "list" | "map") => void;
+    resolvedPostalCode: Record<string, unknown> | null;
+    searchTerm: string;
+    view: "list" | "map";
+  }) => {
+    const { Pressable, Text, TextInput, View } = require("react-native");
+    const { useTranslation } = require("react-i18next");
+    const { t } = useTranslation();
+    return (
+      <View>
+        <TextInput
+          accessibilityLabel={t("churches.search.unifiedLabel")}
+          onChangeText={onChangeText}
+          onSubmitEditing={onSearch}
+          value={searchTerm}
+        />
+        <Text>{t("churches.search.usOnly")}</Text>
+        <Pressable accessibilityLabel={t("churches.search.action")} accessibilityRole="button" onPress={onSearch} />
+        <Pressable
+          accessibilityLabel={t("churches.filters.open")}
+          accessibilityRole="button"
+          accessibilityState={{ disabled: !resolvedPostalCode }}
+          disabled={!resolvedPostalCode}
+        />
+        <Pressable
+          accessibilityLabel={t(view === "map" ? "churches.results.showList" : "churches.results.showMap")}
+          accessibilityRole="button"
+          accessibilityState={{ disabled: !hasSearched || (view === "list" && !canShowMap) }}
+          disabled={!hasSearched || (view === "list" && !canShowMap)}
+          onPress={() => onViewChange(view === "map" ? "list" : "map")}
+        />
+        {resolvedPostalCode ? (
+          <Pressable
+            accessibilityLabel="Apply Austin filters"
+            accessibilityRole="button"
+            onPress={() => onApplyFilters({ city: "Austin", dioceseId: "diocese-austin" })}
+          />
+        ) : null}
+        {errorMessage ? <Text accessibilityRole="alert">{errorMessage}</Text> : null}
       </View>
     );
   },
@@ -159,11 +219,21 @@ describe("ChurchesScreen", () => {
   it("validates incomplete ZIP input before making a request", async () => {
     await render(<ChurchesScreen />);
     await screen.findByText("Find a church");
-    await fireEvent.changeText(screen.getByLabelText("ZIP code"), "787");
+    await fireEvent.changeText(screen.getByLabelText("Search by ZIP, church name, or address"), "787");
     await fireEvent.press(screen.getByRole("button", { name: "Search churches" }));
 
     expect(screen.getByRole("alert")).toHaveTextContent("Enter a valid five-digit ZIP code.");
     expect(mockResolvePostalCode).not.toHaveBeenCalled();
+  });
+
+  it("requires a nonempty unified search term", async () => {
+    await render(<ChurchesScreen />);
+    await screen.findByText("Find a church");
+    await fireEvent.press(screen.getByRole("button", { name: "Search churches" }));
+
+    expect(screen.getByRole("alert")).toHaveTextContent("Enter a five-digit U.S. ZIP, church name, or address.");
+    expect(mockResolvePostalCode).not.toHaveBeenCalled();
+    expect(mockSearchChurches).not.toHaveBeenCalled();
   });
 
   it("keeps the globe until a submitted ZIP search replaces it with the full map", async () => {
@@ -176,7 +246,7 @@ describe("ChurchesScreen", () => {
       selected: false,
     });
     expect(screen.getByLabelText("Church discovery globe")).toBeTruthy();
-    await fireEvent.changeText(screen.getByLabelText("ZIP code"), "78701");
+    await fireEvent.changeText(screen.getByLabelText("Search by ZIP, church name, or address"), "78701");
     expect(screen.getByLabelText("Church discovery globe")).toBeTruthy();
     expect(screen.queryByLabelText("Church results map")).toBeNull();
 
@@ -186,11 +256,26 @@ describe("ChurchesScreen", () => {
     expect(screen.queryByLabelText("Church discovery globe")).toBeNull();
   });
 
+  it("clears stale map and result state when a submitted term is edited", async () => {
+    mockSearchChurches.mockResolvedValue(churchPage);
+    await render(<ChurchesScreen />);
+    await screen.findByText("Find a church");
+    const searchInput = screen.getByLabelText("Search by ZIP, church name, or address");
+    await fireEvent.changeText(searchInput, "78701");
+    await fireEvent.press(screen.getByRole("button", { name: "Search churches" }));
+    expect(await screen.findByLabelText("Church results map")).toBeTruthy();
+
+    await fireEvent.changeText(searchInput, "St. Mary");
+    expect(screen.queryByLabelText("Church results map")).toBeNull();
+    expect(screen.getByLabelText("Church discovery globe")).toBeTruthy();
+    expect(screen.queryByText("Nearby churches")).toBeNull();
+  });
+
   it("resolves a ZIP, searches with its filters, and toggles between map and list", async () => {
     mockSearchChurches.mockResolvedValue(churchPage);
     await render(<ChurchesScreen />);
     await screen.findByText("Find a church");
-    await fireEvent.changeText(screen.getByLabelText("ZIP code"), "78701");
+    await fireEvent.changeText(screen.getByLabelText("Search by ZIP, church name, or address"), "78701");
     await fireEvent.press(screen.getByRole("button", { name: "Search churches" }));
 
     await waitFor(() => expect(mockResolvePostalCode).toHaveBeenCalledWith("78701"));
@@ -198,7 +283,7 @@ describe("ChurchesScreen", () => {
       expect.objectContaining({ country: "US", limit: 20, offset: 0, postalCode: "78701", radiusMiles: 25 }),
     );
     expect(await screen.findByLabelText("Church results map")).toBeTruthy();
-    await fireEvent.press(screen.getByRole("tab", { name: "List" }));
+    await fireEvent.press(screen.getByRole("button", { name: "Show church list" }));
     expect(screen.getAllByText("St. Mary Cathedral").length).toBeGreaterThan(0);
     await fireEvent.press(screen.getByRole("button", { name: "View St. Mary Cathedral details" }));
     expect(mockGetChurchDetails).toHaveBeenCalledWith("church-1");
@@ -209,12 +294,9 @@ describe("ChurchesScreen", () => {
     mockSearchChurches.mockResolvedValue(churchPage);
     await render(<ChurchesScreen />);
     await screen.findByText("Find a church");
-    await fireEvent.changeText(screen.getByLabelText("ZIP code"), "78701");
+    await fireEvent.changeText(screen.getByLabelText("Search by ZIP, church name, or address"), "78701");
     await fireEvent.press(screen.getByRole("button", { name: "Search churches" }));
-    await screen.findByText("Searching near Austin, TX");
-    await fireEvent.press(screen.getByRole("radio", { name: "Austin" }));
-    await fireEvent.press(screen.getByRole("radio", { name: "Diocese of Austin" }));
-    await fireEvent.press(screen.getByRole("button", { name: "Search churches" }));
+    await fireEvent.press(await screen.findByRole("button", { name: "Apply Austin filters" }));
 
     expect(mockSearchChurches).toHaveBeenLastCalledWith(
       expect.objectContaining({ city: "Austin", dioceseId: "diocese-austin", postalCode: "78701" }),
@@ -230,7 +312,7 @@ describe("ChurchesScreen", () => {
     });
     await render(<ChurchesScreen />);
     await screen.findByText("Find a church");
-    await fireEvent.changeText(screen.getByLabelText("ZIP code"), "78701");
+    await fireEvent.changeText(screen.getByLabelText("Search by ZIP, church name, or address"), "78701");
     await fireEvent.press(screen.getByRole("button", { name: "Search churches" }));
     await fireEvent.press(await screen.findByRole("button", { name: "Map marker St. Mary Cathedral" }));
 
@@ -242,13 +324,56 @@ describe("ChurchesScreen", () => {
     mockSearchChurches.mockResolvedValue(churchPage);
     await render(<ChurchesScreen />);
     await screen.findByText("Find a church");
-    await fireEvent.changeText(screen.getByLabelText("Church name or address"), "Cathedral");
+    await fireEvent.changeText(screen.getByLabelText("Search by ZIP, church name, or address"), "Cathedral");
     await fireEvent.press(screen.getByRole("button", { name: "Search churches" }));
 
-    await waitFor(() => expect(mockSearchChurches).toHaveBeenCalledWith({ limit: 20, offset: 0, q: "Cathedral" }));
+    await waitFor(() =>
+      expect(mockSearchChurches).toHaveBeenCalledWith({ country: "US", limit: 20, offset: 0, q: "Cathedral" }),
+    );
     expect(mockResolvePostalCode).not.toHaveBeenCalled();
     expect(screen.getByLabelText("Church discovery globe")).toBeTruthy();
     expect(screen.getByText("St. Mary Cathedral")).toBeTruthy();
+  });
+
+  it("preserves U.S. query classification when loading another result page", async () => {
+    mockSearchChurches
+      .mockResolvedValueOnce({ data: [church], meta: { hasMore: true, limit: 20, nextOffset: 20, offset: 0 } })
+      .mockResolvedValueOnce(emptyPage);
+    await render(<ChurchesScreen />);
+    await screen.findByText("Find a church");
+    await fireEvent.changeText(screen.getByLabelText("Search by ZIP, church name, or address"), "Cathedral");
+    await fireEvent.press(screen.getByRole("button", { name: "Search churches" }));
+    await fireEvent.press(await screen.findByRole("button", { name: "Load more churches" }));
+
+    await waitFor(() => expect(mockSearchChurches).toHaveBeenCalledTimes(2));
+    expect(mockSearchChurches).toHaveBeenLastCalledWith({
+      country: "US",
+      limit: 20,
+      offset: 20,
+      q: "Cathedral",
+    });
+  });
+
+  it("treats a numeric-leading street address as a query and can map its coordinates", async () => {
+    mockSearchChurches.mockResolvedValue(churchPage);
+    await render(<ChurchesScreen />);
+    await screen.findByText("Find a church");
+    await fireEvent.changeText(screen.getByLabelText("Search by ZIP, church name, or address"), "203 E 10th St Austin");
+    await fireEvent.press(screen.getByRole("button", { name: "Search churches" }));
+
+    await waitFor(() =>
+      expect(mockSearchChurches).toHaveBeenCalledWith({
+        country: "US",
+        limit: 20,
+        offset: 0,
+        q: "203 E 10th St Austin",
+      }),
+    );
+    expect(mockResolvePostalCode).not.toHaveBeenCalled();
+    expect(screen.getByLabelText("Church discovery globe")).toBeTruthy();
+
+    await fireEvent.press(screen.getByRole("button", { name: "Show church map" }));
+    expect(screen.getByLabelText("Church results map")).toBeTruthy();
   });
 
   it("opens an empty Review reminders tab and returns to church discovery", async () => {
@@ -266,7 +391,7 @@ describe("ChurchesScreen", () => {
     mockSearchChurches.mockResolvedValue(churchPage);
     await render(<ChurchesScreen />);
     await screen.findByText("Find a church");
-    await fireEvent.changeText(screen.getByLabelText("ZIP code"), "78701");
+    await fireEvent.changeText(screen.getByLabelText("Search by ZIP, church name, or address"), "78701");
     await fireEvent.press(screen.getByRole("button", { name: "Search churches" }));
     await fireEvent.press(await screen.findByRole("button", { name: "Map marker St. Mary Cathedral" }));
     await fireEvent.press(await screen.findByRole("button", { name: "Add church" }));
@@ -303,7 +428,7 @@ describe("ChurchesScreen", () => {
     mockSearchChurches.mockResolvedValue(churchPage);
     await render(<ChurchesScreen />);
     await screen.findByText("Find a church");
-    await fireEvent.changeText(screen.getByLabelText("ZIP code"), "78701");
+    await fireEvent.changeText(screen.getByLabelText("Search by ZIP, church name, or address"), "78701");
     await fireEvent.press(screen.getByRole("button", { name: "Search churches" }));
     await fireEvent.press(await screen.findByRole("button", { name: "Map marker St. Mary Cathedral" }));
     await fireEvent.press(await screen.findByRole("button", { name: "Add church" }));
@@ -361,5 +486,6 @@ describe("ChurchesScreen", () => {
     await render(<ChurchesScreen />);
     expect(await screen.findByText("Encuentra una iglesia")).toBeTruthy();
     expect(screen.getByRole("button", { name: "Buscar iglesias" })).toBeTruthy();
+    expect(screen.getByText("Solo EE. UU.")).toBeTruthy();
   });
 });

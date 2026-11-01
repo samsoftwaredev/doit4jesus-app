@@ -79,14 +79,9 @@ export function ChurchResultsSheet({
 
   const animatedStyle = useAnimatedStyle(() => ({ height: sheetHeight.value }));
 
-  /** Advances one snap position without requiring a drag gesture. */
-  function expandSheet(): void {
-    onSnapChange(snap === "peek" ? "middle" : "expanded");
-  }
-
-  /** Moves one snap position toward the map without requiring a drag gesture. */
-  function collapseSheet(): void {
-    onSnapChange(snap === "expanded" ? "middle" : "peek");
+  /** Toggles the drawer between fully open and closed while retaining drag-based middle snapping. */
+  function toggleSheet(): void {
+    onSnapChange(snap === "peek" ? "expanded" : "peek");
   }
 
   return (
@@ -99,22 +94,17 @@ export function ChurchResultsSheet({
             </Text>
             <Text style={styles.summary}>{summary}</Text>
           </View>
-          <View style={styles.actions}>
-            <IconButton
-              accessibilityLabel={t("churches.results.collapseSheet")}
-              disabled={snap === "peek"}
-              onPress={collapseSheet}
-            >
-              <Feather accessible={false} color={theme.colors.icon.primary} name="chevron-down" size={20} />
-            </IconButton>
-            <IconButton
-              accessibilityLabel={t("churches.results.expandSheet")}
-              disabled={snap === "expanded"}
-              onPress={expandSheet}
-            >
-              <Feather accessible={false} color={theme.colors.icon.primary} name="chevron-up" size={20} />
-            </IconButton>
-          </View>
+          <IconButton
+            accessibilityLabel={t(snap === "peek" ? "churches.results.expandSheet" : "churches.results.collapseSheet")}
+            onPress={toggleSheet}
+          >
+            <Feather
+              accessible={false}
+              color={theme.colors.icon.primary}
+              name={snap === "peek" ? "chevron-up" : "chevron-down"}
+              size={20}
+            />
+          </IconButton>
         </View>
       </GestureDetector>
       {snap !== "peek" ? (
@@ -127,7 +117,6 @@ export function ChurchResultsSheet({
 }
 
 const styleSheet = createThemedStyles((theme) => ({
-  actions: { flexDirection: "row", gap: theme.spacing[1] },
   content: { gap: theme.spacing[3], padding: theme.spacing[4], paddingTop: theme.spacing[2] },
   header: {
     alignItems: "center",
