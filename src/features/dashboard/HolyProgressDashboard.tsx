@@ -5,6 +5,7 @@ import { AppState, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { DailyLiturgyDashboard } from "@/features/liturgy/screens";
+import { ChurchHomeSection } from "@/features/churches";
 import {
   AllMysteries,
   GlobalRosaryStatsCard,
@@ -549,6 +550,9 @@ export function HolyProgressDashboard({
             reminder={reminder}
           />
         )}
+      </View>
+      <View testID="church-home-section-container">
+        <ChurchHomeSection />
       </View>
       <View onLayout={onGardenLayout} testID="rosary-garden-section-container">
         <RosaryGardenSection initialData={initialData} onPrayToday={prayTodayFromGarden} />

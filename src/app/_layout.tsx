@@ -138,6 +138,7 @@ export function RootNavigator() {
         <Stack.Screen name="battle" />
         <Stack.Screen name="blocked-accounts" />
         <Stack.Screen name="change-email" />
+        <Stack.Screen name="churches" />
         <Stack.Screen name="demonsCatalog" />
         <Stack.Screen name="friends" />
         <Stack.Screen name="messages" />

@@ -11,6 +11,8 @@ export type AchievementEvent =
   | { type: "onboarding-complete" }
   | { type: "daily-scripture-complete" }
   | { type: "rosary-video-complete" }
+  | { type: "church-reminders-configured" }
+  | { type: "church-reminders-updated" }
   | { badge: BadgeAchievement; type: "badge-award" };
 
 type AchievementContextValue = {

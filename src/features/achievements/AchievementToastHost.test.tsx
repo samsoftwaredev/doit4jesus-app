@@ -69,6 +69,28 @@ function VideoRosaryAchievementTrigger() {
   );
 }
 
+/** Queues the first completed church-reminder setup for the global confetti toast. */
+function ChurchRemindersAchievementTrigger() {
+  const { queueAchievement } = useAchievement();
+
+  return (
+    <Pressable accessibilityRole="button" onPress={() => queueAchievement({ type: "church-reminders-configured" })}>
+      <Text>Show church reminders completion</Text>
+    </Pressable>
+  );
+}
+
+/** Queues a normal saved message for later church-reminder edits. */
+function ChurchRemindersUpdatedTrigger() {
+  const { queueAchievement } = useAchievement();
+
+  return (
+    <Pressable accessibilityRole="button" onPress={() => queueAchievement({ type: "church-reminders-updated" })}>
+      <Text>Show church reminders saved</Text>
+    </Pressable>
+  );
+}
+
 /** Renders the reactive achievement provider with the globally positioned toast host. */
 function renderToastHost() {
   return render(
@@ -84,6 +106,8 @@ function renderToastHost() {
           <BadgeAchievementTrigger />
           <DailyScriptureAchievementTrigger />
           <VideoRosaryAchievementTrigger />
+          <ChurchRemindersAchievementTrigger />
+          <ChurchRemindersUpdatedTrigger />
           <AchievementToastHost />
         </AchievementProvider>
       </SafeAreaProvider>
@@ -169,6 +193,27 @@ describe("AchievementToastHost", () => {
     await act(async () => i18n.changeLanguage("es"));
     await fireEvent.press(screen.getByRole("button", { name: "Show video Rosary completion" }));
     expect(await screen.findByText("¡Completaste tu Rosario en video! 🎉")).toBeTruthy();
+  });
+
+  it("celebrates configured church reminders in English and Spanish", async () => {
+    await renderToastHost();
+
+    await fireEvent.press(screen.getByRole("button", { name: "Show church reminders completion" }));
+    expect(await screen.findByText("Your church reminders are ready! 🎉")).toBeTruthy();
+    expect(screen.getByTestId("achievement-confetti")).toBeTruthy();
+
+    await fireEvent.press(screen.getByRole("button", { name: "Dismiss message" }));
+    await act(async () => i18n.changeLanguage("es"));
+    await fireEvent.press(screen.getByRole("button", { name: "Show church reminders completion" }));
+    expect(await screen.findByText("¡Tus recordatorios de iglesias están listos! 🎉")).toBeTruthy();
+  });
+
+  it("shows later church reminder edits as a normal toast without confetti", async () => {
+    await renderToastHost();
+    await fireEvent.press(screen.getByRole("button", { name: "Show church reminders saved" }));
+
+    expect(await screen.findByText("Your church reminders are saved.")).toBeTruthy();
+    expect(screen.queryByTestId("achievement-confetti")).toBeNull();
   });
 
   it("keeps completion feedback visible without particles when reduced motion is enabled", async () => {

@@ -185,6 +185,11 @@ jest.mock("@/features/liturgy/screens", () => {
   };
 });
 
+jest.mock("@/features/churches", () => {
+  const { Text } = jest.requireActual<typeof import("react-native")>("react-native");
+  return { ChurchHomeSection: () => <Text>Church Home Section</Text> };
+});
+
 jest.mock("@/features/prayer/rosary/garden/components", () => {
   const { Text } = jest.requireActual<typeof import("react-native")>("react-native");
   return { RosaryGardenSection: () => <Text>Rosary Garden Section</Text> };
@@ -370,6 +375,7 @@ describe("HolyProgressDashboard", () => {
 
     const sections = screen.getByLabelText("Holy Progress Dashboard").props.children;
     expect(sections[2].props.testID).toBe("daily-rosary-card-container");
+    expect(sections[3].props.testID).toBe("church-home-section-container");
   });
 
   it("uses the existing Rosary route without presenting a global leaderboard action", async () => {
@@ -402,6 +408,7 @@ describe("HolyProgressDashboard", () => {
     expect(screen.getByText("Daily Mass")).toBeTruthy();
     expect(screen.getByText("Today’s Scripture Readings")).toBeTruthy();
     expect(screen.getByText("Daily Scripture Quote")).toBeTruthy();
+    expect(screen.getByText("Church Home Section")).toBeTruthy();
     expect(screen.getByText("Prayers by Others Section")).toBeTruthy();
     expect(screen.getByText("All Mysteries Section")).toBeTruthy();
     expect(await screen.findByText("Global total 26")).toBeTruthy();
@@ -416,6 +423,7 @@ describe("HolyProgressDashboard", () => {
       "today-rosary-card-container",
       "streak-progress-container",
       "daily-rosary-card-container",
+      "church-home-section-container",
       "rosary-garden-section-container",
       "rosary-guide-section-container",
       "daily-liturgy-section-container",
@@ -549,7 +557,8 @@ describe("HolyProgressDashboard", () => {
 
     const sections = screen.getByLabelText("Holy Progress Dashboard").props.children;
     expect(sections[2].props.testID).toBe("daily-rosary-card-container");
-    expect(sections[3].props.testID).toBe("rosary-garden-section-container");
+    expect(sections[3].props.testID).toBe("church-home-section-container");
+    expect(sections[4].props.testID).toBe("rosary-garden-section-container");
   });
 
   it("replaces an unavailable streak card with a male user's journey welcome while retaining progress content", async () => {
