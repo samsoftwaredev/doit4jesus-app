@@ -311,8 +311,9 @@ describe("HolyProgressDashboard", () => {
   it("loads the four dashboard sections and refetches authoritative Rosary data after completion", async () => {
     const rendered = await render(<HolyProgressDashboard />);
 
-    expect(await screen.findByLabelText("Rosaries, 86")).toBeTruthy();
-    expect(screen.getByRole("header", { name: "LEVEL PROGRESS" })).toBeTruthy();
+    expect(await screen.findByRole("header", { name: "LEVEL PROGRESS" })).toBeTruthy();
+    await fireEvent.press(screen.getByLabelText("Show Holy Progress"));
+    expect(screen.getByLabelText("Rosaries, 86")).toBeTruthy();
     expect(screen.getByText("Did I show mercy?")).toBeTruthy();
     expect(screen.getByText("Plant Today’s Flower")).toBeTruthy();
     expect(screen.getByText("28 Day Streak")).toBeTruthy();
@@ -336,15 +337,21 @@ describe("HolyProgressDashboard", () => {
     await rendered.unmount();
   });
 
-  it("places level progress directly after holy progress", async () => {
+  it("places Level Progress first in a carousel with Holy Progress second", async () => {
     await render(<HolyProgressDashboard />);
     await screen.findByRole("header", { name: "LEVEL PROGRESS" });
 
-    const cards = screen.getByTestId("dashboard-primary-grid").props.children;
-    expect(cards[0].props.testID).toBe("holy-progress-card-container");
-    expect(cards[1].props.testID).toBe("level-progress-card-container");
-    expect(cards[2].props.testID).toBe("global-leaderboard-card-container");
-    expect(cards).toHaveLength(5);
+    const cards = screen.getByTestId("dashboard-primary-grid").children;
+    const carouselContainer = screen.getByTestId("progress-cards-carousel-container");
+    const leaderboardContainer = screen.getByTestId("global-leaderboard-card-container");
+    expect(cards.indexOf(carouselContainer)).toBe(0);
+    expect(cards.indexOf(leaderboardContainer)).toBe(1);
+    expect(cards).toHaveLength(4);
+
+    const levelPage = screen.getByTestId("level-progress-card-container");
+    const holyPage = screen.getByTestId("holy-progress-card-container", { includeHiddenElements: true });
+    expect(levelPage.parent?.children.indexOf(levelPage)).toBe(0);
+    expect(levelPage.parent?.children.indexOf(holyPage)).toBe(1);
   });
 
   it("places today's Rosary first, before streak progress, and opens the scheduled full Rosary", async () => {
@@ -433,10 +440,9 @@ describe("HolyProgressDashboard", () => {
       "global-rosary-stats-section-container",
     ]);
 
-    const progressCards = screen.getByTestId("dashboard-primary-grid").props.children;
-    expect(progressCards[0].props.testID).toBe("holy-progress-card-container");
-    expect(progressCards[1].props.testID).toBe("level-progress-card-container");
-    expect(progressCards[2].props.testID).toBe("global-leaderboard-card-container");
+    const progressCards = screen.getByTestId("dashboard-primary-grid").children;
+    expect(progressCards.indexOf(screen.getByTestId("progress-cards-carousel-container"))).toBe(0);
+    expect(progressCards.indexOf(screen.getByTestId("global-leaderboard-card-container"))).toBe(1);
   });
 
   it("uses the Prayer aggregate for initial intentions without issuing a duplicate preview request", async () => {

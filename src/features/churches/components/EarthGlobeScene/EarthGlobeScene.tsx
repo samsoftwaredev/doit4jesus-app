@@ -40,25 +40,17 @@ export function getNextEarthRotation(
   return currentRotation + deltaSeconds * radiansPerSecond;
 }
 
-/** Oversizes and offsets the Earth to fill the panel while preserving negative space in its upper-right corner. */
+/** Centers the Earth on the panel's bottom edge so its upper semicircle fills only the lower half. */
 export function getGlobeSceneTransform(
-  viewportWidth: number,
+  _viewportWidth: number,
   viewportHeight: number,
 ): { positionX: number; positionY: number; scale: number } {
-  const positionX = -viewportWidth * 0.18;
-  const positionY = -viewportHeight * 0.16;
-  const halfWidth = viewportWidth / 2;
-  const halfHeight = viewportHeight / 2;
-  const coveredCornerRadius = Math.max(
-    Math.hypot(-halfWidth - positionX, halfHeight - positionY),
-    Math.hypot(-halfWidth - positionX, -halfHeight - positionY),
-    Math.hypot(halfWidth - positionX, -halfHeight - positionY),
-  );
+  const radius = viewportHeight / 2;
 
   return {
-    positionX,
-    positionY,
-    scale: coveredCornerRadius * 1.03,
+    positionX: 0,
+    positionY: -radius,
+    scale: radius,
   };
 }
 

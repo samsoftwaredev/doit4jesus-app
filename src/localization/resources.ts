@@ -466,6 +466,12 @@ export const resources = {
       },
       dashboard: {
         accessibilityLabel: "Holy Progress Dashboard",
+        progressCarousel: {
+          label: "Level Progress and Holy Progress cards",
+          showHoly: "Show Holy Progress",
+          showLevel: "Show Level Progress",
+          swipeHint: "Swipe horizontally to switch between Level Progress and Holy Progress.",
+        },
         conscience: {
           description:
             "An examination of conscience is a prayerful review of your thoughts, words, and actions. Use these questions before going to sleep and before Confession.",
@@ -1965,6 +1971,12 @@ export const resources = {
       },
       dashboard: {
         accessibilityLabel: "Panel de progreso espiritual",
+        progressCarousel: {
+          label: "Tarjetas de progreso de nivel y progreso espiritual",
+          showHoly: "Mostrar Progreso espiritual",
+          showLevel: "Mostrar Progreso de nivel",
+          swipeHint: "Desliza horizontalmente para cambiar entre Progreso de nivel y Progreso espiritual.",
+        },
         conscience: {
           description:
             "Un examen de conciencia es una revisión en oración de tus pensamientos, palabras y acciones. Usa estas preguntas antes de dormir y antes de confesarte.",

@@ -59,6 +59,7 @@ import {
   JourneyWelcomeCard,
   LeaderboardCard,
   LevelProgressCard,
+  ProgressCardsCarousel,
 } from "./components";
 import {
   getConscienceQuestion,
@@ -564,37 +565,35 @@ export function HolyProgressDashboard({
         <DailyLiturgyDashboard initialData={initialPrayerData} showHighlightedVerse={false} />
       </View>
       <View style={[styles.primaryGrid, useCardColumns && styles.primaryGridColumns]} testID="dashboard-primary-grid">
-        <View
-          style={[styles.primaryCard, useCardColumns && styles.primaryCardColumn]}
-          testID="holy-progress-card-container"
-        >
-          <HolyProgressCard
-            detailsError={holyDetailsError}
-            isLoadingDetails={isLoadingHolyDetails}
-            isLoadingProgress={isLoadingProgress}
-            isLoadingStats={isLoadingStats}
-            levelCatalog={levelCatalog}
-            onViewActivityPoints={openActivityPoints}
-            progress={progress}
-            progressError={progressError}
-            recentRosaryActivities={recentRosaryActivities}
-            rosaryStats={rosaryStats}
-            statsError={statsError}
-          />
-          <ActivityPointsModal onClose={closeActivityPoints} visible={isActivityPointsVisible} />
-        </View>
-        <View
-          style={[styles.primaryCard, useCardColumns && styles.primaryCardColumn]}
-          testID="level-progress-card-container"
-        >
-          <LevelProgressCard
-            gender={profile?.gender ?? null}
-            isLoading={isLoadingProgress}
-            levelCatalog={levelCatalog}
-            progress={progress}
-            progressError={progressError}
-          />
-        </View>
+        <ProgressCardsCarousel
+          holyProgressCard={
+            <>
+              <HolyProgressCard
+                detailsError={holyDetailsError}
+                isLoadingDetails={isLoadingHolyDetails}
+                isLoadingProgress={isLoadingProgress}
+                isLoadingStats={isLoadingStats}
+                levelCatalog={levelCatalog}
+                onViewActivityPoints={openActivityPoints}
+                progress={progress}
+                progressError={progressError}
+                recentRosaryActivities={recentRosaryActivities}
+                rosaryStats={rosaryStats}
+                statsError={statsError}
+              />
+              <ActivityPointsModal onClose={closeActivityPoints} visible={isActivityPointsVisible} />
+            </>
+          }
+          levelProgressCard={
+            <LevelProgressCard
+              gender={profile?.gender ?? null}
+              isLoading={isLoadingProgress}
+              levelCatalog={levelCatalog}
+              progress={progress}
+              progressError={progressError}
+            />
+          }
+        />
         <View style={styles.primaryCard} testID="global-leaderboard-card-container">
           <LeaderboardCard
             isLifetimeLoading={isLifetimeGlobalLeaderboardLoading}
