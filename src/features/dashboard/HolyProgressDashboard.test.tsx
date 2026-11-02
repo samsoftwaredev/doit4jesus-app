@@ -175,11 +175,11 @@ jest.mock("@/hooks/useCurrentLocalDate", () => ({
 jest.mock("@/features/liturgy/screens", () => {
   const { Text, View } = jest.requireActual<typeof import("react-native")>("react-native");
   return {
-    DailyLiturgyDashboard: () => (
+    DailyLiturgyDashboard: ({ showHighlightedVerse = true }: { showHighlightedVerse?: boolean }) => (
       <View>
         <Text>Daily Mass</Text>
         <Text>Today’s Scripture Readings</Text>
-        <Text>Daily Scripture Quote</Text>
+        {showHighlightedVerse ? <Text>Daily Scripture Quote</Text> : null}
       </View>
     ),
   };
@@ -407,7 +407,7 @@ describe("HolyProgressDashboard", () => {
     expect(screen.getByText("What It Promises")).toBeTruthy();
     expect(screen.getByText("Daily Mass")).toBeTruthy();
     expect(screen.getByText("Today’s Scripture Readings")).toBeTruthy();
-    expect(screen.getByText("Daily Scripture Quote")).toBeTruthy();
+    expect(screen.queryByText("Daily Scripture Quote")).toBeNull();
     expect(screen.getByText("Church Home Section")).toBeTruthy();
     expect(screen.getByText("Prayers by Others Section")).toBeTruthy();
     expect(screen.getByText("All Mysteries Section")).toBeTruthy();

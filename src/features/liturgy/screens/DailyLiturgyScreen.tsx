@@ -26,6 +26,7 @@ import type { DailyLiturgyViewModel, DailyReadingProgress } from "../liturgy.typ
 export interface DailyLiturgyDashboardProps {
   initialData?: ScreenDataResponse;
   onCalendarPress?: () => void;
+  showHighlightedVerse?: boolean;
 }
 
 /** Returns whether this local reading state contains every reading in the displayed liturgy. */
@@ -58,7 +59,11 @@ function LiturgyLoadingState() {
  * Home-dashboard section for daily Mass and Scripture in the selected language.
  * The parent dashboard owns scrolling so this component can live naturally alongside other cards.
  */
-export function DailyLiturgyDashboard({ initialData, onCalendarPress }: DailyLiturgyDashboardProps) {
+export function DailyLiturgyDashboard({
+  initialData,
+  onCalendarPress,
+  showHighlightedVerse = true,
+}: DailyLiturgyDashboardProps) {
   const { t } = useTranslation();
   const { locale } = useAppLanguage();
   const styles = useThemedStyles(styleSheet);
@@ -200,7 +205,7 @@ export function DailyLiturgyDashboard({ initialData, onCalendarPress }: DailyLit
             onNextDay={showNextDay}
             onPreviousDay={showPreviousDay}
           />
-          {liturgy.highlightedVerse ? <DailyVerseCard {...liturgy.highlightedVerse} /> : null}
+          {showHighlightedVerse && liturgy.highlightedVerse ? <DailyVerseCard {...liturgy.highlightedVerse} /> : null}
         </View>
       ) : null}
       {isLoading && liturgy ? (

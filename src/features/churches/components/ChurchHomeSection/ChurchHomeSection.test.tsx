@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react-native";
 
 import { i18n } from "@/localization";
+import { theme } from "@/theme/tokens";
 
 import { ChurchHomeSection } from "./ChurchHomeSection";
 
@@ -51,7 +52,16 @@ describe("ChurchHomeSection", () => {
   it("invites an unsubscribed user to find nearby churches", async () => {
     await render(<ChurchHomeSection />);
 
-    expect(await screen.findByText("Visit Jesus in the tabernacle. He is waiting for you.")).toBeTruthy();
+    const title = await screen.findByRole("header", { name: "He is waiting for you" });
+    expect(title).toHaveStyle({ fontFamily: theme.fontFamilies.devotional });
+    expect(screen.getByText("Visit Jesus in the tabernacle.")).toBeTruthy();
+    expect(screen.getByTestId("church-invitation-header")).toHaveStyle({ borderBottomWidth: 0 });
+    expect(screen.getByTestId("church-invitation-background").props).toMatchObject({
+      accessible: false,
+      contentFit: "cover",
+      contentPosition: { right: 0, top: "50%" },
+      source: [require("../../../../../assets/images/churches/eucharist-invitation-oil-painting.jpg")],
+    });
     expect(screen.getByText("Find nearby Mass times")).toBeTruthy();
     await fireEvent.press(screen.getByRole("button", { name: "Find churches near you" }));
     expect(mockPush).toHaveBeenCalledWith("/churches");
@@ -87,6 +97,7 @@ describe("ChurchHomeSection", () => {
     expect(await screen.findByText("Upcoming church services")).toBeTruthy();
     expect(screen.getByText("Mass tomorrow at 8:00 AM")).toBeTruthy();
     expect(screen.getByText("St. Mary Cathedral")).toBeTruthy();
+    expect(screen.queryByTestId("church-invitation-background")).toBeNull();
     expect(screen.queryByText("Your church reminders")).toBeNull();
     expect(screen.queryByText("Update churches, service types, or reminder days.")).toBeNull();
     await fireEvent.press(screen.getByRole("button", { name: "Manage church reminders" }));
@@ -159,7 +170,8 @@ describe("ChurchHomeSection", () => {
     await i18n.changeLanguage("es");
     await render(<ChurchHomeSection />);
 
-    expect(await screen.findByText("Visita a Jesús en el sagrario. Él te espera.")).toBeTruthy();
+    expect(await screen.findByRole("header", { name: "Él te espera" })).toBeTruthy();
+    expect(screen.getByText("Visita a Jesús en el sagrario.")).toBeTruthy();
     expect(screen.getByRole("button", { name: "Buscar iglesias cercanas" })).toBeTruthy();
   });
 
@@ -169,6 +181,6 @@ describe("ChurchHomeSection", () => {
 
     await waitFor(() => expect(screen.getByText("We couldn’t load your church reminders.")).toBeTruthy());
     await fireEvent.press(screen.getByRole("button", { name: "Try Again" }));
-    expect(await screen.findByText("Visit Jesus in the tabernacle. He is waiting for you.")).toBeTruthy();
+    expect(await screen.findByRole("header", { name: "He is waiting for you" })).toBeTruthy();
   });
 });

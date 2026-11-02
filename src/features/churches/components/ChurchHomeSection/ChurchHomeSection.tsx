@@ -1,4 +1,5 @@
 import Feather from "@expo/vector-icons/Feather";
+import { Image } from "expo-image";
 import { useFocusEffect, useRouter } from "expo-router";
 import type { Href } from "expo-router";
 import { useCallback, useState } from "react";
@@ -7,12 +8,16 @@ import { useTranslation } from "react-i18next";
 
 import { IconButton } from "@/components";
 import { Button, Card } from "@/components/ui";
+import { useResponsiveLayout } from "@/hooks";
 import { logDevelopmentError } from "@/lib/development-logger";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 import { getChurchSubscriptions, getUpcomingChurchServices } from "../../churches.api";
 import type { ChurchSubscription, UpcomingChurchService } from "../../churches.types";
+
+const EUCHARIST_INVITATION_BACKGROUND =
+  require("../../../../../assets/images/churches/eucharist-invitation-oil-painting.jpg") as number;
 
 export type ChurchHomeSectionProps = {
   now?: Date;
@@ -64,11 +69,12 @@ function formatOccurrence(
   return translate("churches.home.occurrenceDate", { date, service, time });
 }
 
-/** Loads Home church reminders and exposes reminder management from the upcoming-services header. */
+/** Loads Home church reminders and renders either the Eucharistic invitation or upcoming-service management. */
 export function ChurchHomeSection({ now }: ChurchHomeSectionProps) {
   const styles = useThemedStyles(styleSheet);
   const router = useRouter();
   const { i18n, t } = useTranslation();
+  const { isNarrowPhone } = useResponsiveLayout();
   const [subscriptions, setSubscriptions] = useState<ChurchSubscription[] | null>(null);
   const [upcoming, setUpcoming] = useState<UpcomingChurchService[]>([]);
   const [hasError, setHasError] = useState(false);
@@ -138,24 +144,50 @@ export function ChurchHomeSection({ now }: ChurchHomeSectionProps) {
   if (subscriptions.length === 0) {
     const benefits = ["mass", "confession", "adoration", "reminders"] as const;
     return (
-      <Card
-        footer={
-          <Button fullWidth onPress={openChurches}>
-            {t("churches.invitation.action")}
-          </Button>
-        }
-        title={t("churches.invitation.title")}
-      >
-        <View style={styles.stack}>
-          <Text style={styles.muted}>{t("churches.invitation.description")}</Text>
-          {benefits.map((benefit) => (
-            <View key={benefit} style={styles.benefit}>
-              <Feather accessible={false} color={theme.colors.semantic.success} name="check-circle" size={18} />
-              <Text style={styles.benefitText}>{t(`churches.invitation.${benefit}`)}</Text>
+      <View style={styles.invitationFrame}>
+        <Image
+          accessible={false}
+          contentFit="cover"
+          contentPosition="right center"
+          pointerEvents="none"
+          source={EUCHARIST_INVITATION_BACKGROUND}
+          style={styles.invitationBackground}
+          testID="church-invitation-background"
+        />
+        <View accessible={false} pointerEvents="none" style={styles.invitationOverlay} />
+        <Card
+          footer={
+            <Button fullWidth onPress={openChurches}>
+              {t("churches.invitation.action")}
+            </Button>
+          }
+          header={
+            <View style={styles.invitationHeaderCopy} testID="church-invitation-header">
+              <Text
+                accessibilityRole="header"
+                style={[styles.invitationTitle, isNarrowPhone && styles.invitationTitleCompact]}
+              >
+                {t("churches.invitation.title")}
+              </Text>
+              <Text style={[styles.invitationSubtitle, isNarrowPhone && styles.invitationSubtitleCompact]}>
+                {t("churches.invitation.subtitle")}
+              </Text>
             </View>
-          ))}
-        </View>
-      </Card>
+          }
+          headerStyle={[styles.invitationHeader, isNarrowPhone && styles.invitationHeaderCompact]}
+          style={styles.invitationCard}
+        >
+          <View style={styles.stack}>
+            <Text style={styles.invitationDescription}>{t("churches.invitation.description")}</Text>
+            {benefits.map((benefit) => (
+              <View key={benefit} style={styles.benefit}>
+                <Feather accessible={false} color={theme.colors.accent.amberLight} name="check-circle" size={18} />
+                <Text style={styles.benefitText}>{t(`churches.invitation.${benefit}`)}</Text>
+              </View>
+            ))}
+          </View>
+        </Card>
+      </View>
     );
   }
 
@@ -200,8 +232,40 @@ export function ChurchHomeSection({ now }: ChurchHomeSectionProps) {
 
 const styleSheet = createThemedStyles((theme) => ({
   benefit: { alignItems: "center", flexDirection: "row", gap: theme.spacing[2], minWidth: 0 },
-  benefitText: { ...theme.typography.body, color: theme.colors.text.primary, flex: 1 },
+  benefitText: { ...theme.typography.body, color: theme.colors.text.white, flex: 1 },
   cards: { gap: theme.spacing[3] },
+  invitationBackground: { bottom: 0, left: 0, position: "absolute", right: 0, top: 0 },
+  invitationCard: { backgroundColor: "transparent" },
+  invitationDescription: { ...theme.typography.bodySmall, color: theme.colors.text.white },
+  invitationFrame: { borderRadius: theme.radii.md, overflow: "hidden", position: "relative" },
+  invitationHeader: {
+    borderBottomWidth: 0,
+    margin: 0,
+    paddingHorizontal: theme.spacing[5],
+    paddingVertical: theme.spacing[4],
+  },
+  invitationHeaderCompact: { paddingHorizontal: theme.spacing[3] },
+  invitationHeaderCopy: { borderBottomWidth: 0, justifyContent: "center", minWidth: 0 },
+  invitationOverlay: {
+    backgroundColor: "rgba(4, 13, 21, 0.68)",
+    bottom: 0,
+    left: 0,
+    position: "absolute",
+    right: 0,
+    top: 0,
+  },
+  invitationSubtitle: {
+    ...theme.typography.body,
+    color: theme.colors.text.white,
+    marginTop: theme.spacing[2],
+  },
+  invitationSubtitleCompact: { ...theme.typography.bodySmall, marginTop: theme.spacing[1] },
+  invitationTitle: {
+    ...theme.typography.heading1,
+    color: theme.colors.text.white,
+    fontFamily: theme.fontFamilies.devotional,
+  },
+  invitationTitleCompact: { fontSize: theme.fontSizes.xl, lineHeight: theme.lineHeights.xl },
   loading: { minHeight: theme.sizes.touchTarget },
   muted: { ...theme.typography.bodySmall, color: theme.colors.text.secondary },
   occurrence: { ...theme.typography.body, color: theme.colors.text.primary, fontWeight: "700" },

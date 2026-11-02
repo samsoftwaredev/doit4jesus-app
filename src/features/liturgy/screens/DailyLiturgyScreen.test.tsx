@@ -165,6 +165,12 @@ describe("DailyLiturgyDashboard", () => {
     await waitFor(() => expect(screen.getByText("You shall love the Lord your God.")).toBeTruthy());
   });
 
+  it("can hide the highlighted verse card when embedded on Home", async () => {
+    await render(<DailyLiturgyDashboard showHighlightedVerse={false} />);
+    await waitFor(() => expect(screen.getByText("Memorial of Saint Pius X, Pope")).toBeTruthy());
+    expect(screen.queryByText("You shall love the Lord your God.")).toBeNull();
+  });
+
   it("shows an error state and a Retry button when loading fails", async () => {
     fetchTodayLiturgy.mockRejectedValue(new Error("Network error"));
     await render(<DailyLiturgyDashboard />);

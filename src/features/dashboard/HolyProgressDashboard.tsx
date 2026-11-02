@@ -561,7 +561,7 @@ export function HolyProgressDashboard({
         <RosaryGuideCards />
       </View>
       <View testID="daily-liturgy-section-container">
-        <DailyLiturgyDashboard initialData={initialPrayerData} />
+        <DailyLiturgyDashboard initialData={initialPrayerData} showHighlightedVerse={false} />
       </View>
       <View style={[styles.primaryGrid, useCardColumns && styles.primaryGridColumns]} testID="dashboard-primary-grid">
         <View
