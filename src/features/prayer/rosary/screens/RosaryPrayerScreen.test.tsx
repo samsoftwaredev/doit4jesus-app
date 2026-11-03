@@ -65,6 +65,8 @@ const { useReducedMotion } = jest.requireMock("react-native-reanimated") as {
   useReducedMotion: jest.Mock;
 };
 
+jest.setTimeout(10_000);
+
 function mockSession(overrides = {}) {
   useRosarySession.mockReturnValue({
     completedBeadIds: [],
@@ -121,7 +123,7 @@ describe("RosaryPrayerScreen", () => {
     expect(screen.queryByText("FRUIT OF THE MYSTERY")).toBeNull();
     expect(screen.queryByText("HAIL MARY")).toBeNull();
     expect(screen.queryByText("SCRIPTURE")).toBeNull();
-  }, 10000);
+  });
 
   it("uses the active mystery artwork as a decorative full-page background", async () => {
     const rendered = await render(<RosaryPrayerScreen />);

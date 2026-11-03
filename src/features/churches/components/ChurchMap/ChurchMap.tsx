@@ -38,7 +38,7 @@ export default function ChurchMap({ center, markers, onSelectChurch, selectedChu
           const label = createChurchMarkerLabel(marker);
           const icon = L.divIcon({
             className: "church-map-marker-shell",
-            html: `<span aria-hidden="true" class="church-map-marker${selected ? " selected" : ""}">✝</span>`,
+            html: `<span aria-hidden="true" class="church-map-marker${selected ? " selected" : ""}"><svg class="church-map-marker-building" viewBox="0 0 24 24"><path fill="currentColor" d="M11 2h2v3h3v2h-3v2.2l7 4.1V22h-6v-5h-4v5H4v-8.7l7-4.1V7H8V5h3V2Z"/></svg></span>`,
             iconAnchor: [18, 18],
             iconSize: [36, 36],
           });
@@ -80,6 +80,7 @@ export default function ChurchMap({ center, markers, onSelectChurch, selectedChu
         .leaflet-container { background: #102D45; font-family: system-ui, sans-serif; height: 100%; width: 100%; }
         .church-map-marker-shell { background: transparent; border: 0; }
         .church-map-marker { align-items: center; background: #163A57; border: 2px solid #F1C46A; border-radius: 999px; color: #F1C46A; display: flex; font-size: 20px; height: 32px; justify-content: center; width: 32px; }
+        .church-map-marker-building { height: 20px; width: 20px; }
         .church-map-marker.selected { background: #245E48; border-color: #ffffff; color: #ffffff; transform: scale(1.12); }
         .leaflet-control-attribution { font-size: 10px; }
       `}</style>

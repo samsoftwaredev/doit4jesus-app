@@ -117,9 +117,14 @@ export function ChurchHomeSection({ now }: ChurchHomeSectionProps) {
     }, [loadChurchHome]),
   );
 
-  /** Opens the protected discovery and reminder-management route. */
-  function openChurches(): void {
+  /** Opens full-screen church discovery. */
+  function openChurchDiscovery(): void {
     router.push("/churches" as Href);
+  }
+
+  /** Opens reminder preferences directly for an already subscribed user. */
+  function openReminderReview(): void {
+    router.push("/churches/reminders" as Href);
   }
 
   if (hasError) {
@@ -157,7 +162,7 @@ export function ChurchHomeSection({ now }: ChurchHomeSectionProps) {
         <View accessible={false} pointerEvents="none" style={styles.invitationOverlay} />
         <Card
           footer={
-            <Button fullWidth onPress={openChurches}>
+            <Button fullWidth onPress={openChurchDiscovery}>
               {t("churches.invitation.action")}
             </Button>
           }
@@ -196,7 +201,7 @@ export function ChurchHomeSection({ now }: ChurchHomeSectionProps) {
     <View style={styles.cards}>
       <Card
         headerRight={
-          <IconButton accessibilityLabel={t("churches.home.manageAction")} onPress={openChurches}>
+          <IconButton accessibilityLabel={t("churches.home.manageAction")} onPress={openReminderReview}>
             <Feather accessible={false} color={theme.colors.icon.primary} name="settings" size={20} />
           </IconButton>
         }

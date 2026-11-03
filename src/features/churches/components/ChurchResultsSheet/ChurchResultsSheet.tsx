@@ -13,8 +13,10 @@ import { theme } from "@/theme/tokens";
 export type ChurchResultsSheetSnap = "expanded" | "middle" | "peek";
 
 export type ChurchResultsSheetProps = {
+  bottomInset?: number;
   children: ReactNode;
   onSnapChange: (snap: ChurchResultsSheetSnap) => void;
+  overlaysControls?: boolean;
   panelHeight: number;
   snap: ChurchResultsSheetSnap;
   summary: string;
@@ -38,10 +40,12 @@ function getClosestSnap(height: number, heights: SheetHeights): ChurchResultsShe
   );
 }
 
-/** Presents church results over the map with gesture and assistive-technology snap controls. */
+/** Presents church results over the map and optionally elevates details above discovery controls. */
 export function ChurchResultsSheet({
+  bottomInset = 0,
   children,
   onSnapChange,
+  overlaysControls = false,
   panelHeight,
   snap,
   summary,
@@ -85,7 +89,11 @@ export function ChurchResultsSheet({
   }
 
   return (
-    <Animated.View style={[styles.sheet, animatedStyle]}>
+    <Animated.View
+      accessibilityViewIsModal={overlaysControls}
+      style={[styles.sheet, overlaysControls && styles.sheetOverlay, { bottom: bottomInset }, animatedStyle]}
+      testID="church-results-sheet"
+    >
       <GestureDetector gesture={panGesture}>
         <View style={styles.header}>
           <View accessible style={styles.headerCopy}>
@@ -144,6 +152,7 @@ const styleSheet = createThemedStyles((theme) => ({
     zIndex: theme.zIndex.sticky,
     ...theme.shadows.large,
   },
+  sheetOverlay: { zIndex: theme.zIndex.modal },
   summary: { ...theme.typography.caption, color: theme.colors.text.secondary },
   title: { ...theme.typography.heading3, color: theme.colors.text.primary },
 }));

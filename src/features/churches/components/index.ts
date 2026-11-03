@@ -6,8 +6,10 @@ export type { EarthGlobeSceneProps } from "./EarthGlobeScene";
 export { ChurchHomeSection } from "./ChurchHomeSection";
 export type { ChurchHomeSectionProps } from "./ChurchHomeSection";
 export { ChurchMap } from "./ChurchMap";
+export { ChurchReminderSetupProvider, useChurchReminderSetup } from "./ChurchReminderSetupProvider";
+export type { ChurchReminderMutationFailure, ChurchReminderSetupContextValue } from "./ChurchReminderSetupProvider";
 export { ChurchSearchToolbar } from "./ChurchSearchToolbar";
-export type { ChurchDiscoveryView, ChurchFilterSelection, ChurchSearchToolbarProps } from "./ChurchSearchToolbar";
+export type { ChurchDiscoveryView, ChurchSearchToolbarProps } from "./ChurchSearchToolbar";
 export {
   ChurchResultsSheet,
   getChurchResultsSheetHeights,

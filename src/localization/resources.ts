@@ -98,16 +98,6 @@ export const resources = {
           globeLabel: "Church discovery globe",
           globePrompt: "Search by U.S. ZIP, church name, or address to explore churches.",
         },
-        filters: {
-          title: "Filter churches",
-          open: "Open church filters",
-          unavailable: "Search a U.S. ZIP code to use city and diocese filters.",
-          apply: "Apply filters",
-          city: "City",
-          diocese: "Diocese",
-          allCities: "All nearby cities",
-          allDioceses: "All dioceses",
-        },
         results: {
           title: "Nearby churches",
           showMap: "Show church map",
@@ -138,6 +128,8 @@ export const resources = {
         },
         setup: {
           review: "Review reminders",
+          next: "Next: Set reminders",
+          loading: "Loading church reminders",
           title: "Choose your reminders",
           description: "Select at least one service and one reminder day for each church.",
           serviceTypes: "Services",
@@ -1602,16 +1594,6 @@ export const resources = {
           globeLabel: "Globo para buscar iglesias",
           globePrompt: "Busca por código postal de EE. UU., iglesia o dirección para explorar iglesias.",
         },
-        filters: {
-          title: "Filtrar iglesias",
-          open: "Abrir filtros de iglesias",
-          unavailable: "Busca un código postal de EE. UU. para usar filtros de ciudad y diócesis.",
-          apply: "Aplicar filtros",
-          city: "Ciudad",
-          diocese: "Diócesis",
-          allCities: "Todas las ciudades cercanas",
-          allDioceses: "Todas las diócesis",
-        },
         results: {
           title: "Iglesias cercanas",
           showMap: "Mostrar mapa de iglesias",
@@ -1642,6 +1624,8 @@ export const resources = {
         },
         setup: {
           review: "Revisar recordatorios",
+          next: "Siguiente: configurar recordatorios",
+          loading: "Cargando recordatorios de iglesias",
           title: "Elige tus recordatorios",
           description: "Selecciona al menos un servicio y un día de recordatorio para cada iglesia.",
           serviceTypes: "Servicios",

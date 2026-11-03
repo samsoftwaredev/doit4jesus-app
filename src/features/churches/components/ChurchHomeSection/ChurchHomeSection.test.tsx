@@ -101,7 +101,7 @@ describe("ChurchHomeSection", () => {
     expect(screen.queryByText("Your church reminders")).toBeNull();
     expect(screen.queryByText("Update churches, service types, or reminder days.")).toBeNull();
     await fireEvent.press(screen.getByRole("button", { name: "Manage church reminders" }));
-    expect(mockPush).toHaveBeenCalledWith("/churches");
+    expect(mockPush).toHaveBeenCalledWith("/churches/reminders");
   });
 
   it("labels tomorrow by church calendar date across a daylight-saving transition", async () => {

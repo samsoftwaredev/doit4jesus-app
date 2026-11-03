@@ -22,6 +22,23 @@ describe("ChurchMap", () => {
     expect(source).not.toContain('await import("leaflet/dist/leaflet.css")');
   });
 
+  it("renders a church-building marker instead of the cross glyph", () => {
+    const { readFileSync } = jest.requireActual("fs") as {
+      readFileSync: (path: string, encoding: string) => string;
+    };
+    const { dirname, join } = jest.requireActual("path") as {
+      dirname: (path: string) => string;
+      join: (...paths: string[]) => string;
+    };
+    const testPath = expect.getState().testPath;
+    if (!testPath) throw new Error("Jest did not expose the ChurchMap test path.");
+    const source = readFileSync(join(dirname(testPath), "ChurchMap.tsx"), "utf8");
+
+    expect(source).toContain('class="church-map-marker-building"');
+    expect(source).toContain("<svg");
+    expect(source).not.toContain(">✝</span>");
+  });
+
   it("builds a descriptive accessible marker label", () => {
     expect(createChurchMarkerLabel(markers[0]!)).toBe("St. Mary, 203 E 10th St, Austin");
   });

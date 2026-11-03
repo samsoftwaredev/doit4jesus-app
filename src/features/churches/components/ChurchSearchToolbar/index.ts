@@ -1,2 +1,2 @@
 export { ChurchSearchToolbar } from "./ChurchSearchToolbar";
-export type { ChurchDiscoveryView, ChurchFilterSelection, ChurchSearchToolbarProps } from "./ChurchSearchToolbar";
+export type { ChurchDiscoveryView, ChurchSearchToolbarProps } from "./ChurchSearchToolbar";

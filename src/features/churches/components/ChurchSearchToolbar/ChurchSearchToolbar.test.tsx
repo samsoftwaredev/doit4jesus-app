@@ -4,49 +4,16 @@ import { i18n } from "@/localization";
 
 import { ChurchSearchToolbar, type ChurchSearchToolbarProps } from "./ChurchSearchToolbar";
 
-const resolvedPostalCode = {
-  cities: [
-    {
-      isPrimary: true,
-      label: "Austin city",
-      name: "Austin",
-      overlapPercent: 99.5,
-      regionCode: "TX",
-      status: "current_census_place",
-    },
-    {
-      isPrimary: false,
-      label: "West Lake Hills city",
-      name: "West Lake Hills",
-      overlapPercent: 0.5,
-      regionCode: "TX",
-      status: "current_census_place",
-    },
-  ],
-  dioceseStatus: "approximate_centroid",
-  dioceses: [{ id: "diocese-austin", matchStatus: "approximate_centroid", name: "Diocese of Austin" }],
-  latitude: 30.2672,
-  longitude: -97.7431,
-  postalCode: "78701",
-  primaryCity: "Austin",
-  regionCodes: ["TX"],
-  timezone: "America/Chicago",
-};
-
 function createProps(overrides: Partial<ChurchSearchToolbarProps> = {}): ChurchSearchToolbarProps {
   return {
     canShowMap: false,
     errorMessage: null,
     hasSearched: false,
     isSearching: false,
-    onApplyFilters: jest.fn(),
     onChangeText: jest.fn(),
     onSearch: jest.fn(),
     onViewChange: jest.fn(),
-    resolvedPostalCode: null,
     searchTerm: "",
-    selectedCity: "",
-    selectedDioceseId: "",
     view: "list",
     ...overrides,
   };
@@ -71,6 +38,7 @@ describe("ChurchSearchToolbar", () => {
     expect(screen.getByRole("button", { name: "Search churches" })).toHaveStyle({ height: 44, width: 44 });
     expect(screen.queryByRole("button", { name: "Open church filters" })).toBeNull();
     expect(screen.queryAllByRole("tab")).toHaveLength(0);
+    expect(screen.queryByRole("button", { name: "Open church filters" })).toBeNull();
     expect(screen.queryByRole("button", { name: "Show church map" })).toBeNull();
 
     await fireEvent.changeText(screen.getByLabelText("Search by ZIP, church name, or address"), "St. Mary");
@@ -88,6 +56,7 @@ describe("ChurchSearchToolbar", () => {
     );
 
     expect(screen.queryAllByRole("tab")).toHaveLength(0);
+    expect(screen.queryByRole("button", { name: "Open church filters" })).toBeNull();
     expect(screen.getByRole("button", { name: "Show church list" }).props.accessibilityState).toMatchObject({
       disabled: false,
     });
@@ -99,59 +68,6 @@ describe("ChurchSearchToolbar", () => {
     );
     await fireEvent.press(screen.getByRole("button", { name: "Show church map" }));
     expect(onViewChange).toHaveBeenLastCalledWith("map");
-  });
-
-  it("drops ZIP-derived filters beneath the toolbar and applies them together", async () => {
-    const onApplyFilters = jest.fn();
-    await render(
-      <ChurchSearchToolbar
-        {...createProps({
-          canShowMap: true,
-          hasSearched: true,
-          onApplyFilters,
-          resolvedPostalCode,
-          view: "map",
-        })}
-      />,
-    );
-
-    await fireEvent.press(screen.getByRole("button", { name: "Open church filters" }));
-    expect(screen.getByTestId("church-filter-dropdown")).toBeTruthy();
-    await fireEvent.press(screen.getByRole("button", { name: "Open church filters" }));
-    expect(screen.queryByTestId("church-filter-dropdown")).toBeNull();
-    await fireEvent.press(screen.getByRole("button", { name: "Open church filters" }));
-    expect(screen.getByRole("header", { name: "Filter churches" })).toBeTruthy();
-    expect(screen.getByText("Searching near Austin, TX")).toBeTruthy();
-
-    await fireEvent.press(screen.getByRole("radio", { name: "Austin" }));
-    await fireEvent.press(screen.getByRole("radio", { name: "Diocese of Austin" }));
-    await fireEvent.press(screen.getByRole("button", { name: "Apply filters" }));
-
-    expect(onApplyFilters).toHaveBeenCalledWith({ city: "Austin", dioceseId: "diocese-austin" });
-    expect(screen.queryByRole("header", { name: "Filter churches" })).toBeNull();
-  });
-
-  it("discards staged dropdown filters when cancelled", async () => {
-    const onApplyFilters = jest.fn();
-    await render(
-      <ChurchSearchToolbar
-        {...createProps({
-          hasSearched: true,
-          onApplyFilters,
-          resolvedPostalCode,
-          selectedCity: "Austin",
-          selectedDioceseId: "diocese-austin",
-        })}
-      />,
-    );
-
-    await fireEvent.press(screen.getByRole("button", { name: "Open church filters" }));
-    await fireEvent.press(screen.getByRole("radio", { name: "All nearby cities" }));
-    await fireEvent.press(screen.getByRole("button", { name: "Cancel" }));
-    await fireEvent.press(screen.getByRole("button", { name: "Open church filters" }));
-
-    expect(screen.getByRole("radio", { name: "Austin" }).props.accessibilityState).toMatchObject({ checked: true });
-    expect(onApplyFilters).not.toHaveBeenCalled();
   });
 
   it("renders errors and Spanish toolbar copy", async () => {
