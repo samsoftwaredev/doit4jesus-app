@@ -3,6 +3,7 @@ import {
   fetchApprovedPrayerIntentions,
   fetchMyPrayerIntentions,
   fetchPrayerIntentionPrayerSummary,
+  parseApprovedPrayerIntentionsPage,
   recordPrayerForIntention,
 } from "./prayerIntentions.api";
 
@@ -73,6 +74,14 @@ describe("prayer intentions API", () => {
     const fetchMock = globalThis.fetch as unknown as jest.Mock;
     expect(fetchMock.mock.calls[0][0]).toContain("limit=100&offset=0");
     expect(fetchMock.mock.calls[1][0]).toContain("limit=1&offset=0&status=visible");
+  });
+
+  it("parses the aggregate Prayer by Others section with the creator ID", () => {
+    const legacyIntention = { ...approvedIntention, symbol: null };
+    expect(parseApprovedPrayerIntentionsPage([legacyIntention], pageMeta)).toEqual({
+      data: [legacyIntention],
+      meta: pageMeta,
+    });
   });
 
   it("creates intentions and records and summarizes their prayers", async () => {

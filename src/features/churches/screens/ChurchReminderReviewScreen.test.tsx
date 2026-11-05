@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react-native";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react-native";
 
 import { i18n } from "@/localization";
 
@@ -73,7 +73,15 @@ describe("ChurchReminderReviewScreen", () => {
     expect(mockToggleServiceType).toHaveBeenCalledWith(church.id, "mass");
     expect(mockToggleWeekday).toHaveBeenCalledWith(church.id, "sunday");
 
-    await fireEvent.press(screen.getByRole("button", { name: "Complete setup" }));
+    const completeButton = screen.getByRole("button", { name: "Complete setup" });
+    expect(
+      within(screen.getByTestId("screen-shell-scroll-view")).queryByRole("button", { name: "Complete setup" }),
+    ).toBeNull();
+    expect(
+      within(screen.getByTestId("screen-shell-bottom-action")).getByRole("button", { name: "Complete setup" }),
+    ).toBe(completeButton);
+
+    await fireEvent.press(completeButton);
     await waitFor(() => expect(mockCompleteSetup).toHaveBeenCalledTimes(1));
     expect(mockReplace).toHaveBeenCalledWith("/home");
   });

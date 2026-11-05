@@ -13,6 +13,7 @@ type ScreenShellProps = PropsWithChildren<{
   actions?: ReactNode;
   backAccessibilityLabel?: string;
   background?: ReactNode;
+  bottomAction?: ReactNode;
   contentContainerStyle?: StyleProp<ViewStyle>;
   description: string;
   eyebrow?: string;
@@ -30,13 +31,14 @@ type ScreenShellProps = PropsWithChildren<{
  * Warm light remains behind the UI while non-interactive dust passes above
  * normal screen content.
  *
- * @param props Header, body, optional background content, and an interactive viewport overlay for the screen.
+ * @param props Header, scrollable body, optional persistent bottom action, background content, and viewport overlay.
  * @returns A safe-area screen shell with its content above the background.
  */
 export function ScreenShell({
   actions,
   backAccessibilityLabel,
   background,
+  bottomAction,
   children,
   contentContainerStyle,
   description,
@@ -54,7 +56,13 @@ export function ScreenShell({
 
   return (
     <SafeAreaView edges={["top"]} style={styles.safeArea} testID={testID}>
-      <ScrollView contentContainerStyle={styles.scrollContent} ref={scrollViewRef} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        ref={scrollViewRef}
+        showsVerticalScrollIndicator={false}
+        style={styles.scrollView}
+        testID="screen-shell-scroll-view"
+      >
         <View style={styles.page}>
           <View pointerEvents="none" style={styles.backgroundLayer}>
             {background}
@@ -76,6 +84,11 @@ export function ScreenShell({
         </View>
       </ScrollView>
       <SacredAtmosphere layer="foregroundDust" testID="sacred-atmosphere-foreground" />
+      {bottomAction ? (
+        <SafeAreaView edges={["bottom"]} style={styles.bottomAction} testID="screen-shell-bottom-action">
+          <View style={[styles.bottomActionContent, { paddingHorizontal: responsive.gutter }]}>{bottomAction}</View>
+        </SafeAreaView>
+      ) : null}
       {overlay ? (
         <View
           pointerEvents="box-none"
@@ -90,6 +103,18 @@ export function ScreenShell({
 }
 
 const styleSheet = createThemedStyles((theme) => ({
+  bottomAction: {
+    backgroundColor: theme.colors.surface.primary,
+    borderTopColor: theme.colors.border.default,
+    borderTopWidth: theme.borderWidths.thin,
+    zIndex: theme.zIndex.drawer,
+  },
+  bottomActionContent: {
+    alignSelf: "center",
+    maxWidth: theme.sizes.contentMaxWidth,
+    paddingVertical: theme.spacing[3],
+    width: "100%",
+  },
   safeArea: {
     flex: 1,
     backgroundColor: theme.colors.background.primary,
@@ -98,6 +123,7 @@ const styleSheet = createThemedStyles((theme) => ({
   scrollContent: {
     flexGrow: 1,
   },
+  scrollView: { flex: 1 },
   page: {
     flexGrow: 1,
     position: "relative",

@@ -16,7 +16,7 @@ import { theme } from "@/theme/tokens";
 import { getChurchSubscriptions, getUpcomingChurchServices } from "../../churches.api";
 import type { ChurchSubscription, UpcomingChurchService } from "../../churches.types";
 
-const EUCHARIST_INVITATION_BACKGROUND =
+const EUCHARIST_BACKGROUND =
   require("../../../../../assets/images/churches/eucharist-invitation-oil-painting.jpg") as number;
 
 export type ChurchHomeSectionProps = {
@@ -155,7 +155,7 @@ export function ChurchHomeSection({ now }: ChurchHomeSectionProps) {
           contentFit="cover"
           contentPosition="right center"
           pointerEvents="none"
-          source={EUCHARIST_INVITATION_BACKGROUND}
+          source={EUCHARIST_BACKGROUND}
           style={styles.invitationBackground}
           testID="church-invitation-background"
         />
@@ -199,38 +199,59 @@ export function ChurchHomeSection({ now }: ChurchHomeSectionProps) {
   const hasPendingSchedule = subscriptions.some((subscription) => !subscription.scheduleReady);
   return (
     <View style={styles.cards}>
-      <Card
-        headerRight={
-          <IconButton accessibilityLabel={t("churches.home.manageAction")} onPress={openReminderReview}>
-            <Feather accessible={false} color={theme.colors.icon.primary} name="settings" size={20} />
-          </IconButton>
-        }
-        title={t("churches.home.upcomingTitle")}
-      >
-        <View style={styles.stack}>
-          {upcoming.map((occurrence) => (
-            <View
-              accessibilityLabel={formatOccurrence(occurrence, currentNow, locale, t)}
-              key={occurrence.id}
-              style={styles.row}
-            >
-              <Feather accessible={false} color={theme.colors.accent.amberLight} name="calendar" size={20} />
-              <View style={styles.rowCopy}>
-                <Text style={styles.occurrence}>{formatOccurrence(occurrence, currentNow, locale, t)}</Text>
-                <Text style={styles.muted}>{occurrence.churchName}</Text>
+      <View style={styles.upcomingFrame}>
+        <Image
+          accessible={false}
+          contentFit="cover"
+          contentPosition="right center"
+          pointerEvents="none"
+          source={EUCHARIST_BACKGROUND}
+          style={styles.upcomingBackground}
+          testID="church-upcoming-background"
+        />
+        <View accessible={false} pointerEvents="none" style={styles.upcomingOverlay} />
+        <Card
+          headerRight={
+            <View style={styles.headerActions}>
+              <IconButton accessibilityLabel={t("churches.search.title")} onPress={openChurchDiscovery}>
+                <Feather accessible={false} color={theme.colors.icon.primary} name="search" size={20} />
+              </IconButton>
+              <IconButton accessibilityLabel={t("churches.home.manageAction")} onPress={openReminderReview}>
+                <Feather accessible={false} color={theme.colors.icon.primary} name="settings" size={20} />
+              </IconButton>
+            </View>
+          }
+          style={styles.upcomingCard}
+          title={t("churches.home.upcomingTitle")}
+          titleStyle={styles.upcomingTitle}
+        >
+          <View style={styles.stack}>
+            {upcoming.map((occurrence) => (
+              <View
+                accessibilityLabel={formatOccurrence(occurrence, currentNow, locale, t)}
+                key={occurrence.id}
+                style={styles.row}
+              >
+                <Feather accessible={false} color={theme.colors.accent.amberLight} name="calendar" size={20} />
+                <View style={styles.rowCopy}>
+                  <Text style={styles.upcomingOccurrence}>{formatOccurrence(occurrence, currentNow, locale, t)}</Text>
+                  <Text style={styles.upcomingMuted}>{occurrence.churchName}</Text>
+                </View>
               </View>
-            </View>
-          ))}
-          {upcoming.length === 0 ? (
-            <View style={styles.stack}>
-              <Text style={styles.occurrence}>
-                {t(hasPendingSchedule ? "churches.home.pending" : "churches.home.empty")}
-              </Text>
-              {hasPendingSchedule ? <Text style={styles.muted}>{t("churches.home.pendingDescription")}</Text> : null}
-            </View>
-          ) : null}
-        </View>
-      </Card>
+            ))}
+            {upcoming.length === 0 ? (
+              <View style={styles.stack}>
+                <Text style={styles.upcomingOccurrence}>
+                  {t(hasPendingSchedule ? "churches.home.pending" : "churches.home.empty")}
+                </Text>
+                {hasPendingSchedule ? (
+                  <Text style={styles.upcomingMuted}>{t("churches.home.pendingDescription")}</Text>
+                ) : null}
+              </View>
+            ) : null}
+          </View>
+        </Card>
+      </View>
     </View>
   );
 }
@@ -239,6 +260,7 @@ const styleSheet = createThemedStyles((theme) => ({
   benefit: { alignItems: "center", flexDirection: "row", gap: theme.spacing[2], minWidth: 0 },
   benefitText: { ...theme.typography.body, color: theme.colors.text.white, flex: 1 },
   cards: { gap: theme.spacing[3] },
+  headerActions: { alignItems: "center", flexDirection: "row", gap: theme.spacing[2] },
   invitationBackground: { bottom: 0, left: 0, position: "absolute", right: 0, top: 0 },
   invitationCard: { backgroundColor: "transparent" },
   invitationDescription: { ...theme.typography.bodySmall, color: theme.colors.text.white },
@@ -277,4 +299,18 @@ const styleSheet = createThemedStyles((theme) => ({
   row: { alignItems: "center", flexDirection: "row", gap: theme.spacing[3], minWidth: 0 },
   rowCopy: { flex: 1, gap: theme.spacing[1], minWidth: 0 },
   stack: { gap: theme.spacing[3] },
+  upcomingBackground: { bottom: 0, left: 0, position: "absolute", right: 0, top: 0 },
+  upcomingCard: { backgroundColor: "transparent" },
+  upcomingFrame: { borderRadius: theme.radii.md, overflow: "hidden", position: "relative" },
+  upcomingMuted: { ...theme.typography.bodySmall, color: theme.colors.text.white },
+  upcomingOccurrence: { ...theme.typography.body, color: theme.colors.text.white, fontWeight: "700" },
+  upcomingOverlay: {
+    backgroundColor: "rgba(4, 13, 21, 0.72)",
+    bottom: 0,
+    left: 0,
+    position: "absolute",
+    right: 0,
+    top: 0,
+  },
+  upcomingTitle: { color: theme.colors.text.white },
 }));

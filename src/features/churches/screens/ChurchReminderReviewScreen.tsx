@@ -18,7 +18,7 @@ function formatChurchAddress(church: ChurchSummary): string {
     .join(", ");
 }
 
-/** Presents editable service and weekday preferences on the dedicated reminder route. */
+/** Presents scrollable reminder preferences with a persistent, safe-area-aware completion action. */
 export function ChurchReminderReviewScreen() {
   const router = useRouter();
   const styles = useThemedStyles(styleSheet);
@@ -35,9 +35,25 @@ export function ChurchReminderReviewScreen() {
     if (await setup.completeSetup()) router.replace("/home");
   }
 
+  const showCompleteAction =
+    !setup.isLoadingSubscriptions && (setup.drafts.length > 0 || setup.existingSubscriptions.length > 0);
+
   return (
     <ScreenShell
       backAccessibilityLabel={t("common.back")}
+      bottomAction={
+        showCompleteAction ? (
+          <View style={styles.pinnedAction}>
+            <Button fullWidth loading={setup.isSaving} onPress={() => void completeSetup()}>
+              {setup.isSaving
+                ? t("churches.setup.saving")
+                : setup.mutationFailures.length > 0
+                  ? t("churches.errors.retrySave")
+                  : t("churches.setup.complete")}
+            </Button>
+          </View>
+        ) : null
+      }
       contentContainerStyle={styles.content}
       description={t("churches.setup.description")}
       headerVariant="compact"
@@ -135,15 +151,6 @@ export function ChurchReminderReviewScreen() {
             {`${failure.name}: ${failure.message}`}
           </Text>
         ))}
-        {!setup.isLoadingSubscriptions && (setup.drafts.length > 0 || setup.existingSubscriptions.length > 0) ? (
-          <Button fullWidth loading={setup.isSaving} onPress={() => void completeSetup()}>
-            {setup.isSaving
-              ? t("churches.setup.saving")
-              : setup.mutationFailures.length > 0
-                ? t("churches.errors.retrySave")
-                : t("churches.setup.complete")}
-          </Button>
-        ) : null}
       </View>
     </ScreenShell>
   );
@@ -174,6 +181,7 @@ const styleSheet = createThemedStyles((theme) => ({
   label: { ...theme.typography.label, color: theme.colors.text.primary },
   loading: { alignItems: "center", padding: theme.spacing[4] },
   muted: { ...theme.typography.bodySmall, color: theme.colors.text.secondary },
+  pinnedAction: { alignSelf: "center", maxWidth: 760, width: "100%" },
   preferenceCard: {
     backgroundColor: theme.colors.surface.tertiary,
     borderColor: theme.colors.border.default,

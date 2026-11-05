@@ -18,7 +18,7 @@ export type ApprovedPrayerIntention = {
   description: string;
   expiresAt: string;
   id: string;
-  symbol: string;
+  symbol: string | null;
   title: string;
 };
 
@@ -45,7 +45,7 @@ export type MyPrayerIntention = {
   id: string;
   reviewedAt: string | null;
   status: MyPrayerIntentionStatus;
-  symbol: string;
+  symbol: string | null;
   title: string;
 };
 

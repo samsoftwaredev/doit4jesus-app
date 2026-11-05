@@ -76,7 +76,7 @@ function parseApprovedPrayerIntention(value: unknown): ApprovedPrayerIntention {
     description: readString(intention.description, "description"),
     expiresAt: readString(intention.expiresAt, "expiration date"),
     id: readString(intention.id, "intention ID"),
-    symbol: readString(intention.symbol, "symbol"),
+    symbol: readNullableString(intention.symbol, "symbol"),
     title: readString(intention.title, "title"),
   };
 }
@@ -95,7 +95,7 @@ function parseMyPrayerIntention(value: unknown): MyPrayerIntention {
     id: readString(intention.id, "intention ID"),
     reviewedAt: readNullableString(intention.reviewedAt, "review date"),
     status,
-    symbol: readString(intention.symbol, "symbol"),
+    symbol: readNullableString(intention.symbol, "symbol"),
     title: readString(intention.title, "title"),
   };
 }

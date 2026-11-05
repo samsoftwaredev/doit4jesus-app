@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createRef } from "react";
-import { render, screen } from "@testing-library/react-native";
+import { render, screen, within } from "@testing-library/react-native";
 import { ScrollView, Text, View } from "react-native";
 
 import { AppVisualEffectsProvider } from "@/theme/AppVisualEffectsProvider";
@@ -77,6 +77,19 @@ describe("ScreenShell", () => {
     expect(screen.getByTestId("screen-shell-overlay").props.style).toEqual(
       expect.arrayContaining([expect.objectContaining({ position: "absolute", top: 0 })]),
     );
+  });
+
+  it("keeps a bottom action outside the scrollable screen content", async () => {
+    await render(
+      <AppVisualEffectsProvider>
+        <ScreenShell bottomAction={<Text>Persistent action</Text>} description="A calm place to grow." title="Welcome">
+          <Text>Screen content</Text>
+        </ScreenShell>
+      </AppVisualEffectsProvider>,
+    );
+
+    expect(within(screen.getByTestId("screen-shell-scroll-view")).queryByText("Persistent action")).toBeNull();
+    expect(within(screen.getByTestId("screen-shell-bottom-action")).getByText("Persistent action")).toBeTruthy();
   });
 
   it("stacks the heading and actions when large text needs more horizontal room", async () => {

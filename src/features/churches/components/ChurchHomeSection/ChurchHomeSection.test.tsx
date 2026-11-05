@@ -97,9 +97,21 @@ describe("ChurchHomeSection", () => {
     expect(await screen.findByText("Upcoming church services")).toBeTruthy();
     expect(screen.getByText("Mass tomorrow at 8:00 AM")).toBeTruthy();
     expect(screen.getByText("St. Mary Cathedral")).toBeTruthy();
+    expect(screen.getByTestId("church-upcoming-background").props).toMatchObject({
+      accessible: false,
+      contentFit: "cover",
+      contentPosition: { right: 0, top: "50%" },
+      source: [require("../../../../../assets/images/churches/eucharist-invitation-oil-painting.jpg")],
+    });
     expect(screen.queryByTestId("church-invitation-background")).toBeNull();
     expect(screen.queryByText("Your church reminders")).toBeNull();
     expect(screen.queryByText("Update churches, service types, or reminder days.")).toBeNull();
+    const findChurchButton = screen.getByRole("button", { name: "Find a church" });
+    expect(findChurchButton.props.style).toEqual(
+      expect.arrayContaining([expect.objectContaining({ height: 44, width: 44 })]),
+    );
+    await fireEvent.press(findChurchButton);
+    expect(mockPush).toHaveBeenCalledWith("/churches");
     await fireEvent.press(screen.getByRole("button", { name: "Manage church reminders" }));
     expect(mockPush).toHaveBeenCalledWith("/churches/reminders");
   });
@@ -173,6 +185,23 @@ describe("ChurchHomeSection", () => {
     expect(await screen.findByRole("header", { name: "Él te espera" })).toBeTruthy();
     expect(screen.getByText("Visita a Jesús en el sagrario.")).toBeTruthy();
     expect(screen.getByRole("button", { name: "Buscar iglesias cercanas" })).toBeTruthy();
+  });
+
+  it("labels the church-finder action in Spanish for subscribed users", async () => {
+    await i18n.changeLanguage("es");
+    mockGetSubscriptions.mockResolvedValue([
+      {
+        church,
+        churchId: "church-1",
+        notificationWeekdays: ["sunday"],
+        scheduleReady: true,
+        serviceTypes: ["mass"],
+      },
+    ]);
+
+    await render(<ChurchHomeSection />);
+
+    expect(await screen.findByRole("button", { name: "Encuentra una iglesia" })).toBeTruthy();
   });
 
   it("offers a retry after the subscription request fails", async () => {
