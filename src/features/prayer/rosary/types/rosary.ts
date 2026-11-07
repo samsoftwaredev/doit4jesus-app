@@ -4,9 +4,11 @@ export type RosaryMysteryCategory = string;
 
 export type RosaryMysteryType = "joyful" | "luminous" | "sorrowful" | "glorious";
 
-export type RosaryLength = "short" | "medium" | "long";
+export type RosaryLength = "short" | "long";
 
 export type RosaryArtStyle = "comic" | "classic";
+
+export type RosaryMysteryNarrationKind = "title" | "reflection" | "fruit";
 
 export type RosaryBeadType =
   | "ourFather"
@@ -39,6 +41,7 @@ export interface RosaryBead {
   decade?: number;
   beadInDecade?: number;
   mysteryId?: string;
+  mysteryNarrationKind?: RosaryMysteryNarrationKind;
   scriptureReference?: string;
   scriptureText?: string;
   isPhysicalBead?: boolean;

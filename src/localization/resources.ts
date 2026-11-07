@@ -1062,14 +1062,11 @@ export const resources = {
           pageAnnouncement: "{{title}}, page {{current}} of {{total}}",
           pages: {
             artwork: "Artwork",
-            fruit: "Fruit of the Mystery",
-            mystery: "Mystery",
-            prayer: "Prayer",
-            scripture: "Scripture",
+            fruitPrayer: "Fruit and Prayer",
+            mysteryScripture: "Mystery and Scripture",
           },
           showPage: "Show {{title}}, page {{current}} of {{total}}",
-          swipeHint:
-            "Swipe left or right to move between Mystery, Artwork, Fruit of the Mystery, Prayer, and Scripture.",
+          swipeHint: "Swipe left or right to move between Mystery and Scripture, Artwork, and Fruit and Prayer.",
         },
         completion: {
           activityRecorded: "Rosary recorded. {{points}} experience points earned.",
@@ -1104,21 +1101,16 @@ export const resources = {
         },
         length: {
           currentWithRemaining: "Current Rosary length: {{length}}. Time remaining: {{remaining}}",
-          default: "Classic",
+          default: "Long",
           hint: "Opens Rosary settings to change the prayer length.",
           long: {
-            introduction: "Everything in Classic, plus:",
+            introduction: "Everything in Short, plus:",
             label: "Long (30 min)",
             name: "Long",
-            prayers: { one: "Litany of Loreto" },
-          },
-          medium: {
-            introduction: "Everything in Short, plus:",
-            label: "Classic (20 min)",
-            name: "Classic",
             prayers: {
               one: "Our Father, Hail Mary, and Glory Be for the Pope’s intentions",
               two: "St. Michael Prayer",
+              three: "Litany of Loreto",
             },
           },
           selected: "{{length}} Rosary selected.",
@@ -2560,14 +2552,12 @@ export const resources = {
           pageAnnouncement: "{{title}}, página {{current}} de {{total}}",
           pages: {
             artwork: "Arte sacro",
-            fruit: "Fruto del Misterio",
-            mystery: "Misterio",
-            prayer: "Oración",
-            scripture: "Sagrada Escritura",
+            fruitPrayer: "Fruto del Misterio y Oración",
+            mysteryScripture: "Misterio y Sagrada Escritura",
           },
           showPage: "Mostrar {{title}}, página {{current}} de {{total}}",
           swipeHint:
-            "Desliza a la izquierda o a la derecha para ver Misterio, Arte sacro, Fruto del Misterio, Oración y Sagrada Escritura.",
+            "Desliza a la izquierda o a la derecha para ver Misterio y Sagrada Escritura, Arte sacro, y Fruto del Misterio y Oración.",
         },
         completion: {
           activityRecorded: "Rosario registrado. Ganaste {{points}} puntos de experiencia.",
@@ -2602,21 +2592,16 @@ export const resources = {
         },
         length: {
           currentWithRemaining: "Duración actual del Rosario: {{length}}. Tiempo restante: {{remaining}}",
-          default: "Clásico",
+          default: "Largo",
           hint: "Abre la configuración del Rosario para cambiar su duración.",
           long: {
-            introduction: "Todo lo incluido en Clásico, más:",
+            introduction: "Todo lo incluido en Corto, más:",
             label: "Largo (30 min)",
             name: "Largo",
-            prayers: { one: "Letanías Lauretanas" },
-          },
-          medium: {
-            introduction: "Todo lo incluido en Corto, más:",
-            label: "Clásico (20 min)",
-            name: "Clásico",
             prayers: {
               one: "Padre Nuestro, Ave María y Gloria por las intenciones del Papa",
               two: "Oración a san Miguel",
+              three: "Letanías Lauretanas",
             },
           },
           selected: "Rosario {{length}} seleccionado.",

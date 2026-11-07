@@ -37,7 +37,7 @@ describe("RosaryBottomNavigation", () => {
         onPrevious={onPrevious}
         onRestart={onRestart}
         progress={{ currentIndex: 2, prayerName: "Hail Mary", total: 10 }}
-        rosaryLength="medium"
+        rosaryLength="long"
       />,
     );
 
@@ -68,7 +68,7 @@ describe("RosaryBottomNavigation", () => {
         onRestart={jest.fn()}
         progress={{ currentIndex: 38, prayerName: "Ave María", total: 59 }}
         rosaryArtStyle="comic"
-        rosaryLength="medium"
+        rosaryLength="long"
       />,
     );
 
@@ -89,7 +89,7 @@ describe("RosaryBottomNavigation", () => {
         previousDisabled
         progress={{ currentIndex: 0, prayerName: "Sign of the Cross", total: 59 }}
         rosaryArtStyle="comic"
-        rosaryLength="medium"
+        rosaryLength="long"
       />,
     );
 
@@ -113,7 +113,7 @@ describe("RosaryBottomNavigation", () => {
         onRestart={jest.fn()}
         progress={{ currentIndex: 1, prayerName: "Ave María", total: 59 }}
         rosaryArtStyle="comic"
-        rosaryLength="medium"
+        rosaryLength="long"
       />,
     );
     await fireEvent.press(screen.getByRole("button", { name: "Cuenta anterior" }));
@@ -130,7 +130,7 @@ describe("RosaryBottomNavigation", () => {
         onRestart={jest.fn()}
         progress={{ currentIndex: 2, prayerName: "Hail Mary", total: 10 }}
         rosaryArtStyle="comic"
-        rosaryLength="medium"
+        rosaryLength="long"
       />,
     );
 
@@ -163,7 +163,7 @@ describe("RosaryBottomNavigation", () => {
         onAdvance={jest.fn()}
         onRestart={onRestart}
         progress={{ currentIndex: 1, prayerName: "Hail Mary", total: 10 }}
-        rosaryLength="medium"
+        rosaryLength="long"
       />,
     );
 
@@ -183,18 +183,19 @@ describe("RosaryBottomNavigation", () => {
         onLengthChange={onLengthChange}
         onRestart={jest.fn()}
         progress={{ currentIndex: 59, prayerName: "Hail, Holy Queen", total: 59 }}
-        rosaryLengthAudioDurations={{ long: 1634, medium: 1417, short: 1269 }}
-        rosaryLength="medium"
+        rosaryLengthAudioDurations={{ long: 1634, short: 1269 }}
+        rosaryLength="long"
       />,
     );
 
     await fireEvent.press(screen.getByLabelText("Open Rosary settings"));
 
-    expect(screen.getByRole("radio", { name: "Classic (23:37) Rosary" }).props.accessibilityState).toEqual({
+    expect(screen.getAllByRole("radio")).toHaveLength(6);
+    expect(screen.getByRole("radio", { name: "Long (27:14) Rosary" }).props.accessibilityState).toEqual({
       selected: true,
     });
     expect(screen.getByText("Everything in Short, plus:")).toBeTruthy();
-    expect(screen.getByText("Everything in Classic, plus:")).toBeTruthy();
+    expect(screen.queryByText(/Classic \(\d+/)).toBeNull();
     expect(screen.getByText(/Five mysteries/)).toBeTruthy();
     const shortRosaryOption = screen.getByRole("radio", { name: "Short (21:09) Rosary" });
     expect(shortRosaryOption.props.accessibilityHint).toContain("Five mysteries");
@@ -208,7 +209,7 @@ describe("RosaryBottomNavigation", () => {
     expect(screen.getByRole("radio", { name: /Long/i })).toBeTruthy();
   });
 
-  it("shows the Classic Rosary name in Spanish", async () => {
+  it("shows only the Short and Long Rosary names in Spanish", async () => {
     await act(async () => i18n.changeLanguage("es"));
     await render(
       <RosaryBottomNavigation
@@ -218,14 +219,14 @@ describe("RosaryBottomNavigation", () => {
         onLengthChange={jest.fn()}
         onRestart={jest.fn()}
         progress={{ currentIndex: 1, prayerName: "Ave María", total: 10 }}
-        rosaryLengthAudioDurations={{ long: 1911, medium: 1663, short: 1498 }}
-        rosaryLength="medium"
+        rosaryLengthAudioDurations={{ long: 1911, short: 1498 }}
+        rosaryLength="long"
       />,
     );
 
     await fireEvent.press(screen.getByLabelText("Abrir configuración del Rosario"));
 
-    expect(screen.getByRole("radio", { name: "Clásico (27:43) Rosario" }).props.accessibilityState).toEqual({
+    expect(screen.getByRole("radio", { name: "Largo (31:51) Rosario" }).props.accessibilityState).toEqual({
       selected: true,
     });
     expect(screen.getByText(/Cinco misterios/)).toBeTruthy();
@@ -233,7 +234,8 @@ describe("RosaryBottomNavigation", () => {
     expect(shortRosaryOption.props.accessibilityHint).toContain("Cinco misterios");
     expect(shortRosaryOption.props.accessibilityHint).not.toContain("oraciones de Fátima");
     expect(shortRosaryOption.props.accessibilityHint).not.toContain("La Salve");
-    expect(screen.getByText("Todo lo incluido en Clásico, más:")).toBeTruthy();
+    expect(screen.getByText("Todo lo incluido en Corto, más:")).toBeTruthy();
+    expect(screen.queryByText(/Clásico \(\d+/)).toBeNull();
   });
 
   it("plays and pauses available prayer audio with an accessible 44 pixel control", async () => {
@@ -251,7 +253,7 @@ describe("RosaryBottomNavigation", () => {
         onLengthChange={jest.fn()}
         onRestart={jest.fn()}
         progress={{ currentIndex: 1, prayerName: "Hail Mary", total: 10 }}
-        rosaryLength="medium"
+        rosaryLength="long"
       />,
     );
 
@@ -274,7 +276,7 @@ describe("RosaryBottomNavigation", () => {
         onLengthChange={jest.fn()}
         onRestart={jest.fn()}
         progress={{ currentIndex: 1, prayerName: "Hail Mary", total: 10 }}
-        rosaryLength="medium"
+        rosaryLength="long"
       />,
     );
     expect(screen.getByRole("button", { name: "Pause prayer audio" })).toBeTruthy();
@@ -292,7 +294,7 @@ describe("RosaryBottomNavigation", () => {
         onLengthChange={jest.fn()}
         onRestart={jest.fn()}
         progress={{ currentIndex: 1, prayerName: "Hail Mary", total: 10 }}
-        rosaryLength="medium"
+        rosaryLength="long"
       />,
     );
     expect(screen.getByTestId("feather-icon-volume-x")).toBeTruthy();
@@ -313,7 +315,7 @@ describe("RosaryBottomNavigation", () => {
         onLengthChange={jest.fn()}
         onRestart={jest.fn()}
         progress={{ currentIndex: 1, prayerName: "Saint Michael Prayer", total: 10 }}
-        rosaryLength="medium"
+        rosaryLength="long"
       />,
     );
 
@@ -342,7 +344,7 @@ describe("RosaryBottomNavigation", () => {
         onLengthChange={jest.fn()}
         onRestart={jest.fn()}
         progress={{ currentIndex: 1, prayerName: "Hail Mary", total: 10 }}
-        rosaryLength="medium"
+        rosaryLength="long"
         rosaryArtStyle="comic"
       />,
     );
@@ -373,7 +375,7 @@ describe("RosaryBottomNavigation", () => {
           onLengthChange={jest.fn()}
           onRestart={jest.fn()}
           progress={{ currentIndex: 1, prayerName: "Hail Mary", total: 10 }}
-          rosaryLength="medium"
+          rosaryLength="long"
         />
       </AppLanguageProvider>,
     );
@@ -403,7 +405,7 @@ describe("RosaryBottomNavigation", () => {
         onRestart={jest.fn()}
         progress={{ currentIndex: 1, prayerName: "Hail Mary", total: 10 }}
         rosaryArtStyle="comic"
-        rosaryLength="medium"
+        rosaryLength="long"
       />,
     );
 

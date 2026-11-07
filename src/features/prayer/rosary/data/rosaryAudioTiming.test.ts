@@ -48,20 +48,16 @@ describe("getRemainingRosaryAudioSeconds", () => {
   });
 
   it("totals and formats the exact audio duration for each Rosary length and language", () => {
-    const joyfulEnglish = (length: "short" | "medium" | "long") =>
+    const joyfulEnglish = (length: "short" | "long") =>
       getRosaryAudioDurationSeconds(
         getRosarySequenceForLength(englishRosaryContent, "joyful", length).flatMap((bead) => bead.audioQueue ?? []),
       );
-    const joyfulSpanish = (length: "short" | "medium" | "long") =>
+    const joyfulSpanish = (length: "short" | "long") =>
       getRosaryAudioDurationSeconds(
         getRosarySequenceForLength(spanishRosaryContent, "joyful", length).flatMap((bead) => bead.audioQueue ?? []),
       );
 
-    expect(
-      [joyfulEnglish("short"), joyfulEnglish("medium"), joyfulEnglish("long")].map(formatRosaryAudioDuration),
-    ).toEqual(["20:11", "22:56", "26:33"]);
-    expect(
-      [joyfulSpanish("short"), joyfulSpanish("medium"), joyfulSpanish("long")].map(formatRosaryAudioDuration),
-    ).toEqual(["25:05", "28:24", "32:31"]);
+    expect([joyfulEnglish("short"), joyfulEnglish("long")].map(formatRosaryAudioDuration)).toEqual(["20:11", "26:33"]);
+    expect([joyfulSpanish("short"), joyfulSpanish("long")].map(formatRosaryAudioDuration)).toEqual(["25:05", "32:31"]);
   });
 });

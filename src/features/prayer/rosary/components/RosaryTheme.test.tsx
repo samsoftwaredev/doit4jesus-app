@@ -7,7 +7,7 @@ import { darkTheme, lightTheme, setActiveAppTheme } from "@/theme/tokens";
 
 import { RosaryArc } from "./RosaryArc";
 import { RosaryBottomNavigation } from "./RosaryBottomNavigation";
-import { ScriptureCard } from "./ScriptureCard";
+import { MysteryScriptureCard } from "./MysteryScriptureCard";
 
 let mockColorScheme: "light" | "dark" = "dark";
 
@@ -28,7 +28,7 @@ describe("Rosary prayer appearance", () => {
     setActiveAppTheme(selectedTheme);
     await render(
       <>
-        <ScriptureCard quotation="The Word became flesh." reference="John 1:14" />
+        <MysteryScriptureCard scriptureQuotation="The Word became flesh." scriptureReference="John 1:14" />
         <RosaryArc
           beads={rosarySequence.slice(0, 2)}
           completedBeadIds={["hail-mary-1"]}
@@ -45,13 +45,13 @@ describe("Rosary prayer appearance", () => {
           onLengthChange={jest.fn()}
           onRestart={jest.fn()}
           progress={{ currentIndex: 2, prayerName: "Hail Mary", total: 10 }}
-          rosaryLength="medium"
+          rosaryLength="long"
           rosaryArtStyle="comic"
         />
       </>,
     );
 
-    const scriptureCardStyle = StyleSheet.flatten(screen.getByLabelText("Scripture. John 1:14").props.style);
+    const scriptureCardStyle = StyleSheet.flatten(screen.getByTestId("mystery-scripture-card").props.style);
     expect(scriptureCardStyle).toMatchObject({
       backgroundColor: selectedTheme.rosary.colors.immersiveCard,
     });

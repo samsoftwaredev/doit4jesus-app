@@ -226,15 +226,15 @@ describe("useRosarySession", () => {
     expect(result.current.currentMysteryIndex).toBe(0);
   });
 
-  it("restores a legacy closing step by stable prayer identity when Classic adds prayers before it", async () => {
-    const medium = getRosarySequenceForLength(englishRosaryContent, "joyful", "medium");
+  it("restores a legacy closing step by stable prayer identity when Long adds prayers before it", async () => {
+    const long = getRosarySequenceForLength(englishRosaryContent, "joyful", "long");
     const short = getRosarySequenceForLength(englishRosaryContent, "joyful", "short");
     const storage = createStorage(
       JSON.stringify({ currentBeadIndex: 73, completedBeadIds: [], currentMysteryIndex: 4 }),
     );
     const { result } = await renderHook(() =>
       useRosarySession({
-        beads: medium,
+        beads: long,
         isFullRosary: true,
         legacyBeads: short,
         mysteries: rosaryMysteries,
@@ -245,13 +245,13 @@ describe("useRosarySession", () => {
     await waitFor(() => expect(result.current.isHydrated).toBe(true));
 
     expect(result.current.currentBead?.id).toBe("joyful_sign_of_cross_closing");
-    expect(result.current.currentBeadIndex).toBe(medium.length - 1);
+    expect(result.current.currentBeadIndex).toBe(long.length - 1);
   });
 
   it("preserves a shared current step and falls back to the final Sign of the Cross when shortening", async () => {
-    const medium = getRosarySequenceForLength(englishRosaryContent, "joyful", "medium");
+    const long = getRosarySequenceForLength(englishRosaryContent, "joyful", "long");
     const short = getRosarySequenceForLength(englishRosaryContent, "joyful", "short");
-    const saintMichaelIndex = medium.findIndex((step) => step.id === "saint-michael");
+    const saintMichaelIndex = long.findIndex((step) => step.id === "saint-michael");
     const storage = createStorage(
       JSON.stringify({
         currentBeadId: "saint-michael",
@@ -260,7 +260,7 @@ describe("useRosarySession", () => {
         currentMysteryIndex: 4,
       }),
     );
-    let selectedBeads = medium;
+    let selectedBeads = long;
     const { result, rerender } = await renderHook(() =>
       useRosarySession({ beads: selectedBeads, isFullRosary: true, mysteries: rosaryMysteries, storage }),
     );

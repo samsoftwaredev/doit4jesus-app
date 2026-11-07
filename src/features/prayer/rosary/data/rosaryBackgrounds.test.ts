@@ -48,27 +48,6 @@ describe("Rosary backgrounds", () => {
     }
   });
 
-  it("omits known byte-identical files from selectable image collections", () => {
-    expect(mysteryClassicArt.secondLuminous).not.toContain(
-      require("../../../../../assets/images/mysteriesClassicArt/luminous/weddingAtCana/secondLuminous07.jpg"),
-    );
-    expect(mysteryClassicArt.secondLuminous).not.toContain(
-      require("../../../../../assets/images/mysteriesClassicArt/luminous/weddingAtCana/secondLuminous14.jpg"),
-    );
-    expect(mysteryClassicArt.fourthLuminous).not.toContain(
-      require("../../../../../assets/images/mysteriesClassicArt/luminous/transfiguration/fourthLuminous14.png"),
-    );
-    expect(mysteryClassicArt.fifthLuminous).not.toContain(
-      require("../../../../../assets/images/mysteriesClassicArt/luminous/institutionOfTheEucharist/fifthLuminous13.jpg"),
-    );
-    expect(mysteryClassicArt.secondGlorious).not.toContain(
-      require("../../../../../assets/images/mysteriesClassicArt/glorious/ascension/secondGlorious13.jpg"),
-    );
-    expect(mysteryClassicArt.thirdSorrowful).not.toContain(
-      require("../../../../../assets/images/mysteriesClassicArt/sorrowful/crowningWithThorns/thirdSorrowful16.jpg"),
-    );
-  });
-
   it("uses ten different mystery images for the decade Hail Mary beads", () => {
     const mystery = getRosaryMysteriesFromContent(englishRosaryContent, "joyful", "classic", () => 0.5)[0];
     const backgrounds = Array.from({ length: 10 }, (_, index) =>

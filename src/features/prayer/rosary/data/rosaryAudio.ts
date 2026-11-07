@@ -3,6 +3,7 @@ import type {
   RosaryContent,
   RosaryContentPrayerId,
 } from "@/features/prayer/rosary/data/rosaryContent";
+import type { RosaryMysteryNarrationKind } from "@/features/prayer/rosary/types";
 
 const introAssetIds = {
   popeIntentions: {
@@ -17,7 +18,7 @@ const introAssetIds = {
 
 export type RosaryIntroAudioId = keyof typeof introAssetIds;
 
-export type RosaryMysteryAudioKind = "title" | "reflection" | "fruit";
+export type RosaryMysteryAudioKind = RosaryMysteryNarrationKind;
 
 export interface RosaryMysteryAudioTrack {
   kind: RosaryMysteryAudioKind;

@@ -119,10 +119,10 @@ describe("RosaryPrayerScreen", () => {
 
     expect(screen.getByText("CURRENT MYSTERY")).toBeTruthy();
     expect(screen.getByText("The Annunciation")).toBeTruthy();
-    expect(screen.queryByText("Luke 1:26-38")).toBeNull();
+    expect(screen.getByText("Luke 1:26-38")).toBeTruthy();
     expect(screen.queryByText("FRUIT OF THE MYSTERY")).toBeNull();
     expect(screen.queryByText("HAIL MARY")).toBeNull();
-    expect(screen.queryByText("SCRIPTURE")).toBeNull();
+    expect(screen.getByText("SCRIPTURE")).toBeTruthy();
   });
 
   it("uses the active mystery artwork as a decorative full-page background", async () => {
@@ -154,7 +154,7 @@ describe("RosaryPrayerScreen", () => {
     const rendered = await render(<RosaryPrayerScreen isDecade={false} />);
 
     expect(screen.getByTestId("rosary-mystery-background").props.source).toEqual([mysteryClassicArt.firstJoyful[0]]);
-    await fireEvent.press(screen.getByRole("button", { name: "Show Artwork, page 2 of 5" }));
+    await fireEvent.press(screen.getByRole("button", { name: "Show Artwork, page 2 of 3" }));
     expect(screen.getByTestId("rosary-artwork-image").props.source).toEqual([mysteryClassicArt.firstJoyful[0]]);
     expect(screen.getByTestId("rosary-artwork-image").props.contentFit).toBe("contain");
     await fireEvent(screen.getByTestId("rosary-mystery-background"), "error", { nativeEvent: {} });
@@ -200,7 +200,6 @@ describe("RosaryPrayerScreen", () => {
     const completedCrucifix = screen.getByRole("button", { name: "completed crucifix, Apostles' Creed" });
     expect(screen.getByLabelText(/upcoming bead 59, Hail Mary/i)).toBeTruthy();
     expect(screen.queryByTestId(`rosary-arc-physical-${nonPhysicalPrayer.id}`)).toBeNull();
-    await fireEvent.press(screen.getByRole("button", { name: "Show Scripture, page 5 of 5" }));
     expect(screen.getByText("Luke 1:28")).toBeTruthy();
     expect(screen.getByText("And coming to her, he said, “Hail, favored one! The Lord is with you.”")).toBeTruthy();
     expect(useRosarySession).toHaveBeenCalledWith(
@@ -219,7 +218,7 @@ describe("RosaryPrayerScreen", () => {
     });
     const rendered = await render(<RosaryPrayerScreen isDecade={false} />);
 
-    await fireEvent.press(screen.getByRole("button", { name: "Show Prayer, page 4 of 5" }));
+    await fireEvent.press(screen.getByRole("button", { name: "Show Fruit and Prayer, page 3 of 3" }));
     expect(screen.getByText("SIGN OF THE CROSS")).toBeTruthy();
     expect(screen.getAllByText("0 of 59").length).toBeGreaterThan(0);
     expect(screen.getByRole("button", { name: "current crucifix, Apostles' Creed" })).toBeTruthy();
@@ -247,7 +246,7 @@ describe("RosaryPrayerScreen", () => {
 
     await render(<RosaryPrayerScreen isDecade={false} />);
 
-    await fireEvent.press(screen.getByRole("button", { name: "Show Prayer, page 4 of 5" }));
+    await fireEvent.press(screen.getByRole("button", { name: "Show Fruit and Prayer, page 3 of 3" }));
     expect(screen.getByText("FATIMA PRAYER")).toBeTruthy();
     expect(screen.getAllByText("15 of 59").length).toBeGreaterThan(0);
     expect(screen.getByLabelText(/current bead 15, Hail Mary/i)).toBeTruthy();
@@ -264,7 +263,7 @@ describe("RosaryPrayerScreen", () => {
     });
 
     await render(<RosaryPrayerScreen isDecade={false} />);
-    await fireEvent.press(screen.getByRole("button", { name: "Show Prayer, page 4 of 5" }));
+    await fireEvent.press(screen.getByRole("button", { name: "Show Fruit and Prayer, page 3 of 3" }));
 
     expect(screen.getByRole("header", { name: "Fruits of the Three Hail Marys" })).toBeTruthy();
     expect(screen.getAllByText("1 of 59").length).toBeGreaterThan(0);
@@ -278,6 +277,42 @@ describe("RosaryPrayerScreen", () => {
     expect(playbackOptions?.audioQueue).toEqual(["/assets/audios/en/prayers/threeHailMaryFruits.m4a"]);
     playbackOptions?.onQueueComplete?.();
     expect(goToNextBead).toHaveBeenCalledTimes(1);
+  });
+
+  it("shows Fruit during reflection narration even while audio is paused, then hides it on title narration", async () => {
+    const reflectionNarration = {
+      ...fullRosarySequence[7],
+      id: "joyful_bead_07-mystery-reflection",
+      mysteryNarrationKind: "reflection" as const,
+      prayer: {
+        beadType: "narration" as const,
+        id: "joyful_bead_07-mystery-reflection",
+        name: "Mystery Reflection",
+        text: "",
+      },
+      prayerId: "joyful_bead_07-mystery-reflection",
+      type: "narration" as const,
+    };
+    mockSession({ currentBead: reflectionNarration, currentPrayer: reflectionNarration.prayer });
+    const rendered = await render(<RosaryPrayerScreen isDecade={false} />);
+    await fireEvent.press(screen.getByRole("button", { name: "Show Fruit and Prayer, page 3 of 3" }));
+
+    expect(mockUseRosaryAudioPlayback.mock.results.at(-1)?.value.isPlaying).toBe(false);
+    expect(screen.getByText("FRUIT OF THE MYSTERY")).toBeTruthy();
+    expect(screen.queryByText("MYSTERY REFLECTION")).toBeNull();
+
+    const titleNarration = {
+      ...reflectionNarration,
+      id: "joyful_bead_07-mystery-title",
+      mysteryNarrationKind: "title" as const,
+      prayer: { ...reflectionNarration.prayer, id: "joyful_bead_07-mystery-title", name: "The Annunciation" },
+      prayerId: "joyful_bead_07-mystery-title",
+    };
+    mockSession({ currentBead: titleNarration, currentPrayer: titleNarration.prayer });
+    await rendered.rerender(<RosaryPrayerScreen isDecade={false} />);
+
+    expect(screen.queryByText("FRUIT OF THE MYSTERY")).toBeNull();
+    expect(screen.queryByTestId("fruit-prayer-card")).toBeNull();
   });
 
   it("returns to Home from the chevron back action", async () => {
@@ -358,11 +393,11 @@ describe("RosaryPrayerScreen", () => {
     const controls = within(header).getAllByRole("button");
     expect(controls.map((control) => control.props.accessibilityLabel)).toEqual([
       "Go back",
-      "Current Rosary length: Classic. Time remaining: 2:45",
+      "Current Rosary length: Long. Time remaining: 2:45",
       "View Maria's prayer profile, online and praying",
       "View all 2 people praying now",
     ]);
-    expect(within(header).getByText("Classic·2:45")).toBeTruthy();
+    expect(within(header).getByText("Long·2:45")).toBeTruthy();
   });
 
   it("should advance to the next bead when the progress button is pressed", async () => {
@@ -432,8 +467,8 @@ describe("RosaryPrayerScreen", () => {
   it("shows the remaining Rosary audio time in the top length button instead of beneath playback controls", async () => {
     await render(<RosaryPrayerScreen />);
 
-    expect(screen.getByText("Classic·2:45")).toBeTruthy();
-    expect(screen.getByLabelText("Current Rosary length: Classic. Time remaining: 2:45")).toBeTruthy();
+    expect(screen.getByText("Long·2:45")).toBeTruthy();
+    expect(screen.getByLabelText("Current Rosary length: Long. Time remaining: 2:45")).toBeTruthy();
     expect(screen.queryByLabelText(/Time remaining: 0 hours, 2 minutes, 45 seconds/i)).toBeNull();
   });
 
@@ -441,8 +476,8 @@ describe("RosaryPrayerScreen", () => {
     await act(async () => i18n.changeLanguage("es"));
     await render(<RosaryPrayerScreen />);
 
-    expect(screen.getByText("Clásico·2:45")).toBeTruthy();
-    expect(screen.getByLabelText("Duración actual del Rosario: Clásico. Tiempo restante: 2:45")).toBeTruthy();
+    expect(screen.getByText("Largo·2:45")).toBeTruthy();
+    expect(screen.getByLabelText("Duración actual del Rosario: Largo. Tiempo restante: 2:45")).toBeTruthy();
 
     await act(async () => i18n.changeLanguage("en"));
   });
@@ -474,7 +509,7 @@ describe("RosaryPrayerScreen", () => {
     expect(within(prayerDetails).queryByTestId("rosary-artwork-image")).toBeNull();
     expect(within(prayerDetails).queryByText("FRUIT OF THE MYSTERY")).toBeNull();
     expect(within(prayerDetails).queryByText("HAIL MARY")).toBeNull();
-    expect(within(prayerDetails).queryByText("SCRIPTURE")).toBeNull();
+    expect(within(prayerDetails).getByText("SCRIPTURE")).toBeTruthy();
     expect(within(scrollingContent).queryByTestId("rosary-progress-button")).toBeNull();
     expect(screen.getByTestId("rosary-progress-button")).toBeTruthy();
 
@@ -489,22 +524,23 @@ describe("RosaryPrayerScreen", () => {
     expect(goToPreviousBead).not.toHaveBeenCalled();
   });
 
-  it("opens settings from the Classic-length badge and changes the active length", async () => {
+  it("opens settings from the Long-length badge and changes the active length", async () => {
     await render(<RosaryPrayerScreen isDecade={false} />);
 
     const lengthBadge = await screen.findByRole("button", {
-      name: /^Current Rosary length: Classic\. Time remaining: \d+:\d{2}$/,
+      name: /^Current Rosary length: Long\. Time remaining: \d+:\d{2}$/,
     });
     await fireEvent.press(lengthBadge);
 
     expect(screen.getByRole("header", { name: "Rosary settings" })).toBeTruthy();
-    await fireEvent.press(screen.getByRole("radio", { name: /^Long \(\d+:\d{2}\) Rosary$/ }));
+    expect(screen.queryByRole("radio", { name: /^Classic \(/ })).toBeNull();
+    await fireEvent.press(screen.getByRole("radio", { name: /^Short \(\d+:\d{2}\) Rosary$/ }));
 
-    expect(screen.getByLabelText(/^Current Rosary length: Long\. Time remaining: \d+:\d{2}$/)).toBeTruthy();
+    expect(screen.getByLabelText(/^Current Rosary length: Short\. Time remaining: \d+:\d{2}$/)).toBeTruthy();
     await waitFor(() =>
       expect(useRosarySession).toHaveBeenLastCalledWith(
         expect.objectContaining({
-          beads: expect.arrayContaining([expect.objectContaining({ id: "litany-of-loreto" })]),
+          beads: expect.not.arrayContaining([expect.objectContaining({ id: "litany-of-loreto" })]),
         }),
       ),
     );

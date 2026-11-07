@@ -7,15 +7,13 @@ import Animated, { FadeIn, useReducedMotion } from "react-native-reanimated";
 import type { RosaryMystery, RosaryPrayer } from "@/features/prayer/rosary/types";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 
-import { FruitOfMysteryCard } from "../FruitOfMysteryCard";
-import { MysteryCard } from "../MysteryCard";
-import { PrayerCard } from "../PrayerCard";
+import { FruitPrayerCard } from "../FruitPrayerCard";
+import { MysteryScriptureCard } from "../MysteryScriptureCard";
 import { RosaryArtworkCard } from "../RosaryArtworkCard";
-import { ScriptureCard } from "../ScriptureCard";
 
 const SWIPE_THRESHOLD = 42;
 const VERTICAL_GESTURE_LIMIT = 24;
-const DETAIL_PAGES = ["mystery", "artwork", "fruit", "prayer", "scripture"] as const;
+const DETAIL_PAGES = ["mysteryScripture", "artwork", "fruitPrayer"] as const;
 
 type RosaryDetailPage = (typeof DETAIL_PAGES)[number];
 
@@ -26,15 +24,16 @@ export interface RosaryDetailCarouselProps {
   prayer?: RosaryPrayer;
   scriptureQuotation?: string;
   scriptureReference?: string;
+  showFruitOfMystery?: boolean;
 }
 
-/** Wraps any page index into the available five-page carousel range. */
+/** Wraps any page index into the available three-page carousel range. */
 function wrapPageIndex(index: number) {
   return (index + DETAIL_PAGES.length) % DETAIL_PAGES.length;
 }
 
 /**
- * Shows one Rosary detail card at a time with wraparound swipes and directly selectable pagination dots.
+ * Shows one of three combined Rosary detail cards with wraparound swipes and selectable pagination dots.
  * The active detail remains stable while incoming mystery and prayer content updates.
  */
 export function RosaryDetailCarousel({
@@ -44,6 +43,7 @@ export function RosaryDetailCarousel({
   prayer,
   scriptureQuotation,
   scriptureReference,
+  showFruitOfMystery = false,
 }: RosaryDetailCarouselProps) {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
@@ -89,14 +89,24 @@ export function RosaryDetailCarousel({
     switch (page) {
       case "artwork":
         return <RosaryArtworkCard imageSource={artworkSource} />;
-      case "fruit":
-        return <FruitOfMysteryCard description={mystery?.fruitDescription} fruit={mystery?.fruit} />;
-      case "prayer":
-        return <PrayerCard hideWhenEmpty={isNarrationOnly} prayer={prayer} />;
-      case "scripture":
-        return <ScriptureCard quotation={scriptureQuotation} reference={scriptureReference} />;
+      case "fruitPrayer":
+        return (
+          <FruitPrayerCard
+            fruit={mystery?.fruit}
+            fruitDescription={mystery?.fruitDescription}
+            hidePrayerWhenEmpty={isNarrationOnly}
+            prayer={prayer}
+            showFruit={showFruitOfMystery}
+          />
+        );
       default:
-        return <MysteryCard mystery={mystery} />;
+        return (
+          <MysteryScriptureCard
+            mystery={mystery}
+            scriptureQuotation={scriptureQuotation}
+            scriptureReference={scriptureReference}
+          />
+        );
     }
   }
 

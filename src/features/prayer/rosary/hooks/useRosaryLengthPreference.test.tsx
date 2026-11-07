@@ -14,17 +14,17 @@ function createStorage(initialValue: string | null = null): jest.Mocked<RosarySt
 }
 
 describe("useRosaryLengthPreference", () => {
-  it("defaults to the Classic Rosary value and remembers a changed length on the device", async () => {
+  it("defaults to the Long Rosary value and remembers a changed length on the device", async () => {
     const storage = createStorage();
     const { result } = await renderHook(() => useRosaryLengthPreference(storage));
 
     await waitFor(() => expect(result.current.isHydrated).toBe(true));
-    expect(result.current.rosaryLength).toBe("medium");
-
-    await act(async () => result.current.setRosaryLength("long"));
-
     expect(result.current.rosaryLength).toBe("long");
-    expect(storage.setItem).toHaveBeenCalledWith(ROSARY_LENGTH_STORAGE_KEY, "long");
+
+    await act(async () => result.current.setRosaryLength("short"));
+
+    expect(result.current.rosaryLength).toBe("short");
+    expect(storage.setItem).toHaveBeenCalledWith(ROSARY_LENGTH_STORAGE_KEY, "short");
   });
 
   it("restores valid choices and ignores invalid stored values", async () => {
@@ -37,8 +37,18 @@ describe("useRosaryLengthPreference", () => {
     const invalidStorage = createStorage("extra-long");
     const invalid = await renderHook(() => useRosaryLengthPreference(invalidStorage));
     await waitFor(() => expect(invalid.result.current.isHydrated).toBe(true));
-    expect(invalid.result.current.rosaryLength).toBe("medium");
+    expect(invalid.result.current.rosaryLength).toBe("long");
     await invalid.unmount();
+  });
+
+  it("migrates the retired Classic preference to Long", async () => {
+    const storage = createStorage("medium");
+    const { result } = await renderHook(() => useRosaryLengthPreference(storage));
+
+    await waitFor(() => expect(result.current.isHydrated).toBe(true));
+
+    expect(result.current.rosaryLength).toBe("long");
+    expect(storage.setItem).toHaveBeenCalledWith(ROSARY_LENGTH_STORAGE_KEY, "long");
   });
 
   it("keeps the preference usable in memory when storage fails", async () => {

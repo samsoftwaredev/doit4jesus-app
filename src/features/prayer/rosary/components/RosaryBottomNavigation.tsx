@@ -46,8 +46,7 @@ interface RosaryBottomNavigationProps {
 
 const prayerKeysByLength: Record<RosaryLength, readonly string[]> = {
   short: ["one", "two", "three"],
-  medium: ["one", "two"],
-  long: ["one"],
+  long: ["one", "two", "three"],
 };
 const mysteryOrdinalKeys = ["first", "second", "third", "fourth", "fifth"] as const;
 

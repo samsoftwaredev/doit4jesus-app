@@ -2,7 +2,7 @@ import { act, fireEvent, render, screen } from "@testing-library/react-native";
 import { AccessibilityInfo, Dimensions, StyleSheet } from "react-native";
 import { fireGestureHandler, getByGestureTestId } from "react-native-gesture-handler/jest-utils";
 
-import { rosaryMysteries } from "@/features/prayer/rosary/data/rosaryMysteries";
+import type { RosaryMystery, RosaryPrayer } from "@/features/prayer/rosary/types";
 import { i18n } from "@/localization";
 
 import { RosaryDetailCarousel, type RosaryDetailCarouselProps } from "./RosaryDetailCarousel";
@@ -17,13 +17,32 @@ function setWindowDimensions({ fontScale = 1, height, width }: { fontScale?: num
   Dimensions.set({ screen: dimensions, window: dimensions });
 }
 
-const mystery = rosaryMysteries[0];
+const prayer: RosaryPrayer = {
+  beadType: "hailMary",
+  id: "hail-mary",
+  name: "Hail Mary",
+  text: "Hail Mary, full of grace.",
+};
+const mystery: RosaryMystery = {
+  backgroundImageSources: [{ uri: "mystery-art" }],
+  category: "Joyful Mysteries",
+  fruit: "Humility",
+  fruitDescription: "Ask for the grace of humility.",
+  id: "annunciation",
+  imageAlt: "The Annunciation",
+  imageSource: { uri: "mystery-art" },
+  prayers: [prayer],
+  scriptureReference: "Luke 1:26-38",
+  scriptureText: "The angel Gabriel was sent from God.",
+  title: "The Annunciation",
+};
 const defaultProps: RosaryDetailCarouselProps = {
   artworkSource: mystery.imageSource,
   mystery,
-  prayer: mystery.prayers[1],
+  prayer,
   scriptureQuotation: mystery.scriptureText,
   scriptureReference: mystery.scriptureReference,
+  showFruitOfMystery: false,
 };
 
 async function swipeDetails(translationX: number, translationY = 2) {
@@ -43,50 +62,49 @@ describe("RosaryDetailCarousel", () => {
 
   afterEach(() => jest.restoreAllMocks());
 
-  it("shows only the Mystery page initially with five accessible pagination controls", async () => {
+  it("shows Mystery and Scripture first with three accessible pagination controls", async () => {
     await render(<RosaryDetailCarousel {...defaultProps} />);
 
     expect(screen.getByText("CURRENT MYSTERY")).toBeTruthy();
+    expect(screen.getByText("SCRIPTURE")).toBeTruthy();
+    expect(screen.getByText("Luke 1:26-38")).toBeTruthy();
     expect(screen.queryByText("FRUIT OF THE MYSTERY")).toBeNull();
     expect(screen.queryByText("HAIL MARY")).toBeNull();
-    expect(screen.queryByText("SCRIPTURE")).toBeNull();
-    expect(screen.getByRole("button", { name: "Show Mystery, page 1 of 5" }).props.accessibilityState).toEqual({
-      selected: true,
-    });
-    expect(screen.getAllByRole("button", { name: /Show .+, page \d of 5/ })).toHaveLength(5);
+    expect(
+      screen.getByRole("button", { name: "Show Mystery and Scripture, page 1 of 3" }).props.accessibilityState,
+    ).toEqual({ selected: true });
+    expect(screen.getAllByRole("button", { name: /Show .+, page \d of 3/ })).toHaveLength(3);
   });
 
-  it("places the pagination controls above the active detail card", async () => {
+  it("places pagination above the active combined card", async () => {
     await render(<RosaryDetailCarousel {...defaultProps} />);
     const container = screen.getByTestId("rosary-detail-carousel");
-    const activePageContainer = screen.getByTestId("rosary-detail-page-mystery").parent;
-    const paginationContainer = screen.getByRole("button", { name: "Show Mystery, page 1 of 5" }).parent;
+    const activePageContainer = screen.getByTestId("rosary-detail-page-mysteryScripture").parent;
+    const paginationContainer = screen.getByRole("button", {
+      name: "Show Mystery and Scripture, page 1 of 3",
+    }).parent;
 
     expect(container.children.indexOf(paginationContainer!)).toBeLessThan(
       container.children.indexOf(activePageContainer!),
     );
   });
 
-  it("cycles through details in both directions and wraps at each end", async () => {
+  it("cycles through the three details in both directions and wraps at each end", async () => {
     await render(<RosaryDetailCarousel {...defaultProps} />);
 
     await swipeDetails(-60);
     expect(screen.getByTestId("rosary-artwork-image").props.source).toEqual([mystery.imageSource]);
 
     await swipeDetails(-60);
-    expect(screen.getByText("FRUIT OF THE MYSTERY")).toBeTruthy();
-
-    await swipeDetails(-60);
     expect(screen.getByText("HAIL MARY")).toBeTruthy();
-
-    await swipeDetails(-60);
-    expect(screen.getByText("SCRIPTURE")).toBeTruthy();
+    expect(screen.queryByText("FRUIT OF THE MYSTERY")).toBeNull();
 
     await swipeDetails(-60);
     expect(screen.getByText("CURRENT MYSTERY")).toBeTruthy();
+    expect(screen.getByText("SCRIPTURE")).toBeTruthy();
 
     await swipeDetails(60);
-    expect(screen.getByText("SCRIPTURE")).toBeTruthy();
+    expect(screen.getByText("HAIL MARY")).toBeTruthy();
   });
 
   it("ignores short and vertical gestures so prayer scrolling remains available", async () => {
@@ -96,67 +114,61 @@ describe("RosaryDetailCarousel", () => {
     await swipeDetails(-60, 30);
 
     expect(screen.getByText("CURRENT MYSTERY")).toBeTruthy();
+    expect(screen.getByText("SCRIPTURE")).toBeTruthy();
   });
 
-  it("supports direct dot selection, announces the page, and preserves 44-point targets", async () => {
+  it("supports direct selection, announces the page, and preserves 44-point targets", async () => {
     await render(<RosaryDetailCarousel {...defaultProps} />);
-    const scriptureDot = screen.getByRole("button", { name: "Show Scripture, page 5 of 5" });
+    const fruitPrayerDot = screen.getByRole("button", { name: "Show Fruit and Prayer, page 3 of 3" });
 
-    await fireEvent.press(scriptureDot);
+    await fireEvent.press(fruitPrayerDot);
 
-    expect(screen.getByText("SCRIPTURE")).toBeTruthy();
-    expect(scriptureDot.props.accessibilityState).toEqual({ selected: true });
-    expect(StyleSheet.flatten(scriptureDot.props.style)).toMatchObject({ height: 44, width: 44 });
-    expect(AccessibilityInfo.announceForAccessibility).toHaveBeenCalledWith("Scripture, page 5 of 5");
+    expect(screen.getByText("HAIL MARY")).toBeTruthy();
+    expect(fruitPrayerDot.props.accessibilityState).toEqual({ selected: true });
+    expect(StyleSheet.flatten(fruitPrayerDot.props.style)).toMatchObject({ height: 44, width: 44 });
+    expect(AccessibilityInfo.announceForAccessibility).toHaveBeenCalledWith("Fruit and Prayer, page 3 of 3");
   });
 
   it("retains Artwork while its source, mystery, and prayer content change", async () => {
     const rendered = await render(<RosaryDetailCarousel {...defaultProps} />);
-    await fireEvent.press(screen.getByRole("button", { name: "Show Artwork, page 2 of 5" }));
+    await fireEvent.press(screen.getByRole("button", { name: "Show Artwork, page 2 of 3" }));
 
-    await rendered.rerender(
-      <RosaryDetailCarousel
-        {...defaultProps}
-        artworkSource={rosaryMysteries[1].imageSource}
-        mystery={rosaryMysteries[1]}
-        prayer={{ ...mystery.prayers[1], id: "updated-prayer", name: "Updated Prayer", text: "Updated prayer text." }}
-      />,
-    );
+    await rendered.rerender(<RosaryDetailCarousel {...defaultProps} artworkSource={{ uri: "updated-art" }} />);
 
-    expect(screen.getByTestId("rosary-artwork-image").props.source).toEqual([rosaryMysteries[1].imageSource]);
+    expect(screen.getByTestId("rosary-artwork-image").props.source).toEqual([{ uri: "updated-art" }]);
     expect(screen.queryByText("CURRENT MYSTERY")).toBeNull();
-    expect(screen.getByRole("button", { name: "Show Artwork, page 2 of 5" }).props.accessibilityState).toEqual({
+    expect(screen.getByRole("button", { name: "Show Artwork, page 2 of 3" }).props.accessibilityState).toEqual({
       selected: true,
     });
   });
 
-  it("keeps the Prayer page empty for narration while retaining the other carousel pages", async () => {
-    await render(
-      <RosaryDetailCarousel
-        {...defaultProps}
-        isNarrationOnly
-        prayer={{ ...mystery.prayers[1], beadType: "narration", name: "Mystery Reflection", text: "" }}
-      />,
+  it("shows Fruit during its narration step even while playback is paused", async () => {
+    const narration = { ...prayer, beadType: "narration" as const, name: "Mystery Reflection", text: "" };
+    const rendered = await render(
+      <RosaryDetailCarousel {...defaultProps} isNarrationOnly prayer={narration} showFruitOfMystery />,
     );
+    await fireEvent.press(screen.getByRole("button", { name: "Show Fruit and Prayer, page 3 of 3" }));
 
-    await fireEvent.press(screen.getByRole("button", { name: "Show Prayer, page 4 of 5" }));
-
-    expect(screen.getByTestId("rosary-detail-page-prayer")).toBeTruthy();
+    expect(screen.getByText("FRUIT OF THE MYSTERY")).toBeTruthy();
+    expect(screen.getByRole("header", { name: "Humility" })).toBeTruthy();
     expect(screen.queryByText("MYSTERY REFLECTION")).toBeNull();
-    expect(screen.queryByLabelText("Prayer text unavailable")).toBeNull();
-    expect(screen.getAllByRole("button", { name: /Show .+, page \d of 5/ })).toHaveLength(5);
+
+    await rendered.rerender(
+      <RosaryDetailCarousel {...defaultProps} isNarrationOnly prayer={narration} showFruitOfMystery={false} />,
+    );
+    expect(screen.queryByText("FRUIT OF THE MYSTERY")).toBeNull();
+    expect(screen.queryByTestId("fruit-prayer-card")).toBeNull();
   });
 
-  it("localizes carousel controls and Fruit accessibility content in Spanish", async () => {
+  it("localizes the three carousel controls in Spanish", async () => {
     await act(async () => i18n.changeLanguage("es"));
     await render(<RosaryDetailCarousel {...defaultProps} />);
 
     const guidance = screen.getByLabelText("Carrusel de detalles del Rosario");
     expect(guidance.props.accessible).toBe(true);
     expect(guidance.props.accessibilityHint).toContain("Desliza a la izquierda o a la derecha");
-    expect(screen.getByRole("button", { name: "Mostrar Arte sacro, página 2 de 5" })).toBeTruthy();
-    await fireEvent.press(screen.getByRole("button", { name: "Mostrar Fruto del Misterio, página 3 de 5" }));
-    expect(screen.getByLabelText(new RegExp(`^Fruto del misterio\\. ${mystery.fruit}\\.`))).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Mostrar Misterio y Sagrada Escritura, página 1 de 3" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Mostrar Fruto del Misterio y Oración, página 3 de 3" })).toBeTruthy();
   });
 
   it("removes the page transition when reduced motion is enabled", async () => {

@@ -64,6 +64,13 @@ function physicalBeadProgress(beads: RosaryBead[], currentBeadIndex: number) {
   return { currentIndex, total };
 }
 
+/** Returns whether the current narration step should reveal the mystery fruit card content. */
+function isMysteryFruitNarration(bead?: RosaryBead) {
+  return (
+    bead?.type === "narration" && (bead.mysteryNarrationKind === "reflection" || bead.mysteryNarrationKind === "fruit")
+  );
+}
+
 /**
  * Renders the guided Rosary with prayer-responsive artwork from the selected style and localized prayer sequence.
  * Prayer content scrolls as one surface while the mystery-aware navigation remains fixed and immediately available.
@@ -145,7 +152,7 @@ export function RosaryPrayerScreen({
           durations[option.id] = getRosaryAudioDurationSeconds(audioPaths);
           return durations;
         },
-        { long: 0, medium: 0, short: 0 },
+        { long: 0, short: 0 },
       ),
     [mysteryType, rosaryContent],
   );
@@ -499,6 +506,7 @@ export function RosaryPrayerScreen({
                   session.currentBead?.scriptureReference ??
                   (isDecade ? session.currentMystery?.scriptureReference : undefined)
                 }
+                showFruitOfMystery={isMysteryFruitNarration(session.currentBead)}
               />
               {audioPlayback.playbackError ? (
                 <Text accessibilityRole="alert" style={styles.storageNote}>

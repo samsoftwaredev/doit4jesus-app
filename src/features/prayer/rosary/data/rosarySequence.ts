@@ -46,7 +46,7 @@ interface ClosingPrayerDefinition {
   spanishTitle?: string;
 }
 
-const mediumClosingPrayers: readonly ClosingPrayerDefinition[] = [
+const sharedLongClosingPrayers: readonly ClosingPrayerDefinition[] = [
   {
     beadType: "ourFather",
     contentId: "our_father",
@@ -80,7 +80,7 @@ const mediumClosingPrayers: readonly ClosingPrayerDefinition[] = [
 ];
 
 const longClosingPrayers: readonly ClosingPrayerDefinition[] = [
-  ...mediumClosingPrayers,
+  ...sharedLongClosingPrayers,
   {
     beadType: "closingPrayer",
     contentId: "litany_of_loreto",
@@ -112,11 +112,13 @@ function getMysteryNarrationName(content: RosaryContent, mysteryId: string, kind
 function createNarrationBead({
   audioPath,
   id,
+  mysteryNarrationKind,
   name,
   sourceStep,
 }: {
   audioPath: string;
   id: string;
+  mysteryNarrationKind?: RosaryMysteryAudioKind;
   name: string;
   sourceStep: RosaryContentPrayerStep;
 }): RosaryBead {
@@ -127,6 +129,7 @@ function createNarrationBead({
     id,
     isPhysicalBead: false,
     mysteryId: sourceStep.mystery_id ?? undefined,
+    mysteryNarrationKind,
     prayer: {
       beadType: "narration",
       id,
@@ -157,6 +160,7 @@ function createRosarySteps(step: RosaryContentPrayerStep, content: RosaryContent
     createNarrationBead({
       audioPath: track.path,
       id: `${step.id}-mystery-${track.kind}`,
+      mysteryNarrationKind: track.kind,
       name: getMysteryNarrationName(content, step.mystery_id!, track.kind),
       sourceStep: step,
     }),
@@ -291,9 +295,9 @@ function createPopeIntentionsNarration(content: RosaryContent, sequence: number)
 
 /**
  * Composes a Rosary for the selected length.
- * The Short Rosary omits Fatima Prayer and Hail, Holy Queen; Medium and Long add their
- * respective closing prayers to the complete base sequence. The final Sign of the Cross
- * remains last and physical-bead numbering is unchanged.
+ * The Short Rosary omits Fatima Prayer and Hail, Holy Queen; Long adds its closing prayers
+ * to the complete base sequence. The final Sign of the Cross remains last and physical-bead
+ * numbering is unchanged.
  */
 export function getRosarySequenceForLength(
   content: RosaryContent,
@@ -312,9 +316,8 @@ export function getRosarySequenceForLength(
   if (!finalStep || finalStep.type !== "signOfCross" || finalStep.section !== "closing") return baseSequence;
 
   const sharedSteps = baseSequence.slice(0, -1);
-  const definitions = length === "long" ? longClosingPrayers : mediumClosingPrayers;
   const popeNarration = createPopeIntentionsNarration(content, sharedSteps.length + 1);
-  const addedSteps = definitions.map((definition, index) =>
+  const addedSteps = longClosingPrayers.map((definition, index) =>
     createClosingPrayer(content, definition, sharedSteps.length + popeNarration.length + index + 1),
   );
 
