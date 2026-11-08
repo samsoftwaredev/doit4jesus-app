@@ -1,6 +1,7 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { View } from "react-native";
 import type { LayoutChangeEvent, ScrollView } from "react-native";
 
 import { ScreenShell } from "@/components/screen-shell";
@@ -10,6 +11,9 @@ import { fetchScreenData } from "@/features/screen-data";
 import type { ScreenDataResponse } from "@/features/screen-data";
 import { logDevelopmentError } from "@/lib/development-logger";
 import { useAppLanguage } from "@/localization";
+
+/** Quiet period after the last Garden position change before a one-time Garden route target is cleared. */
+const GARDEN_SCROLL_SETTLE_MS = 800;
 
 /** Extracts a single search-parameter value when Expo Router supplies a repeated parameter array. */
 function firstSearchParameter(value: string | string[] | undefined) {
@@ -24,28 +28,44 @@ export default function HomeScreen() {
   const { locale } = useAppLanguage();
   const [initialData, setInitialData] = useState<ScreenDataResponse>();
   const [isInitialLoadSettled, setIsInitialLoadSettled] = useState(false);
-  const [gardenOffsetY, setGardenOffsetY] = useState<number | null>(null);
+  const [dashboardOffsetY, setDashboardOffsetY] = useState(0);
+  const [gardenLayoutY, setGardenLayoutY] = useState<number | null>(null);
   const homeScrollViewRef = useRef<ScrollView>(null);
   const hasScrolledToGardenRef = useRef(false);
   const scrollTarget = firstSearchParameter(rawScrollTarget);
 
-  /** Records the Garden position within Home's scroll view for an incoming Garden route target. */
-  const handleGardenLayout = useCallback((event: LayoutChangeEvent) => {
-    setGardenOffsetY(event.nativeEvent.layout.y);
+  /** Records where the dashboard starts below Home's page header inside the scroll content. */
+  const handleDashboardLayout = useCallback((event: LayoutChangeEvent) => {
+    setDashboardOffsetY(event.nativeEvent.layout.y);
   }, []);
 
+  /** Records the Garden position within the dashboard, which is relative to the dashboard rather than the scroll view. */
+  const handleGardenLayout = useCallback((event: LayoutChangeEvent) => {
+    setGardenLayoutY(event.nativeEvent.layout.y);
+  }, []);
+
+  // Scroll-content offset of the Garden: the header above the dashboard plus the Garden's offset inside it.
+  const gardenOffsetY = gardenLayoutY === null ? null : dashboardOffsetY + gardenLayoutY;
+
   useEffect(
-    /** Scrolls an incoming Home Garden route to the measured Rosary Garden and clears its one-time target. */
+    /**
+     * Scrolls an incoming Home Garden route to the measured Rosary Garden.
+     *
+     * Cards above the Garden (church reminders, progress, daily Rosary) finish loading after the first layout and
+     * push the Garden down, so the scroll is repeated whenever its position changes and the one-time target is only
+     * cleared once the position has stopped moving.
+     */
     function scrollToRequestedGarden() {
       if (scrollTarget !== "garden") {
         hasScrolledToGardenRef.current = false;
         return;
       }
-      if (gardenOffsetY === null || hasScrolledToGardenRef.current || !homeScrollViewRef.current) return;
+      if (gardenOffsetY === null || !homeScrollViewRef.current) return;
 
+      homeScrollViewRef.current.scrollTo({ animated: !hasScrolledToGardenRef.current, y: gardenOffsetY });
       hasScrolledToGardenRef.current = true;
-      homeScrollViewRef.current.scrollTo({ animated: true, y: gardenOffsetY });
-      router.setParams({ scrollTo: undefined });
+      const settleTimer = setTimeout(() => router.setParams({ scrollTo: undefined }), GARDEN_SCROLL_SETTLE_MS);
+      return () => clearTimeout(settleTimer);
     },
     [gardenOffsetY, router, scrollTarget],
   );
@@ -88,7 +108,9 @@ export default function HomeScreen() {
       scrollViewRef={homeScrollViewRef}
     >
       {isInitialLoadSettled ? (
-        <HolyProgressDashboard initialData={initialData} onGardenLayout={handleGardenLayout} />
+        <View onLayout={handleDashboardLayout} testID="home-dashboard-container">
+          <HolyProgressDashboard initialData={initialData} onGardenLayout={handleGardenLayout} />
+        </View>
       ) : null}
     </ScreenShell>
   );

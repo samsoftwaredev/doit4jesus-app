@@ -6,7 +6,6 @@ import { useCallback, useState } from "react";
 import { AppState, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
-import { IconButton } from "@/components";
 import { Button, Card } from "@/components/ui";
 import { useResponsiveLayout } from "@/hooks";
 import { logDevelopmentError } from "@/lib/development-logger";
@@ -74,7 +73,7 @@ export function ChurchHomeSection({ now }: ChurchHomeSectionProps) {
   const styles = useThemedStyles(styleSheet);
   const router = useRouter();
   const { i18n, t } = useTranslation();
-  const { isNarrowPhone } = useResponsiveLayout();
+  const { isNarrowPhone, isTablet } = useResponsiveLayout();
   const [subscriptions, setSubscriptions] = useState<ChurchSubscription[] | null>(null);
   const [upcoming, setUpcoming] = useState<UpcomingChurchService[]>([]);
   const [hasError, setHasError] = useState(false);
@@ -211,14 +210,27 @@ export function ChurchHomeSection({ now }: ChurchHomeSectionProps) {
         />
         <View accessible={false} pointerEvents="none" style={styles.upcomingOverlay} />
         <Card
-          headerRight={
-            <View style={styles.headerActions}>
-              <IconButton accessibilityLabel={t("churches.search.title")} onPress={openChurchDiscovery}>
-                <Feather accessible={false} color={theme.colors.icon.primary} name="search" size={20} />
-              </IconButton>
-              <IconButton accessibilityLabel={t("churches.home.manageAction")} onPress={openReminderReview}>
-                <Feather accessible={false} color={theme.colors.icon.primary} name="settings" size={20} />
-              </IconButton>
+          footer={
+            <View style={[styles.footerActions, isTablet && styles.footerActionsRow]} testID="church-home-actions">
+              <Button
+                fullWidth={!isTablet}
+                leftIcon={<Feather accessible={false} color={theme.colors.text.white} name="search" size={18} />}
+                onPress={openChurchDiscovery}
+                style={isTablet ? styles.footerButton : undefined}
+                textStyle={styles.footerOutlineText}
+                variant="outline"
+              >
+                {t("churches.search.title")}
+              </Button>
+              <Button
+                fullWidth={!isTablet}
+                onPress={openReminderReview}
+                style={isTablet ? styles.footerButton : undefined}
+                textStyle={styles.footerLinkText}
+                variant="ghost"
+              >
+                {t("churches.setup.review")}
+              </Button>
             </View>
           }
           style={styles.upcomingCard}
@@ -260,7 +272,12 @@ const styleSheet = createThemedStyles((theme) => ({
   benefit: { alignItems: "center", flexDirection: "row", gap: theme.spacing[2], minWidth: 0 },
   benefitText: { ...theme.typography.body, color: theme.colors.text.white, flex: 1 },
   cards: { gap: theme.spacing[3] },
-  headerActions: { alignItems: "center", flexDirection: "row", gap: theme.spacing[2] },
+  // Phones stack the actions; tablets and larger place them side by side.
+  footerActions: { gap: theme.spacing[3] },
+  footerActionsRow: { flexDirection: "row" },
+  footerButton: { flex: 1, minWidth: 0 },
+  footerLinkText: { color: theme.colors.accent.amberLight },
+  footerOutlineText: { color: theme.colors.text.white },
   invitationBackground: { bottom: 0, left: 0, position: "absolute", right: 0, top: 0 },
   invitationCard: { backgroundColor: "transparent" },
   invitationDescription: { ...theme.typography.bodySmall, color: theme.colors.text.white },

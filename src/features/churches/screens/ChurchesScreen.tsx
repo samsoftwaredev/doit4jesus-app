@@ -158,6 +158,7 @@ export function ChurchesScreen() {
     setIsDetailsLoading(true);
     setDetailsLoadFailed(false);
     setSearchError(null);
+    setup.clearError();
     setSheetSnap("expanded");
     try {
       setSelectedDetails(await getChurchDetails(churchId));
@@ -248,7 +249,7 @@ export function ChurchesScreen() {
         <View style={styles.searchOverlay}>
           <ChurchSearchToolbar
             canShowMap={canShowMap}
-            errorMessage={searchError ?? setup.errorMessage}
+            errorMessage={searchError ?? (selectedDetails ? null : setup.errorMessage)}
             hasSearched={hasSearched}
             isSearching={isSearching}
             onChangeText={handleSearchTermChange}
@@ -325,18 +326,25 @@ export function ChurchesScreen() {
                   {t("churches.errors.retryDetails")}
                 </Button>
               ) : (
-                <Button
-                  disabled={!selectedDetails.isActive}
-                  fullWidth
-                  onPress={() => setup.toggleSelectedChurch(selectedDetails)}
-                  variant={setup.selectedChurchIds.has(selectedDetails.id) ? "outline" : "primary"}
-                >
-                  {t(
-                    setup.selectedChurchIds.has(selectedDetails.id)
-                      ? "churches.results.remove"
-                      : "churches.results.select",
-                  )}
-                </Button>
+                <>
+                  {setup.errorMessage ? (
+                    <Text accessibilityLiveRegion="polite" accessibilityRole="alert" style={styles.errorText}>
+                      {setup.errorMessage}
+                    </Text>
+                  ) : null}
+                  <Button
+                    disabled={!selectedDetails.isActive}
+                    fullWidth
+                    onPress={() => setup.toggleSelectedChurch(selectedDetails)}
+                    variant={setup.selectedChurchIds.has(selectedDetails.id) ? "outline" : "primary"}
+                  >
+                    {t(
+                      setup.selectedChurchIds.has(selectedDetails.id)
+                        ? "churches.results.remove"
+                        : "churches.results.select",
+                    )}
+                  </Button>
+                </>
               )}
             </View>
           ) : view === "list" ? (
@@ -392,6 +400,8 @@ export function ChurchesScreen() {
               <Feather accessible={false} color={theme.colors.text.inverse} name="chevron-right" size={20} />
             ) : undefined
           }
+          textStyle={hasExistingSubscriptions ? styles.reviewActionText : undefined}
+          variant={hasExistingSubscriptions ? "ghost" : "primary"}
         >
           {setup.isLoadingSubscriptions ? t("churches.setup.loading") : actionLabel}
         </Button>
@@ -436,6 +446,7 @@ const styleSheet = createThemedStyles((theme) => ({
     minHeight: theme.sizes.touchTarget,
     paddingVertical: theme.spacing[2],
   },
+  reviewActionText: { color: theme.colors.accent.amberLight },
   safeArea: { backgroundColor: theme.colors.background.secondary, flex: 1, position: "relative" },
   searchOverlay: { paddingBottom: theme.spacing[2], paddingHorizontal: theme.spacing[3] },
   statusText: { ...theme.typography.bodySmall, color: theme.colors.semantic.info },

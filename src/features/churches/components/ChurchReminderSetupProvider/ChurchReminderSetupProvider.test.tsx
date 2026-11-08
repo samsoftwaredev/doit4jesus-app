@@ -178,7 +178,9 @@ describe("ChurchReminderSetupProvider", () => {
     await fireEvent.press(screen.getByRole("button", { name: "Toggle second church" }));
     await fireEvent.press(screen.getByRole("button", { name: "Toggle third church" }));
     await fireEvent.press(screen.getByRole("button", { name: "Toggle fourth church" }));
-    expect(screen.getByRole("alert")).toHaveTextContent("You can follow up to three churches.");
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      "You can only follow 3 churches at a time. Remove one to add another.",
+    );
     expect(screen.getByText("drafts:3")).toBeTruthy();
   });
 

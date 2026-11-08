@@ -2,6 +2,7 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react-native";
 
 import { i18n } from "@/localization";
+import { theme } from "@/theme/tokens";
 
 import { ChurchesScreen } from "./ChurchesScreen";
 
@@ -277,5 +278,31 @@ describe("ChurchesScreen", () => {
     await render(<ChurchesScreen />);
     expect(screen.getByText("Encuentra una iglesia")).toBeTruthy();
     expect(screen.getByRole("button", { name: "Siguiente: configurar recordatorios" })).toBeTruthy();
+  });
+
+  it("explains the three-church limit next to Add church instead of behind the details sheet", async () => {
+    mockSearchChurches.mockResolvedValue(churchPage);
+    mockSetup = { ...mockSetup, errorMessage: "You can only follow 3 churches at a time. Remove one to add another." };
+    await render(<ChurchesScreen />);
+    await fireEvent.changeText(screen.getByLabelText("Search by ZIP, church name, or address"), "78701");
+    await fireEvent.press(screen.getByRole("button", { name: "Search churches" }));
+    await fireEvent.press(await screen.findByRole("button", { name: "Map marker St. Mary Cathedral" }));
+    await fireEvent.press(await screen.findByRole("button", { name: "Add church" }));
+
+    expect(mockToggleSelectedChurch).toHaveBeenCalledWith(details);
+    const alerts = screen.getAllByRole("alert");
+    expect(alerts).toHaveLength(1);
+    expect(alerts[0]).toHaveTextContent("You can only follow 3 churches at a time. Remove one to add another.");
+  });
+
+  it("shows the Review reminders action in gold", async () => {
+    mockSetup = {
+      ...mockSetup,
+      existingSubscriptions: [
+        { church, churchId: church.id, notificationWeekdays: ["sunday"], scheduleReady: true, serviceTypes: ["mass"] },
+      ],
+    };
+    await render(<ChurchesScreen />);
+    expect(screen.getByText("Review reminders")).toHaveStyle({ color: theme.colors.accent.amberLight });
   });
 });

@@ -6,8 +6,14 @@ import { theme } from "@/theme/tokens";
 import { ChurchHomeSection } from "./ChurchHomeSection";
 
 const mockPush = jest.fn();
+const mockWindowDimensions = jest.fn();
 const mockGetSubscriptions = jest.fn();
 const mockGetUpcoming = jest.fn();
+
+jest.mock("react-native/Libraries/Utilities/useWindowDimensions", () => ({
+  __esModule: true,
+  default: () => mockWindowDimensions(),
+}));
 
 jest.mock("expo-router", () => ({
   useFocusEffect: (effect: () => void | (() => void)) => {
@@ -44,6 +50,7 @@ const church = {
 describe("ChurchHomeSection", () => {
   beforeEach(async () => {
     jest.clearAllMocks();
+    mockWindowDimensions.mockReturnValue({ fontScale: 1, height: 844, scale: 3, width: 390 });
     await i18n.changeLanguage("en");
     mockGetSubscriptions.mockResolvedValue([]);
     mockGetUpcoming.mockResolvedValue({ data: [], meta: { hasMore: false, limit: 50, nextOffset: null, offset: 0 } });
@@ -67,7 +74,7 @@ describe("ChurchHomeSection", () => {
     expect(mockPush).toHaveBeenCalledWith("/churches");
   });
 
-  it("shows upcoming services with a management action in the card header", async () => {
+  it("shows upcoming services with find and review actions in the card footer", async () => {
     mockGetSubscriptions.mockResolvedValue([
       {
         church,
@@ -106,13 +113,9 @@ describe("ChurchHomeSection", () => {
     expect(screen.queryByTestId("church-invitation-background")).toBeNull();
     expect(screen.queryByText("Your church reminders")).toBeNull();
     expect(screen.queryByText("Update churches, service types, or reminder days.")).toBeNull();
-    const findChurchButton = screen.getByRole("button", { name: "Find a church" });
-    expect(findChurchButton.props.style).toEqual(
-      expect.arrayContaining([expect.objectContaining({ height: 44, width: 44 })]),
-    );
-    await fireEvent.press(findChurchButton);
+    await fireEvent.press(screen.getByRole("button", { name: "Find a church" }));
     expect(mockPush).toHaveBeenCalledWith("/churches");
-    await fireEvent.press(screen.getByRole("button", { name: "Manage church reminders" }));
+    await fireEvent.press(screen.getByRole("button", { name: "Review reminders" }));
     expect(mockPush).toHaveBeenCalledWith("/churches/reminders");
   });
 
@@ -211,5 +214,29 @@ describe("ChurchHomeSection", () => {
     await waitFor(() => expect(screen.getByText("We couldn’t load your church reminders.")).toBeTruthy());
     await fireEvent.press(screen.getByRole("button", { name: "Try Again" }));
     expect(await screen.findByRole("header", { name: "He is waiting for you" })).toBeTruthy();
+  });
+
+  describe("subscribed card actions", () => {
+    beforeEach(() => {
+      mockGetSubscriptions.mockResolvedValue([
+        { church, churchId: "church-1", notificationWeekdays: ["sunday"], scheduleReady: true, serviceTypes: ["mass"] },
+      ]);
+    });
+
+    it("stacks the actions on phones with a golden review link", async () => {
+      await render(<ChurchHomeSection />);
+
+      const actions = await screen.findByTestId("church-home-actions");
+      expect(actions).not.toHaveStyle({ flexDirection: "row" });
+      expect(screen.getByText("Review reminders")).toHaveStyle({ color: theme.colors.accent.amberLight });
+      expect(screen.getByText("Find a church")).toHaveStyle({ color: theme.colors.text.white });
+    });
+
+    it("places the actions side by side on larger displays", async () => {
+      mockWindowDimensions.mockReturnValue({ fontScale: 1, height: 1024, scale: 2, width: 820 });
+      await render(<ChurchHomeSection />);
+
+      expect(await screen.findByTestId("church-home-actions")).toHaveStyle({ flexDirection: "row" });
+    });
   });
 });
