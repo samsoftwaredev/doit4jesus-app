@@ -13,3 +13,5 @@ export { ActivityPointsModal } from "./ActivityPointsModal";
 export type { ActivityPointsModalProps } from "./ActivityPointsModal";
 export { AvatarJourneyCard } from "./AvatarJourneyCard";
 export type { AvatarJourneyCardProps } from "./AvatarJourneyCard";
+export { HomeSectionsCarousel } from "./HomeSectionsCarousel";
+export type { HomeSectionsCarouselProps } from "./HomeSectionsCarousel";

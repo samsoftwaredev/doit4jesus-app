@@ -1,9 +1,10 @@
-import { act, fireEvent, render, screen, waitFor } from "@testing-library/react-native";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react-native";
 import { StyleSheet } from "react-native";
 
 import { notifyRosaryCompletionRecorded } from "@/features/prayer/rosary/rosary-completion-events";
 import { i18n } from "@/localization";
 
+import { HomeSectionsCarousel } from "./components";
 import { HolyProgressDashboard } from "./HolyProgressDashboard";
 
 const mockPush = jest.fn();
@@ -360,8 +361,11 @@ describe("HolyProgressDashboard", () => {
     expect(screen.getByText("Monday")).toBeTruthy();
     expect(screen.getByText("Joyful Mysteries")).toBeTruthy();
     const sections = screen.getByLabelText("Holy Progress Dashboard").props.children;
-    expect(sections[0].props.testID).toBe("today-rosary-card-container");
-    expect(sections[1].props.testID).toBe("streak-progress-container");
+    expect(sections[0].type).toBe(HomeSectionsCarousel);
+    const todayPage = screen.getByTestId("home-today-page");
+    expect(within(todayPage).getByTestId("today-rosary-card-container")).toBeTruthy();
+    expect(within(todayPage).getByTestId("streak-progress-container")).toBeTruthy();
+    expect(todayPage.parent?.children.indexOf(todayPage)).toBe(0);
 
     await fireEvent.press(screen.getByLabelText("Pray digital Rosary for today's Joyful Mysteries"));
     expect(mockPush).toHaveBeenCalledWith({
@@ -381,8 +385,8 @@ describe("HolyProgressDashboard", () => {
     await screen.findByLabelText("Pray Rosary");
 
     const sections = screen.getByLabelText("Holy Progress Dashboard").props.children;
-    expect(sections[2].props.testID).toBe("church-home-section-container");
-    expect(sections[3].props.testID).toBe("daily-rosary-card-container");
+    expect(sections[1].props.testID).toBe("church-home-section-container");
+    expect(sections[2].props.testID).toBe("daily-rosary-card-container");
   });
 
   it("uses the existing Rosary route without presenting a global leaderboard action", async () => {
@@ -417,7 +421,12 @@ describe("HolyProgressDashboard", () => {
     expect(screen.queryByText("Daily Scripture Quote")).toBeNull();
     expect(screen.getByText("Church Home Section")).toBeTruthy();
     expect(screen.getByText("Prayers by Others Section")).toBeTruthy();
-    expect(screen.getByText("All Mysteries Section")).toBeTruthy();
+    expect(
+      within(screen.getByTestId("home-mysteries-page", { includeHiddenElements: true })).getByText(
+        "All Mysteries Section",
+        { includeHiddenElements: true },
+      ),
+    ).toBeTruthy();
     expect(await screen.findByText("Global total 26")).toBeTruthy();
   });
 
@@ -426,9 +435,8 @@ describe("HolyProgressDashboard", () => {
     await screen.findByText("Global total 26");
 
     const sections = screen.getByLabelText("Holy Progress Dashboard").props.children;
-    expect(sections.map((section: { props: { testID?: string } }) => section.props.testID)).toEqual([
-      "today-rosary-card-container",
-      "streak-progress-container",
+    expect(sections[0].type).toBe(HomeSectionsCarousel);
+    expect(sections.slice(1).map((section: { props: { testID?: string } }) => section.props.testID)).toEqual([
       "church-home-section-container",
       "daily-rosary-card-container",
       "rosary-garden-section-container",
@@ -436,7 +444,6 @@ describe("HolyProgressDashboard", () => {
       "daily-liturgy-section-container",
       "dashboard-primary-grid",
       "prayers-by-others-section-container",
-      "all-mysteries-section-container",
       "global-rosary-stats-section-container",
     ]);
 
@@ -486,6 +493,7 @@ describe("HolyProgressDashboard", () => {
     await fireEvent.press(screen.getByLabelText("Share an intention"));
     await fireEvent.press(screen.getByLabelText("Open my intentions"));
     await fireEvent.press(screen.getByLabelText("See all intentions"));
+    await fireEvent.press(screen.getByLabelText("Show All Mysteries"));
     await fireEvent.press(screen.getByLabelText("Open Joyful Mysteries"));
 
     expect(mockPush).toHaveBeenCalledWith({ pathname: "/intention-rosary", params: { intentionId: "intention-1" } });
@@ -562,8 +570,8 @@ describe("HolyProgressDashboard", () => {
     await render(<HolyProgressDashboard />);
 
     const sections = screen.getByLabelText("Holy Progress Dashboard").props.children;
-    expect(sections[3].props.testID).toBe("daily-rosary-card-container");
-    expect(sections[4].props.testID).toBe("rosary-garden-section-container");
+    expect(sections[2].props.testID).toBe("daily-rosary-card-container");
+    expect(sections[3].props.testID).toBe("rosary-garden-section-container");
   });
 
   it("replaces an unavailable streak card with a male user's journey welcome while retaining progress content", async () => {

@@ -450,6 +450,12 @@ export const resources = {
       },
       dashboard: {
         accessibilityLabel: "Holy Progress Dashboard",
+        homeCarousel: {
+          label: "Today's Rosary and All Mysteries",
+          showMysteries: "Show All Mysteries",
+          showToday: "Show Today's Rosary",
+          swipeHint: "Swipe horizontally to switch between Today's Rosary and All Mysteries.",
+        },
         progressCarousel: {
           label: "Level Progress and Holy Progress cards",
           showHoly: "Show Holy Progress",
@@ -1931,6 +1937,12 @@ export const resources = {
       },
       dashboard: {
         accessibilityLabel: "Panel de progreso espiritual",
+        homeCarousel: {
+          label: "Rosario de hoy y todos los misterios",
+          showMysteries: "Mostrar todos los misterios",
+          showToday: "Mostrar el Rosario de hoy",
+          swipeHint: "Desliza horizontalmente para cambiar entre el Rosario de hoy y todos los misterios.",
+        },
         progressCarousel: {
           label: "Tarjetas de progreso de nivel y progreso espiritual",
           showHoly: "Mostrar Progreso espiritual",

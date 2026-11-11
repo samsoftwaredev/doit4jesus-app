@@ -59,6 +59,7 @@ import {
   JourneyWelcomeCard,
   LeaderboardCard,
   LevelProgressCard,
+  HomeSectionsCarousel,
   ProgressCardsCarousel,
 } from "./components";
 import {
@@ -520,23 +521,34 @@ export function HolyProgressDashboard({
 
   return (
     <View accessibilityLabel={t("dashboard.accessibilityLabel")} style={styles.dashboard}>
-      <View style={styles.primaryCard} testID="today-rosary-card-container">
-        <MomentForPrayer
-          mysteryImageSource={todayMysterySet.imageSource}
-          mysteryTitle={todayMysterySet.title}
-          onPrayDigital={prayTodaysDigitalRosary}
-          onPrayVideo={prayTodaysVideoRosary}
-          weekday={getWeekdayLabel(today, locale)}
-        />
-      </View>
-      <View testID="streak-progress-container">
-        <UserProgressSection
-          errorFallback={
-            <JourneyWelcomeCard displayName={profile?.displayName ?? null} gender={profile?.gender ?? null} />
-          }
-          initialData={initialData}
-        />
-      </View>
+      <HomeSectionsCarousel
+        mysteriesPage={
+          <View testID="all-mysteries-section-container">
+            <AllMysteries cardWidth={mysteryCardWidth} gap={mysteryColumnGap} onOpenMystery={openMystery} />
+          </View>
+        }
+        todayPage={
+          <>
+            <View style={styles.primaryCard} testID="today-rosary-card-container">
+              <MomentForPrayer
+                mysteryImageSource={todayMysterySet.imageSource}
+                mysteryTitle={todayMysterySet.title}
+                onPrayDigital={prayTodaysDigitalRosary}
+                onPrayVideo={prayTodaysVideoRosary}
+                weekday={getWeekdayLabel(today, locale)}
+              />
+            </View>
+            <View testID="streak-progress-container">
+              <UserProgressSection
+                errorFallback={
+                  <JourneyWelcomeCard displayName={profile?.displayName ?? null} gender={profile?.gender ?? null} />
+                }
+                initialData={initialData}
+              />
+            </View>
+          </>
+        }
+      />
       <View testID="church-home-section-container">
         <ChurchHomeSection />
       </View>
@@ -634,9 +646,6 @@ export function HolyProgressDashboard({
           onRetry={loadIntentions}
           onSeeAll={seeAllIntentions}
         />
-      </View>
-      <View testID="all-mysteries-section-container">
-        <AllMysteries cardWidth={mysteryCardWidth} gap={mysteryColumnGap} onOpenMystery={openMystery} />
       </View>
       <View testID="global-rosary-stats-section-container">
         <GlobalRosaryStatsCard
