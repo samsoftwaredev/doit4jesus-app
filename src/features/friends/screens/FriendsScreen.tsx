@@ -5,6 +5,7 @@ import { ScrollView, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { IconButton, PageHeader } from "@/components";
+import { useFloatingTabBarInset } from "@/components/navigation/FloatingTabBarInset";
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { Button } from "@/components/ui";
 import { FriendsList, FriendsState, PendingRequestsCard, RosaryLeaderboardCard } from "@/features/friends/components";
@@ -58,6 +59,7 @@ function FriendsScreenContent({ initialData }: { initialData?: ScreenDataRespons
     requestsSection ? parseFriendRequestsPage(requestsSection.data, requestsSection.meta) : undefined,
   );
   const { contentWidth, gutter, isDesktop, isLargeText } = useResponsiveLayout();
+  const floatingTabBarInset = useFloatingTabBarInset();
   const useColumns = isDesktop && contentWidth >= 900 && !isLargeText;
 
   const openFriend = (friendId: string) => {
@@ -100,7 +102,10 @@ function FriendsScreenContent({ initialData }: { initialData?: ScreenDataRespons
         />
       </View>
       <ScrollView
-        contentContainerStyle={[styles.content, { paddingHorizontal: gutter }]}
+        contentContainerStyle={[
+          styles.content,
+          { paddingBottom: theme.spacing[10] + floatingTabBarInset, paddingHorizontal: gutter },
+        ]}
         showsVerticalScrollIndicator={false}
       >
         {leaderboard.isLoading ? (

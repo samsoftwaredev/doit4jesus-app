@@ -80,6 +80,7 @@ export function ChurchesScreen() {
   const [searchError, setSearchError] = useState<string | null>(null);
   const [pageHeight, setPageHeight] = useState(viewportHeight);
   const [bottomActionHeight, setBottomActionHeight] = useState(76);
+  const [topOverlayHeight, setTopOverlayHeight] = useState(0);
   const [isListOpen, setIsListOpen] = useState(false);
 
   /** Returns the localized user-facing message for known church API failures. */
@@ -207,7 +208,8 @@ export function ChurchesScreen() {
   }));
   const canShowMap = resolvedPostalCode !== null || mapMarkers.length > 0;
   const shouldShowMap = resolvedPostalCode !== null || (hasSearched && view === "map" && mapMarkers.length > 0);
-  const resultsPanelHeight = Math.max(240, pageHeight - bottomActionHeight);
+  // The sheet must end below the header and search bar so its content is never hidden behind them.
+  const resultsPanelHeight = Math.max(240, pageHeight - bottomActionHeight - topOverlayHeight);
 
   return (
     <SafeAreaView
@@ -233,10 +235,12 @@ export function ChurchesScreen() {
       <View
         accessibilityElementsHidden={selectedDetails !== null}
         importantForAccessibility={selectedDetails ? "no-hide-descendants" : "auto"}
+        onLayout={(event) => setTopOverlayHeight(event.nativeEvent.layout.height)}
         pointerEvents="box-none"
         style={styles.topOverlay}
       >
-        <View style={styles.headerSurface}>
+        {/* Absolute children ignore the SafeAreaView padding, so the status-bar inset is applied here. */}
+        <View style={[styles.headerSurface, { paddingTop: insets.top }]}>
           <PageHeader
             backAccessibilityLabel={t("common.back")}
             description={t("churches.search.description")}

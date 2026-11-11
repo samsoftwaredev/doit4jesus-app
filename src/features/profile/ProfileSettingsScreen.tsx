@@ -17,6 +17,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { PageHeader } from "@/components";
+import { useFloatingTabBarInset } from "@/components/navigation/FloatingTabBarInset";
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { Button } from "@/components/ui";
 import { APP_CONFIG, getLocalizedLegalUrls } from "@/config/app-config";
@@ -60,6 +61,7 @@ export function ProfileSettingsScreen() {
   const { language } = useAppLanguage();
   const legalUrls = getLocalizedLegalUrls(language);
   const insets = useSafeAreaInsets();
+  const floatingTabBarInset = useFloatingTabBarInset();
   const router = useRouter();
   const { configurationError } = useAuth();
   const { colorScheme, preference } = useAppTheme();
@@ -214,7 +216,7 @@ export function ProfileSettingsScreen() {
           styles.content,
           {
             maxWidth: isTablet ? 760 : 700,
-            paddingBottom: insets.bottom + theme.spacing[8],
+            paddingBottom: (floatingTabBarInset || insets.bottom) + theme.spacing[8],
             paddingHorizontal: gutter,
           },
         ]}

@@ -48,6 +48,11 @@ export function useRosaryAudioPlayback({
   const queueKey = `${playbackKey}:${resolvedSources.join(":")}`;
 
   useEffect(() => {
+    // Prayer audio plays at full volume; background music is kept quieter by its own provider.
+    player.volume = 1;
+  }, [player]);
+
+  useEffect(() => {
     /** Configures Rosary audio for foreground playback, including the iOS silent switch. */
     async function configureAudio() {
       try {
