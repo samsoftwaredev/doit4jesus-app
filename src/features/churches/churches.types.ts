@@ -141,7 +141,7 @@ export type ChurchSubscriptionPreferences = {
   serviceTypes: readonly ChurchServiceType[];
 };
 
-export type CreateChurchSubscriptionInput = ChurchSubscriptionPreferences & {
+export type CreateChurchSubscriptionInput = {
   churchId: string;
 };
 

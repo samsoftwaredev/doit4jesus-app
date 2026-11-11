@@ -20,6 +20,7 @@ import {
   ChurchSearchToolbar,
   type ChurchDiscoveryView,
   type ChurchResultsSheetSnap,
+  SelectedChurchesModal,
   useChurchReminderSetup,
 } from "../components";
 
@@ -79,6 +80,7 @@ export function ChurchesScreen() {
   const [searchError, setSearchError] = useState<string | null>(null);
   const [pageHeight, setPageHeight] = useState(viewportHeight);
   const [bottomActionHeight, setBottomActionHeight] = useState(76);
+  const [isListOpen, setIsListOpen] = useState(false);
 
   /** Returns the localized user-facing message for known church API failures. */
   function translateApiError(error: unknown, fallbackKey: string): string {
@@ -153,7 +155,7 @@ export function ChurchesScreen() {
   async function selectChurch(churchId: string): Promise<void> {
     const summary =
       results.find((church) => church.id === churchId) ??
-      setup.drafts.find((draft) => draft.church.id === churchId)?.church;
+      setup.selectedChurches.find((church) => church.id === churchId);
     if (!summary) return;
     setIsDetailsLoading(true);
     setDetailsLoadFailed(false);
@@ -205,9 +207,6 @@ export function ChurchesScreen() {
   }));
   const canShowMap = resolvedPostalCode !== null || mapMarkers.length > 0;
   const shouldShowMap = resolvedPostalCode !== null || (hasSearched && view === "map" && mapMarkers.length > 0);
-  const hasExistingSubscriptions = setup.existingSubscriptions.length > 0;
-  const actionDisabled = setup.isLoadingSubscriptions || (!hasExistingSubscriptions && setup.drafts.length === 0);
-  const actionLabel = hasExistingSubscriptions ? t("churches.setup.review") : t("churches.setup.next");
   const resultsPanelHeight = Math.max(240, pageHeight - bottomActionHeight);
 
   return (
@@ -268,7 +267,7 @@ export function ChurchesScreen() {
           overlaysControls={selectedDetails !== null}
           panelHeight={resultsPanelHeight}
           snap={sheetSnap}
-          summary={t("churches.results.selectedCount", { count: setup.drafts.length })}
+          summary={t("churches.results.selectedCount", { count: setup.selectedChurches.length })}
           title={t("churches.results.title")}
         >
           {isDetailsLoading ? <ActivityIndicator color={theme.colors.brand.primaryLight} /> : null}
@@ -332,9 +331,15 @@ export function ChurchesScreen() {
                       {setup.errorMessage}
                     </Text>
                   ) : null}
+                  {setup.limitReached ? (
+                    <Button onPress={() => setIsListOpen(true)} variant="ghost">
+                      {t("churches.selected.review")}
+                    </Button>
+                  ) : null}
                   <Button
-                    disabled={!selectedDetails.isActive}
+                    disabled={!selectedDetails.isActive || setup.pendingChurchIds.has(selectedDetails.id)}
                     fullWidth
+                    loading={setup.pendingChurchIds.has(selectedDetails.id)}
                     onPress={() => setup.toggleSelectedChurch(selectedDetails)}
                     variant={setup.selectedChurchIds.has(selectedDetails.id) ? "outline" : "primary"}
                   >
@@ -391,21 +396,27 @@ export function ChurchesScreen() {
         testID="church-discovery-bottom-action"
       >
         <Button
-          disabled={actionDisabled}
+          disabled={setup.isLoadingSubscriptions}
           fullWidth
+          leftIcon={<Feather accessible={false} color={theme.colors.text.primary} name="list" size={20} />}
           loading={setup.isLoadingSubscriptions}
-          onPress={() => router.push("/churches/reminders")}
-          rightIcon={
-            !hasExistingSubscriptions ? (
-              <Feather accessible={false} color={theme.colors.text.inverse} name="chevron-right" size={20} />
-            ) : undefined
-          }
-          textStyle={hasExistingSubscriptions ? styles.reviewActionText : undefined}
-          variant={hasExistingSubscriptions ? "ghost" : "primary"}
+          onPress={() => setIsListOpen(true)}
+          variant="secondary"
         >
-          {setup.isLoadingSubscriptions ? t("churches.setup.loading") : actionLabel}
+          {setup.isLoadingSubscriptions
+            ? t("churches.setup.loading")
+            : t("churches.selected.button", { count: setup.selectedChurches.length })}
         </Button>
       </View>
+      <SelectedChurchesModal
+        churches={setup.selectedChurches}
+        errorMessage={setup.errorMessage}
+        maxChurches={3}
+        onClose={() => setIsListOpen(false)}
+        onRemove={setup.toggleSelectedChurch}
+        pendingChurchIds={setup.pendingChurchIds}
+        visible={isListOpen}
+      />
     </SafeAreaView>
   );
 }
@@ -446,7 +457,6 @@ const styleSheet = createThemedStyles((theme) => ({
     minHeight: theme.sizes.touchTarget,
     paddingVertical: theme.spacing[2],
   },
-  reviewActionText: { color: theme.colors.accent.amberLight },
   safeArea: { backgroundColor: theme.colors.background.secondary, flex: 1, position: "relative" },
   searchOverlay: { paddingBottom: theme.spacing[2], paddingHorizontal: theme.spacing[3] },
   statusText: { ...theme.typography.bodySmall, color: theme.colors.semantic.info },

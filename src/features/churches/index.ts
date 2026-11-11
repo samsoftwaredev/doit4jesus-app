@@ -35,6 +35,4 @@ export type {
 export { ChurchHomeSection, ChurchMap } from "./components";
 export type { ChurchHomeSectionProps } from "./components";
 export { createChurchMarkerLabel, getChurchMapBounds } from "./churches.map";
-export { buildSubscriptionOperations } from "./churches.setup";
-export type { ChurchReminderDraft, ChurchSubscriptionOperation } from "./churches.setup";
-export { ChurchReminderReviewScreen, ChurchesScreen } from "./screens";
+export { ChurchesScreen } from "./screens";

@@ -7,7 +7,7 @@ export { ChurchHomeSection } from "./ChurchHomeSection";
 export type { ChurchHomeSectionProps } from "./ChurchHomeSection";
 export { ChurchMap } from "./ChurchMap";
 export { ChurchReminderSetupProvider, useChurchReminderSetup } from "./ChurchReminderSetupProvider";
-export type { ChurchReminderMutationFailure, ChurchReminderSetupContextValue } from "./ChurchReminderSetupProvider";
+export type { ChurchReminderSetupContextValue } from "./ChurchReminderSetupProvider";
 export { ChurchSearchToolbar } from "./ChurchSearchToolbar";
 export type { ChurchDiscoveryView, ChurchSearchToolbarProps } from "./ChurchSearchToolbar";
 export {
@@ -16,3 +16,4 @@ export {
   type ChurchResultsSheetProps,
   type ChurchResultsSheetSnap,
 } from "./ChurchResultsSheet";
+export { SelectedChurchesModal, type SelectedChurchesModalProps } from "./SelectedChurchesModal";

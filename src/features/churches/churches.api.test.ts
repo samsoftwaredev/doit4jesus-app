@@ -379,34 +379,49 @@ describe("church API", () => {
       json: async () =>
         request?.method === "DELETE"
           ? undefined
-          : {
-              data: {
-                church,
-                churchId: "church-1",
-                notificationWeekdays: ["sunday"],
-                scheduleReady: true,
-                serviceTypes: ["mass"],
+          : request?.method === "POST"
+            ? { data: { id: "subscription-1", churchId: "church-1", reviewId: null, scheduleStatus: "pending" } }
+            : {
+                data: {
+                  church,
+                  churchId: "church-1",
+                  notificationWeekdays: ["sunday"],
+                  scheduleReady: true,
+                  serviceTypes: ["mass"],
+                },
               },
-            },
       ok: true,
-      status: request?.method === "DELETE" ? 204 : 200,
+      status: request?.method === "DELETE" ? 204 : request?.method === "POST" ? 201 : 200,
     }));
     globalThis.fetch = fetchMock as unknown as typeof fetch;
     const preferences = { notificationWeekdays: ["sunday"] as const, serviceTypes: ["mass"] as const };
 
-    await createChurchSubscription({ churchId: "church-1", ...preferences });
+    await expect(createChurchSubscription({ churchId: "church-1" })).resolves.toEqual({ alreadySubscribed: false });
     await updateChurchSubscription("church-1", preferences);
     await deleteChurchSubscription("church-1");
 
     expect(fetchMock.mock.calls.map(([url, request]) => [url, request?.method, request?.body])).toEqual([
-      [
-        "https://api.example.test/api/v1/me/church-subscriptions",
-        "POST",
-        JSON.stringify({ churchId: "church-1", ...preferences }),
-      ],
+      ["https://api.example.test/api/v1/me/church-subscriptions", "POST", JSON.stringify({ churchId: "church-1" })],
       ["https://api.example.test/api/v1/me/church-subscriptions/church-1", "PATCH", JSON.stringify(preferences)],
       ["https://api.example.test/api/v1/me/church-subscriptions/church-1", "DELETE", undefined],
     ]);
+  });
+
+  it("treats following an already-followed church as a success", async () => {
+    globalThis.fetch = jest.fn(async () => ({
+      json: async () => ({
+        data: {
+          alreadySubscribed: true,
+          churchId: "church-1",
+          id: "subscription-1",
+          message: "You already follow this church.",
+        },
+      }),
+      ok: true,
+      status: 200,
+    })) as unknown as typeof fetch;
+
+    await expect(createChurchSubscription({ churchId: "church-1" })).resolves.toEqual({ alreadySubscribed: true });
   });
 
   it("surfaces backend status and code through ChurchApiError", async () => {
@@ -416,9 +431,7 @@ describe("church API", () => {
       status: 409,
     })) as unknown as typeof fetch;
 
-    await expect(
-      createChurchSubscription({ churchId: "church-4", notificationWeekdays: ["friday"], serviceTypes: ["mass"] }),
-    ).rejects.toEqual(
+    await expect(createChurchSubscription({ churchId: "church-4" })).rejects.toEqual(
       expect.objectContaining<Partial<ChurchApiError>>({ code: "CHURCH_SUBSCRIPTION_LIMIT", status: 409 }),
     );
   });

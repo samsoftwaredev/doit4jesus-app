@@ -10,71 +10,52 @@ import {
   createChurchSubscription,
   deleteChurchSubscription,
   getChurchSubscriptions,
-  updateChurchSubscription,
 } from "../../churches.api";
-import {
-  buildSubscriptionOperations,
-  type ChurchReminderDraft,
-  type ChurchSubscriptionOperation,
-} from "../../churches.setup";
-import type { ChurchServiceType, ChurchSubscription, ChurchSummary, NotificationWeekday } from "../../churches.types";
+import type { ChurchSummary } from "../../churches.types";
 
 const MAX_SUBSCRIPTIONS = 3;
 
-export type ChurchReminderMutationFailure = { churchId: string; message: string; name: string };
-
 export type ChurchReminderSetupContextValue = {
   clearError: () => void;
-  completeSetup: () => Promise<boolean>;
-  drafts: ChurchReminderDraft[];
   errorMessage: string | null;
-  existingSubscriptions: ChurchSubscription[];
   isLoadingSubscriptions: boolean;
-  isSaving: boolean;
-  mutationFailures: ChurchReminderMutationFailure[];
+  /** True after an attempt to add a church beyond the maximum, until the next selection change. */
+  limitReached: boolean;
+  /** Churches whose follow or unfollow request is still in flight. */
+  pendingChurchIds: ReadonlySet<string>;
   selectedChurchIds: ReadonlySet<string>;
+  /** The churches the user follows, in the order they were added. */
+  selectedChurches: ChurchSummary[];
+  /** Follows or unfollows a church and saves the change immediately. */
   toggleSelectedChurch: (church: ChurchSummary) => void;
-  toggleServiceType: (churchId: string, serviceType: ChurchServiceType) => void;
-  toggleWeekday: (churchId: string, weekday: NotificationWeekday) => void;
 };
 
 const ChurchReminderSetupContext = createContext<ChurchReminderSetupContextValue | null>(null);
 
-/** Converts saved subscriptions into mutable reminder drafts without sharing their arrays. */
-function subscriptionsToDrafts(subscriptions: readonly ChurchSubscription[]): ChurchReminderDraft[] {
-  return subscriptions.map((subscription) => ({
-    church: subscription.church,
-    notificationWeekdays: [...subscription.notificationWeekdays],
-    serviceTypes: [...subscription.serviceTypes],
-  }));
-}
-
 /**
- * Owns church selection and reminder mutations for every page inside the nested churches route.
- * Unsaved drafts remain available while discovery and review pages stay within that route layout.
+ * Owns the followed churches for every page inside the nested churches route.
+ * Each add or remove is saved to the API immediately; the API applies default reminder preferences.
  */
 export function ChurchReminderSetupProvider({ children }: PropsWithChildren) {
   const { t } = useTranslation();
   const { queueAchievement } = useAchievement();
-  const [existingSubscriptions, setExistingSubscriptions] = useState<ChurchSubscription[]>([]);
-  const [drafts, setDrafts] = useState<ChurchReminderDraft[]>([]);
+  const [selectedChurches, setSelectedChurches] = useState<ChurchSummary[]>([]);
+  const [pendingChurchIds, setPendingChurchIds] = useState<ReadonlySet<string>>(() => new Set());
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [mutationFailures, setMutationFailures] = useState<ChurchReminderMutationFailure[]>([]);
   const [isLoadingSubscriptions, setIsLoadingSubscriptions] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
-  const mayCelebrateInitialSetupRef = useRef(false);
-  const selectedChurchIds = useMemo(() => new Set(drafts.map((draft) => draft.church.id)), [drafts]);
+  const [limitReached, setLimitReached] = useState(false);
+  const mayCelebrateFirstChurchRef = useRef(false);
+  const selectedChurchIds = useMemo(() => new Set(selectedChurches.map((church) => church.id)), [selectedChurches]);
 
   useEffect(
-    /** Loads the server baseline once for both discovery selection and reminder review. */
+    /** Loads the followed churches once for both discovery selection and the selected-churches list. */
     function loadInitialSubscriptions() {
       let active = true;
       void getChurchSubscriptions()
         .then((subscriptions) => {
           if (!active) return;
-          setExistingSubscriptions(subscriptions);
-          setDrafts(subscriptionsToDrafts(subscriptions));
-          mayCelebrateInitialSetupRef.current = subscriptions.length === 0;
+          setSelectedChurches(subscriptions.map((subscription) => subscription.church));
+          mayCelebrateFirstChurchRef.current = subscriptions.length === 0;
         })
         .catch((error) => {
           logDevelopmentError("loading church subscriptions", error);
@@ -115,148 +96,74 @@ export function ChurchReminderSetupProvider({ children }: PropsWithChildren) {
   /** Clears a recoverable selection or validation error before the user's next action. */
   function clearError(): void {
     setErrorMessage(null);
+    setLimitReached(false);
   }
 
-  /** Adds or removes one church while enforcing the server's three-church maximum locally. */
+  /** Marks one church as having a request in flight, or clears it when the request settles. */
+  function setPending(churchId: string, isPending: boolean): void {
+    setPendingChurchIds((current) => {
+      const next = new Set(current);
+      if (isPending) next.add(churchId);
+      else next.delete(churchId);
+      return next;
+    });
+  }
+
+  /** Adds or removes one church and saves immediately, enforcing the server's three-church maximum locally. */
   function toggleSelectedChurch(church: ChurchSummary): void {
-    if (selectedChurchIds.has(church.id)) {
-      setDrafts((current) => current.filter((draft) => draft.church.id !== church.id));
-      setErrorMessage(null);
-      return;
-    }
-    if (drafts.length >= MAX_SUBSCRIPTIONS) {
-      setErrorMessage(t("churches.errors.limit"));
-      return;
-    }
-    setErrorMessage(null);
-    setDrafts((current) => [...current, { church, notificationWeekdays: [], serviceTypes: [] }]);
-  }
-
-  /** Toggles one service preference without changing other church drafts. */
-  function toggleServiceType(churchId: string, serviceType: ChurchServiceType): void {
-    setDrafts((current) =>
-      current.map((draft) =>
-        draft.church.id !== churchId
-          ? draft
-          : {
-              ...draft,
-              serviceTypes: draft.serviceTypes.includes(serviceType)
-                ? draft.serviceTypes.filter((value) => value !== serviceType)
-                : [...draft.serviceTypes, serviceType],
-            },
-      ),
-    );
-  }
-
-  /** Toggles one notification weekday without changing other church drafts. */
-  function toggleWeekday(churchId: string, weekday: NotificationWeekday): void {
-    setDrafts((current) =>
-      current.map((draft) =>
-        draft.church.id !== churchId
-          ? draft
-          : {
-              ...draft,
-              notificationWeekdays: draft.notificationWeekdays.includes(weekday)
-                ? draft.notificationWeekdays.filter((value) => value !== weekday)
-                : [...draft.notificationWeekdays, weekday],
-            },
-      ),
-    );
-  }
-
-  /** Executes one normalized subscription operation against its authenticated endpoint. */
-  async function executeOperation(operation: ChurchSubscriptionOperation): Promise<ChurchSubscription | null> {
-    if (operation.kind === "delete") {
-      await deleteChurchSubscription(operation.church.id);
-      return null;
-    }
-    if (operation.kind === "create") {
-      return createChurchSubscription({
-        churchId: operation.church.id,
-        notificationWeekdays: operation.notificationWeekdays,
-        serviceTypes: operation.serviceTypes,
-      });
-    }
-    return updateChurchSubscription(operation.church.id, {
-      notificationWeekdays: operation.notificationWeekdays,
-      serviceTypes: operation.serviceTypes,
-    });
-  }
-
-  /** Applies a fulfilled mutation to the comparison baseline used by individual retries. */
-  function applySuccessfulOperation(
-    baseline: ChurchSubscription[],
-    operation: ChurchSubscriptionOperation,
-    response: ChurchSubscription | null | undefined,
-  ): ChurchSubscription[] {
-    const withoutChurch = baseline.filter((subscription) => subscription.churchId !== operation.church.id);
-    if (operation.kind === "delete") return withoutChurch;
-    const previous = baseline.find((subscription) => subscription.churchId === operation.church.id);
-    const subscription = response ?? {
-      church: operation.church,
-      churchId: operation.church.id,
-      notificationWeekdays: [...operation.notificationWeekdays],
-      scheduleReady: previous?.scheduleReady ?? operation.church.scheduleStatus === "verified",
-      serviceTypes: [...operation.serviceTypes],
-    };
-    return [...withoutChurch, subscription];
-  }
-
-  /** Saves the smallest subscription diff and returns true only when every requested mutation succeeds. */
-  async function completeSetup(): Promise<boolean> {
-    if (drafts.some((draft) => draft.serviceTypes.length === 0 || draft.notificationWeekdays.length === 0)) {
-      setErrorMessage(t("churches.setup.validation"));
-      return false;
-    }
-    setIsSaving(true);
-    setErrorMessage(null);
-    setMutationFailures([]);
-    const operations = buildSubscriptionOperations(existingSubscriptions, drafts);
-    const results = await Promise.allSettled(operations.map(executeOperation));
-    let nextBaseline = [...existingSubscriptions];
-    const failures: ChurchReminderMutationFailure[] = [];
-    results.forEach((result, index) => {
-      const operation = operations[index]!;
-      if (result.status === "fulfilled") {
-        nextBaseline = applySuccessfulOperation(nextBaseline, operation, result.value);
-      } else {
-        failures.push({
-          churchId: operation.church.id,
-          message: translateMutationError(result.reason),
-          name: operation.church.name,
-        });
+    if (pendingChurchIds.has(church.id)) return;
+    const isSelected = selectedChurchIds.has(church.id);
+    if (!isSelected) {
+      const pendingAdditions = [...pendingChurchIds].filter((churchId) => !selectedChurchIds.has(churchId)).length;
+      if (selectedChurches.length + pendingAdditions >= MAX_SUBSCRIPTIONS) {
+        setErrorMessage(t("churches.errors.limit"));
+        setLimitReached(true);
+        return;
       }
-    });
-    setExistingSubscriptions(nextBaseline);
-    setIsSaving(false);
-    if (failures.length > 0) {
-      setMutationFailures(failures);
-      return false;
     }
-    if (mayCelebrateInitialSetupRef.current && drafts.length > 0) {
-      queueAchievement({ type: "church-reminders-configured" });
-      mayCelebrateInitialSetupRef.current = false;
-    } else {
-      queueAchievement({ type: "church-reminders-updated" });
-    }
-    return true;
+    clearError();
+    setPending(church.id, true);
+    void (async () => {
+      try {
+        let alreadyFollowed = false;
+        if (isSelected) await deleteChurchSubscription(church.id);
+        else alreadyFollowed = (await createChurchSubscription({ churchId: church.id })).alreadySubscribed;
+        setSelectedChurches((current) =>
+          isSelected
+            ? current.filter((item) => item.id !== church.id)
+            : current.some((item) => item.id === church.id)
+              ? current
+              : [...current, church],
+        );
+        // Only the first completed setup is celebrated; later adds, removals, and updates show no toast.
+        if (alreadyFollowed) return;
+        if (!isSelected && mayCelebrateFirstChurchRef.current) {
+          queueAchievement({ type: "church-reminders-configured" });
+          mayCelebrateFirstChurchRef.current = false;
+        }
+      } catch (error) {
+        logDevelopmentError(isSelected ? "removing church subscription" : "adding church subscription", error);
+        setErrorMessage(translateMutationError(error));
+        setLimitReached(
+          error instanceof ChurchApiError && (error.code === "CHURCH_SUBSCRIPTION_LIMIT" || error.status === 409),
+        );
+      } finally {
+        setPending(church.id, false);
+      }
+    })();
   }
 
   return (
     <ChurchReminderSetupContext.Provider
       value={{
         clearError,
-        completeSetup,
-        drafts,
         errorMessage,
-        existingSubscriptions,
         isLoadingSubscriptions,
-        isSaving,
-        mutationFailures,
+        limitReached,
+        pendingChurchIds,
         selectedChurchIds,
+        selectedChurches,
         toggleSelectedChurch,
-        toggleServiceType,
-        toggleWeekday,
       }}
     >
       {children}
@@ -264,7 +171,7 @@ export function ChurchReminderSetupProvider({ children }: PropsWithChildren) {
   );
 }
 
-/** Returns the reminder setup state shared by the nested discovery and review routes. */
+/** Returns the followed-church state shared by the nested discovery routes. */
 export function useChurchReminderSetup(): ChurchReminderSetupContextValue {
   const context = useContext(ChurchReminderSetupContext);
   if (!context) throw new Error("useChurchReminderSetup must be used within ChurchReminderSetupProvider.");

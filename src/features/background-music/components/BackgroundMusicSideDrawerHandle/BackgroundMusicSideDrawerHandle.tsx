@@ -106,7 +106,7 @@ export function BackgroundMusicSideDrawerHandle() {
   if (isRosaryVideo) return null;
 
   return (
-    <View pointerEvents="box-none" style={styles.host}>
+    <View pointerEvents="box-none" style={styles.host} testID="background-music-host">
       {isExpanded ? (
         <Pressable
           accessibilityElementsHidden
@@ -240,6 +240,8 @@ const styleSheet = createThemedStyles((theme) => ({
   host: {
     bottom: 0,
     left: 0,
+    // The collapsed drawer is slid off the right edge; clip it so web pages do not gain horizontal scroll.
+    overflow: "hidden",
     pointerEvents: "box-none",
     position: "absolute",
     right: 0,

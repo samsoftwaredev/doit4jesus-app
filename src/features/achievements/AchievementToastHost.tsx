@@ -30,9 +30,7 @@ export function AchievementToastHost() {
           ? t("achievements.rosaryVideoComplete")
           : achievement?.type === "church-reminders-configured"
             ? t("achievements.churchRemindersConfigured")
-            : achievement?.type === "church-reminders-updated"
-              ? t("churches.setup.saved")
-              : t("achievements.onboardingComplete");
+            : t("achievements.onboardingComplete");
   const badgeArtwork =
     achievement?.type === "badge-award" ? resolveBadgeArtwork(achievement.badge.code, achievement.badge.iconUrl) : null;
 
@@ -47,14 +45,12 @@ export function AchievementToastHost() {
 
   return (
     <View pointerEvents="box-none" style={styles.host} testID="achievement-toast-host">
-      {achievement.type !== "church-reminders-updated" ? (
-        <Confetti
-          key={achievementSequence}
-          style={styles.confetti}
-          testID="achievement-confetti"
-          trigger={achievementSequence ?? 0}
-        />
-      ) : null}
+      <Confetti
+        key={achievementSequence}
+        style={styles.confetti}
+        testID="achievement-confetti"
+        trigger={achievementSequence ?? 0}
+      />
       <View
         style={[styles.content, { paddingHorizontal: gutter, paddingTop: insets.top + theme.spacing[2] }]}
         testID="achievement-toast-content"

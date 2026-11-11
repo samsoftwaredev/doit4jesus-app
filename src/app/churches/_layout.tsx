@@ -2,7 +2,7 @@ import { Stack } from "expo-router";
 
 import { ChurchReminderSetupProvider } from "@/features/churches/components";
 
-/** Keeps reminder drafts alive while users move between church discovery and review. */
+/** Keeps chosen-church drafts alive across church discovery. */
 export default function ChurchesLayout() {
   return (
     <ChurchReminderSetupProvider>

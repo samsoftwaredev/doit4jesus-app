@@ -12,7 +12,6 @@ export type AchievementEvent =
   | { type: "daily-scripture-complete" }
   | { type: "rosary-video-complete" }
   | { type: "church-reminders-configured" }
-  | { type: "church-reminders-updated" }
   | { badge: BadgeAchievement; type: "badge-award" };
 
 type AchievementContextValue = {

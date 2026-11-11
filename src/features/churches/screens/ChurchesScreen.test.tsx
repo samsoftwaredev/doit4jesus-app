@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports -- Jest mocks load React Native components lazily. */
-import { fireEvent, render, screen, waitFor } from "@testing-library/react-native";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react-native";
 
 import { i18n } from "@/localization";
-import { theme } from "@/theme/tokens";
 
 import { ChurchesScreen } from "./ChurchesScreen";
 
@@ -126,6 +125,8 @@ jest.mock("../components", () => ({
       </View>
     );
   },
+  // The real list modal is used so its remove and complete actions are exercised end to end.
+  SelectedChurchesModal: jest.requireActual("../components/SelectedChurchesModal").SelectedChurchesModal,
   useChurchReminderSetup: () => mockSetup,
 }));
 
@@ -173,11 +174,12 @@ describe("ChurchesScreen", () => {
     await i18n.changeLanguage("en");
     mockSetup = {
       clearError: mockClearError,
-      drafts: [],
       errorMessage: null,
-      existingSubscriptions: [],
       isLoadingSubscriptions: false,
+      limitReached: false,
+      pendingChurchIds: new Set(),
       selectedChurchIds: new Set(),
+      selectedChurches: [],
       toggleSelectedChurch: mockToggleSelectedChurch,
     };
     mockResolvePostalCode.mockResolvedValue(location);
@@ -244,40 +246,79 @@ describe("ChurchesScreen", () => {
     expect(mockToggleSelectedChurch).toHaveBeenCalledWith(details);
   });
 
-  it("uses a disabled first-time action until a church is selected", async () => {
-    const { rerender } = await render(<ChurchesScreen />);
-    expect(screen.getByRole("button", { name: "Next: Set reminders" }).props.accessibilityState.disabled).toBe(true);
-    mockSetup = {
-      ...mockSetup,
-      drafts: [{ church, notificationWeekdays: [], serviceTypes: [] }],
-      selectedChurchIds: new Set([church.id]),
-    };
-    await rerender(<ChurchesScreen />);
-    const next = screen.getByRole("button", { name: "Next: Set reminders" });
-    expect(next.props.accessibilityState.disabled).toBe(false);
-    await fireEvent.press(next);
-    expect(mockPush).toHaveBeenCalledWith("/churches/reminders");
+  const chosen = () => ({
+    selectedChurchIds: new Set([church.id]),
+    selectedChurches: [church],
   });
 
-  it("keeps Review reminders enabled when an existing subscription is removed from drafts", async () => {
+  it("shows a clear selected-churches button with the count and no Complete button", async () => {
+    mockSetup = { ...mockSetup, ...chosen() };
+    await render(<ChurchesScreen />);
+
+    expect(screen.getByRole("button", { name: "My selected churches (1)" })).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Complete" })).toBeNull();
+  });
+
+  it("opens the list of selected churches and removes one from it", async () => {
+    mockSetup = { ...mockSetup, ...chosen() };
+    await render(<ChurchesScreen />);
+    expect(screen.queryByTestId("selected-churches-sheet")).toBeNull();
+
+    await fireEvent.press(screen.getByRole("button", { name: "My selected churches (1)" }));
+
+    expect(screen.getByTestId("selected-churches-sheet")).toBeTruthy();
+    expect(screen.getByText("St. Mary Cathedral")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Complete" })).toBeNull();
+    await fireEvent.press(screen.getByRole("button", { name: "Remove church St. Mary Cathedral" }));
+    expect(mockToggleSelectedChurch).toHaveBeenCalledWith(church);
+  });
+
+  it("shows an empty message when nothing is selected and closes the list", async () => {
+    await render(<ChurchesScreen />);
+    await fireEvent.press(screen.getByRole("button", { name: "My selected churches (0)" }));
+    expect(screen.getByText("You haven’t selected any churches yet.")).toBeTruthy();
+
+    await fireEvent.press(screen.getAllByRole("button", { name: "Close" }).at(-1)!);
+    await waitFor(() => expect(screen.queryByTestId("selected-churches-sheet")).toBeNull());
+  });
+
+  it("disables removing a church while its request is saving and shows save errors in the list", async () => {
     mockSetup = {
       ...mockSetup,
-      existingSubscriptions: [
-        { church, churchId: church.id, notificationWeekdays: ["sunday"], scheduleReady: true, serviceTypes: ["mass"] },
-      ],
+      ...chosen(),
+      errorMessage: "We couldn’t save that change. Please try again.",
+      pendingChurchIds: new Set([church.id]),
     };
     await render(<ChurchesScreen />);
-    const review = screen.getByRole("button", { name: "Review reminders" });
-    expect(review.props.accessibilityState.disabled).toBe(false);
-    await fireEvent.press(review);
-    expect(mockPush).toHaveBeenCalledWith("/churches/reminders");
+    await fireEvent.press(screen.getByRole("button", { name: "My selected churches (1)" }));
+
+    expect(
+      screen.getByRole("button", { name: "Remove church St. Mary Cathedral" }).props.accessibilityState.disabled,
+    ).toBe(true);
+    expect(
+      within(screen.getByTestId("selected-churches-sheet")).getByText(
+        "We couldn’t save that change. Please try again.",
+      ),
+    ).toBeTruthy();
   });
 
-  it("renders discovery and its bottom action in Spanish", async () => {
+  it("saves a church from its details with one tap on Add church, with no extra step", async () => {
+    mockSearchChurches.mockResolvedValue(churchPage);
+    await render(<ChurchesScreen />);
+    await fireEvent.changeText(screen.getByLabelText("Search by ZIP, church name, or address"), "78701");
+    await fireEvent.press(screen.getByRole("button", { name: "Search churches" }));
+    await fireEvent.press(await screen.findByRole("button", { name: "Map marker St. Mary Cathedral" }));
+    await fireEvent.press(await screen.findByRole("button", { name: "Add church" }));
+
+    expect(mockToggleSelectedChurch).toHaveBeenCalledWith(details);
+    expect(screen.queryByRole("button", { name: "Complete" })).toBeNull();
+  });
+
+  it("renders discovery and its selected-churches button in Spanish", async () => {
     await i18n.changeLanguage("es");
     await render(<ChurchesScreen />);
     expect(screen.getByText("Encuentra una iglesia")).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Siguiente: configurar recordatorios" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Mis iglesias seleccionadas (0)" })).toBeTruthy();
   });
 
   it("explains the three-church limit next to Add church instead of behind the details sheet", async () => {
@@ -295,14 +336,20 @@ describe("ChurchesScreen", () => {
     expect(alerts[0]).toHaveTextContent("You can only follow 3 churches at a time. Remove one to add another.");
   });
 
-  it("shows the Review reminders action in gold", async () => {
+  it("offers a link to the selected churches when the limit is reached, so one can be removed", async () => {
+    mockSearchChurches.mockResolvedValue(churchPage);
     mockSetup = {
       ...mockSetup,
-      existingSubscriptions: [
-        { church, churchId: church.id, notificationWeekdays: ["sunday"], scheduleReady: true, serviceTypes: ["mass"] },
-      ],
+      errorMessage: "You can only follow 3 churches at a time. Remove one to add another.",
+      limitReached: true,
     };
     await render(<ChurchesScreen />);
-    expect(screen.getByText("Review reminders")).toHaveStyle({ color: theme.colors.accent.amberLight });
+    await fireEvent.changeText(screen.getByLabelText("Search by ZIP, church name, or address"), "78701");
+    await fireEvent.press(screen.getByRole("button", { name: "Search churches" }));
+    await fireEvent.press(await screen.findByRole("button", { name: "Map marker St. Mary Cathedral" }));
+    await fireEvent.press(await screen.findByRole("button", { name: "Add church" }));
+
+    await fireEvent.press(screen.getByRole("button", { name: "Review my churches to remove one" }));
+    expect(screen.getByTestId("selected-churches-sheet")).toBeTruthy();
   });
 });

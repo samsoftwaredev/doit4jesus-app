@@ -118,6 +118,12 @@ describe("BackgroundMusicSideDrawerHandle", () => {
     expect(screen.getByTestId("background-music-panel")).toBeTruthy();
   });
 
+  it("clips the off-screen drawer so web pages cannot scroll sideways", async () => {
+    await render(<BackgroundMusicSideDrawerHandle />);
+
+    expect(screen.getByTestId("background-music-host")).toHaveStyle({ overflow: "hidden" });
+  });
+
   it("closes on an outside tap without changing playback", async () => {
     await render(<BackgroundMusicSideDrawerHandle />);
 

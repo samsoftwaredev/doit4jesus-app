@@ -367,17 +367,20 @@ export async function getChurchSubscriptions(): Promise<ChurchSubscription[]> {
   return readDataArray(payload, ["subscriptions"]).map(parseSubscription);
 }
 
-/** Creates one church subscription with complete service and weekday preferences. */
-export async function createChurchSubscription(input: CreateChurchSubscriptionInput): Promise<ChurchSubscription> {
+/**
+ * Follows one church; the API applies its default service and weekday reminder preferences.
+ * The response only confirms the follow (it is not a full subscription), and following a church
+ * that is already followed succeeds with `alreadySubscribed` set.
+ */
+export async function createChurchSubscription(
+  input: CreateChurchSubscriptionInput,
+): Promise<{ alreadySubscribed: boolean }> {
   const payload = await requestChurchApi("/api/v1/me/church-subscriptions", {
-    body: JSON.stringify({
-      churchId: input.churchId,
-      notificationWeekdays: input.notificationWeekdays,
-      serviceTypes: input.serviceTypes,
-    }),
+    body: JSON.stringify({ churchId: input.churchId }),
     method: "POST",
   });
-  return parseSubscription(unwrapData(payload));
+  const data = unwrapData(payload);
+  return { alreadySubscribed: isRecord(data) && data.alreadySubscribed === true };
 }
 
 /** Replaces all reminder preferences for an existing church subscription. */
