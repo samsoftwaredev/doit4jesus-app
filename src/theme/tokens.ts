@@ -975,7 +975,7 @@ export const sizes = {
   headerHeight: 72,
   sidebarWidth: 240,
   sidebarCollapsedWidth: 72,
-  bottomNavigationHeight: 68,
+  bottomNavigationHeight: 56,
 
   cardMinWidth: 220,
   contentMaxWidth: 1200,

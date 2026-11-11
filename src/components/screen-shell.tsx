@@ -4,10 +4,12 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { PageHeader } from "@/components";
+import { useFloatingTabBarInset } from "@/components/navigation/FloatingTabBarInset";
 import type { PageHeaderVariant } from "@/components";
 import { SacredAtmosphere } from "@/components/ui/SacredAtmosphere";
 import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
+import { theme } from "@/theme/tokens";
 
 type ScreenShellProps = PropsWithChildren<{
   actions?: ReactNode;
@@ -53,6 +55,7 @@ export function ScreenShell({
 }: ScreenShellProps) {
   const styles = useThemedStyles(styleSheet);
   const responsive = useResponsiveLayout();
+  const floatingTabBarInset = useFloatingTabBarInset();
 
   return (
     <SafeAreaView edges={["top"]} style={styles.safeArea} testID={testID}>
@@ -68,7 +71,14 @@ export function ScreenShell({
             {background}
             <SacredAtmosphere />
           </View>
-          <View style={[styles.content, { paddingHorizontal: responsive.gutter }, contentContainerStyle]}>
+          <View
+            style={[
+              styles.content,
+              { paddingHorizontal: responsive.gutter },
+              floatingTabBarInset ? { paddingBottom: theme.spacing[8] + floatingTabBarInset } : null,
+              contentContainerStyle,
+            ]}
+          >
             <PageHeader
               actions={actions}
               backAccessibilityLabel={backAccessibilityLabel}

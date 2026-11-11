@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { i18n } from "@/localization";
 import { theme } from "@/theme/tokens";
@@ -86,21 +87,48 @@ describe("ResponsiveTabs", () => {
 
   it("uses the journey card glyphs with active and inactive navigation tints", async () => {
     setViewport(390);
-    await render(<ResponsiveTabs />);
+    await render(
+      <SafeAreaProvider
+        initialMetrics={{
+          frame: { height: 844, width: 390, x: 0, y: 0 },
+          insets: { bottom: 0, left: 0, right: 0, top: 0 },
+        }}
+      >
+        <ResponsiveTabs />
+      </SafeAreaProvider>,
+    );
 
     expect(mockTabIcons.mock.calls.map(([icon]) => ({ color: icon.color, name: icon.name }))).toEqual(expectedTabIcons);
   });
 
   it.each([320, 390, 768])("keeps bottom navigation at %ipx", async (width) => {
     setViewport(width);
-    await render(<ResponsiveTabs />);
+    await render(
+      <SafeAreaProvider
+        initialMetrics={{
+          frame: { height: 844, width: 390, x: 0, y: 0 },
+          insets: { bottom: 0, left: 0, right: 0, top: 0 },
+        }}
+      >
+        <ResponsiveTabs />
+      </SafeAreaProvider>,
+    );
 
     expect(mockTabsProps.mock.lastCall?.[0].screenOptions.tabBarPosition).toBe("bottom");
   });
 
   it("uses an expanded, accessible 240px navigation rail at the desktop boundary", async () => {
     setViewport(1024, 768, 1.6);
-    await render(<ResponsiveTabs />);
+    await render(
+      <SafeAreaProvider
+        initialMetrics={{
+          frame: { height: 844, width: 390, x: 0, y: 0 },
+          insets: { bottom: 0, left: 0, right: 0, top: 0 },
+        }}
+      >
+        <ResponsiveTabs />
+      </SafeAreaProvider>,
+    );
 
     const options = mockTabsProps.mock.lastCall?.[0].screenOptions;
     expect(options.tabBarPosition).toBe("left");
@@ -121,7 +149,16 @@ describe("ResponsiveTabs", () => {
     mockTextScale = 1.3;
     setViewport(390, 844, 1);
 
-    await render(<ResponsiveTabs />);
+    await render(
+      <SafeAreaProvider
+        initialMetrics={{
+          frame: { height: 844, width: 390, x: 0, y: 0 },
+          insets: { bottom: 0, left: 0, right: 0, top: 0 },
+        }}
+      >
+        <ResponsiveTabs />
+      </SafeAreaProvider>,
+    );
 
     const options = mockTabsProps.mock.lastCall?.[0].screenOptions;
     expect(options.tabBarLabelStyle).toMatchObject({ fontSize: 14.3, lineHeight: 18.2 });
@@ -132,7 +169,16 @@ describe("ResponsiveTabs", () => {
     await i18n.changeLanguage("es");
     setViewport(390);
 
-    await render(<ResponsiveTabs />);
+    await render(
+      <SafeAreaProvider
+        initialMetrics={{
+          frame: { height: 844, width: 390, x: 0, y: 0 },
+          insets: { bottom: 0, left: 0, right: 0, top: 0 },
+        }}
+      >
+        <ResponsiveTabs />
+      </SafeAreaProvider>,
+    );
 
     expect(screen.getByText("home:Inicio")).toBeTruthy();
     expect(screen.queryByText("prayer:Oración")).toBeNull();

@@ -376,13 +376,13 @@ describe("HolyProgressDashboard", () => {
     });
   });
 
-  it("keeps the daily Rosary reminder directly after the streak progress", async () => {
+  it("places upcoming church events directly after the streak progress, above the daily Rosary reminder", async () => {
     await render(<HolyProgressDashboard />);
     await screen.findByLabelText("Pray Rosary");
 
     const sections = screen.getByLabelText("Holy Progress Dashboard").props.children;
-    expect(sections[2].props.testID).toBe("daily-rosary-card-container");
-    expect(sections[3].props.testID).toBe("church-home-section-container");
+    expect(sections[2].props.testID).toBe("church-home-section-container");
+    expect(sections[3].props.testID).toBe("daily-rosary-card-container");
   });
 
   it("uses the existing Rosary route without presenting a global leaderboard action", async () => {
@@ -429,8 +429,8 @@ describe("HolyProgressDashboard", () => {
     expect(sections.map((section: { props: { testID?: string } }) => section.props.testID)).toEqual([
       "today-rosary-card-container",
       "streak-progress-container",
-      "daily-rosary-card-container",
       "church-home-section-container",
+      "daily-rosary-card-container",
       "rosary-garden-section-container",
       "rosary-guide-section-container",
       "daily-liturgy-section-container",
@@ -562,8 +562,7 @@ describe("HolyProgressDashboard", () => {
     await render(<HolyProgressDashboard />);
 
     const sections = screen.getByLabelText("Holy Progress Dashboard").props.children;
-    expect(sections[2].props.testID).toBe("daily-rosary-card-container");
-    expect(sections[3].props.testID).toBe("church-home-section-container");
+    expect(sections[3].props.testID).toBe("daily-rosary-card-container");
     expect(sections[4].props.testID).toBe("rosary-garden-section-container");
   });
 

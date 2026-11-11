@@ -537,6 +537,9 @@ export function HolyProgressDashboard({
           initialData={initialData}
         />
       </View>
+      <View testID="church-home-section-container">
+        <ChurchHomeSection />
+      </View>
       <View style={styles.primaryCard} testID="daily-rosary-card-container">
         {!isLoadingReminder && reminderError ? (
           <JourneyWelcomeCard displayName={profile?.displayName ?? null} gender={profile?.gender ?? null} />
@@ -551,9 +554,6 @@ export function HolyProgressDashboard({
             reminder={reminder}
           />
         )}
-      </View>
-      <View testID="church-home-section-container">
-        <ChurchHomeSection />
       </View>
       <View onLayout={onGardenLayout} testID="rosary-garden-section-container">
         <RosaryGardenSection initialData={initialData} onPrayToday={prayTodayFromGarden} />
