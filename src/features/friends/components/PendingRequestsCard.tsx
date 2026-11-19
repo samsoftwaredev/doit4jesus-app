@@ -13,6 +13,7 @@ type PendingRequestsCardProps = {
   isMutatingId?: string;
   onAccept: (request: FriendRequest) => void;
   onDecline: (request: FriendRequest) => void;
+  onOpenProfile?: (request: FriendRequest) => void;
   onSeeAll: () => void;
   requests: FriendRequest[];
 };
@@ -22,6 +23,7 @@ export function PendingRequestsCard({
   isMutatingId,
   onAccept,
   onDecline,
+  onOpenProfile,
   onSeeAll,
   requests,
 }: PendingRequestsCardProps) {
@@ -59,6 +61,7 @@ export function PendingRequestsCard({
                 key={request.id}
                 onAccept={() => onAccept(request)}
                 onDecline={() => onDecline(request)}
+                onOpenProfile={onOpenProfile && request.user.username ? () => onOpenProfile(request) : undefined}
                 request={request}
               />
             ))

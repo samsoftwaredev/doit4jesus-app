@@ -15,6 +15,8 @@ import { BackgroundMusicProvider, BackgroundMusicSideDrawerHandle } from "@/feat
 import { getProfileAccessState, ProfileProvider, useCurrentProfile } from "@/features/profile";
 import { logDevelopmentError } from "@/lib/development-logger";
 import { supabase } from "@/lib/supabase";
+import { PendingFriendInviteRedeemer } from "@/features/friends/PendingFriendInviteRedeemer";
+import { NotificationBadgeProvider } from "@/features/notifications";
 import { AccountLanguagePreferenceSync } from "@/localization/AccountLanguagePreferenceSync";
 import { AppLanguageProvider, useAppLanguage } from "@/localization";
 import { AppThemeProvider, getStatusBarStyle, useAppTheme } from "@/theme/AppThemeProvider";
@@ -74,11 +76,14 @@ function ThemedRoot() {
           <StatusBar style={getStatusBarStyle(colorScheme)} />
           <AuthProvider>
             <BadgeAwardSubscription />
-            <ProfileProvider>
-              <AccountLanguagePreferenceSync>
-                <RootNavigator />
-              </AccountLanguagePreferenceSync>
-            </ProfileProvider>
+            <NotificationBadgeProvider>
+              <ProfileProvider>
+                <AccountLanguagePreferenceSync>
+                  <RootNavigator />
+                  <PendingFriendInviteRedeemer />
+                </AccountLanguagePreferenceSync>
+              </ProfileProvider>
+            </NotificationBadgeProvider>
           </AuthProvider>
           <AchievementToastHost />
         </ThemeProvider>

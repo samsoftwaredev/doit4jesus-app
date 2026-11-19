@@ -1,8 +1,10 @@
 import { getSupabaseAccessToken } from "@/lib/supabase";
 import type {
+  AcceptedFriendInvite,
   CurrentLevel,
   EarnedFriendBadge,
   FriendDetails,
+  FriendInvitePreview,
   FriendProfileSummary,
   FriendRequest,
   FriendRequestDirection,
@@ -17,7 +19,9 @@ import type {
   LeaderboardPeriod,
   LeaderboardPeriodType,
   OffsetPageMeta,
+  RelationshipState,
   RosaryStreak,
+  UserPublicProfile,
   UserSearchPage,
 } from "./friends.types";
 
@@ -278,7 +282,7 @@ async function getRequestConfig() {
   return { accessToken, apiUrl: apiUrl.replace(/\/$/, "") };
 }
 
-async function request(path: string, options: RequestOptions = {}): Promise<unknown> {
+export async function request(path: string, options: RequestOptions = {}): Promise<unknown> {
   const { accessToken, apiUrl } = await getRequestConfig();
   const body = options.body ? JSON.stringify(options.body) : undefined;
   const response = await fetch(`${apiUrl}${path}`, {
@@ -502,5 +506,77 @@ export async function getFriendsComparison({
     offset: readNumber(data.offset, "comparison offset"),
     period: parseLeaderboardPeriod(data.period),
     total: readNumber(data.total, "comparison total"),
+  };
+}
+
+const RELATIONSHIP_STATES: RelationshipState[] = ["none", "outgoingPending", "incomingPending", "friends"];
+
+/** Parses a relationship state, rejecting values the app does not understand. */
+function parseRelationshipState(value: unknown): RelationshipState {
+  const state = readString(value, "relationship state") as RelationshipState;
+  if (!RELATIONSHIP_STATES.includes(state)) throw new Error("Invalid relationship state.");
+  return state;
+}
+
+/** Loads any user's limited public profile by username, including the caller's relationship to them. */
+export async function getUserProfile(username: string): Promise<UserPublicProfile> {
+  const payload = readRecord(await request(`/api/v1/users/${encodeURIComponent(username)}`), "user profile response");
+  const data = readRecord(payload.data, "user profile data");
+  const progress = readRecord(data.progress, "user progress");
+
+  return {
+    badges: readArray(data.badges, "user badges").map(parseEarnedFriendBadge),
+    progress: {
+      currentLevel: parseCurrentLevel(progress.currentLevel),
+      totalXp: readNumber(progress.totalXp, "user total XP"),
+    },
+    relationshipState: parseRelationshipState(data.relationshipState),
+    requestId: readOptionalNullableString(data.requestId, "request ID"),
+    rosaryTotal: readNumber(data.rosaryTotal, "user Rosary total"),
+    user: parseFriendProfile(data.user),
+  };
+}
+
+/** Returns the caller's personal invite code used to build a shareable link. */
+export async function getMyFriendInviteCode(): Promise<string> {
+  const payload = readRecord(await request("/api/v1/me/friend-invite"), "friend invite response");
+  return readString(readRecord(payload.data, "friend invite data").code, "friend invite code");
+}
+
+/** Loads the inviter behind a friend-invite code. */
+export async function getFriendInvitePreview(code: string): Promise<FriendInvitePreview> {
+  const payload = readRecord(
+    await request(`/api/v1/friend-invites/${encodeURIComponent(code)}`),
+    "friend invite preview response",
+  );
+  const data = readRecord(payload.data, "friend invite preview data");
+  const inviter = readRecord(data.inviter, "friend invite inviter");
+
+  return {
+    inviter: {
+      avatarUrl: readOptionalNullableString(inviter.avatarUrl, "inviter avatar URL"),
+      displayName: readString(inviter.displayName, "inviter display name"),
+      id: readString(inviter.id, "inviter ID"),
+      title: readOptionalNullableString(inviter.title, "inviter title"),
+      username: readOptionalNullableString(inviter.username, "inviter username"),
+    },
+    relationshipState: parseRelationshipState(data.relationshipState),
+  };
+}
+
+/** Accepts a friend invite, making the caller and inviter friends immediately. */
+export async function acceptFriendInvite(code: string): Promise<AcceptedFriendInvite> {
+  const payload = readRecord(
+    await request(`/api/v1/friend-invites/${encodeURIComponent(code)}/accept`, { method: "POST" }),
+    "accept friend invite response",
+  );
+  const data = readRecord(payload.data, "accept friend invite data");
+  const status = readString(data.status, "friend invite status");
+  if (status !== "accepted" && status !== "alreadyFriends") throw new Error("Invalid friend invite status.");
+
+  return {
+    friendId: readString(data.friendId, "friend ID"),
+    friendshipId: readOptionalNullableString(data.friendshipId, "friendship ID"),
+    status,
   };
 }

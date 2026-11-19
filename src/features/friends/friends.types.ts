@@ -158,3 +158,27 @@ export interface UserSearchPage {
   data: UserSearchResult[];
   meta: OffsetPageMeta;
 }
+
+export type RelationshipState = UserSearchResult["relationshipState"];
+
+/** A non-friend's limited public profile plus the caller's relationship to them. */
+export interface UserPublicProfile {
+  badges: EarnedFriendBadge[];
+  progress: FriendDetails["progress"];
+  relationshipState: RelationshipState;
+  requestId: string | null;
+  rosaryTotal: number;
+  user: FriendProfileSummary;
+}
+
+/** The inviter identity shown before a friend invite is accepted. */
+export interface FriendInvitePreview {
+  inviter: Omit<FriendProfileSummary, "countryCode"> & { countryCode?: string | null };
+  relationshipState: RelationshipState;
+}
+
+export interface AcceptedFriendInvite {
+  friendId: string;
+  friendshipId: string | null;
+  status: "accepted" | "alreadyFriends";
+}

@@ -1,11 +1,15 @@
 import {
+  acceptFriendInvite,
   acceptFriendRequest,
   cancelFriendRequest,
+  getFriendInvitePreview,
   getFriendProfile,
   getFriendRequests,
   getFriends,
   getFriendsComparison,
+  getMyFriendInviteCode,
   getRosaryLeaderboard,
+  getUserProfile,
   rejectFriendRequest,
   removeFriend,
   searchUsers,
@@ -410,5 +414,95 @@ describe("Friends API", () => {
     ) as unknown as typeof fetch;
 
     await expect(getFriendRequests()).rejects.toThrow("unknown friend request status");
+  });
+});
+
+describe("Friend invites and public profiles API", () => {
+  beforeEach(() => {
+    process.env.EXPO_PUBLIC_API_URL = "https://api.example.test/";
+  });
+
+  afterEach(() => {
+    delete process.env.EXPO_PUBLIC_API_URL;
+  });
+
+  it("loads the personal invite code", async () => {
+    const fetchMock = jest.fn(async (_input: string, _init?: RequestInit) =>
+      successResponse({ data: { code: "abcdefghijkl" } }),
+    );
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+    await expect(getMyFriendInviteCode()).resolves.toBe("abcdefghijkl");
+    expect(fetchMock.mock.calls[0]?.[0]).toBe("https://api.example.test/api/v1/me/friend-invite");
+  });
+
+  it("previews and accepts an invite", async () => {
+    const fetchMock = jest.fn(async (input: string, _init?: RequestInit) =>
+      input.endsWith("/accept")
+        ? successResponse({ data: { friendId: "friend-maria", friendshipId: "ship-1", status: "accepted" } })
+        : successResponse({
+            data: {
+              inviter: {
+                avatarUrl: null,
+                displayName: "Maria Santos",
+                id: "friend-maria",
+                title: null,
+                username: "maria",
+              },
+              relationshipState: "none",
+            },
+          }),
+    );
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+    await expect(getFriendInvitePreview("abcdefghijkl")).resolves.toMatchObject({
+      inviter: { displayName: "Maria Santos", username: "maria" },
+      relationshipState: "none",
+    });
+    await expect(acceptFriendInvite("abcdefghijkl")).resolves.toEqual({
+      friendId: "friend-maria",
+      friendshipId: "ship-1",
+      status: "accepted",
+    });
+    expect(fetchMock.mock.calls[1]?.[1]).toMatchObject({ method: "POST" });
+  });
+
+  it("parses a non-friend's public profile with the pending request id", async () => {
+    globalThis.fetch = jest.fn(async () =>
+      successResponse({
+        data: {
+          badges: [],
+          progress: { currentLevel: level, totalXp: 120 },
+          relationshipState: "incomingPending",
+          requestId: "request-9",
+          rosaryTotal: 14,
+          user: profile,
+        },
+      }),
+    ) as unknown as typeof fetch;
+
+    await expect(getUserProfile("maria")).resolves.toMatchObject({
+      relationshipState: "incomingPending",
+      requestId: "request-9",
+      rosaryTotal: 14,
+      user: { username: "maria" },
+    });
+  });
+
+  it("rejects an unknown relationship state", async () => {
+    globalThis.fetch = jest.fn(async () =>
+      successResponse({
+        data: {
+          badges: [],
+          progress: { currentLevel: level, totalXp: 1 },
+          relationshipState: "stranger",
+          requestId: null,
+          rosaryTotal: 0,
+          user: profile,
+        },
+      }),
+    ) as unknown as typeof fetch;
+
+    await expect(getUserProfile("maria")).rejects.toThrow("Invalid relationship state.");
   });
 });

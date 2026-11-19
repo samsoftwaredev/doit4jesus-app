@@ -110,6 +110,15 @@ export function FriendRequestsScreen() {
                       .cancel(item)
                       .catch((error) => logDevelopmentError("cancelling a friend request", error))
                   }
+                  onOpenProfile={
+                    item.user.username
+                      ? () =>
+                          router.push({
+                            pathname: "/friends/user/[username]",
+                            params: { username: item.user.username ?? "" },
+                          })
+                      : undefined
+                  }
                   onDecline={() =>
                     void requests
                       .resolve(item, "rejected")

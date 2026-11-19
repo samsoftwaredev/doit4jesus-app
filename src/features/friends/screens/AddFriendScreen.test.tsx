@@ -6,6 +6,7 @@ import { i18n } from "@/localization";
 import { AddFriendScreen } from "./AddFriendScreen";
 
 jest.mock("expo-router", () => ({ useRouter: () => ({ back: jest.fn(), push: jest.fn(), replace: jest.fn() }) }));
+jest.mock("@/features/friends/friends.api", () => ({ getMyFriendInviteCode: jest.fn(async () => "abcdefghijkl") }));
 jest.mock("@/features/friends/friends.hooks", () => ({ useFriendSearch: jest.fn(), useSendFriendRequest: jest.fn() }));
 
 const { useFriendSearch, useSendFriendRequest } = jest.requireMock("@/features/friends/friends.hooks") as {
@@ -22,7 +23,7 @@ describe("AddFriendScreen", () => {
     jest.restoreAllMocks();
   });
 
-  it("opens the native share sheet with the public invite link", async () => {
+  it("opens the native share sheet with the user's personal invite link", async () => {
     const share = jest.spyOn(Share, "share").mockResolvedValue({ action: Share.sharedAction });
     useFriendSearch.mockReturnValue({ error: undefined, isLoading: false, results: [] });
     useSendFriendRequest.mockReturnValue({
@@ -38,7 +39,7 @@ describe("AddFriendScreen", () => {
 
     expect(share).toHaveBeenCalledWith({
       message:
-        "Join me on Do It 4 Jesus! Grow in faith, pray together, and encourage one another.\nhttps://www.doitforjesus.com",
+        "Join me on Do It 4 Jesus! Grow in faith, pray together, and encourage one another.\nhttps://www.doitforjesus.com/invite/abcdefghijkl",
     });
   });
 
@@ -59,8 +60,26 @@ describe("AddFriendScreen", () => {
 
     expect(share).toHaveBeenCalledWith({
       message:
-        "¡Únete conmigo en Do It 4 Jesus! Crezcamos en la fe, oremos juntos y animémonos mutuamente.\nhttps://www.doitforjesus.com",
+        "¡Únete conmigo en Do It 4 Jesus! Crezcamos en la fe, oremos juntos y animémonos mutuamente.\nhttps://www.doitforjesus.com/invite/abcdefghijkl",
     });
+  });
+
+  it("opens a search result's profile when the row is tapped", async () => {
+    useFriendSearch.mockReturnValue({
+      error: undefined,
+      isLoading: false,
+      results: [{ avatarUrl: null, relationshipState: "none", title: null, username: "johnpaul" }],
+    });
+    useSendFriendRequest.mockReturnValue({
+      error: undefined,
+      pendingUsername: undefined,
+      requestedUsernames: [],
+      send: jest.fn(),
+    });
+
+    await render(<AddFriendScreen />);
+
+    expect(screen.getByRole("button", { name: "View @johnpaul’s profile" })).toBeTruthy();
   });
 
   it("shows username search results and sends a friend request", async () => {

@@ -62,7 +62,7 @@ export function ReportContentModal({
             {t("safety.reportTitle")}
           </Text>
           <Text style={styles.copy}>{t("safety.reportDescription")}</Text>
-          <ScrollView style={styles.reasons}>
+          <ScrollView contentContainerStyle={styles.reasonsContent} style={styles.reasons}>
             {reasons.map((item) => (
               <Button
                 fullWidth
@@ -124,6 +124,7 @@ const styleSheet = createThemedStyles((appTheme) => ({
   title: { ...appTheme.typography.heading3, color: appTheme.colors.text.primary },
   copy: { ...appTheme.typography.bodySmall, color: appTheme.colors.text.secondary },
   reasons: { maxHeight: 260 },
+  reasonsContent: { gap: appTheme.spacing[2] },
   input: {
     ...appTheme.typography.body,
     borderColor: appTheme.colors.border.default,

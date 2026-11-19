@@ -168,7 +168,7 @@ export function FriendProfileScreen({ friendId }: { friendId: string | undefined
             <CompareStatsSection friendId={friendId} />
           </View>
 
-          <View testID="friend-profile-section-remove">
+          <View style={styles.safetyActions} testID="friend-profile-section-remove">
             {safetyError ? (
               <Text accessibilityRole="alert" style={styles.safetyError}>
                 {t("safety.actionError")}
@@ -218,6 +218,7 @@ function ProfileStat({ label, value }: { label: string; value: string }) {
 }
 
 const styleSheet = createThemedStyles((theme) => ({
+  safetyActions: { gap: theme.spacing[3] },
   safetyError: { ...theme.typography.bodySmall, color: theme.colors.text.danger, marginBottom: theme.spacing[2] },
   content: {
     alignSelf: "center",

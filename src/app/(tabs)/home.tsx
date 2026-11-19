@@ -1,4 +1,4 @@
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
@@ -7,6 +7,7 @@ import type { LayoutChangeEvent, ScrollView } from "react-native";
 import { ScreenShell } from "@/components/screen-shell";
 import { HeaderActionGroup } from "@/components/ui";
 import { HolyProgressDashboard } from "@/features/dashboard";
+import { useNotificationBadge } from "@/features/notifications";
 import { fetchScreenData } from "@/features/screen-data";
 import type { ScreenDataResponse } from "@/features/screen-data";
 import { logDevelopmentError } from "@/lib/development-logger";
@@ -26,6 +27,7 @@ export default function HomeScreen() {
   const { scrollTo: rawScrollTarget } = useLocalSearchParams<{ scrollTo?: string | string[] }>();
   const { t } = useTranslation();
   const { locale } = useAppLanguage();
+  const { count: notificationCount, refresh: refreshNotificationCount } = useNotificationBadge();
   const [initialData, setInitialData] = useState<ScreenDataResponse>();
   const [isInitialLoadSettled, setIsInitialLoadSettled] = useState(false);
   const [dashboardOffsetY, setDashboardOffsetY] = useState(0);
@@ -94,10 +96,17 @@ export default function HomeScreen() {
     };
   }, [locale]);
 
+  useFocusEffect(
+    useCallback(() => {
+      void refreshNotificationCount();
+    }, [refreshNotificationCount]),
+  );
+
   return (
     <ScreenShell
       actions={
         <HeaderActionGroup
+          notificationUnreadCount={notificationCount}
           onMessagesPress={() => router.push("/messages")}
           onNotificationsPress={() => router.push("/notifications")}
           onSettingsPress={() => router.push("/settings")}

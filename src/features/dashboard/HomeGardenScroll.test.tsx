@@ -5,6 +5,7 @@ const mockSetParams = jest.fn();
 let mockScrollParam: string | undefined;
 
 jest.mock("expo-router", () => ({
+  useFocusEffect: jest.fn(),
   useLocalSearchParams: () => ({ scrollTo: mockScrollParam }),
   useRouter: () => mockRouter,
 }));
@@ -22,6 +23,9 @@ jest.mock("@/components/screen-shell", () => {
 });
 
 jest.mock("@/components/ui", () => ({ HeaderActionGroup: () => null }));
+jest.mock("@/features/notifications", () => ({
+  useNotificationBadge: () => ({ count: 0, markAllSeen: jest.fn(), refresh: jest.fn() }),
+}));
 jest.mock("@/features/screen-data", () => ({ fetchScreenData: jest.fn().mockResolvedValue({}) }));
 jest.mock("@/localization", () => ({ useAppLanguage: () => ({ locale: "en-US" }) }));
 jest.mock("@/features/dashboard", () => {

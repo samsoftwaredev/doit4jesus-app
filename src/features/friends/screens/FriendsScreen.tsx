@@ -156,6 +156,12 @@ function FriendsScreenContent({ initialData }: { initialData?: ScreenDataRespons
                 isMutatingId={requests.isMutatingId}
                 onAccept={(request) => resolveRequest(request, "accepted")}
                 onDecline={(request) => resolveRequest(request, "rejected")}
+                onOpenProfile={(request) =>
+                  router.push({
+                    pathname: "/friends/user/[username]",
+                    params: { username: request.user.username ?? "" },
+                  })
+                }
                 onSeeAll={() => router.push("/friends/requests")}
                 requests={requests.requests}
               />

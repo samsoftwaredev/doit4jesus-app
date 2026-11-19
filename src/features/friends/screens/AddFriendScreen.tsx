@@ -1,13 +1,14 @@
 import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
-import { FlatList, KeyboardAvoidingView, Platform, Share, Text, TextInput, View } from "react-native";
+import { FlatList, KeyboardAvoidingView, Platform, Pressable, Share, Text, TextInput, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { AtmosphericSafeAreaView } from "@/components/atmospheric-safe-area-view";
 import { BackHeader } from "@/components/navigation";
 import { Button, Card } from "@/components/ui";
 import { FriendAvatar, FriendsState } from "@/features/friends/components";
+import { getMyFriendInviteCode } from "@/features/friends/friends.api";
 import { useFriendSearch, useSendFriendRequest } from "@/features/friends/friends.hooks";
 import type { UserSearchResult } from "@/features/friends/friends.types";
 import { logDevelopmentError } from "@/lib/development-logger";
@@ -30,16 +31,24 @@ export function AddFriendScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const [query, setQuery] = useState("");
+  const [isPreparingInvite, setIsPreparingInvite] = useState(false);
+  const [inviteError, setInviteError] = useState(false);
   const search = useFriendSearch(query);
   const request = useSendFriendRequest();
   const searchHint = useMemo(() => query.trim().length === 0, [query]);
 
   /** Opens the operating system share sheet with the localized invite copy and public app landing page. */
   const handleInvite = useCallback(async () => {
+    setIsPreparingInvite(true);
+    setInviteError(false);
     try {
-      await Share.share({ message: `${t("friends.invite.message")}\n${APP_CONFIG.inviteUrl}` });
+      const code = await getMyFriendInviteCode();
+      await Share.share({ message: `${t("friends.invite.message")}\n${APP_CONFIG.inviteUrl}/invite/${code}` });
     } catch (error) {
       logDevelopmentError("sharing a friend invite", error);
+      setInviteError(true);
+    } finally {
+      setIsPreparingInvite(false);
     }
   }, [t]);
 
@@ -98,11 +107,17 @@ export function AddFriendScreen() {
                 <Button
                   accessibilityLabel={t("friends.invite.action")}
                   fullWidth
+                  loading={isPreparingInvite}
                   onPress={handleInvite}
                   variant="outline"
                 >
                   {t("friends.invite.action")}
                 </Button>
+                {inviteError ? (
+                  <Text accessibilityRole="alert" style={styles.requestError}>
+                    {t("friends.invite.error")}
+                  </Text>
+                ) : null}
               </Card>
               <View style={styles.searchInputWrap}>
                 <Feather color={theme.colors.icon.muted} name="search" size={theme.sizes.iconSmall} />
@@ -158,21 +173,29 @@ function SearchResultItem({
 }) {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
+  const router = useRouter();
   const relationshipKey = statusKey(result, requestedUsernames);
   const status = relationshipKey ? t(relationshipKey) : undefined;
 
   return (
     <Card padding="sm" style={styles.resultCard}>
       <View style={styles.resultRow}>
-        <FriendAvatar
-          accessibilityLabel={t("friends.avatarLabel", { name: `@${result.username}` })}
-          name={result.username}
-          source={result.avatarUrl}
-        />
-        <View style={styles.resultCopy}>
-          <Text style={styles.username}>{`@${result.username}`}</Text>
-          {result.title ? <Text style={styles.resultTitle}>{result.title}</Text> : null}
-        </View>
+        <Pressable
+          accessibilityLabel={t("friends.userProfile.open", { username: result.username })}
+          accessibilityRole="button"
+          onPress={() => router.push({ pathname: "/friends/user/[username]", params: { username: result.username } })}
+          style={styles.resultProfile}
+        >
+          <FriendAvatar
+            accessibilityLabel={t("friends.avatarLabel", { name: `@${result.username}` })}
+            name={result.username}
+            source={result.avatarUrl}
+          />
+          <View style={styles.resultCopy}>
+            <Text style={styles.username}>{`@${result.username}`}</Text>
+            {result.title ? <Text style={styles.resultTitle}>{result.title}</Text> : null}
+          </View>
+        </Pressable>
         {status ? (
           <Text accessibilityLabel={`${result.username}: ${status}`} style={styles.relationshipStatus}>
             {status}
@@ -246,9 +269,16 @@ const styleSheet = createThemedStyles((theme) => ({
     marginLeft: theme.spacing[3],
     minWidth: theme.spacing[0],
   },
+  resultProfile: {
+    alignItems: "center",
+    flex: 1,
+    flexDirection: "row",
+    minWidth: theme.spacing[0],
+  },
   resultRow: {
     alignItems: "center",
     flexDirection: "row",
+    gap: theme.spacing[2],
   },
   resultTitle: {
     ...theme.typography.bodySmall,

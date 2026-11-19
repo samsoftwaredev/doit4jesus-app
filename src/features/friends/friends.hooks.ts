@@ -8,6 +8,7 @@ import {
   cancelFriendRequest,
   getFriendProfile,
   getFriendRequests,
+  getUserProfile,
   getFriends,
   getFriendsComparison,
   getRosaryLeaderboard,
@@ -23,6 +24,7 @@ import type {
   FriendsComparison,
   FriendsLeaderboard,
   LeaderboardPeriodType,
+  UserPublicProfile,
   UserSearchResult,
 } from "./friends.types";
 
@@ -411,4 +413,36 @@ export function useFriendsComparison(friendId: string | undefined, initialPeriod
   const friend = useMemo(() => entries.find((entry) => entry.profile.id === friendId), [entries, friendId]);
 
   return { comparison, currentUser, error, friend, isLoading, periodType, reload: load, setPeriodType };
+}
+
+/** Loads a user's public profile by username so non-friends can be viewed and added. */
+export function useUserProfile(username: string | undefined) {
+  const [error, setError] = useState<string>();
+  const [isLoading, setIsLoading] = useState(Boolean(username));
+  const [profile, setProfile] = useState<UserPublicProfile>();
+
+  const load = useCallback(async () => {
+    if (!username) {
+      setError(i18n.t("friends.errors.friendNotFound"));
+      setIsLoading(false);
+      return;
+    }
+
+    setError(undefined);
+    setIsLoading(true);
+    try {
+      setProfile(await getUserProfile(username));
+    } catch (requestError) {
+      logDevelopmentError("loading a user profile", requestError);
+      setError(messageFrom(requestError, i18n.t("friends.errors.friendProfile")));
+    } finally {
+      setIsLoading(false);
+    }
+  }, [username]);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
+
+  return { error, isLoading, profile, reload: load, setProfile };
 }

@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui";
@@ -12,6 +12,7 @@ type FriendRequestItemProps = {
   onAccept?: () => void;
   onCancel?: () => void;
   onDecline?: () => void;
+  onOpenProfile?: () => void;
   request: FriendRequest;
 };
 
@@ -21,6 +22,7 @@ export function FriendRequestItem({
   onAccept,
   onCancel,
   onDecline,
+  onOpenProfile,
   request,
 }: FriendRequestItemProps) {
   const styles = useThemedStyles(styleSheet);
@@ -30,7 +32,18 @@ export function FriendRequestItem({
 
   return (
     <View style={styles.item}>
-      <View style={styles.profileRow}>
+      <Pressable
+        accessibilityLabel={
+          onOpenProfile
+            ? t("friends.userProfile.open", { username: request.user.username ?? request.user.displayName })
+            : undefined
+        }
+        accessibilityRole={onOpenProfile ? "button" : undefined}
+        accessible={onOpenProfile ? undefined : false}
+        disabled={!onOpenProfile}
+        onPress={onOpenProfile}
+        style={styles.profileRow}
+      >
         <FriendAvatar
           accessibilityLabel={t("friends.avatarLabel", { name: request.user.displayName })}
           countryCode={request.user.countryCode}
@@ -42,7 +55,7 @@ export function FriendRequestItem({
           <Text style={styles.metadata}>{levelText}</Text>
           {!isIncoming ? <Text style={styles.status}>{t("friends.requestSent")}</Text> : null}
         </View>
-      </View>
+      </Pressable>
       {request.status === "pending" && isIncoming ? (
         <View style={styles.actions}>
           <Button
