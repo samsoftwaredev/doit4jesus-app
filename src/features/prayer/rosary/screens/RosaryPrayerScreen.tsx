@@ -15,12 +15,7 @@ import { recordRosaryActivity } from "@/features/prayer/rosary/api/activities.ap
 import { getMysteryOrdinalKey } from "@/features/prayer/rosary/components/RosaryBottomNavigation";
 import { RosaryCelebrationView } from "@/features/prayer/rosary/components/RosaryCelebration";
 import { useRosaryCelebrationStats } from "@/features/prayer/rosary/components/RosaryCelebration/useRosaryCelebrationStats";
-import {
-  RosaryArc,
-  RosaryBottomNavigation,
-  RosaryDetailCarousel,
-  RosaryPresence,
-} from "@/features/prayer/rosary/components";
+import { RosaryArc, RosaryBottomNavigation, RosaryDetails, RosaryPresence } from "@/features/prayer/rosary/components";
 import { getRosaryContent } from "@/features/prayer/rosary/data/localizedRosaryContent";
 import {
   formatRosaryAudioDuration,
@@ -68,12 +63,6 @@ function physicalBeadProgress(beads: RosaryBead[], currentBeadIndex: number) {
 }
 
 /** Returns whether the current narration step should reveal the mystery fruit card content. */
-function isMysteryFruitNarration(bead?: RosaryBead) {
-  return (
-    bead?.type === "narration" && (bead.mysteryNarrationKind === "reflection" || bead.mysteryNarrationKind === "fruit")
-  );
-}
-
 /**
  * Renders the guided Rosary with prayer-responsive artwork from the selected style and localized prayer sequence.
  * Prayer content scrolls as one surface while the mystery-aware navigation remains fixed and immediately available.
@@ -455,7 +444,10 @@ export function RosaryPrayerScreen({
           <ScrollView
             accessibilityLabel={t("rosary.controls.content")}
             contentContainerStyle={styles.prayerExperienceContent}
-            nestedScrollEnabled
+            alwaysBounceVertical
+            bounces
+            keyboardShouldPersistTaps="handled"
+            overScrollMode="always"
             showsVerticalScrollIndicator
             style={styles.prayerExperience}
           >
@@ -509,7 +501,7 @@ export function RosaryPrayerScreen({
             />
 
             <View accessibilityLabel={t("rosary.controls.details")} style={[styles.contentColumn, { gap: contentGap }]}>
-              <RosaryDetailCarousel
+              <RosaryDetails
                 artworkSource={backgroundImageFailed ? undefined : backgroundImageSource}
                 isNarrationOnly={session.currentBead?.type === "narration"}
                 mystery={session.currentMystery}
@@ -521,7 +513,6 @@ export function RosaryPrayerScreen({
                   session.currentBead?.scriptureReference ??
                   (isDecade ? session.currentMystery?.scriptureReference : undefined)
                 }
-                showFruitOfMystery={isMysteryFruitNarration(session.currentBead)}
               />
               {audioPlayback.playbackError ? (
                 <Text accessibilityRole="alert" style={styles.storageNote}>

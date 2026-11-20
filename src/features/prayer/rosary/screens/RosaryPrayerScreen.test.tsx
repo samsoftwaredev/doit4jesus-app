@@ -1,6 +1,5 @@
 import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react-native";
 import { StyleSheet } from "react-native";
-import { fireGestureHandler, getByGestureTestId } from "react-native-gesture-handler/jest-utils";
 
 import { rosaryMysteries } from "@/features/prayer/rosary/data/rosaryMysteries";
 import { prayerById } from "@/features/prayer/rosary/data/rosaryPrayers";
@@ -119,9 +118,8 @@ describe("RosaryPrayerScreen", () => {
 
     expect(screen.getByText("CURRENT MYSTERY")).toBeTruthy();
     expect(screen.getByText("The Annunciation")).toBeTruthy();
-    expect(screen.queryByText("Luke 1:26-38")).toBeNull();
     expect(screen.getByText("FRUIT OF THE MYSTERY")).toBeTruthy();
-    expect(screen.queryByText("HAIL MARY")).toBeNull();
+    expect(screen.getByText("HAIL MARY")).toBeTruthy();
     expect(screen.queryByText("SCRIPTURE")).toBeNull();
   });
 
@@ -199,7 +197,6 @@ describe("RosaryPrayerScreen", () => {
     const completedCrucifix = screen.getByRole("button", { name: "completed crucifix, Apostles' Creed" });
     expect(screen.getByLabelText(/upcoming bead 59, Hail Mary/i)).toBeTruthy();
     expect(screen.queryByTestId(`rosary-arc-physical-${nonPhysicalPrayer.id}`)).toBeNull();
-    await fireEvent.press(screen.getByRole("button", { name: "Show Fruit, Scripture and Prayer, page 2 of 2" }));
     expect(screen.getByTestId("rosary-scripture-inline")).toHaveTextContent(
       "Luke 1:28 And coming to her, he said, “Hail, favored one! The Lord is with you.”",
     );
@@ -219,7 +216,6 @@ describe("RosaryPrayerScreen", () => {
     });
     const rendered = await render(<RosaryPrayerScreen isDecade={false} />);
 
-    await fireEvent.press(screen.getByRole("button", { name: "Show Fruit, Scripture and Prayer, page 2 of 2" }));
     expect(screen.getByText("SIGN OF THE CROSS")).toBeTruthy();
     expect(screen.getAllByText("0 of 59").length).toBeGreaterThan(0);
     expect(screen.getByRole("button", { name: "current crucifix, Apostles' Creed" })).toBeTruthy();
@@ -247,7 +243,6 @@ describe("RosaryPrayerScreen", () => {
 
     await render(<RosaryPrayerScreen isDecade={false} />);
 
-    await fireEvent.press(screen.getByRole("button", { name: "Show Fruit, Scripture and Prayer, page 2 of 2" }));
     expect(screen.getByText("FATIMA PRAYER")).toBeTruthy();
     expect(screen.getAllByText("15 of 59").length).toBeGreaterThan(0);
     expect(screen.getByLabelText(/current bead 15, Hail Mary/i)).toBeTruthy();
@@ -264,7 +259,6 @@ describe("RosaryPrayerScreen", () => {
     });
 
     await render(<RosaryPrayerScreen isDecade={false} />);
-    await fireEvent.press(screen.getByRole("button", { name: "Show Fruit, Scripture and Prayer, page 2 of 2" }));
 
     expect(
       within(screen.getByTestId("rosary-progress-button")).getByText("Fruits of the Three Hail Marys"),
@@ -298,7 +292,6 @@ describe("RosaryPrayerScreen", () => {
     };
     mockSession({ currentBead: reflectionNarration, currentPrayer: reflectionNarration.prayer });
     const rendered = await render(<RosaryPrayerScreen isDecade={false} />);
-    await fireEvent.press(screen.getByRole("button", { name: "Show Fruit, Scripture and Prayer, page 2 of 2" }));
 
     expect(mockUseRosaryAudioPlayback.mock.results.at(-1)?.value.isPlaying).toBe(false);
     expect(screen.getByText("FRUIT OF THE MYSTERY")).toBeTruthy();
@@ -314,7 +307,7 @@ describe("RosaryPrayerScreen", () => {
     mockSession({ currentBead: titleNarration, currentPrayer: titleNarration.prayer });
     await rendered.rerender(<RosaryPrayerScreen isDecade={false} />);
 
-    expect(screen.queryByText("FRUIT OF THE MYSTERY")).toBeNull();
+    expect(screen.getAllByText("FRUIT OF THE MYSTERY")).toHaveLength(1);
     expect(screen.queryByTestId("fruit-prayer-card")).toBeNull();
   });
 
@@ -511,17 +504,11 @@ describe("RosaryPrayerScreen", () => {
     expect(within(prayerDetails).getByText("CURRENT MYSTERY")).toBeTruthy();
     expect(within(prayerDetails).getByTestId("rosary-artwork-image")).toBeTruthy();
     expect(within(prayerDetails).getByText("FRUIT OF THE MYSTERY")).toBeTruthy();
-    expect(within(prayerDetails).queryByText("HAIL MARY")).toBeNull();
     expect(within(prayerDetails).queryByText("SCRIPTURE")).toBeNull();
     expect(within(scrollingContent).queryByTestId("rosary-progress-button")).toBeNull();
     expect(screen.getByTestId("rosary-progress-button")).toBeTruthy();
 
-    await act(async () => {
-      fireGestureHandler(getByGestureTestId("rosary-detail-carousel-swipe"), [{ translationX: -60, translationY: 2 }]);
-    });
-
     expect(within(prayerDetails).getByText("HAIL MARY")).toBeTruthy();
-    expect(within(prayerDetails).queryByTestId("rosary-artwork-image")).toBeNull();
     expect(goToNextBead).not.toHaveBeenCalled();
     expect(goToPreviousBead).not.toHaveBeenCalled();
   });
