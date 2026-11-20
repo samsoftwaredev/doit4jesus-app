@@ -1,3 +1,4 @@
+import { boxShadow } from "@/theme/boxShadow";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -163,9 +164,7 @@ const styleSheet = createThemedStyles((theme) => ({
     minWidth: theme.spacing[0],
     overflow: "hidden",
     padding: theme.spacing[5],
-    shadowColor: theme.colors.brand.primary,
-    shadowOpacity: 0.26,
-    shadowRadius: theme.spacing[4],
+    ...boxShadow(theme.colors.brand.primary, 0.26, 0, theme.spacing[4]),
   },
   cardWide: { minHeight: theme.spacing[24] * 4, paddingRight: "43%" },
   copy: { zIndex: 2 },

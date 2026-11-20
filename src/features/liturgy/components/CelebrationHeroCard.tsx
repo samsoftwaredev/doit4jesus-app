@@ -1,3 +1,4 @@
+import { boxShadow } from "@/theme/boxShadow";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -40,7 +41,7 @@ export function CelebrationHeroCard({ celebration, date, onCalendarPress }: Cele
         color: celebration.liturgicalColor.toLowerCase(),
         name: celebration.name,
       })}
-      style={[styles.card, { borderColor: colors.border, shadowColor: colors.accent }]}
+      style={[styles.card, { borderColor: colors.border, ...boxShadow(colors.accent, 0.28, 2, 14) }]}
     >
       <LinearGradient
         colors={theme.colors.gradients.celebrationHero}
@@ -86,9 +87,6 @@ const styleSheet = createThemedStyles((theme) => ({
     minHeight: 220,
     overflow: "hidden",
     padding: theme.spacing[5],
-    shadowOffset: { height: 2, width: 0 },
-    shadowOpacity: 0.28,
-    shadowRadius: 14,
   },
   copy: { flex: 1, paddingRight: theme.spacing[16], zIndex: 1 },
   copyWithReducedArtwork: { paddingRight: theme.spacing[0] },

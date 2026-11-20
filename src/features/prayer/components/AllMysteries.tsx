@@ -1,5 +1,6 @@
-import { useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Text, View } from "react-native";
+import type { LayoutChangeEvent } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { RosaryMysteryCard } from "@/features/prayer/rosary/components/RosaryMysteryCard";
@@ -7,23 +8,25 @@ import { getRosaryContent } from "@/features/prayer/rosary/data/localizedRosaryC
 import { getRosaryMysterySetsFromContent } from "@/features/prayer/rosary/data/rosaryMysteries";
 import { useRosaryArtStylePreference } from "@/features/prayer/rosary/hooks/useRosaryArtStylePreference";
 import type { RosaryMysteryType } from "@/features/prayer/rosary/types/rosary";
-import { useResponsiveLayout } from "@/hooks";
 import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 
 type AllMysteriesProps = {
-  cardWidth: number;
   gap: number;
   onOpenMystery: (mysteryType: RosaryMysteryType) => void;
 };
 
-/** Renders the complete grid of Rosary mystery sets. */
-export function AllMysteries({ cardWidth, gap, onOpenMystery }: AllMysteriesProps) {
+/** Renders the complete grid of Rosary mystery sets, always as two columns (2x2). */
+export function AllMysteries({ gap, onOpenMystery }: AllMysteriesProps) {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
   const { language } = useAppLanguage();
   const { rosaryArtStyle } = useRosaryArtStylePreference();
-  const { isDesktop } = useResponsiveLayout();
+  const [gridWidth, setGridWidth] = useState(0);
+  const onGridLayout = useCallback((event: LayoutChangeEvent) => {
+    setGridWidth(Math.floor(event.nativeEvent.layout.width));
+  }, []);
+  const cardWidth = gridWidth > 0 ? Math.floor((gridWidth - gap) / 2) : 0;
   const rosaryMysterySets = useMemo(
     () => getRosaryMysterySetsFromContent(getRosaryContent(language), rosaryArtStyle),
     [language, rosaryArtStyle],
@@ -35,17 +38,20 @@ export function AllMysteries({ cardWidth, gap, onOpenMystery }: AllMysteriesProp
         {t("prayer.allMysteriesUpper")}
       </Text>
       <View
-        style={[styles.mysteryGrid, isDesktop && styles.mysteryGridDesktop, { columnGap: gap, rowGap: gap }]}
+        onLayout={onGridLayout}
+        style={[styles.mysteryGrid, { columnGap: gap, rowGap: gap }]}
         testID="all-mysteries-grid"
       >
-        {rosaryMysterySets.map((set) => (
-          <RosaryMysteryCard
-            key={set.type}
-            mysterySet={set}
-            onPress={() => onOpenMystery(set.type)}
-            width={cardWidth}
-          />
-        ))}
+        {cardWidth > 0
+          ? rosaryMysterySets.map((set) => (
+              <RosaryMysteryCard
+                key={set.type}
+                mysterySet={set}
+                onPress={() => onOpenMystery(set.type)}
+                width={cardWidth}
+              />
+            ))
+          : null}
       </View>
     </View>
   );
@@ -53,7 +59,6 @@ export function AllMysteries({ cardWidth, gap, onOpenMystery }: AllMysteriesProp
 
 const styleSheet = createThemedStyles((theme) => ({
   mysteryGrid: { flexDirection: "row", flexWrap: "wrap" },
-  mysteryGridDesktop: { flexWrap: "nowrap" },
   section: { gap: theme.spacing[4] },
   sectionLabel: {
     ...theme.typography.labelSmall,

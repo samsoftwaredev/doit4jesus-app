@@ -1,3 +1,4 @@
+import { boxShadow } from "@/theme/boxShadow";
 import Feather from "@expo/vector-icons/Feather";
 import { Image, type ImageSource } from "expo-image";
 import { useCallback, useEffect, useState } from "react";
@@ -86,10 +87,7 @@ const styleSheet = createThemedStyles((theme) => ({
   container: {
     elevation: 4,
     position: "relative",
-    shadowColor: theme.colors.text.primary,
-    shadowOffset: { height: theme.spacing[1], width: 0 },
-    shadowOpacity: 0.2,
-    shadowRadius: theme.spacing[3],
+    ...boxShadow(theme.colors.text.primary, 0.2, theme.spacing[1], theme.spacing[3]),
   },
   dismiss: {
     alignItems: "center",

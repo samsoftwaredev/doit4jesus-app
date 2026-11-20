@@ -1,5 +1,6 @@
 // src/theme/tokens.ts
 
+import { boxShadow } from "./boxShadow";
 import { Platform, TextStyle, ViewStyle } from "react-native";
 
 /**
@@ -820,125 +821,75 @@ export const shadows = {
   none: {} satisfies ViewStyle,
 
   small: Platform.select<ViewStyle>({
-    ios: {
-      shadowColor: colors.black,
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.16,
-      shadowRadius: 4,
-    },
+    ios: boxShadow(colors.black, 0.16, 2, 4),
     android: {
       elevation: 2,
     },
-    default: {},
+    default: boxShadow(colors.black, 0.16, 2, 4),
   }),
 
   medium: Platform.select<ViewStyle>({
-    ios: {
-      shadowColor: colors.black,
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.22,
-      shadowRadius: 8,
-    },
+    ios: boxShadow(colors.black, 0.22, 4, 8),
     android: {
       elevation: 5,
     },
-    default: {},
+    default: boxShadow(colors.black, 0.22, 4, 8),
   }),
 
   large: Platform.select<ViewStyle>({
-    ios: {
-      shadowColor: colors.black,
-      shadowOffset: { width: 0, height: 8 },
-      shadowOpacity: 0.28,
-      shadowRadius: 16,
-    },
+    ios: boxShadow(colors.black, 0.28, 8, 16),
     android: {
       elevation: 10,
     },
-    default: {},
+    default: boxShadow(colors.black, 0.28, 8, 16),
   }),
 
   focus: Platform.select<ViewStyle>({
-    ios: {
-      shadowColor: colors.brand.primaryLight,
-      shadowOffset: { width: 0, height: 0 },
-      shadowOpacity: 0.28,
-      shadowRadius: 6,
-    },
+    ios: boxShadow(colors.brand.primaryLight, 0.28, 0, 6),
     android: {
       elevation: 4,
     },
-    default: {},
+    default: boxShadow(colors.brand.primaryLight, 0.28, 0, 6),
   }),
 
   /**
    * Backward-compatible name for components created with the previous tokens.
    */
   goldGlow: Platform.select<ViewStyle>({
-    ios: {
-      shadowColor: colors.accent.amber,
-      shadowOffset: { width: 0, height: 0 },
-      shadowOpacity: 0.22,
-      shadowRadius: 6,
-    },
+    ios: boxShadow(colors.accent.amber, 0.22, 0, 6),
     android: {
       elevation: 4,
     },
-    default: {},
+    default: boxShadow(colors.accent.amber, 0.22, 0, 6),
   }),
 } as const;
 
 const lightShadows = {
   none: {} satisfies ViewStyle,
   small: Platform.select<ViewStyle>({
-    ios: {
-      shadowColor: "#594220",
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-    },
+    ios: boxShadow("#594220", 0.1, 2, 4),
     android: { elevation: 2 },
-    default: {},
+    default: boxShadow("#594220", 0.1, 2, 4),
   }),
   medium: Platform.select<ViewStyle>({
-    ios: {
-      shadowColor: "#594220",
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.14,
-      shadowRadius: 8,
-    },
+    ios: boxShadow("#594220", 0.14, 4, 8),
     android: { elevation: 5 },
-    default: {},
+    default: boxShadow("#594220", 0.14, 4, 8),
   }),
   large: Platform.select<ViewStyle>({
-    ios: {
-      shadowColor: "#594220",
-      shadowOffset: { width: 0, height: 8 },
-      shadowOpacity: 0.18,
-      shadowRadius: 16,
-    },
+    ios: boxShadow("#594220", 0.18, 8, 16),
     android: { elevation: 10 },
-    default: {},
+    default: boxShadow("#594220", 0.18, 8, 16),
   }),
   focus: Platform.select<ViewStyle>({
-    ios: {
-      shadowColor: lightColors.brand.primary,
-      shadowOffset: { width: 0, height: 0 },
-      shadowOpacity: 0.2,
-      shadowRadius: 6,
-    },
+    ios: boxShadow(lightColors.brand.primary, 0.2, 0, 6),
     android: { elevation: 4 },
-    default: {},
+    default: boxShadow(lightColors.brand.primary, 0.2, 0, 6),
   }),
   goldGlow: Platform.select<ViewStyle>({
-    ios: {
-      shadowColor: lightColors.gold.primary,
-      shadowOffset: { width: 0, height: 0 },
-      shadowOpacity: 0.14,
-      shadowRadius: 6,
-    },
+    ios: boxShadow(lightColors.gold.primary, 0.14, 0, 6),
     android: { elevation: 4 },
-    default: {},
+    default: boxShadow(lightColors.gold.primary, 0.14, 0, 6),
   }),
 } as const;
 
@@ -1027,14 +978,9 @@ export const rosaryTokens = {
   },
   shadows: {
     activeBead: Platform.select<ViewStyle>({
-      ios: {
-        shadowColor: "#FFE09A",
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.68,
-        shadowRadius: 12,
-      },
+      ios: boxShadow("#FFE09A", 0.68, 0, 12),
       android: { elevation: 9 },
-      default: {},
+      default: boxShadow("#FFE09A", 0.68, 0, 12),
     }),
   },
 } as const;
@@ -1072,14 +1018,9 @@ const lightRosaryTokens = {
   },
   shadows: {
     activeBead: Platform.select<ViewStyle>({
-      ios: {
-        shadowColor: "#8A6425",
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.3,
-        shadowRadius: 10,
-      },
+      ios: boxShadow("#8A6425", 0.3, 0, 10),
       android: { elevation: 7 },
-      default: {},
+      default: boxShadow("#8A6425", 0.3, 0, 10),
     }),
   },
 } as const;

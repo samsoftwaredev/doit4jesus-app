@@ -1,23 +1,17 @@
 import type { ReactNode } from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
-import type { LayoutChangeEvent, NativeScrollEvent, NativeSyntheticEvent } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 
+import { usePagedCarousel } from "../usePagedCarousel";
+
 const LEVEL_PROGRESS_PAGE = 0;
 const HOLY_PROGRESS_PAGE = 1;
-const LAST_PAGE_INDEX = HOLY_PROGRESS_PAGE;
 
 export interface ProgressCardsCarouselProps {
   holyProgressCard: ReactNode;
   levelProgressCard: ReactNode;
-}
-
-/** Keeps a calculated carousel page within the available two-card range. */
-function clampPageIndex(index: number): number {
-  return Math.min(Math.max(index, LEVEL_PROGRESS_PAGE), LAST_PAGE_INDEX);
 }
 
 /**
@@ -27,61 +21,16 @@ function clampPageIndex(index: number): number {
 export function ProgressCardsCarousel({ holyProgressCard, levelProgressCard }: ProgressCardsCarouselProps) {
   const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
-  const scrollViewRef = useRef<ScrollView>(null);
-  const selectedPageRef = useRef(LEVEL_PROGRESS_PAGE);
-  const [pageWidth, setPageWidth] = useState(0);
-  const [selectedPage, setSelectedPage] = useState(LEVEL_PROGRESS_PAGE);
-
-  /** Stores the actual card viewport width so each page occupies the complete carousel. */
-  const handleLayout = useCallback((event: LayoutChangeEvent) => {
-    const nextWidth = Math.round(event.nativeEvent.layout.width);
-    if (nextWidth > 0) setPageWidth(nextWidth);
-  }, []);
-
-  /** Updates the selected indicator after a swipe settles on a card. */
-  const handleScrollEnd = useCallback(
-    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      if (pageWidth <= 0) return;
-      const nextPage = clampPageIndex(Math.round(event.nativeEvent.contentOffset.x / pageWidth));
-      selectedPageRef.current = nextPage;
-      setSelectedPage(nextPage);
-    },
-    [pageWidth],
-  );
-
-  /** Moves the carousel to a requested page and immediately updates its selected indicator. */
-  const showPage = useCallback(
-    (index: number) => {
-      const nextPage = clampPageIndex(index);
-      selectedPageRef.current = nextPage;
-      setSelectedPage(nextPage);
-      if (pageWidth > 0) scrollViewRef.current?.scrollTo?.({ animated: true, x: nextPage * pageWidth, y: 0 });
-    },
-    [pageWidth],
-  );
-
-  /** Returns directly to the first Level Progress card. */
-  const showLevelProgress = useCallback(() => showPage(LEVEL_PROGRESS_PAGE), [showPage]);
-
-  /** Advances directly to the second Holy Progress card. */
-  const showHolyProgress = useCallback(() => showPage(HOLY_PROGRESS_PAGE), [showPage]);
-
-  useEffect(
-    /** Keeps the selected card aligned when rotation, resizing, or responsive layout changes its width. */
-    function realignSelectedPage() {
-      if (pageWidth > 0) {
-        scrollViewRef.current?.scrollTo?.({ animated: false, x: selectedPageRef.current * pageWidth, y: 0 });
-      }
-    },
-    [pageWidth],
-  );
+  const { onLayout, onScroll, onScrollEnd, pageWidth, scrollViewRef, selectedPage, showPage } = usePagedCarousel(2);
+  const showLevelProgress = () => showPage(LEVEL_PROGRESS_PAGE);
+  const showHolyProgress = () => showPage(HOLY_PROGRESS_PAGE);
 
   const levelSelected = selectedPage === LEVEL_PROGRESS_PAGE;
   const holySelected = selectedPage === HOLY_PROGRESS_PAGE;
   const pageStyle = [styles.page, pageWidth > 0 ? { width: pageWidth } : styles.unmeasuredPage];
 
   return (
-    <View onLayout={handleLayout} style={styles.container} testID="progress-cards-carousel-container">
+    <View onLayout={onLayout} style={styles.container} testID="progress-cards-carousel-container">
       <ScrollView
         accessibilityHint={t("dashboard.progressCarousel.swipeHint")}
         accessibilityLabel={t("dashboard.progressCarousel.label")}
@@ -89,7 +38,9 @@ export function ProgressCardsCarousel({ holyProgressCard, levelProgressCard }: P
         disableIntervalMomentum
         horizontal
         nestedScrollEnabled
-        onMomentumScrollEnd={handleScrollEnd}
+        onMomentumScrollEnd={onScrollEnd}
+        onScroll={onScroll}
+        onScrollEndDrag={onScrollEnd}
         pagingEnabled
         ref={scrollViewRef}
         scrollEventThrottle={16}

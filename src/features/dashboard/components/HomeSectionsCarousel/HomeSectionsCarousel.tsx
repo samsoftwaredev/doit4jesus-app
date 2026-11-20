@@ -1,10 +1,10 @@
 import type { ReactNode } from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
-import type { LayoutChangeEvent, NativeScrollEvent, NativeSyntheticEvent } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
+
+import { usePagedCarousel } from "../usePagedCarousel";
 
 const TODAY_PAGE = 0;
 const MYSTERIES_PAGE = 1;
@@ -14,11 +14,6 @@ export interface HomeSectionsCarouselProps {
   todayPage: ReactNode;
 }
 
-/** Keeps a calculated carousel page within the two-page range. */
-function clampPageIndex(index: number): number {
-  return Math.min(Math.max(index, TODAY_PAGE), MYSTERIES_PAGE);
-}
-
 /**
  * Presents Today's Rosary with streak progress first and All Mysteries second in a horizontally paged carousel.
  * Swipe gestures and the two accessible indicators stay synchronized across layout changes.
@@ -26,55 +21,14 @@ function clampPageIndex(index: number): number {
 export function HomeSectionsCarousel({ mysteriesPage, todayPage }: HomeSectionsCarouselProps) {
   const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
-  const scrollViewRef = useRef<ScrollView>(null);
-  const selectedPageRef = useRef(TODAY_PAGE);
-  const [pageWidth, setPageWidth] = useState(0);
-  const [selectedPage, setSelectedPage] = useState(TODAY_PAGE);
-
-  /** Stores the actual viewport width so each page occupies the complete carousel. */
-  const handleLayout = useCallback((event: LayoutChangeEvent) => {
-    const nextWidth = Math.round(event.nativeEvent.layout.width);
-    if (nextWidth > 0) setPageWidth(nextWidth);
-  }, []);
-
-  /** Updates the selected indicator after a swipe settles on a page. */
-  const handleScrollEnd = useCallback(
-    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      if (pageWidth <= 0) return;
-      const nextPage = clampPageIndex(Math.round(event.nativeEvent.contentOffset.x / pageWidth));
-      selectedPageRef.current = nextPage;
-      setSelectedPage(nextPage);
-    },
-    [pageWidth],
-  );
-
-  /** Moves the carousel to a requested page and immediately updates its selected indicator. */
-  const showPage = useCallback(
-    (index: number) => {
-      const nextPage = clampPageIndex(index);
-      selectedPageRef.current = nextPage;
-      setSelectedPage(nextPage);
-      if (pageWidth > 0) scrollViewRef.current?.scrollTo?.({ animated: true, x: nextPage * pageWidth, y: 0 });
-    },
-    [pageWidth],
-  );
-
-  useEffect(
-    /** Keeps the selected page aligned when rotation, resizing, or responsive layout changes its width. */
-    function realignSelectedPage() {
-      if (pageWidth > 0) {
-        scrollViewRef.current?.scrollTo?.({ animated: false, x: selectedPageRef.current * pageWidth, y: 0 });
-      }
-    },
-    [pageWidth],
-  );
+  const { onLayout, onScroll, onScrollEnd, pageWidth, scrollViewRef, selectedPage, showPage } = usePagedCarousel(2);
 
   const todaySelected = selectedPage === TODAY_PAGE;
   const mysteriesSelected = selectedPage === MYSTERIES_PAGE;
   const pageStyle = [styles.page, pageWidth > 0 ? { width: pageWidth } : styles.unmeasuredPage];
 
   return (
-    <View onLayout={handleLayout} style={styles.container} testID="home-sections-carousel-container">
+    <View onLayout={onLayout} style={styles.container} testID="home-sections-carousel-container">
       <ScrollView
         accessibilityHint={t("dashboard.homeCarousel.swipeHint")}
         accessibilityLabel={t("dashboard.homeCarousel.label")}
@@ -82,7 +36,9 @@ export function HomeSectionsCarousel({ mysteriesPage, todayPage }: HomeSectionsC
         disableIntervalMomentum
         horizontal
         nestedScrollEnabled
-        onMomentumScrollEnd={handleScrollEnd}
+        onMomentumScrollEnd={onScrollEnd}
+        onScroll={onScroll}
+        onScrollEndDrag={onScrollEnd}
         pagingEnabled
         ref={scrollViewRef}
         scrollEventThrottle={16}

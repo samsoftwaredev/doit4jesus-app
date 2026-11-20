@@ -107,7 +107,7 @@ export function HolyProgressDashboard({
   const styles = useThemedStyles(styleSheet);
   const router = useRouter();
   const { profile } = useCurrentProfile();
-  const { contentWidth, gutter, isDesktop, isLargeText, isNarrowPhone, isTablet, width } = useResponsiveLayout();
+  const { contentWidth, isLargeText, isTablet } = useResponsiveLayout();
   const [conscience, setConscience] = useState<ConscienceQuestionViewModel | null>(null);
   const [conscienceQuestions, setConscienceQuestions] = useState<ConscienceQuestionListItemViewModel[]>([]);
   const [conscienceError, setConscienceError] = useState(false);
@@ -158,13 +158,6 @@ export function HolyProgressDashboard({
     [rosaryArtStyle, rosaryContent, todayMysteryType],
   );
   const mysteryColumnGap = theme.spacing[2];
-  const mysteryContainerMaxWidth = isDesktop ? 960 : isTablet ? 760 : width;
-  const mysteryUsableWidth = Math.max(0, Math.min(contentWidth, mysteryContainerMaxWidth) - gutter * 2);
-  const mysteryColumns = isDesktop ? 4 : isLargeText || isNarrowPhone ? 1 : 2;
-  const mysteryCardWidth = Math.max(
-    theme.sizes.touchTarget * 3,
-    (mysteryUsableWidth - mysteryColumnGap * (mysteryColumns - 1)) / mysteryColumns,
-  );
 
   useEffect(
     /** Loads the former Prayer page's aggregate sections for the active local day. */
@@ -524,7 +517,7 @@ export function HolyProgressDashboard({
       <HomeSectionsCarousel
         mysteriesPage={
           <View testID="all-mysteries-section-container">
-            <AllMysteries cardWidth={mysteryCardWidth} gap={mysteryColumnGap} onOpenMystery={openMystery} />
+            <AllMysteries gap={mysteryColumnGap} onOpenMystery={openMystery} />
           </View>
         }
         todayPage={

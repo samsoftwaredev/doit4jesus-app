@@ -1,3 +1,4 @@
+import { textShadow } from "@/theme/boxShadow";
 import { Image } from "expo-image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -673,9 +674,7 @@ const styleSheet = createThemedStyles((theme) => ({
     ...theme.typography.heading2,
     color: theme.rosary.colors.immersivePrimary,
     textAlign: "center",
-    textShadowColor: theme.colors.background.overlay,
-    textShadowOffset: { height: 1, width: 0 },
-    textShadowRadius: 5,
+    ...textShadow(theme.colors.background.overlay, 1, 5),
   },
   progress: {
     ...theme.typography.label,
