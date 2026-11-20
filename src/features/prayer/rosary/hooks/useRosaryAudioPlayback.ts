@@ -18,6 +18,9 @@ function getErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : "audio-playback-failed";
 }
 
+/** Every prayer plays at full volume; background music is held at 15% by its own provider. */
+const PRAYER_AUDIO_VOLUME = 1;
+
 /**
  * Manages foreground-only Rosary playback for a localized sequence of bundled recordings.
  * Queue changes restart at the first track, completed tracks advance in order, and the final track reports completion.
@@ -49,7 +52,7 @@ export function useRosaryAudioPlayback({
 
   useEffect(() => {
     // Prayer audio plays at full volume; background music is kept quieter by its own provider.
-    player.volume = 1;
+    player.volume = PRAYER_AUDIO_VOLUME;
   }, [player]);
 
   useEffect(() => {
@@ -83,6 +86,7 @@ export function useRosaryAudioPlayback({
 
     try {
       player.replace(firstSource);
+      player.volume = PRAYER_AUDIO_VOLUME;
     } catch (error) {
       logDevelopmentError("preparing Rosary audio", error);
       setLocalError(getErrorMessage(error));
@@ -135,6 +139,7 @@ export function useRosaryAudioPlayback({
       currentTrackIndex.current = nextIndex;
       completionArmed.current = false;
       player.replace(nextSource);
+      player.volume = PRAYER_AUDIO_VOLUME;
       player.play();
     } catch (error) {
       logDevelopmentError("advancing Rosary audio", error);
@@ -164,6 +169,7 @@ export function useRosaryAudioPlayback({
         currentTrackIndex.current = 0;
         handledCompletion.current = false;
         player.replace(firstSource);
+        player.volume = PRAYER_AUDIO_VOLUME;
       }
       player.play();
       setLocalError(null);

@@ -67,6 +67,7 @@ export function BackgroundMusicProvider({ children }: PropsWithChildren) {
     setCurrentTrackIndex(nextIndex);
     player.pause();
     player.replace(BACKGROUND_MUSIC_PLAYLIST[nextIndex].audioSource);
+    player.volume = BACKGROUND_MUSIC_VOLUME;
     player.play();
   }, [player]);
 

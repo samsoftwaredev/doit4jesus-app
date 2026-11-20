@@ -12,6 +12,22 @@ const prayer: RosaryPrayer = {
 };
 
 describe("FruitPrayerCard", () => {
+  it("shows Scripture inline as reference plus verse with no Scripture title", async () => {
+    await render(
+      <FruitPrayerCard
+        prayer={prayer}
+        scriptureQuotation="Hail, favored one!"
+        scriptureReference="Luke 1:28"
+        showFruit={false}
+      />,
+    );
+
+    const scripture = screen.getByTestId("rosary-scripture-inline");
+    expect(scripture).toHaveTextContent("Luke 1:28 Hail, favored one!");
+    expect(screen.queryByText("SCRIPTURE")).toBeNull();
+    expect(screen.getByText("Hail Mary, full of grace.")).toBeTruthy();
+  });
+
   it("shows only the active prayer outside a mystery fruit narration step", async () => {
     await render(
       <FruitPrayerCard

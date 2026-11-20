@@ -96,17 +96,13 @@ export function RosaryDetailCarousel({
             fruitDescription={mystery?.fruitDescription}
             hidePrayerWhenEmpty={isNarrationOnly}
             prayer={prayer}
+            scriptureQuotation={scriptureQuotation}
+            scriptureReference={scriptureReference}
             showFruit={showFruitOfMystery}
           />
         );
       default:
-        return (
-          <MysteryScriptureCard
-            mystery={mystery}
-            scriptureQuotation={scriptureQuotation}
-            scriptureReference={scriptureReference}
-          />
-        );
+        return <MysteryScriptureCard mystery={mystery} />;
     }
   }
 

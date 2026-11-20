@@ -11,6 +11,8 @@ export interface FruitPrayerCardProps {
   fruitDescription?: string;
   hidePrayerWhenEmpty?: boolean;
   prayer?: RosaryPrayer;
+  scriptureQuotation?: string;
+  scriptureReference?: string;
   showFruit?: boolean;
 }
 
@@ -20,6 +22,8 @@ export function FruitPrayerCard({
   fruitDescription,
   hidePrayerWhenEmpty = false,
   prayer,
+  scriptureQuotation,
+  scriptureReference,
   showFruit = false,
 }: FruitPrayerCardProps) {
   const styles = useThemedStyles(styleSheet);
@@ -29,7 +33,11 @@ export function FruitPrayerCard({
   const visibleFruit = fruit?.trim() || t("rosary.cards.fruitUnavailable");
   const visibleDescription = fruitDescription?.trim() || t("rosary.cards.reflectionUnavailable");
 
-  if (!showFruit && !showPrayer) return null;
+  const reference = scriptureReference?.trim();
+  const quotation = scriptureQuotation?.trim();
+  const hasScripture = Boolean(reference || quotation);
+
+  if (!showFruit && !showPrayer && !hasScripture) return null;
 
   return (
     <View style={styles.card} testID="fruit-prayer-card">
@@ -56,7 +64,20 @@ export function FruitPrayerCard({
         </View>
       ) : null}
 
-      {showFruit && showPrayer ? <View style={styles.sectionDivider} /> : null}
+      {showFruit && hasScripture ? <View style={styles.sectionDivider} /> : null}
+
+      {hasScripture ? (
+        <Text
+          accessibilityLabel={t("rosary.cards.scriptureLabel", { reference: reference ?? "" })}
+          style={styles.scripture}
+          testID="rosary-scripture-inline"
+        >
+          {reference ? <Text style={styles.scriptureReference}>{reference} </Text> : null}
+          {quotation}
+        </Text>
+      ) : null}
+
+      {(showFruit || hasScripture) && showPrayer ? <View style={styles.sectionDivider} /> : null}
 
       {showPrayer ? (
         <View key={prayer?.id}>
@@ -116,6 +137,17 @@ const styleSheet = createThemedStyles((theme) => ({
     marginVertical: theme.spacing[4],
     opacity: theme.opacity.secondary,
     width: "100%",
+  },
+  scripture: {
+    ...theme.typography.body,
+    color: theme.rosary.colors.immersiveSecondary,
+    fontStyle: "italic",
+    lineHeight: theme.lineHeights.lg + theme.spacing[1],
+  },
+  scriptureReference: {
+    ...theme.typography.bodyMedium,
+    color: theme.rosary.colors.immersiveGold,
+    fontStyle: "normal",
   },
   prayerBody: {
     marginTop: theme.spacing[2],

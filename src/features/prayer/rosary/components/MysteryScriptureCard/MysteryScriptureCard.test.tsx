@@ -19,31 +19,20 @@ const mystery: RosaryMystery = {
 };
 
 describe("MysteryScriptureCard", () => {
-  it("combines the current mystery and Scripture in one accessible card", async () => {
-    await render(
-      <MysteryScriptureCard
-        mystery={mystery}
-        scriptureQuotation="Hail, favored one! The Lord is with you."
-        scriptureReference="Luke 1:28"
-      />,
-    );
+  it("shows the current mystery without any Scripture section", async () => {
+    await render(<MysteryScriptureCard mystery={mystery} />);
 
     expect(screen.getByTestId("mystery-scripture-card")).toBeTruthy();
     expect(screen.getByText("CURRENT MYSTERY")).toBeTruthy();
     expect(screen.getByRole("header", { name: "The Annunciation" })).toBeTruthy();
     expect(screen.getByText("Joyful Mysteries")).toBeTruthy();
-    expect(screen.getByText("SCRIPTURE")).toBeTruthy();
-    expect(screen.getByText("Luke 1:28")).toBeTruthy();
-    expect(screen.getByText("Hail, favored one! The Lord is with you.")).toBeTruthy();
-    expect(screen.getByLabelText("Scripture. Luke 1:28")).toBeTruthy();
+    expect(screen.queryByText("SCRIPTURE")).toBeNull();
   });
 
-  it("keeps both sections useful when mystery and Scripture data are unavailable", async () => {
+  it("keeps a useful empty state when mystery data is unavailable", async () => {
     await render(<MysteryScriptureCard />);
 
     expect(screen.getByLabelText("No Rosary mystery available")).toBeTruthy();
     expect(screen.getByText("No mystery available")).toBeTruthy();
-    expect(screen.getByText("Scripture reference unavailable")).toBeTruthy();
-    expect(screen.getByText("Scripture quotation unavailable.")).toBeTruthy();
   });
 });

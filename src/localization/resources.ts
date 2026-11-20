@@ -1078,8 +1078,8 @@ export const resources = {
           pageAnnouncement: "{{title}}, page {{current}} of {{total}}",
           pages: {
             artwork: "Artwork",
-            fruitPrayer: "Fruit and Prayer",
-            mysteryScripture: "Mystery and Scripture",
+            fruitPrayer: "Fruit, Scripture and Prayer",
+            mysteryScripture: "Mystery",
           },
           showPage: "Show {{title}}, page {{current}} of {{total}}",
           swipeHint: "Swipe left or right to move between Mystery and Scripture, Artwork, and Fruit and Prayer.",
@@ -2584,8 +2584,8 @@ export const resources = {
           pageAnnouncement: "{{title}}, página {{current}} de {{total}}",
           pages: {
             artwork: "Arte sacro",
-            fruitPrayer: "Fruto del Misterio y Oración",
-            mysteryScripture: "Misterio y Sagrada Escritura",
+            fruitPrayer: "Fruto, Sagrada Escritura y Oración",
+            mysteryScripture: "Misterio",
           },
           showPage: "Mostrar {{title}}, página {{current}} de {{total}}",
           swipeHint:

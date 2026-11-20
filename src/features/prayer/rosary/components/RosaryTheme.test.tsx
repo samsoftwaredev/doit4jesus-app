@@ -28,7 +28,7 @@ describe("Rosary prayer appearance", () => {
     setActiveAppTheme(selectedTheme);
     await render(
       <>
-        <MysteryScriptureCard scriptureQuotation="The Word became flesh." scriptureReference="John 1:14" />
+        <MysteryScriptureCard />
         <RosaryArc
           beads={rosarySequence.slice(0, 2)}
           completedBeadIds={["hail-mary-1"]}
@@ -54,9 +54,6 @@ describe("Rosary prayer appearance", () => {
     const scriptureCardStyle = StyleSheet.flatten(screen.getByTestId("mystery-scripture-card").props.style);
     expect(scriptureCardStyle).toMatchObject({
       backgroundColor: selectedTheme.rosary.colors.immersiveCard,
-    });
-    expect(StyleSheet.flatten(screen.getByText("John 1:14").props.style)).toMatchObject({
-      color: selectedTheme.rosary.colors.immersivePrimary,
     });
     const arcStyle = StyleSheet.flatten(screen.getByLabelText("Interactive Rosary arc").props.style);
     expect(arcStyle.backgroundColor).toBeUndefined();
