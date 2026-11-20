@@ -12,6 +12,8 @@ export interface MysteryScriptureCardProps {
 export function MysteryScriptureCard({ mystery }: MysteryScriptureCardProps) {
   const styles = useThemedStyles(styleSheet);
   const { t } = useTranslation();
+  const visibleFruit = mystery?.fruit?.trim() || t("rosary.cards.fruitUnavailable");
+  const visibleDescription = mystery?.fruitDescription?.trim() || t("rosary.cards.reflectionUnavailable");
 
   return (
     <View style={styles.card} testID="mystery-scripture-card">
@@ -22,6 +24,19 @@ export function MysteryScriptureCard({ mystery }: MysteryScriptureCardProps) {
             {mystery.title}
           </Text>
           <Text style={styles.category}>{mystery.category}</Text>
+          <View style={styles.fruitDivider} />
+          <View
+            accessibilityLabel={t("rosary.cards.fruitAccessibilityLabel", {
+              description: visibleDescription,
+              fruit: visibleFruit,
+            })}
+            accessible
+            testID="mystery-fruit"
+          >
+            <Text style={styles.label}>{t("rosary.cards.fruitLabel")}</Text>
+            <Text style={styles.fruit}>{visibleFruit}</Text>
+            <Text style={styles.fruitDescription}>{visibleDescription}</Text>
+          </View>
         </View>
       ) : (
         <View accessibilityLabel={t("rosary.cards.noMysteryLabel")}>
@@ -57,6 +72,23 @@ const styleSheet = createThemedStyles((theme) => ({
     ...theme.typography.bodySmall,
     color: theme.rosary.colors.immersiveSecondary,
     marginTop: theme.spacing[0.5],
+  },
+  fruit: {
+    ...theme.typography.heading3,
+    color: theme.rosary.colors.immersivePrimary,
+    marginTop: theme.spacing[1],
+  },
+  fruitDescription: {
+    ...theme.typography.bodySmall,
+    color: theme.rosary.colors.immersiveSecondary,
+    marginTop: theme.spacing[1],
+  },
+  fruitDivider: {
+    backgroundColor: theme.rosary.colors.goldMuted,
+    height: theme.rosary.borderWidths.goldHairline,
+    marginVertical: theme.spacing[3],
+    opacity: theme.opacity.secondary,
+    width: "100%",
   },
   emptyTitle: {
     ...theme.typography.heading3,

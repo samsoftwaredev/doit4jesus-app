@@ -59,10 +59,10 @@ describe("AllMysteries", () => {
   });
 
   it.each([
-    ["mobile", 390],
-    ["tablet", 768],
-    ["desktop", 1024],
-  ] as const)("always lays mysteries out as a wrapping 2x2 grid on %s", async (_name, width) => {
+    ["mobile", 390, 160],
+    ["tablet", 768, 160],
+    ["desktop", 1024, 160],
+  ] as const)("always lays mysteries out as a 2x2 grid (%s)", async (_name, width, cardWidth) => {
     setViewport(width);
 
     await renderMeasured();
@@ -71,6 +71,6 @@ describe("AllMysteries", () => {
       expect.objectContaining({ flexWrap: "wrap" }),
     );
     const card = screen.getByLabelText(`Open ${rosaryMysterySets[0].title}`);
-    expect(StyleSheet.flatten(card.props.style).width).toBe(160);
+    expect(StyleSheet.flatten(card.props.style).width).toBe(cardWidth);
   });
 });

@@ -41,7 +41,7 @@ describe("useResponsiveLayout", () => {
 
     const { result } = await renderHook(() => useResponsiveLayout());
 
-    expect(result.current.contentWidth).toBe(1200);
+    expect(result.current.contentWidth).toBe(500);
     expect(result.current.isLargeText).toBe(true);
     expect(result.current.gutter).toBeGreaterThan(16);
   });

@@ -42,10 +42,10 @@ describe("RosaryBottomNavigation", () => {
     );
 
     await fireEvent.press(screen.getByRole("button", { name: "Previous bead" }));
-    expect(screen.getByText("4th Glorious Mystery").props.numberOfLines).toBe(2);
-    expect(screen.queryByText("Hail Mary")).toBeNull();
+    expect(screen.getByText("Hail Mary").props.numberOfLines).toBe(2);
+    expect(screen.queryByText("4th Glorious Mystery")).toBeNull();
     const progressButton = screen.getByTestId("rosary-progress-button");
-    expect(within(progressButton).queryByText("2 of 10")).toBeNull();
+    expect(within(progressButton).getByText("2 of 10")).toBeTruthy();
     expect(JSON.stringify(rendered.toJSON())).not.toContain(theme.rosary.colors.pearl);
     await fireEvent.press(screen.getByLabelText("4th Glorious Mystery. Next bead."));
     await fireEvent.press(screen.getByLabelText("Open Rosary settings"));
@@ -72,9 +72,9 @@ describe("RosaryBottomNavigation", () => {
       />,
     );
 
-    expect(screen.getByText("4.º Misterio Glorioso")).toBeTruthy();
+    expect(screen.getByText("Ave María")).toBeTruthy();
     expect(screen.getByLabelText("4.º Misterio Glorioso. Siguiente cuenta.")).toBeTruthy();
-    expect(screen.queryByText("38 de 59")).toBeNull();
+    expect(screen.getByText("38 de 59")).toBeTruthy();
   });
 
   it("disables the previous-bead button on the first step and localizes it in Spanish", async () => {

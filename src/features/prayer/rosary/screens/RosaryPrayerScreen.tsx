@@ -12,6 +12,7 @@ import { Confetti, SacredAtmosphere } from "@/components/ui";
 import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
 import { recordPrayerForIntention } from "@/features/prayer/intentions";
 import { recordRosaryActivity } from "@/features/prayer/rosary/api/activities.api";
+import { getMysteryOrdinalKey } from "@/features/prayer/rosary/components/RosaryBottomNavigation";
 import { RosaryCelebrationView } from "@/features/prayer/rosary/components/RosaryCelebration";
 import { useRosaryCelebrationStats } from "@/features/prayer/rosary/components/RosaryCelebration/useRosaryCelebrationStats";
 import {
@@ -203,6 +204,14 @@ export function RosaryPrayerScreen({
   const progress = {
     ...beadProgress,
     prayerName: session.currentPrayer?.name ?? t("rosary.cards.prayer"),
+  };
+  // The arc's centre names the current mystery; the bottom button names the current prayer.
+  const arcProgress = {
+    ...progress,
+    prayerName: t("rosary.settings.mysteryPosition", {
+      ordinal: t(`rosary.settings.mysteryOrdinals.${getMysteryOrdinalKey(session.currentMysteryIndex + 1)}`),
+      type: t(`rosary.settings.mysteryTypes.${mysteryType}`),
+    }),
   };
 
   /** Formats an exact localized audio duration for a selectable Rosary length. */
@@ -496,7 +505,7 @@ export function RosaryPrayerScreen({
               onNext={session.goToNextBead}
               onPrevious={session.goToPreviousBead}
               onSelectBead={session.selectBead}
-              progress={progress}
+              progress={arcProgress}
             />
 
             <View accessibilityLabel={t("rosary.controls.details")} style={[styles.contentColumn, { gap: contentGap }]}>

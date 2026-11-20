@@ -13,7 +13,7 @@ import { RosaryArtworkCard } from "../RosaryArtworkCard";
 
 const SWIPE_THRESHOLD = 42;
 const VERTICAL_GESTURE_LIMIT = 24;
-const DETAIL_PAGES = ["mysteryScripture", "artwork", "fruitPrayer"] as const;
+const DETAIL_PAGES = ["mysteryScripture", "fruitPrayer"] as const;
 
 type RosaryDetailPage = (typeof DETAIL_PAGES)[number];
 
@@ -27,13 +27,13 @@ export interface RosaryDetailCarouselProps {
   showFruitOfMystery?: boolean;
 }
 
-/** Wraps any page index into the available three-page carousel range. */
+/** Wraps any page index into the available two-page carousel range. */
 function wrapPageIndex(index: number) {
   return (index + DETAIL_PAGES.length) % DETAIL_PAGES.length;
 }
 
 /**
- * Shows one of three combined Rosary detail cards with wraparound swipes and selectable pagination dots.
+ * Shows one of two combined Rosary detail cards with wraparound swipes and selectable pagination dots.
  * The active detail remains stable while incoming mystery and prayer content updates.
  */
 export function RosaryDetailCarousel({
@@ -87,8 +87,6 @@ export function RosaryDetailCarousel({
   /** Renders only the selected detail so hidden cards stay outside the visual and accessibility trees. */
   function renderActivePage(page: RosaryDetailPage) {
     switch (page) {
-      case "artwork":
-        return <RosaryArtworkCard imageSource={artworkSource} />;
       case "fruitPrayer":
         return (
           <FruitPrayerCard
@@ -102,7 +100,12 @@ export function RosaryDetailCarousel({
           />
         );
       default:
-        return <MysteryScriptureCard mystery={mystery} />;
+        return (
+          <View style={styles.combinedPage}>
+            <MysteryScriptureCard mystery={mystery} />
+            <RosaryArtworkCard imageSource={artworkSource} />
+          </View>
+        );
     }
   }
 
@@ -160,6 +163,11 @@ export function RosaryDetailCarousel({
 }
 
 const styleSheet = createThemedStyles((theme) => ({
+  combinedPage: {
+    gap: theme.spacing[3],
+    minWidth: 0,
+    width: "100%",
+  },
   container: {
     minWidth: 0,
     width: "100%",

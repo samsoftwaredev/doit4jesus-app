@@ -51,7 +51,7 @@ const prayerKeysByLength: Record<RosaryLength, readonly string[]> = {
 const mysteryOrdinalKeys = ["first", "second", "third", "fourth", "fifth"] as const;
 
 /** Resolves any mystery position to one of the five traditional Rosary ordinal labels. */
-function getMysteryOrdinalKey(position: number) {
+export function getMysteryOrdinalKey(position: number) {
   const normalizedPosition = Number.isFinite(position) ? Math.trunc(position) : 1;
   const boundedPosition = Math.max(1, Math.min(normalizedPosition, mysteryOrdinalKeys.length));
   return mysteryOrdinalKeys[boundedPosition - 1];
@@ -224,7 +224,10 @@ export function RosaryBottomNavigation({
             >
               <View style={styles.progressCopy}>
                 <Text numberOfLines={2} style={styles.mysteryName}>
-                  {mysteryLabel}
+                  {progress.prayerName}
+                </Text>
+                <Text style={styles.progressCount}>
+                  {t("rosary.arc.progress", { current: progress.currentIndex, total: progress.total })}
                 </Text>
               </View>
               <Feather
@@ -496,6 +499,11 @@ const styleSheet = createThemedStyles((theme) => ({
   progressCopy: {
     flex: 1,
     minWidth: 0,
+  },
+  progressCount: {
+    ...theme.typography.caption,
+    color: theme.rosary.colors.immersiveGold,
+    marginTop: theme.spacing[0.5],
   },
   mysteryName: {
     ...theme.typography.bodyMedium,

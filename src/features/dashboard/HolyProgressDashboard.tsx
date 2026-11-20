@@ -528,7 +528,7 @@ export function HolyProgressDashboard({
         }
         todayPage={
           <>
-            <View style={styles.primaryCard} testID="today-rosary-card-container">
+            <View style={[styles.primaryCard, styles.todayCardGrow]} testID="today-rosary-card-container">
               <MomentForPrayer
                 mysteryImageSource={todayMysterySet.imageSource}
                 mysteryTitle={todayMysterySet.title}
@@ -664,6 +664,7 @@ const styleSheet = createThemedStyles((theme) => ({
     gap: theme.spacing[4],
     paddingBottom: theme.spacing[4],
   },
+  todayCardGrow: { flexGrow: 1 },
   primaryCard: {
     minWidth: theme.spacing[0],
     width: "100%",

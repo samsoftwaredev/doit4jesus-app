@@ -929,7 +929,7 @@ export const sizes = {
   bottomNavigationHeight: 56,
 
   cardMinWidth: 220,
-  contentMaxWidth: 1200,
+  contentMaxWidth: 500,
 } as const;
 
 export const breakpoints = {

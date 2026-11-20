@@ -113,7 +113,7 @@ function TodayRosaryCard({
 }
 
 const styleSheet = createThemedStyles((theme) => ({
-  section: { width: "100%" },
+  section: { flexGrow: 1, width: "100%" },
   sectionLabel: {
     ...theme.typography.labelSmall,
     color: theme.rosary.colors.gold,
@@ -125,7 +125,7 @@ const styleSheet = createThemedStyles((theme) => ({
   todayActionsRow: { flexDirection: "row", gap: theme.spacing[2] },
   digitalAction: { borderColor: theme.rosary.colors.gold },
   digitalActionText: { color: theme.rosary.colors.gold },
-  todayCard: { backgroundColor: theme.rosary.colors.cardInset, minHeight: 272 },
+  todayCard: { backgroundColor: theme.rosary.colors.cardInset, flexGrow: 1, minHeight: 272 },
   todayContent: {
     flex: 1,
     justifyContent: "flex-end",

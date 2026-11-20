@@ -42,13 +42,8 @@ describe("RosaryArc", () => {
     expect(screen.getByTestId(`rosary-arc-pearl-${openingOurFather.id}`)).toBeTruthy();
     expect(screen.getByTestId(`rosary-arc-rose-${firstOpeningHailMary.id}`)).toBeTruthy();
     expect(screen.getByRole("header", { name: "Hail Mary" })).toBeTruthy();
-    expect(screen.getByText("2 of 59")).toBeTruthy();
-    expect(screen.getByRole("progressbar").props.accessibilityValue).toEqual({
-      max: 59,
-      min: 0,
-      now: 2,
-      text: "2 of 59",
-    });
+    // The bead count now lives in the bottom navigation button, not the arc centre.
+    expect(screen.queryByText("2 of 59")).toBeNull();
   });
 
   it("distinguishes completed, current, and upcoming markers without allowing progress skips", async () => {
@@ -123,7 +118,6 @@ describe("RosaryArc", () => {
     expect(screen.getByRole("button", { name: "current crucifix, Apostles' Creed" })).toBeTruthy();
     expect(screen.getByTestId(`rosary-arc-crucifix-artwork-${fullRosarySequence[1].id}`).props.accessible).toBe(false);
     expect(screen.getAllByTestId(/^rosary-arc-physical-/)).toHaveLength(59);
-    expect(screen.getByText("0 of 59")).toBeTruthy();
   });
 
   it("localizes progress and interaction guidance in Spanish", async () => {
@@ -134,7 +128,6 @@ describe("RosaryArc", () => {
     );
 
     expect(screen.getByRole("header", { name: "Padre Nuestro" })).toBeTruthy();
-    expect(screen.getByText("1 de 59")).toBeTruthy();
     expect(screen.getByLabelText("Arco interactivo del Rosario")).toBeTruthy();
   });
 

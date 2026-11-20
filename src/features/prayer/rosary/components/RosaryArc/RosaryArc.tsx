@@ -251,7 +251,6 @@ export function RosaryArc({
   );
   const completedIds = useMemo(() => new Set(completedBeadIds), [completedBeadIds]);
   const sourceIndexById = useMemo(() => new Map(beads.map((bead, index) => [bead.id, index])), [beads]);
-  const progressText = t("rosary.arc.progress", { current: progress.currentIndex, total: progress.total });
   const markers = useMemo<ArcMarker[]>(
     () =>
       visibleBeads.map((bead, index) => {
@@ -530,22 +529,6 @@ export function RosaryArc({
             <Text accessibilityRole="header" numberOfLines={2} style={styles.prayerName}>
               {progress.prayerName}
             </Text>
-            <View
-              accessible
-              accessibilityLabel={t("rosary.arc.progressLabel", {
-                current: progress.currentIndex,
-                total: progress.total,
-              })}
-              accessibilityRole="progressbar"
-              accessibilityValue={{
-                max: progress.total,
-                min: 0,
-                now: progress.currentIndex,
-                text: progressText,
-              }}
-            >
-              <Text style={styles.progress}>{progressText}</Text>
-            </View>
           </View>
         </View>
       </GestureDetector>
@@ -671,7 +654,7 @@ const styleSheet = createThemedStyles((theme) => ({
     zIndex: 6,
   },
   prayerName: {
-    ...theme.typography.heading2,
+    ...theme.typography.heading3,
     color: theme.rosary.colors.immersivePrimary,
     textAlign: "center",
     ...textShadow(theme.colors.background.overlay, 1, 5),

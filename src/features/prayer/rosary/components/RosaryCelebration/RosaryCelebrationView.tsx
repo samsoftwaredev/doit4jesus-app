@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
   },
   recordText: { color: CELEBRATION_COLORS.goldBright, fontSize: 13, fontWeight: "800", letterSpacing: 2 },
   root: { backgroundColor: CELEBRATION_COLORS.background[0], flex: 1 },
-  safe: { flex: 1 },
+  safe: { alignSelf: "center", flex: 1, maxWidth: 700, width: "100%" },
   share: {
     alignItems: "center",
     backgroundColor: CELEBRATION_COLORS.gold,

@@ -22,11 +22,12 @@ export function AllMysteries({ gap, onOpenMystery }: AllMysteriesProps) {
   const { t } = useTranslation();
   const { language } = useAppLanguage();
   const { rosaryArtStyle } = useRosaryArtStylePreference();
+  const columns = 2;
   const [gridWidth, setGridWidth] = useState(0);
   const onGridLayout = useCallback((event: LayoutChangeEvent) => {
     setGridWidth(Math.floor(event.nativeEvent.layout.width));
   }, []);
-  const cardWidth = gridWidth > 0 ? Math.floor((gridWidth - gap) / 2) : 0;
+  const cardWidth = gridWidth > 0 ? Math.floor((gridWidth - gap * (columns - 1)) / columns) : 0;
   const rosaryMysterySets = useMemo(
     () => getRosaryMysterySetsFromContent(getRosaryContent(language), rosaryArtStyle),
     [language, rosaryArtStyle],
