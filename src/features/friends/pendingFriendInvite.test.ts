@@ -1,3 +1,10 @@
+import {
+  clearPendingFriendInvite,
+  isFriendInviteCode,
+  readPendingFriendInvite,
+  savePendingFriendInvite,
+} from "./pendingFriendInvite";
+
 const mockStore = new Map<string, string>();
 
 jest.mock("@react-native-async-storage/async-storage", () => ({
@@ -8,13 +15,6 @@ jest.mock("@react-native-async-storage/async-storage", () => ({
     setItem: jest.fn(async (key: string, value: string) => void mockStore.set(key, value)),
   },
 }));
-
-import {
-  clearPendingFriendInvite,
-  isFriendInviteCode,
-  readPendingFriendInvite,
-  savePendingFriendInvite,
-} from "./pendingFriendInvite";
 
 describe("pending friend invite storage", () => {
   beforeEach(() => {
