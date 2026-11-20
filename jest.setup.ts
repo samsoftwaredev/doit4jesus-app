@@ -34,6 +34,7 @@ jest.mock("react-native-reanimated", () => {
   return {
     ...ReactNative.Animated,
     default: ReactNative.Animated,
+    Easing: ReactNative.Easing,
     FadeIn: transition,
     FadeInUp: transition,
     cancelAnimation: jest.fn(),
@@ -41,6 +42,7 @@ jest.mock("react-native-reanimated", () => {
     useEvent: (handler: unknown) => handler,
     useReducedMotion: jest.fn(() => true),
     useSharedValue: sharedValue,
+    withDelay: (_delay: number, value: unknown) => value,
     withRepeat: (value: unknown) => value,
     withSequence: jest.fn((...values: unknown[]) => values.at(-1)),
     withSpring: (value: unknown) => value,

@@ -5,13 +5,15 @@ import { useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AccessibilityInfo, Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import Animated, { FadeIn, useReducedMotion } from "react-native-reanimated";
+import { useReducedMotion } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Confetti, SacredAtmosphere } from "@/components/ui";
 import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
 import { recordPrayerForIntention } from "@/features/prayer/intentions";
 import { recordRosaryActivity } from "@/features/prayer/rosary/api/activities.api";
+import { RosaryCelebrationView } from "@/features/prayer/rosary/components/RosaryCelebration";
+import { useRosaryCelebrationStats } from "@/features/prayer/rosary/components/RosaryCelebration/useRosaryCelebrationStats";
 import {
   RosaryArc,
   RosaryBottomNavigation,
@@ -95,6 +97,7 @@ export function RosaryPrayerScreen({
   const { fontScale, width } = useResponsiveLayout();
   const reduceMotion = useReducedMotion();
   const [completionVisible, setCompletionVisible] = useState(false);
+  const celebration = useRosaryCelebrationStats();
   const [completionCelebration, setCompletionCelebration] = useState(0);
   const [completionError, setCompletionError] = useState<string>();
   const [intentionPrayerCount, setIntentionPrayerCount] = useState<number>();
@@ -319,6 +322,7 @@ export function RosaryPrayerScreen({
 
     try {
       if (!activityRecorded.current) {
+        await celebration.capturePrevious();
         const completedAt = new Date();
         const result = await recordRosaryActivity({
           completedAt: completedAt.toISOString(),
@@ -331,6 +335,7 @@ export function RosaryPrayerScreen({
         });
         activityRecorded.current = true;
         setRosaryRecorded(true);
+        void celebration.load();
         if (result.points > 0) {
           AccessibilityInfo.announceForAccessibility(
             t("rosary.completion.activityRecorded", { points: result.points }),
@@ -355,7 +360,7 @@ export function RosaryPrayerScreen({
       completionRequestInFlight.current = false;
       setIsRecordingCompletion(false);
     }
-  }, [intentionId, t]);
+  }, [celebration, intentionId, t]);
 
   useEffect(() => {
     if (!session.isHydrated) return;
@@ -386,6 +391,7 @@ export function RosaryPrayerScreen({
     setIntentionPrayerCount(undefined);
     setRosaryRecorded(false);
     activityRecorded.current = false;
+    celebration.reset();
     intentionPrayerRecorded.current = false;
     completionKey.current = undefined;
     completionStartedAt.current = new Date();
@@ -556,35 +562,17 @@ export function RosaryPrayerScreen({
         <Modal
           animationType={reduceMotion ? "none" : "fade"}
           onRequestClose={() => setCompletionVisible(false)}
-          presentationStyle="overFullScreen"
-          transparent
+          presentationStyle="fullScreen"
           visible={completionVisible}
         >
           <View style={styles.completionOverlay}>
-            {completionCelebration > 0 ? (
-              <Confetti
-                active={completionVisible}
-                style={styles.completionConfetti}
-                testID="rosary-completion-confetti"
-                trigger={completionCelebration}
-              />
-            ) : null}
-            <Animated.View entering={reduceMotion ? undefined : FadeIn.duration(220)} style={styles.completionCard}>
-              <View style={styles.completionIcon}>
-                <Feather
-                  accessible={false}
-                  color={theme.rosary.colors.goldBright}
-                  name="heart"
-                  size={theme.sizes.iconLarge}
-                />
-              </View>
-              <Text accessibilityRole="header" style={styles.completionTitle}>
-                {t("rosary.completion.title")}
-              </Text>
-              <Text style={styles.completionDate}>
-                {completionDateLabel(session.lastPrayedOn, locale, t("rosary.completion.today"))}
-              </Text>
-              <Text style={styles.completionCopy}>{t("rosary.completion.copy")}</Text>
+            <RosaryCelebrationView
+              dateLabel={completionDateLabel(session.lastPrayedOn, locale, t("rosary.completion.today"))}
+              isLoadingStats={isRecordingCompletion || celebration.isLoading}
+              onNext={exitToGarden}
+              onPrayAgain={restart}
+              stats={celebration.stats}
+            >
               {rosaryRecorded ? <Text style={styles.completionSuccess}>{t("rosary.completion.recorded")}</Text> : null}
               {intentionPrayerCount !== undefined ? (
                 <Text style={styles.completionSuccess}>
@@ -609,23 +597,15 @@ export function RosaryPrayerScreen({
                   </Text>
                 </Pressable>
               ) : null}
-              <Pressable
-                accessibilityLabel={t("rosary.completion.prayAgainLabel")}
-                accessibilityRole="button"
-                onPress={restart}
-                style={({ pressed }) => [styles.primaryAction, pressed && styles.pressed]}
-              >
-                <Text style={styles.primaryActionText}>{t("rosary.completion.prayAgain")}</Text>
-              </Pressable>
-              <Pressable
-                accessibilityLabel={t("rosary.completion.exitGardenLabel")}
-                accessibilityRole="button"
-                onPress={exitToGarden}
-                style={({ pressed }) => [styles.secondaryAction, pressed && styles.pressed]}
-              >
-                <Text style={styles.secondaryActionText}>{t("rosary.completion.exitGarden")}</Text>
-              </Pressable>
-            </Animated.View>
+            </RosaryCelebrationView>
+            {completionCelebration > 0 ? (
+              <Confetti
+                active={completionVisible}
+                style={styles.completionConfetti}
+                testID="rosary-completion-confetti"
+                trigger={completionCelebration}
+              />
+            ) : null}
           </View>
         </Modal>
       </SafeAreaView>
@@ -710,51 +690,10 @@ const styleSheet = createThemedStyles((theme) => ({
     textAlign: "center",
   },
   completionOverlay: {
-    alignItems: "center",
-    backgroundColor: theme.colors.background.overlay,
     flex: 1,
-    justifyContent: "center",
-    padding: theme.spacing[5],
-  },
-  completionCard: {
-    alignItems: "center",
-    backgroundColor: theme.rosary.colors.cardInset,
-    borderColor: theme.rosary.colors.gold,
-    borderRadius: theme.radii["2xl"],
-    borderWidth: theme.rosary.borderWidths.gold,
-    maxWidth: 410,
-    padding: theme.spacing[6],
-    width: "100%",
-    zIndex: 1,
   },
   completionConfetti: {
     zIndex: 0,
-  },
-  completionIcon: {
-    alignItems: "center",
-    backgroundColor: "rgba(230, 186, 100, 0.12)",
-    borderColor: "rgba(230, 186, 100, 0.55)",
-    borderRadius: theme.radii.pill,
-    borderWidth: theme.rosary.borderWidths.goldHairline,
-    height: theme.spacing[12],
-    justifyContent: "center",
-    width: theme.spacing[12],
-  },
-  completionTitle: {
-    ...theme.typography.heading2,
-    color: theme.colors.text.white,
-    marginTop: theme.spacing[3],
-  },
-  completionDate: {
-    ...theme.typography.bodySmall,
-    color: theme.rosary.colors.gold,
-    marginTop: theme.spacing[1],
-  },
-  completionCopy: {
-    ...theme.typography.body,
-    color: theme.rosary.colors.scripture,
-    marginTop: theme.spacing[3],
-    textAlign: "center",
   },
   completionError: {
     ...theme.typography.bodySmall,
@@ -767,33 +706,6 @@ const styleSheet = createThemedStyles((theme) => ({
     color: theme.colors.text.success,
     marginTop: theme.spacing[2],
     textAlign: "center",
-  },
-  primaryAction: {
-    alignItems: "center",
-    backgroundColor: theme.rosary.colors.gold,
-    borderRadius: theme.radii.pill,
-    justifyContent: "center",
-    marginTop: theme.spacing[5],
-    minHeight: theme.sizes.buttonHeight,
-    width: "100%",
-  },
-  primaryActionText: {
-    ...theme.typography.button,
-    color: theme.colors.text.inverse,
-  },
-  secondaryAction: {
-    alignItems: "center",
-    borderColor: theme.rosary.colors.goldMuted,
-    borderRadius: theme.radii.pill,
-    borderWidth: theme.rosary.borderWidths.goldHairline,
-    justifyContent: "center",
-    marginTop: theme.spacing[2],
-    minHeight: theme.sizes.buttonHeight,
-    width: "100%",
-  },
-  secondaryActionText: {
-    ...theme.typography.button,
-    color: theme.colors.text.primary,
   },
   retryAction: {
     alignItems: "center",

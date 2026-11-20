@@ -85,7 +85,8 @@
         {
           "assets": ["./assets/audios/music"]
         }
-      ]
+      ],
+      "expo-sharing"
     ],
     "experiments": {
       "typedRoutes": true,

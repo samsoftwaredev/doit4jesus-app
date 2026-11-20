@@ -552,7 +552,7 @@ describe("RosaryPrayerScreen", () => {
     mockSession({ isRosaryCompleted: true, lastPrayedOn: "2026-08-06T10:00:00.000Z" });
     await render(<RosaryPrayerScreen />);
 
-    expect(screen.getByText("Rosary Completed")).toBeTruthy();
+    expect(screen.getAllByText("ROSARY COMPLETED").length).toBeGreaterThan(0);
     expect(screen.queryByTestId("rosary-completion-confetti")).toBeNull();
     await fireEvent.press(screen.getByLabelText("Pray this mystery again"));
 
@@ -563,7 +563,7 @@ describe("RosaryPrayerScreen", () => {
     mockSession({ isRosaryCompleted: true, lastPrayedOn: "2026-08-06T10:00:00.000Z" });
     await render(<RosaryPrayerScreen />);
 
-    await fireEvent.press(screen.getByRole("button", { name: "Exit & View Garden" }));
+    await fireEvent.press(screen.getByRole("button", { name: "Continue to your Rosary Garden" }));
 
     expect(mockReplace).toHaveBeenCalledWith({ pathname: "/home", params: { scrollTo: "garden" } });
   });
@@ -574,7 +574,7 @@ describe("RosaryPrayerScreen", () => {
 
     await render(<RosaryPrayerScreen />);
 
-    expect(screen.getByRole("button", { name: "Salir y ver el jardín" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Continuar a tu Jardín del Rosario" })).toBeTruthy();
   });
 
   it("should use a safe completion-date fallback for invalid saved dates", async () => {
