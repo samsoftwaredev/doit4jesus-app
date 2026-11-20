@@ -186,6 +186,7 @@ function parseGlobalLeaderboardEntry(value: unknown): LeaderboardEntryViewModel 
     rosaries: readNumber(entry.rosaries_count, "leaderboard Rosary count"),
     saintAvatarId: readNullableString(profile.saintAvatarId, "leaderboard saint avatar ID"),
     userId: readString(entry.user_id, "leaderboard user ID"),
+    username: readOptionalNullableString(profile.username, "leaderboard username") ?? null,
   };
 }
 

@@ -504,6 +504,12 @@ export function HolyProgressDashboard({
     [router],
   );
 
+  /** Opens another user's profile, where a friend request can be sent. */
+  const openUserProfile = useCallback(
+    (username: string) => router.push({ pathname: "/friends/user/[username]", params: { username } }),
+    [router],
+  );
+
   /** Opens the form for sharing a prayer intention. */
   const createIntention = useCallback(() => router.push("/create-prayer-intention"), [router]);
 
@@ -605,6 +611,7 @@ export function HolyProgressDashboard({
             isWeeklyLoading={isWeeklyGlobalLeaderboardLoading}
             lifetimeError={lifetimeGlobalLeaderboardError}
             lifetimeLeaderboard={lifetimeGlobalLeaderboard}
+            onOpenProfile={openUserProfile}
             onRetryLifetime={loadLifetimeGlobalLeaderboard}
             onRetryWeekly={loadWeeklyGlobalLeaderboard}
             weeklyError={weeklyGlobalLeaderboardError}

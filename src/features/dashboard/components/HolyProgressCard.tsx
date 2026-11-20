@@ -277,6 +277,7 @@ const styleSheet = createThemedStyles((theme) => ({
     borderColor: theme.colors.gold.strong,
     borderRadius: theme.radii.xl,
     borderWidth: theme.borderWidths.thin,
+    flexGrow: 1,
     minHeight: 350,
     overflow: "hidden",
     paddingHorizontal: theme.spacing[3],

@@ -42,6 +42,7 @@ export type LeaderboardEntryViewModel = {
   rosaries: number;
   saintAvatarId: string | null;
   userId: string;
+  username: string | null;
 };
 
 export type GlobalLeaderboardPeriodType = "weekly" | "lifetime";

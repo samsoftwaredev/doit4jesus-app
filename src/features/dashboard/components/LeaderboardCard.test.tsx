@@ -17,6 +17,7 @@ const weeklyEntries: LeaderboardEntryViewModel[] = [
     rosaries: 245,
     saintAvatarId: "a1000000-0000-4000-8000-000000000005",
     userId: "first-warrior",
+    username: "first-warrior",
   },
   {
     avatarUrl: "https://example.test/second.png",
@@ -27,6 +28,7 @@ const weeklyEntries: LeaderboardEntryViewModel[] = [
     rosaries: 190,
     saintAvatarId: null,
     userId: "second-warrior",
+    username: "second-warrior",
   },
   {
     avatarUrl: null,
@@ -37,6 +39,7 @@ const weeklyEntries: LeaderboardEntryViewModel[] = [
     rosaries: 156,
     saintAvatarId: null,
     userId: "third-warrior",
+    username: "third-warrior",
   },
 ];
 
@@ -50,6 +53,7 @@ const lifetimeEntries: LeaderboardEntryViewModel[] = [
     rosaries: 1245,
     saintAvatarId: null,
     userId: "lifetime-leader",
+    username: "lifetime-leader",
   },
   {
     avatarUrl: null,
@@ -60,6 +64,7 @@ const lifetimeEntries: LeaderboardEntryViewModel[] = [
     rosaries: 1100,
     saintAvatarId: null,
     userId: "lifetime-runner-up",
+    username: "lifetime-runner-up",
   },
   {
     avatarUrl: null,
@@ -70,6 +75,7 @@ const lifetimeEntries: LeaderboardEntryViewModel[] = [
     rosaries: 529,
     saintAvatarId: null,
     userId: "lifetime-tenth",
+    username: "lifetime-tenth",
   },
 ];
 
@@ -165,6 +171,15 @@ describe("LeaderboardCard", () => {
     expect(screen.getByLabelText("Third Warrior's avatar").children).toHaveLength(1);
   });
 
+  it("opens another user's profile from their avatar but not the current user's", async () => {
+    const onOpenProfile = jest.fn();
+    await render(<LeaderboardCard {...defaultProps} onOpenProfile={onOpenProfile} />);
+
+    await fireEvent.press(screen.getAllByLabelText("View @first-warrior’s profile")[0]);
+
+    expect(onOpenProfile).toHaveBeenCalledWith("first-warrior");
+  });
+
   it("keeps lifetime results visible when the weekly board fails and retries only weekly", async () => {
     const onRetryWeekly = jest.fn();
     await render(
@@ -214,6 +229,7 @@ describe("LeaderboardCard", () => {
       rank: 18,
       rosaries: 4,
       userId: "weekly-me",
+      username: "weekly-me",
     };
     const lifetimeCurrentUser = {
       ...lifetimeEntries[0],
@@ -222,6 +238,7 @@ describe("LeaderboardCard", () => {
       rank: 24,
       rosaries: 17,
       userId: "lifetime-me",
+      username: "lifetime-me",
     };
 
     await render(
@@ -271,6 +288,7 @@ describe("LeaderboardCard", () => {
       isCurrentUser: true,
       rank: 24,
       userId: "samuel",
+      username: "samuel",
     };
     await render(
       <LeaderboardCard {...defaultProps} lifetimeLeaderboard={leaderboard("lifetime", lifetimeEntries, currentUser)} />,

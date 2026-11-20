@@ -130,6 +130,7 @@ const styleSheet = createThemedStyles((theme) => ({
     justifyContent: "center",
   },
   page: {
+    flexDirection: "column",
     flexShrink: 0,
     minWidth: 0,
   },

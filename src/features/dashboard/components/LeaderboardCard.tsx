@@ -1,5 +1,6 @@
 import Feather from "@expo/vector-icons/Feather";
 import { LinearGradient } from "expo-linear-gradient";
+import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable, ScrollView, Text, View } from "react-native";
 
@@ -17,6 +18,7 @@ type LeaderboardCardProps = {
   isWeeklyLoading: boolean;
   lifetimeError: boolean;
   lifetimeLeaderboard: GlobalRosaryLeaderboard | null;
+  onOpenProfile?: (username: string) => void;
   onRetryLifetime: () => void;
   onRetryWeekly: () => void;
   weeklyError: boolean;
@@ -29,6 +31,7 @@ type BoardStatusProps = {
   isLoading: boolean;
   leaderboard: GlobalRosaryLeaderboard | null;
   loadingLabel: string;
+  onOpenProfile?: (username: string) => void;
   onRetry: () => void;
   retryLabel: string;
   unavailableMessage: string;
@@ -71,6 +74,7 @@ export function LeaderboardCard({
   isWeeklyLoading,
   lifetimeError,
   lifetimeLeaderboard,
+  onOpenProfile,
   onRetryLifetime,
   onRetryWeekly,
   weeklyError,
@@ -104,6 +108,7 @@ export function LeaderboardCard({
           isLoading={isWeeklyLoading}
           leaderboard={weeklyLeaderboard}
           loadingLabel={t("dashboard.leaderboard.weeklyLoading")}
+          onOpenProfile={onOpenProfile}
           onRetry={onRetryWeekly}
           retryLabel={t("dashboard.leaderboard.weeklyRetryLabel")}
           unavailableMessage={t("dashboard.leaderboard.weeklyUnavailable")}
@@ -123,6 +128,7 @@ export function LeaderboardCard({
           isLoading={isLifetimeLoading}
           leaderboard={lifetimeLeaderboard}
           loadingLabel={t("dashboard.leaderboard.lifetimeLoading")}
+          onOpenProfile={onOpenProfile}
           onRetry={onRetryLifetime}
           retryLabel={t("dashboard.leaderboard.lifetimeRetryLabel")}
           unavailableMessage={t("dashboard.leaderboard.lifetimeUnavailable")}
@@ -140,6 +146,7 @@ function BoardStatus({
   isLoading,
   leaderboard,
   loadingLabel,
+  onOpenProfile,
   onRetry,
   retryLabel,
   unavailableMessage,
@@ -170,14 +177,50 @@ function BoardStatus({
 
   return (
     <>
-      {variant === "weekly" ? <WeeklyPodium entries={entries} /> : <LifetimeLeaderboardRows entries={entries} />}
+      {variant === "weekly" ? (
+        <WeeklyPodium entries={entries} onOpenProfile={onOpenProfile} />
+      ) : (
+        <LifetimeLeaderboardRows entries={entries} onOpenProfile={onOpenProfile} />
+      )}
       {leaderboard ? <PinnedCurrentUser leaderboard={leaderboard} /> : null}
     </>
   );
 }
 
+/** Makes another user's avatar open their profile; the current user and users without a username stay static. */
+function ProfileAvatarLink({
+  children,
+  entry,
+  onOpenProfile,
+}: {
+  children: ReactNode;
+  entry: LeaderboardEntryViewModel;
+  onOpenProfile?: (username: string) => void;
+}) {
+  const { t } = useTranslation();
+  const username = entry.username;
+  if (!onOpenProfile || !username || entry.isCurrentUser) return <>{children}</>;
+
+  return (
+    <Pressable
+      accessibilityLabel={t("friends.userProfile.open", { username })}
+      accessibilityRole="button"
+      hitSlop={8}
+      onPress={() => onOpenProfile(username)}
+    >
+      {children}
+    </Pressable>
+  );
+}
+
 /** Displays available podium placements with country-badged avatars in second-first-third visual order. */
-function WeeklyPodium({ entries }: { entries: LeaderboardEntryViewModel[] }) {
+function WeeklyPodium({
+  entries,
+  onOpenProfile,
+}: {
+  entries: LeaderboardEntryViewModel[];
+  onOpenProfile?: (username: string) => void;
+}) {
   const { t } = useTranslation();
   const { locale } = useAppLanguage();
   const styles = useThemedStyles(styleSheet);
@@ -215,15 +258,17 @@ function WeeklyPodium({ entries }: { entries: LeaderboardEntryViewModel[] }) {
             <Text accessible={false} style={styles.podiumMedal}>
               {medal(entry.rank)}
             </Text>
-            <AvatarWithCountryBadge
-              accessibilityLabel={t("dashboard.leaderboard.avatarLabel", { name: entry.displayName })}
-              borderColor={theme.colors.gold.strong}
-              borderWidth={theme.borderWidths.thin}
-              countryCode={entry.countryCode}
-              name={entry.displayName}
-              size={avatarSize}
-              source={getProfileAvatarSource(entry.saintAvatarId, entry.avatarUrl)}
-            />
+            <ProfileAvatarLink entry={entry} onOpenProfile={onOpenProfile}>
+              <AvatarWithCountryBadge
+                accessibilityLabel={t("dashboard.leaderboard.avatarLabel", { name: entry.displayName })}
+                borderColor={theme.colors.gold.strong}
+                borderWidth={theme.borderWidths.thin}
+                countryCode={entry.countryCode}
+                name={entry.displayName}
+                size={avatarSize}
+                source={getProfileAvatarSource(entry.saintAvatarId, entry.avatarUrl)}
+              />
+            </ProfileAvatarLink>
             <Text style={[styles.podiumRank, { color: rankColor(entry.rank) }]}>#{entry.rank}</Text>
             <Text style={styles.podiumName}>{entry.displayName}</Text>
             <Text style={styles.podiumRosaries}>
@@ -237,7 +282,13 @@ function WeeklyPodium({ entries }: { entries: LeaderboardEntryViewModel[] }) {
 }
 
 /** Renders lifetime leaders with country-badged avatars in ascending server-provided rank order. */
-function LifetimeLeaderboardRows({ entries }: { entries: LeaderboardEntryViewModel[] }) {
+function LifetimeLeaderboardRows({
+  entries,
+  onOpenProfile,
+}: {
+  entries: LeaderboardEntryViewModel[];
+  onOpenProfile?: (username: string) => void;
+}) {
   const { t } = useTranslation();
   const { locale } = useAppLanguage();
   const styles = useThemedStyles(styleSheet);
@@ -278,14 +329,16 @@ function LifetimeLeaderboardRows({ entries }: { entries: LeaderboardEntryViewMod
                 <Text style={[styles.rank, { color: rankColor(entry.rank) }]}>{entry.rank}</Text>
               </View>
               <View style={styles.warriorColumn}>
-                <AvatarWithCountryBadge
-                  accessibilityLabel={t("dashboard.leaderboard.avatarLabel", { name: entry.displayName })}
-                  borderWidth={0}
-                  countryCode={entry.countryCode}
-                  name={entry.displayName}
-                  size={32}
-                  source={getProfileAvatarSource(entry.saintAvatarId, entry.avatarUrl)}
-                />
+                <ProfileAvatarLink entry={entry} onOpenProfile={onOpenProfile}>
+                  <AvatarWithCountryBadge
+                    accessibilityLabel={t("dashboard.leaderboard.avatarLabel", { name: entry.displayName })}
+                    borderWidth={0}
+                    countryCode={entry.countryCode}
+                    name={entry.displayName}
+                    size={32}
+                    source={getProfileAvatarSource(entry.saintAvatarId, entry.avatarUrl)}
+                  />
+                </ProfileAvatarLink>
                 <Text style={styles.name}>{entry.displayName}</Text>
               </View>
               <Text style={styles.rosariesColumn}>{formatPoints(entry.rosaries, locale)}</Text>
