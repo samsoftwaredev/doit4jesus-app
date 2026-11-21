@@ -5,7 +5,6 @@ import { Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 
-import { BackHeader } from "@/components/navigation";
 import { Button } from "@/components/ui";
 import { APP_CONFIG } from "@/config/app-config";
 import { useAchievement } from "@/features/achievements";
@@ -233,12 +232,23 @@ export function RosaryVideoScreen({
   return (
     <SafeAreaView edges={["top", "bottom"]} style={styles.safeArea} testID="rosary-video-screen">
       <View style={styles.content}>
-        <BackHeader
-          description={t("rosary.video.description")}
-          onBack={handleBack}
-          rightAction={isRouteFocused ? <RosaryPresence /> : undefined}
-          title={t("rosary.video.title")}
-        />
+        <View style={styles.topBar} testID="rosary-video-top-bar">
+          <Pressable
+            accessibilityLabel={t("common.goBack")}
+            accessibilityRole="button"
+            hitSlop={theme.spacing[2]}
+            onPress={handleBack}
+            style={styles.backButton}
+          >
+            <Feather
+              accessible={false}
+              color={theme.colors.text.primary}
+              name="chevron-left"
+              size={theme.sizes.iconMedium}
+            />
+          </Pressable>
+          {isRouteFocused ? <RosaryPresence /> : null}
+        </View>
         <View style={styles.playerArea} testID="rosary-video-player-area">
           <View
             accessibilityLabel={t("rosary.video.playerLabel")}
@@ -345,6 +355,19 @@ export function RosaryVideoScreen({
 const styleSheet = createThemedStyles((theme) => ({
   safeArea: { backgroundColor: theme.colors.black, flex: 1 },
   content: { backgroundColor: theme.colors.black, flex: 1 },
+  topBar: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    minHeight: theme.sizes.touchTarget,
+    paddingHorizontal: theme.spacing[3],
+  },
+  backButton: {
+    alignItems: "center",
+    height: theme.sizes.touchTarget,
+    justifyContent: "center",
+    width: theme.sizes.touchTarget,
+  },
   playerArea: { flex: 1, justifyContent: "center" },
   playerFrame: {
     aspectRatio: 16 / 9,
