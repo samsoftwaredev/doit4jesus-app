@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
@@ -82,7 +82,14 @@ export function ProgressCardsCarousel({ holyProgressCard, levelProgressCard }: P
             accessibilityElementsHidden
             importantForAccessibility="no-hide-descendants"
             style={[styles.dot, levelSelected && styles.selectedDot]}
-          />
+            testID="progress-carousel-pill-level"
+          >
+            {levelSelected ? null : (
+              <Text numberOfLines={1} style={styles.dotCaption} testID="progress-carousel-pill-caption">
+                {t("dashboard.progressCarousel.levelCaption")}
+              </Text>
+            )}
+          </View>
         </Pressable>
         <Pressable
           accessibilityLabel={t("dashboard.progressCarousel.showHoly")}
@@ -95,7 +102,14 @@ export function ProgressCardsCarousel({ holyProgressCard, levelProgressCard }: P
             accessibilityElementsHidden
             importantForAccessibility="no-hide-descendants"
             style={[styles.dot, holySelected && styles.selectedDot]}
-          />
+            testID="progress-carousel-pill-holy"
+          >
+            {holySelected ? null : (
+              <Text numberOfLines={1} style={styles.dotCaption} testID="progress-carousel-pill-caption">
+                {t("dashboard.progressCarousel.holyCaption")}
+              </Text>
+            )}
+          </View>
         </Pressable>
       </View>
     </View>
@@ -112,17 +126,26 @@ const styleSheet = createThemedStyles((theme) => ({
     width: "100%",
   },
   dot: {
+    alignItems: "center",
     backgroundColor: theme.rosary.colors.goldMuted,
     borderRadius: theme.radii.pill,
-    height: theme.spacing[2],
+    height: 14,
+    justifyContent: "center",
+    minWidth: theme.spacing[5],
     opacity: theme.opacity.secondary,
-    width: theme.spacing[2],
+    paddingHorizontal: theme.spacing[2],
+  },
+  dotCaption: {
+    color: theme.colors.text.inverse,
+    fontSize: 9,
+    fontWeight: "600",
+    lineHeight: 11,
   },
   dotTarget: {
     alignItems: "center",
     height: theme.sizes.touchTarget,
     justifyContent: "center",
-    width: theme.sizes.touchTarget,
+    minWidth: theme.sizes.touchTarget,
   },
   indicators: {
     alignItems: "center",
@@ -137,7 +160,6 @@ const styleSheet = createThemedStyles((theme) => ({
   selectedDot: {
     backgroundColor: theme.rosary.colors.goldBright,
     opacity: 1,
-    width: theme.spacing[5],
     ...theme.rosary.shadows.activeBead,
   },
   unmeasuredPage: {

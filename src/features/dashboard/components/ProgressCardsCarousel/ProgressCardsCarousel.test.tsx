@@ -28,8 +28,18 @@ describe("ProgressCardsCarousel", () => {
     expect(indicators).toHaveLength(2);
     expect(StyleSheet.flatten(indicators[0].props.style)).toMatchObject({
       height: theme.sizes.touchTarget,
-      width: theme.sizes.touchTarget,
+      minWidth: theme.sizes.touchTarget,
     });
+    expect(screen.getAllByTestId("progress-carousel-pill-caption", { includeHiddenElements: true })).toHaveLength(1);
+    expect(screen.getByText("Stats", { includeHiddenElements: true })).toBeTruthy();
+    expect(screen.queryByText("Level", { includeHiddenElements: true })).toBeNull();
+    const pillHeights = ["level", "holy"].map(
+      (name) =>
+        StyleSheet.flatten(
+          screen.getByTestId(`progress-carousel-pill-${name}`, { includeHiddenElements: true }).props.style,
+        ).height,
+    );
+    expect(new Set(pillHeights).size).toBe(1);
     expect(screen.getByLabelText("Show Level Progress").props.accessibilityState).toEqual({ selected: true });
     expect(screen.getByLabelText("Show Holy Progress").props.accessibilityState).toEqual({ selected: false });
   });

@@ -117,7 +117,7 @@ describe("RosaryPrayerScreen", () => {
     await render(<RosaryPrayerScreen />);
 
     expect(screen.getByText("CURRENT MYSTERY")).toBeTruthy();
-    expect(screen.getByText("The Annunciation")).toBeTruthy();
+    expect(screen.getAllByText("The Annunciation").length).toBeGreaterThan(0);
     expect(screen.getByText("FRUIT OF THE MYSTERY")).toBeTruthy();
     expect(screen.getByText("HAIL MARY")).toBeTruthy();
     expect(screen.queryByText("SCRIPTURE")).toBeNull();

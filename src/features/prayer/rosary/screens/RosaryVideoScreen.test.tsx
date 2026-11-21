@@ -78,6 +78,18 @@ describe("RosaryVideoScreen", () => {
     await act(async () => i18n.changeLanguage("en"));
   });
 
+  it("shows only the back button and presence in the header, with no title or subtitle", async () => {
+    await renderScreen();
+
+    expect(screen.getByRole("button", { name: "Go back" })).toBeTruthy();
+    expect(screen.queryByRole("header")).toBeNull();
+    expect(screen.queryByText(i18n.t("rosary.video.title"))).toBeNull();
+    expect(screen.queryByText(i18n.t("rosary.video.description"))).toBeNull();
+
+    await fireEvent.press(screen.getByRole("button", { name: "Go back" }));
+    expect(mockBack).toHaveBeenCalled();
+  });
+
   it("centers the full-width player vertically on a black page and provides accessible bottom actions", async () => {
     await renderScreen();
 

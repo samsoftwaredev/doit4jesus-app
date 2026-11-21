@@ -1,6 +1,8 @@
 import { act, fireEvent, render, screen } from "@testing-library/react-native";
 import { Dimensions, StyleSheet } from "react-native";
 
+import { artworkCredits } from "@/features/prayer/rosary/data/artworkCredits";
+import { artworkKeysBySource } from "@/features/prayer/rosary/data/artworkRegistry";
 import { rosaryMysteries } from "@/features/prayer/rosary/data/rosaryMysteries";
 import { i18n } from "@/localization";
 
@@ -23,6 +25,31 @@ describe("RosaryArtworkCard", () => {
     jest.clearAllMocks();
     useReducedMotion.mockReturnValue(true);
     setWindowDimensions({ height: 844, width: 390 });
+  });
+
+  it("shows the painting title and artist under the image only when entered", async () => {
+    const key = "mysteriesClassicArt/general/holyTrinity01.jpg";
+    const source = [...artworkKeysBySource.entries()].find(([, entryKey]) => entryKey === key)![0];
+    const original = artworkCredits[key];
+    try {
+      artworkCredits[key] = { artist: "", title: "" };
+      const rendered = await render(<RosaryArtworkCard imageSource={source} />);
+      expect(screen.queryByTestId("rosary-artwork-credit")).toBeNull();
+
+      artworkCredits[key] = { artist: "Albrecht Dürer", title: "Adoration of the Trinity" };
+      await rendered.rerender(<RosaryArtworkCard imageSource={source} />);
+      expect(screen.getByText("Adoration of the Trinity")).toBeTruthy();
+      expect(screen.getByText("Albrecht Dürer")).toBeTruthy();
+    } finally {
+      artworkCredits[key] = original;
+    }
+  });
+
+  it("credits comic illustrations to Camilo Ruiz", async () => {
+    await render(<RosaryArtworkCard imageSource={firstArtwork} />);
+
+    expect(screen.getByText("Camilo Ruiz")).toBeTruthy();
+    expect(screen.getByText("The Annunciation")).toBeTruthy();
   });
 
   it("shows the full uncropped artwork without a visible title or overlay", async () => {

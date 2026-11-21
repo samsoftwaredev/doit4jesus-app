@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Text, useWindowDimensions, View, type ImageSourcePropType } from "react-native";
 import { useReducedMotion } from "react-native-reanimated";
 
+import { getArtworkCredit } from "@/features/prayer/rosary/data/getArtworkCredit";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
@@ -27,6 +28,7 @@ export function RosaryArtworkCard({ imageSource }: RosaryArtworkCardProps) {
   const { height, width } = useWindowDimensions();
   const [imageFailed, setImageFailed] = useState(false);
   const frameHeight = getArtworkFrameHeight(width, height);
+  const credit = getArtworkCredit(imageSource);
 
   useEffect(() => {
     setImageFailed(false);
@@ -36,34 +38,63 @@ export function RosaryArtworkCard({ imageSource }: RosaryArtworkCardProps) {
   const handleImageError = useCallback(() => setImageFailed(true), []);
 
   return (
-    <View style={[styles.frame, { height: frameHeight }]} testID="rosary-artwork-card">
-      {!imageSource || imageFailed ? (
-        <View
-          accessibilityLabel={t("rosary.cards.devotionalImageUnavailable")}
-          accessibilityRole="image"
-          accessible
-          style={styles.fallback}
-        >
-          <Text style={styles.fallbackText}>{t("rosary.cards.devotionalImageUnavailable")}</Text>
+    <View style={styles.container}>
+      <View style={[styles.frame, { height: frameHeight }]} testID="rosary-artwork-card">
+        {!imageSource || imageFailed ? (
+          <View
+            accessibilityLabel={t("rosary.cards.devotionalImageUnavailable")}
+            accessibilityRole="image"
+            accessible
+            style={styles.fallback}
+          >
+            <Text style={styles.fallbackText}>{t("rosary.cards.devotionalImageUnavailable")}</Text>
+          </View>
+        ) : (
+          <Image
+            accessibilityLabel={t("rosary.cards.currentArtworkAccessibilityLabel")}
+            accessible
+            cachePolicy="memory-disk"
+            contentFit="contain"
+            onError={handleImageError}
+            source={imageSource}
+            style={styles.image}
+            testID="rosary-artwork-image"
+            transition={reduceMotion ? 0 : 180}
+          />
+        )}
+      </View>
+      {credit && !imageFailed ? (
+        <View style={styles.credit} testID="rosary-artwork-credit">
+          {credit.title ? <Text style={styles.creditTitle}>{credit.title}</Text> : null}
+          {credit.artist ? <Text style={styles.creditArtist}>{credit.artist}</Text> : null}
         </View>
-      ) : (
-        <Image
-          accessibilityLabel={t("rosary.cards.currentArtworkAccessibilityLabel")}
-          accessible
-          cachePolicy="memory-disk"
-          contentFit="contain"
-          onError={handleImageError}
-          source={imageSource}
-          style={styles.image}
-          testID="rosary-artwork-image"
-          transition={reduceMotion ? 0 : 180}
-        />
-      )}
+      ) : null}
     </View>
   );
 }
 
 const styleSheet = createThemedStyles((theme) => ({
+  container: {
+    gap: theme.spacing[1.5],
+    minWidth: 0,
+    width: "100%",
+  },
+  credit: {
+    alignItems: "center",
+    gap: 2,
+    paddingHorizontal: theme.spacing[3],
+  },
+  creditTitle: {
+    ...theme.typography.caption,
+    color: theme.rosary.colors.immersiveSecondary,
+    fontStyle: "italic",
+    textAlign: "center",
+  },
+  creditArtist: {
+    ...theme.typography.caption,
+    color: theme.rosary.colors.immersiveSecondary,
+    textAlign: "center",
+  },
   frame: {
     backgroundColor: "transparent",
     borderRadius: theme.radii.xl,
