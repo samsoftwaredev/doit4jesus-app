@@ -125,7 +125,7 @@ export function UserProfileScreen({ username }: { username: string | undefined }
           <View style={styles.actions} testID="user-profile-actions">
             {profile.relationshipState === "none" ? (
               <Button fullWidth loading={isMutating} onPress={() => void addFriend(profile)} variant="warning">
-                {t("friends.add")}
+                {t("friends.sendRequest")}
               </Button>
             ) : null}
             {profile.relationshipState === "outgoingPending" ? (

@@ -65,10 +65,25 @@ describe("UserProfileScreen", () => {
     expect(screen.getByText("@maria")).toBeTruthy();
     expect(screen.getByText("14")).toBeTruthy();
 
-    await fireEvent.press(screen.getByRole("button", { name: "Add" }));
+    await fireEvent.press(screen.getByRole("button", { name: "Send friend request" }));
 
     await waitFor(() => expect(api.sendFriendRequest).toHaveBeenCalledWith("maria"));
     await waitFor(() => expect(reload).toHaveBeenCalled());
+  });
+
+  it("does not send a friend request until the button is pressed", async () => {
+    mockProfile("none");
+    await render(<UserProfileScreen username="maria" />);
+
+    expect(screen.getByRole("button", { name: "Send friend request" })).toBeTruthy();
+    expect(api.sendFriendRequest).not.toHaveBeenCalled();
+  });
+
+  it("only offers to send a request when there is no existing relationship", async () => {
+    mockProfile("friends");
+    await render(<UserProfileScreen username="maria" />);
+
+    expect(screen.queryByRole("button", { name: "Send friend request" })).toBeNull();
   });
 
   it("lets the user accept an incoming request from the profile", async () => {
@@ -111,7 +126,7 @@ describe("UserProfileScreen", () => {
     api.sendFriendRequest.mockRejectedValue(new Error("boom"));
 
     await render(<UserProfileScreen username="maria" />);
-    await fireEvent.press(screen.getByRole("button", { name: "Add" }));
+    await fireEvent.press(screen.getByRole("button", { name: "Send friend request" }));
 
     expect(await screen.findByRole("alert")).toBeTruthy();
   });

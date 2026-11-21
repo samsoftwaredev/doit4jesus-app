@@ -341,6 +341,7 @@ export const resources = {
         received: "Received",
         requestReceived: "Request received",
         requested: "Requested",
+        sendRequest: "Send friend request",
         requests: {
           description: "Review incoming and sent friend requests.",
           loading: "Loading friend requests…",
@@ -1870,6 +1871,7 @@ export const resources = {
         received: "Recibidas",
         requestReceived: "Solicitud recibida",
         requested: "Solicitado",
+        sendRequest: "Enviar solicitud de amistad",
         requests: {
           description: "Revisa las solicitudes de amistad recibidas y enviadas.",
           loading: "Cargando solicitudes de amistad…",
