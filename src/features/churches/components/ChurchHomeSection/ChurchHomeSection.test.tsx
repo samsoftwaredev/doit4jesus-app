@@ -52,9 +52,9 @@ describe("ChurchHomeSection", () => {
   it("invites an unsubscribed user to find nearby churches", async () => {
     await render(<ChurchHomeSection />);
 
-    const title = await screen.findByRole("header", { name: "He is waiting for you" });
+    const title = await screen.findByRole("header", { name: "Visit Jesus" });
     expect(title).toHaveStyle({ fontFamily: theme.fontFamilies.devotional });
-    expect(screen.getByText("Visit Jesus in the tabernacle.")).toBeTruthy();
+    expect(screen.getByText("He is waiting for you.")).toBeTruthy();
     expect(screen.getByTestId("church-invitation-header")).toHaveStyle({ borderBottomWidth: 0 });
     expect(screen.getByTestId("church-invitation-background").props).toMatchObject({
       accessible: false,
@@ -176,8 +176,8 @@ describe("ChurchHomeSection", () => {
     await i18n.changeLanguage("es");
     await render(<ChurchHomeSection />);
 
-    expect(await screen.findByRole("header", { name: "Él te espera" })).toBeTruthy();
-    expect(screen.getByText("Visita a Jesús en el sagrario.")).toBeTruthy();
+    expect(await screen.findByRole("header", { name: "Visita a Jesús" })).toBeTruthy();
+    expect(screen.getByText("Él te espera.")).toBeTruthy();
     expect(screen.getByRole("button", { name: "Buscar iglesias cercanas" })).toBeTruthy();
   });
 
@@ -204,7 +204,7 @@ describe("ChurchHomeSection", () => {
 
     await waitFor(() => expect(screen.getByText("We couldn’t load your church reminders.")).toBeTruthy());
     await fireEvent.press(screen.getByRole("button", { name: "Try Again" }));
-    expect(await screen.findByRole("header", { name: "He is waiting for you" })).toBeTruthy();
+    expect(await screen.findByRole("header", { name: "Visit Jesus" })).toBeTruthy();
   });
 
   it("offers only the church finder on the subscribed card, with no reminder review action", async () => {

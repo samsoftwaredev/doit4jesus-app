@@ -62,8 +62,8 @@ export const resources = {
         title: "Church reminders",
         description: "Find a nearby Catholic church and choose the worship times you want to hear about.",
         invitation: {
-          title: "He is waiting for you",
-          subtitle: "Visit Jesus in the tabernacle.",
+          title: "Visit Jesus",
+          subtitle: "He is waiting for you.",
           description: "Find a nearby church and make time for Jesus this week.",
           action: "Find churches near you",
           mass: "Find nearby Mass times",
@@ -1592,8 +1592,8 @@ export const resources = {
         title: "Recordatorios de iglesias",
         description: "Encuentra una iglesia católica cercana y elige los horarios de culto que quieres recibir.",
         invitation: {
-          title: "Él te espera",
-          subtitle: "Visita a Jesús en el sagrario.",
+          title: "Visita a Jesús",
+          subtitle: "Él te espera.",
           description: "Encuentra una iglesia cercana y dedica tiempo a Jesús esta semana.",
           action: "Buscar iglesias cercanas",
           mass: "Encuentra horarios de Misa cercanos",

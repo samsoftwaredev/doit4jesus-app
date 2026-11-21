@@ -18,9 +18,13 @@ type UserProgressStats = {
   rosariesPrayed: number;
 };
 
+export type UserProgressStatus = "loading" | "ready" | "unavailable";
+
 type UserProgressSectionProps = {
   errorFallback?: ReactNode;
   initialData?: ScreenDataResponse;
+  /** Reports whether streak data is loading, available, or unavailable so the page can reorder around it. */
+  onStatusChange?: (status: UserProgressStatus) => void;
 };
 
 /**
@@ -29,7 +33,7 @@ type UserProgressSectionProps = {
  * @param props - Optional screen data and a Home-specific replacement for the generic unavailable-progress state.
  * @returns The user's streak statistics, loading treatment, or supplied fallback after a request failure.
  */
-export function UserProgressSection({ errorFallback, initialData }: UserProgressSectionProps) {
+export function UserProgressSection({ errorFallback, initialData, onStatusChange }: UserProgressSectionProps) {
   const { t } = useTranslation();
   const styles = useThemedStyles(styleSheet);
   const [isLoadingStats, setIsLoadingStats] = useState(true);
@@ -65,6 +69,10 @@ export function UserProgressSection({ errorFallback, initialData }: UserProgress
   useEffect(() => {
     void loadProgress();
   }, [loadProgress]);
+
+  useEffect(() => {
+    onStatusChange?.(isLoadingStats ? "loading" : stats ? "ready" : "unavailable");
+  }, [isLoadingStats, onStatusChange, stats]);
 
   return (
     <View accessibilityLabel={t("progress.sectionLabel")} style={styles.section}>

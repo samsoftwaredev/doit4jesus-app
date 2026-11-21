@@ -36,11 +36,15 @@ import {
   fetchLevels,
   fetchRecentRosaryActivities,
   fetchRosaryStats,
+  isProgressNotFoundError,
   parseDashboardProgressData,
   parseLevelsData,
   parseRecentRosaryActivitiesData,
   parseRosaryStatsData,
   UserProgressSection,
+  type UserProgressStatus,
+  LevelCatalogEntry,
+  RecentRosaryActivity,
 } from "@/features/progress";
 import { fetchScreenData } from "@/features/screen-data";
 import type { ScreenDataResponse } from "@/features/screen-data";
@@ -50,7 +54,6 @@ import { useAppLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
-import type { LevelCatalogEntry, RecentRosaryActivity } from "@/features/progress";
 import {
   ConscienceQuestionCard,
   ActivityPointsModal,
@@ -121,6 +124,7 @@ export function HolyProgressDashboard({
   const [levelCatalog, setLevelCatalog] = useState<LevelCatalogEntry[] | null>(null);
   const [progress, setProgress] = useState<Awaited<ReturnType<typeof fetchDashboardProgress>> | null>(null);
   const [progressError, setProgressError] = useState(false);
+  const [progressNotFound, setProgressNotFound] = useState(false);
   const [reminder, setReminder] = useState<RosaryReminderViewModel | null>(null);
   const [reminderError, setReminderError] = useState(false);
   const [recentRosaryActivities, setRecentRosaryActivities] = useState<RecentRosaryActivity[] | null>(null);
@@ -190,13 +194,16 @@ export function HolyProgressDashboard({
   const loadProgress = useCallback(async () => {
     setIsLoadingProgress(true);
     setProgressError(false);
+    setProgressNotFound(false);
     try {
       const section = initialData?.sections.progress;
       setProgress(section ? parseDashboardProgressData(section.data) : await fetchDashboardProgress());
     } catch (error) {
       logDevelopmentError("loading dashboard progress", error);
       setProgress(null);
-      setProgressError(true);
+      // A 404 means there is no progress to show, so the cards are hidden rather than shown as an error.
+      if (isProgressNotFoundError(error)) setProgressNotFound(true);
+      else setProgressError(true);
     } finally {
       setIsLoadingProgress(false);
     }
@@ -516,6 +523,9 @@ export function HolyProgressDashboard({
   /** Opens the authenticated user's prayer intentions. */
   const openMyIntentions = useCallback(() => router.push("/my-prayer-intentions"), [router]);
 
+  const [streakStatus, setStreakStatus] = useState<UserProgressStatus>("loading");
+  const hasNoStreakData = streakStatus === "unavailable";
+
   const useCardColumns = isTablet && contentWidth >= 700 && !isLargeText;
 
   return (
@@ -528,6 +538,11 @@ export function HolyProgressDashboard({
         }
         todayPage={
           <>
+            {hasNoStreakData ? (
+              <View testID="journey-welcome-container">
+                <JourneyWelcomeCard displayName={profile?.displayName ?? null} gender={profile?.gender ?? null} />
+              </View>
+            ) : null}
             <View style={[styles.primaryCard, styles.todayCardGrow]} testID="today-rosary-card-container">
               <MomentForPrayer
                 mysteryImageSource={todayMysterySet.imageSource}
@@ -538,12 +553,7 @@ export function HolyProgressDashboard({
               />
             </View>
             <View testID="streak-progress-container">
-              <UserProgressSection
-                errorFallback={
-                  <JourneyWelcomeCard displayName={profile?.displayName ?? null} gender={profile?.gender ?? null} />
-                }
-                initialData={initialData}
-              />
+              <UserProgressSection errorFallback={<></>} initialData={initialData} onStatusChange={setStreakStatus} />
             </View>
           </>
         }
@@ -576,35 +586,37 @@ export function HolyProgressDashboard({
         <DailyLiturgyDashboard initialData={initialPrayerData} showHighlightedVerse={false} />
       </View>
       <View style={[styles.primaryGrid, useCardColumns && styles.primaryGridColumns]} testID="dashboard-primary-grid">
-        <ProgressCardsCarousel
-          holyProgressCard={
-            <>
-              <HolyProgressCard
-                detailsError={holyDetailsError}
-                isLoadingDetails={isLoadingHolyDetails}
-                isLoadingProgress={isLoadingProgress}
-                isLoadingStats={isLoadingStats}
+        {progressNotFound ? null : (
+          <ProgressCardsCarousel
+            holyProgressCard={
+              <>
+                <HolyProgressCard
+                  detailsError={holyDetailsError}
+                  isLoadingDetails={isLoadingHolyDetails}
+                  isLoadingProgress={isLoadingProgress}
+                  isLoadingStats={isLoadingStats}
+                  levelCatalog={levelCatalog}
+                  onViewActivityPoints={openActivityPoints}
+                  progress={progress}
+                  progressError={progressError}
+                  recentRosaryActivities={recentRosaryActivities}
+                  rosaryStats={rosaryStats}
+                  statsError={statsError}
+                />
+                <ActivityPointsModal onClose={closeActivityPoints} visible={isActivityPointsVisible} />
+              </>
+            }
+            levelProgressCard={
+              <LevelProgressCard
+                gender={profile?.gender ?? null}
+                isLoading={isLoadingProgress}
                 levelCatalog={levelCatalog}
-                onViewActivityPoints={openActivityPoints}
                 progress={progress}
                 progressError={progressError}
-                recentRosaryActivities={recentRosaryActivities}
-                rosaryStats={rosaryStats}
-                statsError={statsError}
               />
-              <ActivityPointsModal onClose={closeActivityPoints} visible={isActivityPointsVisible} />
-            </>
-          }
-          levelProgressCard={
-            <LevelProgressCard
-              gender={profile?.gender ?? null}
-              isLoading={isLoadingProgress}
-              levelCatalog={levelCatalog}
-              progress={progress}
-              progressError={progressError}
-            />
-          }
-        />
+            }
+          />
+        )}
         <View style={styles.primaryCard} testID="global-leaderboard-card-container">
           <LeaderboardCard
             isLifetimeLoading={isLifetimeGlobalLeaderboardLoading}

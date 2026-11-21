@@ -7,6 +7,7 @@ export {
   fetchRecentRosaryActivities,
   fetchRosaryStats,
   fetchUserProgress,
+  isProgressNotFoundError,
   parseBadgeCatalogData,
   parseDashboardProgressData,
   parseLevelsData,
@@ -30,4 +31,5 @@ export type {
   UserRosaryStats,
 } from "./progress.types";
 export { UserProgressSection } from "./UserProgressSection";
+export type { UserProgressStatus } from "./UserProgressSection";
 export { StreakCards } from "./StreakCards";

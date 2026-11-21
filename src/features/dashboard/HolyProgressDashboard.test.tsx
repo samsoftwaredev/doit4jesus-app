@@ -54,20 +54,29 @@ jest.mock("expo-router", () => {
   };
 });
 
+let mockStreakStatus: string = "ready";
+
 jest.mock("@/features/progress", () => ({
   ...(() => {
     const { Text, View } = jest.requireActual<typeof import("react-native")>("react-native");
     return {
       EarnedBadgesSection: () => <Text>Dashboard Earned Badges</Text>,
       fetchDashboardProgress: (...args: unknown[]) => mockFetchDashboardProgress(...args),
+      isProgressNotFoundError: (error: unknown) => (error as { status?: number } | undefined)?.status === 404,
       fetchLevels: (...args: unknown[]) => mockFetchLevels(...args),
       fetchRecentRosaryActivities: (...args: unknown[]) => mockFetchRecentRosaryActivities(...args),
       fetchRosaryStats: (...args: unknown[]) => mockFetchRosaryStats(...args),
-      UserProgressSection: () => (
-        <View testID="mock-streak-progress">
-          <Text>Existing User Progress</Text>
-        </View>
-      ),
+      UserProgressSection: ({ onStatusChange }: { onStatusChange?: (status: string) => void }) => {
+        const { useEffect } = jest.requireActual<typeof import("react")>("react");
+        useEffect(() => {
+          onStatusChange?.(mockStreakStatus);
+        }, [onStatusChange]);
+        return (
+          <View testID="mock-streak-progress">
+            <Text>Existing User Progress</Text>
+          </View>
+        );
+      },
     };
   })(),
 }));
@@ -246,6 +255,7 @@ jest.mock("@/features/profile", () => ({
 
 describe("HolyProgressDashboard", () => {
   beforeEach(async () => {
+    mockStreakStatus = "ready";
     jest.clearAllMocks();
     mockFocusCleanups.length = 0;
     await i18n.changeLanguage("en");
@@ -378,6 +388,46 @@ describe("HolyProgressDashboard", () => {
       pathname: "/rosary-video",
       params: { mysteryType: "joyful" },
     });
+  });
+
+  it("keeps Today's Rosary above the streak data and hides the journey card while streak data exists", async () => {
+    mockStreakStatus = "ready";
+    await render(<HolyProgressDashboard />);
+
+    expect(screen.queryByTestId("journey-welcome-container")).toBeNull();
+    expect(screen.getByTestId("today-rosary-card-container")).toBeTruthy();
+  });
+
+  it("puts the journey welcome above Today's Rosary only when there is no streak data", async () => {
+    mockStreakStatus = "unavailable";
+    await render(<HolyProgressDashboard />);
+
+    const todayPage = screen.getByTestId("home-today-page");
+    const children = todayPage.children;
+    const journey = within(todayPage).getByTestId("journey-welcome-container");
+    const today = within(todayPage).getByTestId("today-rosary-card-container");
+    expect(children.findIndex((child) => child === journey)).toBeLessThan(
+      children.findIndex((child) => child === today),
+    );
+    expect(within(journey).getByRole("header", { name: "Your journey begins, Mateo!" })).toBeTruthy();
+  });
+
+  it("hides the Level and Holy Progress cards when the progress request returns 404", async () => {
+    mockFetchDashboardProgress.mockRejectedValue(Object.assign(new Error("Not found"), { status: 404 }));
+
+    await render(<HolyProgressDashboard />);
+
+    await waitFor(() => expect(mockFetchDashboardProgress).toHaveBeenCalled());
+    await waitFor(() => expect(screen.queryByTestId("progress-cards-carousel-container")).toBeNull());
+  });
+
+  it("keeps the Level and Holy Progress cards for other progress failures", async () => {
+    mockFetchDashboardProgress.mockRejectedValue(Object.assign(new Error("Server error"), { status: 500 }));
+
+    await render(<HolyProgressDashboard />);
+
+    await waitFor(() => expect(mockFetchDashboardProgress).toHaveBeenCalled());
+    expect(screen.getByTestId("progress-cards-carousel-container")).toBeTruthy();
   });
 
   it("places upcoming church events directly after the streak progress, above the daily Rosary reminder", async () => {

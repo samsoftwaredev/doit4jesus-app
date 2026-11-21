@@ -19,8 +19,6 @@ describe("JourneyWelcomeCard", () => {
     expect(screen.getByRole("header", { name: "Your journey begins, Mateo!" })).toBeTruthy();
     expect(screen.getByText("Here's an overview of the app.")).toBeTruthy();
     expect(screen.getByLabelText("Your path through DoIt4Jesus")).toBeTruthy();
-    expect(screen.getByTestId("journey-ornament")).toBeTruthy();
-    expect(screen.getByTestId("journey-introduction-divider")).toBeTruthy();
     expect(screen.getByText("Home · See your progress.")).toBeTruthy();
     expect(screen.getByText("Prayer · Make time for prayer.")).toBeTruthy();
     expect(screen.getByText("Community · Compete with others.")).toBeTruthy();

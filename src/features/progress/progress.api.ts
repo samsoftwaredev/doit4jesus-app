@@ -237,6 +237,22 @@ function parseBadgeResponse(value: unknown): BadgeCatalogEntry {
   };
 }
 
+/** Carries the HTTP status of a failed progress request so callers can tell "no data yet" (404) from real failures. */
+export class ProgressRequestError extends Error {
+  readonly status: number;
+
+  constructor(status: number) {
+    super(`Unable to load your progress (${status}).`);
+    this.name = "ProgressRequestError";
+    this.status = status;
+  }
+}
+
+/** Reports whether an error is a 404 Not Found response from the progress API. */
+export function isProgressNotFoundError(error: unknown): boolean {
+  return error instanceof ProgressRequestError && error.status === 404;
+}
+
 async function requestProgress(path: string): Promise<unknown> {
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
@@ -253,7 +269,7 @@ async function requestProgress(path: string): Promise<unknown> {
   });
 
   if (!response.ok) {
-    throw new Error(`Unable to load your progress (${response.status}).`);
+    throw new ProgressRequestError(response.status);
   }
 
   return response.json() as Promise<unknown>;
