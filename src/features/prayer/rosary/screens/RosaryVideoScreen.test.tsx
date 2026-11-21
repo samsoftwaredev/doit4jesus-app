@@ -10,6 +10,7 @@ import { RosaryVideoScreen } from "@/features/prayer/rosary/screens/RosaryVideoS
 import { i18n } from "@/localization";
 
 const mockBack = jest.fn();
+const mockReplace = jest.fn();
 const mockQueueAchievement = jest.fn();
 const mockRecordRosaryActivity = jest.fn();
 const mockPlay = jest.fn();
@@ -17,6 +18,8 @@ const mockPause = jest.fn();
 const mockSeekBy = jest.fn();
 const mockPlayerProps = jest.fn();
 const mockRosaryPresence = jest.fn();
+const mockCapturePrevious = jest.fn();
+const mockLoadCelebration = jest.fn();
 const mockFocusCleanups: (() => void)[] = [];
 
 jest.mock("expo-router", () => ({
@@ -28,7 +31,24 @@ jest.mock("expo-router", () => ({
       return cleanup;
     }, [effect]);
   },
-  useRouter: () => ({ back: mockBack }),
+  useRouter: () => ({ back: mockBack, replace: mockReplace }),
+}));
+jest.mock("@/features/prayer/rosary/components/RosaryCelebration", () => {
+  const ReactNative = jest.requireActual<typeof import("react-native")>("react-native");
+  return {
+    RosaryCelebrationView: ({ onNext }: { onNext: () => void }) => (
+      <ReactNative.Pressable onPress={onNext} testID="mock-celebration" />
+    ),
+  };
+});
+jest.mock("@/features/prayer/rosary/components/RosaryCelebration/useRosaryCelebrationStats", () => ({
+  useRosaryCelebrationStats: () => ({
+    capturePrevious: mockCapturePrevious,
+    isLoading: false,
+    load: mockLoadCelebration,
+    reset: jest.fn(),
+    stats: null,
+  }),
 }));
 jest.mock("@/features/achievements", () => ({
   useAchievement: () => ({ queueAchievement: mockQueueAchievement }),
@@ -151,6 +171,34 @@ describe("RosaryVideoScreen", () => {
     expect(mockRecordRosaryActivity).toHaveBeenCalledTimes(1);
     expect(mockPause).not.toHaveBeenCalled();
     expect(mockQueueAchievement).toHaveBeenCalledWith({ type: "rosary-video-complete" });
+  });
+
+  it("shows the celebration at 95 percent without pausing, once the Rosary is recorded", async () => {
+    await renderScreen();
+
+    await act(async () => latestPlayerProps().onProgress({ currentTime: 900, duration: 1_000 }));
+    await waitFor(() => expect(mockRecordRosaryActivity).toHaveBeenCalledTimes(1));
+    expect(mockCapturePrevious.mock.invocationCallOrder[0]).toBeLessThan(
+      mockRecordRosaryActivity.mock.invocationCallOrder[0],
+    );
+    expect(mockLoadCelebration).toHaveBeenCalledTimes(1);
+    expect(screen.queryByTestId("mock-celebration")).toBeNull();
+
+    await act(async () => latestPlayerProps().onProgress({ currentTime: 950, duration: 1_000 }));
+    expect(screen.getByTestId("mock-celebration")).toBeTruthy();
+    expect(mockPause).not.toHaveBeenCalled();
+
+    await fireEvent.press(screen.getByTestId("mock-celebration"));
+    expect(mockReplace).toHaveBeenCalledWith({ params: { scrollTo: "garden" }, pathname: "/home" });
+  });
+
+  it("does not show the celebration when saving fails", async () => {
+    mockRecordRosaryActivity.mockRejectedValueOnce(new Error("offline"));
+    await renderScreen();
+
+    await act(async () => latestPlayerProps().onProgress({ currentTime: 96, duration: 100 }));
+    await screen.findByText("Your Rosary could not be saved.");
+    expect(screen.queryByTestId("mock-celebration")).toBeNull();
   });
 
   it("keeps a failed completion non-blocking and retries with the same idempotency key", async () => {

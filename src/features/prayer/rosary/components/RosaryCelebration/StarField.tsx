@@ -12,6 +12,9 @@ import Animated, {
 
 import { CELEBRATION_COLORS, seeded } from "./celebrationTheme";
 
+/** Dims the whole field so the stars sit softly behind the content. */
+const STAR_OPACITY = 0.5;
+
 type StarSpec = { delay: number; id: number; left: number; size: number; top: number };
 
 function Star({ animated, spec }: { animated: boolean; spec: StarSpec }) {
@@ -26,7 +29,7 @@ function Star({ animated, spec }: { animated: boolean; spec: StarSpec }) {
   }, [animated, spec.delay, twinkle]);
 
   const style = useAnimatedStyle(() => ({
-    opacity: twinkle.value,
+    opacity: twinkle.value * STAR_OPACITY,
     transform: [{ scale: 0.6 + twinkle.value * 0.6 }],
   }));
 

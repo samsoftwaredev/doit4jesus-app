@@ -1,11 +1,11 @@
 import Feather from "@expo/vector-icons/Feather";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Modal, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 
-import { Button } from "@/components/ui";
+import { Button, Confetti } from "@/components/ui";
 import { APP_CONFIG } from "@/config/app-config";
 import { useAchievement } from "@/features/achievements";
 import { recordRosaryActivity } from "@/features/prayer/rosary/api/activities.api";
@@ -16,13 +16,16 @@ import {
   type RosaryVideoPlayerHandle,
   type RosaryVideoProgress,
 } from "@/features/prayer/rosary/components";
+import { RosaryCelebrationView } from "@/features/prayer/rosary/components/RosaryCelebration";
+import { useRosaryCelebrationStats } from "@/features/prayer/rosary/components/RosaryCelebration/useRosaryCelebrationStats";
 import type { RosaryMysteryType } from "@/features/prayer/rosary/types";
 import { logDevelopmentError } from "@/lib/development-logger";
-import type { SupportedLanguage } from "@/localization";
+import { useAppLanguage, type SupportedLanguage } from "@/localization";
 import { createThemedStyles, useThemedStyles } from "@/theme/createThemedStyles";
 import { theme } from "@/theme/tokens";
 
 const completionThreshold = 0.85;
+const celebrationThreshold = 0.95;
 
 type CompletionStatus = "idle" | "recorded" | "recording" | "save-error";
 
@@ -39,6 +42,16 @@ function hasReachedCompletion({ currentTime, duration }: RosaryVideoProgress): b
     Number.isFinite(duration) &&
     duration > 0 &&
     currentTime / duration >= completionThreshold
+  );
+}
+
+/** Reports whether playback has reached the point where the celebration page is shown. */
+function hasReachedCelebration({ currentTime, duration }: RosaryVideoProgress): boolean {
+  return (
+    Number.isFinite(currentTime) &&
+    Number.isFinite(duration) &&
+    duration > 0 &&
+    currentTime / duration >= celebrationThreshold
   );
 }
 
@@ -108,6 +121,12 @@ export function RosaryVideoScreen({
   const styles = useThemedStyles(styleSheet);
   const router = useRouter();
   const { queueAchievement } = useAchievement();
+  const { locale } = useAppLanguage();
+  const celebration = useRosaryCelebrationStats();
+  const reachedCelebrationRef = useRef(false);
+  const celebrationShownRef = useRef(false);
+  const [celebrationVisible, setCelebrationVisible] = useState(false);
+  const [celebrationTrigger, setCelebrationTrigger] = useState(0);
   const playerRef = useRef<RosaryVideoPlayerHandle>(null);
   const mountedRef = useRef(true);
   const completionStatusRef = useRef<CompletionStatus>("idle");
@@ -142,6 +161,21 @@ export function RosaryVideoScreen({
     }, []),
   );
 
+  /** Opens the celebration once, after the Rosary is recorded and playback has reached the celebration point. */
+  const maybeShowCelebration = useCallback(() => {
+    if (celebrationShownRef.current || !reachedCelebrationRef.current) return;
+    if (completionStatusRef.current !== "recorded" || !mountedRef.current) return;
+    celebrationShownRef.current = true;
+    setCelebrationVisible(true);
+    setCelebrationTrigger((current) => current + 1);
+  }, []);
+
+  /** Closes the celebration and goes home to the Rosary Garden. */
+  const exitToGarden = useCallback(() => {
+    setCelebrationVisible(false);
+    router.replace({ pathname: "/home", params: { scrollTo: "garden" } });
+  }, [router]);
+
   /** Returns to the previous protected route. */
   const handleBack = useCallback(() => router.back(), [router]);
 
@@ -152,6 +186,7 @@ export function RosaryVideoScreen({
     if (mountedRef.current) setCompletionStatus("recording");
 
     try {
+      await celebration.capturePrevious();
       const completedAt = new Date();
       await recordRosaryActivity({
         completedAt: completedAt.toISOString(),
@@ -165,20 +200,24 @@ export function RosaryVideoScreen({
       completionStatusRef.current = "recorded";
       if (!mountedRef.current) return;
       setCompletionStatus("recorded");
+      void celebration.load();
       queueAchievement({ type: "rosary-video-complete" });
+      maybeShowCelebration();
     } catch (error) {
       logDevelopmentError("recording video Rosary completion", error);
       completionStatusRef.current = "save-error";
       if (mountedRef.current) setCompletionStatus("save-error");
     }
-  }, [queueAchievement]);
+  }, [celebration, maybeShowCelebration, queueAchievement]);
 
   /** Receives YouTube timing updates and starts completion recording at the selected threshold. */
   const handleProgress = useCallback(
     async (progress: RosaryVideoProgress) => {
+      if (hasReachedCelebration(progress)) reachedCelebrationRef.current = true;
       if (completionStatusRef.current === "idle" && hasReachedCompletion(progress)) await recordCompletion();
+      maybeShowCelebration();
     },
-    [recordCompletion],
+    [maybeShowCelebration, recordCompletion],
   );
 
   /** Enables the custom controls after YouTube confirms that the player is ready. */
@@ -348,11 +387,39 @@ export function RosaryVideoScreen({
           </View>
         </View>
       </View>
+      <Modal
+        animationType="fade"
+        onRequestClose={() => setCelebrationVisible(false)}
+        presentationStyle="fullScreen"
+        visible={celebrationVisible}
+      >
+        <View style={styles.celebrationOverlay}>
+          <RosaryCelebrationView
+            dateLabel={new Date().toLocaleDateString(locale, { day: "numeric", month: "long", year: "numeric" })}
+            isLoadingStats={celebration.isLoading}
+            onNext={exitToGarden}
+            onPrayAgain={() => setCelebrationVisible(false)}
+            stats={celebration.stats}
+          />
+          <Confetti
+            active={celebrationVisible}
+            style={styles.celebrationConfetti}
+            testID="rosary-video-completion-confetti"
+            trigger={celebrationTrigger}
+          />
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
 
 const styleSheet = createThemedStyles((theme) => ({
+  celebrationConfetti: {
+    zIndex: 0,
+  },
+  celebrationOverlay: {
+    flex: 1,
+  },
   safeArea: { backgroundColor: theme.colors.black, flex: 1 },
   content: { backgroundColor: theme.colors.black, flex: 1 },
   topBar: {
